@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package esof322.pa1;
 
 /**
@@ -10,7 +5,7 @@ package esof322.pa1;
  * @authors Trent Baker, Madison Fichtner, Cody Stoner, Logan Bonney
  */
 
-public class Vector3D 
+public final class Vector3D 
 {
     private final double x;
     private final double y;
