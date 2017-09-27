@@ -8,7 +8,7 @@ public class Vector3DTest {
 
 	@Test
 	public void testScale() {
-		int f = 3;
+	int f = 3;
         int x = 2;
         int y = 1;
         int z = 0;
