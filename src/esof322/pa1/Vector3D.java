@@ -51,20 +51,24 @@ public final class Vector3D
     //Produce the dot product of "this" Vector3D and argument Vector3D v({x0, y0, z0} dot {x1, y1, z1} = x0*x1 + y0*y1 + z0*z1).	
     public double dot(Vector3D v)
     {
-        
+    	double dotProduct;
+    	dotProduct = ((this.x * v.x) + (this.y * v.x) + (this.z * v.y));
+        return dotProduct;
     }
     
     
     //returns the magnitude of a Vector3D(sqrt(x*x + y*y + z*z)).	
     public double magnitude()
     {
-        
+    	double magnitude;
+    	magnitude = Math.sqrt((this.x * 2) + (this.y * 2) + (this.z * 2));
+        return magnitude;
     }
     
     
     public String toString()
     {
-        
+        return "";
     }
     
     
