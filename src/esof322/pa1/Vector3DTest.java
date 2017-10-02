@@ -90,9 +90,13 @@ public class Vector3DTest
 	}
 	
 	@Test
-	public void equals() 
-        {
-		
+	public void equals() {
+		Vector3D actualVector = new Vector3D(x, y, z);
+		Vector3D comparisonVector = new Vector3D(2, 1, 0);
+		boolean expectedResult = true;
+		boolean actualResult;
+		actualResult = actualVector.equals(comparisonVector);
+		assertEquals(expectedResult, actualResult);
 	}
 
 }
