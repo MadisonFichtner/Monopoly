@@ -1,3 +1,4 @@
+import java.util.Random;
 
 public class Player {
 	public Deed[] deeds = new Deed[40]; //Assuming one person can own all positions on board
@@ -30,6 +31,9 @@ public class Player {
 	 */
 	public int[] roll_dice() {
 		//randomize dice throw and display image of side of each dice that was rolled
+		Random rand = new Random();
+		dice[0] = rand.nextInt(6) + 1;
+		dice[1] = rand.nextInt(6) + 1;
 		return dice;
 	}
 	
