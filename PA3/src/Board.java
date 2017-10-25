@@ -1,14 +1,20 @@
+import java.io.File;
 
 public class Board {
 	
 	public int numHotelsRemaining;
 	public int numHousesRemaining;
-	public Player[] players = new Player[4];
+	public Player[] players;
 	public Deed[] board = new Deed[40];
 	
+	public Board(Player[] users, Deed[] new_board) {
+		this.numHotelsRemaining = 12;
+		this.numHousesRemaining = 32;
+		this.players = users;
+		this.board = new_board;
+	}
+	
 	public void populate_board() {
-		//Pass in all the information about each individual deed and store in them in board[].
-		//Need to parse .csv file for information about each deed.
 		//Need to build a .csv file with all the information we require for each property,
 		//I tried to find one online but none of them are exactly what we need
 	}
@@ -37,4 +43,5 @@ public class Board {
 	public void hold_auction(Deed auctionedDeed) {
 		
 	}
+
 }

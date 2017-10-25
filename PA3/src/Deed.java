@@ -6,15 +6,25 @@ public class Deed {
 	public int purchase_price;
 	public int mortgage_value;
 	public int rent;
-	public String owner;
+	public Player owner;
 	public boolean whole_color_group_owned;
 	public boolean mortgaged;
 	public String deed_type;
 	
-	
+	/*
+	 * Creates new deed, initially the owner, whole_group_owned, and mortgaged will be null
+	 * 
+	 * @param color -> color of space
+	 * @param position -> position on the board for the deed
+	 * @param purchase_price
+	 * @param mortgage_value -> reward for mortgaging the deed 
+	 * @param rent -> cost for landing on deed
+	 * @param name -> name of deed
+	 * @param deed_type -> Street, Railroad, Utility, or other
+	 */
 	public Deed(int position, String color, int purchase_price, int mortgage_value, int rent, String name, String deed_type) {
-		this.color = color;
 		this.position = position;
+		this.color = color;
 		this.purchase_price = purchase_price;
 		this.mortgage_value = mortgage_value;
 		this.rent = rent;
@@ -25,6 +35,11 @@ public class Deed {
 		this.deed_type = deed_type;
 	}
 	
+	
+	/*
+	 * Calculates rent based on deed_type, houses/hotel on deed if it's a 
+	 * street and whether the player who owns said deed owns all deeds of that color group
+	 */
 	public int calculate_rent() {
 		int rent = 0;
 		if(deed_type.equals("Street")) {
@@ -46,9 +61,12 @@ public class Deed {
 		return rent;
 	}
 	
+	public Player get_owner() {
+		return owner;
+	}
+	
 	public int get_mortgage() {
-		int mortage_value = 0;
-		return mortage_value;
+		return mortgage_value;
 	}
 
 }
