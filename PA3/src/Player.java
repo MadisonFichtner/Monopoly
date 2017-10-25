@@ -8,6 +8,7 @@ public class Player {
 	public int position;
 	public int[] dice;
 	public int dice_sum;
+	public int railroad_count;
 	
 	
 	/*
@@ -23,6 +24,7 @@ public class Player {
 		this.dice = new int[]{0,0};
 		this.name = name;
 		this.token = token;
+		this.railroad_count = 0; //if 2 RR, rent = 50, 3-rent=100, 4-rent=200
 	}
 	
 	/*
@@ -101,6 +103,10 @@ public class Player {
 		else {
 			money -= deed.calculate_rent();
 			receiving_player.money += deed.calculate_rent();
+		}
+		if(deed.deed_type.equals("company")) {
+			//if(receiving_player owns 1 company, receiving_player.money += 4 * dice_sum
+			//else if(receiving_player owns 2 company, receiving_player.money += 10 * dice_sum
 		}
 		
 	}
