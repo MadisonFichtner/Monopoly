@@ -24,7 +24,7 @@ public class Main{
 		Deed[] new_board = new Deed[40];
 		in.close();
 		
-		String fileName = "monopolyDeeds.csv"; //just a sample file name
+		String fileName = "test.csv"; //just a sample file name
 		File csvFile = new File(fileName);
 		BufferedReader reader = new BufferedReader(new FileReader(csvFile));
 		new_board = parse_CSV(csvFile);
@@ -51,6 +51,7 @@ public class Main{
 			int rent4 = in.nextInt();
 			int rent_hotel = in.nextInt();
 			int build_cost = in.nextInt();
+			in.next();
 			String deed_type = in.next();
 			
 			deeds[i] = new Deed(position, name, property_group, color, price, mortgage_value, rent,
