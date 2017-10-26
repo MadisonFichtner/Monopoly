@@ -15,10 +15,10 @@ public class Board {
 	}
 	
 	public void populate_board() {
-		//Need to build a .csv file with all the information we require for each property,
-		//I tried to find one online but none of them are exactly what we need
+		
 	}
 	
+	//The dice roll logic needs to be in the player class
 	public void take_turn(Player player) {
 		int double_roll_counter = 0;
 		int dice_sum = 0;
