@@ -26,7 +26,6 @@ public class Main{
 			players[i] = new Player(name, token);
 		}
 		Deed[] new_board = new Deed[40];
-		in.close();
 		
 		String fileName = "test.csv"; //just a sample file name
 		File csvFile = new File(fileName);
@@ -42,12 +41,16 @@ public class Main{
 		int period = 1000;
 		timer.scheduleAtFixedRate(new TimerTask() {
 
+        	int i = 0;
 	        public void run() {
 	        	//put program code in here, will stop when timer hits 0 starting at interval (300)
-	        	int i = 0;
 	        	board.take_turn(players[i]);
+	        	i++;
+	        	if(i == players.length)
+	        		i = 0;
 	        }
 	    }, delay, period);
+	    
 	}
 	
 	//parse_CSV needs to read in contents of .csv and populate an array of deeds
@@ -75,7 +78,6 @@ public class Main{
 			deeds[i] = new Deed(position, name, property_group, color, price, mortgage_value, rent,
 					rent1, rent2, rent3, rent4, rent_hotel, build_cost, deed_type);
 		}
-		in.close();
 		//populate deeds giving csv_file
 		return deeds;
 	}

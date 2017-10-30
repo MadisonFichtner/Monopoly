@@ -14,6 +14,8 @@ public class Deed {
 	public int rent_hotel;
 	public int build_cost; //same for both houses and hotels
 	public String deed_type;
+	public int current_houses;
+	public boolean has_hotel;
 	
 	public Player owner;
 	public boolean whole_color_group_owned;
@@ -46,6 +48,8 @@ public class Deed {
 		this.rent_hotel = rent_hotel;
 		this.build_cost = build_cost;
 		this.deed_type = deed_type;
+		this.current_houses = 0; //initially has no houses/hotel
+		this.has_hotel = false;
 		
 		this.owner = null;
 		this.whole_color_group_owned = false;
