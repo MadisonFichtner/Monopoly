@@ -3,8 +3,12 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.Scanner;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class Main{
+	static int interval;
+	static Timer timer;
 	private static final String COMMA_DELIMITER = ",";
 	public static void main(String[] args) throws FileNotFoundException {
 		
@@ -30,6 +34,20 @@ public class Main{
 		new_board = parse_CSV(csvFile);
 		
 		Board board = new Board(players, new_board);
+		
+		//Timer to kill program
+		Timer timer = new Timer();
+		interval = 300;
+		int delay = 1000;
+		int period = 1000;
+		timer.scheduleAtFixedRate(new TimerTask() {
+
+	        public void run() {
+	        	//put program code in here, will stop when timer hits 0 starting at interval (300)
+	        	int i = 0;
+	        	board.take_turn(players[i]);
+	        }
+	    }, delay, period);
 	}
 	
 	//parse_CSV needs to read in contents of .csv and populate an array of deeds
@@ -62,5 +80,9 @@ public class Main{
 		return deeds;
 	}
 	
-
+	private static final int setInterval() {
+	    if (interval == 1)
+	        timer.cancel();
+	    return --interval;
+	}
 }
