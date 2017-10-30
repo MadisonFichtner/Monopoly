@@ -1,7 +1,9 @@
+import java.util.ArrayList;
 import java.util.Random;
+import java.util.Scanner;
 
 public class Player {
-	public Deed[] deeds = new Deed[40]; //Assuming one person can own all positions on board
+	public ArrayList<Deed> deeds; //Assuming one person can own all positions on board
 	public int money;
 	public String token;
 	public String name;
@@ -9,6 +11,7 @@ public class Player {
 	public int[] dice;
 	public int dice_sum;
 	public int railroad_count;
+	public int building_value;
 	
 	
 	/*
@@ -18,13 +21,14 @@ public class Player {
 	 * @param toke -> name of token entered by user (make picture on board)
 	 */
 	public Player(String name, String token) {
-		this.deeds = null;
+		this.deeds = new ArrayList<Deed>();
 		this.money = 1500;
 		this.position = 0;
 		this.dice = new int[]{0,0};
 		this.name = name;
 		this.token = token;
 		this.railroad_count = 0; //if 2 RR, rent = 50, 3-rent=100, 4-rent=200
+		this.building_value = 0; //initially owns 0 buildings
 	}
 	
 	/*
@@ -36,6 +40,8 @@ public class Player {
 		Random rand = new Random();
 		dice[0] = rand.nextInt(6) + 1;
 		dice[1] = rand.nextInt(6) + 1;
+		dice_sum = dice[0] + dice[1];
+		System.out.println(dice[0] + " " + dice[1]);
 		return dice;
 	}
 	
@@ -44,22 +50,60 @@ public class Player {
 		
 	}
 	
+	public boolean buy_property(Deed deed) {
+		boolean bought = false;
+		Scanner in = new Scanner(System.in);
+		boolean valid;
+		int answer = 0;
+		do {
+			valid = true;
+			try {
+				System.out.println("Do you want to buy: " + deed.name + " for $" + deed.purchase_price + "? (1. yes / 2. no)");
+				answer = in.nextInt();
+			}
+			catch (Exception e) {
+				System.out.println("That was an incorrect input, enter an integer");
+				valid = false;
+				in.nextLine();
+			}
+		}while(valid == false);
+		
+		if(answer == 1) {
+			money -= deed.purchase_price;
+			deeds.add(deed);
+			if(deed.deed_type.equals("Railroad"))
+			railroad_count++;
+			bought = true;
+		}
+		else
+			bought = false;
+		
+		return bought;
+	}
+	
 	/*
 	 * Moves players token, and returns $200 if they passed go
 	 * 
 	 * @param spaces -> dice_sum
 	 */
-	public void move(int dice_sum) {
+	public void move() {
 		boolean passed_go = false;
-		position = position += dice_sum;
+		if(position + dice_sum > 40) {
+			int overflow = (position + dice_sum) - 40;
+			position = overflow;
+			passed_go = true;
+		}
+		else
+			position = position += dice_sum;
 		//if position 0 get passed
 		//passed_go = true;
-		passed_go = true;
-		
 		
 		if(passed_go == true) {
 			money += 200;
 		}
+	}
+	public void move_to_jail() {
+		position = 10;
 	}
 	
 	
@@ -112,7 +156,20 @@ public class Player {
 	}
 	
 	public int calculate_net_worth() {
-		int netWorth = 0; //= all of items values and money added up
-		return netWorth;
+		int net_worth = 0; //= all of items values and money added up
+		for(int i = 0; i < deeds.size(); i++) {
+			net_worth += money;
+			net_worth += (deeds.get(i).purchase_price + (deeds.get(i).build_cost * deeds.get(i).current_houses));
+			if(deeds.get(i).has_hotel == true)
+				net_worth += deeds.get(i).build_cost;
+		}
+		return net_worth;
+	}
+	
+	public void pay_tax(int response) {
+		if(response == 1)
+			money -= calculate_net_worth();
+		else
+			money -= 200;
 	}
 }
