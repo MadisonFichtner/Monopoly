@@ -14,64 +14,7 @@ public class Board {
 		this.players = users;
 		this.board = new_board;
 	}
-	
-	public void populate_board() {
-		
-	}
-	
-	public int user_prompt(Player player, int turn) { //turn 0 means they haven't rolled dice yet, turn 1 means they rolled doubles, turn 2 means they have the option to buy/sell property and develop
-		Scanner in = new Scanner(System.in);
-		int response = 0;
-		if(turn == 0) {
-			System.out.println(player.name + ", what would you like to do? (1. Roll Dice / 2. Sell Property / 3. Buy House / 4. Buy Hotel / 5. Mortgage) > ");
-			response = in.nextInt();
-			switch(response) {
-			case 1: 
-				player.roll_dice();				//Player rolls dice, dice values are stored in player class
-				player.move();					//Player moves the number of spaces specified in the roll
-				response = 1;
-				break;
-			case 2: //sell property
-			case 3: //buy houses
-			case 4: //buy hotels
-			case 5: //mortgage 
-				player.print_deeds();
-				System.out.println("Which deed would you like to mortgage?");
-				response = in.nextInt();
-				Deed deed = player.deeds.get(response);
-				player.mortgage_deed(deed);
-			}
-		}
-		else if(turn == 1) {
-			System.out.println(player.name + ", you rolled doubles, rolling dice again.");
-			player.roll_dice();				//Player rolls dice, dice values are stored in player class
-			player.move();					//Player moves the number of spaces specified in the roll
-			response = 1;
-		}
-		else if(turn == 2) {
-			System.out.println(player.name + ", what would you like to do? (1. Sell Property / 2. Buy House / 3. Buy Hotel / 4. Mortgage / 5. End Turn) > ");
-			response = in.nextInt();
-			switch(response) {
-			case 1: //sell property
-				response = 1;
-			case 2: //buy house
-				response = 2;
-			case 3: //buy hotel
-				response = 3;
-			case 4: //mortgage
-				player.print_deeds();
-				System.out.println("Which deed would you like to mortgage?");
-				response = in.nextInt();
-				Deed deed = player.deeds.get(response);
-				player.mortgage_deed(deed);
-				response = 4;
-			case 5: //end turn
-				response = 5;
-			}
-		}
-		return response;
-	}
-	
+
 	//The dice roll logic needs to be in the player class
 	public void take_turn(Player player) {
 		System.out.println("It is " + player.name + "'s turn.");
@@ -154,6 +97,76 @@ public class Board {
 		}
 		System.out.println(player.name + " has ended their turn. \n");
 	}
+	
+	
+	public int user_prompt(Player player, int turn) { //turn 0 means they haven't rolled dice yet, turn 1 means they rolled doubles, turn 2 means they have the option to buy/sell property and develop
+		Scanner in = new Scanner(System.in);
+		int response = 0;
+		if(turn == 0) {
+			System.out.println(player.name + ", what would you like to do? (1. Roll Dice / 2. Sell Property / 3. Buy House / 4. Buy Hotel / 5. Mortgage) > ");
+			response = in.nextInt();
+			switch(response) {
+			case 1: 
+				player.roll_dice();				//Player rolls dice, dice values are stored in player class
+				player.move();					//Player moves the number of spaces specified in the roll
+				response = 1;
+				break;
+			case 2: //sell property
+				player.trade_deed(players);
+				response = 2;
+				break;
+			case 3: //buy houses
+				response = 3;
+				break;
+			case 4: //buy hotels
+				response = 4;
+				break;
+			case 5: //mortgage 
+				player.print_deeds();
+				System.out.println("Which deed would you like to mortgage?");
+				response = in.nextInt();
+				Deed deed = player.deeds.get(response);
+				player.mortgage_deed(deed);
+				response = 5;
+				break;
+			}
+		}
+		else if(turn == 1) {
+			System.out.println(player.name + ", you rolled doubles, rolling dice again.");
+			player.roll_dice();				//Player rolls dice, dice values are stored in player class
+			player.move();					//Player moves the number of spaces specified in the roll
+			response = 1;
+		}
+		else if(turn == 2) {
+			System.out.println(player.name + ", what would you like to do? (1. Sell Property / 2. Buy House / 3. Buy Hotel / 4. Mortgage / 5. End Turn) > ");
+			response = in.nextInt();
+			switch(response) {
+			case 1: //sell property
+				player.trade_deed(players);
+				response = 1;
+				break;
+			case 2: //buy house
+				response = 2;
+				break;
+			case 3: //buy hotel
+				response = 3;
+				break;
+			case 4: //mortgage
+				player.print_deeds();
+				System.out.println("Which deed would you like to mortgage?");
+				response = in.nextInt();
+				Deed deed = player.deeds.get(response);
+				player.mortgage_deed(deed);
+				response = 4;
+				break;
+			case 5: //end turn
+				response = 5;
+				break;
+			}
+		}
+		return response;
+	}
+	
 	
 	//Auctions deed between all players
 	public void hold_auction(Deed auctionedDeed) {

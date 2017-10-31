@@ -115,8 +115,23 @@ public class Player {
 	 * @param deed -> deed to be traded
 	 * @param recipient -> player to receive deed
 	 */
-	public void trade_deed(Deed deed, Player recipient) {
+	public void trade_deed(Player[] players) {
+		Scanner in = new Scanner(System.in);
+		print_deeds();
+		System.out.println("Which deed would you like to sell?");
+		int deed_num = in.nextInt();
+		System.out.println("Who is buying it?");
+		for(int i = 0; i < players.length; i++) {
+			System.out.println(i + ". " + players[i].name);
+		}
+		int recipient_num = in.nextInt();
+		System.out.println("How much is it being sold for?");
+		int price = in.nextInt();
 		
+		players[recipient_num].deeds.add(deeds.get(deed_num));	//adds deed to recipients deeds
+		deeds.remove(deed_num);									//removes deed from current players deeds
+		money += price;
+		players[recipient_num].money -= price;
 	}
 	
 	/*
@@ -181,5 +196,10 @@ public class Player {
 		for(int i = 0; i < deeds.size(); i++) {
 			System.out.println(i + ". Name: " + deeds.get(i).name + ", Mortgage Value:" + deeds.get(i).calculate_mortgage());
 		}
+	}
+	
+	public void pay_house() {
+		Scanner in = new Scanner(System.in);
+		
 	}
 }
