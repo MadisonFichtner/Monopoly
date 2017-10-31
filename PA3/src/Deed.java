@@ -17,6 +17,8 @@ public class Deed {
 	public int current_houses;
 	public boolean has_hotel;
 	
+	public int new_rent;
+	public boolean max_houses;
 	public Player owner;
 	public boolean whole_color_group_owned;
 	public boolean mortgaged;
@@ -51,6 +53,8 @@ public class Deed {
 		this.current_houses = 0; //initially has no houses/hotel
 		this.has_hotel = false;
 		
+		this.new_rent = rent; //calculated rent
+		this.max_houses = false;
 		this.owner = null;
 		this.whole_color_group_owned = false;
 		this.mortgaged = false;
@@ -62,18 +66,35 @@ public class Deed {
 	 * street and whether the player who owns said deed owns all deeds of that color group
 	 */
 	public int calculate_rent() {
-		int rent = 0;
-		if(deed_type.equals("Street")) {
-			//search streets[] for deed name and access calculate_rent from the street class
-			//if owner owns all of color group, double
+		if(mortgaged == true)
+			System.out.println(name + " is mortgaged and will not collect rent.");
+		else if(deed_type.equals("street")) {
+			switch(current_houses) {
+			case 0: new_rent = rent; break;
+			case 1: new_rent = rent1house; break;
+			case 2: new_rent = rent2house; break;
+			case 3: new_rent = rent3house; break;
+			case 4: new_rent = rent4house; break;
+			}
+			if(has_hotel == true)
+				new_rent = rent_hotel;
 		}
-		else if(deed_type.equals("Railroad")) {
-			//search railroad[] for deed name and access calculate_rent from the street class
+		else if(deed_type.equals("railroad")) {
 			//if owner owns 1 rent = 25; 2 rent = 50; 3 rent = 100; 4 rent = 200
+			switch(owner.railroad_count) {
+			case 0: new_rent = rent; break;
+			case 1: new_rent = 25; break;
+			case 2: new_rent = 50; break;
+			case 3: new_rent = 100; break;
+			case 4: new_rent = 200; break;
+			}
 		}
-		else if(deed_type.equals("Utility")) {
-			//search utilities[] for deed name and access calculate_rent from the street class
+		else if(deed_type.equals("utility")) {
 			//if owner owns 1 rent = 4*dice; 2 rent= 10 * dice
+			switch(owner.utilities_count) {
+			case 1: new_rent = (4 * owner.dice_sum);
+			case 2: new_rent = (10 * owner.dice_sum);
+			}
 		}
 		else {
 			//else its free parking/other spots
@@ -84,7 +105,7 @@ public class Deed {
 	
 	public int calculate_mortgage() {
 		int mortgage = 0;
-		mortgage += mortgage_value;
+		mortgage = mortgage_value;
 		if(current_houses != 0) {
 			mortgage += current_houses * build_cost;
 			current_houses = 0;

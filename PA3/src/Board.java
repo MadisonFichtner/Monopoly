@@ -19,7 +19,6 @@ public class Board {
 	public void take_turn(Player player) {
 		System.out.println("It is " + player.name + "'s turn.");
 		Scanner in = new Scanner(System.in);
-		boolean in_jail = false;		//Is true if player is in jail	
 		boolean is_free_parking = false;//Is true of player lands on GO, Jail, or Free Parking
 		int double_roll_counter = 0;	//Keeps track of how many times player has rolled doubles
 		int response = 0;
@@ -31,7 +30,7 @@ public class Board {
 		int position = player.position;	//Players current position used to check deed in that position
 		
 		//If the player is jail
-		if(in_jail == true) {
+		if(player.in_jail == true) {
 			//give option to roll dice for doubles or pay $50
 		}
 		
@@ -40,8 +39,10 @@ public class Board {
 			System.out.println("No property to buy. Landed on space is " + board[position].name  + "\n");
 			//is_free_parking = true;
 		}
+		else if(board[position].name.equals("Go to Jail"))
+			player.move_to_jail();
 		else if(board[position].name.equals("Income Tax")) {
-			System.out.println("You landed on Income Tax, would you like to pay 10% of your net worth, or $200? (1. 10% / 2. $200");
+			System.out.println("You landed on Income Tax, you piece of shit have to pay 10% of your net worth, or $200. (1. 10% / 2. $200)");
 			int answer = in.nextInt();
 			player.pay_tax(answer);
 		}
@@ -57,16 +58,20 @@ public class Board {
 				System.out.println(player.name + " did not buy " + deed.name + " so " + deed.name + " will be auctioned.");
 			}
 		}
+		else if(board[player.position].owner != null) {
+			Deed deed = board[player.position];
+			player.pay_rent(deed);
+		}
 		
 		//Doubles were rolled, does the same thing as above, just repeats if doubles are rolled
 		while(player.dice[0] == player.dice[1]) {
 			if(double_roll_counter == 2) { //if doubles have been rolled twice, go to jail
 				player.move_to_jail();
-				in_jail = true;
 			}
 			else {							//if doubles haven't been rolled twice, keep being offered to buy property or auction it off
 				response = 0;
 				response = user_prompt(player, 1);
+				position = player.position;
 				
 				if(board[position].name.equals("Free Parking") || board[position].name.equals("Jail") || board[position].name.equals("GO")) {
 					System.out.println("No property to buy. Landed on space is " + board[position].name  + "\n");
@@ -85,7 +90,7 @@ public class Board {
 						System.out.println(player.name + " bought " + deed.name + " for $" + deed.purchase_price + "\n");
 					}
 					else {
-						System.out.println(player.name + " did not buy " + deed.name + " so " + deed.name + " will be auctioned.");
+						System.out.println(player.name + " did not buy " + deed.name + " so " + deed.name + " will be auctioned.\n");
 						hold_auction(deed);
 					}
 				}
@@ -116,9 +121,11 @@ public class Board {
 				response = 2;
 				break;
 			case 3: //buy houses
+				player.buy_house();
 				response = 3;
 				break;
 			case 4: //buy hotels
+				player.buy_hotel();
 				response = 4;
 				break;
 			case 5: //mortgage 
@@ -146,9 +153,11 @@ public class Board {
 				response = 1;
 				break;
 			case 2: //buy house
+				player.buy_house();
 				response = 2;
 				break;
 			case 3: //buy hotel
+				player.buy_hotel();
 				response = 3;
 				break;
 			case 4: //mortgage
