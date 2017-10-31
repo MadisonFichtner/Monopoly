@@ -19,29 +19,72 @@ public class Board {
 		
 	}
 	
+	public int user_prompt(Player player, int turn) { //turn 0 means they haven't rolled dice yet, turn 1 means they rolled doubles, turn 2 means they have the option to buy/sell property and develop
+		Scanner in = new Scanner(System.in);
+		int response = 0;
+		if(turn == 0) {
+			System.out.println(player.name + ", what would you like to do? (1. Roll Dice / 2. Sell Property / 3. Buy House / 4. Buy Hotel / 5. Mortgage) > ");
+			response = in.nextInt();
+			switch(response) {
+			case 1: 
+				player.roll_dice();				//Player rolls dice, dice values are stored in player class
+				player.move();					//Player moves the number of spaces specified in the roll
+				response = 1;
+				break;
+			case 2: //sell property
+			case 3: //buy houses
+			case 4: //buy hotels
+			case 5: //mortgage 
+				player.print_deeds();
+				System.out.println("Which deed would you like to mortgage?");
+				response = in.nextInt();
+				Deed deed = player.deeds.get(response);
+				player.mortgage_deed(deed);
+			}
+		}
+		else if(turn == 1) {
+			System.out.println(player.name + ", you rolled doubles, rolling dice again.");
+			player.roll_dice();				//Player rolls dice, dice values are stored in player class
+			player.move();					//Player moves the number of spaces specified in the roll
+			response = 1;
+		}
+		else if(turn == 2) {
+			System.out.println(player.name + ", what would you like to do? (1. Sell Property / 2. Buy House / 3. Buy Hotel / 4. Mortgage / 5. End Turn) > ");
+			response = in.nextInt();
+			switch(response) {
+			case 1: //sell property
+				response = 1;
+			case 2: //buy house
+				response = 2;
+			case 3: //buy hotel
+				response = 3;
+			case 4: //mortgage
+				player.print_deeds();
+				System.out.println("Which deed would you like to mortgage?");
+				response = in.nextInt();
+				Deed deed = player.deeds.get(response);
+				player.mortgage_deed(deed);
+				response = 4;
+			case 5: //end turn
+				response = 5;
+			}
+		}
+		return response;
+	}
+	
 	//The dice roll logic needs to be in the player class
 	public void take_turn(Player player) {
+		System.out.println("It is " + player.name + "'s turn.");
 		Scanner in = new Scanner(System.in);
 		boolean in_jail = false;		//Is true if player is in jail	
 		boolean is_free_parking = false;//Is true of player lands on GO, Jail, or Free Parking
 		int double_roll_counter = 0;	//Keeps track of how many times player has rolled doubles
-		int roll_dice = 0;
+		int response = 0;
 		
-		System.out.println(player.name + ", what would you like to do? (1. Roll Dice / 2. Sell Property / 3. Buy House / 4. Buy Hotel / 5. Mortgage) > ");
-		roll_dice = in.nextInt();
-		switch(roll_dice) {
-		case 1: 
-			player.roll_dice();				//Player rolls dice, dice values are stored in player class
-			player.move();					//Player moves the number of spaces specified in the roll
-		case 2: //sell property
-		case 3: //buy houses
-		case 4: //buy hotels
-		case 5: //prompt for what property to mortgage	player.mortgage_deed(deed);
+		while(response != 1) {
+			response = user_prompt(player, 0); //turn 0, meaning they haven't rolled doubles
 		}
 		
-		//player.roll_dice();				//Player rolls dice, dice values are stored in player class
-		//player.move();					//Player moves the number of spaces specified in the roll
-
 		int position = player.position;	//Players current position used to check deed in that position
 		
 		//If the player is jail
@@ -52,7 +95,7 @@ public class Board {
 		//If player lands on free parking, GO, or Jail set is_free_parking to true, and there is no property to buy
 		if(board[position].name.equals("Free Parking") || board[position].name.equals("Jail") || board[position].name.equals("GO")) {
 			System.out.println("No property to buy. Landed on space is " + board[position].name  + "\n");
-			is_free_parking = true;
+			//is_free_parking = true;
 		}
 		else if(board[position].name.equals("Income Tax")) {
 			System.out.println("You landed on Income Tax, would you like to pay 10% of your net worth, or $200? (1. 10% / 2. $200");
@@ -60,7 +103,7 @@ public class Board {
 			player.pay_tax(answer);
 		}
 		//If there is no owner of the deed landed on and it's not free parking, allow user to buy the property, or it will be auctioned
-		else if(board[player.position].owner == null && is_free_parking == false) {
+		else if(board[player.position].owner == null) {// && is_free_parking == false)
 			Deed deed = board[player.position];
 			boolean bought = false;
 			bought = player.buy_property(deed);
@@ -79,10 +122,8 @@ public class Board {
 				in_jail = true;
 			}
 			else {							//if doubles haven't been rolled twice, keep being offered to buy property or auction it off
-				double_roll_counter++;
-				System.out.println("Double rolled, rolling dice again");
-				player.roll_dice();
-				player.move();
+				response = 0;
+				response = user_prompt(player, 1);
 				
 				if(board[position].name.equals("Free Parking") || board[position].name.equals("Jail") || board[position].name.equals("GO")) {
 					System.out.println("No property to buy. Landed on space is " + board[position].name  + "\n");
@@ -102,10 +143,16 @@ public class Board {
 					}
 					else {
 						System.out.println(player.name + " did not buy " + deed.name + " so " + deed.name + " will be auctioned.");
+						hold_auction(deed);
 					}
 				}
 			}
 		}
+		response = 0;
+		while(response != 5) {
+			response = user_prompt(player, 2);
+		}
+		System.out.println(player.name + " has ended their turn. \n");
 	}
 	
 	//Auctions deed between all players

@@ -82,12 +82,20 @@ public class Deed {
 		return rent;
 	}
 	
-	public Player get_owner() {
-		return owner;
+	public int calculate_mortgage() {
+		int mortgage = 0;
+		mortgage += mortgage_value;
+		if(current_houses != 0) {
+			mortgage += current_houses * build_cost;
+			current_houses = 0;
+		}
+		else if(has_hotel == true) {
+			mortgage += 5 * build_cost;
+			current_houses = 0;
+			has_hotel = true;
+		}
+		mortgage_value = mortgage;
+		return mortgage;
 	}
 	
-	public int get_mortgage() {
-		return mortgage_value;
-	}
-
 }
