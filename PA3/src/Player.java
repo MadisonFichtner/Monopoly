@@ -12,6 +12,7 @@ public class Player {
 	public int dice_sum;
 	public int railroad_count;
 	public int building_value;
+	public int mortgage_owed;
 	
 	
 	/*
@@ -86,7 +87,7 @@ public class Player {
 	 * 
 	 * @param spaces -> dice_sum
 	 */
-	public void move() {
+	public void move() { 
 		boolean passed_go = false;
 		if(position + dice_sum > 40) {
 			int overflow = (position + dice_sum) - 40;
@@ -100,6 +101,7 @@ public class Player {
 		
 		if(passed_go == true) {
 			money += 200;
+			System.out.println("You passed go, have $200 on me!");
 		}
 	}
 	public void move_to_jail() {
@@ -124,7 +126,9 @@ public class Player {
 	 */
 	//In design we have this returning an int but i dont see a point in that
 	public void mortgage_deed(Deed deed) {
-		money += deed.get_mortgage();
+		money += deed.mortgage_value;
+		mortgage_owed += deed.mortgage_value;
+		System.out.println(deed.name + " was mortgaged for " + deed.mortgage_value);
 		deed.mortgaged = true;
 	}
 	
@@ -139,7 +143,7 @@ public class Player {
 	 * 
 	 */
 	public void pay_rent(Deed deed) {
-		Player receiving_player = deed.get_owner();
+		Player receiving_player = deed.owner;
 		
 		if (receiving_player == this)
 		{
@@ -171,5 +175,11 @@ public class Player {
 			money -= calculate_net_worth();
 		else
 			money -= 200;
+	}
+	
+	public void print_deeds() {
+		for(int i = 0; i < deeds.size(); i++) {
+			System.out.println(i + ". Name: " + deeds.get(i).name + ", Mortgage Value:" + deeds.get(i).calculate_mortgage());
+		}
 	}
 }
