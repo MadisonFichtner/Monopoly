@@ -97,5 +97,4 @@ public class Deed {
 		mortgage_value = mortgage;
 		return mortgage;
 	}
-	
 }
