@@ -54,10 +54,6 @@ public class Player {
 		return dice;
 	}
 	
-	//is this supposed to be move_to_space
-	public void take_turn() {
-		
-	}
 	
 	public boolean buy_property(Deed deed) {
 		boolean bought = false;

@@ -54,9 +54,11 @@ public class Board {
 			if(bought == true) {
 				System.out.println(player.name + " bought " + deed.name + " for $" + deed.purchase_price + "\n");
 			}
-			else {
-				System.out.println(player.name + " did not buy " + deed.name + " so " + deed.name + " will be auctioned.");
+			else if(bought == false) {
+				System.out.println(player.name + " did not have enough money to buy " + deed.name + " so " + deed.name + " will be auctioned.");
 			}
+			else
+				System.out.println(player.name + " did not buy " + deed.name + " so " + deed.name + " will be auctioned.");
 		}
 		else if(board[player.position].owner != null) {
 			Deed deed = board[player.position];
