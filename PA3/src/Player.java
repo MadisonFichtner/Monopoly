@@ -50,6 +50,7 @@ public class Player {
 		dice[1] = rand.nextInt(6) + 1;
 		dice_sum = dice[0] + dice[1];
 		System.out.println("Dice 1 result: " + dice[0] + "\nDice 2 result: " + dice[1]);
+		System.out.println("Current money: "+ money);
 		return dice;
 	}
 	
@@ -76,21 +77,28 @@ public class Player {
 			}
 		}while(valid == false);
 		
-		if(answer == 1) {
-			deed.owner = this;
-			money -= deed.purchase_price;
-			deeds.add(deed);
-			if(deed.deed_type.equals("railroad"))
-				railroad_count++;
-			if(deed.deed_type.equals("utility"))
-				utilities_count++;
-			bought = true;
-		}
-		else
-			bought = false;
-		
-		return bought;
-	}
+		if(answer == 1) 
+        {
+            if(money>=deed.purchase_price)
+            {
+                deed.owner = this;
+                money -= deed.purchase_price;
+                deeds.add(deed);
+                if(deed.deed_type.equals("railroad"))
+                    railroad_count++;
+                if(deed.deed_type.equals("utility"))
+                    utilities_count++;
+                bought = true;}
+
+            else 
+                bought = false;
+        }
+
+        else 
+            bought = false;
+        return bought;
+
+    }
 	
 	/*
 	 * Moves players token, and returns $200 if they passed go
