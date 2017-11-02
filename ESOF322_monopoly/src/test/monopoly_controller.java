@@ -45,7 +45,7 @@ public class monopoly_controller implements Initializable {
 
         public void testWindow() {
             try{
-                Parent newWin = FXMLLoader.load(getClass().getResource("purchase.fxml"));
+                Parent newWin = FXMLLoader.load(getClass().getResource("auction.fxml"));
                 Stage newStage = new Stage();
                 newStage.setScene(new Scene(newWin));
                 newStage.show();
