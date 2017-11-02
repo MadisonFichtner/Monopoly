@@ -54,9 +54,11 @@ public class Board {
 			if(bought == true) {
 				System.out.println(player.name + " bought " + deed.name + " for $" + deed.purchase_price + "\n");
 			}
-			else {
-				System.out.println(player.name + " did not buy " + deed.name + " so " + deed.name + " will be auctioned.");
+			else if(bought == false) {
+				System.out.println(player.name + " did not have enough money to buy " + deed.name + " so " + deed.name + " will be auctioned.");
 			}
+			else
+				System.out.println(player.name + " did not buy " + deed.name + " so " + deed.name + " will be auctioned.");
 		}
 		else if(board[player.position].owner != null) {
 			Deed deed = board[player.position];
@@ -78,7 +80,7 @@ public class Board {
 					is_free_parking = true;
 				}
 				else if(board[position].name.equals("Income Tax")) {
-					System.out.println("You landed on Income Tax, would you like to pay 10% of your net worth, or $200? (1. 10% / 2. $200");
+					System.out.println("You landed on Income Tax, you piece of shit have to pay 10% of your net worth, or $200? (1. 10% / 2. $200");
 					int answer = in.nextInt();
 					player.pay_tax(answer);
 				}
@@ -97,7 +99,7 @@ public class Board {
 			}
 		}
 		response = 0;
-		while(response != 5) {
+		while(response != 6) {
 			response = user_prompt(player, 2);
 		}
 		System.out.println(player.name + " has ended their turn. \n");
@@ -107,7 +109,7 @@ public class Board {
 	public int user_prompt(Player player, int turn) { //turn 0 means they haven't rolled dice yet, turn 1 means they rolled doubles, turn 2 means they have the option to buy/sell property and develop
 		Scanner in = new Scanner(System.in);
 		int response = 0;
-		if(turn == 0) {
+		if(turn == 0) { //What are players actually allowed to do at the beginning of their turn other than roll? nothing?
 			System.out.println(player.name + ", what would you like to do? (1. Roll Dice / 2. Sell Property / 3. Buy House / 4. Buy Hotel / 5. Mortgage) > ");
 			response = in.nextInt();
 			switch(response) {
@@ -145,7 +147,7 @@ public class Board {
 			response = 1;
 		}
 		else if(turn == 2) {
-			System.out.println(player.name + ", what would you like to do? (1. Sell Property / 2. Buy House / 3. Buy Hotel / 4. Mortgage / 5. End Turn) > ");
+			System.out.println(player.name + ", what would you like to do? (1. Sell Property / 2. Buy House / 3. Buy Hotel / 4. Mortgage / 5. Pay Mortgage(s) / 6. End Turn) > ");
 			response = in.nextInt();
 			switch(response) {
 			case 1: //sell property
@@ -168,8 +170,14 @@ public class Board {
 				player.mortgage_deed(deed);
 				response = 4;
 				break;
-			case 5: //end turn
+			case 5:
+				System.out.println("Would you like to pay off all mortgages, or a single mortgage? (1. All Mortgages / 2. Single Mortgage)");
+				response = in.nextInt();
+				player.pay_mortgage(response);
 				response = 5;
+				break;
+			case 6: //end turn
+				response = 6;
 				break;
 			}
 		}

@@ -17,6 +17,7 @@ public class Deed {
 	public int current_houses;
 	public boolean has_hotel;
 	
+	public int mortgage_owed;
 	public int new_rent;
 	public boolean max_houses;
 	public Player owner;
@@ -53,6 +54,7 @@ public class Deed {
 		this.current_houses = 0; //initially has no houses/hotel
 		this.has_hotel = false;
 		
+		this.mortgage_owed = 0;
 		this.new_rent = rent; //calculated rent
 		this.max_houses = false;
 		this.owner = null;
@@ -107,15 +109,17 @@ public class Deed {
 		int mortgage = 0;
 		mortgage = mortgage_value;
 		if(current_houses != 0) {
+			System.out.println(current_houses + " houses were sold to mortgage the property for: $" + (current_houses + build_cost));
 			mortgage += current_houses * build_cost;
 			current_houses = 0;
 		}
 		else if(has_hotel == true) {
+			System.out.println("The hotel on the property was sold to mortgage the property for: $" + (5 * build_cost));
 			mortgage += 5 * build_cost;
 			current_houses = 0;
 			has_hotel = true;
 		}
-		mortgage_value = mortgage;
+		mortgage_owed = mortgage;
 		return mortgage;
 	}
 }

@@ -50,13 +50,10 @@ public class Player {
 		dice[1] = rand.nextInt(6) + 1;
 		dice_sum = dice[0] + dice[1];
 		System.out.println("Dice 1 result: " + dice[0] + "\nDice 2 result: " + dice[1]);
+		System.out.println("Current money: "+ money);
 		return dice;
 	}
 	
-	//is this supposed to be move_to_space
-	public void take_turn() {
-		
-	}
 	
 	public boolean buy_property(Deed deed) {
 		boolean bought = false;
@@ -76,21 +73,28 @@ public class Player {
 			}
 		}while(valid == false);
 		
-		if(answer == 1) {
-			deed.owner = this;
-			money -= deed.purchase_price;
-			deeds.add(deed);
-			if(deed.deed_type.equals("railroad"))
-				railroad_count++;
-			if(deed.deed_type.equals("utility"))
-				utilities_count++;
-			bought = true;
-		}
-		else
-			bought = false;
-		
-		return bought;
-	}
+		if(answer == 1) 
+        {
+            if(money>=deed.purchase_price)
+            {
+                deed.owner = this;
+                money -= deed.purchase_price;
+                deeds.add(deed);
+                if(deed.deed_type.equals("railroad"))
+                    railroad_count++;
+                if(deed.deed_type.equals("utility"))
+                    utilities_count++;
+                bought = true;}
+
+            else 
+                bought = false;
+        }
+
+        else 
+            bought = false;
+        return bought;
+
+    }
 	
 	/*
 	 * Moves players token, and returns $200 if they passed go
@@ -166,12 +170,38 @@ public class Player {
 	}
 	
 	public void pay_mortgage(int choice) {
-		if(choice == 0) {//Paying all mortgages
-			
-		}
-			
-		else if(choice == 1){//Paying single mortgage
-		
+		Scanner in = new Scanner(System.in);
+		if(mortgage_owed > 0) {
+			if(choice == 1) {//Paying all mortgages
+				System.out.println("Remaining Money: " + money);
+				System.out.println("Mortgage Owed: " + mortgage_owed);
+				if(mortgage_owed > money) {
+					System.out.println("You do not have the funds to pay of your mortgages all at once.");
+				}
+				else if(mortgage_owed <= money) {
+					for(int i = 0; i < deeds.size(); i++) {
+						if(deeds.get(i).mortgaged == true) {
+							deeds.get(i).mortgaged = false;				//set mortgaged flag to false
+							money -= deeds.get(i).mortgage_owed;			//subtract mortgage_owed for specific property from money
+							mortgage_owed -= deeds.get(i).mortgage_owed;	//subtract mortgage_owed for specific property from overall mortgage_owed
+							deeds.get(i).mortgage_owed = 0;
+						}
+					}
+					System.out.println("Remaining Money: " + money);
+					System.out.println("Mortgage Owed: " + mortgage_owed);
+				}
+			}
+				
+			else if(choice == 2){//Paying single mortgage
+				print_mortgaged_deeds();
+				System.out.println("Which mortgage would you like to pay off?");
+				int response = in.nextInt();
+				deeds.get(response).mortgaged = false;				//set mortgaged flag to false
+				money -= deeds.get(response).mortgage_owed;			//subtract mortgage_owed for specific property from money
+				mortgage_owed -= deeds.get(response).mortgage_owed;	//subtract mortgage_owed for specific property from overall mortgage_owed
+				deeds.get(response).mortgage_owed = 0;
+				System.out.println("You successfully paid off the mortgage on: " + deeds.get(response).name + "\nRemaining Money: " + money);
+			}
 		}
 			
 	}
@@ -198,10 +228,14 @@ public class Player {
 		}
 	}
 	
+	/*
+	 * needs to be changed.
+	 * must account for properties that are mortgaged and not mortgaged along with houses and hotels
+	 */
 	public int calculate_net_worth() {
 		int net_worth = 0; //= all of items values and money added up
+		net_worth += money;
 		for(int i = 0; i < deeds.size(); i++) {
-			net_worth += money;
 			net_worth += (deeds.get(i).purchase_price + (deeds.get(i).build_cost * deeds.get(i).current_houses));
 			if(deeds.get(i).has_hotel == true)
 				net_worth += deeds.get(i).build_cost;
@@ -221,6 +255,14 @@ public class Player {
 			System.out.println(i + ") Name: " + deeds.get(i).name + "| Rent Cost: " + deeds.get(i).calculate_rent() + 
 					"| Houses: " + deeds.get(i).current_houses + "| Hotel: " + deeds.get(i).has_hotel + "| Mortgage Value:" 
 					+ deeds.get(i).calculate_mortgage()); //add sell info, and houses/hotels
+		}
+	}
+	
+	public void print_mortgaged_deeds() {
+		for(int i = 0; i < deeds.size(); i++) {
+			if(deeds.get(i).mortgaged == true) {
+				System.out.println(i + ") Name: " + deeds.get(i).name + "| Mortgage Owed: " + deeds.get(i).mortgage_owed);
+			}
 		}
 	}
 	
