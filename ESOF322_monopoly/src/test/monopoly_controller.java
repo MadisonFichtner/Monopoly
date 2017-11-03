@@ -18,6 +18,8 @@ import java.util.ResourceBundle;
 public class monopoly_controller implements Initializable {
     @FXML
     public Button roll_button;
+    public Button trade_button;
+    public Button mortgage_button;
     public ImageView dice_a;
     public ImageView dice_b;
     public ImageView test_token;

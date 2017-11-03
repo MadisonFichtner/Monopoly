@@ -10,6 +10,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.ResourceBundle;
 
 public class auction_controller implements Initializable {
@@ -21,6 +22,12 @@ public class auction_controller implements Initializable {
     public Button bid_button;
 
     public void initialize(URL fxmlFileLocation, ResourceBundle resources) {
-            bid_player.setItems(FXCollections.observableArrayList("player 1", "player2", "testing"));
-        }
+        ArrayList<String> testing = new ArrayList<String>();
+        testing.add("Trent");
+        testing.add("Logan");
+        testing.add("Cody");
+        testing.add("Madison");
+        bid_player.setItems(FXCollections.observableArrayList(testing));
+    }
+
 }
