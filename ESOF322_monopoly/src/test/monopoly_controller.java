@@ -8,6 +8,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
 
@@ -30,6 +31,7 @@ public class monopoly_controller implements Initializable {
         roll_button.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
+                dice_a.setImage(new Image("/resources/dice_2.png"));
 //                ROLL BUTTON IS PRESSED
             }
         });
@@ -37,6 +39,7 @@ public class monopoly_controller implements Initializable {
         trade_button.setOnAction(new EventHandler<ActionEvent>() {
            @Override
            public void handle(ActionEvent event) {
+               trade_window();
 //               TRADE BUTTON IN PRESSED
            }
        });
@@ -44,12 +47,39 @@ public class monopoly_controller implements Initializable {
         mortgage_button.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
+                mortgage_window();
 //                MORTGAGE BUTTON IS PRESSED
             }
         });
 
 
 
+
+    }
+
+    private void trade_window() {
+        try {
+            Parent root = FXMLLoader.load(getClass().getResource("trade.fxml"));
+            Stage trade_stage = new Stage();
+            trade_stage.setTitle("Trade");
+            trade_stage.setScene(new Scene(root));
+            trade_stage.show();
+        } catch (Exception e){
+            System.out.println("Something went wrong");
+        }
+
+    }
+
+    private void mortgage_window() {
+        try {
+            Parent root = FXMLLoader.load(getClass().getResource("mortgage.fxml"));
+            Stage trade_stage = new Stage();
+            trade_stage.setTitle("Mortgage");
+            trade_stage.setScene(new Scene(root));
+            trade_stage.show();
+        } catch (Exception e){
+            System.out.println("Something went wrong");
+        }
 
     }
 }
