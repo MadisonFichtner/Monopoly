@@ -30,31 +30,26 @@ public class monopoly_controller implements Initializable {
         roll_button.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-//                ROLL DICE HERE
-                System.out.println("rolling dice");
-
-//                MOVING TOKENS WILL BE SOMETHING LIKE THIS
-                double tempx = test_token.getTranslateX();
-                test_token.setTranslateX(tempx - 50);
-
-//                we shouldn't do relative transforms, we should have translate values associated with each board location so we can just do token.setTranslateX(some_val)
-
-                testWindow();
+//                ROLL BUTTON IS PRESSED
             }
         });
 
+        trade_button.setOnAction(new EventHandler<ActionEvent>() {
+           @Override
+           public void handle(ActionEvent event) {
+//               TRADE BUTTON IN PRESSED
+           }
+       });
+
+        mortgage_button.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+//                MORTGAGE BUTTON IS PRESSED
+            }
+        });
+
+
+
+
     }
-
-        public void testWindow() {
-            try{
-                Parent newWin = FXMLLoader.load(getClass().getResource("auction.fxml"));
-                Stage newStage = new Stage();
-                newStage.setScene(new Scene(newWin));
-                newStage.show();
-            }
-            catch (Exception e) {
-                System.out.print("something went wrong");
-            }
-
-        }
 }
