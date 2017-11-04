@@ -17,7 +17,7 @@ public class Player {
 	public boolean has_street;
 	public boolean in_jail;
 	public int turns_in_jail;
-	
+	public boolean is_interested = true;
 	
 	/*
 	 * Creates new player object. Starts with $1500
@@ -56,7 +56,7 @@ public class Player {
 		return dice;
 	}
 	
-	/**
+	/*
 	 * Allows user to purchase property that is not already owned by another player.
 	 * 
 	 * @param deed
@@ -102,6 +102,22 @@ public class Player {
         return bought;
 
     }
+	
+	/*
+	 * If player bought auction, this is used
+	 * 
+	 * @param deed -> the deed that was purchased
+	 * @param price -> price at which they purchased the deed
+	 */
+	public void buy_auction(Deed deed, int price) {
+		deeds.add(deed);
+		money -= price;
+		deed.owner = this;
+		if(deed.deed_type.equals("railroad"))
+            railroad_count++;
+        if(deed.deed_type.equals("utility"))
+            utilities_count++;
+	}
 	
 	/*
 	 * Moves players token based on dice roll and current position, and returns $200 if they passed go
@@ -178,6 +194,7 @@ public class Player {
 	}
 	
 	/*
+<<<<<<< HEAD
 	 * Trades deed between two players
 	 * 
 	 * @param deed -> deed to be traded
@@ -217,7 +234,6 @@ public class Player {
 		else if(deeds.size() == 0)
 			System.out.println("No properties owned, so no properties to sell.");
 	}
-	
 	/*
 	 * Mortgages a deed. Player receives specified money from mortgage, and the deed's mortgage flag is flipped
 	 * 
@@ -401,16 +417,22 @@ public class Player {
 				has_one_eligible = true;
 			}
 		}
-		if(has_one_eligible == false) {
-			System.out.print("No properties are eligible to have a hotel developed. (No properties owned, or no properties with 4 houses)");
+		int property = 0;
+		if(has_one_eligible == true) {
+			System.out.println("Which property would you like to build a hotel on?");
+			property = in.nextInt();
+			deeds.get(property).has_hotel = true;
+			deeds.get(property).current_houses = 0;
+			deeds.get(property).max_houses = false;
+			money -= deeds.get(property).build_cost;
+			System.out.println("You purchased a hotel on " + deeds.get(property).name + " for $" + deeds.get(property).build_cost);
+			System.out.println("Remaining money = " + money);
 		}
-		System.out.println("Which property would you like to build a hotel on?");
-		int property = in.nextInt();
-		deeds.get(property).has_hotel = true;
-		deeds.get(property).current_houses = 0;
-		deeds.get(property).max_houses = false;
-		money -= deeds.get(property).build_cost;	
-		System.out.println("You purchased a hotel on " + deeds.get(property).name + " for $" + deeds.get(property).build_cost);
-		System.out.println("Remaining money = " + money);
+		else if(has_one_eligible == false) {
+			System.out.println("No properties are eligible to have a hotel developed. (No properties owned, or no properties with 4 houses) \nWould you like to build a house instead? (1. Yes / 2. No)");
+			int answer = in.nextInt();
+			if(answer == 1)
+				buy_house();
+		}	
 	}
 }
