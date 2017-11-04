@@ -237,11 +237,13 @@ public class Board {
 	/*
 	 * Auctions a deed to the player with the highest bid
 	 * 
+	 * @@@@@@@ Still needs some work for when person who passed up buying it bids (Crashes program) 
+	 * 
 	 * @param auctionedDeed -> deed being auctioned
 	 */
 	public void auction(Deed auctionedDeed) {
 		Scanner in = new Scanner(System.in);
-		int highest_bid = 0;	//Higest bid
+		int highest_bid = 50;	//Higest bid
 		boolean is_valid = true;	//while loop conditional
 		int players_interested = players.length;	//To check if there's only 1 person interested 
 		int i = 0;	//Keeps track of how whose turn it is to bid
@@ -261,7 +263,7 @@ public class Board {
 			while(is_valid == true && players[i].is_interested == true) {
 				System.out.println(players[i].name + " enter a bid or 0 to back out: ");
 				bid = in.nextInt();
-				if(bid > highest_bid) {	//If the bid is valid
+				if(bid > highest_bid && bid>=50) {	//If the bid is valid
 					highest_bid = bid;
 					System.out.println(players[i].name + " has the highest bid of: $" + highest_bid);
 					i++;
@@ -277,10 +279,10 @@ public class Board {
 					System.out.println("Bid was not higher than the current highest bid, try again. Enter a value larger, or a 0 to back out");
 				}
 
-				if(i == players.length)		//If the iterator is the same as the array length, reset it
+				else if(i == players.length)		//If the iterator is the same as the array length, reset it
 					i = 0;
-
-				if(players_interested == 1) {	//If it's the last player interested turn, break
+				
+				else if(players_interested == 1) {	//If it's the last player interested turn, break
 					System.out.println(players[i].name + " wins the bid for the property: " + auctionedDeed.name + " for $" + highest_bid);
 					players[i].buy_auction(auctionedDeed, highest_bid);
 				}

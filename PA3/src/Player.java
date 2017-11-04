@@ -330,7 +330,7 @@ public class Player {
 	 */
 	public void pay_tax(int response) {
 		if(response == 1)
-			money -= calculate_net_worth();
+			money -= calculate_net_worth()*.1;
 		else
 			money -= 200;
 	}
