@@ -29,7 +29,7 @@ public class Board {
 		int double_roll_counter = 0;	//Keeps track of how many times player has rolled doubles
 		int response = 0;
 
-		player.move_to_jail();
+		
 		
 		if(player.in_jail == false) {
 			while(response != 1) {	//Take in user input and return an int based on their response
@@ -71,7 +71,7 @@ public class Board {
 			if(bought == true && player.money >= board[player.position].purchase_price) {
 				System.out.println(player.name + " bought " + deed.name + " for $" + deed.purchase_price + "\n");
 			}
-			else if(bought == false && player.money >= board[player.position].purchase_price) {	//If player does not have fund to buy property, it will automatically be auctioned
+			else if(bought == false && player.money < board[player.position].purchase_price) {	//If player does not have fund to buy property, it will automatically be auctioned
 				System.out.println(player.name + " did not have enough money to buy " + deed.name + " so " + deed.name + " will be auctioned.");
 				auction(deed);
 			}
@@ -123,14 +123,16 @@ public class Board {
 						if(bought == true && player.money >= board[player.position].purchase_price) {
 							System.out.println(player.name + " bought " + deed.name + " for $" + deed.purchase_price + "\n");
 						}
-						else if(bought == false && player.money >= board[player.position].purchase_price) { //If player does not have fund to buy property, it will automatically be auctioned
+						else if(bought == false && player.money < board[player.position].purchase_price) {	//If player does not have fund to buy property, it will automatically be auctioned
 							System.out.println(player.name + " did not have enough money to buy " + deed.name + " so " + deed.name + " will be auctioned.");
 							auction(deed);
 						}
-						else {
+						else
+						{
 							System.out.println(player.name + " did not buy " + deed.name + " so " + deed.name + " will be auctioned.\n");
 							auction(deed);
 						}
+						
 					}
 					
 					//If player lands on property owned by somebody else, they pay rent
@@ -157,7 +159,7 @@ public class Board {
 		Scanner in = new Scanner(System.in);
 		int response = 0;
 		if(turn == 0) { //What are players actually allowed to do at the beginning of their turn other than roll? nothing?
-			System.out.println(player.name + ", what would you like to do? (1. Roll Dice / 2. Sell Property / 3. Buy House / 4. Buy Hotel / 5. Mortgage) > ");
+			System.out.println(player.name + ", what would you like to do? (1. Roll Dice> )");
 			response = in.nextInt();
 			switch(response) {
 			case 1: //Roll Dice
@@ -165,7 +167,7 @@ public class Board {
 				player.move();					//Player moves the number of spaces specified in the roll
 				response = 1;
 				break;
-			case 2: //sell property
+			/**case 2: //sell property
 				player.trade_deed(players);
 				response = 2;
 				break;
@@ -184,7 +186,7 @@ public class Board {
 				Deed deed = player.deeds.get(response);
 				player.mortgage_deed(deed);
 				response = 5;
-				break;
+				break;**/
 			}
 		}
 		

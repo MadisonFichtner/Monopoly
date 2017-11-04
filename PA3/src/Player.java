@@ -200,10 +200,19 @@ public class Player {
 			System.out.println("How much is it being sold for?");
 			int price = in.nextInt();
 			
-			players[recipient_num].deeds.add(deeds.get(deed_num));	//adds deed to recipients deeds
-			deeds.remove(deed_num);									//removes deed from current players deeds
-			money += price;
-			players[recipient_num].money -= price;
+			if(players[recipient_num].money<=price) {
+				System.out.println("Sorry other player doesnt have enough money.");
+			}
+			else if(players[recipient_num].money>=price)
+			{
+				
+				players[recipient_num].deeds.add(deeds.get(deed_num));	//adds deed to recipients deeds
+				deeds.remove(deed_num);									//removes deed from current players deeds
+				money += price;
+				players[recipient_num].money -= price;
+				System.out.println("Property has been transfered to the buyer.");
+			}	
+			
 		}
 		else if(deeds.size() == 0)
 			System.out.println("No properties owned, so no properties to sell.");
@@ -322,7 +331,7 @@ public class Player {
 	}
 	
 	/*
-	 * Prints ownly mortgaged deeds
+	 * Prints only mortgaged deeds
 	 */
 	public void print_mortgaged_deeds() {
 		for(int i = 0; i < deeds.size(); i++) {
