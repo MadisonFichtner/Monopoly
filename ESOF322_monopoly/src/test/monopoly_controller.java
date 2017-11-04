@@ -8,6 +8,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
 
@@ -30,31 +31,55 @@ public class monopoly_controller implements Initializable {
         roll_button.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-//                ROLL DICE HERE
-                System.out.println("rolling dice");
-
-//                MOVING TOKENS WILL BE SOMETHING LIKE THIS
-                double tempx = test_token.getTranslateX();
-                test_token.setTranslateX(tempx - 50);
-
-//                we shouldn't do relative transforms, we should have translate values associated with each board location so we can just do token.setTranslateX(some_val)
-
-                testWindow();
+                dice_a.setImage(new Image("/resources/dice_2.png"));
+//                ROLL BUTTON IS PRESSED
             }
         });
 
+        trade_button.setOnAction(new EventHandler<ActionEvent>() {
+           @Override
+           public void handle(ActionEvent event) {
+               trade_window();
+//               TRADE BUTTON IN PRESSED
+           }
+       });
+
+        mortgage_button.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                mortgage_window();
+//                MORTGAGE BUTTON IS PRESSED
+            }
+        });
+
+
+
+
     }
 
-        public void testWindow() {
-            try{
-                Parent newWin = FXMLLoader.load(getClass().getResource("auction.fxml"));
-                Stage newStage = new Stage();
-                newStage.setScene(new Scene(newWin));
-                newStage.show();
-            }
-            catch (Exception e) {
-                System.out.print("something went wrong");
-            }
-
+    private void trade_window() {
+        try {
+            Parent root = FXMLLoader.load(getClass().getResource("trade.fxml"));
+            Stage trade_stage = new Stage();
+            trade_stage.setTitle("Trade");
+            trade_stage.setScene(new Scene(root));
+            trade_stage.show();
+        } catch (Exception e){
+            System.out.println("Something went wrong");
         }
+
+    }
+
+    private void mortgage_window() {
+        try {
+            Parent root = FXMLLoader.load(getClass().getResource("mortgage.fxml"));
+            Stage trade_stage = new Stage();
+            trade_stage.setTitle("Mortgage");
+            trade_stage.setScene(new Scene(root));
+            trade_stage.show();
+        } catch (Exception e){
+            System.out.println("Something went wrong");
+        }
+
+    }
 }
