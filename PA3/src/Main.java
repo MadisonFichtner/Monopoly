@@ -53,7 +53,9 @@ public class Main{
 	    
 	}
 	
-	//parse_CSV needs to read in contents of .csv and populate an array of deeds
+	/*
+	 * Parses the inputted .csv file to populate the game board with deeds
+	 */
 	public static Deed[] parse_CSV(File csv_file) throws FileNotFoundException {
 		Deed[] deeds = new Deed[40];
 		Scanner in = new Scanner(csv_file);
@@ -82,6 +84,9 @@ public class Main{
 		return deeds;
 	}
 	
+	/**
+	 * Part of timer.
+	 */
 	private static final int setInterval() {
 	    if (interval == 1)
 	        timer.cancel();
