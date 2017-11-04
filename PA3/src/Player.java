@@ -16,10 +16,11 @@ public class Player {
 	public int mortgage_owed;
 	public boolean has_street;
 	public boolean in_jail;
+	public int turns_in_jail;
 	
 	
 	/*
-	 * Creates new player
+	 * Creates new player object. Starts with $1500
 	 * 
 	 * @param name -> name of player entered by user
 	 * @param toke -> name of token entered by user (make picture on board)
@@ -37,6 +38,7 @@ public class Player {
 		this.utilities_count = 0;
 		this.railroad_count = 0;
 		this.in_jail = false;
+		this.turns_in_jail = 0;
 	}
 	
 	/*
@@ -54,7 +56,12 @@ public class Player {
 		return dice;
 	}
 	
-	
+	/**
+	 * Allows user to purchase property that is not already owned by another player.
+	 * 
+	 * @param deed
+	 * @return boolean based on whether the property was bought or not
+	 */
 	public boolean buy_property(Deed deed) {
 		boolean bought = false;
 		Scanner in = new Scanner(System.in);
@@ -97,7 +104,7 @@ public class Player {
     }
 	
 	/*
-	 * Moves players token, and returns $200 if they passed go
+	 * Moves players token based on dice roll and current position, and returns $200 if they passed go
 	 * 
 	 * @param spaces -> dice_sum
 	 */
@@ -118,11 +125,57 @@ public class Player {
 			System.out.println("You passed go, have $200 on me!");
 		}
 	}
+	
+	/**
+	 * Moves player directly to jail, and sets a boolean for whether they are in jail to true
+	 */
 	public void move_to_jail() {
 		position = 10;
 		in_jail = true;
 	}
 	
+	/*
+	 * Logic to get out of jail
+	 */
+	public void get_out_of_jail() {
+		//give option to roll dice for doubles or pay $50
+		Scanner in = new Scanner(System.in);
+		if(turns_in_jail == 3) {	//If they've rolled for doubles the max number of times
+			System.out.println("Turn 3 in jail. You must pay $50 and roll forward.");
+			money -= 50;
+			in_jail = false;
+			turns_in_jail = 0;
+			roll_dice();
+			move();
+		}
+		else {	// give option to either pay or roll for doubles
+			System.out.println("Turn: " + turns_in_jail + " spent in jail. " + (3-turns_in_jail) + " more before you must pay $50 dollars.");
+			System.out.println("Roll for doubles, or pay $50? (1. Roll / 2. $50)");
+			int choice = in.nextInt();
+			switch(choice){
+				case 1:	//If they roll for doubles
+					int dice[] = roll_dice();
+					if(dice[0] == dice [1])	//If doubles are rolled
+					{
+						System.out.println("You rolled doubles. Gratz.");
+						in_jail = false;
+						turns_in_jail = 0;
+						move();
+						break;
+					}
+					else	//If doubles are not rolled
+					{
+						System.out.println("You did not roll doubles...");
+						break;
+					}
+				case 2:	//If they pay $50
+					System.out.println("You paid $50 and are now out of jail.");
+					roll_dice();
+					move();
+					break;
+			}
+		}
+	}
 	
 	/*
 	 * Trades deed between two players
@@ -169,6 +222,11 @@ public class Player {
 		deed.mortgaged = true;
 	}
 	
+	/*
+	 * Allows user to pay off all mortgages or a single mortgage of their choosing
+	 * 
+	 * @param choice -> user's choice as to whether they are paying all mortgages or a single mortgage
+	 */
 	public void pay_mortgage(int choice) {
 		Scanner in = new Scanner(System.in);
 		if(mortgage_owed > 0) {
@@ -229,8 +287,7 @@ public class Player {
 	}
 	
 	/*
-	 * needs to be changed.
-	 * must account for properties that are mortgaged and not mortgaged along with houses and hotels
+	 * Calculates a user's net worth based on current money, and properties owned
 	 */
 	public int calculate_net_worth() {
 		int net_worth = 0; //= all of items values and money added up
@@ -243,6 +300,9 @@ public class Player {
 		return net_worth;
 	}
 	
+	/*
+	 * Allows user to pay tax
+	 */
 	public void pay_tax(int response) {
 		if(response == 1)
 			money -= calculate_net_worth();
@@ -250,6 +310,9 @@ public class Player {
 			money -= 200;
 	}
 	
+	/*
+	 * Prints out deeds owned by player
+	 */
 	public void print_deeds() {
 		for(int i = 0; i < deeds.size(); i++) {
 			System.out.println(i + ") Name: " + deeds.get(i).name + "| Rent Cost: " + deeds.get(i).calculate_rent() + 
@@ -258,6 +321,9 @@ public class Player {
 		}
 	}
 	
+	/*
+	 * Prints ownly mortgaged deeds
+	 */
 	public void print_mortgaged_deeds() {
 		for(int i = 0; i < deeds.size(); i++) {
 			if(deeds.get(i).mortgaged == true) {
@@ -266,6 +332,9 @@ public class Player {
 		}
 	}
 	
+	/*
+	 * Prints only street type deeds
+	 */
 	public void print_streets() {
 		for(int i = 0; i < deeds.size(); i++) {
 			if(deeds.get(i).deed_type.equals("street")) {
@@ -275,6 +344,9 @@ public class Player {
 		}
 	}
 	
+	/*
+	 * Allows a user to purchase a house and sets necessary information in deed class
+	 */
 	public void buy_house() {
 		Scanner in = new Scanner(System.in);
 		int property = 0;
@@ -306,6 +378,9 @@ public class Player {
 			System.out.println("You have no eligible properties to develop a house on. (No streets owned, or no streets with room for any houses)");
 	}
 	
+	/*
+	 * Allows user to purchase a hotel on a property
+	 */
 	public void buy_hotel() {
 		Scanner in = new Scanner(System.in);
 		boolean has_one_eligible = false;

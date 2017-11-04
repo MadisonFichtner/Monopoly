@@ -54,6 +54,7 @@ public class Deed {
 		this.current_houses = 0; //initially has no houses/hotel
 		this.has_hotel = false;
 		
+		//These are automatically set no matter the input from the deed. Standard for all deeds.
 		this.mortgage_owed = 0;
 		this.new_rent = rent; //calculated rent
 		this.max_houses = false;
@@ -105,6 +106,11 @@ public class Deed {
 		return rent;
 	}
 	
+	/*
+	 * Calculates mortgage based on base mortgage value, and the nubmer of houses built, or whether a hotel is built
+	 * 
+	 * returns the int value of the mortgage
+	 */
 	public int calculate_mortgage() {
 		int mortgage = 0;
 		mortgage = mortgage_value;
