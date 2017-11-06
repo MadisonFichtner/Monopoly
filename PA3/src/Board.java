@@ -3,14 +3,12 @@ import java.util.Scanner;
 
 public class Board {
 	
-	public int numHotelsRemaining;
-	public int numHousesRemaining;
+	public int numHotelsRemaining = 12;
+	public int numHousesRemaining = 32;
 	public Player[] players;
 	public Deed[] board = new Deed[40];
 	
 	public Board(Player[] users, Deed[] new_board) {
-		this.numHotelsRemaining = 12;
-		this.numHousesRemaining = 32;
 		this.players = users;
 		this.board = new_board;
 	}
@@ -158,7 +156,7 @@ public class Board {
 		Scanner in = new Scanner(System.in);
 		int response = 0;
 		if(turn == 0) { //What are players actually allowed to do at the beginning of their turn other than roll? nothing?
-			System.out.println(player.name + ", what would you like to do? (1. Roll Dice> )");
+			System.out.println(player.name + ", what would you like to do? (1. Roll Dice) > ");
 			response = in.nextInt();
 			switch(response) {
 			case 1: //Roll Dice
@@ -166,26 +164,6 @@ public class Board {
 				player.move();					//Player moves the number of spaces specified in the roll
 				response = 1;
 				break;
-			/**case 2: //sell property
-				player.trade_deed(players);
-				response = 2;
-				break;
-			case 3: //buy houses
-				player.buy_house();
-				response = 3;
-				break;
-			case 4: //buy hotels
-				player.buy_hotel();
-				response = 4;
-				break;
-			case 5: //mortgage 
-				player.print_deeds();
-				System.out.println("Which deed would you like to mortgage?");
-				response = in.nextInt();
-				Deed deed = player.deeds.get(response);
-				player.mortgage_deed(deed);
-				response = 5;
-				break;**/
 			}
 		}
 		
@@ -257,34 +235,63 @@ public class Board {
 		}
 		
 		//While there are more than 1 person still interested
-		while(players_interested > 1) {
+		while(players_interested >= 1) {
 			is_valid = true;	//Reset to true to enter while loop
 			int bid = -1;		//Set bid to a - so that it's not a player response #
 			while(is_valid == true && players[i].is_interested == true) {
-				System.out.println(players[i].name + " enter a bid or 0 to back out: ");
-				bid = in.nextInt();
-				if(bid > highest_bid && bid>=50) {	//If the bid is valid
-					highest_bid = bid;
-					System.out.println(players[i].name + " has the highest bid of: $" + highest_bid);
-					i++;
-				}
-				else if(bid == 0) {		//If player chooses to back out
-					System.out.println(players[i].name + " is no longer interested in the auction.");
-					players[i].is_interested = false;
-					players_interested--;		//Decrement players interested
-					i++;						//Increment the interator
-					is_valid = false;			//Set is_valid to false to break inner while loop
-				}
-				else if(bid <= highest_bid) {	//If bid is lower than highest bid, prompt again
-					System.out.println("Bid was not higher than the current highest bid, try again. Enter a value larger, or a 0 to back out");
-				}
-
-				else if(i == players.length)		//If the iterator is the same as the array length, reset it
-					i = 0;
 				
-				else if(players_interested == 1) {	//If it's the last player interested turn, break
-					System.out.println(players[i].name + " wins the bid for the property: " + auctionedDeed.name + " for $" + highest_bid);
-					players[i].buy_auction(auctionedDeed, highest_bid);
+				if(players_interested == 1 && highest_bid == 50) {
+					System.out.println("Nobody bid on the property, last oppurtunity for " + players[i].name + " to buy for any amount higher than $50.");
+					boolean unsold = false;
+					while(unsold == false) {
+						System.out.println("Enter 0 to let the property go unsold, or enter a price higher than $50.");
+						bid = in.nextInt();
+						if(bid == 0) {
+							System.out.println("Nobody wanted " + auctionedDeed.name + ". Will go unsold");
+							players_interested--;
+							unsold = true;
+						}
+						else if(bid > 0 && bid <= 50) {
+							System.out.println("Invalid bid. Please enter either 0, or a number greater than 50");
+						}
+						else if(bid > 50) {
+							highest_bid = bid;
+							System.out.println(players[i].name + " wins the bid for the property: " + auctionedDeed.name + " for $" + highest_bid);
+							players[i].buy_auction(auctionedDeed, highest_bid);
+							is_valid = false;
+							players_interested--;
+							unsold = true;
+						}
+					}
+				}
+				if(players_interested > 1) {
+					System.out.println(players[i].name + " enter a bid higher than the starting price of $50 or 0 to back out: ");
+					bid = in.nextInt();
+					
+					if (bid > highest_bid && bid>=50) {	//If the bid is valid
+						highest_bid = bid;
+						System.out.println(players[i].name + " has the highest bid of: $" + highest_bid);
+						i++;
+					}
+					else if(bid == 0) {		//If player chooses to back out
+						System.out.println(players[i].name + " is no longer interested in the auction.");
+						players[i].is_interested = false;
+						players_interested--;		//Decrement players interested
+						i++;						//Increment the interator
+						is_valid = false;			//Set is_valid to false to break inner while loop
+					}
+					
+					else if(bid <= highest_bid) {	//If bid is lower than highest bid, prompt again
+						System.out.println("Bid was not higher than the current highest bid of " + highest_bid + ", try again. Enter a value larger, or a 0 to back out");
+					}
+	
+					else if(i == players.length)		//If the iterator is the same as the array length, reset it
+						i = 0;
+					
+					else if(players_interested == 1) {	//If it's the last player interested turn, break
+						System.out.println(players[i].name + " wins the bid for the property: " + auctionedDeed.name + " for $" + highest_bid);
+						players[i].buy_auction(auctionedDeed, highest_bid);
+					}
 				}
 			}
 		}
