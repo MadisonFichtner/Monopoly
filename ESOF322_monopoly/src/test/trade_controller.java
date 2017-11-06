@@ -24,6 +24,7 @@ public class trade_controller implements Initializable {
         accept_button.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
+            	
                 Window this_window = accept_button.getScene().getWindow();
                 this_window.hide();
 //                ACCEPT BUTTON IS PRESSED

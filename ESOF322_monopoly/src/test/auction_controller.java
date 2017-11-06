@@ -28,6 +28,7 @@ public class auction_controller implements Initializable {
         testing.add("Cody");
         testing.add("Madison");
         bid_player.setItems(FXCollections.observableArrayList(testing));
+        
     }
 
 }
