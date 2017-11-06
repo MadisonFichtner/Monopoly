@@ -12,9 +12,14 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
 
-
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.net.URL;
 import java.util.ResourceBundle;
+import java.util.Scanner;
+import java.io.FileReader;
 
 public class monopoly_controller implements Initializable {
     @FXML
@@ -24,10 +29,19 @@ public class monopoly_controller implements Initializable {
     public ImageView dice_a;
     public ImageView dice_b;
     public ImageView test_token;
-    public ImageView board;
+    public ImageView boardImg;
+    
+	private static final String COMMA_DELIMITER = ",";
+    
+    int users = 4;
+    Player[] players = new Player[users];
+    Board board;
+    
 
     public void initialize(URL fxmlFileLocation, ResourceBundle resources) {
-
+    		
+    	init();
+    	
         roll_button.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
@@ -51,10 +65,6 @@ public class monopoly_controller implements Initializable {
 //                MORTGAGE BUTTON IS PRESSED
             }
         });
-
-
-
-
     }
 
     private void trade_window() {
@@ -82,4 +92,61 @@ public class monopoly_controller implements Initializable {
         }
 
     }
+    
+    /*
+	 * Parses the inputted .csv file to populate the game board with deeds
+	 */
+	public static Deed[] parse_CSV(File csv_file) throws FileNotFoundException {
+		Deed[] deeds = new Deed[40];
+		Scanner in = new Scanner(csv_file);
+		in.useDelimiter(COMMA_DELIMITER);
+		for(int i = 0; i < 40; i++) {
+			int position = in.nextInt();
+			String name = in.next();
+			int property_group = in.nextInt();
+			String color = in.next();
+			int price = in.nextInt();
+			int mortgage_value = in.nextInt();
+			int rent = in.nextInt();
+			int rent1 = in.nextInt();
+			int rent2 = in.nextInt();
+			int rent3 = in.nextInt();
+			int rent4 = in.nextInt();
+			int rent_hotel = in.nextInt();
+			int build_cost = in.nextInt();
+			in.next();
+			String deed_type = in.next();
+			
+			deeds[i] = new Deed(position, name, property_group, color, price, mortgage_value, rent,
+					rent1, rent2, rent3, rent4, rent_hotel, build_cost, deed_type);
+		}
+		//populate deeds giving csv_file
+		return deeds;
+	}
+	
+	public void init() {
+		Scanner in = new Scanner(System.in);
+   	 for(int i = 0; i < users; i++) {
+			System.out.println("Please enter a name for player " + (i+1) + ": ");
+			String name = in.next();
+			System.out.println("Please select a token for player " + (i+1) + ": ");
+			String token = in.next();
+
+			players[i] = new Player(name, token);
+		}
+   	 
+   	Deed[] new_board = new Deed[40];
+		
+		String fileName = "test.csv"; //just a sample file name
+		File csvFile = new File(fileName);
+		try {
+			BufferedReader reader = new BufferedReader(new FileReader(csvFile));
+			new_board = parse_CSV(csvFile);
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		Board board = new Board(players, new_board);
+	}
 }
