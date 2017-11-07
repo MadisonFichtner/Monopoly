@@ -24,9 +24,12 @@ import java.io.FileReader;
 
 public class monopoly_controller implements Initializable {
 	@FXML
-	public Button roll_button;
-	public Button trade_button;
-	public Button mortgage_button;
+	public Button hotel_button;
+	public Button mort_button;
+	public Button sell_button;
+	public Button house_button;
+	public Button end_button;
+	
 	public ImageView dice_a;
 	public ImageView dice_b;
 	public ImageView test_token;
@@ -36,36 +39,66 @@ public class monopoly_controller implements Initializable {
 
 	private static int users = 4;
 	private static Player[] players = new Player[users];
-	Board board;
+	private static Board board;
+	private static int playerTurn = 0;
 
 	public void initialize(URL fxmlFileLocation, ResourceBundle resources) {
 
 		init();
-
-		roll_button.setOnAction(new EventHandler<ActionEvent>() {
-			@Override
-			public void handle(ActionEvent event) {
-				System.out.println(players[0].name);
-				dice_a.setImage(new Image("/resources/dice_2.png"));
-				// ROLL BUTTON IS PRESSED
-			}
+		disableButtons();
+		
+		hotel_button.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+            	Board.current.trade_deed(players);
+            }
 		});
-
-		trade_button.setOnAction(new EventHandler<ActionEvent>() {
-			@Override
-			public void handle(ActionEvent event) {
-				trade_window();
-				// TRADE BUTTON IN PRESSED
-			}
+		
+		mort_button.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+            	//This just mortgages their 0th deed
+            	Board.current.mortgage_deed(Board.current.deeds.get(0));
+            }
 		});
-
-		mortgage_button.setOnAction(new EventHandler<ActionEvent>() {
-			@Override
-			public void handle(ActionEvent event) {
-				mortgage_window();
-				// MORTGAGE BUTTON IS PRESSED
-			}
+		
+		sell_button.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+            	System.out.println("Would you like to pay off all mortgages, or a single mortgage? (1. All Mortgages / 2. Single Mortgage)");
+				Board.current.pay_mortgage(2);
+            }
 		});
+		
+		house_button.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+            	Board.current.buy_house();
+            }
+		});
+		
+		end_button.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+            	nextTurn();
+            }
+		});
+//
+//		trade_button.setOnAction(new EventHandler<ActionEvent>() {
+//			@Override
+//			public void handle(ActionEvent event) {
+//				trade_window();
+//				// TRADE BUTTON IN PRESSED
+//			}
+//		});
+//
+//		mortgage_button.setOnAction(new EventHandler<ActionEvent>() {
+//			@Override
+//			public void handle(ActionEvent event) {
+//				mortgage_window();
+//				// MORTGAGE BUTTON IS PRESSED
+//			}
+//		});
 	}
 
 	private void trade_window() {
@@ -135,7 +168,9 @@ public class monopoly_controller implements Initializable {
 		} catch (Exception e) {
 			System.out.println("Something went wrong");
 		}
-
+	}
+	
+	public static void setPlayers(CharSequence[] users) {
 		Deed[] new_board = new Deed[40];
 
 		String fileName = "test.csv"; // just a sample file name
@@ -147,13 +182,34 @@ public class monopoly_controller implements Initializable {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
-		Board board = new Board(players, new_board);
-	}
-	
-	public static void setPlayers(CharSequence[] users) {
+		
 		for ( int i = 0; i < users.length; i++) {
 			players[i] = new Player(users[i].toString(), "token" + 1);
 		}
+		board = new Board(players, new_board);
+	}
+	
+	public static void takeTurn() {
+		board.init_turn(players[playerTurn]);
+	}
+	
+	public static void nextTurn() {
+		playerTurn++;
+		takeTurn();
+	}
+	public void disableButtons() {
+		hotel_button.setDisable(true);
+		mort_button.setDisable(true);
+		sell_button.setDisable(true);
+		house_button.setDisable(true);
+		end_button.setDisable(true);
+	}
+	
+	public void enableButtons() {
+		hotel_button.setDisable(false);
+		mort_button.setDisable(false);
+		sell_button.setDisable(false);
+		house_button.setDisable(false);
+		end_button.setDisable(false);
 	}
 }
