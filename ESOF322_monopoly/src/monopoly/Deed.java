@@ -15,15 +15,15 @@ public class Deed {
 	public int rent_hotel;
 	public int build_cost; //same for both houses and hotels
 	public String deed_type;
+	public int current_houses;
+	public boolean has_hotel;
 	
-	public int current_houses = 0;
-	public boolean has_hotel = false;
-	public int mortgage_owed = 0;
-	public int new_rent = rent;
-	public boolean max_houses = false;
-	public Player owner = null;
-	public boolean whole_color_group_owned = false;
-	public boolean mortgaged = false;
+	public int mortgage_owed;
+	public int new_rent;
+	public boolean max_houses;
+	public Player owner;
+	public boolean whole_color_group_owned;
+	public boolean mortgaged;
 	
 	/*
 	 * Creates new deed, initially the owner, whole_group_owned, and mortgaged will be null
@@ -52,6 +52,16 @@ public class Deed {
 		this.rent_hotel = rent_hotel;
 		this.build_cost = build_cost;
 		this.deed_type = deed_type;
+		this.current_houses = 0; //initially has no houses/hotel
+		this.has_hotel = false;
+		
+		//These are automatically set no matter the input from the deed. Standard for all deeds.
+		this.mortgage_owed = 0;
+		this.new_rent = rent; //calculated rent
+		this.max_houses = false;
+		this.owner = null;
+		this.whole_color_group_owned = false;
+		this.mortgaged = false;
 	}
 	
 	
