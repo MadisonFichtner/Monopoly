@@ -96,7 +96,9 @@ public class Deed {
 			//else its free parking/other spots
 			return 0;
 		}
-		return rent;
+		if(whole_color_group_owned == true)
+			new_rent = new_rent * 2;
+		return new_rent;
 	}
 	
 	/*
