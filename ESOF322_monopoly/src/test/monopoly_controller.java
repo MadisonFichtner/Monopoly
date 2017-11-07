@@ -116,7 +116,7 @@ public class monopoly_controller implements Initializable {
 	public static void setPlayers(CharSequence[] users) {
 		Deed[] deeds = new Deed[40];
 
-		String fileName = "../test.csv"; // just a sample file name
+		String fileName = "ESOF322_monopoly/test.csv"; // just a sample file name
 		File csvFile = new File(fileName);
 		try {
 			deeds = parse_CSV(csvFile);
@@ -182,7 +182,6 @@ public class monopoly_controller implements Initializable {
 			deeds[i] = new Deed(position, name, property_group, color, price, mortgage_value, rent, rent1, rent2, rent3,
 					rent4, rent_hotel, build_cost, deed_type);
 		}
-		in.close();
 		// populate deeds giving csv_file
 		return deeds;
 	}
