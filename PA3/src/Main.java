@@ -50,7 +50,6 @@ public class Main{
 	        		i = 0;
 	        }
 	    }, delay, period);
-	    board.game_over();
 	}
 	
 	/*
