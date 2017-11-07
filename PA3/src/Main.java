@@ -36,7 +36,7 @@ public class Main{
 		
 		//Timer to kill program
 		Timer timer = new Timer();
-		interval = 300;
+		interval = 180;
 		int delay = 1000;
 		int period = 1000;
 		timer.scheduleAtFixedRate(new TimerTask() {
@@ -50,7 +50,7 @@ public class Main{
 	        		i = 0;
 	        }
 	    }, delay, period);
-	    
+	    board.game_over();
 	}
 	
 	/*
