@@ -1,4 +1,4 @@
-package monopoly;
+package test;
 
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
@@ -13,7 +13,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
 
-public class AuctionController implements Initializable {
+public class auction_controller implements Initializable {
     @FXML
     public Label current_price;
     public ImageView auction_deed;

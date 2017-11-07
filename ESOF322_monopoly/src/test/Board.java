@@ -1,4 +1,4 @@
-package monopoly;
+package test;
 
 import java.util.Scanner;
 
@@ -40,7 +40,7 @@ public class Board {
 			try {
 				Parent root = FXMLLoader.load(getClass().getResource("roll.fxml"));
 				Stage trade_stage = new Stage();
-				trade_stage.setTitle("Trade");
+				trade_stage.setTitle("roll");
 				trade_stage.setScene(new Scene(root));
 				trade_stage.show();
 			} catch (Exception e) {
@@ -102,7 +102,7 @@ public class Board {
 	
 	//This determines if an auction should be held after a player has had the chance to buy it
 	// The ui for auction has been started but the code has not.
-	//After the auction is done Main.monopoly.enableButtons() need to be called.
+	//After the auction is done Main.test.enableButtons() need to be called.
 	public static void auctionProperty(boolean bought) {
 		if(bought == true) {
 			System.out.println(current.name + " bought " + board[position].name + " for $" + board[position].purchase_price + "\n");
@@ -115,9 +115,10 @@ public class Board {
 			System.out.println(current.name + " did not buy " + board[position].name + " so " + board[position].name + " will be auctioned.");
 			auction(board[position]);
 		}
+		rollAgain_or_waitForUser();
 	}
 	
-	public void rollAgain_or_waitForUser() {
+	public static void rollAgain_or_waitForUser() {
 		//Doubles were rolled, does the same thing as above, just repeats if doubles are rolled
 		if(was_in_jail == false && current.dice[0] == current.dice[1]) {
 				double_roll_counter++;

@@ -1,4 +1,4 @@
-package monopoly;
+package test;
 
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -7,13 +7,12 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.TextField;
-import javafx.stage.Stage;
 import javafx.stage.Window;
 
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class TradeController implements Initializable {
+public class trade_controller implements Initializable {
     @FXML
     public ChoiceBox trade_deed;
     public ChoiceBox trade_player;

@@ -1,4 +1,4 @@
-package monopoly;
+package test;
 
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -17,7 +17,7 @@ import java.net.URL;
 import java.util.ResourceBundle;
 import java.util.Scanner;
 
-public class MonopolyController implements Initializable {
+public class monopoly_controller implements Initializable {
 	@FXML
 	public Button hotel_button;
 	public Button mort_button;
@@ -116,7 +116,7 @@ public class MonopolyController implements Initializable {
 	public static void setPlayers(CharSequence[] users) {
 		Deed[] deeds = new Deed[40];
 
-		String fileName = "test.csv"; // just a sample file name
+		String fileName = "../test.csv"; // just a sample file name
 		File csvFile = new File(fileName);
 		try {
 			deeds = parse_CSV(csvFile);

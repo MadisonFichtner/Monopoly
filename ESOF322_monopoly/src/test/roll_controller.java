@@ -1,4 +1,4 @@
-package monopoly;
+package test;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -9,7 +9,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.stage.Window;
 
-public class RollController implements Initializable {
+public class roll_controller implements Initializable {
 		public Button roll_button;
 
 		@Override

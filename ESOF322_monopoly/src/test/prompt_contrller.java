@@ -1,4 +1,4 @@
-package monopoly;
+package test;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -8,7 +8,7 @@ import javafx.event.EventHandler;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 
-public class PromptController  implements Initializable{
+public class prompt_contrller implements Initializable{
 	public Button hotel_button;
 	public Button mort_button;
 	public Button sell_button;
