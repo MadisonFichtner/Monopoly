@@ -1,4 +1,4 @@
-package test;
+package monopoly;
 
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -8,21 +8,16 @@ import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 import java.util.Scanner;
-import java.io.FileReader;
 
-public class monopoly_controller implements Initializable {
+public class MonopolyController implements Initializable {
 	@FXML
 	public Button hotel_button;
 	public Button mort_button;
@@ -44,13 +39,13 @@ public class monopoly_controller implements Initializable {
 
 	public void initialize(URL fxmlFileLocation, ResourceBundle resources) {
 
-		init();
+		getPlayers();
 		disableButtons();
 		
 		hotel_button.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-            	Board.current.trade_deed(players);
+            	Board.current.buy_hotel();
             }
 		});
 		
@@ -58,15 +53,18 @@ public class monopoly_controller implements Initializable {
             @Override
             public void handle(ActionEvent event) {
             	//This just mortgages their 0th deed
-            	Board.current.mortgage_deed(Board.current.deeds.get(0));
+            	Board.current.print_deeds();
+				System.out.println("Which deed would you like to mortgage?");
+				Deed deed = Board.current.deeds.get(0);
+				Board.current.mortgage_deed(deed);
             }
 		});
 		
+		// Handles trading deed. There is a ui template for this but no code
 		sell_button.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-            	System.out.println("Would you like to pay off all mortgages, or a single mortgage? (1. All Mortgages / 2. Single Mortgage)");
-				Board.current.pay_mortgage(2);
+				Board.current.trade_deed(players);
             }
 		});
 		
@@ -100,33 +98,63 @@ public class monopoly_controller implements Initializable {
 //			}
 //		});
 	}
-
-	private void trade_window() {
+	
+	// Opens the UI for inputing player names
+	public void getPlayers() {
 		try {
-			Parent root = FXMLLoader.load(getClass().getResource("auction.fxml"));
+			Parent root = FXMLLoader.load(getClass().getResource("users.fxml"));
 			Stage trade_stage = new Stage();
-			trade_stage.setTitle("Trade");
+			trade_stage.setTitle("Players");
 			trade_stage.setScene(new Scene(root));
 			trade_stage.show();
 		} catch (Exception e) {
 			System.out.println("Something went wrong");
 		}
-
 	}
+	
+	//is called by users.fxml
+	public static void setPlayers(CharSequence[] users) {
+		Deed[] deeds = new Deed[40];
 
-	private void mortgage_window() {
+		String fileName = "test.csv"; // just a sample file name
+		File csvFile = new File(fileName);
 		try {
-			Parent root = FXMLLoader.load(getClass().getResource("mortgage.fxml"));
-			Stage trade_stage = new Stage();
-			trade_stage.setTitle("Mortgage");
-			trade_stage.setScene(new Scene(root));
-			trade_stage.show();
-		} catch (Exception e) {
-			System.out.println("Something went wrong");
+			deeds = parse_CSV(csvFile);
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
-
+		
+		for ( int i = 0; i < users.length; i++) {
+			players[i] = new Player(users[i].toString(), "token" + 1);
+		}
+		board = new Board(players, deeds);
 	}
-
+	
+	public static void takeTurn() {
+		board.init_turn(players[playerTurn]);
+	}
+	
+	public static void nextTurn() {
+		playerTurn++;
+		takeTurn();
+	}
+	public void disableButtons() {
+		hotel_button.setDisable(true);
+		mort_button.setDisable(true);
+		sell_button.setDisable(true);
+		house_button.setDisable(true);
+		end_button.setDisable(true);
+	}
+	
+	public void enableButtons() {
+		hotel_button.setDisable(false);
+		mort_button.setDisable(false);
+		sell_button.setDisable(false);
+		house_button.setDisable(false);
+		end_button.setDisable(false);
+	}
+	
 	/*
 	 * Parses the inputted .csv file to populate the game board with deeds
 	 */
@@ -154,62 +182,8 @@ public class monopoly_controller implements Initializable {
 			deeds[i] = new Deed(position, name, property_group, color, price, mortgage_value, rent, rent1, rent2, rent3,
 					rent4, rent_hotel, build_cost, deed_type);
 		}
+		in.close();
 		// populate deeds giving csv_file
 		return deeds;
-	}
-
-	public void init() {
-		try {
-			Parent root = FXMLLoader.load(getClass().getResource("users.fxml"));
-			Stage trade_stage = new Stage();
-			trade_stage.setTitle("Players");
-			trade_stage.setScene(new Scene(root));
-			trade_stage.show();
-		} catch (Exception e) {
-			System.out.println("Something went wrong");
-		}
-	}
-	
-	public static void setPlayers(CharSequence[] users) {
-		Deed[] new_board = new Deed[40];
-
-		String fileName = "test.csv"; // just a sample file name
-		File csvFile = new File(fileName);
-		try {
-			BufferedReader reader = new BufferedReader(new FileReader(csvFile));
-			new_board = parse_CSV(csvFile);
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		for ( int i = 0; i < users.length; i++) {
-			players[i] = new Player(users[i].toString(), "token" + 1);
-		}
-		board = new Board(players, new_board);
-	}
-	
-	public static void takeTurn() {
-		board.init_turn(players[playerTurn]);
-	}
-	
-	public static void nextTurn() {
-		playerTurn++;
-		takeTurn();
-	}
-	public void disableButtons() {
-		hotel_button.setDisable(true);
-		mort_button.setDisable(true);
-		sell_button.setDisable(true);
-		house_button.setDisable(true);
-		end_button.setDisable(true);
-	}
-	
-	public void enableButtons() {
-		hotel_button.setDisable(false);
-		mort_button.setDisable(false);
-		sell_button.setDisable(false);
-		house_button.setDisable(false);
-		end_button.setDisable(false);
 	}
 }

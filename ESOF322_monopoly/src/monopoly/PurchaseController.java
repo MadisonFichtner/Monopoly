@@ -1,4 +1,4 @@
-package test;
+package monopoly;
 
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -9,7 +9,7 @@ import javafx.scene.control.Button;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class purchase_controller implements Initializable {
+public class PurchaseController implements Initializable {
     @FXML
     public Button yes_button;
     public Button no_button;

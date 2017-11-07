@@ -1,4 +1,4 @@
-package test;
+package monopoly;
 
 public class Deed {
 	public int position;

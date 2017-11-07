@@ -1,9 +1,7 @@
-package test;
+package monopoly;
 
-import java.io.File;
 import java.util.Scanner;
 
-import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -19,21 +17,23 @@ public class Board {
 	public static Player current;
 	private static boolean is_free_parking;//Is true of player lands on GO, Jail, or Free Parking
 	private static int double_roll_counter;	//Keeps track of how many times player has rolled doubles
-	private static int response;
 	private static boolean was_in_jail;
+	private static int position;
 
 	public Board(Player[] users, Deed[] new_board) {
 		this.numHotelsRemaining = 12;
 		this.numHousesRemaining = 32;
-		this.players = users;
-		this.board = new_board;
+		players = users;
+		board = new_board;
 	}
 
+	// Reset all the variables for a players turn and gives them the option to roll if they are not in jail
+	// The ui for escaping jail still needs to be created and connected to moveToSpace()
 	public void init_turn(Player player) {
 		current = player;
+		position = current.position;
 		is_free_parking = false;//Is true of player lands on GO, Jail, or Free Parking
 		double_roll_counter = 0;	//Keeps track of how many times player has rolled doubles
-		response = 0;
 		was_in_jail = false;
 		if (player.in_jail == false) {
 			current = player;
@@ -51,31 +51,21 @@ public class Board {
 			player.turns_in_jail++;
 			player.get_out_of_jail();
 			was_in_jail = true;
+			moveToSpace(true);
 		}
 	}
 	
-	public static void roll_again() {
-		try {
-			Parent root = FXMLLoader.load(Board.class.getResource("roll.fxml"));
-			Stage trade_stage = new Stage();
-			trade_stage.setTitle("Trade");
-			trade_stage.setScene(new Scene(root));
-			trade_stage.show();
-		} catch (Exception e) {
-			System.out.println("Something went wrong");
-		}
-	}
-
-	public static void begin_turn(int[] dice) {
-		if(dice != null) {
-			//Handle a turn from jail
-		} else {
-			current.roll_dice();				//Player rolls dice, dice values are stored in player class
+	// Move the player and deals with what happens at that space. If the player started the turn in jail, don't roll.
+	// The buy Property ui hasn't been created or connected to auctionProperty()
+	public static void moveToSpace(boolean fromJail) {
+		if(fromJail) {
 			current.move();
-			response = 1;
+		} else {
+			current.roll_dice();  //Player rolls dice, dice values are stored in player class
+			current.move();
 		}
 		
-		int position = current.position;
+		position = current.position;
 		
 		//If player lands on free parking, GO, or Jail set is_free_parking to true, and there is no property to buy
 				if(board[position].name.equals("Free Parking") || board[position].name.equals("Jail") || board[position].name.equals("GO")) {
@@ -93,52 +83,61 @@ public class Board {
 //					int answer = in.nextInt();  Fix this with a a prompt later
 					current.pay_tax(1);
 				}
-				
-				//If there is no owner of the deed landed on and it's not free parking, allow user to buy the property, or it will be auctioned
-				else if(board[current.position].owner == null) {// && is_free_parking == false)
-					Deed deed = board[current.position];
-					boolean bought = false;
-					bought = current.buy_property(deed);
-					if(bought == true && current.money >= board[current.position].purchase_price) {
-						System.out.println(current.name + " bought " + deed.name + " for $" + deed.purchase_price + "\n");
-					}
-					else if(bought == false && current.money < board[current.position].purchase_price) {	//If player does not have fund to buy property, it will automatically be auctioned
-						System.out.println(current.name + " did not have enough money to buy " + deed.name + " so " + deed.name + " will be auctioned.");
-						auction(deed);
-					}
-					else {
-						System.out.println(current.name + " did not buy " + deed.name + " so " + deed.name + " will be auctioned.");
-						auction(deed);
-					}
-				}
-				
 				//If player lands on property owned by somebody else, they pay rent
 				else if(board[current.position].owner != null) {
 					Deed deed = board[current.position];
 					current.pay_rent(deed);
 				}
 				
-				
-				
-				//Doubles were rolled, does the same thing as above, just repeats if doubles are rolled
-				if(was_in_jail == false) {
-					while(current.dice[0] == current.dice[1]) {
-						double_roll_counter++;
-						if(double_roll_counter == 2) { //if doubles have been rolled twice, go to jail
-							current.move_to_jail();
-						}
-						
-						else {
-							roll_again();
-							return;
-						}
-					}
-				
+				//If there is no owner of the deed landed on and it's not free parking, allow user to buy the property, or it will be auctioned
+				else if(board[current.position].owner == null) {// && is_free_parking == false)
+					Deed deed = board[current.position];
+					boolean bought = false;
+					bought = current.buy_property(deed);
+					auctionProperty(bought);
 				}
 				
-				response = 0;	//Reset response to 0
+				Main.monopoly.enableButtons(); //This needs to be done after all other user input has been gotten
 	}
 	
+	//This determines if an auction should be held after a player has had the chance to buy it
+	// The ui for auction has been started but the code has not.
+	//After the auction is done Main.monopoly.enableButtons() need to be called.
+	public static void auctionProperty(boolean bought) {
+		if(bought == true) {
+			System.out.println(current.name + " bought " + board[position].name + " for $" + board[position].purchase_price + "\n");
+		}
+		else if(bought == false && current.money < board[current.position].purchase_price) {	//If current does not have fund to buy property, it will automatically be auctioned
+			System.out.println(current.name + " did not have enough money to buy " + board[position].name + " so " + board[position].name + " will be auctioned.");
+			auction(board[position]);
+		}
+		else {
+			System.out.println(current.name + " did not buy " + board[position].name + " so " + board[position].name + " will be auctioned.");
+			auction(board[position]);
+		}
+	}
+	
+	public void rollAgain_or_waitForUser() {
+		//Doubles were rolled, does the same thing as above, just repeats if doubles are rolled
+		if(was_in_jail == false && current.dice[0] == current.dice[1]) {
+				double_roll_counter++;
+				if(double_roll_counter == 2) { //if doubles have been rolled twice, go to jail
+					current.move_to_jail();
+				}
+				
+				else {
+					try {
+						Parent root = FXMLLoader.load(Board.class.getResource("roll.fxml"));
+						Stage trade_stage = new Stage();
+						trade_stage.setTitle("Trade");
+						trade_stage.setScene(new Scene(root));
+						trade_stage.show();
+					} catch (Exception e) {
+						System.out.println("Something went wrong");
+					}
+				}
+		}
+	}
 	public static void auction(Deed auctionedDeed) {
 		Scanner in = new Scanner(System.in);
 		int highest_bid = 50;	//Higest bid
@@ -186,5 +185,6 @@ public class Board {
 				}
 			}
 		}
+		in.close();
 	}
 }

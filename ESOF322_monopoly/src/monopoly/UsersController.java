@@ -1,19 +1,15 @@
-package test;
+package monopoly;
 
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
-import javafx.stage.Stage;
 import javafx.stage.Window;
 
-public class users_controller implements Initializable{
+public class UsersController implements Initializable{
 	public Button done_button;
 	public TextField player1;
 	public TextField player2;
@@ -26,11 +22,10 @@ public class users_controller implements Initializable{
             @Override
             public void handle(ActionEvent event) {
             	CharSequence[] players = {player1.getCharacters(), player2.getCharacters(), player3.getCharacters(), player4.getCharacters()};
-            	monopoly_controller.setPlayers(players);       	
+            	MonopolyController.setPlayers(players);       	
             	Window this_window = done_button.getScene().getWindow();
             	this_window.hide();
-            	monopoly_controller.takeTurn();
-            	Main.monopoly.enableButtons();
+            	MonopolyController.takeTurn();
             }
 		});
 	}

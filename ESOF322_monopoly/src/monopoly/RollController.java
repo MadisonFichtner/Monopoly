@@ -1,4 +1,4 @@
-package test;
+package monopoly;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -9,7 +9,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.stage.Window;
 
-public class roll_controller implements Initializable {
+public class RollController implements Initializable {
 		public Button roll_button;
 
 		@Override
@@ -19,7 +19,7 @@ public class roll_controller implements Initializable {
 	            public void handle(ActionEvent event) {
 	            	Window this_window = roll_button.getScene().getWindow();
 	            	this_window.hide();
-	            	Board.begin_turn(null);
+	            	Board.moveToSpace(false);
 	            }
 			});
 			
