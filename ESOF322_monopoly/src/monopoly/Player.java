@@ -1,23 +1,24 @@
 package monopoly;
+
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.Scanner;
 
 public class Player {
-	public ArrayList<Deed> deeds; //Assuming one person can own all positions on board
-	public int money;
+	public ArrayList<Deed> deeds = new ArrayList<Deed>(); //Assuming one person can own all positions on board
+	public int money = 1500;
 	public String token;
 	public String name;
-	public int position;
-	public int[] dice;
-	public int dice_sum;
-	public int railroad_count;
-	public int utilities_count;
-	public int building_value;
-	public int mortgage_owed;
-	public boolean has_street;
-	public boolean in_jail;
-	public int turns_in_jail;
+	public int position = 0;
+	public int[] dice = new int[]{0,0};
+	public int dice_sum = 0;
+	public int railroad_count = 0;
+	public int utilities_count = 0;
+	public int building_value = 0;
+	public int mortgage_owed = 0;
+	public boolean has_street = false;
+	public boolean in_jail = false;
+	public int turns_in_jail = 0;
 	public boolean is_interested = true;
 	
 	/*
@@ -27,19 +28,8 @@ public class Player {
 	 * @param toke -> name of token entered by user (make picture on board)
 	 */
 	public Player(String name, String token) {
-		this.deeds = new ArrayList<Deed>();
-		this.money = 1500;
-		this.position = 0;
-		this.dice = new int[]{0,0};
 		this.name = name;
 		this.token = token;
-		this.railroad_count = 0; //if 2 RR, rent = 50, 3-rent=100, 4-rent=200
-		this.building_value = 0; //initially owns 0 buildings
-		this.has_street = false;
-		this.utilities_count = 0;
-		this.railroad_count = 0;
-		this.in_jail = false;
-		this.turns_in_jail = 0;
 	}
 	
 	/*

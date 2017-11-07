@@ -84,8 +84,6 @@ public class Board {
 			player.pay_rent(deed);
 		}
 		
-		
-		
 		//Doubles were rolled, does the same thing as above, just repeats if doubles are rolled
 		if(was_in_jail == false) {
 			while(player.dice[0] == player.dice[1]) {
