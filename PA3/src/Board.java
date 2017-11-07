@@ -297,4 +297,18 @@ public class Board {
 		}
 	}
 
+	public Player game_over() {
+		int current_high = -1;
+		int high_player = -1;
+		for(int i = 0; i < players.length; i++) {
+			players[i].calculate_net_worth();
+			if(players[i].overall_net_worth > current_high) {
+				high_player = i;
+				current_high = players[i].overall_net_worth;
+			}
+		}
+		System.out.println(players[high_player].name + " is the winner with a net worth of: " + current_high);
+		return players[high_player];
+	}
+	
 }

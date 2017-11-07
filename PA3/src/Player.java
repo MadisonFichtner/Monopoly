@@ -18,6 +18,7 @@ public class Player {
 	public boolean in_jail = false;
 	public int turns_in_jail = 0;
 	public boolean is_interested = true;
+	public int overall_net_worth = money;
 	
 	/*
 	 * Creates new player object. Starts with $1500
@@ -311,6 +312,7 @@ public class Player {
 			if(deeds.get(i).has_hotel == true)
 				net_worth += deeds.get(i).build_cost;
 		}
+		overall_net_worth = net_worth;
 		return net_worth;
 	}
 	
