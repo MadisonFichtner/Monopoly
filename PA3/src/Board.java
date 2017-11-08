@@ -248,6 +248,7 @@ public class Board {
 						bid = in.nextInt();
 						if(bid == 0) {
 							System.out.println("Nobody wanted " + auctionedDeed.name + ". Will go unsold");
+							players[i].is_interested = false;
 							players_interested--;
 							unsold = true;
 						}
