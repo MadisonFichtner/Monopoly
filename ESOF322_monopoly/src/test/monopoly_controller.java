@@ -10,6 +10,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
+import javafx.stage.Window;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -24,6 +25,7 @@ public class monopoly_controller implements Initializable {
 	public Button sell_button;
 	public Button house_button;
 	public Button end_button;
+	public Button roll_button;
 	
 	public ImageView dice_a;
 	public ImageView dice_b;
@@ -34,13 +36,13 @@ public class monopoly_controller implements Initializable {
 
 	private static int users = 4;
 	private static Player[] players = new Player[users];
-	private static Board board;
+	public static Board board;
 	private static int playerTurn = 0;
 
 	public void initialize(URL fxmlFileLocation, ResourceBundle resources) {
 
 		getPlayers();
-		disableButtons();
+		disable_buttons();
 		
 		hotel_button.setOnAction(new EventHandler<ActionEvent>() {
             @Override
@@ -81,6 +83,14 @@ public class monopoly_controller implements Initializable {
             	nextTurn();
             }
 		});
+		
+		roll_button.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+            	Window this_window = roll_button.getScene().getWindow();
+            	Board.moveToSpace(false);
+            }
+		});
 //
 //		trade_button.setOnAction(new EventHandler<ActionEvent>() {
 //			@Override
@@ -116,7 +126,7 @@ public class monopoly_controller implements Initializable {
 	public static void setPlayers(CharSequence[] users) {
 		Deed[] deeds = new Deed[40];
 
-		String fileName = "ESOF322_monopoly/test.csv"; // just a sample file name
+		String fileName = "test.csv"; // just a sample file name
 		File csvFile = new File(fileName);
 		try {
 			deeds = parse_CSV(csvFile);
@@ -132,14 +142,18 @@ public class monopoly_controller implements Initializable {
 	}
 	
 	public static void takeTurn() {
-		board.init_turn(players[playerTurn]);
+		board.start_turn(players[playerTurn]);
 	}
 	
-	public static void nextTurn() {
+	public void nextTurn() {
+		disable_buttons();
 		playerTurn++;
+		if(playerTurn == players.length)
+    		playerTurn = 0;
 		takeTurn();
 	}
-	public void disableButtons() {
+	public void disable_buttons() {
+		roll_button.setDisable(false);
 		hotel_button.setDisable(true);
 		mort_button.setDisable(true);
 		sell_button.setDisable(true);
@@ -147,7 +161,8 @@ public class monopoly_controller implements Initializable {
 		end_button.setDisable(true);
 	}
 	
-	public void enableButtons() {
+	public void enable_buttons() {
+		roll_button.setDisable(true);
 		hotel_button.setDisable(false);
 		mort_button.setDisable(false);
 		sell_button.setDisable(false);

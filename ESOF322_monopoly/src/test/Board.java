@@ -11,14 +11,14 @@ public class Board {
 
 	public int numHotelsRemaining;
 	public int numHousesRemaining;
-	
+
 	public static Player[] players;
 	public static Deed[] board = new Deed[40];
 	public static Player current;
-	private static boolean is_free_parking;//Is true of player lands on GO, Jail, or Free Parking
-	private static int double_roll_counter;	//Keeps track of how many times player has rolled doubles
+	public static int position;
+	private static boolean is_free_parking;// Is true of player lands on GO, Jail, or Free Parking
+	private static int double_roll_counter; // Keeps track of how many times player has rolled doubles
 	private static boolean was_in_jail;
-	private static int position;
 
 	public Board(Player[] users, Deed[] new_board) {
 		this.numHotelsRemaining = 12;
@@ -27,26 +27,17 @@ public class Board {
 		board = new_board;
 	}
 
-	// Reset all the variables for a players turn and gives them the option to roll if they are not in jail
-	// The ui for escaping jail still needs to be created and connected to moveToSpace()
-	public void init_turn(Player player) {
+	// Reset all the variables for a players turn and gives them the option to roll
+	// if they are not in jail
+	// The ui for escaping jail still needs to be created and connected to
+	// moveToSpace()
+	public void start_turn(Player player) {
 		current = player;
 		position = current.position;
-		is_free_parking = false;//Is true of player lands on GO, Jail, or Free Parking
-		double_roll_counter = 0;	//Keeps track of how many times player has rolled doubles
+		is_free_parking = false;// Is true of player lands on GO, Jail, or Free Parking
+		double_roll_counter = 0; // Keeps track of how many times player has rolled doubles
 		was_in_jail = false;
-		if (player.in_jail == false) {
-			current = player;
-			try {
-				Parent root = FXMLLoader.load(getClass().getResource("roll.fxml"));
-				Stage trade_stage = new Stage();
-				trade_stage.setTitle("roll");
-				trade_stage.setScene(new Scene(root));
-				trade_stage.show();
-			} catch (Exception e) {
-				System.out.println("Something went wrong");
-			}
-		} else if (player.in_jail == true) {
+		if (player.in_jail == true) {
 			// give option to roll dice for doubles or pay $50
 			player.turns_in_jail++;
 			player.get_out_of_jail();
@@ -54,147 +45,169 @@ public class Board {
 			moveToSpace(true);
 		}
 	}
-	
-	// Move the player and deals with what happens at that space. If the player started the turn in jail, don't roll.
+
+	// Move the player and deals with what happens at that space. If the player
+	// started the turn in jail, don't roll.
 	// The buy Property ui hasn't been created or connected to auctionProperty()
 	public static void moveToSpace(boolean fromJail) {
-		if(fromJail) {
+		if (fromJail) {
 			current.move();
 		} else {
-			current.roll_dice();  //Player rolls dice, dice values are stored in player class
+			current.roll_dice(); // Player rolls dice, dice values are stored in player class
 			current.move();
 		}
-		
+
 		position = current.position;
-		
-		//If player lands on free parking, GO, or Jail set is_free_parking to true, and there is no property to buy
-				if(board[position].name.equals("Free Parking") || board[position].name.equals("Jail") || board[position].name.equals("GO")) {
-					if(current.in_jail == false)
-						System.out.println("No property to buy. Landed on space is " + board[position].name  + "\n");
+
+		// If player lands on free parking, GO, or Jail set is_free_parking to true, and
+		// there is no property to buy
+		if (board[position].name.equals("Free Parking") || board[position].name.equals("Jail")
+				|| board[position].name.equals("GO")) {
+			if (current.in_jail == false)
+				System.out.println("No property to buy. Landed on space is " + board[position].name + "\n");
+		}
+
+		// If player lands on "Go to Jail" send the player to jail
+		else if (board[position].name.equals("Go to Jail"))
+			current.move_to_jail();
+
+		// If player lands on "Income Tax", give them the option to pay $200 or %10 of
+		// their net worth (without letting them calculate net worth prior to
+		else if (board[position].name.equals("Income Tax")) {
+			System.out.println(
+					"You landed on Income Tax, you piece of shit have to pay 10% of your net worth, or $200. (1. 10% / 2. $200)");
+			// int answer = in.nextInt(); Fix this with a a prompt later
+			current.pay_tax(1);
+		}
+		// If player lands on property owned by somebody else, they pay rent
+		else if (board[current.position].owner != null) {
+			Deed deed = board[current.position];
+			current.pay_rent(deed);
+		}
+
+		// If there is no owner of the deed landed on and it's not free parking, allow
+		// user to buy the property, or it will be auctioned
+		else if (board[current.position].owner == null) {// && is_free_parking == false)
+			if (current.money > board[current.position].purchase_price) {
+				try {
+					Parent root = FXMLLoader.load(Board.class.getResource("purchase.fxml"));
+					Stage trade_stage = new Stage();
+					trade_stage.setTitle("purchase");
+					trade_stage.setScene(new Scene(root));
+					trade_stage.show();
+				} catch (Exception e) {
+					System.out.println("Something went wrong");
 				}
-				
-				//If player lands on "Go to Jail" send the player to jail
-				else if(board[position].name.equals("Go to Jail"))
-					current.move_to_jail();
-				
-				//If player lands on "Income Tax", give them the option to pay $200 or %10 of their net worth (without letting them calculate net worth prior to
-				else if(board[position].name.equals("Income Tax")) {
-					System.out.println("You landed on Income Tax, you piece of shit have to pay 10% of your net worth, or $200. (1. 10% / 2. $200)");
-//					int answer = in.nextInt();  Fix this with a a prompt later
-					current.pay_tax(1);
-				}
-				//If player lands on property owned by somebody else, they pay rent
-				else if(board[current.position].owner != null) {
-					Deed deed = board[current.position];
-					current.pay_rent(deed);
-				}
-				
-				//If there is no owner of the deed landed on and it's not free parking, allow user to buy the property, or it will be auctioned
-				else if(board[current.position].owner == null) {// && is_free_parking == false)
-					Deed deed = board[current.position];
-					boolean bought = false;
-					bought = current.buy_property(deed);
-					auctionProperty(bought);
-				}
-				
-				Main.monopoly.enableButtons(); //This needs to be done after all other user input has been gotten
+			} else {
+				auctionProperty();
+			}
+
+			// boolean bought = false;
+			// bought = current.buy_property(deed);
+			
+		}
+
+		 // This needs to be done after all other user input has been gotten
 	}
-	
-	//This determines if an auction should be held after a player has had the chance to buy it
+
+	// This determines if an auction should be held after a player has had the
+	// chance to buy it
 	// The ui for auction has been started but the code has not.
-	//After the auction is done Main.test.enableButtons() need to be called.
-	public static void auctionProperty(boolean bought) {
-		if(bought == true) {
-			System.out.println(current.name + " bought " + board[position].name + " for $" + board[position].purchase_price + "\n");
-		}
-		else if(bought == false && current.money < board[current.position].purchase_price) {	//If current does not have fund to buy property, it will automatically be auctioned
-			System.out.println(current.name + " did not have enough money to buy " + board[position].name + " so " + board[position].name + " will be auctioned.");
+	// After the auction is done Main.test.enableButtons() need to be called.
+	public static void auctionProperty() {
+		if (current.money < board[current.position].purchase_price) {
+			System.out.println(current.name + " did not have enough money to buy " + board[position].name + " so " + board[position].name + " will be auctioned."); 
 			auction(board[position]);
-		}
-		else {
+		} else {
 			System.out.println(current.name + " did not buy " + board[position].name + " so " + board[position].name + " will be auctioned.");
 			auction(board[position]);
 		}
-		rollAgain_or_waitForUser();
+		check_for_doubles();
 	}
+
 	
-	public static void rollAgain_or_waitForUser() {
-		//Doubles were rolled, does the same thing as above, just repeats if doubles are rolled
-		if(was_in_jail == false && current.dice[0] == current.dice[1]) {
-				double_roll_counter++;
-				if(double_roll_counter == 2) { //if doubles have been rolled twice, go to jail
-					current.move_to_jail();
+	public static void check_for_doubles() {
+		// Doubles were rolled, does the same thing as above, just repeats if doubles
+		// are rolled
+		if (was_in_jail == false && current.dice[0] == current.dice[1]) {
+			double_roll_counter++;
+			if (double_roll_counter == 2) { // if doubles have been rolled twice, go to jail
+				current.move_to_jail();
+			}
+
+			else {
+				try {
+					Parent root = FXMLLoader.load(Board.class.getResource("roll.fxml"));
+					Stage trade_stage = new Stage();
+					trade_stage.setTitle("Trade");
+					trade_stage.setScene(new Scene(root));
+					trade_stage.show();
+				} catch (Exception e) {
+					System.out.println("Something went wrong");
 				}
-				
-				else {
-					try {
-						Parent root = FXMLLoader.load(Board.class.getResource("roll.fxml"));
-						Stage trade_stage = new Stage();
-						trade_stage.setTitle("Trade");
-						trade_stage.setScene(new Scene(root));
-						trade_stage.show();
-					} catch (Exception e) {
-						System.out.println("Something went wrong");
-					}
-				}
+				return;
+			}
 		}
+		Main.monopoly.enable_buttons();
 	}
+
 	public static void auction(Deed auctionedDeed) {
 		Scanner in = new Scanner(System.in);
-		int highest_bid = 50;	//Higest bid
-		boolean is_valid = true;	//while loop conditional
-		int players_interested = players.length;	//To check if there's only 1 person interested 
-		int i = 0;	//Keeps track of how whose turn it is to bid
-		
+		int highest_bid = 50; // Higest bid
+		boolean is_valid = true; // while loop conditional
+		int players_interested = players.length; // To check if there's only 1 person interested
+		int i = 0; // Keeps track of how whose turn it is to bid
+
 		System.out.println("Bid is starting at $50 for: " + auctionedDeed.name);
 		System.out.println("Enter bid amount, or 0 if not interested");
-		
-		//Resets whether the players are interested in the property each time a property is auctioned
-		for(int j = 0; j < players.length; j++) {
+
+		// Resets whether the players are interested in the property each time a
+		// property is auctioned
+		for (int j = 0; j < players.length; j++) {
 			players[j].is_interested = true;
 		}
-		
-		//While there are more than 1 person still interested
-		while(players_interested > 1) {
-			is_valid = true;	//Reset to true to enter while loop
-			int bid = -1;		//Set bid to a - so that it's not a player response #
-			while(is_valid == true && players[i].is_interested == true) {
+
+		// While there are more than 1 person still interested
+		while (players_interested > 1) {
+			is_valid = true; // Reset to true to enter while loop
+			int bid = -1; // Set bid to a - so that it's not a player response #
+			while (is_valid == true && players[i].is_interested == true) {
 				System.out.println(players[i].name + " enter a bid or 0 to back out: ");
 				bid = in.nextInt();
-				if(bid > highest_bid && bid>=50) {	//If the bid is valid
+				if (bid > highest_bid && bid >= 50) { // If the bid is valid
 					highest_bid = bid;
 					System.out.println(players[i].name + " has the highest bid of: $" + highest_bid);
 					i++;
-				}
-				else if(bid == 0) {		//If player chooses to back out
+				} else if (bid == 0) { // If player chooses to back out
 					System.out.println(players[i].name + " is no longer interested in the auction.");
 					players[i].is_interested = false;
-					players_interested--;		//Decrement players interested
-					i++;						//Increment the interator
-					is_valid = false;			//Set is_valid to false to break inner while loop
-				}
-				else if(bid <= highest_bid) {	//If bid is lower than highest bid, prompt again
-					System.out.println("Bid was not higher than the current highest bid, try again. Enter a value larger, or a 0 to back out");
+					players_interested--; // Decrement players interested
+					i++; // Increment the interator
+					is_valid = false; // Set is_valid to false to break inner while loop
+				} else if (bid <= highest_bid) { // If bid is lower than highest bid, prompt again
+					System.out.println(
+							"Bid was not higher than the current highest bid, try again. Enter a value larger, or a 0 to back out");
 				}
 
-				else if(i == players.length)		//If the iterator is the same as the array length, reset it
+				else if (i == players.length) // If the iterator is the same as the array length, reset it
 					i = 0;
-				
-				else if(players_interested == 1) {	//If it's the last player interested turn, break
-					System.out.println(players[i].name + " wins the bid for the property: " + auctionedDeed.name + " for $" + highest_bid);
+
+				else if (players_interested == 1) { // If it's the last player interested turn, break
+					System.out.println(players[i].name + " wins the bid for the property: " + auctionedDeed.name
+							+ " for $" + highest_bid);
 					players[i].buy_auction(auctionedDeed, highest_bid);
 				}
 			}
 		}
 		in.close();
 	}
-	
+
 	public Player game_over() {
 		int current_high = -1;
 		int high_player = -1;
-		for(int i = 0; i < players.length; i++) {
+		for (int i = 0; i < players.length; i++) {
 			players[i].calculate_net_worth();
-			if(players[i].overall_net_worth > current_high) {
+			if (players[i].overall_net_worth > current_high) {
 				high_player = i;
 				current_high = players[i].overall_net_worth;
 			}

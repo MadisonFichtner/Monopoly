@@ -8,7 +8,7 @@ import javafx.event.EventHandler;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 
-public class prompt_contrller implements Initializable{
+public class prompt_controller implements Initializable{
 	public Button hotel_button;
 	public Button mort_button;
 	public Button sell_button;
