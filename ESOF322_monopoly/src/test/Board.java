@@ -141,7 +141,7 @@ public class Board {
 	}
 	public static void auction(Deed auctionedDeed) {
 		Scanner in = new Scanner(System.in);
-		int highest_bid = 50;	//Higest bid
+		int highest_bid = 50;	//Highest bid
 		boolean is_valid = true;	//while loop conditional
 		int players_interested = players.length;	//To check if there's only 1 person interested 
 		int i = 0;	//Keeps track of how whose turn it is to bid
