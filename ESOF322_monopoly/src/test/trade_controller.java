@@ -61,7 +61,7 @@ public class trade_controller implements Initializable {
 		trade_player.setConverter(new StringConverter<Player>() {
 			@Override
 			public String toString(Player person) {
-				return new StringBuilder(person.name).toString();
+				return new StringBuilder(person.name + " - $" + person.money).toString();
 			}
 
 			@Override

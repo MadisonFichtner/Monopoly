@@ -659,7 +659,7 @@ public class Player {
 	 * 
 	 * @param deed -> deed to be mortgaged
 	 */
-	
+
 	// In design we have this returning an int but i dont see a point in that
 	public void mortgage_deed(Deed deed) {
 		money += deed.calculate_mortgage();
@@ -674,7 +674,7 @@ public class Player {
 		mortgage_owed -= deed.mortgage_owed; // subtract mortgage_owed for specific property from
 		deed.mortgage_owed = 0;
 	}
-	
+
 	/*
 	 * Allows user to pay off all mortgages or a single mortgage of their choosing
 	 * 
@@ -739,7 +739,8 @@ public class Player {
 			money -= deed.calculate_rent();
 			receiving_player.money += deed.calculate_rent();
 			System.out.println(receiving_player.name + " recieved $" + deed.calculate_rent() + " in rent.");
-			Main.monopoly.set_message(name + " pays $" + deed.calculate_rent() + " in rent to " + receiving_player.name + " for " + deed.name);
+			Main.monopoly.set_message(name + " pays $" + deed.calculate_rent() + " in rent to " + receiving_player.name
+					+ " for " + deed.name);
 		}
 	}
 
@@ -803,11 +804,12 @@ public class Player {
 			}
 		}
 	}
-	
+
 	public void bought_house(Deed deed, int houses) {
 		if (deed.current_houses == 4) {
 			Main.monopoly.set_message("You already have 4 houses on this property, build a hotel.");
-		} else if (deed.max_houses == false && deed.deed_type.equals("street")&& deed.whole_color_group_owned == true) {
+		} else if (deed.max_houses == false && deed.deed_type.equals("street")
+				&& deed.whole_color_group_owned == true) {
 			deed.current_houses += houses;
 			money -= deed.build_cost * houses;
 			if (deed.current_houses == 4)
@@ -857,14 +859,14 @@ public class Player {
 	}
 
 	public void bought_hotel(Deed deed) {
-			deed.has_hotel = true;
-			deed.current_houses = 0;
-			deed.max_houses = false;
-			money -= deed.build_cost;
-			Main.monopoly.set_message("You purchased a hotel on " + deed.name + " for $" + deed.build_cost);
-			System.out.println("Remaining money = " + money);
+		deed.has_hotel = true;
+		deed.current_houses = 0;
+		deed.max_houses = false;
+		money -= deed.build_cost;
+		Main.monopoly.set_message("You purchased a hotel on " + deed.name + " for $" + deed.build_cost);
+		System.out.println("Remaining money = " + money);
 	}
-	
+
 	/*
 	 * Allows user to purchase a hotel on a property
 	 */
