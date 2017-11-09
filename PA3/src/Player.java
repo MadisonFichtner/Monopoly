@@ -84,70 +84,86 @@ public class Player {
                     utilities_count++;
                 bought = true;
 
-                switch(deed.property_group){
-                	case 1: 
-                		property_groups[0]++;
-                		if(property_groups[0] == 2){
-                			for(int i = 0; i < 2; i++) {
-                				deed.whole_color_group_owned = true;
-                			}
-                		}
-                		break;
-                	case 2: 
-                		property_groups[1]++; 
-                		if(property_groups[1] == 3){
-                			for(int i = 0; i < 3; i++) {
-                				deed.whole_color_group_owned = true;
-                			}
-                		}
-                		break;
-                	case 3: 
-                		property_groups[2]++;
-                		if(property_groups[1] == 3){
-                			for(int i = 0; i < 3; i++) {
-                				deed.whole_color_group_owned = true;
-                			}
-                		}
-                		break;
-                	case 4: 
-                		property_groups[3]++; 
-                		if(property_groups[1] == 3){
-                			for(int i = 0; i < 3; i++) {
-                				deed.whole_color_group_owned = true;
-                			}
-                		}
-                		break;
-                	case 5: 
-                		property_groups[4]++; 
-                		if(property_groups[1] == 3){
-                			for(int i = 0; i < 3; i++) {
-                				deed.whole_color_group_owned = true;
-                			}
-                		}
-                		break;
-                	case 6: 
-                		property_groups[5]++; 
-                		if(property_groups[1] == 3){
-                			for(int i = 0; i < 3; i++) {
-                				deed.whole_color_group_owned = true;
-                			}
-                		}
-                		break;
-                	case 7: 
-                		property_groups[6]++; 
-                		if(property_groups[1] == 3){
-                			for(int i = 0; i < 3; i++) {
-                				deed.whole_color_group_owned = true;
-                			}
-                		}
-                		break;
-                	case 8: 
-                		property_groups[7]++;
-                		if(property_groups[1] == 2){
-                			for(int i = 0; i < 2; i++) {
-                				deed.whole_color_group_owned = true;
-                			}
-            		}
+                switch (deed.property_group) {
+        		case 1:													//If deed.property_group == 1 (mediterranean / baltic)
+        			property_groups[0]++;								//Increment property_group[] corresponding to it (0)
+        			if (property_groups[0] == 2) {						//If property_group[0] == 2 (meaning the person owns both properties in group)
+        				for (int i = 0; i < deeds.size(); i++) {		//Go through all deeds owned by user
+        					if(deeds.get(i).property_group == 1){		//If a deed has the property_group == 1
+        						deeds.get(i).whole_color_group_owned = true;	//Flip the whole_color_group_owned boolean
+                    		}
+        				}
+        			}
+        			break;
+        		case 2:
+        			property_groups[1]++;
+        			if (property_groups[1] == 3) {
+        				for (int i = 0; i < deeds.size(); i++) {
+        					if(deeds.get(i).property_group == 2){
+        						deeds.get(i).whole_color_group_owned = true;
+                    		}
+        				}
+        			}
+        			break;
+        		case 3:
+        			property_groups[2]++;
+        			if (property_groups[2] == 3) {
+        				for (int i = 0; i < deeds.size(); i++) {
+        					if(deeds.get(i).property_group == 3){
+        						deeds.get(i).whole_color_group_owned = true;
+                    		}
+        				}
+        			}
+        			break;
+        		case 4:
+        			property_groups[3]++;
+        			if (property_groups[3] == 3) {
+        				for (int i = 0; i < deeds.size(); i++) {
+        					if(deeds.get(i).property_group == 4){
+        						deeds.get(i).whole_color_group_owned = true;
+                    		}
+        				}
+        			}
+        			break;
+        		case 5:
+        			property_groups[4]++;
+        			if (property_groups[4] == 3) {
+        				for (int i = 0; i < deeds.size(); i++) {
+        					if(deeds.get(i).property_group == 5){
+        						deeds.get(i).whole_color_group_owned = true;
+                    		}
+        				}
+        			}
+        			break;
+        		case 6:
+        			property_groups[5]++;
+        			if (property_groups[5] == 3) {
+        				for (int i = 0; i < deeds.size(); i++) {
+        					if(deeds.get(i).property_group == 6){
+        						deeds.get(i).whole_color_group_owned = true;
+                    		}
+        				}
+        			}
+        			break;
+        		case 7:
+        			property_groups[6]++;
+        			if (property_groups[6] == 3) {
+        				for (int i = 0; i < deeds.size(); i++) {
+        					if(deeds.get(i).property_group == 7){
+        						deeds.get(i).whole_color_group_owned = true;
+                    		}
+        				}
+        			}
+        			break;
+        		case 8:
+        			property_groups[7]++;
+        			if (property_groups[7] == 2) {
+        				for (int i = 0; i < deeds.size(); i++) {
+        					if(deeds.get(i).property_group == 8){
+        						deeds.get(i).whole_color_group_owned = true;
+                    		}
+        				}
+        			}
                 }
             }
 
@@ -555,7 +571,8 @@ public class Player {
 		for(int i = 0; i < deeds.size(); i++) {
 			if(deeds.get(i).deed_type.equals("street")) {
 				System.out.println(i + ") Name: " + deeds.get(i).name + "| Build Cost:" + deeds.get(i).build_cost + 
-						"| Current Houses: " + deeds.get(i).current_houses + "| Has a Hotel: " + deeds.get(i).has_hotel);
+						"| Current Houses: " + deeds.get(i).current_houses + "| Has a Hotel: " + deeds.get(i).has_hotel
+						+ " Whole Color Group Owned: " + deeds.get(i).whole_color_group_owned);
 			}
 		}
 	}

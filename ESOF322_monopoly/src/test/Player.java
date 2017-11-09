@@ -67,7 +67,7 @@ public class Player {
 			if (property_groups[0] == 2) {						//If property_group[0] == 2 (meaning the person owns both properties in group)
 				for (int i = 0; i < deeds.size(); i++) {		//Go through all deeds owned by user
 					if(deeds.get(i).property_group == 1){		//If a deed has the property_group == 1
-						deed.whole_color_group_owned = true;	//Flip the whole_color_group_owned boolean
+						deeds.get(i).whole_color_group_owned = true;	//Flip the whole_color_group_owned boolean
             		}
 				}
 			}
@@ -77,7 +77,7 @@ public class Player {
 			if (property_groups[1] == 3) {
 				for (int i = 0; i < deeds.size(); i++) {
 					if(deeds.get(i).property_group == 2){
-						deed.whole_color_group_owned = true;
+						deeds.get(i).whole_color_group_owned = true;
             		}
 				}
 			}
@@ -87,7 +87,7 @@ public class Player {
 			if (property_groups[2] == 3) {
 				for (int i = 0; i < deeds.size(); i++) {
 					if(deeds.get(i).property_group == 3){
-						deed.whole_color_group_owned = true;
+						deeds.get(i).whole_color_group_owned = true;
             		}
 				}
 			}
@@ -97,7 +97,7 @@ public class Player {
 			if (property_groups[3] == 3) {
 				for (int i = 0; i < deeds.size(); i++) {
 					if(deeds.get(i).property_group == 4){
-						deed.whole_color_group_owned = true;
+						deeds.get(i).whole_color_group_owned = true;
             		}
 				}
 			}
@@ -107,7 +107,7 @@ public class Player {
 			if (property_groups[4] == 3) {
 				for (int i = 0; i < deeds.size(); i++) {
 					if(deeds.get(i).property_group == 5){
-						deed.whole_color_group_owned = true;
+						deeds.get(i).whole_color_group_owned = true;
             		}
 				}
 			}
@@ -117,7 +117,7 @@ public class Player {
 			if (property_groups[5] == 3) {
 				for (int i = 0; i < deeds.size(); i++) {
 					if(deeds.get(i).property_group == 6){
-						deed.whole_color_group_owned = true;
+						deeds.get(i).whole_color_group_owned = true;
             		}
 				}
 			}
@@ -127,7 +127,7 @@ public class Player {
 			if (property_groups[6] == 3) {
 				for (int i = 0; i < deeds.size(); i++) {
 					if(deeds.get(i).property_group == 7){
-						deed.whole_color_group_owned = true;
+						deeds.get(i).whole_color_group_owned = true;
             		}
 				}
 			}
@@ -137,7 +137,7 @@ public class Player {
 			if (property_groups[7] == 2) {
 				for (int i = 0; i < deeds.size(); i++) {
 					if(deeds.get(i).property_group == 8){
-						deed.whole_color_group_owned = true;
+						deeds.get(i).whole_color_group_owned = true;
             		}
 				}
 			}
