@@ -667,6 +667,13 @@ public class Player {
 		deed.mortgaged = true;
 	}
 
+	public void pay_mortgage_single(Deed deed) {
+		deed.mortgaged = false; // set mortgaged flag to false
+		money -= deed.mortgage_owed; // subtract mortgage_owed for specific property from money
+		mortgage_owed -= deed.mortgage_owed; // subtract mortgage_owed for specific property from
+		deed.mortgage_owed = 0;
+	}
+	
 	/*
 	 * Allows user to pay off all mortgages or a single mortgage of their choosing
 	 * 
@@ -794,6 +801,20 @@ public class Player {
 			}
 		}
 	}
+	
+	public void bought_house(Deed deed, int houses) {
+		if (deed.current_houses == 4) {
+			Main.monopoly.set_message("You already have 4 houses on this property, build a hotel.");
+		} else if (deed.max_houses == false && deed.deed_type.equals("street")&& deed.whole_color_group_owned == true) {
+			deed.current_houses += houses;
+			money -= deed.build_cost * houses;
+			if (deed.current_houses == 4)
+				deed.max_houses = true;
+			System.out.println("Remaining money = " + money);
+		} else {
+			Main.monopoly.set_message("That is not an eligible property to build a house on");
+		}
+	}
 
 	/*
 	 * Allows a user to purchase a house and sets necessary information in deed
@@ -833,6 +854,15 @@ public class Player {
 					"You have no eligible properties to develop a house on. (No streets owned, or no streets with room for any houses, or no entire color groups owned)");
 	}
 
+	public void bought_hotel(Deed deed) {
+			deed.has_hotel = true;
+			deed.current_houses = 0;
+			deed.max_houses = false;
+			money -= deed.build_cost;
+			Main.monopoly.set_message("You purchased a hotel on " + deed.name + " for $" + deed.build_cost);
+			System.out.println("Remaining money = " + money);
+	}
+	
 	/*
 	 * Allows user to purchase a hotel on a property
 	 */

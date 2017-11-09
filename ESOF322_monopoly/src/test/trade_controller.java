@@ -34,7 +34,7 @@ public class trade_controller implements Initializable {
 		accept_button.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
-				if (trade_player.getValue().money > Integer.parseInt(trade_amount.getText())) {
+				if (trade_player.getValue().money >= Integer.parseInt(trade_amount.getText())) {
 					Window this_window = accept_button.getScene().getWindow();
 					this_window.hide();
 					Board.current.traded_deed(trade_deed.getValue(), trade_player.getValue(), Integer.parseInt(trade_amount.getText()));
@@ -44,7 +44,7 @@ public class trade_controller implements Initializable {
 			}
 		});
 
-		// Changes the way the players are displayed
+		// Changes the way the deed are displayed
 		trade_deed.setConverter(new StringConverter<Deed>() {
 			@Override
 			public String toString(Deed deed) {

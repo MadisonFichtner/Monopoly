@@ -48,18 +48,32 @@ public class monopoly_controller implements Initializable {
 		hotel_button.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-            	Board.current.buy_hotel();
+            	try {
+        			Parent root = FXMLLoader.load(getClass().getResource("hotel.fxml"));
+        			Stage trade_stage = new Stage();
+        			trade_stage.setTitle("Buy hotel");
+        			trade_stage.setScene(new Scene(root));
+        			trade_stage.show();
+        		} catch (Exception e) {
+        			System.out.println("Something went wrong");
+        			set_message("No eligible properties, buy houses first");
+        		}
             }
 		});
 		
 		mort_button.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-            	//This just mortgages their 0th deed
-            	Board.current.print_deeds();
-				System.out.println("Which deed would you like to mortgage?");
-				Deed deed = Board.current.deeds.get(0);
-				Board.current.mortgage_deed(deed);
+            	
+            	try {
+        			Parent root = FXMLLoader.load(getClass().getResource("mortgage.fxml"));
+        			Stage trade_stage = new Stage();
+        			trade_stage.setTitle("Choose a deed");
+        			trade_stage.setScene(new Scene(root));
+        			trade_stage.show();
+        		} catch (Exception e) {
+        			System.out.println("Something went wrong");
+        		}
             }
 		});
 		
@@ -76,14 +90,21 @@ public class monopoly_controller implements Initializable {
         		} catch (Exception e) {
         			System.out.println("Something went wrong");
         		}
-				//Board.current.trade_deed(players);
             }
 		});
 		
 		house_button.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-            	Board.current.buy_house();
+            	try {
+        			Parent root = FXMLLoader.load(getClass().getResource("house.fxml"));
+        			Stage trade_stage = new Stage();
+        			trade_stage.setTitle("Buy hotel");
+        			trade_stage.setScene(new Scene(root));
+        			trade_stage.show();
+        		} catch (Exception e) {
+        			System.out.println("Something went wrong");
+        		}
             }
 		});
 		
