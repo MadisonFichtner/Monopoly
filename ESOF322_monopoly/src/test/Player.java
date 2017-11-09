@@ -21,6 +21,7 @@ public class Player {
 	public int turns_in_jail = 0;
 	public boolean is_interested = true;
 	public int overall_net_worth = money;
+	public int[] property_totals = {2,3,3,3,3,3,3,2};
 	public int[] property_groups = new int[8];
 
 	/*
@@ -61,7 +62,15 @@ public class Player {
 		if (deed.deed_type.equals("utility"))
 			utilities_count++;
 
-		switch (deed.property_group) {
+		property_groups[deed.property_group - 1] ++;
+		if (property_groups[deed.property_group - 1] == property_totals[deed.property_group - 1]) {
+			for (int i = 0; i < deeds.size(); i++) {
+				if(deeds.get(i).property_group == 1){
+					deeds.get(i).whole_color_group_owned = true;
+				}
+			}
+		}
+		/*switch (deed.property_group) {
 		case 1:													//If deed.property_group == 1 (mediterranean / baltic)
 			property_groups[0]++;								//Increment property_group[] corresponding to it (0)
 			if (property_groups[0] == 2) {						//If property_group[0] == 2 (meaning the person owns both properties in group)
@@ -141,13 +150,13 @@ public class Player {
             		}
 				}
 			}
-		}
+		}*/
 		Main.monopoly.set_message(name + " bought " + deed.name);
 		Main.monopoly.enable_buttons();
 	}
 
 	/*
-	 * Allows user to purchase property that is not already owned by another player.
+//	 * Allows user to purchase property that is not already owned by another player.
 	 * 
 	 * @param deed
 	 * 
