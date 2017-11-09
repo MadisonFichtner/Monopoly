@@ -126,7 +126,7 @@ public class Player {
 				}
 			}
 		}
-		Main.monopoly.set_message("You Bought " + deed.name);
+		Main.monopoly.set_message(name + " bought " + deed.name);
 		Main.monopoly.enable_buttons();
 	}
 
@@ -477,6 +477,7 @@ public class Player {
 		money += price;
 		player.money -= price;
 		System.out.println("Property has been transfered to the buyer.");
+		Main.monopoly.set_message(player.name + " Bought " + deed.name + " from " + name + " for $" + price);
 	}
 
 	/*
@@ -738,6 +739,7 @@ public class Player {
 			money -= deed.calculate_rent();
 			receiving_player.money += deed.calculate_rent();
 			System.out.println(receiving_player.name + " recieved $" + deed.calculate_rent() + " in rent.");
+			Main.monopoly.set_message(name + " pays $" + deed.calculate_rent() + " in rent to " + receiving_player.name + " for " + deed.name);
 		}
 	}
 

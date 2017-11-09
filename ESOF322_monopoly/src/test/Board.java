@@ -33,6 +33,7 @@ public class Board {
 	// moveToSpace()
 	public void start_turn(Player player) {
 		current = player;
+		Main.monopoly.set_message("It is " + current.name + "'s turn.");
 		position = current.position;
 		is_free_parking = false;// Is true of player lands on GO, Jail, or Free Parking
 		double_roll_counter = 0; // Keeps track of how many times player has rolled doubles
@@ -63,19 +64,23 @@ public class Board {
 		// there is no property to buy
 		if (board[position].name.equals("Free Parking") || board[position].name.equals("Jail")
 				|| board[position].name.equals("GO")) {
-			if (current.in_jail == false)
+			if (current.in_jail == false) {
 				System.out.println("No property to buy. Landed on space is " + board[position].name + "\n");
+				Main.monopoly.set_message("No property to buy. " + current.name + " landed on " + board[position].name);
+			}
 		}
 
 		// If player lands on "Go to Jail" send the player to jail
-		else if (board[position].name.equals("Go to Jail"))
+		else if (board[position].name.equals("Go to Jail")) {
 			current.move_to_jail();
+			Main.monopoly.set_message("You're going to jail!");
+		}
 
 		// If player lands on "Income Tax", give them the option to pay $200 or %10 of
 		// their net worth (without letting them calculate net worth prior to
 		else if (board[position].name.equals("Income Tax")) {
-			System.out.println(
-					"You landed on Income Tax, you piece of shit have to pay 10% of your net worth, or $200. (1. 10% / 2. $200)");
+			System.out.println("You landed on Income Tax, you piece of shit have to pay 10% of your net worth, or $200. (1. 10% / 2. $200)");
+			Main.monopoly.set_message("You have to pay income tax.");
 			// int answer = in.nextInt(); Fix this with a a prompt later
 			current.pay_tax(1);
 		}
