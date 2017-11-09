@@ -98,16 +98,17 @@ public class Board {
 				} catch (Exception e) {
 					System.out.println("Something went wrong");
 				}
+				return;
 			} else {
 				auctionProperty();
 			}
 
 			// boolean bought = false;
 			// bought = current.buy_property(deed);
-			
+
 		}
 
-		 // This needs to be done after all other user input has been gotten
+		Main.monopoly.enable_buttons();
 	}
 
 	// This determines if an auction should be held after a player has had the
@@ -116,16 +117,17 @@ public class Board {
 	// After the auction is done Main.test.enableButtons() need to be called.
 	public static void auctionProperty() {
 		if (current.money < board[current.position].purchase_price) {
-			System.out.println(current.name + " did not have enough money to buy " + board[position].name + " so " + board[position].name + " will be auctioned."); 
+			System.out.println(current.name + " did not have enough money to buy " + board[position].name + " so "
+					+ board[position].name + " will be auctioned.");
 			auction(board[position]);
 		} else {
-			System.out.println(current.name + " did not buy " + board[position].name + " so " + board[position].name + " will be auctioned.");
+			System.out.println(current.name + " did not buy " + board[position].name + " so " + board[position].name
+					+ " will be auctioned.");
 			auction(board[position]);
 		}
 		check_for_doubles();
 	}
 
-	
 	public static void check_for_doubles() {
 		// Doubles were rolled, does the same thing as above, just repeats if doubles
 		// are rolled

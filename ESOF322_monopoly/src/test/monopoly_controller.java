@@ -8,6 +8,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
 import javafx.stage.Window;
@@ -26,6 +27,7 @@ public class monopoly_controller implements Initializable {
 	public Button house_button;
 	public Button end_button;
 	public Button roll_button;
+	public Label message;
 	
 	public ImageView dice_a;
 	public ImageView dice_b;
@@ -33,7 +35,6 @@ public class monopoly_controller implements Initializable {
 	public ImageView boardImg;
 
 	private static final String COMMA_DELIMITER = ",";
-
 	private static int users = 4;
 	private static Player[] players = new Player[users];
 	public static Board board;
@@ -66,7 +67,16 @@ public class monopoly_controller implements Initializable {
 		sell_button.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-				Board.current.trade_deed(players);
+            	try {
+        			Parent root = FXMLLoader.load(getClass().getResource("trade.fxml"));
+        			Stage trade_stage = new Stage();
+        			trade_stage.setTitle("Trade");
+        			trade_stage.setScene(new Scene(root));
+        			trade_stage.show();
+        		} catch (Exception e) {
+        			System.out.println("Something went wrong");
+        		}
+				//Board.current.trade_deed(players);
             }
 		});
 		
@@ -199,5 +209,9 @@ public class monopoly_controller implements Initializable {
 		}
 		// populate deeds giving csv_file
 		return deeds;
+	}
+	
+	public void set_message(String string) {
+		message.setText(string);
 	}
 }
