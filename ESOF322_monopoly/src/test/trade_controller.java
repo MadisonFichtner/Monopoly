@@ -10,6 +10,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.TextField;
+import javafx.stage.Stage;
 import javafx.stage.Window;
 import javafx.util.StringConverter;
 
@@ -35,8 +36,8 @@ public class trade_controller implements Initializable {
 			@Override
 			public void handle(ActionEvent event) {
 				if (trade_player.getValue().money >= Integer.parseInt(trade_amount.getText())) {
-					Window this_window = accept_button.getScene().getWindow();
-					this_window.hide();
+					Stage stage = (Stage) accept_button.getScene().getWindow();
+	            	stage.close();
 					Board.current.traded_deed(trade_deed.getValue(), trade_player.getValue(), Integer.parseInt(trade_amount.getText()));
 				} else {
 					Main.monopoly.set_message(trade_player.getValue().name + " does not have $" + Integer.parseInt(trade_amount.getText()) + "!");

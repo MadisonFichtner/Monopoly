@@ -7,6 +7,7 @@ import javafx.event.EventHandler;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
+import javafx.stage.Stage;
 import javafx.stage.Window;
 
 public class users_controller implements Initializable{
@@ -23,8 +24,8 @@ public class users_controller implements Initializable{
             public void handle(ActionEvent event) {
             	CharSequence[] players = {player1.getCharacters(), player2.getCharacters(), player3.getCharacters(), player4.getCharacters()};
             	monopoly_controller.setPlayers(players);
-            	Window this_window = done_button.getScene().getWindow();
-            	this_window.hide();
+            	Stage stage = (Stage) done_button.getScene().getWindow();
+            	stage.close();
             	monopoly_controller.takeTurn();
             }
 		});

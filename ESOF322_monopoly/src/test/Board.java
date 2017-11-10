@@ -1,5 +1,6 @@
 package test;
 
+import java.util.Arrays;
 import java.util.Scanner;
 
 import javafx.fxml.FXMLLoader;
@@ -16,6 +17,8 @@ public class Board {
 	public static Deed[] board = new Deed[40];
 	public static Player current;
 	public static int position;
+	public static int[] bids = {0, 0, 0, 0};
+	public static int highest_bid = 50;
 	private static boolean is_free_parking;// Is true of player lands on GO, Jail, or Free Parking
 	private static int double_roll_counter; // Keeps track of how many times player has rolled doubles
 	private static boolean was_in_jail;
@@ -112,8 +115,7 @@ public class Board {
 			// bought = current.buy_property(deed);
 
 		}
-
-		Main.monopoly.enable_buttons();
+		check_for_doubles();
 	}
 
 	// This determines if an auction should be held after a player has had the
@@ -122,15 +124,21 @@ public class Board {
 	// After the auction is done Main.test.enableButtons() need to be called.
 	public static void auctionProperty() {
 		if (current.money < board[current.position].purchase_price) {
-			System.out.println(current.name + " did not have enough money to buy " + board[position].name + " so "
+			Main.monopoly.set_message(current.name + " did not have enough money to buy " + board[position].name + " so "
 					+ board[position].name + " will be auctioned.");
-			auction(board[position]);
 		} else {
-			System.out.println(current.name + " did not buy " + board[position].name + " so " + board[position].name
+			Main.monopoly.set_message(current.name + " did not buy " + board[position].name + " so " + board[position].name
 					+ " will be auctioned.");
-			auction(board[position]);
 		}
-		check_for_doubles();
+		try {
+			Parent root = FXMLLoader.load(Board.class.getResource("auction.fxml"));
+			Stage trade_stage = new Stage();
+			trade_stage.setTitle("auction");
+			trade_stage.setScene(new Scene(root));
+			trade_stage.show();
+		} catch (Exception e) {
+			System.out.println("Something went wrong with auctioning");
+		}
 	}
 
 	public static void check_for_doubles() {
@@ -157,56 +165,42 @@ public class Board {
 		}
 		Main.monopoly.enable_buttons();
 	}
-
-	public static void auction(Deed auctionedDeed) {
-		Scanner in = new Scanner(System.in);
-		int highest_bid = 50; // Higest bid
-		boolean is_valid = true; // while loop conditional
-		int players_interested = players.length; // To check if there's only 1 person interested
-		int i = 0; // Keeps track of how whose turn it is to bid
-
-		System.out.println("Bid is starting at $50 for: " + auctionedDeed.name);
-		System.out.println("Enter bid amount, or 0 if not interested");
-
-		// Resets whether the players are interested in the property each time a
-		// property is auctioned
-		for (int j = 0; j < players.length; j++) {
-			players[j].is_interested = true;
-		}
-
-		// While there are more than 1 person still interested
-		while (players_interested > 1) {
-			is_valid = true; // Reset to true to enter while loop
-			int bid = -1; // Set bid to a - so that it's not a player response #
-			while (is_valid == true && players[i].is_interested == true) {
-				System.out.println(players[i].name + " enter a bid or 0 to back out: ");
-				bid = in.nextInt();
-				if (bid > highest_bid && bid >= 50) { // If the bid is valid
-					highest_bid = bid;
-					System.out.println(players[i].name + " has the highest bid of: $" + highest_bid);
-					i++;
-				} else if (bid == 0) { // If player chooses to back out
-					System.out.println(players[i].name + " is no longer interested in the auction.");
-					players[i].is_interested = false;
-					players_interested--; // Decrement players interested
-					i++; // Increment the interator
-					is_valid = false; // Set is_valid to false to break inner while loop
-				} else if (bid <= highest_bid) { // If bid is lower than highest bid, prompt again
-					System.out.println(
-							"Bid was not higher than the current highest bid, try again. Enter a value larger, or a 0 to back out");
-				}
-
-				else if (i == players.length) // If the iterator is the same as the array length, reset it
-					i = 0;
-
-				else if (players_interested == 1) { // If it's the last player interested turn, break
-					System.out.println(players[i].name + " wins the bid for the property: " + auctionedDeed.name
-							+ " for $" + highest_bid);
-					players[i].buy_auction(auctionedDeed, highest_bid);
-				}
+	
+	public static void gui_auction(int[] bids, int highest_bid, Deed deed) {
+		int displayed_highest = highest_bid;
+		int players_interested = 0;
+		for(int i = 0; i < bids.length; i++) {
+			if(bids[i] >= highest_bid) {
+				highest_bid = bids[i];
+				players_interested++;
+			} else if(bids[i] > displayed_highest) {
+				players_interested++;
 			}
 		}
-		in.close();
+		if(players_interested == 1) {
+			for(int i = 0; i < bids.length; i++) {
+				if(highest_bid == bids[i]) {
+					Arrays.fill(bids, 0);
+					Main.monopoly.set_message(players[i].name + " won " + deed.name + " for $" + highest_bid);
+					players[i].buy_auction(deed, highest_bid);
+					highest_bid = 50;
+				}
+			}
+		} else if(players_interested > 1) {
+			Board.highest_bid = highest_bid;
+			Board.bids = bids;
+			try {
+				Parent root = FXMLLoader.load(Board.class.getResource("auction.fxml"));
+				Stage trade_stage = new Stage();
+				trade_stage.setTitle("Auction");
+				trade_stage.setScene(new Scene(root));
+				trade_stage.show();
+			} catch (Exception e) {
+				System.out.println("Something went wrong");
+			}
+		} else {
+			highest_bid = 50;
+		}
 	}
 
 	public Player game_over() {
