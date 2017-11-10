@@ -12,7 +12,7 @@ import javafx.scene.control.ChoiceBox;
 import javafx.stage.Window;
 import javafx.util.StringConverter;
 
-public class mortgage_controller  implements Initializable {
+public class mortgage_controller implements Initializable {
 	public Button done_button;
 	public ChoiceBox<Deed> deed_box;
 

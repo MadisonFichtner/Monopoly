@@ -44,9 +44,19 @@ public class Board {
 		if (player.in_jail == true) {
 			// give option to roll dice for doubles or pay $50
 			player.turns_in_jail++;
-			player.get_out_of_jail();
-			was_in_jail = true;
-			moveToSpace(true);
+			if(player.turns_in_jail >= 3) {
+				player.pay_bail();
+			} else {
+				try {
+					Parent root = FXMLLoader.load(Board.class.getResource("jail.fxml"));
+					Stage trade_stage = new Stage();
+					trade_stage.setTitle("jail");
+					trade_stage.setScene(new Scene(root));
+					trade_stage.show();
+				} catch (Exception e) {
+					System.out.println("Something went wrong");
+				}
+			}
 		}
 	}
 
@@ -54,8 +64,21 @@ public class Board {
 	// started the turn in jail, don't roll.
 	// The buy Property ui hasn't been created or connected to auctionProperty()
 	public static void moveToSpace(boolean fromJail) {
-		if (fromJail) {
-			current.move();
+		if (fromJail && current.in_jail == true) {
+			current.roll_dice();
+			
+			if (current.dice[0] == current.dice[1]) // If doubles are rolled
+			{
+				was_in_jail = true;
+				Main.monopoly.set_message("You rolled doubles. Gratz.");
+				current.in_jail = false;
+				current.turns_in_jail = 0;
+				current.move();
+			} else // If doubles are not rolled
+			{
+				Main.monopoly.set_message("You did not roll doubles...");
+				return;
+			}
 		} else {
 			current.roll_dice(); // Player rolls dice, dice values are stored in player class
 			current.move();
@@ -106,7 +129,6 @@ public class Board {
 				} catch (Exception e) {
 					System.out.println("Something went wrong");
 				}
-				return;
 			} else {
 				auctionProperty();
 			}
@@ -148,19 +170,8 @@ public class Board {
 			double_roll_counter++;
 			if (double_roll_counter == 2) { // if doubles have been rolled twice, go to jail
 				current.move_to_jail();
-			}
-
-			else {
-				try {
-					Parent root = FXMLLoader.load(Board.class.getResource("roll.fxml"));
-					Stage trade_stage = new Stage();
-					trade_stage.setTitle("Trade");
-					trade_stage.setScene(new Scene(root));
-					trade_stage.show();
-				} catch (Exception e) {
-					System.out.println("Something went wrong");
-				}
-				return;
+			} else {
+				moveToSpace(false);
 			}
 		}
 		Main.monopoly.enable_buttons();

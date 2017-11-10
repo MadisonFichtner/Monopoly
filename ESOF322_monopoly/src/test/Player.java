@@ -156,123 +156,6 @@ public class Player {
 	}
 
 	/*
-//	 * Allows user to purchase property that is not already owned by another player.
-	 * 
-	 * @param deed
-	 * 
-	 * @return boolean based on whether the property was bought or not
-	 */
-	// public boolean buy_property(Deed deed) {
-	// boolean bought = false;
-	// Scanner in = new Scanner(System.in);
-	// boolean valid;
-	// int answer = 0;
-	// do {
-	// valid = true;
-	// try {
-	// System.out.println("Do you want to buy: " + deed.name + " for $" +
-	// deed.purchase_price + "? (1. yes / 2. no)");
-	// answer = in.nextInt();
-	// }
-	// catch (Exception e) {
-	// System.out.println("That was an incorrect input, enter an integer");
-	// valid = false;
-	// in.nextLine();
-	// }
-	// }while(valid == false);
-	//
-	// if(answer == 1)
-	// {
-	// if(money>=deed.purchase_price)
-	// {
-	// deed.owner = this;
-	// money -= deed.purchase_price;
-	// deeds.add(deed);
-	// if(deed.deed_type.equals("railroad"))
-	// railroad_count++;
-	// if(deed.deed_type.equals("utility"))
-	// utilities_count++;
-	// bought = true;
-	// bought = true;
-	//
-	// switch(deed.property_group){
-	// case 1:
-	// property_groups[0]++;
-	// if(property_groups[0] == 2){
-	// for(int i = 0; i < 2; i++) {
-	// deed.whole_color_group_owned = true;
-	// }
-	// }
-	// break;
-	// case 2:
-	// property_groups[1]++;
-	// if(property_groups[1] == 3){
-	// for(int i = 0; i < 3; i++) {
-	// deed.whole_color_group_owned = true;
-	// }
-	// }
-	// break;
-	// case 3:
-	// property_groups[2]++;
-	// if(property_groups[1] == 3){
-	// for(int i = 0; i < 3; i++) {
-	// deed.whole_color_group_owned = true;
-	// }
-	// }
-	// break;
-	// case 4:
-	// property_groups[3]++;
-	// if(property_groups[1] == 3){
-	// for(int i = 0; i < 3; i++) {
-	// deed.whole_color_group_owned = true;
-	// }
-	// }
-	// break;
-	// case 5:
-	// property_groups[4]++;
-	// if(property_groups[1] == 3){
-	// for(int i = 0; i < 3; i++) {
-	// deed.whole_color_group_owned = true;
-	// }
-	// }
-	// break;
-	// case 6:
-	// property_groups[5]++;
-	// if(property_groups[1] == 3){
-	// for(int i = 0; i < 3; i++) {
-	// deed.whole_color_group_owned = true;
-	// }
-	// }
-	// break;
-	// case 7:
-	// property_groups[6]++;
-	// if(property_groups[1] == 3){
-	// for(int i = 0; i < 3; i++) {
-	// deed.whole_color_group_owned = true;
-	// }
-	// }
-	// break;
-	// case 8:
-	// property_groups[7]++;
-	// if(property_groups[1] == 2){
-	// for(int i = 0; i < 2; i++) {
-	// deed.whole_color_group_owned = true;
-	// }
-	// }
-	// }
-	// }
-	//
-	// else
-	// bought = false;
-	// }
-	//
-	// else
-	// bought = false;
-	// return bought;
-	//
-	// }
-
-	/*
 	 * If player bought auction, this is used
 	 * 
 	 * @param deed -> the deed that was purchased
@@ -319,6 +202,14 @@ public class Player {
 	public void move_to_jail() {
 		position = 10;
 		in_jail = true;
+	}
+	
+	public void pay_bail(){
+		Main.monopoly.set_message("Turn 3 in jail. You must pay $50 and roll forward.");
+		money -= 50;
+		in_jail = false;
+		turns_in_jail = 0;
+		roll_dice();
 	}
 
 	/*
