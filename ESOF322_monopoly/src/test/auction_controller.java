@@ -32,7 +32,7 @@ public class auction_controller implements Initializable {
 
     public void initialize(URL fxmlFileLocation, ResourceBundle resources) {
     	int[] bids = Board.bids;
-    	ArrayList<Player> players = new ArrayList<Player>(Arrays.asList(Board.players));
+    	ArrayList<Player> players = new ArrayList<Player>(Arrays.asList(monopoly_controller.players));
 		bid_player.setItems(FXCollections.observableArrayList(players));
 		current_price.setText("The highest bid is $" + Board.highest_bid);
         
@@ -53,9 +53,9 @@ public class auction_controller implements Initializable {
     			@Override
     			public void handle(ActionEvent event) {
     				Player bidder = bid_player.getValue();
-    				for(int i =0; i < Board.players.length; i++) {
-    					if(Board.players[i].name.compareTo(bidder.name) == 0) {
-    						if(Board.players[i].money > Integer.parseInt(bid_amount.getText())) {
+    				for(int i =0; i < monopoly_controller.players.length; i++) {
+    					if(monopoly_controller.players[i].name.compareTo(bidder.name) == 0) {
+    						if(monopoly_controller.players[i].money > Integer.parseInt(bid_amount.getText())) {
         						bids[i] = Integer.parseInt(bid_amount.getText());
     						} else {
     							Main.monopoly.set_message("You don't have that much money!");

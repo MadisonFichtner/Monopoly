@@ -21,49 +21,32 @@ import java.util.ResourceBundle;
 import java.util.Scanner;
 
 public class monopoly_controller implements Initializable {
-    @FXML
-    public Button hotel_button;
-    public Button mort_button;
-    public Button sell_button;
-    public Button house_button;
-    public Button end_button;
-    public Button roll_button;
-    public Label message;
+	@FXML
+	public Button hotel_button;
+	public Button mort_button;
+	public Button sell_button;
+	public Button house_button;
+	public Button end_button;
+	public Button roll_button;
+	public Label message;
 
-    public ImageView token_hat;
-    public ImageView token_ship;
-    public ImageView token_dog;
-    public ImageView token_boot;
+	public ImageView dice_a;
+	public ImageView dice_b;
+	public ImageView test_token;
+	public ImageView boardImg;
 
-    public ImageView boardImg;
+	private static final String COMMA_DELIMITER = ",";
+	private static int users = 4;
+	public static Player[] players = new Player[users];
+	public static Board board;
+	private static int playerTurn = 0;
 
-    public ArrayList<ImageView> token_list = new ArrayList<ImageView>();
+	public void initialize(URL fxmlFileLocation, ResourceBundle resources) {
 
-    private static int[][] coords = {{320,315}, {250,315}, {190,315}, {130,315}, {70,315}, {10,315}, {-70,315}, {-130,315}, {-200,315}, {-260,315}, {-375,380}, {-320,250}, {-320,190}, {-320,130}, {-320,70}, {-320,10}, {-320,-70}, {-320,-130}, {-320,-200}, {-320,-260}, {-320,-320}, {-260,-320}, {-200,-320}, {-130,-320}, {-70,-320}, {0,-320}, {70,-320}, {130,-320}, {200,-320}, {260,-320}, {330,-320}, {330,-260}, {330,-200}, {330,-130}, {330,-70}, {330,0}, {330,70}, {330,130}, {330,200}, {330,260}};
-    private static final String COMMA_DELIMITER = ",";
-    private static int users = 4;
-    private static Player[] players = new Player[users];
-    public static Board board;
-    private static int playerTurn = 0;
+		getPlayers();
+		disable_buttons();
 
-    public void move_token(int player_num, int spot) {
-        System.out.println("X: " + (int) coords[spot][0]);
-        System.out.println("Y: " + (int) coords[spot][1]);
-        token_list.get(player_num).setTranslateX(coords[spot][0]);
-        token_list.get(player_num).setTranslateY(coords[spot][1]);
-    }
-
-    public void initialize(URL fxmlFileLocation, ResourceBundle resources) {
-
-        token_list.add(token_hat);
-        token_list.add(token_dog);
-        token_list.add(token_ship);
-        token_list.add(token_boot);
-
-        getPlayers();
-        disable_buttons();
-
-        hotel_button.setOnAction(new EventHandler<ActionEvent>() {
+		hotel_button.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
                 try {

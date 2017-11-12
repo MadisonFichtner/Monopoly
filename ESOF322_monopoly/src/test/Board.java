@@ -12,7 +12,6 @@ public class Board {
 	public int numHotelsRemaining;
 	public int numHousesRemaining;
 
-	public static Player[] players;
 	public static Deed[] board = new Deed[40];
 	public static Player current;
 	public static int position;
@@ -25,7 +24,6 @@ public class Board {
 	public Board(Player[] users, Deed[] new_board) {
 		this.numHotelsRemaining = 12;
 		this.numHousesRemaining = 32;
-		players = users;
 		board = new_board;
 	}
 
@@ -191,8 +189,8 @@ public class Board {
 			for(int i = 0; i < bids.length; i++) {
 				if(highest_bid == bids[i]) {
 					Arrays.fill(bids, 0);
-					Main.monopoly.set_message(players[i].name + " won " + deed.name + " for $" + highest_bid);
-					players[i].buy_auction(deed, highest_bid);
+					Main.monopoly.set_message(monopoly_controller.players[i].name + " won " + deed.name + " for $" + highest_bid);
+					monopoly_controller.players[i].buy_auction(deed, highest_bid);
 					highest_bid = 50;
 				}
 			}
@@ -216,14 +214,14 @@ public class Board {
 	public Player game_over() {
 		int current_high = -1;
 		int high_player = -1;
-		for (int i = 0; i < players.length; i++) {
-			players[i].calculate_net_worth();
-			if (players[i].overall_net_worth > current_high) {
+		for (int i = 0; i < monopoly_controller.players.length; i++) {
+			monopoly_controller.players[i].calculate_net_worth();
+			if (monopoly_controller.players[i].overall_net_worth > current_high) {
 				high_player = i;
-				current_high = players[i].overall_net_worth;
+				current_high = monopoly_controller.players[i].overall_net_worth;
 			}
 		}
-		System.out.println(players[high_player].name + " is the winner with a net worth of: " + current_high);
-		return players[high_player];
+		System.out.println(monopoly_controller.players[high_player].name + " is the winner with a net worth of: " + current_high);
+		return monopoly_controller.players[high_player];
 	}
 }

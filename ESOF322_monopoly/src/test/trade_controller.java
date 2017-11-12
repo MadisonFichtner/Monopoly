@@ -27,7 +27,7 @@ public class trade_controller implements Initializable {
 	public Button accept_button;
 
 	public void initialize(URL fxmlFileLocation, ResourceBundle resources) {
-		ArrayList<Player> players = new ArrayList<Player>(Arrays.asList(Board.players));
+		ArrayList<Player> players = new ArrayList<Player>(Arrays.asList(monopoly_controller.players));
 		trade_player.setItems(FXCollections.observableArrayList(players));
 
 		trade_deed.setItems(FXCollections.observableArrayList(Board.current.deeds));
