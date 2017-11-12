@@ -16,7 +16,7 @@ public class Main extends Application {
     public void start(Stage primaryStage) throws Exception {
     	FXMLLoader loader = new FXMLLoader(getClass().getResource("monopoly.fxml"));
     	Parent root = loader.load();
-    	monopoly=loader.<monopoly_controller>getController();
+    	monopoly=loader.getController();
         primaryStage.setTitle("Monopoly");
         primaryStage.setScene(new Scene(root));
         primaryStage.show();
