@@ -1,7 +1,6 @@
 package test;
 
 import java.util.Arrays;
-import java.util.Scanner;
 
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
