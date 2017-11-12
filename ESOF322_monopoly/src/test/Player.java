@@ -377,7 +377,8 @@ public class Player {
 		}
 
 		player.deeds.add(deed); // adds deed to recipients deeds
-		deeds.remove(deed); // removes deed from current players deeds
+		this.deeds.remove(deed); // removes deed from current players deeds
+        deed.owner = player;
 		money += price;
 		player.money -= price;
 		System.out.println("Property has been transfered to the buyer.");
