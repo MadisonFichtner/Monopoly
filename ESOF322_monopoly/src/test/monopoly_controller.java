@@ -36,7 +36,7 @@ public class monopoly_controller implements Initializable {
 
 	private static final String COMMA_DELIMITER = ",";
 	private static int users = 4;
-	private static Player[] players = new Player[users];
+	public static Player[] players = new Player[users];
 	public static Board board;
 	private static int playerTurn = 0;
 
