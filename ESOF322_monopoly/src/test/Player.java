@@ -32,25 +32,17 @@ public class Player {
      *
      * @param toke -> name of token entered by user (make picture on board)
      */
-    public Player(String name, String token) {
+    public Player(String name, String token, int player_num) {
         this.name = name;
         this.token = token;
+        this.player_num = player_num;
     }
 
     /*
      * randomly generates two numbers between 1-6 to represent dice, sets the sum of
      * the dice, and returns images of the two dices sides that were rolled
      */
-    public int[] roll_dice() {
-        // randomize dice throw and display image of side of each dice that was rolled
-        Random rand = new Random();
-        dice[0] = rand.nextInt(6) + 1;
-        dice[1] = rand.nextInt(6) + 1;
-        dice_sum = dice[0] + dice[1];
-        System.out.println("Dice 1 result: " + dice[0] + "\nDice 2 result: " + dice[1]);
-        System.out.println("Current money: " + money);
-        return dice;
-    }
+
 
     // If a player buys a deed through the gui this is called, otherwise auction is
     // called
@@ -85,16 +77,7 @@ public class Player {
      * @param deed -> the deed that was purchased
      *
      * @param price -> price at which they purchased the deed
-     */
-    public void buy_auction(Deed deed, int price) {
-        deeds.add(deed);
-        money -= price;
-        deed.owner = this;
-        if (deed.deed_type.equals("railroad"))
-            railroad_count++;
-        if (deed.deed_type.equals("utility"))
-            utilities_count++;
-    }
+*/
 
     /*
      * Moves players token based on dice roll and current position, and returns $200
@@ -130,13 +113,7 @@ public class Player {
         in_jail = true;
     }
 
-    public void pay_bail() {
-        Main.monopoly.set_message("Turn 3 in jail. You must pay $50 and roll forward.");
-        money -= 50;
-        in_jail = false;
-        turns_in_jail = 0;
-        roll_dice();
-    }
+
 
     /*
      * Logic to get out of jail
@@ -180,164 +157,7 @@ public class Player {
         }
     }
 
-    public void traded_deed(Deed deed, Player player, int price) {
 
-        switch (deed.property_group) {                                                //Logic to make whole_color_group_owned false when a user sells part of a full color group
-            case 1:
-                if (property_groups[0] == 2) {                                            //If property_groups[1] == 2 (player owns both
-                    for (int i = 0; i < deeds.size(); i++) {                                //Go through all deeds owned by the player
-                        if (deeds.get(i).property_group == 1)                            //If the deeds property group == 1
-                            deeds.get(i).whole_color_group_owned = false;        //Flip the whole_color_group_owned boolean to false
-                    }
-                }
-                property_groups[0]--;                                                    //Decrement the number of deeds the player owns in that color group
-                break;
-            case 2:
-                if (property_groups[1] == 3) {
-                    for (int i = 0; i < deeds.size(); i++) {
-                        if (deeds.get(i).property_group == 2)
-                            deeds.get(i).whole_color_group_owned = false;
-                    }
-                }
-                property_groups[1]--;
-                break;
-            case 3:
-                if (property_groups[2] == 3) {
-                    for (int i = 0; i < deeds.size(); i++) {
-                        if (deeds.get(i).property_group == 3)
-                            deeds.get(i).whole_color_group_owned = false;
-                    }
-                }
-                property_groups[2]--;
-                break;
-            case 4:
-                if (property_groups[3] == 3) {
-                    for (int i = 0; i < deeds.size(); i++) {
-                        if (deeds.get(i).property_group == 4)
-                            deeds.get(i).whole_color_group_owned = false;
-                    }
-                }
-                property_groups[3]--;
-                break;
-            case 5:
-                if (property_groups[4] == 3) {
-                    for (int i = 0; i < deeds.size(); i++) {
-                        if (deeds.get(i).property_group == 5)
-                            deeds.get(i).whole_color_group_owned = false;
-                    }
-                }
-                property_groups[4]--;
-                break;
-            case 6:
-                if (property_groups[5] == 3) {
-                    for (int i = 0; i < deeds.size(); i++) {
-                        if (deeds.get(i).property_group == 6)
-                            deeds.get(i).whole_color_group_owned = false;
-                    }
-                }
-                property_groups[5]--;
-                break;
-            case 7:
-                if (property_groups[6] == 3) {
-                    for (int i = 0; i < deeds.size(); i++) {
-                        if (deeds.get(i).property_group == 7)
-                            deeds.get(i).whole_color_group_owned = false;
-                    }
-                }
-                property_groups[6]--;
-                break;
-            case 8:
-                if (property_groups[7] == 2) {
-                    for (int i = 0; i < deeds.size(); i++) {
-                        if (deeds.get(i).property_group == 8)
-                            deeds.get(i).whole_color_group_owned = false;
-                    }
-                }
-                property_groups[7]--;
-        }
-
-
-        switch (deed.property_group) {                                                //Logic to flip whole_color_group_owned to true if a player buys a property from another player to finish color group
-            case 1:
-                player.property_groups[0]++;                                            //Increment the receiving players corresponing property_group
-                if (player.property_groups[0] == 2) {                                    //If the property_group is 2 (player owns both deeds in color group)
-                    for (int i = 0; i < deeds.size(); i++) {                            //For each deed player owns
-                        if (deeds.get(i).property_group == 1)                            //If deeds property_group == 1
-                            player.deeds.get(i).whole_color_group_owned = true;            //Flip whole_color_group_owned to true
-                    }
-                }
-                break;
-            case 2:
-                player.property_groups[1]++;
-                if (player.property_groups[1] == 3) {
-                    for (int i = 0; i < deeds.size(); i++) {
-                        if (deeds.get(i).property_group == 2)
-                            player.deeds.get(i).whole_color_group_owned = true;
-                    }
-                }
-                break;
-            case 3:
-                player.property_groups[2]++;
-                if (player.property_groups[2] == 3) {
-                    for (int i = 0; i < deeds.size(); i++) {
-                        if (deeds.get(i).property_group == 3)
-                            player.deeds.get(i).whole_color_group_owned = true;
-                    }
-                }
-                break;
-            case 4:
-                player.property_groups[3]++;
-                if (player.property_groups[3] == 3) {
-                    for (int i = 0; i < deeds.size(); i++) {
-                        if (deeds.get(i).property_group == 4)
-                            player.deeds.get(i).whole_color_group_owned = true;
-                    }
-                }
-                break;
-            case 5:
-                player.property_groups[4]++;
-                if (player.property_groups[4] == 3) {
-                    for (int i = 0; i < deeds.size(); i++) {
-                        if (deeds.get(i).property_group == 5)
-                            player.deeds.get(i).whole_color_group_owned = true;
-                    }
-                }
-                break;
-            case 6:
-                player.property_groups[5]++;
-                if (player.property_groups[5] == 3) {
-                    for (int i = 0; i < deeds.size(); i++) {
-                        if (deeds.get(i).property_group == 6)
-                            player.deeds.get(i).whole_color_group_owned = true;
-                    }
-                }
-                break;
-            case 7:
-                player.property_groups[6]++;
-                if (player.property_groups[6] == 3) {
-                    for (int i = 0; i < deeds.size(); i++) {
-                        if (deeds.get(i).property_group == 7)
-                            player.deeds.get(i).whole_color_group_owned = true;
-                    }
-                }
-                break;
-            case 8:
-                player.property_groups[7]++;
-                if (player.property_groups[7] == 2) {
-                    for (int i = 0; i < deeds.size(); i++) {
-                        if (deeds.get(i).property_group == 8)
-                            player.deeds.get(i).whole_color_group_owned = true;
-                    }
-                }
-        }
-
-        player.deeds.add(deed); // adds deed to recipients deeds
-        deeds.remove(deed); // removes deed from current players deeds
-        money += price;
-        player.money -= price;
-        System.out.println("Property has been transfered to the buyer.");
-        Main.monopoly.set_message(player.name + " Bought " + deed.name + " from " + name + " for $" + price);
-    }
 
 	/*
 	 * Creates new player object. Starts with $1500
@@ -345,11 +165,7 @@ public class Player {
 	 * @param name -> name of player entered by user
 	 *
 	 * @param toke -> name of token entered by user (make picture on board)
-	 */
-	public Player(String name, String token) {
-		this.name = name;
-		this.token = token;
-	}
+*/
 
 	/*
 	 * randomly generates two numbers between 1-6 to represent dice, sets the sum of
@@ -368,107 +184,7 @@ public class Player {
 
 	// If a player buys a deed through the gui this is called, otherwise auction is
 	// called
-	public void bought_property(Deed deed) {
-		deed.owner = this;
-		money -= deed.purchase_price;
-		deeds.add(deed);
-		if (deed.deed_type.equals("railroad"))
-			railroad_count++;
-		if (deed.deed_type.equals("utility"))
-			utilities_count++;
 
-		property_groups[deed.property_group - 1] ++;
-		if (property_groups[deed.property_group - 1] == property_totals[deed.property_group - 1]) {
-			for (int i = 0; i < deeds.size(); i++) {
-				if(deeds.get(i).property_group == 1){
-					deeds.get(i).whole_color_group_owned = true;
-				}
-			}
-		}
-		/*switch (deed.property_group) {
-		case 1:													//If deed.property_group == 1 (mediterranean / baltic)
-			property_groups[0]++;								//Increment property_group[] corresponding to it (0)
-			if (property_groups[0] == 2) {						//If property_group[0] == 2 (meaning the person owns both properties in group)
-				for (int i = 0; i < deeds.size(); i++) {		//Go through all deeds owned by user
-					if(deeds.get(i).property_group == 1){		//If a deed has the property_group == 1
-						deeds.get(i).whole_color_group_owned = true;	//Flip the whole_color_group_owned boolean
-            		}
-				}
-			}
-			break;
-		case 2:
-			property_groups[1]++;
-			if (property_groups[1] == 3) {
-				for (int i = 0; i < deeds.size(); i++) {
-					if(deeds.get(i).property_group == 2){
-						deeds.get(i).whole_color_group_owned = true;
-            		}
-				}
-			}
-			break;
-		case 3:
-			property_groups[2]++;
-			if (property_groups[2] == 3) {
-				for (int i = 0; i < deeds.size(); i++) {
-					if(deeds.get(i).property_group == 3){
-						deeds.get(i).whole_color_group_owned = true;
-            		}
-				}
-			}
-			break;
-		case 4:
-			property_groups[3]++;
-			if (property_groups[3] == 3) {
-				for (int i = 0; i < deeds.size(); i++) {
-					if(deeds.get(i).property_group == 4){
-						deeds.get(i).whole_color_group_owned = true;
-            		}
-				}
-			}
-			break;
-		case 5:
-			property_groups[4]++;
-			if (property_groups[4] == 3) {
-				for (int i = 0; i < deeds.size(); i++) {
-					if(deeds.get(i).property_group == 5){
-						deeds.get(i).whole_color_group_owned = true;
-            		}
-				}
-			}
-			break;
-		case 6:
-			property_groups[5]++;
-			if (property_groups[5] == 3) {
-				for (int i = 0; i < deeds.size(); i++) {
-					if(deeds.get(i).property_group == 6){
-						deeds.get(i).whole_color_group_owned = true;
-            		}
-				}
-			}
-			break;
-		case 7:
-			property_groups[6]++;
-			if (property_groups[6] == 3) {
-				for (int i = 0; i < deeds.size(); i++) {
-					if(deeds.get(i).property_group == 7){
-						deeds.get(i).whole_color_group_owned = true;
-            		}
-				}
-			}
-			break;
-		case 8:
-			property_groups[7]++;
-			if (property_groups[7] == 2) {
-				for (int i = 0; i < deeds.size(); i++) {
-					if(deeds.get(i).property_group == 8){
-						deeds.get(i).whole_color_group_owned = true;
-            		}
-				}
-			}
-		}*/
-		Main.monopoly.set_message(name + " bought " + deed.name);
-		Main.monopoly.enable_buttons();
-	}
 
 	/*
 	 * If player bought auction, this is used
@@ -493,31 +209,13 @@ public class Player {
 	 *
 	 * @param spaces -> dice_sum
 	 */
-	public void move() {
-		boolean passed_go = false;
-		if (position + dice_sum > 40) {
-			int overflow = (position + dice_sum) - 40;
-			position = overflow;
-			passed_go = true;
-		} else
-			position = position += dice_sum;
-		// if position 0 get passed
-		// passed_go = true;
 
-		if (passed_go == true) {
-			money += 200;
-			System.out.println("You passed go, have $200 on me!");
-		}
-	}
 
 	/**
 	 * Moves player directly to jail, and sets a boolean for whether they are in
 	 * jail to true
 	 */
-	public void move_to_jail() {
-		position = 10;
-		in_jail = true;
-	}
+
 
 	public void pay_bail(){
 		Main.monopoly.set_message("Turn 3 in jail. You must pay $50 and roll forward.");
