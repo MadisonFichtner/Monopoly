@@ -106,12 +106,12 @@ public class Board {
         // If player lands on "Income Tax", give them the option to pay $200 or %10 of
         // their net worth (without letting them calculate net worth prior to
         else if (board[position].name.equals("Income Tax")) {
-            System.out.println("You landed on Income Tax, you piece of shit have to pay 10% of your net worth, or $200. (1. 10% / 2. $200)");
+            System.out.println("You landed on Income Tax, you have to pay 10% of your net worth, or $200. (1. 10% / 2. $200)");
             Main.monopoly.set_message("You have to pay income tax.");
             // int answer = in.nextInt(); Fix this with a a prompt later
             current.pay_tax(1);
         } else if (board[position].name.equals("Luxury Tax")) {
-            System.out.println("You landed on Luxury Tax, you piece of shit have to pay $100");
+            System.out.println("You landed on Luxury Tax, you have to pay $100");
             Main.monopoly.set_message("You have to pay Luxury tax.");
             // int answer = in.nextInt(); Fix this with a a prompt later
             current.pay_tax(2);
