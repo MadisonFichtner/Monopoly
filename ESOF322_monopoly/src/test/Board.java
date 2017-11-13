@@ -57,6 +57,14 @@ public class Board {
 		} else {
 			moveToSpace(false);
 		}
+		if(current.token.equals("token1"))
+			Main.monopoly.set_message("It is " + current.name + "'s turn. (Hat) and they rolled a: " + current.dice_sum);
+		else if(current.token.equals("token2"))
+			Main.monopoly.set_message("It is " + current.name + "'s turn. (Dog) and they rolled a: " + current.dice_sum);
+		else if(current.token.equals("token3"))
+			Main.monopoly.set_message("It is " + current.name + "'s turn. (Ship) and they rolled a: " + current.dice_sum);
+		else
+			Main.monopoly.set_message("It is " + current.name + "'s turn. (Boot) and they rolled a: " + current.dice_sum);
 	}
 
 	// Move the player and deals with what happens at that space. If the player
