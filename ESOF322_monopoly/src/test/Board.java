@@ -209,8 +209,6 @@ public class Board {
 			} catch (Exception e) {
 				System.out.println("Something went wrong");
 			}
-		} else {
-			highest_bid = 50;
 		}
 	}
 
