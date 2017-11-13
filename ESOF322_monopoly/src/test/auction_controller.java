@@ -36,6 +36,31 @@ public class auction_controller implements Initializable {
 		bid_player.setItems(FXCollections.observableArrayList(players));
 		current_price.setText("The highest bid is $" + Board.highest_bid);
         
+		bid_button.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent event) {
+				Player bidder = bid_player.getValue();
+				for(int i =0; i < monopoly_controller.players.length; i++) {
+					if(monopoly_controller.players[i].name.compareTo(bidder.name) == 0) {
+						if(monopoly_controller.players[i].money > Integer.parseInt(bid_amount.getText())) {
+    						bids[i] = Integer.parseInt(bid_amount.getText());
+						} else {
+							Main.monopoly.set_message("You don't have that much money!");
+						}
+					}
+				}
+			}
+		});
+ 		
+ 		done_button.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent event) {
+				Board.gui_auction(bids, Board.highest_bid, Board.board[Board.position]);
+				Stage stage = (Stage) done_button.getScene().getWindow();
+            	stage.close();
+			}
+		});
+		
 		// Changes the way the players are displayed
      		bid_player.setConverter(new StringConverter<Player>() {
      			@Override
@@ -48,31 +73,6 @@ public class auction_controller implements Initializable {
      				throw new UnsupportedOperationException("Not supported.");
      			}
      		});
-     		
-     		bid_button.setOnAction(new EventHandler<ActionEvent>() {
-    			@Override
-    			public void handle(ActionEvent event) {
-    				Player bidder = bid_player.getValue();
-    				for(int i =0; i < monopoly_controller.players.length; i++) {
-    					if(monopoly_controller.players[i].name.compareTo(bidder.name) == 0) {
-    						if(monopoly_controller.players[i].money > Integer.parseInt(bid_amount.getText())) {
-        						bids[i] = Integer.parseInt(bid_amount.getText());
-    						} else {
-    							Main.monopoly.set_message("You don't have that much money!");
-    						}
-    					}
-    				}
-    			}
-    		});
-     		
-     		done_button.setOnAction(new EventHandler<ActionEvent>() {
-    			@Override
-    			public void handle(ActionEvent event) {
-    				Board.gui_auction(bids, Board.highest_bid, Board.board[Board.position]);
-    				Stage stage = (Stage) done_button.getScene().getWindow();
-                	stage.close();
-    			}
-    		});
      		
      		// This listener deletes any characters that get added to the amount
     		bid_amount.lengthProperty().addListener(new ChangeListener<Number>() {

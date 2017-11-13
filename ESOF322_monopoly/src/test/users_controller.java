@@ -24,9 +24,9 @@ public class users_controller implements Initializable{
             public void handle(ActionEvent event) {
             	CharSequence[] players = {player1.getCharacters(), player2.getCharacters(), player3.getCharacters(), player4.getCharacters()};
             	monopoly_controller.setPlayers(players);
+            	Main.monopoly.disable_buttons();
             	Stage stage = (Stage) done_button.getScene().getWindow();
             	stage.close();
-            	Main.monopoly.disable_buttons();
             }
 		});
 	}
