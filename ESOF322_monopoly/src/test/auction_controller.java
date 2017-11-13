@@ -42,7 +42,7 @@ public class auction_controller implements Initializable {
 				Player bidder = bid_player.getValue();
 				for(int i =0; i < monopoly_controller.players.length; i++) {
 					if(monopoly_controller.players[i].name.compareTo(bidder.name) == 0) {
-						if(monopoly_controller.players[i].money > Integer.parseInt(bid_amount.getText())) {
+						if(monopoly_controller.players[i].money >= Integer.parseInt(bid_amount.getText())) {
     						bids[i] = Integer.parseInt(bid_amount.getText());
 						} else {
 							Main.monopoly.set_message("You don't have that much money!");
