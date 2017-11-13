@@ -33,7 +33,14 @@ public class Board {
     // moveToSpace()
     public void start_turn(Player player) {
         current = player;
-        Main.monopoly.set_message("It is " + current.name + "'s turn.");
+        if(current.token.equals("token1"))
+        	Main.monopoly.set_message("It is " + current.name + "'s turn. (Hat)");
+        else if(current.token.equals("token2"))
+        	Main.monopoly.set_message("It is " + current.name + "'s turn. (Dog)");
+        else if(current.token.equals("token3"))
+        	Main.monopoly.set_message("It is " + current.name + "'s turn. (Ship)");
+        else
+        	Main.monopoly.set_message("It is " + current.name + "'s turn. (Boot)");
         position = current.position;
         is_free_parking = false;// Is true of player lands on GO, Jail, or Free Parking
         double_roll_counter = 0; // Keeps track of how many times player has rolled doubles
