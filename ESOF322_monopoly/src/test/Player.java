@@ -23,7 +23,7 @@ public class Player {
     public int turns_in_jail = 0;
     public boolean is_interested = true;
     public int overall_net_worth = money;
-    public int[] property_totals = {2, 3, 3, 3, 3, 3, 3, 2};
+    public int[] property_totals = {0, 0, 0, 1, 1, 1, 1, 1}; // {2, 3, 3, 3, 3, 3, 3, 2};
     public int[] property_groups = new int[8];
     public int player_num = 0;
 
@@ -62,6 +62,7 @@ public class Player {
                 if (property_groups[deed.property_group - 1] == property_totals[deed.property_group - 1]) {
                     for (int i = 0; i < deeds.size(); i++) {
                         if (deeds.get(i).property_group == 1) {
+                            deed.whole_color_group_owned = true;
                             deeds.get(i).whole_color_group_owned = true;
                         }
                     }
