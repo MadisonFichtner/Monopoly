@@ -34,7 +34,7 @@ public class auction_controller implements Initializable {
     	int[] bids = Board.bids;
     	ArrayList<Player> players = new ArrayList<Player>(Arrays.asList(monopoly_controller.players));
 		bid_player.setItems(FXCollections.observableArrayList(players));
-		current_price.setText("The highest bid is $" + Board.highest_bid);
+		current_price.setText("The highest bid for " + Board.board[Board.position].name + " $" + Board.highest_bid);
         
 		// Changes the way the players are displayed
      		bid_player.setConverter(new StringConverter<Player>() {
