@@ -9,6 +9,7 @@ import javafx.event.EventHandler;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
+import javafx.stage.Stage;
 import javafx.stage.Window;
 import javafx.util.StringConverter;
 
@@ -22,9 +23,9 @@ public class house_controller implements Initializable {
 		done_button.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
-				Window this_window = done_button.getScene().getWindow();
-            	this_window.hide();
 				Board.current.bought_house(deed_box.getValue(), 1);
+				Stage stage = (Stage) done_button.getScene().getWindow();
+            	stage.close();
 			}
 		});
 

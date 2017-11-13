@@ -6,6 +6,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.stage.Stage;
 import javafx.stage.Window;
 
 import java.net.URL;
@@ -26,9 +27,9 @@ public class purchase_controller implements Initializable {
             @Override
             public void handle(ActionEvent event) {
 //                PLAYER HAS CHOSEN TO BUY THE PROPERTY
-            	Window this_window = yes_button.getScene().getWindow();
-            	this_window.hide();
             	Board.current.bought_property(deed);
+            	Stage stage = (Stage) yes_button.getScene().getWindow();
+            	stage.close();
             }
         });
 
@@ -36,9 +37,9 @@ public class purchase_controller implements Initializable {
             @Override
             public void handle(ActionEvent event) {
 //                PLAYER HAS CHOSEN NOT TO BUY THE PROPERTY
-            	Window this_window = no_button.getScene().getWindow();
-            	this_window.hide();
             	Board.auctionProperty();
+            	Stage stage = (Stage) yes_button.getScene().getWindow();
+            	stage.close();
             }
         });
         

@@ -24,6 +24,7 @@ public class Deed {
 	public Player owner = null;
 	public boolean whole_color_group_owned = false;
 	public boolean mortgaged = false;
+	public int current_rent = 0;
 
 	/*
 	 * Creates new deed, initially the owner, whole_group_owned, and mortgaged will
@@ -60,8 +61,6 @@ public class Deed {
 		this.rent_hotel = rent_hotel;
 		this.build_cost = build_cost;
 		this.deed_type = deed_type;
-		this.current_houses = 0; // initially has no houses/hotel
-		this.has_hotel = false;
 	}
 
 	/*
@@ -124,6 +123,7 @@ public class Deed {
 		}
 		if (whole_color_group_owned == true)
 			new_rent = new_rent * 2;
+		current_rent = new_rent;
 		return new_rent;
 	}
 
