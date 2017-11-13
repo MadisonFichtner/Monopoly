@@ -54,6 +54,8 @@ public class Board {
 					System.out.println("Something went wrong");
 				}
 			}
+		} else {
+			moveToSpace(false);
 		}
 	}
 
@@ -74,6 +76,7 @@ public class Board {
 			} else // If doubles are not rolled
 			{
 				Main.monopoly.set_message("You did not roll doubles...");
+				Main.monopoly.enable_buttons();
 				return;
 			}
 		} else {

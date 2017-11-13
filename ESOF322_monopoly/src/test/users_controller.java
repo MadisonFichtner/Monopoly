@@ -26,7 +26,7 @@ public class users_controller implements Initializable{
             	monopoly_controller.setPlayers(players);
             	Stage stage = (Stage) done_button.getScene().getWindow();
             	stage.close();
-            	monopoly_controller.takeTurn();
+            	Main.monopoly.disable_buttons();
             }
 		});
 	}

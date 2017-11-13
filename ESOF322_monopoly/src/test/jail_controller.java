@@ -19,8 +19,10 @@ public class jail_controller implements Initializable {
 		roll_button.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
+				System.out.println("test");
 				Board.current.roll_dice();
 				Board.moveToSpace(true);
+				System.out.println("test");
 				Stage stage = (Stage) roll_button.getScene().getWindow();
             	stage.close();
 			}
@@ -30,7 +32,7 @@ public class jail_controller implements Initializable {
 			@Override
 			public void handle(ActionEvent event) {
 				Board.current.in_jail = false;
-				Board.moveToSpace(true);
+				Main.monopoly.enable_buttons();
 				Stage stage = (Stage) roll_button.getScene().getWindow();
             	stage.close();
 			}

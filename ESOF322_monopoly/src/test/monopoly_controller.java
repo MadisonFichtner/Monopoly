@@ -137,26 +137,10 @@ public class monopoly_controller implements Initializable {
         roll_button.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                Window this_window = roll_button.getScene().getWindow();
-                Board.moveToSpace(false);
+            	disable_buttons();
+                takeTurn();
             }
         });
-//
-//		trade_button.setOnAction(new EventHandler<ActionEvent>() {
-//			@Override
-//			public void handle(ActionEvent event) {
-//				trade_window();
-//				// TRADE BUTTON IN PRESSED
-//			}
-//		});
-//
-//		mortgage_button.setOnAction(new EventHandler<ActionEvent>() {
-//			@Override
-//			public void handle(ActionEvent event) {
-//				mortgage_window();
-//				// MORTGAGE BUTTON IS PRESSED
-//			}
-//		});
     }
 
     // Opens the UI for inputing player names
@@ -198,9 +182,9 @@ public class monopoly_controller implements Initializable {
     public void nextTurn() {
         disable_buttons();
         playerTurn++;
-        if (playerTurn == players.length)
-            playerTurn = 0;
-        takeTurn();
+        if(playerTurn == users) {
+        	playerTurn = 0;
+        }
     }
 
     public void disable_buttons() {
