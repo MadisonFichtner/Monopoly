@@ -156,22 +156,45 @@ public class monopoly_controller implements Initializable {
         }
     }
 
+    //MAKE RECEIVE MONOPOLY BOARD OR MSU BOARD
+    //USE APPROPRIATE BOARD.JPG, DEEDS.CSV AND CARDS.CSV
     //is called by users.fxml
     public static void setPlayers(CharSequence[] users) {
         Deed[] deeds = new Deed[40];
+        Card[] communityChest = new Card[16];
+        Card[] chance = new Card[15];
 
-        String fileName = "test.csv"; // just a sample file name
-        File csvFile = new File(fileName);
+        String deedsFileName = "monopolyDeeds.csv"; // just a sample file name
+        File csvDeedsFile = new File(deedsFileName);
         try {
-            deeds = parse_CSV(csvFile);
+            deeds = parse_deeds_CSV(csvDeedsFile);
         } catch (FileNotFoundException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
+        }
+        
+        String communityFileName = "monopolyChestCards.csv";
+        File csvCommunityFile = new File(communityFileName);
+        
+        try {
+        	communityChest = parse_community_CSV(csvCommunityFile);
+        } catch (FileNotFoundException e) {
+        	e.printStackTrace();
+        }
+        
+        String chanceFileName = "monopolyChanceCards.csv";
+        File csvChanceFile = new File(chanceFileName);
+        try {
+        	chance = parse_chance_CSV(csvChanceFile);
+        } catch (FileNotFoundException e) {
+        	e.printStackTrace();
         }
 
         for (int i = 0; i < users.length; i++) {
             players[i] = new Player(users[i].toString(), "token" + 1, i);
         }
+        
+        //board = new Board(players, deeds, communityChest, chance)
         board = new Board(players, deeds);
     }
 
@@ -208,7 +231,7 @@ public class monopoly_controller implements Initializable {
     /*
      * Parses the inputted .csv file to populate the game board with deeds
      */
-    public static Deed[] parse_CSV(File csv_file) throws FileNotFoundException {
+    public static Deed[] parse_deeds_CSV(File csv_file) throws FileNotFoundException {
         Deed[] deeds = new Deed[40];
         Scanner in = new Scanner(csv_file);
         in.useDelimiter(COMMA_DELIMITER);
@@ -235,7 +258,35 @@ public class monopoly_controller implements Initializable {
         // populate deeds giving csv_file
         return deeds;
     }
-
+    
+    public static Card[] parse_community_CSV(File csv_file) throws FileNotFoundException {
+    	Card[] community = new Card[16];
+    	Scanner in = new Scanner(csv_file);
+    	in.useDelimiter(COMMA_DELIMITER);
+    	for(int i = 0; i < 16; i++) {
+    		String name = in.next();
+    		int type = in.nextInt();
+    		boolean isUsable = in.nextBoolean();
+    		System.out.println("");
+    		community[i] = new Card(name, type, isUsable);	
+    	}
+    	return community;
+    }
+    
+    public static Card[] parse_chance_CSV(File csv_file) throws FileNotFoundException {
+    	Card[] chance = new Card[15];
+    	Scanner in = new Scanner(csv_file);
+    	in.useDelimiter(COMMA_DELIMITER);
+    	for(int i = 0; i < 15; i++) {
+    		String name = in.next();
+    		int type = in.nextInt();
+    		boolean isUsable = in.nextBoolean();
+    		
+    		chance[i] = new Card(name, type, isUsable);
+    	}
+    	return chance;
+    }
+    
     public void set_message(String string) {
         message.setText(string);
     }
