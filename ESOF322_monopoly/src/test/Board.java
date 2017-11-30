@@ -5,6 +5,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 
 public class Board {
@@ -13,6 +14,8 @@ public class Board {
     public int numHousesRemaining;
 
     public static Deed[] board = new Deed[40];
+    public static ArrayList<Card> communityChest = new ArrayList<Card>();
+    public static ArrayList<Card> chance = new ArrayList<Card>();
     public static Player current;
     public static int position;
     public static int[] bids = {0, 0, 0, 0};
@@ -20,11 +23,15 @@ public class Board {
     private static boolean is_free_parking;// Is true of player lands on GO, Jail, or Free Parking
     private static int double_roll_counter; // Keeps track of how many times player has rolled doubles
     private static boolean was_in_jail;
+    private static Player[] users;
 
-    public Board(Player[] users, Deed[] new_board) {
+    public Board(Player[] users, Deed[] new_board, ArrayList<Card> communityChest, ArrayList<Card> chance) {
         this.numHotelsRemaining = 12;
         this.numHousesRemaining = 32;
         board = new_board;
+        this.users = users;
+        this.communityChest = communityChest;
+        this.chance = chance;
     }
 
     // Reset all the variables for a players turn and gives them the option to roll
@@ -116,6 +123,25 @@ public class Board {
             // int answer = in.nextInt(); Fix this with a a prompt later
             current.pay_tax(2);
         }
+        
+        
+        
+        
+        //Handles if they land on community chest or chance
+        else if(board[current.position].name.equals("Community Chest")) {
+        	Main.monopoly.set_message("You landed on the Community Chest! Drawing and playing a card.");
+        	current.communityChest(chance.get(0), users, board);
+        }
+        else if(board[current.position].name.equals("Chance")) {
+        	Main.monopoly.set_message("You landed on Chance! Drawing and playing a card.");
+        	current.chance(chance.get(0), users, board);
+        }
+        
+        
+        
+        
+        
+        
         // If player lands on property owned by somebody else, they pay rent
         else if (board[current.position].owner != null) {
             Deed deed = board[current.position];
@@ -129,7 +155,7 @@ public class Board {
                 try {
                     Parent root = FXMLLoader.load(Board.class.getResource("purchase.fxml"));
                     Stage trade_stage = new Stage();
-                    trade_stage.setTitle("purchase");
+                    trade_stage.setTitle("Purchase");
                     trade_stage.setScene(new Scene(root));
                     trade_stage.show();
                 } catch (Exception e) {
@@ -143,6 +169,7 @@ public class Board {
             // bought = current.buy_property(deed);
 
         }
+        
         check_for_doubles();
     }
 

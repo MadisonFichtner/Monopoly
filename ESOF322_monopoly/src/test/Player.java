@@ -26,6 +26,9 @@ public class Player {
     public int[] property_totals = {0, 0, 0, 1, 1, 1, 1, 1}; // {2, 3, 3, 3, 3, 3, 3, 2};
     public int[] property_groups = new int[8];
     public int player_num = 0;
+    public int getOutOfJail = 0;
+    public int currentHouses = 0;
+    public int currentHotels = 0;
 
     /*
      * Creates new player object. Starts with $1500
@@ -39,12 +42,6 @@ public class Player {
         this.token = token;
         this.player_num = player_num;
     }
-
-    /*
-     * randomly generates two numbers between 1-6 to represent dice, sets the sum of
-     * the dice, and returns images of the two dices sides that were rolled
-     */
-
 
     // If a player buys a deed through the gui this is called, otherwise auction is
     // called
@@ -387,6 +384,7 @@ public class Player {
             Main.monopoly.set_message("You already have 4 houses on this property, build a hotel.");
         } else if (deed.max_houses == false && deed.deed_type.equals("street")
                 && deed.whole_color_group_owned == true) {
+        	currentHouses += houses;
             deed.current_houses += houses;
             money -= deed.build_cost * houses;
             if (deed.current_houses == 4)
@@ -398,6 +396,8 @@ public class Player {
     }
 
     public void bought_hotel(Deed deed) {
+    	currentHotels++;
+    	currentHouses -= 4;
         deed.has_hotel = true;
         deed.current_houses = 0;
         deed.max_houses = false;
@@ -405,5 +405,192 @@ public class Player {
         Main.monopoly.set_message("You purchased a hotel on " + deed.name + " for $" + deed.build_cost);
         System.out.println("Remaining money = " + money);
     }
+    
+    //Handles when a player lands on Community Chest
+    public void communityChest(Card card, Player[] users, Deed[] board) {
+    	if (card.name.equals("Get Out of Jail Free")) {
+    		getOutOfJail++;
+    	}
+    	else
+    		useCard(card, users, board);
+    }
+    
+    //Handles when a player lands on Chance
+    public void chance(Card card, Player[] users, Deed[] board) {
+    	if (card.name.equals("Get Out of Jail Free")) {
+    		getOutOfJail++;
+    	}
+    	else
+    		useCard(card, users, board);
+    }
 
+    //List out all possiblities, check csv to see numbers associated with each card
+    public void useCard(Card card, Player[] users, Deed[] board) {
+    	switch(card.type){
+    		case 0: //Advance to go
+    			position = 0;
+    			money += 200;
+    			Main.monopoly.move_token(player_num, position);
+    			Main.monopoly.set_message("You drew: Advance to Go, collect $200");
+    			break;
+    		case 1: //bank error - collect 200
+    			Main.monopoly.set_message("You drew: Bank error - collect $200");
+    			break;
+    		case 2: //doctor's fee - pay 50
+    			Main.monopoly.set_message("You drew: Doctor's fee - pay $50");
+    			money -= 50;
+    			break;
+    		case 3: //from sale of stock - get 50
+    			Main.monopoly.set_message("You drew: From sale of stock you get $50");
+    			money += 50;
+    			break;
+    		case 4: //get out of jail card
+    			Main.monopoly.set_message("You drew: Get out of Jail, Free");
+    			break;
+    		case 5:	//Go to jail - do not collect 200 if pass go
+    			Main.monopoly.set_message("You drew: Go to Jail - do not collect Go");
+    			in_jail = true;
+    			position = 10;
+    			break;
+    		case 6: //Grand Opera night - collect 50 from all players
+    			Main.monopoly.set_message("You drew: Grand Opera Night - collect $50 from everyone else");
+    			for(int i = 0; i < 4; i++) {
+    				if(users[i] != this) {
+    					users[i].money -= 50;
+    					money += 50;
+    				}
+    			}
+    			break;
+    		case 7: //Holiday fund - receive 100
+    			Main.monopoly.set_message("You drew: Holiday fund - receive $100");
+    			money += 100;
+    			break;
+    		case 8: //Income tax refund - collect 20
+    			Main.monopoly.set_message("You drew: Income tax refund - collect $20");
+    			money += 20;
+    			break;
+    		case 9:	//life insurance - collect 100
+    			Main.monopoly.set_message("You drew: Life insurance matures - collect $100");
+    			money += 100;
+    			break;
+    		case 10: //pay hospital fees - pay 100
+    			Main.monopoly.set_message("You drew: Pay hospital fees - pay $100");
+    			money -= 100;
+    			break;
+    		case 11: //pay school fees of 150
+    			Main.monopoly.set_message("You drew: Pay school fees - pay $150");
+    			money -= 150;
+    			break;
+    		case 12: //Receive consultancy fee - collect 25
+    			Main.monopoly.set_message("You drew: Receive consultancy fee - collect $25");
+    			money += 25;
+    			break;
+    		case 13: //street repairs - pay 40 per house and 115 per hotel
+    			Main.monopoly.set_message("You drew: Street repairs - pay $40 per house and $115 per hotel");
+    			int total = 0;
+    			int housesTotal = currentHouses * 40;
+    			int hotelsTotal = currentHotels * 115;
+    			total = housesTotal + hotelsTotal;
+    			money -= total;
+    			Main.monopoly.set_message("You paid: " + total + " for street repairs");
+    			break;
+    		case 14: //2nd place in beauty contest - collect 10
+    			Main.monopoly.set_message("You drew: Won second prize in a beauty contest - collect $10");
+    			money += 10;
+    			break;
+    		case 15: //inherit 100
+    			Main.monopoly.set_message("You drew: You inherit $100");
+    			money += 100;
+    			break;
+    		case 16: //Advance to Illinois Ave. or Duck Pond (24) - If you pass Go - collect $200
+    			Main.monopoly.set_message("You drew: Advance to " + board[24].name + " - If you pass Go - collect $200");
+    			if(position >= 24) {
+    				money += 200;
+    				Main.monopoly.set_message("You passed Go. Collect $200");
+    			}
+    			position = 24;
+    			Main.monopoly.move_token(player_num, position);
+    			break;
+    		case 17: //Advance to St. Charles Place or Howard (11) - if you pass Go - collect $200
+    			Main.monopoly.set_message("You drew: Advance to " + board[11].name + " - If you pass Go - collect $200");
+    			if(position >= 11) {
+    				money += 200;
+    				Main.monopoly.set_message("You passed Go. Collect $200");
+    			}
+    			position = 11;
+    			Main.monopoly.move_token(player_num, position);
+    			break;
+    		case 18: //Advance token to nearest Utility. If unowned - you may buy it. If owned - throw dice and pay owner a totel ten times the amount thrown.
+    			Main.monopoly.set_message("You drew: Advance to the next utility. If unowned - you may buy it. If owned - throw dice and pay owner a total ten times the amount thrown");
+    			if(position < 12 || position > 28) {
+    				position = 12;	//TODO
+    			}
+    			else {
+    				position = 28;	//TODO
+    			}
+    			break;
+    		case 19: //Advance token to nearest Railroad and pay owner twice the rental. If unowned - you may buy it.
+    			Main.monopoly.set_message("You drew: Advance to the next Railroad or Street. If unowned - you may buy it. If owned - pay owner twice the rental price");
+    			if(position < 5 || position >= 35)
+    				position = 5;
+    			else if(position < 15)
+    				position = 15;
+    			else if(position < 25)
+    				position = 25;
+    			else if(position < 35)
+    				position = 35;
+    			break;
+    		case 20: //Bank pays you dividend of $50
+    			Main.monopoly.set_message("You drew: Bank pays you dividend of $50");
+    			money += 50;
+    			break;
+    		case 21: //Go Back 3 Spaces
+    			Main.monopoly.set_message("You drew: Go back 3 spaces");
+    			if(position - 3 < 0) {
+    				int overflow = position - 3;
+    				overflow = overflow * (-1);
+    				position = 40 - overflow;
+    			}
+    			else
+    				position -= 3;
+    			break;
+    		case 22: //Make general repairs on all your property - For each house pay $25 - For each hotel $100
+    			Main.monopoly.set_message("You drew: Make general repairs on all your property - for each house pay $25 and for each hotel pay $100");
+    			total = 0;
+    			housesTotal = currentHouses * 25;
+    			hotelsTotal = currentHotels * 100;
+    			total = housesTotal + hotelsTotal;
+    			money -= total;
+    			Main.monopoly.set_message("You paid: " + total + " for general repairs");
+    			break;
+    		case 23: //Pay poor tax of $15
+    			Main.monopoly.set_message("You drew: Pay poor tax of $15");
+    			money -= 15;
+    			break;
+    		case 24: //Take a trip to Reading Railroad or Grant Street (5) - If you pass Go - collect $200
+    			Main.monopoly.set_message("You drew: Take a trip to " + board[5].name + " - If you pass GO - collect $200");
+    			if(position >= 5) {
+    				money += 200;
+    				Main.monopoly.set_message("You passed Go. Collect $200");
+    			}
+    			position = 5;
+    			Main.monopoly.move_token(player_num, position);
+    			break;
+    		case 25: //Take a walk on the Boardwalk or Montana Hall - Advance token to Boardwalk (39)
+    			Main.monopoly.set_message("You drew: take a walk to " + board[39].name);
+    			position = 39;
+    			Main.monopoly.move_token(player_num, position);
+    			break;
+    		case 26: //You have been elected Chairman of the Board - Pay each player $50
+    			Main.monopoly.set_message("You drew: You have been elected Chairman of the Board - pay each player $50");
+    			for(int i = 0; i < 4; i++) {
+    				if(users[i] != this){
+    					users[i].money += 50;
+    					money -= 50;
+    				}
+    			}
+    			break;
+    			
+    	}
+    }
 }

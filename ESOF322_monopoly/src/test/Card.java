@@ -5,9 +5,10 @@ public class Card {
 	public int type;
 	public boolean isUsable;
 	
-	public Card(String name, int type, boolean isUsable) {
+	public Card(String name, int type) {
 		this.name = name;
 		this.type = type;
-		this.isUsable = isUsable;
+		if(name.equals("Get Out of Jail Free"))
+			isUsable = true;
 	}
 }

@@ -17,6 +17,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.ResourceBundle;
 import java.util.Scanner;
 
@@ -161,8 +162,10 @@ public class monopoly_controller implements Initializable {
     //is called by users.fxml
     public static void setPlayers(CharSequence[] users) {
         Deed[] deeds = new Deed[40];
-        Card[] communityChest = new Card[16];
-        Card[] chance = new Card[15];
+        //Card[] communityChest = new Card[16];
+        //Card[] chance = new Card[15];
+        ArrayList<Card> communityChest = new ArrayList<Card>();
+        ArrayList<Card> chance = new ArrayList<Card>();
 
         String deedsFileName = "monopolyDeeds.csv"; // just a sample file name
         File csvDeedsFile = new File(deedsFileName);
@@ -175,7 +178,6 @@ public class monopoly_controller implements Initializable {
         
         String communityFileName = "monopolyChestCards.csv";
         File csvCommunityFile = new File(communityFileName);
-        
         try {
         	communityChest = parse_community_CSV(csvCommunityFile);
         } catch (FileNotFoundException e) {
@@ -194,8 +196,12 @@ public class monopoly_controller implements Initializable {
             players[i] = new Player(users[i].toString(), "token" + 1, i);
         }
         
-        //board = new Board(players, deeds, communityChest, chance)
-        board = new Board(players, deeds);
+        //Randomizing cards
+        Collections.shuffle(communityChest);
+        Collections.shuffle(chance);
+        
+        //Board now takes in the communityChest and chance cards
+        board = new Board(players, deeds, communityChest, chance);
     }
 
     public static void takeTurn() {
@@ -259,30 +265,34 @@ public class monopoly_controller implements Initializable {
         return deeds;
     }
     
-    public static Card[] parse_community_CSV(File csv_file) throws FileNotFoundException {
-    	Card[] community = new Card[16];
+    public static ArrayList<Card> parse_community_CSV(File csv_file) throws FileNotFoundException {
+    	//Card[] community = new Card[16];
+        ArrayList<Card> community = new ArrayList<Card>();
     	Scanner in = new Scanner(csv_file);
     	in.useDelimiter(COMMA_DELIMITER);
     	for(int i = 0; i < 16; i++) {
     		String name = in.next();
     		int type = in.nextInt();
-    		boolean isUsable = in.nextBoolean();
-    		System.out.println("");
-    		community[i] = new Card(name, type, isUsable);	
+    		in.next();
+    		
+    		Card card = new Card(name, type);	
+    		community.add(card);
     	}
     	return community;
     }
     
-    public static Card[] parse_chance_CSV(File csv_file) throws FileNotFoundException {
-    	Card[] chance = new Card[15];
+    public static ArrayList<Card> parse_chance_CSV(File csv_file) throws FileNotFoundException {
+    	//Card[] chance = new Card[15];
+        ArrayList<Card> chance = new ArrayList<Card>();
     	Scanner in = new Scanner(csv_file);
     	in.useDelimiter(COMMA_DELIMITER);
     	for(int i = 0; i < 15; i++) {
     		String name = in.next();
     		int type = in.nextInt();
-    		boolean isUsable = in.nextBoolean();
+    		in.next();
     		
-    		chance[i] = new Card(name, type, isUsable);
+    		Card card = new Card(name, type);
+    		chance.add(card);
     	}
     	return chance;
     }
