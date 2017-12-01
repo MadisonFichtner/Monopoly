@@ -114,12 +114,12 @@ public class Board {
         // their net worth (without letting them calculate net worth prior to
         else if (board[position].name.equals("Income Tax")) {
             System.out.println("You landed on Income Tax, you have to pay 10% of your net worth, or $200. (1. 10% / 2. $200)");
-            Main.monopoly.set_message("You have to pay income tax.");
+            Main.monopoly.set_message("You have to pay income tax, and now have $" + current.money);
             // int answer = in.nextInt(); Fix this with a a prompt later
             current.pay_tax(1);
         } else if (board[position].name.equals("Luxury Tax")) {
             System.out.println("You landed on Luxury Tax, you have to pay $100");
-            Main.monopoly.set_message("You have to pay Luxury tax.");
+            Main.monopoly.set_message("You have to pay Luxury tax, and now have $" + current.money);
             // int answer = in.nextInt(); Fix this with a a prompt later
             current.pay_tax(2);
         }
@@ -200,8 +200,10 @@ public class Board {
         // Doubles were rolled, does the same thing as above, just repeats if doubles
         // are rolled
         if (was_in_jail == false && current.dice[0] == current.dice[1]) {
+        	Main.monopoly.set_message("You rolled doubles. Rolling again.");
             double_roll_counter++;
             if (double_roll_counter == 2) { // if doubles have been rolled twice, go to jail
+            	Main.monopoly.set_message("You rolled doubles. Twice. Go to jail. Now.");
                 current.move_to_jail();
             } else {
                 moveToSpace(false);

@@ -162,12 +162,11 @@ public class monopoly_controller implements Initializable {
     //is called by users.fxml
     public static void setPlayers(CharSequence[] users) {
         Deed[] deeds = new Deed[40];
-        //Card[] communityChest = new Card[16];
-        //Card[] chance = new Card[15];
         ArrayList<Card> communityChest = new ArrayList<Card>();
         ArrayList<Card> chance = new ArrayList<Card>();
 
-        String deedsFileName = "monopolyDeeds.csv"; // just a sample file name
+        //String deedsFileName = "monopolyDeeds.csv";
+        String deedsFileName = "MSUdeeds.csv"; // just a sample file name
         File csvDeedsFile = new File(deedsFileName);
         try {
             deeds = parse_deeds_CSV(csvDeedsFile);
@@ -176,7 +175,8 @@ public class monopoly_controller implements Initializable {
             e.printStackTrace();
         }
         
-        String communityFileName = "monopolyChestCards.csv";
+        //String communityFileName = "monopolyChestCards.csv";
+        String communityFileName = "MSUChestCards.csv";
         File csvCommunityFile = new File(communityFileName);
         try {
         	communityChest = parse_community_CSV(csvCommunityFile);
@@ -184,7 +184,8 @@ public class monopoly_controller implements Initializable {
         	e.printStackTrace();
         }
         
-        String chanceFileName = "monopolyChanceCards.csv";
+        //String chanceFileName = "monopolyChanceCards.csv";
+        String chanceFileName = "MSUChanceCards.csv";
         File csvChanceFile = new File(chanceFileName);
         try {
         	chance = parse_chance_CSV(csvChanceFile);

@@ -67,7 +67,7 @@ public class Player {
             }
         }
 
-        Main.monopoly.set_message(name + " bought " + deed.name);
+        Main.monopoly.set_message(name + " bought " + deed.name + " and has now currently has $" + money);
         Main.monopoly.enable_buttons();
     }
 
@@ -311,7 +311,7 @@ public class Player {
             receiving_player.money += deed.calculate_rent();
             System.out.println(receiving_player.name + " recieved $" + deed.calculate_rent() + " in rent.");
             Main.monopoly.set_message(name + " pays $" + deed.calculate_rent() + " in rent to " + receiving_player.name
-                    + " for " + deed.name);
+                    + " for " + deed.name + " and now has $" + money);
         }
     }
 
@@ -522,23 +522,19 @@ public class Player {
     			break;
     		case 18: //Advance token to nearest Utility. If unowned - you may buy it. If owned - throw dice and pay owner a totel ten times the amount thrown.
     			Main.monopoly.set_message("You drew: Advance to the next utility. If unowned - you may buy it. If owned - throw dice and pay owner a total ten times the amount thrown");
-    			if(position < 12 || position > 28) {
+    			if(position == 7) 
     				position = 12;	//TODO
-    			}
-    			else {
+    			else 
     				position = 28;	//TODO
-    			}
+    			Main.monopoly.move_token(player_num, position);
     			break;
     		case 19: //Advance token to nearest Railroad and pay owner twice the rental. If unowned - you may buy it.
     			Main.monopoly.set_message("You drew: Advance to the next Railroad or Street. If unowned - you may buy it. If owned - pay owner twice the rental price");
-    			if(position < 5 || position >= 35)
-    				position = 5;
-    			else if(position < 15)
+    			if(position == 7)
     				position = 15;
-    			else if(position < 25)
+    			else
     				position = 25;
-    			else if(position < 35)
-    				position = 35;
+    			Main.monopoly.move_token(player_num, position);
     			break;
     		case 20: //Bank pays you dividend of $50
     			Main.monopoly.set_message("You drew: Bank pays you dividend of $50");
