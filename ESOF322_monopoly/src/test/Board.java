@@ -134,7 +134,11 @@ public class Board {
         }
         else if(board[current.position].name.equals("Chance")) {
         	Main.monopoly.set_message("You landed on Chance! Drawing and playing a card.");
-        	current.chance(chance.get(0), users, board);
+        	int case18case19 = 0;
+        	case18case19 = current.chance(chance.get(0), users, board);
+        	if(case18case19 != 0) {
+        		twoCases(case18case19);
+        	}
         }
         
         
@@ -261,4 +265,49 @@ public class Board {
         return monopoly_controller.players[high_player];
     }
 
+    public static void twoCases(int whichCase) {
+    	if(whichCase == 18) {
+	    	if (board[current.position].owner == null) {// && is_free_parking == false)
+	            if (current.money > board[current.position].purchase_price) {
+	                try {
+	                    Parent root = FXMLLoader.load(Board.class.getResource("purchase.fxml"));
+	                    Stage trade_stage = new Stage();
+	                    trade_stage.setTitle("Purchase");
+	                    trade_stage.setScene(new Scene(root));
+	                    trade_stage.show();
+	                } catch (Exception e) {
+	                    System.out.println("Something went wrong");
+	                }
+	            } else {
+	                auctionProperty();
+	            }
+	    	}
+	    	else if (board[current.position].owner != null) {
+	            Deed deed = board[current.position];
+	            current.pay_rent(deed);
+	        }
+    	}
+    	
+    	else if(whichCase == 19) {
+	    	if (board[current.position].owner == null) {// && is_free_parking == false)
+	            if (current.money > board[current.position].purchase_price) {
+	                try {
+	                    Parent root = FXMLLoader.load(Board.class.getResource("purchase.fxml"));
+	                    Stage trade_stage = new Stage();
+	                    trade_stage.setTitle("Purchase");
+	                    trade_stage.setScene(new Scene(root));
+	                    trade_stage.show();
+	                } catch (Exception e) {
+	                    System.out.println("Something went wrong");
+	                }
+	            } else {
+	                auctionProperty();
+	            }
+	    	}
+	    	else if (board[current.position].owner != null) {
+	            Deed deed = board[current.position];
+	            current.pay_rent(deed);
+	        }
+    	}
+    }
 }

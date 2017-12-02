@@ -164,8 +164,10 @@ public class monopoly_controller implements Initializable {
         Deed[] deeds = new Deed[40];
         ArrayList<Card> communityChest = new ArrayList<Card>();
         ArrayList<Card> chance = new ArrayList<Card>();
-
-        //String deedsFileName = "monopolyDeeds.csv";
+        
+        //if(users choice == monopoly)
+        	//String deedsFileName = "monopolyDeeds.csv";
+        //else
         String deedsFileName = "MSUdeeds.csv"; // just a sample file name
         File csvDeedsFile = new File(deedsFileName);
         try {
@@ -175,7 +177,9 @@ public class monopoly_controller implements Initializable {
             e.printStackTrace();
         }
         
-        //String communityFileName = "monopolyChestCards.csv";
+        //if(users choice == monopoly)
+        	//String communityFileName = "monopolyChestCards.csv";
+        //else
         String communityFileName = "MSUChestCards.csv";
         File csvCommunityFile = new File(communityFileName);
         try {
@@ -184,7 +188,9 @@ public class monopoly_controller implements Initializable {
         	e.printStackTrace();
         }
         
-        //String chanceFileName = "monopolyChanceCards.csv";
+        //if(users choice == monopoly)
+        	//String chanceFileName = "monopolyChanceCards.csv";
+        //else
         String chanceFileName = "MSUChanceCards.csv";
         File csvChanceFile = new File(chanceFileName);
         try {

@@ -314,6 +314,45 @@ public class Player {
                     + " for " + deed.name + " and now has $" + money);
         }
     }
+    
+    /*
+     * Pay rent for case 18/19
+     */
+    public void pay_rent(Deed deed, int whichCase) {
+    	int owed = 0;
+    	int[] dice = new int[2];
+    	dice = roll_dice();
+    	if(whichCase == 18)				//roll dice and pay 10*dicesum if case is 18
+    		owed = dice_sum * 10;
+    	else if(whichCase == 19)		//Set owed to twice the amount specified for rent on the deed if case is 19
+    		owed = 2 * deed.calculate_rent();
+        Player receiving_player = deed.owner;
+
+        if (receiving_player == this) {
+        } else {
+        	if(whichCase == 0) {									//If the case is not from the chance card
+	            money -= deed.calculate_rent();
+	            receiving_player.money += deed.calculate_rent();
+	            System.out.println(receiving_player.name + " recieved $" + deed.calculate_rent() + " in rent.");
+	            Main.monopoly.set_message(name + " pays $" + deed.calculate_rent() + " in rent to " + receiving_player.name
+	                    + " for " + deed.name + " and now has $" + money);
+        	}
+        	else if(whichCase != 0) {								//If the case is from the chance card
+        		money -= owed;
+        		receiving_player.money += owed;
+        		if(whichCase == 18) {
+        			System.out.println(receiving_player.name + " recieved $" + owed + " in rent. (" + dice_sum + " * 10)");
+        			Main.monopoly.set_message(name + " pays $" + owed + " in rent to " + receiving_player.name
+    	                    + " for " + deed.name + " and now has $" + money);
+        		}
+        		else if(whichCase == 19) {
+        			System.out.println(receiving_player.name + " recieved $" + owed + " in rent. (" + deed.calculate_rent() + " * 2)");
+        			Main.monopoly.set_message(name + " pays $" + owed + " in rent to " + receiving_player.name
+    	                    + " for " + deed.name + " and now has $" + money);
+        		}
+        	}
+        }
+    }
 
     /*
      * Calculates a user's net worth based on current money, and properties owned
@@ -416,16 +455,19 @@ public class Player {
     }
     
     //Handles when a player lands on Chance
-    public void chance(Card card, Player[] users, Deed[] board) {
+    public int chance(Card card, Player[] users, Deed[] board) {
+    	int case18case19 = 0;
     	if (card.name.equals("Get Out of Jail Free")) {
     		getOutOfJail++;
     	}
     	else
-    		useCard(card, users, board);
+    		case18case19 = useCard(card, users, board);
+    	return case18case19;
     }
 
     //List out all possiblities, check csv to see numbers associated with each card
-    public void useCard(Card card, Player[] users, Deed[] board) {
+    public int useCard(Card card, Player[] users, Deed[] board) {
+    	int case18case19 = 0;
     	switch(card.type){
     		case 0: //Advance to go
     			position = 0;
@@ -522,18 +564,24 @@ public class Player {
     			break;
     		case 18: //Advance token to nearest Utility. If unowned - you may buy it. If owned - throw dice and pay owner a totel ten times the amount thrown.
     			Main.monopoly.set_message("You drew: Advance to the next utility. If unowned - you may buy it. If owned - throw dice and pay owner a total ten times the amount thrown");
-    			if(position == 7) 
+    			case18case19 = 18;
+    			if(position == 7) {
     				position = 12;	//TODO
-    			else 
+    			}
+    			else {
     				position = 28;	//TODO
+    			}
     			Main.monopoly.move_token(player_num, position);
     			break;
     		case 19: //Advance token to nearest Railroad and pay owner twice the rental. If unowned - you may buy it.
     			Main.monopoly.set_message("You drew: Advance to the next Railroad or Street. If unowned - you may buy it. If owned - pay owner twice the rental price");
-    			if(position == 7)
+    			case18case19 = 19;
+    			if(position == 7) {
     				position = 15;
-    			else
+    			}
+    			else {
     				position = 25;
+    			}
     			Main.monopoly.move_token(player_num, position);
     			break;
     		case 20: //Bank pays you dividend of $50
@@ -588,5 +636,6 @@ public class Player {
     			break;
     			
     	}
+    	return case18case19;
     }
 }
