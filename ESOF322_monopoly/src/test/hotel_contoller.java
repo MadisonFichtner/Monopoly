@@ -10,7 +10,7 @@ import javafx.event.EventHandler;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.stage.Stage;
-import javafx.stage.Window;
+//import javafx.stage.Window;
 import javafx.util.StringConverter;
 
 public class hotel_contoller {
@@ -19,11 +19,11 @@ public class hotel_contoller {
 
 	public void initialize(URL fxmlFileLocation, ResourceBundle resources) {
 		ArrayList<Deed> deeds_with_max = new ArrayList<Deed>();
-		boolean eligible = false;
+		//boolean eligible = false;
 		for (int i = 0; i < Board.current.deeds.size(); i++) {
 			if (Board.current.deeds.get(i).max_houses == true) {
 				deeds_with_max.add(Board.current.deeds.get(i));
-				eligible = true;
+				//eligible = true;
 			}
 		}
 

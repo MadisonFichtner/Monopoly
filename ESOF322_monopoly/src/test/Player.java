@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Random;
 import java.util.Scanner;
 
-import static test.Board.current;
+//import static test.Board.current;
 
 public class Player {
     public ArrayList<Deed> deeds = new ArrayList<Deed>(); // Assuming one person can own all positions on board
@@ -157,6 +157,7 @@ public class Player {
                     break;
             }
         }
+        in.close(); //TODO
     }
 
 
@@ -320,8 +321,7 @@ public class Player {
      */
     public void pay_rent(Deed deed, int whichCase) {
     	int owed = 0;
-    	int[] dice = new int[2];
-    	dice = roll_dice();
+    	roll_dice();
     	if(whichCase == 18)				//roll dice and pay 10*dicesum if case is 18
     		owed = dice_sum * 10;
     	else if(whichCase == 19)		//Set owed to twice the amount specified for rent on the deed if case is 19
@@ -597,6 +597,7 @@ public class Player {
     			}
     			else
     				position -= 3;
+    			Main.monopoly.move_token(player_num, position);
     			break;
     		case 22: //Make general repairs on all your property - For each house pay $25 - For each hotel $100
     			Main.monopoly.set_message("You drew: Make general repairs on all your property - for each house pay $25 and for each hotel pay $100");

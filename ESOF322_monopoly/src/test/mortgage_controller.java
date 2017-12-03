@@ -10,7 +10,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.stage.Stage;
-import javafx.stage.Window;
+//import javafx.stage.Window;
 import javafx.util.StringConverter;
 
 public class mortgage_controller implements Initializable {

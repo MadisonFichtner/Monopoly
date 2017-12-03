@@ -11,7 +11,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
-import javafx.stage.Window;
+//import javafx.stage.Window;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -269,6 +269,7 @@ public class monopoly_controller implements Initializable {
                     rent4, rent_hotel, build_cost, deed_type);
         }
         // populate deeds giving csv_file
+        in.close(); //
         return deeds;
     }
     
@@ -285,6 +286,7 @@ public class monopoly_controller implements Initializable {
     		Card card = new Card(name, type);	
     		community.add(card);
     	}
+    	in.close(); //
     	return community;
     }
     
@@ -301,6 +303,7 @@ public class monopoly_controller implements Initializable {
     		Card card = new Card(name, type);
     		chance.add(card);
     	}
+    	in.close();
     	return chance;
     }
     

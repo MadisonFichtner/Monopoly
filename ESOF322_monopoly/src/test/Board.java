@@ -7,6 +7,7 @@ import javafx.stage.Stage;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 
 public class Board {
 
@@ -20,7 +21,6 @@ public class Board {
     public static int position;
     public static int[] bids = {0, 0, 0, 0};
     public static int highest_bid = 50;
-    private static boolean is_free_parking;// Is true of player lands on GO, Jail, or Free Parking
     private static int double_roll_counter; // Keeps track of how many times player has rolled doubles
     private static boolean was_in_jail;
     private static Player[] users;
@@ -29,9 +29,9 @@ public class Board {
         this.numHotelsRemaining = 12;
         this.numHousesRemaining = 32;
         board = new_board;
-        this.users = users;
-        this.communityChest = communityChest;
-        this.chance = chance;
+        Board.users = users;
+        Board.communityChest = communityChest;
+        Board.chance = chance;
     }
 
     // Reset all the variables for a players turn and gives them the option to roll
@@ -42,7 +42,6 @@ public class Board {
         current = player;
         Main.monopoly.set_message("It is " + current.name + "'s turn.");
         position = current.position;
-        is_free_parking = false;// Is true of player lands on GO, Jail, or Free Parking
         double_roll_counter = 0; // Keeps track of how many times player has rolled doubles
         was_in_jail = false;
         if (player.in_jail == true) {
@@ -130,7 +129,8 @@ public class Board {
         //Handles if they land on community chest or chance
         else if(board[current.position].name.equals("Community Chest")) {
         	Main.monopoly.set_message("You landed on the Community Chest! Drawing and playing a card.");
-        	current.communityChest(chance.get(0), users, board);
+        	current.communityChest(communityChest.get(0), users, board);
+        	Collections.shuffle(communityChest);
         }
         else if(board[current.position].name.equals("Chance")) {
         	Main.monopoly.set_message("You landed on Chance! Drawing and playing a card.");
@@ -139,6 +139,7 @@ public class Board {
         	if(case18case19 != 0) {
         		twoCases(case18case19);
         	}
+        	Collections.shuffle(chance);
         }
         
         
@@ -265,9 +266,12 @@ public class Board {
         return monopoly_controller.players[high_player];
     }
 
+    /*
+     * handles the purchasing of property/paying rent for case 18 and 19 in chance cards
+     */
     public static void twoCases(int whichCase) {
     	if(whichCase == 18) {
-	    	if (board[current.position].owner == null) {// && is_free_parking == false)
+	    	if (board[current.position].owner == null) {						//If property is unowned allow user to purchase
 	            if (current.money > board[current.position].purchase_price) {
 	                try {
 	                    Parent root = FXMLLoader.load(Board.class.getResource("purchase.fxml"));
@@ -282,14 +286,14 @@ public class Board {
 	                auctionProperty();
 	            }
 	    	}
-	    	else if (board[current.position].owner != null) {
+	    	else if (board[current.position].owner != null) {					//otherwise pay rent
 	            Deed deed = board[current.position];
 	            current.pay_rent(deed);
 	        }
     	}
     	
     	else if(whichCase == 19) {
-	    	if (board[current.position].owner == null) {// && is_free_parking == false)
+	    	if (board[current.position].owner == null) {						//If property is unowed allow user to purchase
 	            if (current.money > board[current.position].purchase_price) {
 	                try {
 	                    Parent root = FXMLLoader.load(Board.class.getResource("purchase.fxml"));
@@ -300,11 +304,11 @@ public class Board {
 	                } catch (Exception e) {
 	                    System.out.println("Something went wrong");
 	                }
-	            } else {
+	            } else {												
 	                auctionProperty();
 	            }
 	    	}
-	    	else if (board[current.position].owner != null) {
+	    	else if (board[current.position].owner != null) {					//Otherwise pay rent
 	            Deed deed = board[current.position];
 	            current.pay_rent(deed);
 	        }

@@ -8,7 +8,7 @@ import javafx.event.EventHandler;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.stage.Stage;
-import javafx.stage.Window;
+//import javafx.stage.Window;
 
 public class jail_controller implements Initializable {
 	public Button roll_button;
