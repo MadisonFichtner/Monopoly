@@ -6,6 +6,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Scanner;
 
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
+
 public class GUIHelper {
 	private static MonopolyController monopoly;
 	private static final String COMMA_DELIMITER = ",";
@@ -23,15 +28,15 @@ public class GUIHelper {
 	}
 
 	public static void enableRollGUI() {
-		monopoly.disable_buttons();
+		monopoly.disableButtons();
 	}
 
 	public static void enableTurnGUI() {
-		monopoly.enable_buttons();
+		monopoly.enableButtons();
 	}
 
 	public static void moveTokenImg(int player_num, int spot) {
-		monopoly.move_token(player_num, spot);
+		monopoly.moveToken(player_num, spot);
 	}
 	
 	public static int getNumPlayers() {
@@ -45,6 +50,22 @@ public class GUIHelper {
 	public static Player[] getPlayers() {
 		return players;
 	}
+	
+	public static Board getBoard() {
+		return board;
+	}
+	
+	public static void openAuctionWindow() {
+		try {
+            Parent root = FXMLLoader.load(Board.class.getResource("auction.fxml"));
+            Stage trade_stage = new Stage();
+            trade_stage.setTitle("Auction");
+            trade_stage.setScene(new Scene(root));
+            trade_stage.show();
+        } catch (Exception e) {
+            System.out.println("Something went wrong");
+        }
+	}
 
 	public static void nextTurn() {
 		enableRollGUI();
@@ -55,7 +76,7 @@ public class GUIHelper {
 	}
 	
     public static void takeTurn() {
-        board.start_turn(players[playerTurn]);
+        board.beginTurn(players[playerTurn]);
     }
     
     //MAKE RECEIVE MONOPOLY BOARD OR MSU BOARD
@@ -72,10 +93,9 @@ public class GUIHelper {
         String deedsFileName = "MSUdeeds.csv"; // just a sample file name
         File csvDeedsFile = new File(deedsFileName);
         try {
-            deeds = parse_deeds_CSV(csvDeedsFile);
+            deeds = parseDeedsCSV(csvDeedsFile);
         } catch (FileNotFoundException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            System.out.println("No CSV with that name found!");
         }
         
         //if(users choice == monopoly)
@@ -84,9 +104,9 @@ public class GUIHelper {
         String communityFileName = "MSUChestCards.csv";
         File csvCommunityFile = new File(communityFileName);
         try {
-        	communityChest = parse_community_CSV(csvCommunityFile);
+        	communityChest = parseCommunityCSV(csvCommunityFile);
         } catch (FileNotFoundException e) {
-        	e.printStackTrace();
+        	System.out.println("No CSV with that name found!");
         }
         
         //if(users choice == monopoly)
@@ -95,9 +115,9 @@ public class GUIHelper {
         String chanceFileName = "MSUChanceCards.csv";
         File csvChanceFile = new File(chanceFileName);
         try {
-        	chance = parse_chance_CSV(csvChanceFile);
+        	chance = parseChanceCSV(csvChanceFile);
         } catch (FileNotFoundException e) {
-        	e.printStackTrace();
+        	System.out.println("No CSV with that name found!");
         }
 
         for (int i = 0; i < users.length; i++) {
@@ -115,7 +135,7 @@ public class GUIHelper {
     /*
      * Parses the inputted .csv file to populate the game board with deeds
      */
-    public static Deed[] parse_deeds_CSV(File csv_file) throws FileNotFoundException {
+    public static Deed[] parseDeedsCSV(File csv_file) throws FileNotFoundException {
         Deed[] deeds = new Deed[40];
         Scanner in = new Scanner(csv_file);
         in.useDelimiter(COMMA_DELIMITER);
@@ -140,10 +160,11 @@ public class GUIHelper {
                     rent4, rent_hotel, build_cost, deed_type);
         }
         // populate deeds giving csv_file
+        in.close();
         return deeds;
     }
     
-    public static ArrayList<Card> parse_community_CSV(File csv_file) throws FileNotFoundException {
+    public static ArrayList<Card> parseCommunityCSV(File csv_file) throws FileNotFoundException {
     	//Card[] community = new Card[16];
         ArrayList<Card> community = new ArrayList<Card>();
     	Scanner in = new Scanner(csv_file);
@@ -156,10 +177,11 @@ public class GUIHelper {
     		Card card = new Card(name, type);	
     		community.add(card);
     	}
+    	in.close();
     	return community;
     }
     
-    public static ArrayList<Card> parse_chance_CSV(File csv_file) throws FileNotFoundException {
+    public static ArrayList<Card> parseChanceCSV(File csv_file) throws FileNotFoundException {
     	//Card[] chance = new Card[15];
         ArrayList<Card> chance = new ArrayList<Card>();
     	Scanner in = new Scanner(csv_file);
@@ -172,6 +194,7 @@ public class GUIHelper {
     		Card card = new Card(name, type);
     		chance.add(card);
     	}
+    	in.close();
     	return chance;
     }
 }

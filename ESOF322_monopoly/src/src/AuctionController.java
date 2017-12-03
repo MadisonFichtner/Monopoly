@@ -11,7 +11,6 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
-import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
 import javafx.util.StringConverter;
 
@@ -22,28 +21,29 @@ import java.util.ResourceBundle;
 
 public class AuctionController implements Initializable {
     @FXML
-    public Label current_price;
-    public ImageView auction_deed;
-    public ChoiceBox<Player> bid_player;
-    public TextField bid_amount;
-    public Button bid_button;
-    public Button done_button;
+    public Label currentPrice;
+    public ChoiceBox<Player> bidPlayer;
+    public TextField bidAmount;
+    public Button bidButton;
+    public Button doneButton;
     
 
     public void initialize(URL fxmlFileLocation, ResourceBundle resources) {
-    	int[] bids = Board.bids;
+    	Board board = GUIHelper.getBoard();
+    	int[] bids = board.bids;
+    	
     	ArrayList<Player> players = new ArrayList<Player>(Arrays.asList(GUIHelper.getPlayers()));
-		bid_player.setItems(FXCollections.observableArrayList(players));
-		current_price.setText("The highest bid for " + Board.board[Board.position].name + " $" + Board.highest_bid);
+		bidPlayer.setItems(FXCollections.observableArrayList(players));
+		currentPrice.setText("The highest bid for " + board.deedBoard[board.position].name + " $" + board.highestBid);
         
-		bid_button.setOnAction(new EventHandler<ActionEvent>() {
+		bidButton.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
-				Player bidder = bid_player.getValue();
+				Player bidder = bidPlayer.getValue();
 				for(int i =0; i < GUIHelper.getNumPlayers(); i++) {
 					if(GUIHelper.getPlayer(i).name.compareTo(bidder.name) == 0) {
-						if(GUIHelper.getPlayer(i).money >= Integer.parseInt(bid_amount.getText())) {
-    						bids[i] = Integer.parseInt(bid_amount.getText());
+						if(GUIHelper.getPlayer(i).money >= Integer.parseInt(bidAmount.getText())) {
+    						bids[i] = Integer.parseInt(bidAmount.getText());
 						} else {
 							GUIHelper.setMessage("You don't have that much money!");
 						}
@@ -52,17 +52,17 @@ public class AuctionController implements Initializable {
 			}
 		});
  		
- 		done_button.setOnAction(new EventHandler<ActionEvent>() {
+ 		doneButton.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
-				Board.gui_auction(bids, Board.highest_bid, Board.board[Board.position]);
-				Stage stage = (Stage) done_button.getScene().getWindow();
+				board.auction(bids, board.highestBid, board.deedBoard[board.position]);
+				Stage stage = (Stage) doneButton.getScene().getWindow();
             	stage.close();
 			}
 		});
 		
 		// Changes the way the players are displayed
-     		bid_player.setConverter(new StringConverter<Player>() {
+     		bidPlayer.setConverter(new StringConverter<Player>() {
      			@Override
      			public String toString(Player person) {
      				return new StringBuilder(person.name + " - $" + person.money).toString();
@@ -75,15 +75,15 @@ public class AuctionController implements Initializable {
      		});
      		
      		// This listener deletes any characters that get added to the amount
-    		bid_amount.lengthProperty().addListener(new ChangeListener<Number>() {
+    		bidAmount.lengthProperty().addListener(new ChangeListener<Number>() {
     			@Override
     			public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
     				if (newValue.intValue() > oldValue.intValue()) {
-    					char ch = bid_amount.getText().charAt(oldValue.intValue());
+    					char ch = bidAmount.getText().charAt(oldValue.intValue());
     					// Check if the new character is the number or other's
     					if (!(ch >= '0' && ch <= '9')) {
     						// if it's not number then just setText to previous one
-    						bid_amount.setText(bid_amount.getText().substring(0, bid_amount.getText().length() - 1));
+    						bidAmount.setText(bidAmount.getText().substring(0, bidAmount.getText().length() - 1));
     					}
     				}
     			}

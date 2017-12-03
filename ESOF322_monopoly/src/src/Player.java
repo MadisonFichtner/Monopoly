@@ -2,31 +2,29 @@ package src;
 
 import java.util.ArrayList;
 import java.util.Random;
-import java.util.Scanner;
 
 public class Player {
-    public ArrayList<Deed> deeds = new ArrayList<Deed>(); // Assuming one person can own all positions on board
-    public int money = 1500;
-    public String token;
-    public String name;
-    public int position = 0;
-    public int[] dice = new int[]{0, 0};
-    public int dice_sum = 0;
-    public int railroad_count = 0;
-    public int utilities_count = 0;
-    public int building_value = 0;
-    public int mortgage_owed = 0;
-    public boolean has_street = false;
-    public boolean in_jail = false;
-    public int turns_in_jail = 0;
-    public boolean is_interested = true;
-    public int overall_net_worth = money;
-    public int[] property_totals = {0, 0, 0, 1, 1, 1, 1, 1}; // {2, 3, 3, 3, 3, 3, 3, 2};
-    public int[] property_groups = new int[8];
-    public int player_num = 0;
-    public int getOutOfJail = 0;
-    public int currentHouses = 0;
-    public int currentHotels = 0;
+    ArrayList<Deed> deeds = new ArrayList<Deed>(); // Assuming one person can own all positions on board
+    int money = 1500;
+    String token;
+    String name;
+    int position = 0;
+    int[] dice = new int[]{0, 0};
+    int diceSum = 0;
+    int railroadCount = 0;
+    int utilitiesCount = 0;
+    int buildingValue = 0;
+    int mortgageOwed = 0;
+    boolean hasStreet = false;
+    boolean inJail = false;
+    int turnsInJail = 0;
+    int netWorth = money;
+    int[] propertyTotals = {0, 0, 0, 1, 1, 1, 1, 1}; // {2, 3, 3, 3, 3, 3, 3, 2};
+    int[] propertyGroups = new int[8];
+    int playerNum = 0;
+    int getOutOfJail = 0;
+    int currentHouses = 0;
+    int currentHotels = 0;
 
     /*
      * Creates new player object. Starts with $1500
@@ -38,27 +36,27 @@ public class Player {
     public Player(String name, String token, int player_num) {
         this.name = name;
         this.token = token;
-        this.player_num = player_num;
+        this.playerNum = player_num;
     }
 
     // If a player buys a deed through the gui this is called, otherwise auction is
     // called
-    public void bought_property(Deed deed) {
+    public void boughtProperty(Deed deed) {
         deed.owner = this;
-        money -= deed.purchase_price;
+        money -= deed.price;
         deeds.add(deed);
-        if (deed.deed_type.equals("railroad")) {
-            railroad_count++;
+        if (deed.type.equals("railroad")) {
+            railroadCount++;
         } else {
-            if (deed.deed_type.equals("utility")) {
-                utilities_count++;
+            if (deed.type.equals("utility")) {
+                utilitiesCount++;
             } else {
-                property_groups[deed.property_group - 1]++;
-                if (property_groups[deed.property_group - 1] == property_totals[deed.property_group - 1]) {
+                propertyGroups[deed.propertyGroup - 1]++;
+                if (propertyGroups[deed.propertyGroup - 1] == propertyTotals[deed.propertyGroup - 1]) {
                     for (int i = 0; i < deeds.size(); i++) {
-                        if (deeds.get(i).property_group == 1) {
-                            deed.whole_color_group_owned = true;
-                            deeds.get(i).whole_color_group_owned = true;
+                        if (deeds.get(i).propertyGroup == 1) {
+                            deed.grouped = true;
+                            deeds.get(i).grouped = true;
                         }
                     }
                 }
@@ -85,12 +83,12 @@ public class Player {
      */
     public void move() {
         boolean passed_go = false;
-        if (position + dice_sum >= 40) {
-            int overflow = (position + dice_sum) - 40;
+        if (position + diceSum >= 40) {
+            int overflow = (position + diceSum) - 40;
             position = overflow;
             passed_go = true;
         } else
-            position = position += dice_sum;
+            position = position += diceSum;
 
         // if position 0 get passed
         // passed_go = true;
@@ -99,84 +97,31 @@ public class Player {
             money += 200;
             System.out.println("You passed go, have $200 on me!");
         }
-        GUIHelper.moveTokenImg(player_num, position);
+        GUIHelper.moveTokenImg(playerNum, position);
     }
 
     /**
      * Moves player directly to jail, and sets a boolean for whether they are in
      * jail to true
      */
-    public void move_to_jail() {
+    public void moveToJail() {
         position = 10;
-        in_jail = true;
-        GUIHelper.moveTokenImg(this.player_num, 10);
+        inJail = true;
+        GUIHelper.moveTokenImg(this.playerNum, 10);
 
 
     }
-
-
-    /*
-     * Logic to get out of jail
-     */
-    public void get_out_of_jail() {
-        // give option to roll dice for doubles or pay $50
-        Scanner in = new Scanner(System.in);
-        if (turns_in_jail == 3) { // If they've rolled for doubles the max number of times
-            System.out.println("Turn 3 in jail. You must pay $50 and roll forward.");
-            money -= 50;
-            in_jail = false;
-            turns_in_jail = 0;
-            roll_dice();
-            move();
-        } else { // give option to either pay or roll for doubles
-            System.out.println("Turn: " + turns_in_jail + " spent in jail. " + (3 - turns_in_jail)
-                    + " more before you must pay $50 dollars.");
-            System.out.println("Roll for doubles, or pay $50? (1. Roll / 2. $50)");
-            int choice = in.nextInt();
-            switch (choice) {
-                case 1: // If they roll for doubles
-                    int dice[] = roll_dice();
-                    if (dice[0] == dice[1]) // If doubles are rolled
-                    {
-                        System.out.println("You rolled doubles. Gratz.");
-                        in_jail = false;
-                        turns_in_jail = 0;
-                        move();
-                        break;
-                    } else // If doubles are not rolled
-                    {
-                        System.out.println("You did not roll doubles...");
-                        break;
-                    }
-                case 2: // If they pay $50
-                    System.out.println("You paid $50 and are now out of jail.");
-                    roll_dice();
-                    move();
-                    break;
-            }
-        }
-    }
-
-
-
-	/*
-     * Creates new player object. Starts with $1500
-	 *
-	 * @param name -> name of player entered by user
-	 *
-	 * @param toke -> name of token entered by user (make picture on board)
-*/
 
     /*
      * randomly generates two numbers between 1-6 to represent dice, sets the sum of
      * the dice, and returns images of the two dices sides that were rolled
      */
-    public int[] roll_dice() {
+    public int[] rollDice() {
         // randomize dice throw and display image of side of each dice that was rolled
         Random rand = new Random();
         dice[0] = rand.nextInt(6) + 1;
         dice[1] = rand.nextInt(6) + 1;
-        dice_sum = dice[0] + dice[1];
+        diceSum = dice[0] + dice[1];
         System.out.println("Dice 1 result: " + dice[0] + "\nDice 2 result: " + dice[1]);
         System.out.println("Current money: " + money);
         return dice;
@@ -193,73 +138,59 @@ public class Player {
      *
      * @param price -> price at which they purchased the deed
      */
-    public void buy_auction(Deed deed, int price) {
+    public void buyAuction(Deed deed, int price) {
         deeds.add(deed);
         money -= price;
         deed.owner = this;
-        if (deed.deed_type.equals("railroad"))
-            railroad_count++;
-        if (deed.deed_type.equals("utility"))
-            utilities_count++;
+        if (deed.type.equals("railroad"))
+            railroadCount++;
+        if (deed.type.equals("utility"))
+            utilitiesCount++;
     }
 
-	/*
-     * Moves players token based on dice roll and current position, and returns $200
-	 * if they passed go
-	 *
-	 * @param spaces -> dice_sum
-	 */
-
-
-    /**
-     * Moves player directly to jail, and sets a boolean for whether they are in
-     * jail to true
-     */
-
-
-    public void pay_bail() {
+    public void payBail() {
         GUIHelper.setMessage("Turn 3 in jail. You must pay $50 and roll forward.");
         money -= 50;
-        in_jail = false;
-        turns_in_jail = 0;
-        roll_dice();
+        inJail = false;
+        turnsInJail = 0;
+        rollDice();
     }
 
-    public void traded_deed(Deed deed, Player player, int price) {
-        if (deed.deed_type.equals("railroad")) {
-            railroad_count++;
-            player.railroad_count--;
+    public void tradedDeed(Deed deed, Player player, int price) {
+        if (deed.type.equals("railroad")) {
+            railroadCount++;
+            player.railroadCount--;
         } else {
-            if (deed.deed_type.equals("utility")) {
-                utilities_count++;
-                player.utilities_count--;
+            if (deed.type.equals("utility")) {
+                utilitiesCount++;
+                player.utilitiesCount--;
             } else {
-                property_groups[deed.property_group - 1]++;
-                player.property_groups[deed.property_group - 1]--;
-                if (property_groups[deed.property_group - 1] == property_totals[deed.property_group - 1]) {
+                propertyGroups[deed.propertyGroup - 1]++;
+                player.propertyGroups[deed.propertyGroup - 1]--;
+                if (propertyGroups[deed.propertyGroup - 1] == propertyTotals[deed.propertyGroup - 1]) {
                     for (int i = 0; i < deeds.size(); i++) {
-                        if (deeds.get(i).property_group == deed.property_group) {
-                            deeds.get(i).whole_color_group_owned = true;
+                        if (deeds.get(i).propertyGroup == deed.propertyGroup) {
+                            deeds.get(i).grouped = true;
                         }
                     }
-                } else if (deed.whole_color_group_owned = true) {
-                    deed.whole_color_group_owned = false;
+                } else if (deed.grouped = true) {
+                    deed.grouped = false;
                 }
 
             }
         }
 
-        if (deed.deed_type.equals("railroad")) {
+        if (deed.type.equals("railroad")) {
 
         } else {
-            if (deed.deed_type.equals("utility")) {
+            if (deed.type.equals("utility")) {
 
             } else {
 
-                if (player.property_groups[deed.property_group - 1] == player.property_totals[deed.property_group - 1]) {
+                if (player.propertyGroups[deed.propertyGroup - 1] == player.propertyTotals[deed.propertyGroup - 1]) {
                     for (int i = 0; i < deeds.size(); i++) {
-                        if (deeds.get(i).property_group == 1) {
-                            deeds.get(i).whole_color_group_owned = true;
+                        if (deeds.get(i).propertyGroup == 1) {
+                            deeds.get(i).grouped = true;
                         }
                     }
                 }
@@ -276,18 +207,18 @@ public class Player {
     }
 
     // In design we have this returning an int but i dont see a point in that
-    public void mortgage_deed(Deed deed) {
-        money += deed.calculate_mortgage();
-        mortgage_owed += deed.mortgage_value;
-        System.out.println(deed.name + " was mortgaged for " + deed.mortgage_value + "\nRemaining Money: " + money);
+    public void mortgageDeed(Deed deed) {
+        money += deed.calculateMortgage();
+        mortgageOwed += deed.mortgageValue;
+        System.out.println(deed.name + " was mortgaged for " + deed.mortgageValue + "\nRemaining Money: " + money);
         deed.mortgaged = true;
     }
 
-    public void pay_mortgage_single(Deed deed) {
+    public void payMortage(Deed deed) {
         deed.mortgaged = false; // set mortgaged flag to false
-        money -= deed.mortgage_owed; // subtract mortgage_owed for specific property from money
-        mortgage_owed -= deed.mortgage_owed; // subtract mortgage_owed for specific property from
-        deed.mortgage_owed = 0;
+        money -= deed.mortgageOwed; // subtract mortgage_owed for specific property from money
+        mortgageOwed -= deed.mortgageOwed; // subtract mortgage_owed for specific property from
+        deed.mortgageOwed = 0;
     }
 
     /*
@@ -300,55 +231,16 @@ public class Player {
      *
      *
      */
-    public void pay_rent(Deed deed) {
+    public void payRent(Deed deed) {
         Player receiving_player = deed.owner;
 
         if (receiving_player == this) {
         } else {
-            money -= deed.calculate_rent();
-            receiving_player.money += deed.calculate_rent();
-            System.out.println(receiving_player.name + " recieved $" + deed.calculate_rent() + " in rent.");
-            GUIHelper.setMessage(name + " pays $" + deed.calculate_rent() + " in rent to " + receiving_player.name
+            money -= deed.calculateRent();
+            receiving_player.money += deed.calculateRent();
+            System.out.println(receiving_player.name + " recieved $" + deed.calculateRent() + " in rent.");
+            GUIHelper.setMessage(name + " pays $" + deed.calculateRent() + " in rent to " + receiving_player.name
                     + " for " + deed.name + " and now has $" + money);
-        }
-    }
-    
-    /*
-     * Pay rent for case 18/19
-     */
-    public void pay_rent(Deed deed, int whichCase) {
-    	int owed = 0;
-    	int[] dice = new int[2];
-    	dice = roll_dice();
-    	if(whichCase == 18)				//roll dice and pay 10*dicesum if case is 18
-    		owed = dice_sum * 10;
-    	else if(whichCase == 19)		//Set owed to twice the amount specified for rent on the deed if case is 19
-    		owed = 2 * deed.calculate_rent();
-        Player receiving_player = deed.owner;
-
-        if (receiving_player == this) {
-        } else {
-        	if(whichCase == 0) {									//If the case is not from the chance card
-	            money -= deed.calculate_rent();
-	            receiving_player.money += deed.calculate_rent();
-	            System.out.println(receiving_player.name + " recieved $" + deed.calculate_rent() + " in rent.");
-	            GUIHelper.setMessage(name + " pays $" + deed.calculate_rent() + " in rent to " + receiving_player.name
-	                    + " for " + deed.name + " and now has $" + money);
-        	}
-        	else if(whichCase != 0) {								//If the case is from the chance card
-        		money -= owed;
-        		receiving_player.money += owed;
-        		if(whichCase == 18) {
-        			System.out.println(receiving_player.name + " recieved $" + owed + " in rent. (" + dice_sum + " * 10)");
-        			GUIHelper.setMessage(name + " pays $" + owed + " in rent to " + receiving_player.name
-    	                    + " for " + deed.name + " and now has $" + money);
-        		}
-        		else if(whichCase == 19) {
-        			System.out.println(receiving_player.name + " recieved $" + owed + " in rent. (" + deed.calculate_rent() + " * 2)");
-        			GUIHelper.setMessage(name + " pays $" + owed + " in rent to " + receiving_player.name
-    	                    + " for " + deed.name + " and now has $" + money);
-        		}
-        	}
         }
     }
 
@@ -359,18 +251,18 @@ public class Player {
         int net_worth = 0; // = all of items values and money added up
         net_worth += money;
         for (int i = 0; i < deeds.size(); i++) {
-            net_worth += (deeds.get(i).purchase_price + (deeds.get(i).build_cost * deeds.get(i).current_houses));
-            if (deeds.get(i).has_hotel == true)
-                net_worth += deeds.get(i).build_cost;
+            net_worth += (deeds.get(i).price + (deeds.get(i).buildCost * deeds.get(i).currentHouses));
+            if (deeds.get(i).hasHotel == true)
+                net_worth += deeds.get(i).buildCost;
         }
-        overall_net_worth = net_worth;
+        netWorth = net_worth;
         return net_worth;
     }
 
     /*
      * Allows user to pay tax
      */
-    public void pay_tax(int response) {
+    public void payTax(int response) {
         if (response == 1) {
             money -= calculate_net_worth() * .1;
         } else if (response == 2) {
@@ -383,22 +275,22 @@ public class Player {
     /*
      * Prints out deeds owned by player
      */
-    public void print_deeds() {
+    public void printDeeds() {
         for (int i = 0; i < deeds.size(); i++) {
-            System.out.println(i + ") Name: " + deeds.get(i).name + "| Rent Cost: " + deeds.get(i).calculate_rent()
-                    + "| Houses: " + deeds.get(i).current_houses + "| Hotel: " + deeds.get(i).has_hotel
-                    + "| Mortgage Value:" + deeds.get(i).calculate_mortgage()); // add sell info, and houses/hotels
+            System.out.println(i + ") Name: " + deeds.get(i).name + "| Rent Cost: " + deeds.get(i).calculateRent()
+                    + "| Houses: " + deeds.get(i).currentHouses + "| Hotel: " + deeds.get(i).hasHotel
+                    + "| Mortgage Value:" + deeds.get(i).calculateMortgage()); // add sell info, and houses/hotels
         }
     }
 
     /*
      * Prints only mortgaged deeds
      */
-    public void print_mortgaged_deeds() {
+    public void printMortgagedDeeds() {
         for (int i = 0; i < deeds.size(); i++) {
             if (deeds.get(i).mortgaged == true) {
                 System.out
-                        .println(i + ") Name: " + deeds.get(i).name + "| Mortgage Owed: " + deeds.get(i).mortgage_owed);
+                        .println(i + ") Name: " + deeds.get(i).name + "| Mortgage Owed: " + deeds.get(i).mortgageOwed);
             }
         }
     }
@@ -406,40 +298,40 @@ public class Player {
     /*
      * Prints only street type deeds
      */
-    public void print_streets() {
+    public void printStreets() {
         for (int i = 0; i < deeds.size(); i++) {
-            if (deeds.get(i).deed_type.equals("street")) {
-                System.out.println(i + ") Name: " + deeds.get(i).name + "| Build Cost:" + deeds.get(i).build_cost
-                        + "| Current Houses: " + deeds.get(i).current_houses + "| Has a Hotel: "
-                        + deeds.get(i).has_hotel);
+            if (deeds.get(i).type.equals("street")) {
+                System.out.println(i + ") Name: " + deeds.get(i).name + "| Build Cost:" + deeds.get(i).buildCost
+                        + "| Current Houses: " + deeds.get(i).currentHouses + "| Has a Hotel: "
+                        + deeds.get(i).hasHotel);
             }
         }
     }
 
-    public void bought_house(Deed deed, int houses) {
-        if (deed.current_houses == 4) {
+    public void boughtHouse(Deed deed, int houses) {
+        if (deed.currentHouses == 4) {
             GUIHelper.setMessage("You already have 4 houses on this property, build a hotel.");
-        } else if (deed.max_houses == false && deed.deed_type.equals("street")
-                && deed.whole_color_group_owned == true) {
+        } else if (deed.maxHouses == false && deed.type.equals("street")
+                && deed.grouped == true) {
         	currentHouses += houses;
-            deed.current_houses += houses;
-            money -= deed.build_cost * houses;
-            if (deed.current_houses == 4)
-                deed.max_houses = true;
+            deed.currentHouses += houses;
+            money -= deed.buildCost * houses;
+            if (deed.currentHouses == 4)
+                deed.maxHouses = true;
             System.out.println("Remaining money = " + money);
         } else {
             GUIHelper.setMessage("That is not an eligible property to build a house on");
         }
     }
 
-    public void bought_hotel(Deed deed) {
+    public void boughtHotel(Deed deed) {
     	currentHotels++;
     	currentHouses -= 4;
-        deed.has_hotel = true;
-        deed.current_houses = 0;
-        deed.max_houses = false;
-        money -= deed.build_cost;
-        GUIHelper.setMessage("You purchased a hotel on " + deed.name + " for $" + deed.build_cost);
+        deed.hasHotel = true;
+        deed.currentHouses = 0;
+        deed.maxHouses = false;
+        money -= deed.buildCost;
+        GUIHelper.setMessage("You purchased a hotel on " + deed.name + " for $" + deed.buildCost);
         System.out.println("Remaining money = " + money);
     }
     
@@ -470,7 +362,7 @@ public class Player {
     		case 0: //Advance to go
     			position = 0;
     			money += 200;
-    			GUIHelper.moveTokenImg(player_num, position);
+    			GUIHelper.moveTokenImg(playerNum, position);
     			GUIHelper.setMessage("You drew: Advance to Go, collect $200");
     			break;
     		case 1: //bank error - collect 200
@@ -489,7 +381,7 @@ public class Player {
     			break;
     		case 5:	//Go to jail - do not collect 200 if pass go
     			GUIHelper.setMessage("You drew: Go to Jail - do not collect Go");
-    			in_jail = true;
+    			inJail = true;
     			position = 10;
     			break;
     		case 6: //Grand Opera night - collect 50 from all players
@@ -549,7 +441,7 @@ public class Player {
     				GUIHelper.setMessage("You passed Go. Collect $200");
     			}
     			position = 24;
-    			GUIHelper.moveTokenImg(player_num, position);
+    			GUIHelper.moveTokenImg(playerNum, position);
     			break;
     		case 17: //Advance to St. Charles Place or Howard (11) - if you pass Go - collect $200
     			GUIHelper.setMessage("You drew: Advance to " + board[11].name + " - If you pass Go - collect $200");
@@ -558,7 +450,7 @@ public class Player {
     				GUIHelper.setMessage("You passed Go. Collect $200");
     			}
     			position = 11;
-    			GUIHelper.moveTokenImg(player_num, position);
+    			GUIHelper.moveTokenImg(playerNum, position);
     			break;
     		case 18: //Advance token to nearest Utility. If unowned - you may buy it. If owned - throw dice and pay owner a totel ten times the amount thrown.
     			GUIHelper.setMessage("You drew: Advance to the next utility. If unowned - you may buy it. If owned - throw dice and pay owner a total ten times the amount thrown");
@@ -569,7 +461,7 @@ public class Player {
     			else {
     				position = 28;	//TODO
     			}
-    			GUIHelper.moveTokenImg(player_num, position);
+    			GUIHelper.moveTokenImg(playerNum, position);
     			break;
     		case 19: //Advance token to nearest Railroad and pay owner twice the rental. If unowned - you may buy it.
     			GUIHelper.setMessage("You drew: Advance to the next Railroad or Street. If unowned - you may buy it. If owned - pay owner twice the rental price");
@@ -580,7 +472,7 @@ public class Player {
     			else {
     				position = 25;
     			}
-    			GUIHelper.moveTokenImg(player_num, position);
+    			GUIHelper.moveTokenImg(playerNum, position);
     			break;
     		case 20: //Bank pays you dividend of $50
     			GUIHelper.setMessage("You drew: Bank pays you dividend of $50");
@@ -616,12 +508,12 @@ public class Player {
     				GUIHelper.setMessage("You passed Go. Collect $200");
     			}
     			position = 5;
-    			GUIHelper.moveTokenImg(player_num, position);
+    			GUIHelper.moveTokenImg(playerNum, position);
     			break;
     		case 25: //Take a walk on the Boardwalk or Montana Hall - Advance token to Boardwalk (39)
     			GUIHelper.setMessage("You drew: take a walk to " + board[39].name);
     			position = 39;
-    			GUIHelper.moveTokenImg(player_num, position);
+    			GUIHelper.moveTokenImg(playerNum, position);
     			break;
     		case 26: //You have been elected Chairman of the Board - Pay each player $50
     			GUIHelper.setMessage("You drew: You have been elected Chairman of the Board - pay each player $50");

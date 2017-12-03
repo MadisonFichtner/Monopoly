@@ -11,7 +11,6 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
-import javafx.stage.Window;
 import javafx.util.StringConverter;
 
 import java.net.URL;
@@ -21,32 +20,33 @@ import java.util.ResourceBundle;
 
 public class TradeController implements Initializable {
 	@FXML
-	public ChoiceBox<Deed> trade_deed;
-	public ChoiceBox<Player> trade_player;
-	public TextField trade_amount;
-	public Button accept_button;
+	public ChoiceBox<Deed> tradeDeed;
+	public ChoiceBox<Player> tradePlayer;
+	public TextField tradeAmount;
+	public Button acceptButton;
 
 	public void initialize(URL fxmlFileLocation, ResourceBundle resources) {
+		Board board = GUIHelper.getBoard();
 		ArrayList<Player> players = new ArrayList<Player>(Arrays.asList(GUIHelper.getPlayers()));
-		trade_player.setItems(FXCollections.observableArrayList(players));
+		
+		tradePlayer.setItems(FXCollections.observableArrayList(players));
+		tradeDeed.setItems(FXCollections.observableArrayList(board.current.deeds));
 
-		trade_deed.setItems(FXCollections.observableArrayList(Board.current.deeds));
-
-		accept_button.setOnAction(new EventHandler<ActionEvent>() {
+		acceptButton.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
-				if (trade_player.getValue().money >= Integer.parseInt(trade_amount.getText())) {
-					Stage stage = (Stage) accept_button.getScene().getWindow();
+				if (tradePlayer.getValue().money >= Integer.parseInt(tradeAmount.getText())) {
+					Stage stage = (Stage) acceptButton.getScene().getWindow();
 	            	stage.close();
-					Board.current.traded_deed(trade_deed.getValue(), trade_player.getValue(), Integer.parseInt(trade_amount.getText()));
+					board.current.tradedDeed(tradeDeed.getValue(), tradePlayer.getValue(), Integer.parseInt(tradeAmount.getText()));
 				} else {
-					GUIHelper.setMessage(trade_player.getValue().name + " does not have $" + Integer.parseInt(trade_amount.getText()) + "!");
+					GUIHelper.setMessage(tradePlayer.getValue().name + " does not have $" + Integer.parseInt(tradeAmount.getText()) + "!");
 				}
 			}
 		});
 
 		// Changes the way the deed are displayed
-		trade_deed.setConverter(new StringConverter<Deed>() {
+		tradeDeed.setConverter(new StringConverter<Deed>() {
 			@Override
 			public String toString(Deed deed) {
 				return new StringBuilder(deed.name).toString();
@@ -59,7 +59,7 @@ public class TradeController implements Initializable {
 		});
 
 		// Changes the way the players are displayed
-		trade_player.setConverter(new StringConverter<Player>() {
+		tradePlayer.setConverter(new StringConverter<Player>() {
 			@Override
 			public String toString(Player person) {
 				return new StringBuilder(person.name + " - $" + person.money).toString();
@@ -72,15 +72,15 @@ public class TradeController implements Initializable {
 		});
 
 		// This listener deletes any characters that get addedn to the amount
-		trade_amount.lengthProperty().addListener(new ChangeListener<Number>() {
+		tradeAmount.lengthProperty().addListener(new ChangeListener<Number>() {
 			@Override
 			public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
 				if (newValue.intValue() > oldValue.intValue()) {
-					char ch = trade_amount.getText().charAt(oldValue.intValue());
+					char ch = tradeAmount.getText().charAt(oldValue.intValue());
 					// Check if the new character is the number or other's
 					if (!(ch >= '0' && ch <= '9')) {
 						// if it's not number then just setText to previous one
-						trade_amount.setText(trade_amount.getText().substring(0, trade_amount.getText().length() - 1));
+						tradeAmount.setText(tradeAmount.getText().substring(0, tradeAmount.getText().length() - 1));
 					}
 				}
 			}

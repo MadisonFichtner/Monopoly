@@ -10,34 +10,34 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.stage.Stage;
-import javafx.stage.Window;
 import javafx.util.StringConverter;
 
 public class MortgageController implements Initializable {
-	public Button done_button;
-	public ChoiceBox<Deed> deed_box;
+	public Button doneButton;
+	public ChoiceBox<Deed> deedBox;
 
 	public void initialize(URL fxmlFileLocation, ResourceBundle resources) {
-		deed_box.setItems(FXCollections.observableArrayList(Board.current.deeds));
+		Board board = GUIHelper.getBoard();
+		deedBox.setItems(FXCollections.observableArrayList(board.current.deeds));
 		
-		done_button.setOnAction(new EventHandler<ActionEvent>() {
+		doneButton.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
-				if(deed_box.getValue().mortgaged && Board.current.money > deed_box.getValue().mortgage_owed) {
-					Board.current.pay_mortgage_single(deed_box.getValue());
-				} else if (!deed_box.getValue().mortgaged) {
-					Board.current.mortgage_deed(deed_box.getValue());
+				if(deedBox.getValue().mortgaged && board.current.money > deedBox.getValue().mortgageOwed) {
+					board.current.payMortage(deedBox.getValue());
+				} else if (!deedBox.getValue().mortgaged) {
+					board.current.mortgageDeed(deedBox.getValue());
 				}
-				Stage stage = (Stage) done_button.getScene().getWindow();
+				Stage stage = (Stage) doneButton.getScene().getWindow();
             	stage.close();
 			}
 		});
 
 		// Changes the way the deed are displayed
-		deed_box.setConverter(new StringConverter<Deed>() {
+		deedBox.setConverter(new StringConverter<Deed>() {
 			@Override
 			public String toString(Deed deed) {
-				return new StringBuilder(deed.name +" - houses: " + deed.current_houses + " - Hotel: "+ deed.has_hotel + " - Mortgaged: " + deed.mortgaged).toString();
+				return new StringBuilder(deed.name +" - houses: " + deed.currentHouses + " - Hotel: "+ deed.hasHotel + " - Mortgaged: " + deed.mortgaged).toString();
 			}
 
 			@Override

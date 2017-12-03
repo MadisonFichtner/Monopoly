@@ -1,9 +1,9 @@
 package src;
 
 public class Card {
-	public String name;
-	public int type;
-	public boolean isUsable;
+	String name;
+	int type;
+	boolean isUsable;
 	
 	public Card(String name, int type) {
 		this.name = name;

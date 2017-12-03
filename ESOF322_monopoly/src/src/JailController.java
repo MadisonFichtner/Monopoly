@@ -8,32 +8,33 @@ import javafx.event.EventHandler;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.stage.Stage;
-import javafx.stage.Window;
 
 public class JailController implements Initializable {
-	public Button roll_button;
-	public Button pay_button;
+	public Button rollButton;
+	public Button payButton;
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
-		roll_button.setOnAction(new EventHandler<ActionEvent>() {
+		Board board = GUIHelper.getBoard();
+
+		rollButton.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
 				System.out.println("test");
-				Board.current.roll_dice();
-				Board.moveToSpace(true);
+				board.current.rollDice();
+				board.moveToSpace(true);
 				System.out.println("test");
-				Stage stage = (Stage) roll_button.getScene().getWindow();
+				Stage stage = (Stage) rollButton.getScene().getWindow();
             	stage.close();
 			}
 		});
 
-		pay_button.setOnAction(new EventHandler<ActionEvent>() {
+		payButton.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
-				Board.current.in_jail = false;
+				board.current.inJail = false;
                 GUIHelper.enableTurnGUI();
-				Stage stage = (Stage) roll_button.getScene().getWindow();
+				Stage stage = (Stage) rollButton.getScene().getWindow();
             	stage.close();
 			}
 		});
