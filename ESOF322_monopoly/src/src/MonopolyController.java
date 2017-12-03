@@ -3,14 +3,10 @@ package src;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
-import javafx.stage.Stage;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
@@ -43,7 +39,6 @@ public class MonopolyController implements Initializable {
 	}
 
 	public void initialize(URL fxmlFileLocation, ResourceBundle resources) {
-
 		tokenList.add(tokenHat);
 		tokenList.add(tokenDog);
 		tokenList.add(tokenShip);
@@ -55,32 +50,14 @@ public class MonopolyController implements Initializable {
 		hotelButton.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
-				try {
-					Parent root = FXMLLoader.load(getClass().getResource("hotel.fxml"));
-					Stage trade_stage = new Stage();
-					trade_stage.setTitle("Buy hotel");
-					trade_stage.setScene(new Scene(root));
-					trade_stage.show();
-				} catch (Exception e) {
-					System.out.println("Something went wrong");
-					GUIHelper.setMessage("No eligible properties, buy houses first");
-				}
+				GUIHelper.openWindow("hotel");
 			}
 		});
 
 		mortButton.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
-
-				try {
-					Parent root = FXMLLoader.load(getClass().getResource("mortgage.fxml"));
-					Stage trade_stage = new Stage();
-					trade_stage.setTitle("Choose a deed");
-					trade_stage.setScene(new Scene(root));
-					trade_stage.show();
-				} catch (Exception e) {
-					System.out.println("Something went wrong");
-				}
+				GUIHelper.openWindow("mortgage");
 			}
 		});
 
@@ -88,30 +65,14 @@ public class MonopolyController implements Initializable {
 		sellButton.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
-				try {
-					Parent root = FXMLLoader.load(getClass().getResource("trade.fxml"));
-					Stage trade_stage = new Stage();
-					trade_stage.setTitle("Trade");
-					trade_stage.setScene(new Scene(root));
-					trade_stage.show();
-				} catch (Exception e) {
-					System.out.println("Something went wrong");
-				}
+				GUIHelper.openWindow("trade");
 			}
 		});
 
 		houseButton.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
-				try {
-					Parent root = FXMLLoader.load(getClass().getResource("house.fxml"));
-					Stage trade_stage = new Stage();
-					trade_stage.setTitle("Buy hotel");
-					trade_stage.setScene(new Scene(root));
-					trade_stage.show();
-				} catch (Exception e) {
-					System.out.println("Something went wrong");
-				}
+				GUIHelper.openWindow("house");
 			}
 		});
 
@@ -133,15 +94,7 @@ public class MonopolyController implements Initializable {
 
 	// Opens the UI for inputing player names
 	public void getPlayers() {
-		try {
-			Parent root = FXMLLoader.load(getClass().getResource("users.fxml"));
-			Stage trade_stage = new Stage();
-			trade_stage.setTitle("Players");
-			trade_stage.setScene(new Scene(root));
-			trade_stage.show();
-		} catch (Exception e) {
-			System.out.println("Something went wrong");
-		}
+		GUIHelper.openWindow("users");
 	}
 
 	public void disableButtons() {

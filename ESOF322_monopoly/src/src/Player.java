@@ -13,9 +13,7 @@ public class Player {
     int diceSum = 0;
     int railroadCount = 0;
     int utilitiesCount = 0;
-    int buildingValue = 0;
     int mortgageOwed = 0;
-    boolean hasStreet = false;
     boolean inJail = false;
     int turnsInJail = 0;
     int netWorth = money;
@@ -33,10 +31,10 @@ public class Player {
      *
      * @param toke -> name of token entered by user (make picture on board)
      */
-    public Player(String name, String token, int player_num) {
+    public Player(String name, String token, int playerNum) {
         this.name = name;
         this.token = token;
-        this.playerNum = player_num;
+        this.playerNum = playerNum;
     }
 
     // If a player buys a deed through the gui this is called, otherwise auction is
@@ -82,18 +80,18 @@ public class Player {
      * @param spaces -> dice_sum
      */
     public void move() {
-        boolean passed_go = false;
+        boolean passedGo = false;
         if (position + diceSum >= 40) {
             int overflow = (position + diceSum) - 40;
             position = overflow;
-            passed_go = true;
+            passedGo = true;
         } else
             position = position += diceSum;
 
         // if position 0 get passed
         // passed_go = true;
 
-        if (passed_go == true) {
+        if (passedGo == true) {
             money += 200;
             System.out.println("You passed go, have $200 on me!");
         }
@@ -232,14 +230,14 @@ public class Player {
      *
      */
     public void payRent(Deed deed) {
-        Player receiving_player = deed.owner;
+        Player receivingPlayer = deed.owner;
 
-        if (receiving_player == this) {
+        if (receivingPlayer == this) {
         } else {
             money -= deed.calculateRent();
-            receiving_player.money += deed.calculateRent();
-            System.out.println(receiving_player.name + " recieved $" + deed.calculateRent() + " in rent.");
-            GUIHelper.setMessage(name + " pays $" + deed.calculateRent() + " in rent to " + receiving_player.name
+            receivingPlayer.money += deed.calculateRent();
+            System.out.println(receivingPlayer.name + " recieved $" + deed.calculateRent() + " in rent.");
+            GUIHelper.setMessage(name + " pays $" + deed.calculateRent() + " in rent to " + receivingPlayer.name
                     + " for " + deed.name + " and now has $" + money);
         }
     }
@@ -247,7 +245,7 @@ public class Player {
     /*
      * Calculates a user's net worth based on current money, and properties owned
      */
-    public int calculate_net_worth() {
+    public int calculateNetWorth() {
         int net_worth = 0; // = all of items values and money added up
         net_worth += money;
         for (int i = 0; i < deeds.size(); i++) {
@@ -264,47 +262,11 @@ public class Player {
      */
     public void payTax(int response) {
         if (response == 1) {
-            money -= calculate_net_worth() * .1;
+            money -= calculateNetWorth() * .1;
         } else if (response == 2) {
             money -= 100;
         } else {
             money -= 200;
-        }
-    }
-
-    /*
-     * Prints out deeds owned by player
-     */
-    public void printDeeds() {
-        for (int i = 0; i < deeds.size(); i++) {
-            System.out.println(i + ") Name: " + deeds.get(i).name + "| Rent Cost: " + deeds.get(i).calculateRent()
-                    + "| Houses: " + deeds.get(i).currentHouses + "| Hotel: " + deeds.get(i).hasHotel
-                    + "| Mortgage Value:" + deeds.get(i).calculateMortgage()); // add sell info, and houses/hotels
-        }
-    }
-
-    /*
-     * Prints only mortgaged deeds
-     */
-    public void printMortgagedDeeds() {
-        for (int i = 0; i < deeds.size(); i++) {
-            if (deeds.get(i).mortgaged == true) {
-                System.out
-                        .println(i + ") Name: " + deeds.get(i).name + "| Mortgage Owed: " + deeds.get(i).mortgageOwed);
-            }
-        }
-    }
-
-    /*
-     * Prints only street type deeds
-     */
-    public void printStreets() {
-        for (int i = 0; i < deeds.size(); i++) {
-            if (deeds.get(i).type.equals("street")) {
-                System.out.println(i + ") Name: " + deeds.get(i).name + "| Build Cost:" + deeds.get(i).buildCost
-                        + "| Current Houses: " + deeds.get(i).currentHouses + "| Has a Hotel: "
-                        + deeds.get(i).hasHotel);
-            }
         }
     }
 

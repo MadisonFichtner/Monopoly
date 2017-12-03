@@ -43,23 +43,23 @@ public class Deed {
 	 * 
 	 * @param deed_type -> Street, Railroad, Utility, or other
 	 */
-	public Deed(int position, String name, int property_group, String color, int purchase_price, int mortgage_value,
-			int rent, int rent1house, int rent2house, int rent3house, int rent4house, int rent_hotel, int build_cost,
-			String deed_type) {
+	public Deed(int position, String name, int propertyGroup, String color, int purchasePrice, int mortgageValue,
+			int rent, int rent1house, int rent2house, int rent3house, int rent4house, int rentHotel, int buildCost,
+			String deedType) {
 		this.position = position;
 		this.name = name;
-		this.propertyGroup = property_group;
+		this.propertyGroup = propertyGroup;
 		this.color = color;
-		this.price = purchase_price;
-		this.mortgageValue = mortgage_value;
+		this.price = purchasePrice;
+		this.mortgageValue = mortgageValue;
 		this.rent = rent;
 		this.rent1house = rent1house;
 		this.rent2house = rent2house;
 		this.rent3house = rent3house;
 		this.rent4house = rent4house;
-		this.rentHotel = rent_hotel;
-		this.buildCost = build_cost;
-		this.type = deed_type;
+		this.rentHotel = rentHotel;
+		this.buildCost = buildCost;
+		this.type = deedType;
 	}
 
 	/*

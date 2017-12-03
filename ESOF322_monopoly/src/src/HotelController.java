@@ -17,21 +17,21 @@ public class HotelController {
 	public ChoiceBox<Deed> deedBox;
 
 	public void initialize(URL fxmlFileLocation, ResourceBundle resources) {
-		ArrayList<Deed> deeds_with_max = new ArrayList<Deed>();
+		ArrayList<Deed> deedsWithMax = new ArrayList<Deed>();
 		Board board = GUIHelper.getBoard();
 		
 		for (int i = 0; i < board.current.deeds.size(); i++) {
 			if (board.current.deeds.get(i).maxHouses == true) {
-				deeds_with_max.add(board.current.deeds.get(i));
+				deedsWithMax.add(board.current.deeds.get(i));
 			}
 		}
 
-		deedBox.setItems(FXCollections.observableArrayList(deeds_with_max));
+		deedBox.setItems(FXCollections.observableArrayList(deedsWithMax));
 
 		doneButton.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
-				board.current.boughtHouse(deedBox.getValue(), 1);
+				board.current.boughtHotel(deedBox.getValue());
 				Stage stage = (Stage) doneButton.getScene().getWindow();
             	stage.close();
 			}

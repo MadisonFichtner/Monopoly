@@ -20,10 +20,8 @@ public class JailController implements Initializable {
 		rollButton.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
-				System.out.println("test");
 				board.current.rollDice();
 				board.moveToSpace(true);
-				System.out.println("test");
 				Stage stage = (Stage) rollButton.getScene().getWindow();
             	stage.close();
 			}

@@ -55,15 +55,15 @@ public class GUIHelper {
 		return board;
 	}
 	
-	public static void openAuctionWindow() {
+	public static void openWindow(String name) {
 		try {
-            Parent root = FXMLLoader.load(Board.class.getResource("auction.fxml"));
+            Parent root = FXMLLoader.load(Board.class.getResource(name + ".fxml"));
             Stage trade_stage = new Stage();
-            trade_stage.setTitle("Auction");
+            trade_stage.setTitle(name);
             trade_stage.setScene(new Scene(root));
             trade_stage.show();
         } catch (Exception e) {
-            System.out.println("Something went wrong");
+            System.out.println("Something went wrong when opening " + name + " window.");
         }
 	}
 
