@@ -27,10 +27,6 @@ public class Player {
         return deeds;
     }
 
-    public void setDeeds(ArrayList<Deed> deeds) {
-        this.deeds = deeds;
-    }
-
     public int getMoney() {
         return money;
     }
@@ -39,36 +35,12 @@ public class Player {
         this.money = money;
     }
 
-    public String getToken() {
-        return token;
-    }
-
-    public void setToken(String token) {
-        this.token = token;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public int getPosition() {
-        return position;
-    }
-
     public void setPosition(int position) {
         this.position = position;
     }
 
-    public int[] getDice() {
-        return dice;
-    }
-
-    public void setDice(int[] dice) {
-        this.dice = dice;
+    public int getPosition() {
+        return position;
     }
 
     public int getDiceSum() {
@@ -79,22 +51,6 @@ public class Player {
         this.diceSum = diceSum;
     }
 
-    public int getRailroadCount() {
-        return railroadCount;
-    }
-
-    public void setRailroadCount(int railroadCount) {
-        this.railroadCount = railroadCount;
-    }
-
-    public int getUtilitiesCount() {
-        return utilitiesCount;
-    }
-
-    public void setUtilitiesCount(int utilitiesCount) {
-        this.utilitiesCount = utilitiesCount;
-    }
-
     public int getMortgageOwed() {
         return mortgageOwed;
     }
@@ -103,76 +59,20 @@ public class Player {
         this.mortgageOwed = mortgageOwed;
     }
 
-    public boolean isInJail() {
-        return inJail;
-    }
-
-    public void setInJail(boolean inJail) {
-        this.inJail = inJail;
-    }
-
-    public int getTurnsInJail() {
-        return turnsInJail;
-    }
-
-    public void setTurnsInJail(int turnsInJail) {
-        this.turnsInJail = turnsInJail;
-    }
-
-    public int getNetWorth() {
-        return netWorth;
-    }
-
     public void setNetWorth(int netWorth) {
         this.netWorth = netWorth;
-    }
-
-    public int[] getPropertyTotals() {
-        return propertyTotals;
-    }
-
-    public void setPropertyTotals(int[] propertyTotals) {
-        this.propertyTotals = propertyTotals;
     }
 
     public int[] getPropertyGroups() {
         return propertyGroups;
     }
 
+    public int getNetWorth() {
+        return netWorth;
+    }
+
     public void setPropertyGroups(int[] propertyGroups) {
         this.propertyGroups = propertyGroups;
-    }
-
-    public int getPlayerNum() {
-        return playerNum;
-    }
-
-    public void setPlayerNum(int playerNum) {
-        this.playerNum = playerNum;
-    }
-
-    public int getGetOutOfJail() {
-        return getOutOfJail;
-    }
-
-    public void setGetOutOfJail(int getOutOfJail) {
-        this.getOutOfJail = getOutOfJail;
-    }
-
-    public int getCurrentHouses() {
-        return currentHouses;
-    }
-
-    public void setCurrentHouses(int currentHouses) {
-        this.currentHouses = currentHouses;
-    }
-
-    public int getCurrentHotels() {
-        return currentHotels;
-    }
-
-    public void setCurrentHotels(int currentHotels) {
-        this.currentHotels = currentHotels;
     }
 
     int currentHotels = 0;
@@ -268,7 +168,12 @@ public class Player {
     public void moveToJail() {
         position = 10;
         inJail = true;
-        GUIHelper.moveTokenImg(this.playerNum, 10);
+        try {
+            GUIHelper.moveTokenImg(this.playerNum, 10);
+        } catch (Exception e) {
+            System.out.println("You might be testing, otherwise your GUI has crashed");
+            e.printStackTrace();
+        }
 
 
     }
@@ -310,7 +215,12 @@ public class Player {
     }
 
     public void payBail() {
-        GUIHelper.setMessage("Turn 3 in jail. You must pay $50 and roll forward.");
+        try {
+            GUIHelper.setMessage("Turn 3 in jail. You must pay $50 and roll forward.");
+        } catch (Exception e) {
+            System.out.println("You might be testing, otherwise your GUI has crashed");
+            e.printStackTrace();
+        }
         money -= 50;
         inJail = false;
         turnsInJail = 0;
@@ -364,7 +274,12 @@ public class Player {
         money += price;
         player.money -= price;
         System.out.println("Property has been transfered to the buyer.");
-        GUIHelper.setMessage(player.name + " Bought " + deed.name + " from " + name + " for $" + price);
+        try {
+            GUIHelper.setMessage(player.name + " Bought " + deed.name + " from " + name + " for $" + price);
+        } catch (Exception e) {
+            System.out.println("You might be testing, otherwise your GUI has crashed");
+            e.printStackTrace();
+        }
     }
 
     // In design we have this returning an int but i dont see a point in that
