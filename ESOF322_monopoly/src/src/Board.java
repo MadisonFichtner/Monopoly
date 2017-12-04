@@ -17,6 +17,14 @@ public class Board {
 	int doublesRolled; // Keeps track of how many times player has rolled doubles
 	Player[] users;
 
+	public Player getCurrent() {
+		return current;
+	}
+
+	public void setCurrent(Player current) {
+		this.current = current;
+	}
+
 	public Board(Player[] users, Deed[] newBoard, ArrayList<Card> communityChest, ArrayList<Card> chance) {
 		this.numHotelsRemaining = 12;
 		this.numHousesRemaining = 32;
@@ -32,7 +40,12 @@ public class Board {
 	// moveToSpace()
 	public void beginTurn(Player player) {
 		current = player;
-		GUIHelper.setMessage("It is " + current.name + "'s turn.");
+		try {
+			GUIHelper.setMessage("It is " + current.name + "'s turn.");
+		} catch (Exception e) {
+			System.out.println("You might be testing, otherwise your GUI has crashed");
+			e.printStackTrace();
+		}
 		position = current.position;
 		doublesRolled = 0; // Keeps track of how many times player has rolled doubles
 		if (player.inJail == true) {
@@ -41,35 +54,59 @@ public class Board {
 			if (player.turnsInJail >= 3) {
 				player.payBail();
 			} else {
-				GUIHelper.openWindow("jail");
+				try {
+					GUIHelper.openWindow("jail");
+				} catch (Exception e) {
+					System.out.println("You might be testing, otherwise your GUI has crashed");
+					e.printStackTrace();
+				}
 			}
 		} else {
-			moveToSpace(false);
+			try {
+				moveToSpace(false);
+			} catch (Exception e) {
+				System.out.println("You might be testing, otherwise your GUI has crashed");
+				e.printStackTrace();
+			}
 		}
 	}
 
 	// Move the player and deals with what happens at that space. If the player
 	// started the turn in jail, don't roll.
-	// The buy Property ui hasn't been created or connected to auctionProperty()
 	public void moveToSpace(boolean fromJail) {
 		if (fromJail && current.inJail == true) {
 			current.rollDice();
 
 			if (current.dice[0] == current.dice[1]) // If doubles are rolled
 			{
-				GUIHelper.setMessage("You rolled doubles. Gratz.");
+				try {
+					GUIHelper.setMessage("You rolled doubles. Gratz.");
+				} catch (Exception e) {
+					System.out.println("You might be testing, otherwise your GUI has crashed");
+					e.printStackTrace();
+				}
 				current.inJail = false;
 				current.turnsInJail = 0;
 				current.move();
 			} else // If doubles are not rolled
 			{
-				GUIHelper.setMessage("You did not roll doubles...");
-				GUIHelper.enableTurnGUI();
+				try {
+					GUIHelper.setMessage("You did not roll doubles...");
+					GUIHelper.enableTurnGUI();
+				} catch (Exception e) {
+					System.out.println("You might be testing, otherwise your GUI has crashed");
+					e.printStackTrace();
+				}
 				return;
 			}
 		} else {
 			current.rollDice(); // Player rolls dice, dice values are stored in player class
-			current.move();
+			try {
+				current.move();
+			} catch (Exception e) {
+				System.out.println("You might be testing, otherwise your GUI has crashed");
+				e.printStackTrace();
+			}
 		}
 
 		position = current.position;
@@ -80,14 +117,24 @@ public class Board {
 				|| deedBoard[position].name.equals("GO")) {
 			if (current.inJail == false) {
 				System.out.println("No property to buy. Landed on space is " + deedBoard[position].name + "\n");
-				GUIHelper.setMessage("No property to buy. " + current.name + " landed on " + deedBoard[position].name);
+				try {
+					GUIHelper.setMessage("No property to buy. " + current.name + " landed on " + deedBoard[position].name);
+				} catch (Exception e) {
+					System.out.println("You might be testing, otherwise your GUI has crashed");
+					e.printStackTrace();
+				}
 			}
 		}
 
 		// If player lands on "Go to Jail" send the player to jail
 		else if (deedBoard[position].name.equals("Go to Jail")) {
 			current.moveToJail();
-			GUIHelper.setMessage("You're going to jail!");
+			try {
+				GUIHelper.setMessage("You're going to jail!");
+			} catch (Exception e) {
+				System.out.println("You might be testing, otherwise your GUI has crashed");
+				e.printStackTrace();
+			}
 		}
 
 		// If player lands on "Income Tax", give them the option to pay $200 or %10 of
@@ -95,22 +142,42 @@ public class Board {
 		else if (deedBoard[position].name.equals("Income Tax")) {
 			System.out.println(
 					"You landed on Income Tax, you have to pay 10% of your net worth, or $200. (1. 10% / 2. $200)");
-			GUIHelper.setMessage("You have to pay income tax, and now have $" + current.money);
+			try {
+				GUIHelper.setMessage("You have to pay income tax, and now have $" + current.money);
+			} catch (Exception e) {
+				System.out.println("You might be testing, otherwise your GUI has crashed");
+				e.printStackTrace();
+			}
 			// int answer = in.nextInt(); Fix this with a a prompt later
 			current.payTax(1);
 		} else if (deedBoard[position].name.equals("Luxury Tax")) {
 			System.out.println("You landed on Luxury Tax, you have to pay $100");
-			GUIHelper.setMessage("You have to pay Luxury tax, and now have $" + current.money);
+			try {
+				GUIHelper.setMessage("You have to pay Luxury tax, and now have $" + current.money);
+			} catch (Exception e) {
+				System.out.println("You might be testing, otherwise your GUI has crashed");
+				e.printStackTrace();
+			}
 			// int answer = in.nextInt(); Fix this with a a prompt later
 			current.payTax(2);
 		}
 
 		// Handles if they land on community chest or chance
 		else if (deedBoard[current.position].name.equals("Community Chest")) {
-			GUIHelper.setMessage("You landed on the Community Chest! Drawing and playing a card.");
+			try {
+				GUIHelper.setMessage("You landed on the Community Chest! Drawing and playing a card.");
+			} catch (Exception e) {
+				System.out.println("You might be testing, otherwise your GUI has crashed");
+				e.printStackTrace();
+			}
 			current.communityChest(chance.get(0), users, deedBoard);
 		} else if (deedBoard[current.position].name.equals("Chance")) {
-			GUIHelper.setMessage("You landed on Chance! Drawing and playing a card.");
+			try {
+				GUIHelper.setMessage("You landed on Chance! Drawing and playing a card.");
+			} catch (Exception e) {
+				System.out.println("You might be testing, otherwise your GUI has crashed");
+				e.printStackTrace();
+			}
 			int case18case19 = 0;
 			case18case19 = current.chance(chance.get(0), users, deedBoard);
 			if (case18case19 != 0) {
@@ -126,7 +193,12 @@ public class Board {
 		// user to buy the property, or it will be auctioned
 		else if (deedBoard[current.position].owner == null) {// && is_free_parking == false)
 			if (current.money > deedBoard[current.position].price) {
-				GUIHelper.openWindow("purchase");
+				try {
+					GUIHelper.openWindow("purchase");
+				} catch (Exception e) {
+					System.out.println("You might be testing, otherwise your GUI has crashed");
+					e.printStackTrace();
+				}
 			} else {
 				auctionProperty();
 			}
@@ -151,7 +223,12 @@ public class Board {
 			GUIHelper.setMessage(current.name + " did not buy " + deedBoard[position].name + " so "
 					+ deedBoard[position].name + " will be auctioned.");
 		}
-		GUIHelper.openWindow("auction");
+		try {
+			GUIHelper.openWindow("auction");
+		} catch (Exception e) {
+			System.out.println("You might be testing, otherwise your GUI has crashed");
+			e.printStackTrace();
+		}
 	}
 
 	public void checkForDoubles(boolean fromJail) {
@@ -167,7 +244,12 @@ public class Board {
 				moveToSpace(false);
 			}
 		}
-		GUIHelper.enableTurnGUI();
+		try {
+			GUIHelper.enableTurnGUI();
+		} catch (Exception e) {
+			System.out.println("You might be testing, otherwise your GUI has crashed");
+			e.printStackTrace();
+		}
 	}
 
 	public void auction(int[] bids, int highestBid, Deed deed) {
