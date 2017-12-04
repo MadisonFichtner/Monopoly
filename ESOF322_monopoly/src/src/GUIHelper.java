@@ -1,62 +1,67 @@
 package src;
 
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Scanner;
 
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.stage.Stage;
-
 public class GUIHelper {
-	private static MonopolyController monopoly;
-	private static final String COMMA_DELIMITER = ",";
-	private static int users = 4;
-	private static Player[] players = new Player[users];
-	private static Board board;
-	private static int playerTurn = 0;
+    private static MonopolyController monopoly;
+    private static final String COMMA_DELIMITER = ",";
+    private static int users = 4;
+    private static Player[] players = new Player[users];
+    private static Board board;
+    private static int playerTurn = 0;
 
-	public static void setMessage(String string) {
-		monopoly.message.setText(string);
-	}
+    public static void setMessage(String string) {
+        monopoly.message.setText(string);
+    }
 
-	public static void setMonopoly(MonopolyController monopolyCont) {
-		monopoly = monopolyCont;
-	}
+    public static void setMonopoly(MonopolyController monopolyCont) {
+        monopoly = monopolyCont;
+    }
 
-	public static void enableRollGUI() {
-		monopoly.disableButtons();
-	}
+    public static void enableRollGUI() {
+        monopoly.disableButtons();
+    }
 
-	public static void enableTurnGUI() {
-		monopoly.enableButtons();
-	}
+    public static void enableTurnGUI() {
+        monopoly.enableButtons();
+    }
 
-	public static void moveTokenImg(int player_num, int spot) {
-		monopoly.moveToken(player_num, spot);
-	}
-	
-	public static int getNumPlayers() {
-		return players.length;
-	}
-	
-	public static Player getPlayer(int index) {
-		return players[index];
-	}
-	
-	public static Player[] getPlayers() {
-		return players;
-	}
-	
-	public static Board getBoard() {
-		return board;
-	}
-	
-	public static void openWindow(String name) {
-		try {
+    public static void moveTokenImg(int player_num, int spot) {
+        try {
+            monopoly.moveToken(player_num, spot);
+        } catch (Exception e) {
+            System.out.println("You might be testing, otherwise your GUI has crashed");
+            e.printStackTrace();
+        }
+    }
+
+    public static int getNumPlayers() {
+        return players.length;
+    }
+
+    public static Player getPlayer(int index) {
+        return players[index];
+    }
+
+    public static Player[] getPlayers() {
+        return players;
+    }
+
+    public static Board getBoard() {
+        return board;
+    }
+
+    public static void openWindow(String name) {
+        try {
             Parent root = FXMLLoader.load(Board.class.getResource(name + ".fxml"));
             Stage trade_stage = new Stage();
             trade_stage.setTitle(name);
@@ -65,20 +70,20 @@ public class GUIHelper {
         } catch (Exception e) {
             System.out.println("Something went wrong when opening " + name + " window.");
         }
-	}
+    }
 
-	public static void nextTurn() {
-		enableRollGUI();
-		playerTurn++;
-		if (playerTurn == users) {
-			playerTurn = 0;
-		}
-	}
-	
+    public static void nextTurn() {
+        enableRollGUI();
+        playerTurn++;
+        if (playerTurn == users) {
+            playerTurn = 0;
+        }
+    }
+
     public static void takeTurn() {
         board.beginTurn(players[playerTurn]);
     }
-    
+
     //MAKE RECEIVE MONOPOLY BOARD OR MSU BOARD
     //USE APPROPRIATE BOARD.JPG, DEEDS.CSV AND CARDS.CSV
     //is called by users.fxml
@@ -86,9 +91,9 @@ public class GUIHelper {
         Deed[] deeds = new Deed[40];
         ArrayList<Card> communityChest = new ArrayList<Card>();
         ArrayList<Card> chance = new ArrayList<Card>();
-        
+
         //if(users choice == monopoly)
-        	//String deedsFileName = "monopolyDeeds.csv";
+        //String deedsFileName = "monopolyDeeds.csv";
         //else
         String deedsFileName = "MSUdeeds.csv"; // just a sample file name
         File csvDeedsFile = new File(deedsFileName);
@@ -97,41 +102,41 @@ public class GUIHelper {
         } catch (FileNotFoundException e) {
             System.out.println("No CSV with that name found!");
         }
-        
+
         //if(users choice == monopoly)
-        	//String communityFileName = "monopolyChestCards.csv";
+        //String communityFileName = "monopolyChestCards.csv";
         //else
         String communityFileName = "MSUChestCards.csv";
         File csvCommunityFile = new File(communityFileName);
         try {
-        	communityChest = parseCommunityCSV(csvCommunityFile);
+            communityChest = parseCommunityCSV(csvCommunityFile);
         } catch (FileNotFoundException e) {
-        	System.out.println("No CSV with that name found!");
+            System.out.println("No CSV with that name found!");
         }
-        
+
         //if(users choice == monopoly)
-        	//String chanceFileName = "monopolyChanceCards.csv";
+        //String chanceFileName = "monopolyChanceCards.csv";
         //else
         String chanceFileName = "MSUChanceCards.csv";
         File csvChanceFile = new File(chanceFileName);
         try {
-        	chance = parseChanceCSV(csvChanceFile);
+            chance = parseChanceCSV(csvChanceFile);
         } catch (FileNotFoundException e) {
-        	System.out.println("No CSV with that name found!");
+            System.out.println("No CSV with that name found!");
         }
 
         for (int i = 0; i < users.length; i++) {
             players[i] = new Player(users[i].toString(), "token" + 1, i);
         }
-        
+
         //Randomizing cards
         Collections.shuffle(communityChest);
         Collections.shuffle(chance);
-        
+
         //Board now takes in the communityChest and chance cards
         board = new Board(players, deeds, communityChest, chance);
     }
-    
+
     /*
      * Parses the inputted .csv file to populate the game board with deeds
      */
@@ -163,38 +168,38 @@ public class GUIHelper {
         in.close();
         return deeds;
     }
-    
+
     public static ArrayList<Card> parseCommunityCSV(File csv_file) throws FileNotFoundException {
-    	//Card[] community = new Card[16];
+        //Card[] community = new Card[16];
         ArrayList<Card> community = new ArrayList<Card>();
-    	Scanner in = new Scanner(csv_file);
-    	in.useDelimiter(COMMA_DELIMITER);
-    	for(int i = 0; i < 16; i++) {
-    		String name = in.next();
-    		int type = in.nextInt();
-    		in.next();
-    		
-    		Card card = new Card(name, type);	
-    		community.add(card);
-    	}
-    	in.close();
-    	return community;
+        Scanner in = new Scanner(csv_file);
+        in.useDelimiter(COMMA_DELIMITER);
+        for (int i = 0; i < 16; i++) {
+            String name = in.next();
+            int type = in.nextInt();
+            in.next();
+
+            Card card = new Card(name, type);
+            community.add(card);
+        }
+        in.close();
+        return community;
     }
-    
+
     public static ArrayList<Card> parseChanceCSV(File csv_file) throws FileNotFoundException {
-    	//Card[] chance = new Card[15];
+        //Card[] chance = new Card[15];
         ArrayList<Card> chance = new ArrayList<Card>();
-    	Scanner in = new Scanner(csv_file);
-    	in.useDelimiter(COMMA_DELIMITER);
-    	for(int i = 0; i < 15; i++) {
-    		String name = in.next();
-    		int type = in.nextInt();
-    		in.next();
-    		
-    		Card card = new Card(name, type);
-    		chance.add(card);
-    	}
-    	in.close();
-    	return chance;
+        Scanner in = new Scanner(csv_file);
+        in.useDelimiter(COMMA_DELIMITER);
+        for (int i = 0; i < 15; i++) {
+            String name = in.next();
+            int type = in.nextInt();
+            in.next();
+
+            Card card = new Card(name, type);
+            chance.add(card);
+        }
+        in.close();
+        return chance;
     }
 }

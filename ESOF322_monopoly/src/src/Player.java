@@ -214,8 +214,13 @@ public class Player {
             }
         }
 
-        GUIHelper.setMessage(name + " bought " + deed.name + " and has now currently has $" + money);
-        GUIHelper.enableTurnGUI();
+        try {
+            GUIHelper.setMessage(name + " bought " + deed.name + " and has now currently has $" + money);
+            GUIHelper.enableTurnGUI();
+        } catch (Exception e) {
+            System.out.println("You might be testing, otherwise your GUI has crashed");
+            e.printStackTrace();
+        }
     }
 
     /*
@@ -248,7 +253,12 @@ public class Player {
             money += 200;
             System.out.println("You passed go, have $200 on me!");
         }
-        GUIHelper.moveTokenImg(playerNum, position);
+        try {
+            GUIHelper.moveTokenImg(playerNum, position);
+        } catch (Exception e) {
+            System.out.println("You might be testing, otherwise your GUI has crashed");
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -383,15 +393,20 @@ public class Player {
      *
      */
     public void payRent(Deed deed) {
-        Player receivingPlayer = deed.owner;
+        Player receivingPlayer = deed.getOwner();
 
         if (receivingPlayer == this) {
         } else {
-            money -= deed.calculateRent();
-            receivingPlayer.setMoney(deed.calculateRent() + receivingPlayer.getMoney());
+            this.setMoney(this.getMoney() - deed.calculateRent());
+            receivingPlayer.setMoney(receivingPlayer.getMoney() + deed.calculateRent());
             System.out.println(receivingPlayer.name + " recieved $" + deed.calculateRent() + " in rent.");
-            GUIHelper.setMessage(name + " pays $" + deed.calculateRent() + " in rent to " + receivingPlayer.name
-                    + " for " + deed.name + " and now has $" + money);
+            try {
+                GUIHelper.setMessage(name + " pays $" + deed.calculateRent() + " in rent to " + receivingPlayer.name + " for " + deed.name + " and now has $" + money);
+            } catch (Exception e) {
+                System.out.println("You might be testing, otherwise your GUI has crashed");
+                e.printStackTrace();
+            }
+
         }
     }
 
@@ -428,7 +443,7 @@ public class Player {
             GUIHelper.setMessage("You already have 4 houses on this property, build a hotel.");
         } else if (deed.maxHouses == false && deed.type.equals("street")
                 && deed.grouped == true) {
-        	currentHouses += houses;
+            currentHouses += houses;
             deed.currentHouses += houses;
             money -= deed.buildCost * houses;
             if (deed.currentHouses == 4)
@@ -440,8 +455,8 @@ public class Player {
     }
 
     public void boughtHotel(Deed deed) {
-    	currentHotels++;
-    	currentHouses -= 4;
+        currentHotels++;
+        currentHouses -= 4;
         deed.hasHotel = true;
         deed.currentHouses = 0;
         deed.maxHouses = false;
@@ -449,198 +464,193 @@ public class Player {
         GUIHelper.setMessage("You purchased a hotel on " + deed.name + " for $" + deed.buildCost);
         System.out.println("Remaining money = " + money);
     }
-    
+
     //Handles when a player lands on Community Chest
     public void communityChest(Card card, Player[] users, Deed[] board) {
-    	if (card.name.equals("Get Out of Jail Free")) {
-    		getOutOfJail++;
-    	}
-    	else
-    		useCard(card, users, board);
+        if (card.name.equals("Get Out of Jail Free")) {
+            getOutOfJail++;
+        } else
+            useCard(card, users, board);
     }
-    
+
     //Handles when a player lands on Chance
     public int chance(Card card, Player[] users, Deed[] board) {
-    	int case18case19 = 0;
-    	if (card.name.equals("Get Out of Jail Free")) {
-    		getOutOfJail++;
-    	}
-    	else
-    		case18case19 = useCard(card, users, board);
-    	return case18case19;
+        int case18case19 = 0;
+        if (card.name.equals("Get Out of Jail Free")) {
+            getOutOfJail++;
+        } else
+            case18case19 = useCard(card, users, board);
+        return case18case19;
     }
 
     //List out all possiblities, check csv to see numbers associated with each card
     public int useCard(Card card, Player[] users, Deed[] board) {
-    	int case18case19 = 0;
-    	switch(card.type){
-    		case 0: //Advance to go
-    			position = 0;
-    			money += 200;
-    			GUIHelper.moveTokenImg(playerNum, position);
-    			GUIHelper.setMessage("You drew: Advance to Go, collect $200");
-    			break;
-    		case 1: //bank error - collect 200
-    			GUIHelper.setMessage("You drew: Bank error - collect $200");
-    			break;
-    		case 2: //doctor's fee - pay 50
-    			GUIHelper.setMessage("You drew: Doctor's fee - pay $50");
-    			money -= 50;
-    			break;
-    		case 3: //from sale of stock - get 50
-    			GUIHelper.setMessage("You drew: From sale of stock you get $50");
-    			money += 50;
-    			break;
-    		case 4: //get out of jail card
-    			GUIHelper.setMessage("You drew: Get out of Jail, Free");
-    			break;
-    		case 5:	//Go to jail - do not collect 200 if pass go
-    			GUIHelper.setMessage("You drew: Go to Jail - do not collect Go");
-    			inJail = true;
-    			position = 10;
-    			break;
-    		case 6: //Grand Opera night - collect 50 from all players
-    			GUIHelper.setMessage("You drew: Grand Opera Night - collect $50 from everyone else");
-    			for(int i = 0; i < 4; i++) {
-    				if(users[i] != this) {
-    					users[i].money -= 50;
-    					money += 50;
-    				}
-    			}
-    			break;
-    		case 7: //Holiday fund - receive 100
-    			GUIHelper.setMessage("You drew: Holiday fund - receive $100");
-    			money += 100;
-    			break;
-    		case 8: //Income tax refund - collect 20
-    			GUIHelper.setMessage("You drew: Income tax refund - collect $20");
-    			money += 20;
-    			break;
-    		case 9:	//life insurance - collect 100
-    			GUIHelper.setMessage("You drew: Life insurance matures - collect $100");
-    			money += 100;
-    			break;
-    		case 10: //pay hospital fees - pay 100
-    			GUIHelper.setMessage("You drew: Pay hospital fees - pay $100");
-    			money -= 100;
-    			break;
-    		case 11: //pay school fees of 150
-    			GUIHelper.setMessage("You drew: Pay school fees - pay $150");
-    			money -= 150;
-    			break;
-    		case 12: //Receive consultancy fee - collect 25
-    			GUIHelper.setMessage("You drew: Receive consultancy fee - collect $25");
-    			money += 25;
-    			break;
-    		case 13: //street repairs - pay 40 per house and 115 per hotel
-    			GUIHelper.setMessage("You drew: Street repairs - pay $40 per house and $115 per hotel");
-    			int total = 0;
-    			int housesTotal = currentHouses * 40;
-    			int hotelsTotal = currentHotels * 115;
-    			total = housesTotal + hotelsTotal;
-    			money -= total;
-    			GUIHelper.setMessage("You paid: " + total + " for street repairs");
-    			break;
-    		case 14: //2nd place in beauty contest - collect 10
-    			GUIHelper.setMessage("You drew: Won second prize in a beauty contest - collect $10");
-    			money += 10;
-    			break;
-    		case 15: //inherit 100
-    			GUIHelper.setMessage("You drew: You inherit $100");
-    			money += 100;
-    			break;
-    		case 16: //Advance to Illinois Ave. or Duck Pond (24) - If you pass Go - collect $200
-    			GUIHelper.setMessage("You drew: Advance to " + board[24].name + " - If you pass Go - collect $200");
-    			if(position >= 24) {
-    				money += 200;
-    				GUIHelper.setMessage("You passed Go. Collect $200");
-    			}
-    			position = 24;
-    			GUIHelper.moveTokenImg(playerNum, position);
-    			break;
-    		case 17: //Advance to St. Charles Place or Howard (11) - if you pass Go - collect $200
-    			GUIHelper.setMessage("You drew: Advance to " + board[11].name + " - If you pass Go - collect $200");
-    			if(position >= 11) {
-    				money += 200;
-    				GUIHelper.setMessage("You passed Go. Collect $200");
-    			}
-    			position = 11;
-    			GUIHelper.moveTokenImg(playerNum, position);
-    			break;
-    		case 18: //Advance token to nearest Utility. If unowned - you may buy it. If owned - throw dice and pay owner a totel ten times the amount thrown.
-    			GUIHelper.setMessage("You drew: Advance to the next utility. If unowned - you may buy it. If owned - throw dice and pay owner a total ten times the amount thrown");
-    			case18case19 = 18;
-    			if(position == 7) {
-    				position = 12;	//TODO
-    			}
-    			else {
-    				position = 28;	//TODO
-    			}
-    			GUIHelper.moveTokenImg(playerNum, position);
-    			break;
-    		case 19: //Advance token to nearest Railroad and pay owner twice the rental. If unowned - you may buy it.
-    			GUIHelper.setMessage("You drew: Advance to the next Railroad or Street. If unowned - you may buy it. If owned - pay owner twice the rental price");
-    			case18case19 = 19;
-    			if(position == 7) {
-    				position = 15;
-    			}
-    			else {
-    				position = 25;
-    			}
-    			GUIHelper.moveTokenImg(playerNum, position);
-    			break;
-    		case 20: //Bank pays you dividend of $50
-    			GUIHelper.setMessage("You drew: Bank pays you dividend of $50");
-    			money += 50;
-    			break;
-    		case 21: //Go Back 3 Spaces
-    			GUIHelper.setMessage("You drew: Go back 3 spaces");
-    			if(position - 3 < 0) {
-    				int overflow = position - 3;
-    				overflow = overflow * (-1);
-    				position = 40 - overflow;
-    			}
-    			else
-    				position -= 3;
-    			break;
-    		case 22: //Make general repairs on all your property - For each house pay $25 - For each hotel $100
-    			GUIHelper.setMessage("You drew: Make general repairs on all your property - for each house pay $25 and for each hotel pay $100");
-    			total = 0;
-    			housesTotal = currentHouses * 25;
-    			hotelsTotal = currentHotels * 100;
-    			total = housesTotal + hotelsTotal;
-    			money -= total;
-    			GUIHelper.setMessage("You paid: " + total + " for general repairs");
-    			break;
-    		case 23: //Pay poor tax of $15
-    			GUIHelper.setMessage("You drew: Pay poor tax of $15");
-    			money -= 15;
-    			break;
-    		case 24: //Take a trip to Reading Railroad or Grant Street (5) - If you pass Go - collect $200
-    			GUIHelper.setMessage("You drew: Take a trip to " + board[5].name + " - If you pass GO - collect $200");
-    			if(position >= 5) {
-    				money += 200;
-    				GUIHelper.setMessage("You passed Go. Collect $200");
-    			}
-    			position = 5;
-    			GUIHelper.moveTokenImg(playerNum, position);
-    			break;
-    		case 25: //Take a walk on the Boardwalk or Montana Hall - Advance token to Boardwalk (39)
-    			GUIHelper.setMessage("You drew: take a walk to " + board[39].name);
-    			position = 39;
-    			GUIHelper.moveTokenImg(playerNum, position);
-    			break;
-    		case 26: //You have been elected Chairman of the Board - Pay each player $50
-    			GUIHelper.setMessage("You drew: You have been elected Chairman of the Board - pay each player $50");
-    			for(int i = 0; i < 4; i++) {
-    				if(users[i] != this){
-    					users[i].money += 50;
-    					money -= 50;
-    				}
-    			}
-    			break;
-    			
-    	}
-    	return case18case19;
+        int case18case19 = 0;
+        switch (card.type) {
+            case 0: //Advance to go
+                position = 0;
+                money += 200;
+                GUIHelper.moveTokenImg(playerNum, position);
+                GUIHelper.setMessage("You drew: Advance to Go, collect $200");
+                break;
+            case 1: //bank error - collect 200
+                GUIHelper.setMessage("You drew: Bank error - collect $200");
+                break;
+            case 2: //doctor's fee - pay 50
+                GUIHelper.setMessage("You drew: Doctor's fee - pay $50");
+                money -= 50;
+                break;
+            case 3: //from sale of stock - get 50
+                GUIHelper.setMessage("You drew: From sale of stock you get $50");
+                money += 50;
+                break;
+            case 4: //get out of jail card
+                GUIHelper.setMessage("You drew: Get out of Jail, Free");
+                break;
+            case 5:    //Go to jail - do not collect 200 if pass go
+                GUIHelper.setMessage("You drew: Go to Jail - do not collect Go");
+                inJail = true;
+                position = 10;
+                break;
+            case 6: //Grand Opera night - collect 50 from all players
+                GUIHelper.setMessage("You drew: Grand Opera Night - collect $50 from everyone else");
+                for (int i = 0; i < 4; i++) {
+                    if (users[i] != this) {
+                        users[i].money -= 50;
+                        money += 50;
+                    }
+                }
+                break;
+            case 7: //Holiday fund - receive 100
+                GUIHelper.setMessage("You drew: Holiday fund - receive $100");
+                money += 100;
+                break;
+            case 8: //Income tax refund - collect 20
+                GUIHelper.setMessage("You drew: Income tax refund - collect $20");
+                money += 20;
+                break;
+            case 9:    //life insurance - collect 100
+                GUIHelper.setMessage("You drew: Life insurance matures - collect $100");
+                money += 100;
+                break;
+            case 10: //pay hospital fees - pay 100
+                GUIHelper.setMessage("You drew: Pay hospital fees - pay $100");
+                money -= 100;
+                break;
+            case 11: //pay school fees of 150
+                GUIHelper.setMessage("You drew: Pay school fees - pay $150");
+                money -= 150;
+                break;
+            case 12: //Receive consultancy fee - collect 25
+                GUIHelper.setMessage("You drew: Receive consultancy fee - collect $25");
+                money += 25;
+                break;
+            case 13: //street repairs - pay 40 per house and 115 per hotel
+                GUIHelper.setMessage("You drew: Street repairs - pay $40 per house and $115 per hotel");
+                int total = 0;
+                int housesTotal = currentHouses * 40;
+                int hotelsTotal = currentHotels * 115;
+                total = housesTotal + hotelsTotal;
+                money -= total;
+                GUIHelper.setMessage("You paid: " + total + " for street repairs");
+                break;
+            case 14: //2nd place in beauty contest - collect 10
+                GUIHelper.setMessage("You drew: Won second prize in a beauty contest - collect $10");
+                money += 10;
+                break;
+            case 15: //inherit 100
+                GUIHelper.setMessage("You drew: You inherit $100");
+                money += 100;
+                break;
+            case 16: //Advance to Illinois Ave. or Duck Pond (24) - If you pass Go - collect $200
+                GUIHelper.setMessage("You drew: Advance to " + board[24].name + " - If you pass Go - collect $200");
+                if (position >= 24) {
+                    money += 200;
+                    GUIHelper.setMessage("You passed Go. Collect $200");
+                }
+                position = 24;
+                GUIHelper.moveTokenImg(playerNum, position);
+                break;
+            case 17: //Advance to St. Charles Place or Howard (11) - if you pass Go - collect $200
+                GUIHelper.setMessage("You drew: Advance to " + board[11].name + " - If you pass Go - collect $200");
+                if (position >= 11) {
+                    money += 200;
+                    GUIHelper.setMessage("You passed Go. Collect $200");
+                }
+                position = 11;
+                GUIHelper.moveTokenImg(playerNum, position);
+                break;
+            case 18: //Advance token to nearest Utility. If unowned - you may buy it. If owned - throw dice and pay owner a totel ten times the amount thrown.
+                GUIHelper.setMessage("You drew: Advance to the next utility. If unowned - you may buy it. If owned - throw dice and pay owner a total ten times the amount thrown");
+                case18case19 = 18;
+                if (position == 7) {
+                    position = 12;    //TODO
+                } else {
+                    position = 28;    //TODO
+                }
+                GUIHelper.moveTokenImg(playerNum, position);
+                break;
+            case 19: //Advance token to nearest Railroad and pay owner twice the rental. If unowned - you may buy it.
+                GUIHelper.setMessage("You drew: Advance to the next Railroad or Street. If unowned - you may buy it. If owned - pay owner twice the rental price");
+                case18case19 = 19;
+                if (position == 7) {
+                    position = 15;
+                } else {
+                    position = 25;
+                }
+                GUIHelper.moveTokenImg(playerNum, position);
+                break;
+            case 20: //Bank pays you dividend of $50
+                GUIHelper.setMessage("You drew: Bank pays you dividend of $50");
+                money += 50;
+                break;
+            case 21: //Go Back 3 Spaces
+                GUIHelper.setMessage("You drew: Go back 3 spaces");
+                if (position - 3 < 0) {
+                    int overflow = position - 3;
+                    overflow = overflow * (-1);
+                    position = 40 - overflow;
+                } else
+                    position -= 3;
+                break;
+            case 22: //Make general repairs on all your property - For each house pay $25 - For each hotel $100
+                GUIHelper.setMessage("You drew: Make general repairs on all your property - for each house pay $25 and for each hotel pay $100");
+                total = 0;
+                housesTotal = currentHouses * 25;
+                hotelsTotal = currentHotels * 100;
+                total = housesTotal + hotelsTotal;
+                money -= total;
+                GUIHelper.setMessage("You paid: " + total + " for general repairs");
+                break;
+            case 23: //Pay poor tax of $15
+                GUIHelper.setMessage("You drew: Pay poor tax of $15");
+                money -= 15;
+                break;
+            case 24: //Take a trip to Reading Railroad or Grant Street (5) - If you pass Go - collect $200
+                GUIHelper.setMessage("You drew: Take a trip to " + board[5].name + " - If you pass GO - collect $200");
+                if (position >= 5) {
+                    money += 200;
+                    GUIHelper.setMessage("You passed Go. Collect $200");
+                }
+                position = 5;
+                GUIHelper.moveTokenImg(playerNum, position);
+                break;
+            case 25: //Take a walk on the Boardwalk or Montana Hall - Advance token to Boardwalk (39)
+                GUIHelper.setMessage("You drew: take a walk to " + board[39].name);
+                position = 39;
+                GUIHelper.moveTokenImg(playerNum, position);
+                break;
+            case 26: //You have been elected Chairman of the Board - Pay each player $50
+                GUIHelper.setMessage("You drew: You have been elected Chairman of the Board - pay each player $50");
+                for (int i = 0; i < 4; i++) {
+                    if (users[i] != this) {
+                        users[i].money += 50;
+                        money -= 50;
+                    }
+                }
+                break;
+
+        }
+        return case18case19;
     }
 }
