@@ -388,7 +388,7 @@ public class Player {
         if (receivingPlayer == this) {
         } else {
             money -= deed.calculateRent();
-            receivingPlayer.money += deed.calculateRent();
+            receivingPlayer.setMoney(deed.calculateRent() + receivingPlayer.getMoney());
             System.out.println(receivingPlayer.name + " recieved $" + deed.calculateRent() + " in rent.");
             GUIHelper.setMessage(name + " pays $" + deed.calculateRent() + " in rent to " + receivingPlayer.name
                     + " for " + deed.name + " and now has $" + money);

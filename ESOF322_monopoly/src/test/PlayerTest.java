@@ -54,14 +54,14 @@ public class PlayerTest {
 	@Test
 	public void test_move() {
 		Player test_player = new Player("test", "player", 1);
-//		test_player.getDiceSum() = 6;
+		test_player.setDiceSum(6);
 		int expected_position = 6;
 		test_player.move();
 		boolean valid = false;
 		if(test_player.getPosition() == expected_position)
 			valid = true;
 		assertTrue(valid);
-		//assertEquals(test_player.position, expected_position);
+		assertEquals(test_player.getPosition(), expected_position);
 	}
 	
 	/*
@@ -87,11 +87,11 @@ public class PlayerTest {
 	public void test_pay_rent() {
 		Player test_player = new Player("test", "player", 1);
 		boolean valid = false;
-		Deed test_deed1 = new Deed(0, "test", 0, "blue", 100, 100, 10, 15, 20, 25, 30, 35, 50, "street");
+		Deed test_deed = new Deed(0, "test", 0, "blue", 100, 100, 10, 15, 20, 25, 30, 35, 50, "street");
 		
 		//testing if rent is correctly calculated for no houses/hotels
-		test_player.payRent(test_deed1);
-		if(test_deed1.getCurrentRent() == test_deed1.getRent())
+		test_player.payRent(test_deed);
+		if(test_deed.getCurrentRent() == test_deed.getRent())
 			valid = true;
 		assertTrue(valid);
 	}
