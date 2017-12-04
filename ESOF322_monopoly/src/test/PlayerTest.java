@@ -82,12 +82,16 @@ public class PlayerTest {
         Player testPlayer2 = new Player("test2", "player2", 2);
 
         testPlayer.boughtProperty(testDeed);
-        testPlayer2.boughtProperty(testDeed2);
         testDeed.setOwner(testPlayer);
-        testDeed2.setOwner(testPlayer2);
+        testPlayer.boughtProperty(testDeed2);
+        testDeed2.setOwner(testPlayer);
 
-        testPlayer2.tradedDeed(testDeed, testPlayer,  100);
+        testPlayer.tradedDeed(testDeed, testPlayer2, 50);
+        testPlayer.tradedDeed(testDeed2, testPlayer2, 50);
+
         assertTrue(testPlayer2.getDeeds().contains(testDeed));
+        assertTrue(testPlayer2.getDeeds().contains(testDeed));
+
 
     }
 
