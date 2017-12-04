@@ -22,6 +22,159 @@ public class Player {
     int playerNum = 0;
     int getOutOfJail = 0;
     int currentHouses = 0;
+
+    public ArrayList<Deed> getDeeds() {
+        return deeds;
+    }
+
+    public void setDeeds(ArrayList<Deed> deeds) {
+        this.deeds = deeds;
+    }
+
+    public int getMoney() {
+        return money;
+    }
+
+    public void setMoney(int money) {
+        this.money = money;
+    }
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public int getPosition() {
+        return position;
+    }
+
+    public void setPosition(int position) {
+        this.position = position;
+    }
+
+    public int[] getDice() {
+        return dice;
+    }
+
+    public void setDice(int[] dice) {
+        this.dice = dice;
+    }
+
+    public int getDiceSum() {
+        return diceSum;
+    }
+
+    public void setDiceSum(int diceSum) {
+        this.diceSum = diceSum;
+    }
+
+    public int getRailroadCount() {
+        return railroadCount;
+    }
+
+    public void setRailroadCount(int railroadCount) {
+        this.railroadCount = railroadCount;
+    }
+
+    public int getUtilitiesCount() {
+        return utilitiesCount;
+    }
+
+    public void setUtilitiesCount(int utilitiesCount) {
+        this.utilitiesCount = utilitiesCount;
+    }
+
+    public int getMortgageOwed() {
+        return mortgageOwed;
+    }
+
+    public void setMortgageOwed(int mortgageOwed) {
+        this.mortgageOwed = mortgageOwed;
+    }
+
+    public boolean isInJail() {
+        return inJail;
+    }
+
+    public void setInJail(boolean inJail) {
+        this.inJail = inJail;
+    }
+
+    public int getTurnsInJail() {
+        return turnsInJail;
+    }
+
+    public void setTurnsInJail(int turnsInJail) {
+        this.turnsInJail = turnsInJail;
+    }
+
+    public int getNetWorth() {
+        return netWorth;
+    }
+
+    public void setNetWorth(int netWorth) {
+        this.netWorth = netWorth;
+    }
+
+    public int[] getPropertyTotals() {
+        return propertyTotals;
+    }
+
+    public void setPropertyTotals(int[] propertyTotals) {
+        this.propertyTotals = propertyTotals;
+    }
+
+    public int[] getPropertyGroups() {
+        return propertyGroups;
+    }
+
+    public void setPropertyGroups(int[] propertyGroups) {
+        this.propertyGroups = propertyGroups;
+    }
+
+    public int getPlayerNum() {
+        return playerNum;
+    }
+
+    public void setPlayerNum(int playerNum) {
+        this.playerNum = playerNum;
+    }
+
+    public int getGetOutOfJail() {
+        return getOutOfJail;
+    }
+
+    public void setGetOutOfJail(int getOutOfJail) {
+        this.getOutOfJail = getOutOfJail;
+    }
+
+    public int getCurrentHouses() {
+        return currentHouses;
+    }
+
+    public void setCurrentHouses(int currentHouses) {
+        this.currentHouses = currentHouses;
+    }
+
+    public int getCurrentHotels() {
+        return currentHotels;
+    }
+
+    public void setCurrentHotels(int currentHotels) {
+        this.currentHotels = currentHotels;
+    }
+
     int currentHotels = 0;
 
     /*

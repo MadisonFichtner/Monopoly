@@ -17,6 +17,191 @@ public class Deed {
 	String type;
 	int currentHouses = 0;
 	boolean hasHotel = false;
+
+	public int getPosition() {
+		return position;
+	}
+
+	public void setPosition(int position) {
+		this.position = position;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public int getPropertyGroup() {
+		return propertyGroup;
+	}
+
+	public void setPropertyGroup(int propertyGroup) {
+		this.propertyGroup = propertyGroup;
+	}
+
+	public String getColor() {
+		return color;
+	}
+
+	public void setColor(String color) {
+		this.color = color;
+	}
+
+	public int getPrice() {
+		return price;
+	}
+
+	public void setPrice(int price) {
+		this.price = price;
+	}
+
+	public int getMortgageValue() {
+		return mortgageValue;
+	}
+
+	public void setMortgageValue(int mortgageValue) {
+		this.mortgageValue = mortgageValue;
+	}
+
+	public int getRent() {
+		return rent;
+	}
+
+	public void setRent(int rent) {
+		this.rent = rent;
+	}
+
+	public int getRent1house() {
+		return rent1house;
+	}
+
+	public void setRent1house(int rent1house) {
+		this.rent1house = rent1house;
+	}
+
+	public int getRent2house() {
+		return rent2house;
+	}
+
+	public void setRent2house(int rent2house) {
+		this.rent2house = rent2house;
+	}
+
+	public int getRent3house() {
+		return rent3house;
+	}
+
+	public void setRent3house(int rent3house) {
+		this.rent3house = rent3house;
+	}
+
+	public int getRent4house() {
+		return rent4house;
+	}
+
+	public void setRent4house(int rent4house) {
+		this.rent4house = rent4house;
+	}
+
+	public int getRentHotel() {
+		return rentHotel;
+	}
+
+	public void setRentHotel(int rentHotel) {
+		this.rentHotel = rentHotel;
+	}
+
+	public int getBuildCost() {
+		return buildCost;
+	}
+
+	public void setBuildCost(int buildCost) {
+		this.buildCost = buildCost;
+	}
+
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
+	}
+
+	public int getCurrentHouses() {
+		return currentHouses;
+	}
+
+	public void setCurrentHouses(int currentHouses) {
+		this.currentHouses = currentHouses;
+	}
+
+	public boolean isHasHotel() {
+		return hasHotel;
+	}
+
+	public void setHasHotel(boolean hasHotel) {
+		this.hasHotel = hasHotel;
+	}
+
+	public int getMortgageOwed() {
+		return mortgageOwed;
+	}
+
+	public void setMortgageOwed(int mortgageOwed) {
+		this.mortgageOwed = mortgageOwed;
+	}
+
+	public int getNewRent() {
+		return newRent;
+	}
+
+	public void setNewRent(int newRent) {
+		this.newRent = newRent;
+	}
+
+	public boolean isMaxHouses() {
+		return maxHouses;
+	}
+
+	public void setMaxHouses(boolean maxHouses) {
+		this.maxHouses = maxHouses;
+	}
+
+	public Player getOwner() {
+		return owner;
+	}
+
+	public void setOwner(Player owner) {
+		this.owner = owner;
+	}
+
+	public boolean isGrouped() {
+		return grouped;
+	}
+
+	public void setGrouped(boolean grouped) {
+		this.grouped = grouped;
+	}
+
+	public boolean isMortgaged() {
+		return mortgaged;
+	}
+
+	public void setMortgaged(boolean mortgaged) {
+		this.mortgaged = mortgaged;
+	}
+
+	public int getCurrentRent() {
+		return currentRent;
+	}
+
+	public void setCurrentRent(int currentRent) {
+		this.currentRent = currentRent;
+	}
+
 	int mortgageOwed = 0;
 	int newRent = rent;
 	boolean maxHouses = false;

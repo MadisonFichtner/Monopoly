@@ -19,8 +19,8 @@ public class PlayerTest {
 		boolean valid = false;
 		Deed test_deed = new Deed(0, "test", 0, "blue", 100, 100, 10, 15, 20, 25, 30, 35, 50, "test");
 		
-		test_player.bought_property(test_deed);
-		if(test_player.money == 1400 && test_deed.owner == test_player && test_player.deeds.get(0) == test_deed)
+		test_player.boughtProperty(test_deed);
+		if(test_player.getMoney() == 1400 && test_deed.getOwner() == test_player && test_player.getDeeds().get(0) == test_deed)
 			valid = true;
 		else 
 			valid = false;
@@ -36,8 +36,8 @@ public class PlayerTest {
 		boolean valid = false;
 		Player test_player = new Player("test", "player", 1);
 		for(int i = 0; i < 50; i++) {
-			test_player.roll_dice();
-			if(test_player.dice_sum >= 2 && test_player.dice_sum <= 12)
+			test_player.rollDice();
+			if(test_player.getDiceSum() >= 2 && test_player.getDiceSum() <= 12)
 			{
 				valid = true;
 			}
@@ -54,11 +54,11 @@ public class PlayerTest {
 	@Test
 	public void test_move() {
 		Player test_player = new Player("test", "player", 1);
-		test_player.dice_sum = 6;
+//		test_player.getDiceSum() = 6;
 		int expected_position = 6;
 		test_player.move();
 		boolean valid = false;
-		if(test_player.position == expected_position)
+		if(test_player.getPosition() == expected_position)
 			valid = true;
 		assertTrue(valid);
 		//assertEquals(test_player.position, expected_position);
@@ -72,8 +72,8 @@ public class PlayerTest {
 		Player test_player = new Player("test", "player", 1);
 		boolean valid = false;
 		Deed test_deed = new Deed(0, "test", 0, "blue", 100, 100, 10, 15, 20, 25, 30, 35, 50, "test");
-		test_player.mortgage_deed(test_deed);
-		if(test_player.mortgage_owed == test_deed.mortgage_value && test_player.money == 1500 + test_deed.mortgage_value && test_deed.mortgaged == true)
+		test_player.mortgageDeed(test_deed);
+		if(test_player.getMortgageOwed() == test_deed.getMortgageValue() && test_player.getMoney() == 1500 + test_deed.getMortgageValue() && test_deed.isMortgaged() == true)
 			valid = true;
 		
 		assertTrue(valid);
@@ -90,8 +90,8 @@ public class PlayerTest {
 		Deed test_deed1 = new Deed(0, "test", 0, "blue", 100, 100, 10, 15, 20, 25, 30, 35, 50, "street");
 		
 		//testing if rent is correctly calculated for no houses/hotels
-		test_player.pay_rent(test_deed1);
-		if(test_deed1.current_rent == test_deed1.rent)
+		test_player.payRent(test_deed1);
+		if(test_deed1.getCurrentRent() == test_deed1.getRent())
 			valid = true;
 		assertTrue(valid);
 	}
@@ -103,11 +103,10 @@ public class PlayerTest {
 	@Test
 	public void test_calculate_net_worth() {
 		Player test_player = new Player("test", "player", 1);
-		test_player.money += 500;
+//		test_player.getMoney() += 500;
 		int expected_net_worth = 2000;
-		test_player.calculate_net_worth();
-		
-		assertEquals(test_player.overall_net_worth, expected_net_worth);
+		test_player.calculateNetWorth();
+		assertEquals(test_player.getNetWorth(), expected_net_worth);
 	}
 	
 
