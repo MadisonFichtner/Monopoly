@@ -22,10 +22,7 @@ public class PlayerTest {
         test_deed.setOwner(testPlayer2);
         test_player.setPropertyGroups(new int[6]);
         test_player.boughtProperty(test_deed);
-        if (test_player.getMoney() == 1400 && test_deed.getOwner() == test_player && test_player.getDeeds().get(0) == test_deed)
-            valid = true;
-        else
-            valid = false;
+        valid = test_player.getMoney() == 1400 && test_deed.getOwner() == test_player && test_player.getDeeds().get(0) == test_deed;
 
         assertTrue(valid);
     }
@@ -39,10 +36,7 @@ public class PlayerTest {
         Player test_player = new Player("test", "player", 1);
         for (int i = 0; i < 50; i++) {
             test_player.rollDice();
-            if (test_player.getDiceSum() >= 2 && test_player.getDiceSum() <= 12) {
-                valid = true;
-            } else
-                valid = false;
+            valid = test_player.getDiceSum() >= 2 && test_player.getDiceSum() <= 12;
         }
         assertTrue(valid);
     }
