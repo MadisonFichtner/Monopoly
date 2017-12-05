@@ -18,43 +18,53 @@ public class Deed {
     int currentHouses = 0;
     boolean hasHotel = false;
 
-    public int getMortgageValue() {
+    public int getMortgageValue() 
+    {
         return mortgageValue;
     }
 
-    public int getRent() {
+    public int getRent() 
+    {
         return rent;
     }
 
-    public int getCurrentHouses() {
+    public int getCurrentHouses()
+    {
         return currentHouses;
     }
 
-    public void setCurrentHouses(int currentHouses) {
+    public void setCurrentHouses(int currentHouses) 
+    {
         this.currentHouses = currentHouses;
     }
 
-    public boolean isHasHotel() {
+    public boolean isHasHotel() 
+    {
         return hasHotel;
     }
 
-    public void setHasHotel(boolean hasHotel) {
+    public void setHasHotel(boolean hasHotel) 
+    {
         this.hasHotel = hasHotel;
     }
 
-    public Player getOwner() {
+    public Player getOwner() 
+    {
         return owner;
     }
 
-    public void setOwner(Player owner) {
+    public void setOwner(Player owner) 
+    {
         this.owner = owner;
     }
 
-    public void setMortgaged(boolean mortgaged) {
+    public void setMortgaged(boolean mortgaged)
+    {
         this.mortgaged = mortgaged;
     }
 
-    public boolean isMortgaged() {
+    public boolean isMortgaged() 
+    {
         return mortgaged;
     }
 
@@ -85,7 +95,8 @@ public class Deed {
      */
     public Deed(int position, String name, int propertyGroup, String color, int purchasePrice, int mortgageValue,
                 int rent, int rent1house, int rent2house, int rent3house, int rent4house, int rentHotel, int buildCost,
-                String deedType) {
+                String deedType) 
+    {
         this.position = position;
         this.name = name;
         this.propertyGroup = propertyGroup;
@@ -106,11 +117,14 @@ public class Deed {
      * Calculates rent based on deed_type, houses/hotel on deed if it's a street and
      * whether the player who owns said deed owns all deeds of that color group
      */
-    public int calculateRent() {
+    public int calculateRent() 
+    {
         if (mortgaged == true)
             System.out.println(name + " is mortgaged and will not collect rent.");
-        else if (type.equals("street")) {
-            switch (currentHouses) {
+        else if (type.equals("street")) 
+        {
+            switch (currentHouses) 
+            {
                 case 0:
                     newRent = rent;
                     break;
@@ -129,9 +143,12 @@ public class Deed {
             }
             if (hasHotel == true)
                 newRent = rentHotel;
-        } else if (type.equals("railroad")) {
+        } 
+        else if (type.equals("railroad")) 
+        {
             // if owner owns 1 rent = 25; 2 rent = 50; 3 rent = 100; 4 rent = 200
-            switch (owner.railroadCount) {
+            switch (owner.railroadCount) 
+            {
                 case 0:
                     newRent = rent;
                     break;
@@ -148,15 +165,20 @@ public class Deed {
                     newRent = 200;
                     break;
             }
-        } else if (type.equals("utility")) {
-            // if owner owns 1 rent = 4*dice; 2 rent= 10 * dice
-            switch (owner.utilitiesCount) {
+        } 
+        else if (type.equals("utility"))
+        {
+          // if owner owns 1 rent = 4*dice; 2 rent= 10 * dice
+            switch (owner.utilitiesCount) 
+            {
                 case 1:
                     newRent = (4 * owner.diceSum);
                 case 2:
                     newRent = (10 * owner.diceSum);
             }
-        } else {
+        } 
+        else 
+        {
             // else its free parking/other spots
             return 0;
         }
@@ -171,15 +193,18 @@ public class Deed {
      *
      * returns the int value of the mortgage
      */
-    public int calculateMortgage() {
+    public int calculateMortgage() 
+    {
         int mortgage = 0;
         mortgage = mortgageValue;
-        if (currentHouses != 0) {
+        if (currentHouses != 0) 
+        {
             System.out.println(currentHouses + " houses were sold to mortgage the property for: $"
                     + (currentHouses + buildCost));
             mortgage += currentHouses * buildCost;
             currentHouses = 0;
-        } else if (hasHotel == true) {
+        } else if (hasHotel == true)
+        {
             System.out.println("The hotel on the property was sold to mortgage the property for: $" + (5 * buildCost));
             mortgage += 5 * buildCost;
             currentHouses = 0;
