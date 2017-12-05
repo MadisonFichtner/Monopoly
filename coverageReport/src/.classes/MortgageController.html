@@ -1,0 +1,177 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: MortgageController</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">src</a> ]
+</div>
+
+<h1>Coverage Summary for Class: MortgageController (src)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">MortgageController</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 5)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">MortgageController$1</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 7)
+  </span>
+</td>
+  </tr>
+  <tr>
+    <td class="name">MortgageController$2</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 3)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 3)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 7)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 15)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;package src;
+<i>2</i>&nbsp;
+<i>3</i>&nbsp;import java.net.URL;
+<i>4</i>&nbsp;import java.util.ResourceBundle;
+<i>5</i>&nbsp;
+<i>6</i>&nbsp;import javafx.collections.FXCollections;
+<i>7</i>&nbsp;import javafx.event.ActionEvent;
+<i>8</i>&nbsp;import javafx.event.EventHandler;
+<i>9</i>&nbsp;import javafx.fxml.Initializable;
+<i>10</i>&nbsp;import javafx.scene.control.Button;
+<i>11</i>&nbsp;import javafx.scene.control.ChoiceBox;
+<i>12</i>&nbsp;import javafx.stage.Stage;
+<i>13</i>&nbsp;import javafx.util.StringConverter;
+<i>14</i>&nbsp;
+<b class="nc"><i>15</i>&nbsp;public class MortgageController implements Initializable {</b>
+<i>16</i>&nbsp;	public Button doneButton;
+<i>17</i>&nbsp;	public ChoiceBox&lt;Deed&gt; deedBox;
+<i>18</i>&nbsp;
+<i>19</i>&nbsp;	public void initialize(URL fxmlFileLocation, ResourceBundle resources) {
+<b class="nc"><i>20</i>&nbsp;		Board board = GUIHelper.getBoard();</b>
+<b class="nc"><i>21</i>&nbsp;		deedBox.setItems(FXCollections.observableArrayList(board.current.deeds));</b>
+<i>22</i>&nbsp;		
+<b class="nc"><i>23</i>&nbsp;		doneButton.setOnAction(new EventHandler&lt;ActionEvent&gt;() {</b>
+<i>24</i>&nbsp;			@Override
+<i>25</i>&nbsp;			public void handle(ActionEvent event) {
+<b class="nc"><i>26</i>&nbsp;				if(deedBox.getValue().mortgaged &amp;&amp; board.current.money &gt; deedBox.getValue().mortgageOwed) {</b>
+<b class="nc"><i>27</i>&nbsp;					board.current.payMortage(deedBox.getValue());</b>
+<b class="nc"><i>28</i>&nbsp;				} else if (!deedBox.getValue().mortgaged) {</b>
+<b class="nc"><i>29</i>&nbsp;					board.current.mortgageDeed(deedBox.getValue());</b>
+<i>30</i>&nbsp;				}
+<b class="nc"><i>31</i>&nbsp;				Stage stage = (Stage) doneButton.getScene().getWindow();</b>
+<b class="nc"><i>32</i>&nbsp;            	stage.close();</b>
+<i>33</i>&nbsp;			}
+<i>34</i>&nbsp;		});
+<i>35</i>&nbsp;
+<i>36</i>&nbsp;		// Changes the way the deed are displayed
+<b class="nc"><i>37</i>&nbsp;		deedBox.setConverter(new StringConverter&lt;Deed&gt;() {</b>
+<i>38</i>&nbsp;			@Override
+<i>39</i>&nbsp;			public String toString(Deed deed) {
+<b class="nc"><i>40</i>&nbsp;				return new StringBuilder(deed.name +&quot; - houses: &quot; + deed.currentHouses + &quot; - Hotel: &quot;+ deed.hasHotel + &quot; - Mortgaged: &quot; + deed.mortgaged).toString();</b>
+<i>41</i>&nbsp;			}
+<i>42</i>&nbsp;
+<i>43</i>&nbsp;			@Override
+<i>44</i>&nbsp;			public Deed fromString(String string) {
+<b class="nc"><i>45</i>&nbsp;				throw new UnsupportedOperationException(&quot;Not supported.&quot;);</b>
+<i>46</i>&nbsp;			}
+<i>47</i>&nbsp;		});
+<i>48</i>&nbsp;	}
+<i>49</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2017-12-04 14:26</div>
+</div>
+</body>
+</html>
