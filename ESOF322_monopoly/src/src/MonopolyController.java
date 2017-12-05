@@ -6,6 +6,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import java.net.URL;
 import java.util.ArrayList;
@@ -24,6 +25,7 @@ public class MonopolyController implements Initializable {
 	public ImageView tokenDog;
 	public ImageView tokenShip;
 	public ImageView tokenBoot;
+	public ImageView board;
 
 	ArrayList<ImageView> tokenList = new ArrayList<ImageView>();
 	int[][] coords = { { 320, 315 }, { 250, 315 }, { 190, 315 }, { 130, 315 }, { 70, 315 }, { 10, 315 }, { -70, 315 },
@@ -104,6 +106,16 @@ public class MonopolyController implements Initializable {
 		sellButton.setDisable(true);
 		houseButton.setDisable(true);
 		endButton.setDisable(true);
+	}
+
+	public void setBoardImage(String input) {
+		try {
+			Image boardImage = new Image("file:" + input);
+			board.setImage(boardImage);
+		} catch (Exception e) {
+			System.out.println("Provided board image not found");
+			e.printStackTrace();
+		}
 	}
 
 	public void enableButtons() {

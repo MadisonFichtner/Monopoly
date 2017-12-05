@@ -18,6 +18,13 @@ public class GUIHelper {
     private static Player[] players = new Player[users];
     private static Board board;
     private static int playerTurn = 0;
+    private static String boardMode;
+
+
+    public static void setBoardMode(String boardMode) {
+        GUIHelper.boardMode = boardMode;
+    }
+
 
     public static void setMessage(String string) {
         monopoly.message.setText(string);
@@ -88,6 +95,36 @@ public class GUIHelper {
     //USE APPROPRIATE BOARD.JPG, DEEDS.CSV AND CARDS.CSV
     //is called by users.fxml
     public static void setPlayers(CharSequence[] users) {
+
+        String deedsFileName;
+        String communityFileName;
+        String chanceFileName;
+        
+        switch (boardMode) {
+            case "msu":
+                System.out.println(boardMode);
+                deedsFileName = "MSUdeeds.csv";
+                communityFileName = "MSUChestCards.csv";
+                chanceFileName = "MSUChanceCards.csv";
+                monopoly.setBoardImage("MSUboard.png");
+                break;
+            case "english":
+                System.out.println(boardMode);
+                deedsFileName = "monopolyDeeds.csv";
+                communityFileName = "monopolyChestCards.csv";
+                chanceFileName = "monopolyChanceCards.csv";
+                monopoly.setBoardImage("board.jpg");
+                break;
+            default:
+                System.out.println("Invalid mode: defaulted to msu");
+                deedsFileName = "MSUdeeds.csv";
+                communityFileName = "MSUChestCards.csv";
+                chanceFileName = "MSUChanceCards.csv";
+                monopoly.setBoardImage("MSUboard.png");
+                break;
+        }
+
+
         Deed[] deeds = new Deed[40];
         ArrayList<Card> communityChest = new ArrayList<Card>();
         ArrayList<Card> chance = new ArrayList<Card>();
@@ -95,7 +132,6 @@ public class GUIHelper {
         //if(users choice == monopoly)
         //String deedsFileName = "monopolyDeeds.csv";
         //else
-        String deedsFileName = "MSUdeeds.csv"; // just a sample file name
         File csvDeedsFile = new File(deedsFileName);
         try {
             deeds = parseDeedsCSV(csvDeedsFile);
@@ -106,7 +142,6 @@ public class GUIHelper {
         //if(users choice == monopoly)
         //String communityFileName = "monopolyChestCards.csv";
         //else
-        String communityFileName = "MSUChestCards.csv";
         File csvCommunityFile = new File(communityFileName);
         try {
             communityChest = parseCommunityCSV(csvCommunityFile);
@@ -117,7 +152,6 @@ public class GUIHelper {
         //if(users choice == monopoly)
         //String chanceFileName = "monopolyChanceCards.csv";
         //else
-        String chanceFileName = "MSUChanceCards.csv";
         File csvChanceFile = new File(chanceFileName);
         try {
             chance = parseChanceCSV(csvChanceFile);

@@ -15,6 +15,7 @@ public class UserController implements Initializable{
 	public TextField player2;
 	public TextField player3;
 	public TextField player4;
+	public TextField inputField;
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
@@ -22,7 +23,8 @@ public class UserController implements Initializable{
             @Override
             public void handle(ActionEvent event) {
             	CharSequence[] players = {player1.getCharacters(), player2.getCharacters(), player3.getCharacters(), player4.getCharacters()};
-            	GUIHelper.setPlayers(players);
+            	GUIHelper.setBoardMode(inputField.getCharacters().toString());
+            	GUIHelper.setPlayers(players); //, mode);
             	GUIHelper.enableRollGUI();
             	Stage stage = (Stage) doneButton.getScene().getWindow();
             	stage.close();
