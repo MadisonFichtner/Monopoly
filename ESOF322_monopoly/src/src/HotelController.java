@@ -10,6 +10,7 @@ import javafx.event.EventHandler;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.stage.Stage;
+
 import javafx.util.StringConverter;
 
 public class HotelController {
@@ -19,10 +20,11 @@ public class HotelController {
 	public void initialize(URL fxmlFileLocation, ResourceBundle resources) {
 		ArrayList<Deed> deedsWithMax = new ArrayList<Deed>();
 		Board board = GUIHelper.getBoard();
-		
+		//boolean eligible = false;
 		for (int i = 0; i < board.current.deeds.size(); i++) {
 			if (board.current.deeds.get(i).maxHouses == true) {
 				deedsWithMax.add(board.current.deeds.get(i));
+				//eligible = true;
 			}
 		}
 

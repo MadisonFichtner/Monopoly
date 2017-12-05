@@ -2,6 +2,7 @@ package src;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 
 public class Board {
 
@@ -108,7 +109,6 @@ public class Board {
 				e.printStackTrace();
 			}
 		}
-
 		position = current.position;
 
 		// If player lands on free parking, GO, or Jail set is_free_parking to true, and
@@ -170,7 +170,8 @@ public class Board {
 				System.out.println("You might be testing, otherwise your GUI has crashed");
 				e.printStackTrace();
 			}
-			current.communityChest(chance.get(0), users, deedBoard);
+			current.communityChest(communityChest.get(0), users, deedBoard);
+			Collections.shuffle(communityChest);
 		} else if (deedBoard[current.position].name.equals("Chance")) {
 			try {
 				GUIHelper.setMessage("You landed on Chance! Drawing and playing a card.");
@@ -183,6 +184,7 @@ public class Board {
 			if (case18case19 != 0) {
 				twoCases(case18case19);
 			}
+			Collections.shuffle(chance);
 		}
 		// If player lands on property owned by somebody else, they pay rent
 		else if (deedBoard[current.position].owner != null) {
