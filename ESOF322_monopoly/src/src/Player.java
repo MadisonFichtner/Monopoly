@@ -3,8 +3,7 @@ package src;
 import java.util.ArrayList;
 import java.util.Random;
 
-public class Player 
-{
+public class Player {
     ArrayList<Deed> deeds = new ArrayList<Deed>(); // Assuming one person can own all positions on board
     int money = 1500;
     String token;
@@ -24,68 +23,55 @@ public class Player
     int getOutOfJail = 0;
     int currentHouses = 0;
 
-    public ArrayList<Deed> getDeeds() 
-    {
+    public ArrayList<Deed> getDeeds() {
         return deeds;
     }
 
-    public int getMoney() 
-    {
+    public int getMoney() {
         return money;
     }
 
-    public void setMoney(int money) 
-    {
+    public void setMoney(int money) {
         this.money = money;
     }
 
-    public void setPosition(int position) 
-    {
+    public void setPosition(int position) {
         this.position = position;
     }
 
-    public int getPosition() 
-    {
+    public int getPosition() {
         return position;
     }
 
-    public int getDiceSum() 
-    {
+    public int getDiceSum() {
         return diceSum;
     }
 
-    public void setDiceSum(int diceSum) 
-    {
+    public void setDiceSum(int diceSum) {
         this.diceSum = diceSum;
     }
 
-    public int getMortgageOwed() 
-    {
+    public int getMortgageOwed() {
         return mortgageOwed;
     }
 
-    public void setMortgageOwed(int mortgageOwed) 
-    {
+    public void setMortgageOwed(int mortgageOwed) {
         this.mortgageOwed = mortgageOwed;
     }
 
-    public void setNetWorth(int netWorth) 
-    {
+    public void setNetWorth(int netWorth) {
         this.netWorth = netWorth;
     }
 
-    public int[] getPropertyGroups() 
-    {
+    public int[] getPropertyGroups() {
         return propertyGroups;
     }
 
-    public int getNetWorth() 
-    {
+    public int getNetWorth() {
         return netWorth;
     }
 
-    public void setPropertyGroups(int[] propertyGroups) 
-    {
+    public void setPropertyGroups(int[] propertyGroups) {
         this.propertyGroups = propertyGroups;
     }
 
@@ -98,8 +84,7 @@ public class Player
      *
      * @param toke -> name of token entered by user (make picture on board)
      */
-    public Player(String name, String token, int playerNum) 
-    {
+    public Player(String name, String token, int playerNum) {
         this.name = name;
         this.token = token;
         this.playerNum = playerNum;
@@ -107,13 +92,11 @@ public class Player
 
     // If a player buys a deed through the gui this is called, otherwise auction is
     // called
-    public void boughtProperty(Deed deed) 
-    {
+    public void boughtProperty(Deed deed) {
         deed.owner = this;
         money -= deed.price;
         deeds.add(deed);
-        if (deed.type.equals("railroad")) 
-        {
+        if (deed.type.equals("railroad")) {
             railroadCount++;
         } else {
             if (deed.type.equals("utility")) {
@@ -154,32 +137,25 @@ public class Player
      *
      * @param spaces -> dice_sum
      */
-    public void move() 
-    {
+    public void move() {
         boolean passedGo = false;
-        if (position + diceSum >= 40) 
-        {
+        if (position + diceSum >= 40) {
             int overflow = (position + diceSum) - 40;
             position = overflow;
-            passedGo = true;   
-        } 
-        else
+            passedGo = true;
+        } else
             position = position += diceSum;
 
         // if position 0 get passed
         // passed_go = true;
 
-        if (passedGo == true) 
-        {
+        if (passedGo == true) {
             money += 200;
             System.out.println("You passed go, have $200 on me!");
         }
-        try 
-        {
+        try {
             GUIHelper.moveTokenImg(playerNum, position);
-        } 
-        catch (Exception e) 
-        {
+        } catch (Exception e) {
             System.out.println("You might be testing, otherwise your GUI has crashed");
             e.printStackTrace();
         }
@@ -189,16 +165,12 @@ public class Player
      * Moves player directly to jail, and sets a boolean for whether they are in
      * jail to true
      */
-    public void moveToJail() 
-    {
+    public void moveToJail() {
         position = 10;
         inJail = true;
-        try 
-        {
+        try {
             GUIHelper.moveTokenImg(this.playerNum, 10);
-        } 
-        catch (Exception e) 
-        {
+        } catch (Exception e) {
             System.out.println("You might be testing, otherwise your GUI has crashed");
             e.printStackTrace();
         }
@@ -210,8 +182,7 @@ public class Player
      * randomly generates two numbers between 1-6 to represent dice, sets the sum of
      * the dice, and returns images of the two dices sides that were rolled
      */
-    public int[] rollDice() 
-    {
+    public int[] rollDice() {
         // randomize dice throw and display image of side of each dice that was rolled
         Random rand = new Random();
         dice[0] = rand.nextInt(6) + 1;
@@ -221,7 +192,7 @@ public class Player
         System.out.println("Current money: " + money);
         return dice;
     }
-    
+
     // If a player buys a deed through the gui this is called, otherwise auction is
     // called
     /*
@@ -231,9 +202,8 @@ public class Player
      *
      * @param price -> price at which they purchased the deed
      */
-    
-    public void buyAuction(Deed deed, int price) 
-    {
+
+    public void buyAuction(Deed deed, int price) {
         deeds.add(deed);
         money -= price;
         deed.owner = this;
@@ -243,14 +213,10 @@ public class Player
             utilitiesCount++;
     }
 
-    public void payBail() 
-    {
-        try 
-        {
+    public void payBail() {
+        try {
             GUIHelper.setMessage("Turn 3 in jail. You must pay $50 and roll forward.");
-        } 
-        catch (Exception e) 
-        {
+        } catch (Exception e) {
             System.out.println("You might be testing, otherwise your GUI has crashed");
             e.printStackTrace();
         }
@@ -260,60 +226,40 @@ public class Player
         rollDice();
     }
 
-    public void tradedDeed(Deed deed, Player player, int price) 
-    {
-        if (deed.type.equals("railroad")) 
-        {
+    public void tradedDeed(Deed deed, Player player, int price) {
+        if (deed.type.equals("railroad")) {
             railroadCount++;
             player.railroadCount--;
-        } 
-        else 
-        {
-            if (deed.type.equals("utility")) 
-            {
+        } else {
+            if (deed.type.equals("utility")) {
                 utilitiesCount++;
                 player.utilitiesCount--;
-            } 
-            else 
-            {
+            } else {
                 propertyGroups[deed.propertyGroup - 1]++;
                 player.propertyGroups[deed.propertyGroup - 1]--;
-                if (propertyGroups[deed.propertyGroup - 1] == propertyTotals[deed.propertyGroup - 1]) 
-                {
-                    for (int i = 0; i < deeds.size(); i++) 
-                    {
-                        if (deeds.get(i).propertyGroup == deed.propertyGroup) 
-                        {
+                if (propertyGroups[deed.propertyGroup - 1] == propertyTotals[deed.propertyGroup - 1]) {
+                    for (int i = 0; i < deeds.size(); i++) {
+                        if (deeds.get(i).propertyGroup == deed.propertyGroup) {
                             deeds.get(i).grouped = true;
                         }
                     }
-                } 
-                else if (deed.grouped = true) 
-                {
+                } else if (deed.grouped = true) {
                     deed.grouped = false;
                 }
 
             }
         }
 
-        if (deed.type.equals("railroad")) 
-        {
+        if (deed.type.equals("railroad")) {
 
-        } 
-        else 
-        {
-            if (deed.type.equals("utility")) 
-            {
+        } else {
+            if (deed.type.equals("utility")) {
 
-            }
-            else 
-            {
+            } else {
 
                 if (player.propertyGroups[deed.propertyGroup - 1] == player.propertyTotals[deed.propertyGroup - 1]) {
-                    for (int i = 0; i < deeds.size(); i++) 
-                    {
-                        if (deeds.get(i).propertyGroup == 1) 
-                        {
+                    for (int i = 0; i < deeds.size(); i++) {
+                        if (deeds.get(i).propertyGroup == 1) {
                             deeds.get(i).grouped = true;
                         }
                     }
@@ -327,28 +273,23 @@ public class Player
         money += price;
         player.money -= price;
         System.out.println("Property has been transfered to the buyer.");
-        try 
-        {
+        try {
             GUIHelper.setMessage(player.name + " Bought " + deed.name + " from " + name + " for $" + price);
-        } 
-        catch (Exception e) 
-        {
+        } catch (Exception e) {
             System.out.println("You might be testing, otherwise your GUI has crashed");
             e.printStackTrace();
         }
     }
 
     // In design we have this returning an int but i dont see a point in that
-    public void mortgageDeed(Deed deed) 
-    {
+    public void mortgageDeed(Deed deed) {
         money += deed.calculateMortgage();
         mortgageOwed += deed.mortgageValue;
         System.out.println(deed.name + " was mortgaged for " + deed.mortgageValue + "\nRemaining Money: " + money);
         deed.mortgaged = true;
     }
 
-    public void payMortage(Deed deed) 
-    {
+    public void payMortage(Deed deed) {
         deed.mortgaged = false; // set mortgaged flag to false
         money -= deed.mortgageOwed; // subtract mortgage_owed for specific property from money
         mortgageOwed -= deed.mortgageOwed; // subtract mortgage_owed for specific property from
@@ -365,23 +306,17 @@ public class Player
      *
      *
      */
-    public void payRent(Deed deed) 
-    {
+    public void payRent(Deed deed) {
         Player receivingPlayer = deed.getOwner();
 
-        if (receivingPlayer == this) 
-        {
-        } 
-        else 
-        {
+        if (receivingPlayer == this) {
+        } else {
             this.setMoney(this.getMoney() - deed.calculateRent());
             receivingPlayer.setMoney(receivingPlayer.getMoney() + deed.calculateRent());
             System.out.println(receivingPlayer.name + " recieved $" + deed.calculateRent() + " in rent.");
-            try 
-            {
+            try {
                 GUIHelper.setMessage(name + " pays $" + deed.calculateRent() + " in rent to " + receivingPlayer.name + " for " + deed.name + " and now has $" + money);
-            } catch (Exception e) 
-            {
+            } catch (Exception e) {
                 System.out.println("You might be testing, otherwise your GUI has crashed");
                 e.printStackTrace();
             }
@@ -392,12 +327,10 @@ public class Player
     /*
      * Calculates a user's net worth based on current money, and properties owned
      */
-    public int calculateNetWorth() 
-    {
+    public int calculateNetWorth() {
         int net_worth = 0; // = all of items values and money added up
         net_worth += money;
-        for (int i = 0; i < deeds.size(); i++) 
-        {
+        for (int i = 0; i < deeds.size(); i++) {
             net_worth += (deeds.get(i).price + (deeds.get(i).buildCost * deeds.get(i).currentHouses));
             if (deeds.get(i).hasHotel == true)
                 net_worth += deeds.get(i).buildCost;
@@ -409,46 +342,33 @@ public class Player
     /*
      * Allows user to pay tax
      */
-    public void payTax(int response) 
-    {
-        if (response == 1) 
-        {
+    public void payTax(int response) {
+        if (response == 1) {
             money -= calculateNetWorth() * .1;
-        } 
-        else if (response == 2) 
-        {
+        } else if (response == 2) {
             money -= 100;
-        } 
-        else 
-        {
+        } else {
             money -= 200;
         }
     }
 
-    public void boughtHouse(Deed deed, int houses) 
-    {
-        if (deed.currentHouses == 4) 
-        {
+    public void boughtHouse(Deed deed, int houses) {
+        if (deed.currentHouses == 4) {
             GUIHelper.setMessage("You already have 4 houses on this property, build a hotel.");
-        } 
-        else if (deed.maxHouses == false && deed.type.equals("street")
-                && deed.grouped == true) 
-        {
+        } else if (deed.maxHouses == false && deed.type.equals("street")
+                && deed.grouped == true) {
             currentHouses += houses;
             deed.currentHouses += houses;
             money -= deed.buildCost * houses;
             if (deed.currentHouses == 4)
                 deed.maxHouses = true;
             System.out.println("Remaining money = " + money);
-        } 
-        else 
-        {
+        } else {
             GUIHelper.setMessage("That is not an eligible property to build a house on");
         }
     }
 
-    public void boughtHotel(Deed deed)
-    {
+    public void boughtHotel(Deed deed) {
         currentHotels++;
         currentHouses -= 4;
         deed.hasHotel = true;
@@ -460,35 +380,27 @@ public class Player
     }
 
     //Handles when a player lands on Community Chest
-    public void communityChest(Card card, Player[] users, Deed[] board) 
-    {
-        if (card.name.equals("Get Out of Jail Free")) 
-        {
+    public void communityChest(Card card, Player[] users, Deed[] board) {
+        if (card.name.equals("Get Out of Jail Free")) {
             getOutOfJail++;
-        }
-        else
+        } else
             useCard(card, users, board);
     }
 
     //Handles when a player lands on Chance
-    public int chance(Card card, Player[] users, Deed[] board) 
-    {
+    public int chance(Card card, Player[] users, Deed[] board) {
         int case18case19 = 0;
-        if (card.name.equals("Get Out of Jail Free")) 
-        {
+        if (card.name.equals("Get Out of Jail Free")) {
             getOutOfJail++;
-        } 
-        else
+        } else
             case18case19 = useCard(card, users, board);
         return case18case19;
     }
 
     //List out all possiblities, check csv to see numbers associated with each card
-    public int useCard(Card card, Player[] users, Deed[] board) 
-    {
+    public int useCard(Card card, Player[] users, Deed[] board) {
         int case18case19 = 0;
-        switch (card.type) 
-        {
+        switch (card.type) {
             case 0: //Advance to go
                 position = 0;
                 money += 200;
@@ -516,10 +428,8 @@ public class Player
                 break;
             case 6: //Grand Opera night - collect 50 from all players
                 GUIHelper.setMessage("You drew: Grand Opera Night - collect $50 from everyone else");
-                for (int i = 0; i < 4; i++) 
-                {
-                    if (users[i] != this) 
-                    {
+                for (int i = 0; i < 4; i++) {
+                    if (users[i] != this) {
                         users[i].money -= 50;
                         money += 50;
                     }
@@ -568,8 +478,7 @@ public class Player
                 break;
             case 16: //Advance to Illinois Ave. or Duck Pond (24) - If you pass Go - collect $200
                 GUIHelper.setMessage("You drew: Advance to " + board[24].name + " - If you pass Go - collect $200");
-                if (position >= 24) 
-                {
+                if (position >= 24) {
                     money += 200;
                     GUIHelper.setMessage("You passed Go. Collect $200");
                 }
@@ -578,8 +487,7 @@ public class Player
                 break;
             case 17: //Advance to St. Charles Place or Howard (11) - if you pass Go - collect $200
                 GUIHelper.setMessage("You drew: Advance to " + board[11].name + " - If you pass Go - collect $200");
-                if (position >= 11) 
-                {
+                if (position >= 11) {
                     money += 200;
                     GUIHelper.setMessage("You passed Go. Collect $200");
                 }
@@ -589,12 +497,9 @@ public class Player
             case 18: //Advance token to nearest Utility. If unowned - you may buy it. If owned - throw dice and pay owner a totel ten times the amount thrown.
                 GUIHelper.setMessage("You drew: Advance to the next utility. If unowned - you may buy it. If owned - throw dice and pay owner a total ten times the amount thrown");
                 case18case19 = 18;
-                if (position == 7) 
-                {
+                if (position == 7) {
                     position = 12;    //TODO
-                } 
-                else 
-                {
+                } else {
                     position = 28;    //TODO
                 }
                 GUIHelper.moveTokenImg(playerNum, position);
@@ -602,12 +507,9 @@ public class Player
             case 19: //Advance token to nearest Railroad and pay owner twice the rental. If unowned - you may buy it.
                 GUIHelper.setMessage("You drew: Advance to the next Railroad or Street. If unowned - you may buy it. If owned - pay owner twice the rental price");
                 case18case19 = 19;
-                if (position == 7) 
-                {
+                if (position == 7) {
                     position = 15;
-                } 
-                else 
-                {
+                } else {
                     position = 25;
                 }
                 GUIHelper.moveTokenImg(playerNum, position);
@@ -618,8 +520,7 @@ public class Player
                 break;
             case 21: //Go Back 3 Spaces
                 GUIHelper.setMessage("You drew: Go back 3 spaces");
-                if (position - 3 < 0) 
-                {
+                if (position - 3 < 0) {
                     int overflow = position - 3;
                     overflow = overflow * (-1);
                     position = 40 - overflow;
@@ -641,8 +542,7 @@ public class Player
                 break;
             case 24: //Take a trip to Reading Railroad or Grant Street (5) - If you pass Go - collect $200
                 GUIHelper.setMessage("You drew: Take a trip to " + board[5].name + " - If you pass GO - collect $200");
-                if (position >= 5)
-                {
+                if (position >= 5) {
                     money += 200;
                     GUIHelper.setMessage("You passed Go. Collect $200");
                 }
@@ -656,10 +556,8 @@ public class Player
                 break;
             case 26: //You have been elected Chairman of the Board - Pay each player $50
                 GUIHelper.setMessage("You drew: You have been elected Chairman of the Board - pay each player $50");
-                for (int i = 0; i < 4; i++) 
-                {
-                    if (users[i] != this)
-                    {
+                for (int i = 0; i < 4; i++) {
+                    if (users[i] != this) {
                         users[i].money += 50;
                         money -= 50;
                     }

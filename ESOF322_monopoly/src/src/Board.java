@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 
-public class Board 
+public class Board
 {
 
 	int numHotelsRemaining;
@@ -19,7 +19,7 @@ public class Board
 	int doublesRolled; // Keeps track of how many times player has rolled doubles
 	Player[] users;
 
-	public Player getCurrent() 
+	public Player getCurrent()
 	{
 		return current;
 	}
@@ -29,7 +29,7 @@ public class Board
 		this.current = current;
 	}
 
-	public Board(Player[] users, Deed[] newBoard, ArrayList<Card> communityChest, ArrayList<Card> chance) 
+	public Board(Player[] users, Deed[] newBoard, ArrayList<Card> communityChest, ArrayList<Card> chance)
 	{
 		this.numHotelsRemaining = 12;
 		this.numHousesRemaining = 32;
@@ -43,13 +43,13 @@ public class Board
 	// if they are not in jail
 	// The ui for escaping jail still needs to be created and connected to
 	// moveToSpace()
-	
+
 	public void beginTurn(Player player) {
 		current = player;
-		try 
+		try
 		{
 			GUIHelper.setMessage("It is " + current.name + "'s turn.");
-		} catch (Exception e) 
+		} catch (Exception e)
 		{
 			System.out.println("You might be testing, otherwise your GUI has crashed");
 			e.printStackTrace();
@@ -60,29 +60,29 @@ public class Board
 		{
 			// give option to roll dice for doubles or pay $50
 			player.turnsInJail++;
-			if (player.turnsInJail >= 3) 
+			if (player.turnsInJail >= 3)
 			{
 				player.payBail();
 			}
-			else 
+			else
 			{
-				try 
+				try
 				{
 					GUIHelper.openWindow("jail");
-				} 
+				}
 				catch (Exception e)
 				{
 					System.out.println("You might be testing, otherwise your GUI has crashed");
 					e.printStackTrace();
 				}
 			}
-		} 
-		else 
+		}
+		else
 		{
-			try 
+			try
 			{
 				moveToSpace(false);
-			} 
+			}
 			catch (Exception e)
 			{
 				System.out.println("You might be testing, otherwise your GUI has crashed");
@@ -105,7 +105,7 @@ public class Board
 				{
 					GUIHelper.setMessage("You rolled doubles. Gratz.");
 				}
-				catch (Exception e) 
+				catch (Exception e)
 				{
 					System.out.println("You might be testing, otherwise your GUI has crashed");
 					e.printStackTrace();
@@ -113,9 +113,9 @@ public class Board
 				current.inJail = false;
 				current.turnsInJail = 0;
 				current.move();
-			} 
+			}
 			else // If doubles are not rolled
-			{		
+			{
 				try {
 					GUIHelper.setMessage("You did not roll doubles...");
 					GUIHelper.enableTurnGUI();
@@ -309,7 +309,7 @@ public class Board
 	public Player gameOver() {
 		int currentHigh = -1;
 		int highPlayer = -1;
-		
+
 		for (int i = 0; i < users.length; i++) {
 			users[i].calculateNetWorth();
 			if (users[i].netWorth > currentHigh) {

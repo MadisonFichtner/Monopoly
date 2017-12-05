@@ -19,71 +19,71 @@ import java.util.Arrays;
 import java.util.ResourceBundle;
 
 public class TradeController implements Initializable {
-	@FXML
-	public ChoiceBox<Deed> tradeDeed;
-	public ChoiceBox<Player> tradePlayer;
-	public TextField tradeAmount;
-	public Button acceptButton;
+    @FXML
+    public ChoiceBox<Deed> tradeDeed;
+    public ChoiceBox<Player> tradePlayer;
+    public TextField tradeAmount;
+    public Button acceptButton;
 
-	public void initialize(URL fxmlFileLocation, ResourceBundle resources) {
-		Board board = GUIHelper.getBoard();
-		ArrayList<Player> players = new ArrayList<Player>(Arrays.asList(GUIHelper.getPlayers()));
-		
-		tradePlayer.setItems(FXCollections.observableArrayList(players));
-		tradeDeed.setItems(FXCollections.observableArrayList(board.current.deeds));
+    public void initialize(URL fxmlFileLocation, ResourceBundle resources) {
+        Board board = GUIHelper.getBoard();
+        ArrayList<Player> players = new ArrayList<Player>(Arrays.asList(GUIHelper.getPlayers()));
 
-		acceptButton.setOnAction(new EventHandler<ActionEvent>() {
-			@Override
-			public void handle(ActionEvent event) {
-				if (tradePlayer.getValue().money >= Integer.parseInt(tradeAmount.getText())) {
-					Stage stage = (Stage) acceptButton.getScene().getWindow();
-	            	stage.close();
-					board.current.tradedDeed(tradeDeed.getValue(), tradePlayer.getValue(), Integer.parseInt(tradeAmount.getText()));
-				} else {
-					GUIHelper.setMessage(tradePlayer.getValue().name + " does not have $" + Integer.parseInt(tradeAmount.getText()) + "!");
-				}
-			}
-		});
+        tradePlayer.setItems(FXCollections.observableArrayList(players));
+        tradeDeed.setItems(FXCollections.observableArrayList(board.current.deeds));
 
-		// Changes the way the deed are displayed
-		tradeDeed.setConverter(new StringConverter<Deed>() {
-			@Override
-			public String toString(Deed deed) {
-				return new StringBuilder(deed.name).toString();
-			}
+        acceptButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                if (tradePlayer.getValue().money >= Integer.parseInt(tradeAmount.getText())) {
+                    Stage stage = (Stage) acceptButton.getScene().getWindow();
+                    stage.close();
+                    board.current.tradedDeed(tradeDeed.getValue(), tradePlayer.getValue(), Integer.parseInt(tradeAmount.getText()));
+                } else {
+                    GUIHelper.setMessage(tradePlayer.getValue().name + " does not have $" + Integer.parseInt(tradeAmount.getText()) + "!");
+                }
+            }
+        });
 
-			@Override
-			public Deed fromString(String string) {
-				throw new UnsupportedOperationException("Not supported.");
-			}
-		});
+        // Changes the way the deed are displayed
+        tradeDeed.setConverter(new StringConverter<Deed>() {
+            @Override
+            public String toString(Deed deed) {
+                return new StringBuilder(deed.name).toString();
+            }
 
-		// Changes the way the players are displayed
-		tradePlayer.setConverter(new StringConverter<Player>() {
-			@Override
-			public String toString(Player person) {
-				return new StringBuilder(person.name + " - $" + person.money).toString();
-			}
+            @Override
+            public Deed fromString(String string) {
+                throw new UnsupportedOperationException("Not supported.");
+            }
+        });
 
-			@Override
-			public Player fromString(String string) {
-				throw new UnsupportedOperationException("Not supported.");
-			}
-		});
+        // Changes the way the players are displayed
+        tradePlayer.setConverter(new StringConverter<Player>() {
+            @Override
+            public String toString(Player person) {
+                return new StringBuilder(person.name + " - $" + person.money).toString();
+            }
 
-		// This listener deletes any characters that get addedn to the amount
-		tradeAmount.lengthProperty().addListener(new ChangeListener<Number>() {
-			@Override
-			public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
-				if (newValue.intValue() > oldValue.intValue()) {
-					char ch = tradeAmount.getText().charAt(oldValue.intValue());
-					// Check if the new character is the number or other's
-					if (!(ch >= '0' && ch <= '9')) {
-						// if it's not number then just setText to previous one
-						tradeAmount.setText(tradeAmount.getText().substring(0, tradeAmount.getText().length() - 1));
-					}
-				}
-			}
-		});
-	}
+            @Override
+            public Player fromString(String string) {
+                throw new UnsupportedOperationException("Not supported.");
+            }
+        });
+
+        // This listener deletes any characters that get addedn to the amount
+        tradeAmount.lengthProperty().addListener(new ChangeListener<Number>() {
+            @Override
+            public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+                if (newValue.intValue() > oldValue.intValue()) {
+                    char ch = tradeAmount.getText().charAt(oldValue.intValue());
+                    // Check if the new character is the number or other's
+                    if (!(ch >= '0' && ch <= '9')) {
+                        // if it's not number then just setText to previous one
+                        tradeAmount.setText(tradeAmount.getText().substring(0, tradeAmount.getText().length() - 1));
+                    }
+                }
+            }
+        });
+    }
 }

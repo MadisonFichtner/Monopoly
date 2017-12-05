@@ -1,7 +1,6 @@
 package test;
 
 import org.junit.Test;
-
 import src.Board;
 import src.Card;
 import src.Deed;
