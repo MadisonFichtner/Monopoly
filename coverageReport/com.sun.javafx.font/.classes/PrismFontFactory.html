@@ -1,0 +1,2131 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: PrismFontFactory</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.javafx.font</a> ]
+</div>
+
+<h1>Coverage Summary for Class: PrismFontFactory (com.sun.javafx.font)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">PrismFontFactory</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    41.7%
+  </span>
+  <span class="absValue">
+    (25/ 60)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    20%
+  </span>
+  <span class="absValue">
+    (189/ 947)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright (c) 2011, 2016, Oracle and/or its affiliates. All rights reserved.
+<i>3</i>&nbsp; * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+<i>4</i>&nbsp; *
+<i>5</i>&nbsp; *
+<i>6</i>&nbsp; *
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; *
+<i>11</i>&nbsp; *
+<i>12</i>&nbsp; *
+<i>13</i>&nbsp; *
+<i>14</i>&nbsp; *
+<i>15</i>&nbsp; *
+<i>16</i>&nbsp; *
+<i>17</i>&nbsp; *
+<i>18</i>&nbsp; *
+<i>19</i>&nbsp; *
+<i>20</i>&nbsp; *
+<i>21</i>&nbsp; *
+<i>22</i>&nbsp; *
+<i>23</i>&nbsp; *
+<i>24</i>&nbsp; */
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;package com.sun.javafx.font;
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;import java.security.AccessController;
+<i>29</i>&nbsp;import java.security.PrivilegedAction;
+<i>30</i>&nbsp;import java.security.PrivilegedExceptionAction;
+<i>31</i>&nbsp;import java.io.File;
+<i>32</i>&nbsp;import java.io.FilenameFilter;
+<i>33</i>&nbsp;import java.io.InputStream;
+<i>34</i>&nbsp;import java.lang.ref.WeakReference;
+<i>35</i>&nbsp;import java.lang.reflect.Method;
+<i>36</i>&nbsp;import java.util.ArrayList;
+<i>37</i>&nbsp;import java.util.Collections;
+<i>38</i>&nbsp;import java.util.HashMap;
+<i>39</i>&nbsp;import java.util.HashSet;
+<i>40</i>&nbsp;import java.util.Iterator;
+<i>41</i>&nbsp;import java.util.Locale;
+<i>42</i>&nbsp;
+<i>43</i>&nbsp;import com.sun.glass.ui.Screen;
+<i>44</i>&nbsp;import com.sun.glass.utils.NativeLibLoader;
+<i>45</i>&nbsp;import com.sun.javafx.PlatformUtil;
+<i>46</i>&nbsp;import com.sun.javafx.text.GlyphLayout;
+<i>47</i>&nbsp;import static com.sun.javafx.FXPermissions.LOAD_FONT_PERMISSION;
+<i>48</i>&nbsp;
+<b class="fc"><i>49</i>&nbsp;public abstract class PrismFontFactory implements FontFactory {</b>
+<i>50</i>&nbsp;
+<i>51</i>&nbsp;    public static final boolean debugFonts;
+<i>52</i>&nbsp;    public static final boolean isWindows;
+<i>53</i>&nbsp;    public static final boolean isLinux;
+<i>54</i>&nbsp;    public static final boolean isMacOSX;
+<i>55</i>&nbsp;    public static final boolean isIOS;
+<i>56</i>&nbsp;    public static final boolean isAndroid;
+<i>57</i>&nbsp;    public static final boolean isEmbedded;
+<i>58</i>&nbsp;    public static final int cacheLayoutSize;
+<i>59</i>&nbsp;    static boolean useNativeRasterizer;
+<i>60</i>&nbsp;    private static int subPixelMode;
+<i>61</i>&nbsp;    public static final int SUB_PIXEL_ON = 1;
+<i>62</i>&nbsp;    public static final int SUB_PIXEL_Y = 2;
+<i>63</i>&nbsp;    public static final int SUB_PIXEL_NATIVE = 4;
+<b class="fc"><i>64</i>&nbsp;    private static float fontSizeLimit = 80f;</b>
+<i>65</i>&nbsp;
+<i>66</i>&nbsp;    private static boolean lcdEnabled;
+<b class="fc"><i>67</i>&nbsp;    private static float lcdContrast = -1;</b>
+<i>68</i>&nbsp;    private static String jreFontDir;
+<i>69</i>&nbsp;    private static final String jreDefaultFont   = &quot;Lucida Sans Regular&quot;;
+<i>70</i>&nbsp;    private static final String jreDefaultFontLC = &quot;lucida sans regular&quot;;
+<i>71</i>&nbsp;    private static final String jreDefaultFontFile = &quot;LucidaSansRegular.ttf&quot;;
+<i>72</i>&nbsp;    private static final String T2K_FACTORY = &quot;com.sun.javafx.font.t2k.T2KFactory&quot;;
+<i>73</i>&nbsp;    private static final String CT_FACTORY = &quot;com.sun.javafx.font.coretext.CTFactory&quot;;
+<i>74</i>&nbsp;    private static final String DW_FACTORY = &quot;com.sun.javafx.font.directwrite.DWFactory&quot;;
+<i>75</i>&nbsp;    private static final String FT_FACTORY = &quot;com.sun.javafx.font.freetype.FTFactory&quot;;
+<i>76</i>&nbsp;
+<i>77</i>&nbsp;    /* We need two maps. One to hold pointers to the raw fonts, another
+<i>78</i>&nbsp;     * to hold pointers to the composite resources. Top level look ups
+<i>79</i>&nbsp;     * to createFont() will look first in the compResourceMap, and
+<i>80</i>&nbsp;     * only go to the second map to create a wrapped resource.
+<i>81</i>&nbsp;     * Logical Fonts are handled separately.
+<i>82</i>&nbsp;     */
+<b class="fc"><i>83</i>&nbsp;    HashMap&lt;String, FontResource&gt; fontResourceMap =</b>
+<i>84</i>&nbsp;        new HashMap&lt;String, FontResource&gt;();
+<i>85</i>&nbsp;
+<b class="fc"><i>86</i>&nbsp;    HashMap&lt;String, CompositeFontResource&gt; compResourceMap =</b>
+<i>87</i>&nbsp;        new HashMap&lt;String, CompositeFontResource&gt;();
+<i>88</i>&nbsp;
+<i>89</i>&nbsp;    static {
+<b class="fc"><i>90</i>&nbsp;        isWindows = PlatformUtil.isWindows();</b>
+<b class="fc"><i>91</i>&nbsp;        isMacOSX  = PlatformUtil.isMac();</b>
+<b class="fc"><i>92</i>&nbsp;        isLinux   = PlatformUtil.isLinux();</b>
+<b class="fc"><i>93</i>&nbsp;        isIOS     = PlatformUtil.isIOS();</b>
+<b class="fc"><i>94</i>&nbsp;        isAndroid = PlatformUtil.isAndroid();</b>
+<b class="fc"><i>95</i>&nbsp;        isEmbedded = PlatformUtil.isEmbedded();</b>
+<b class="fc"><i>96</i>&nbsp;        int[] tempCacheLayoutSize = {0x10000};</b>
+<i>97</i>&nbsp;
+<b class="fc"><i>98</i>&nbsp;        debugFonts = AccessController.doPrivileged(</b>
+<i>99</i>&nbsp;                (PrivilegedAction&lt;Boolean&gt;) () -&gt; {
+<b class="fc"><i>100</i>&nbsp;                    NativeLibLoader.loadLibrary(&quot;javafx_font&quot;);</b>
+<b class="fc"><i>101</i>&nbsp;                    String dbg = System.getProperty(&quot;prism.debugfonts&quot;, &quot;&quot;);</b>
+<b class="fc"><i>102</i>&nbsp;                    boolean debug = &quot;true&quot;.equals(dbg);</b>
+<b class="fc"><i>103</i>&nbsp;                    jreFontDir = getJDKFontDir();</b>
+<b class="fc"><i>104</i>&nbsp;                    String s = System.getProperty(&quot;com.sun.javafx.fontSize&quot;);</b>
+<b class="fc"><i>105</i>&nbsp;                    systemFontSize = -1f;</b>
+<b class="fc"><i>106</i>&nbsp;                    if (s != null) {</b>
+<i>107</i>&nbsp;                        try {
+<b class="nc"><i>108</i>&nbsp;                            systemFontSize = Float.parseFloat(s);</b>
+<b class="nc"><i>109</i>&nbsp;                        } catch (NumberFormatException nfe) {</b>
+<b class="nc"><i>110</i>&nbsp;                            System.err.println(&quot;Cannot parse font size &#39;&quot;</b>
+<i>111</i>&nbsp;                                    + s + &quot;&#39;&quot;);
+<b class="nc"><i>112</i>&nbsp;                        }</b>
+<i>113</i>&nbsp;                    }
+<b class="fc"><i>114</i>&nbsp;                    s = System.getProperty(&quot;prism.subpixeltext&quot;, &quot;on&quot;);</b>
+<b class="fc"><i>115</i>&nbsp;                    if (s.indexOf(&quot;on&quot;) != -1 || s.indexOf(&quot;true&quot;) != -1) {</b>
+<b class="fc"><i>116</i>&nbsp;                        subPixelMode = SUB_PIXEL_ON;</b>
+<i>117</i>&nbsp;                    }
+<b class="fc"><i>118</i>&nbsp;                    if (s.indexOf(&quot;native&quot;) != -1) {</b>
+<b class="nc"><i>119</i>&nbsp;                        subPixelMode |= SUB_PIXEL_NATIVE | SUB_PIXEL_ON;</b>
+<i>120</i>&nbsp;                    }
+<b class="fc"><i>121</i>&nbsp;                    if (s.indexOf(&quot;vertical&quot;) != -1) {</b>
+<b class="nc"><i>122</i>&nbsp;                        subPixelMode |= SUB_PIXEL_Y | SUB_PIXEL_NATIVE | SUB_PIXEL_ON;</b>
+<i>123</i>&nbsp;                    }
+<i>124</i>&nbsp;
+<b class="fc"><i>125</i>&nbsp;                    s = System.getProperty(&quot;prism.fontSizeLimit&quot;);</b>
+<b class="fc"><i>126</i>&nbsp;                    if (s != null) {</b>
+<i>127</i>&nbsp;                        try {
+<b class="nc"><i>128</i>&nbsp;                            fontSizeLimit = Float.parseFloat(s);</b>
+<b class="nc"><i>129</i>&nbsp;                            if (fontSizeLimit &lt;= 0) {</b>
+<b class="nc"><i>130</i>&nbsp;                                fontSizeLimit = Float.POSITIVE_INFINITY;</b>
+<i>131</i>&nbsp;                            }
+<b class="nc"><i>132</i>&nbsp;                        } catch (NumberFormatException nfe) {</b>
+<b class="nc"><i>133</i>&nbsp;                            System.err.println(&quot;Cannot parse fontSizeLimit &#39;&quot; + s + &quot;&#39;&quot;);</b>
+<b class="nc"><i>134</i>&nbsp;                        }</b>
+<i>135</i>&nbsp;                    }
+<i>136</i>&nbsp;
+<b class="fc"><i>137</i>&nbsp;                    useNativeRasterizer = isMacOSX || isWindows || isLinux;</b>
+<b class="fc"><i>138</i>&nbsp;                    String defPrismText = useNativeRasterizer ? &quot;native&quot; : &quot;t2k&quot;;</b>
+<b class="fc"><i>139</i>&nbsp;                    String prismText = System.getProperty(&quot;prism.text&quot;, defPrismText);</b>
+<b class="fc"><i>140</i>&nbsp;                    if (useNativeRasterizer) {</b>
+<b class="fc"><i>141</i>&nbsp;                        useNativeRasterizer = !prismText.equals(&quot;t2k&quot;);</b>
+<i>142</i>&nbsp;                    } else {
+<b class="nc"><i>143</i>&nbsp;                        useNativeRasterizer = prismText.equals(&quot;native&quot;);</b>
+<i>144</i>&nbsp;                    }
+<i>145</i>&nbsp;
+<b class="fc"><i>146</i>&nbsp;                    boolean lcdTextOff = (isMacOSX &amp;&amp; !useNativeRasterizer) ||</b>
+<i>147</i>&nbsp;                                         isIOS || isAndroid || isEmbedded;
+<b class="fc"><i>148</i>&nbsp;                    String defLCDProp = lcdTextOff ? &quot;false&quot; : &quot;true&quot;;</b>
+<b class="fc"><i>149</i>&nbsp;                    String lcdProp = System.getProperty(&quot;prism.lcdtext&quot;, defLCDProp);</b>
+<b class="fc"><i>150</i>&nbsp;                    lcdEnabled = lcdProp.equals(&quot;true&quot;);</b>
+<i>151</i>&nbsp;
+<b class="fc"><i>152</i>&nbsp;                    s = System.getProperty(&quot;prism.cacheLayoutSize&quot;);</b>
+<b class="fc"><i>153</i>&nbsp;                    if (s != null) {</b>
+<i>154</i>&nbsp;                        try {
+<b class="nc"><i>155</i>&nbsp;                            tempCacheLayoutSize[0] = Integer.parseInt(s);</b>
+<b class="nc"><i>156</i>&nbsp;                            if (tempCacheLayoutSize[0] &lt; 0) {</b>
+<b class="nc"><i>157</i>&nbsp;                                tempCacheLayoutSize[0] = 0;</b>
+<i>158</i>&nbsp;                            }
+<b class="nc"><i>159</i>&nbsp;                        } catch (NumberFormatException nfe) {</b>
+<b class="nc"><i>160</i>&nbsp;                            System.err.println(&quot;Cannot parse cache layout size &#39;&quot;</b>
+<i>161</i>&nbsp;                                    + s + &quot;&#39;&quot;);
+<b class="nc"><i>162</i>&nbsp;                        }</b>
+<i>163</i>&nbsp;                    }
+<i>164</i>&nbsp;
+<b class="fc"><i>165</i>&nbsp;                    return debug;</b>
+<i>166</i>&nbsp;                }
+<i>167</i>&nbsp;        );
+<b class="fc"><i>168</i>&nbsp;        cacheLayoutSize = tempCacheLayoutSize[0];</b>
+<i>169</i>&nbsp;    }
+<i>170</i>&nbsp;
+<i>171</i>&nbsp;    private static String getJDKFontDir() {
+<i>172</i>&nbsp;        try {
+<b class="fc"><i>173</i>&nbsp;            Class&lt;?&gt; c = Class.forName(&quot;sun.font.lookup.JDKFontLookup&quot;);</b>
+<b class="fc"><i>174</i>&nbsp;            Method m = c.getMethod(&quot;getJDKFontDir&quot;);</b>
+<b class="fc"><i>175</i>&nbsp;            jreFontDir = (String)m.invoke(c);</b>
+<b class="fc"><i>176</i>&nbsp;            return jreFontDir;</b>
+<b class="nc"><i>177</i>&nbsp;        } catch (Throwable t) {</b>
+<b class="nc"><i>178</i>&nbsp;            if (debugFonts) {</b>
+<b class="nc"><i>179</i>&nbsp;                System.err.println(&quot;Could not get JRE font dir via API&quot;);</b>
+<b class="nc"><i>180</i>&nbsp;                t.printStackTrace();</b>
+<i>181</i>&nbsp;            }
+<i>182</i>&nbsp;        }
+<b class="nc"><i>183</i>&nbsp;        return</b>
+<b class="nc"><i>184</i>&nbsp;            System.getProperty(&quot;java.home&quot;,&quot;&quot;) + File.separator +</b>
+<i>185</i>&nbsp;                &quot;lib&quot; + File.separator + &quot;fonts&quot; + File.separator;
+<i>186</i>&nbsp;    }
+<i>187</i>&nbsp;
+<i>188</i>&nbsp;    private static String getNativeFactoryName() {
+<b class="fc"><i>189</i>&nbsp;        if (isWindows) return DW_FACTORY;</b>
+<b class="nc"><i>190</i>&nbsp;        if (isMacOSX || isIOS) return CT_FACTORY;</b>
+<b class="nc"><i>191</i>&nbsp;        if (isLinux || isAndroid) return FT_FACTORY;</b>
+<b class="nc"><i>192</i>&nbsp;        return null;</b>
+<i>193</i>&nbsp;    }
+<i>194</i>&nbsp;
+<i>195</i>&nbsp;    public static float getFontSizeLimit() {
+<b class="fc"><i>196</i>&nbsp;        return fontSizeLimit;</b>
+<i>197</i>&nbsp;    }
+<i>198</i>&nbsp;
+<b class="fc"><i>199</i>&nbsp;    private static PrismFontFactory theFontFactory = null;</b>
+<i>200</i>&nbsp;    public static synchronized PrismFontFactory getFontFactory() {
+<b class="fc"><i>201</i>&nbsp;        if (theFontFactory != null) {</b>
+<b class="fc"><i>202</i>&nbsp;            return theFontFactory;</b>
+<i>203</i>&nbsp;        }
+<b class="fc"><i>204</i>&nbsp;        String factoryClass = null;</b>
+<b class="fc"><i>205</i>&nbsp;        if (useNativeRasterizer) {</b>
+<b class="fc"><i>206</i>&nbsp;            factoryClass = getNativeFactoryName();</b>
+<i>207</i>&nbsp;        }
+<b class="fc"><i>208</i>&nbsp;        if (factoryClass == null) {</b>
+<b class="nc"><i>209</i>&nbsp;            useNativeRasterizer = false;</b>
+<b class="nc"><i>210</i>&nbsp;            factoryClass = T2K_FACTORY;</b>
+<i>211</i>&nbsp;        }
+<b class="fc"><i>212</i>&nbsp;        if (debugFonts) {</b>
+<b class="nc"><i>213</i>&nbsp;            System.err.println(&quot;Loading FontFactory &quot; + factoryClass);</b>
+<b class="nc"><i>214</i>&nbsp;            if (subPixelMode != 0) {</b>
+<b class="nc"><i>215</i>&nbsp;                String s = &quot;Subpixel: enabled&quot;;</b>
+<b class="nc"><i>216</i>&nbsp;                if ((subPixelMode &amp; SUB_PIXEL_Y) != 0) {</b>
+<b class="nc"><i>217</i>&nbsp;                    s += &quot;, vertical&quot;;</b>
+<i>218</i>&nbsp;                }
+<b class="nc"><i>219</i>&nbsp;                if ((subPixelMode &amp; SUB_PIXEL_NATIVE) != 0) {</b>
+<b class="nc"><i>220</i>&nbsp;                    s += &quot;, native&quot;;</b>
+<i>221</i>&nbsp;                }
+<b class="nc"><i>222</i>&nbsp;                System.err.println(s);</b>
+<i>223</i>&nbsp;            }
+<i>224</i>&nbsp;        }
+<b class="fc"><i>225</i>&nbsp;        theFontFactory = getFontFactory(factoryClass);</b>
+<b class="fc"><i>226</i>&nbsp;        if (theFontFactory == null) {</b>
+<b class="nc"><i>227</i>&nbsp;            if (useNativeRasterizer) {</b>
+<i>228</i>&nbsp;                // If native failed use T2K (i.e. Windows Vista)
+<b class="nc"><i>229</i>&nbsp;                useNativeRasterizer = false;</b>
+<b class="nc"><i>230</i>&nbsp;                factoryClass = T2K_FACTORY;</b>
+<i>231</i>&nbsp;            } else {
+<i>232</i>&nbsp;                // If T2K failed use native (i.e. OpenJFX build)
+<b class="nc"><i>233</i>&nbsp;                useNativeRasterizer = true;</b>
+<b class="nc"><i>234</i>&nbsp;                factoryClass = getNativeFactoryName();</b>
+<i>235</i>&nbsp;            }
+<b class="nc"><i>236</i>&nbsp;            if (factoryClass != null) {</b>
+<b class="nc"><i>237</i>&nbsp;                theFontFactory = getFontFactory(factoryClass);</b>
+<i>238</i>&nbsp;            }
+<b class="nc"><i>239</i>&nbsp;            if (debugFonts) {</b>
+<b class="nc"><i>240</i>&nbsp;                System.err.println(&quot;*** Loading primary font factory failed. ***&quot;);</b>
+<b class="nc"><i>241</i>&nbsp;                System.err.println(&quot;*** Fallbacking to &quot; + factoryClass  + &quot; ***&quot;);</b>
+<i>242</i>&nbsp;            }
+<i>243</i>&nbsp;        }
+<b class="fc"><i>244</i>&nbsp;        return theFontFactory;</b>
+<i>245</i>&nbsp;    }
+<i>246</i>&nbsp;
+<i>247</i>&nbsp;    private static synchronized PrismFontFactory getFontFactory(String factoryClass) {
+<i>248</i>&nbsp;        try {
+<b class="fc"><i>249</i>&nbsp;            Class&lt;?&gt; clazz = Class.forName(factoryClass);</b>
+<b class="fc"><i>250</i>&nbsp;            Method mid = clazz.getMethod(&quot;getFactory&quot;, (Class[])null);</b>
+<b class="fc"><i>251</i>&nbsp;            return (PrismFontFactory)mid.invoke(null);</b>
+<b class="nc"><i>252</i>&nbsp;        } catch (Throwable t) {</b>
+<b class="nc"><i>253</i>&nbsp;            if (debugFonts) {</b>
+<b class="nc"><i>254</i>&nbsp;                System.err.println(&quot;Loading font factory failed &quot;+ factoryClass);</b>
+<i>255</i>&nbsp;            }
+<i>256</i>&nbsp;        }
+<b class="nc"><i>257</i>&nbsp;        return null;</b>
+<i>258</i>&nbsp;    }
+<i>259</i>&nbsp;
+<b class="fc"><i>260</i>&nbsp;    private HashMap&lt;String, PrismFontFile&gt;</b>
+<i>261</i>&nbsp;        fileNameToFontResourceMap = new HashMap&lt;String, PrismFontFile&gt;();
+<i>262</i>&nbsp;
+<i>263</i>&nbsp;    protected abstract PrismFontFile
+<i>264</i>&nbsp;          createFontFile(String name, String filename,
+<i>265</i>&nbsp;                         int fIndex, boolean register,
+<i>266</i>&nbsp;                         boolean embedded,
+<i>267</i>&nbsp;                         boolean copy, boolean tracked)
+<i>268</i>&nbsp;                         throws Exception;
+<i>269</i>&nbsp;
+<i>270</i>&nbsp;    public abstract GlyphLayout createGlyphLayout();
+<i>271</i>&nbsp;
+<i>272</i>&nbsp;    // For an caller who has recognised a TTC file and wants to create
+<i>273</i>&nbsp;    // the instances one at a time so as to have visibility into the
+<i>274</i>&nbsp;    // contents of the TTC. Onus is on caller to enumerate all the fonts.
+<i>275</i>&nbsp;    private PrismFontFile createFontResource(String filename, int index) {
+<b class="nc"><i>276</i>&nbsp;        return createFontResource(null, filename, index,</b>
+<i>277</i>&nbsp;                                  true, false, false, false);
+<i>278</i>&nbsp;    }
+<i>279</i>&nbsp;
+<i>280</i>&nbsp;    private PrismFontFile createFontResource(String name,
+<i>281</i>&nbsp;                                             String filename, int index,
+<i>282</i>&nbsp;                                             boolean register, boolean embedded,
+<i>283</i>&nbsp;                                             boolean copy, boolean tracked) {
+<b class="fc"><i>284</i>&nbsp;        String key = (filename+index).toLowerCase();</b>
+<b class="fc"><i>285</i>&nbsp;        PrismFontFile fr = fileNameToFontResourceMap.get(key);</b>
+<b class="fc"><i>286</i>&nbsp;        if (fr != null) {</b>
+<b class="nc"><i>287</i>&nbsp;            return fr;</b>
+<i>288</i>&nbsp;        }
+<i>289</i>&nbsp;
+<i>290</i>&nbsp;        try {
+<b class="fc"><i>291</i>&nbsp;            fr = createFontFile(name, filename, index, register,</b>
+<i>292</i>&nbsp;                                embedded, copy, tracked);
+<b class="fc"><i>293</i>&nbsp;            if (register) {</b>
+<b class="fc"><i>294</i>&nbsp;                storeInMap(fr.getFullName(), fr);</b>
+<b class="fc"><i>295</i>&nbsp;                fileNameToFontResourceMap.put(key, fr);</b>
+<i>296</i>&nbsp;            }
+<b class="fc"><i>297</i>&nbsp;            return fr;</b>
+<b class="nc"><i>298</i>&nbsp;        } catch (Exception e) {</b>
+<b class="nc"><i>299</i>&nbsp;            if (PrismFontFactory.debugFonts) {</b>
+<b class="nc"><i>300</i>&nbsp;                e.printStackTrace();</b>
+<i>301</i>&nbsp;            }
+<b class="nc"><i>302</i>&nbsp;            return null;</b>
+<i>303</i>&nbsp;        }
+<i>304</i>&nbsp;    }
+<i>305</i>&nbsp;
+<i>306</i>&nbsp;    private PrismFontFile createFontResource(String name, String filename) {
+<b class="fc"><i>307</i>&nbsp;        PrismFontFile[] pffArr =</b>
+<b class="fc"><i>308</i>&nbsp;            createFontResources(name, filename,</b>
+<i>309</i>&nbsp;                                true, false, false, false, false);
+<b class="fc"><i>310</i>&nbsp;        if (pffArr == null || pffArr.length == 0) {</b>
+<b class="nc"><i>311</i>&nbsp;           return null;</b>
+<i>312</i>&nbsp;        } else {
+<b class="fc"><i>313</i>&nbsp;           return pffArr[0];</b>
+<i>314</i>&nbsp;        }
+<i>315</i>&nbsp;    }
+<i>316</i>&nbsp;
+<i>317</i>&nbsp;    private PrismFontFile[] createFontResources(String name, String filename,
+<i>318</i>&nbsp;                                                boolean register,
+<i>319</i>&nbsp;                                                boolean embedded,
+<i>320</i>&nbsp;                                                boolean copy,
+<i>321</i>&nbsp;                                                boolean tracked,
+<i>322</i>&nbsp;                                                boolean loadAll) {
+<i>323</i>&nbsp;
+<b class="fc"><i>324</i>&nbsp;        PrismFontFile[] fArr = null;</b>
+<b class="fc"><i>325</i>&nbsp;        if (filename == null) {</b>
+<b class="nc"><i>326</i>&nbsp;            return null;</b>
+<i>327</i>&nbsp;        }
+<b class="fc"><i>328</i>&nbsp;        PrismFontFile fr = createFontResource(name, filename, 0, register,</b>
+<i>329</i>&nbsp;                                              embedded, copy, tracked);
+<b class="fc"><i>330</i>&nbsp;        if (fr == null) {</b>
+<b class="nc"><i>331</i>&nbsp;            return null;</b>
+<i>332</i>&nbsp;        }
+<b class="fc"><i>333</i>&nbsp;        int cnt = (!loadAll) ? 1 : fr.getFontCount();</b>
+<b class="fc"><i>334</i>&nbsp;        fArr = new PrismFontFile[cnt];</b>
+<b class="fc"><i>335</i>&nbsp;        fArr[0] = fr;</b>
+<b class="fc"><i>336</i>&nbsp;        if (cnt == 1) { // Not a TTC, or only requesting one font.</b>
+<b class="fc"><i>337</i>&nbsp;            return fArr;</b>
+<i>338</i>&nbsp;        }
+<b class="nc"><i>339</i>&nbsp;        PrismFontFile.FileRefCounter rc = null;</b>
+<b class="nc"><i>340</i>&nbsp;        if (copy) {</b>
+<b class="nc"><i>341</i>&nbsp;            rc = fr.createFileRefCounter();</b>
+<i>342</i>&nbsp;        }
+<b class="nc"><i>343</i>&nbsp;        int index = 1;</b>
+<i>344</i>&nbsp;        do {
+<b class="nc"><i>345</i>&nbsp;            String key = (filename+index).toLowerCase();</b>
+<i>346</i>&nbsp;            try {
+<b class="nc"><i>347</i>&nbsp;                fr = fileNameToFontResourceMap.get(key);</b>
+<b class="nc"><i>348</i>&nbsp;                if (fr != null) {</b>
+<b class="nc"><i>349</i>&nbsp;                    fArr[index] = fr;</b>
+<b class="nc"><i>350</i>&nbsp;                    continue;</b>
+<i>351</i>&nbsp;                } else {
+<b class="nc"><i>352</i>&nbsp;                    fr = createFontFile(null, filename, index,</b>
+<i>353</i>&nbsp;                                        register, embedded,
+<i>354</i>&nbsp;                                        copy, tracked);
+<b class="nc"><i>355</i>&nbsp;                    if (fr == null) {</b>
+<b class="nc"><i>356</i>&nbsp;                        return null;</b>
+<i>357</i>&nbsp;                    }
+<b class="nc"><i>358</i>&nbsp;                    if (rc != null) {</b>
+<b class="nc"><i>359</i>&nbsp;                        fr.setAndIncFileRefCounter(rc);</b>
+<i>360</i>&nbsp;                    }
+<b class="nc"><i>361</i>&nbsp;                    fArr[index] = fr;</b>
+<b class="nc"><i>362</i>&nbsp;                    String fontname = fr.getFullName();</b>
+<b class="nc"><i>363</i>&nbsp;                    if (register) {</b>
+<b class="nc"><i>364</i>&nbsp;                        storeInMap(fontname, fr);</b>
+<b class="nc"><i>365</i>&nbsp;                        fileNameToFontResourceMap.put(key, fr);</b>
+<i>366</i>&nbsp;                    }
+<i>367</i>&nbsp;                }
+<b class="nc"><i>368</i>&nbsp;            } catch (Exception e) {</b>
+<b class="nc"><i>369</i>&nbsp;                if (PrismFontFactory.debugFonts) {</b>
+<b class="nc"><i>370</i>&nbsp;                    e.printStackTrace();</b>
+<i>371</i>&nbsp;                }
+<b class="nc"><i>372</i>&nbsp;                return null;</b>
+<b class="nc"><i>373</i>&nbsp;            }</b>
+<i>374</i>&nbsp;
+<b class="nc"><i>375</i>&nbsp;        } while (++index &lt; cnt);</b>
+<b class="nc"><i>376</i>&nbsp;        return fArr;</b>
+<i>377</i>&nbsp;    }
+<i>378</i>&nbsp;
+<i>379</i>&nbsp;    private String dotStyleStr(boolean bold, boolean italic) {
+<b class="fc"><i>380</i>&nbsp;        if (!bold) {</b>
+<b class="fc"><i>381</i>&nbsp;            if (!italic) {</b>
+<b class="fc"><i>382</i>&nbsp;                return &quot;&quot;;</b>
+<i>383</i>&nbsp;            }
+<i>384</i>&nbsp;            else {
+<b class="nc"><i>385</i>&nbsp;                return &quot;.italic&quot;;</b>
+<i>386</i>&nbsp;            }
+<i>387</i>&nbsp;        } else {
+<b class="nc"><i>388</i>&nbsp;            if (!italic) {</b>
+<b class="nc"><i>389</i>&nbsp;                return &quot;.bold&quot;;</b>
+<i>390</i>&nbsp;            }
+<i>391</i>&nbsp;            else {
+<b class="nc"><i>392</i>&nbsp;                return &quot;.bolditalic&quot;;</b>
+<i>393</i>&nbsp;            }
+<i>394</i>&nbsp;        }
+<i>395</i>&nbsp;    }
+<i>396</i>&nbsp;
+<i>397</i>&nbsp;    private void storeInMap(String name, FontResource resource) {
+<b class="fc"><i>398</i>&nbsp;        if (name == null || resource == null) {</b>
+<b class="nc"><i>399</i>&nbsp;            return;</b>
+<i>400</i>&nbsp;        }
+<b class="fc"><i>401</i>&nbsp;        if (resource instanceof PrismCompositeFontResource) {</b>
+<b class="nc"><i>402</i>&nbsp;            System.err.println(name + &quot; is a composite &quot; +</b>
+<i>403</i>&nbsp;                                            resource);
+<b class="nc"><i>404</i>&nbsp;            Thread.dumpStack();</b>
+<b class="nc"><i>405</i>&nbsp;            return;</b>
+<i>406</i>&nbsp;        }
+<b class="fc"><i>407</i>&nbsp;        fontResourceMap.put(name.toLowerCase(), resource);</b>
+<b class="fc"><i>408</i>&nbsp;    }</b>
+<i>409</i>&nbsp;
+<i>410</i>&nbsp;    private ArrayList&lt;WeakReference&lt;PrismFontFile&gt;&gt; tmpFonts;
+<i>411</i>&nbsp;    synchronized void addDecodedFont(PrismFontFile fr) {
+<b class="nc"><i>412</i>&nbsp;        fr.setIsDecoded(true);</b>
+<b class="nc"><i>413</i>&nbsp;        addTmpFont(fr);</b>
+<b class="nc"><i>414</i>&nbsp;    }</b>
+<i>415</i>&nbsp;
+<i>416</i>&nbsp;    private synchronized void addTmpFont(PrismFontFile fr) {
+<b class="nc"><i>417</i>&nbsp;        if (tmpFonts == null) {</b>
+<b class="nc"><i>418</i>&nbsp;            tmpFonts = new ArrayList&lt;WeakReference&lt;PrismFontFile&gt;&gt;();</b>
+<i>419</i>&nbsp;        }
+<i>420</i>&nbsp;        WeakReference&lt;PrismFontFile&gt; ref;
+<i>421</i>&nbsp;        /* Registered fonts are enumerable by the application and are
+<i>422</i>&nbsp;         * expected to persist until VM shutdown.
+<i>423</i>&nbsp;         * Other fonts - notably ones temporarily loaded in a web page via
+<i>424</i>&nbsp;         * webview - should be eligible to be collected and have their
+<i>425</i>&nbsp;         * temp files deleted at any time.
+<i>426</i>&nbsp;         */
+<b class="nc"><i>427</i>&nbsp;        if (fr.isRegistered()) {</b>
+<b class="nc"><i>428</i>&nbsp;            ref = new WeakReference&lt;PrismFontFile&gt;(fr);</b>
+<i>429</i>&nbsp;        } else {
+<b class="nc"><i>430</i>&nbsp;            ref = fr.createFileDisposer(this, fr.getFileRefCounter());</b>
+<i>431</i>&nbsp;        }
+<b class="nc"><i>432</i>&nbsp;        tmpFonts.add(ref);</b>
+<b class="nc"><i>433</i>&nbsp;        addFileCloserHook();</b>
+<b class="nc"><i>434</i>&nbsp;    }</b>
+<i>435</i>&nbsp;
+<i>436</i>&nbsp;    synchronized void removeTmpFont(WeakReference&lt;PrismFontFile&gt; ref) {
+<b class="nc"><i>437</i>&nbsp;        if (tmpFonts != null) {</b>
+<b class="nc"><i>438</i>&nbsp;            tmpFonts.remove(ref);</b>
+<i>439</i>&nbsp;        }
+<b class="nc"><i>440</i>&nbsp;    }</b>
+<i>441</i>&nbsp;
+<i>442</i>&nbsp;    /* familyName is expected to be a physical font family name.
+<i>443</i>&nbsp;     */
+<i>444</i>&nbsp;    public synchronized FontResource getFontResource(String familyName,
+<i>445</i>&nbsp;                                                     boolean bold,
+<i>446</i>&nbsp;                                                     boolean italic,
+<i>447</i>&nbsp;                                                     boolean wantComp) {
+<i>448</i>&nbsp;
+<b class="fc"><i>449</i>&nbsp;        if (familyName == null || familyName.isEmpty()) {</b>
+<b class="nc"><i>450</i>&nbsp;            return null;</b>
+<i>451</i>&nbsp;        }
+<i>452</i>&nbsp;
+<b class="fc"><i>453</i>&nbsp;        String lcFamilyName = familyName.toLowerCase();</b>
+<b class="fc"><i>454</i>&nbsp;        String styleStr = dotStyleStr(bold, italic);</b>
+<i>455</i>&nbsp;        FontResource fr;
+<i>456</i>&nbsp;
+<b class="fc"><i>457</i>&nbsp;        fr = lookupResource(lcFamilyName+styleStr, wantComp);</b>
+<b class="fc"><i>458</i>&nbsp;        if (fr != null) {</b>
+<b class="nc"><i>459</i>&nbsp;            return fr;</b>
+<i>460</i>&nbsp;        }
+<i>461</i>&nbsp;
+<i>462</i>&nbsp;
+<i>463</i>&nbsp;        /* We may have registered this as an embedded font.
+<i>464</i>&nbsp;         * In which case we should also try to locate it in
+<i>465</i>&nbsp;         * the non-composite map before looking elsewhere.
+<i>466</i>&nbsp;         * First look for a font with the exact styles specified.
+<i>467</i>&nbsp;         * If that fails, look for any font in the family.
+<i>468</i>&nbsp;         * Later on this should be a lot smarter about finding the best
+<i>469</i>&nbsp;         * match, but that can wait until we have better style matching
+<i>470</i>&nbsp;         * for all cases.
+<i>471</i>&nbsp;         */
+<b class="fc"><i>472</i>&nbsp;        if (embeddedFonts != null &amp;&amp; wantComp) {</b>
+<b class="nc"><i>473</i>&nbsp;            fr = lookupResource(lcFamilyName+styleStr, false);</b>
+<b class="nc"><i>474</i>&nbsp;            if (fr != null) {</b>
+<b class="nc"><i>475</i>&nbsp;                return new PrismCompositeFontResource(fr, lcFamilyName+styleStr);</b>
+<i>476</i>&nbsp;            }
+<b class="nc"><i>477</i>&nbsp;            for (PrismFontFile embeddedFont : embeddedFonts.values()) {</b>
+<b class="nc"><i>478</i>&nbsp;                String lcEmFamily = embeddedFont.getFamilyName().toLowerCase();</b>
+<b class="nc"><i>479</i>&nbsp;                if (lcEmFamily.equals(lcFamilyName)) {</b>
+<b class="nc"><i>480</i>&nbsp;                    return new PrismCompositeFontResource(embeddedFont,</b>
+<i>481</i>&nbsp;                                                        lcFamilyName+styleStr);
+<i>482</i>&nbsp;                }
+<b class="nc"><i>483</i>&nbsp;            }</b>
+<i>484</i>&nbsp;        }
+<i>485</i>&nbsp;
+<i>486</i>&nbsp;        /* We have hard coded some of the most commonly used Windows fonts
+<i>487</i>&nbsp;         * so as to avoid the overhead of doing a lookup via GDI.
+<i>488</i>&nbsp;         */
+<b class="fc"><i>489</i>&nbsp;        if (isWindows) {</b>
+<b class="fc"><i>490</i>&nbsp;            int style = ((bold ? 1 : 0)) + ((italic) ? 2 : 0);</b>
+<b class="fc"><i>491</i>&nbsp;            String fontFile = WindowsFontMap.findFontFile(lcFamilyName, style);</b>
+<b class="fc"><i>492</i>&nbsp;            if (fontFile != null) {</b>
+<b class="fc"><i>493</i>&nbsp;                fr = createFontResource(null, fontFile);</b>
+<b class="fc"><i>494</i>&nbsp;                if (fr != null) {</b>
+<b class="fc"><i>495</i>&nbsp;                    if (bold == fr.isBold() &amp;&amp; italic == fr.isItalic() &amp;&amp;</b>
+<b class="fc"><i>496</i>&nbsp;                        !styleStr.isEmpty())</b>
+<i>497</i>&nbsp;                    {
+<b class="nc"><i>498</i>&nbsp;                        storeInMap(lcFamilyName+styleStr, fr);</b>
+<i>499</i>&nbsp;                    }
+<b class="fc"><i>500</i>&nbsp;                    if (wantComp) {  // wrap with fallback support</b>
+<b class="nc"><i>501</i>&nbsp;                        fr = new PrismCompositeFontResource(fr,</b>
+<i>502</i>&nbsp;                                                       lcFamilyName+styleStr);
+<i>503</i>&nbsp;                    }
+<b class="fc"><i>504</i>&nbsp;                    return fr;</b>
+<i>505</i>&nbsp;                }
+<i>506</i>&nbsp;            }
+<i>507</i>&nbsp;        }
+<i>508</i>&nbsp;
+<b class="nc"><i>509</i>&nbsp;        getFullNameToFileMap();</b>
+<b class="nc"><i>510</i>&nbsp;        ArrayList&lt;String&gt; family = familyToFontListMap.get(lcFamilyName);</b>
+<b class="nc"><i>511</i>&nbsp;        if (family == null) {</b>
+<b class="nc"><i>512</i>&nbsp;            return null;</b>
+<i>513</i>&nbsp;        }
+<i>514</i>&nbsp;
+<b class="nc"><i>515</i>&nbsp;        FontResource plainFR = null, boldFR = null,</b>
+<b class="nc"><i>516</i>&nbsp;            italicFR = null, boldItalicFR = null;</b>
+<b class="nc"><i>517</i>&nbsp;        for (String fontName : family) {</b>
+<b class="nc"><i>518</i>&nbsp;            String lcFontName = fontName.toLowerCase();</b>
+<b class="nc"><i>519</i>&nbsp;            fr = fontResourceMap.get(lcFontName);</b>
+<b class="nc"><i>520</i>&nbsp;            if (fr == null) {</b>
+<b class="nc"><i>521</i>&nbsp;                String file = findFile(lcFontName);</b>
+<b class="nc"><i>522</i>&nbsp;                if (file != null) {</b>
+<b class="nc"><i>523</i>&nbsp;                    fr = getFontResource(fontName, file);</b>
+<i>524</i>&nbsp;                }
+<b class="nc"><i>525</i>&nbsp;                if (fr == null) {</b>
+<b class="nc"><i>526</i>&nbsp;                    continue;</b>
+<i>527</i>&nbsp;                }
+<b class="nc"><i>528</i>&nbsp;                storeInMap(lcFontName, fr);</b>
+<i>529</i>&nbsp;//                 if (wantComp) {
+<i>530</i>&nbsp;//                     // wrap with fallback support
+<i>531</i>&nbsp;//                     fr = new T2KCompositeFontResource(fr, lcFontName);
+<i>532</i>&nbsp;//                 }
+<i>533</i>&nbsp;            }
+<b class="nc"><i>534</i>&nbsp;            if (bold == fr.isBold() &amp;&amp; italic == fr.isItalic()) {</b>
+<b class="nc"><i>535</i>&nbsp;                storeInMap(lcFamilyName+styleStr, fr);</b>
+<b class="nc"><i>536</i>&nbsp;                if (wantComp) {  // wrap with fallback support</b>
+<b class="nc"><i>537</i>&nbsp;                    fr = new PrismCompositeFontResource(fr,</b>
+<i>538</i>&nbsp;                                                      lcFamilyName+styleStr);
+<i>539</i>&nbsp;                }
+<b class="nc"><i>540</i>&nbsp;                return fr;</b>
+<i>541</i>&nbsp;            }
+<b class="nc"><i>542</i>&nbsp;            if (!fr.isBold()) {</b>
+<b class="nc"><i>543</i>&nbsp;                if (!fr.isItalic()) {</b>
+<b class="nc"><i>544</i>&nbsp;                    plainFR = fr;</b>
+<i>545</i>&nbsp;                } else {
+<b class="nc"><i>546</i>&nbsp;                    italicFR = fr;</b>
+<i>547</i>&nbsp;                }
+<i>548</i>&nbsp;            } else {
+<b class="nc"><i>549</i>&nbsp;                if (!fr.isItalic()) {</b>
+<b class="nc"><i>550</i>&nbsp;                    boldFR = fr;</b>
+<i>551</i>&nbsp;                } else {
+<b class="nc"><i>552</i>&nbsp;                    boldItalicFR = fr;</b>
+<i>553</i>&nbsp;                }
+<i>554</i>&nbsp;            }
+<b class="nc"><i>555</i>&nbsp;        }</b>
+<i>556</i>&nbsp;
+<i>557</i>&nbsp;        /* If get here, no perfect match in family. Substitute the
+<i>558</i>&nbsp;         * closest one we found.
+<i>559</i>&nbsp;         */
+<b class="nc"><i>560</i>&nbsp;        if (!bold &amp;&amp; !italic) {</b>
+<b class="nc"><i>561</i>&nbsp;            if (boldFR != null) {</b>
+<b class="nc"><i>562</i>&nbsp;                fr = boldFR;</b>
+<b class="nc"><i>563</i>&nbsp;            } else if (italicFR != null) {</b>
+<b class="nc"><i>564</i>&nbsp;                fr = italicFR;</b>
+<i>565</i>&nbsp;            } else {
+<b class="nc"><i>566</i>&nbsp;                fr = boldItalicFR;</b>
+<i>567</i>&nbsp;            }
+<b class="nc"><i>568</i>&nbsp;        } else if (bold &amp;&amp; !italic) {</b>
+<b class="nc"><i>569</i>&nbsp;            if (plainFR != null) {</b>
+<b class="nc"><i>570</i>&nbsp;                fr = plainFR;</b>
+<b class="nc"><i>571</i>&nbsp;            } else if (boldItalicFR != null) {</b>
+<b class="nc"><i>572</i>&nbsp;                fr = boldItalicFR;</b>
+<i>573</i>&nbsp;            } else {
+<b class="nc"><i>574</i>&nbsp;                fr = italicFR;</b>
+<i>575</i>&nbsp;            }
+<b class="nc"><i>576</i>&nbsp;        } else if (!bold &amp;&amp; italic) {</b>
+<b class="nc"><i>577</i>&nbsp;            if (boldItalicFR != null) {</b>
+<b class="nc"><i>578</i>&nbsp;                fr =  boldItalicFR;</b>
+<b class="nc"><i>579</i>&nbsp;            } else if (plainFR != null) {</b>
+<b class="nc"><i>580</i>&nbsp;                fr = plainFR;</b>
+<i>581</i>&nbsp;            } else {
+<b class="nc"><i>582</i>&nbsp;                fr = boldFR;</b>
+<i>583</i>&nbsp;            }
+<i>584</i>&nbsp;        } else /* (bold &amp;&amp; italic) */ {
+<b class="nc"><i>585</i>&nbsp;            if (italicFR != null) {</b>
+<b class="nc"><i>586</i>&nbsp;                fr = italicFR;</b>
+<b class="nc"><i>587</i>&nbsp;            } else if (boldFR != null) {</b>
+<b class="nc"><i>588</i>&nbsp;                fr = boldFR;</b>
+<i>589</i>&nbsp;            } else {
+<b class="nc"><i>590</i>&nbsp;                fr = plainFR;</b>
+<i>591</i>&nbsp;            }
+<i>592</i>&nbsp;        }
+<b class="nc"><i>593</i>&nbsp;        if (fr != null) {</b>
+<b class="nc"><i>594</i>&nbsp;            storeInMap(lcFamilyName+styleStr, fr);</b>
+<b class="nc"><i>595</i>&nbsp;            if (wantComp) {  // wrap with fallback support</b>
+<b class="nc"><i>596</i>&nbsp;                fr = new PrismCompositeFontResource(fr, lcFamilyName+styleStr);</b>
+<i>597</i>&nbsp;            }
+<i>598</i>&nbsp;        }
+<b class="nc"><i>599</i>&nbsp;        return fr;</b>
+<i>600</i>&nbsp;    }
+<i>601</i>&nbsp;
+<i>602</i>&nbsp;    public synchronized PGFont createFont(String familyName, boolean bold,
+<i>603</i>&nbsp;                                          boolean italic, float size) {
+<b class="nc"><i>604</i>&nbsp;        FontResource fr = null;</b>
+<b class="nc"><i>605</i>&nbsp;        if (familyName != null &amp;&amp; !familyName.isEmpty()) {</b>
+<b class="nc"><i>606</i>&nbsp;            PGFont logFont =</b>
+<b class="nc"><i>607</i>&nbsp;                LogicalFont.getLogicalFont(familyName, bold, italic, size);</b>
+<b class="nc"><i>608</i>&nbsp;            if (logFont != null) {</b>
+<b class="nc"><i>609</i>&nbsp;                return logFont;</b>
+<i>610</i>&nbsp;            }
+<b class="nc"><i>611</i>&nbsp;            fr = getFontResource(familyName, bold, italic, true);</b>
+<i>612</i>&nbsp;        }
+<i>613</i>&nbsp;
+<b class="nc"><i>614</i>&nbsp;        if (fr == null) {</b>
+<i>615</i>&nbsp;            // &quot;System&quot; is the default if we didn&#39;t recognise the family
+<b class="nc"><i>616</i>&nbsp;            return LogicalFont.getLogicalFont(&quot;System&quot;, bold, italic, size);</b>
+<i>617</i>&nbsp;        }
+<b class="nc"><i>618</i>&nbsp;        return new PrismFont(fr, fr.getFullName(), size);</b>
+<i>619</i>&nbsp;    }
+<i>620</i>&nbsp;
+<i>621</i>&nbsp;    public synchronized PGFont createFont(String name, float size) {
+<i>622</i>&nbsp;
+<b class="fc"><i>623</i>&nbsp;        FontResource fr = null;</b>
+<b class="fc"><i>624</i>&nbsp;        if (name != null &amp;&amp; !name.isEmpty()) {</b>
+<b class="fc"><i>625</i>&nbsp;            PGFont logFont =</b>
+<b class="fc"><i>626</i>&nbsp;                LogicalFont.getLogicalFont(name, size);</b>
+<b class="fc"><i>627</i>&nbsp;            if (logFont != null) {</b>
+<b class="fc"><i>628</i>&nbsp;                return logFont;</b>
+<i>629</i>&nbsp;            }
+<i>630</i>&nbsp;
+<b class="nc"><i>631</i>&nbsp;            fr = getFontResource(name, null, true);</b>
+<i>632</i>&nbsp;        }
+<b class="nc"><i>633</i>&nbsp;        if (fr == null) {</b>
+<b class="nc"><i>634</i>&nbsp;            return LogicalFont.getLogicalFont(DEFAULT_FULLNAME, size);</b>
+<i>635</i>&nbsp;        }
+<b class="nc"><i>636</i>&nbsp;        return new PrismFont(fr, fr.getFullName(), size);</b>
+<i>637</i>&nbsp;    }
+<i>638</i>&nbsp;
+<i>639</i>&nbsp;    private PrismFontFile getFontResource(String name, String file) {
+<i>640</i>&nbsp;        /* caller assures file not null */
+<b class="nc"><i>641</i>&nbsp;        PrismFontFile fr = null;</b>
+<i>642</i>&nbsp;        /* Still need decode the dfont (event when coretext is used)
+<i>643</i>&nbsp;         * so that JFXFontFont can read it */
+<b class="nc"><i>644</i>&nbsp;        if (isMacOSX) {</b>
+<b class="nc"><i>645</i>&nbsp;            DFontDecoder decoder = null;</b>
+<b class="nc"><i>646</i>&nbsp;            if (name != null) {</b>
+<b class="nc"><i>647</i>&nbsp;                if (file.endsWith(&quot;.dfont&quot;)) {</b>
+<b class="nc"><i>648</i>&nbsp;                    decoder = new DFontDecoder();</b>
+<i>649</i>&nbsp;                    try {
+<b class="nc"><i>650</i>&nbsp;                        decoder.openFile();</b>
+<b class="nc"><i>651</i>&nbsp;                        decoder.decode(name);</b>
+<b class="nc"><i>652</i>&nbsp;                        decoder.closeFile();</b>
+<b class="nc"><i>653</i>&nbsp;                        file = decoder.getFile().getPath();</b>
+<b class="nc"><i>654</i>&nbsp;                    } catch (Exception e) {</b>
+<b class="nc"><i>655</i>&nbsp;                        file = null;</b>
+<b class="nc"><i>656</i>&nbsp;                        decoder.deleteFile();</b>
+<b class="nc"><i>657</i>&nbsp;                        decoder = null;</b>
+<b class="nc"><i>658</i>&nbsp;                        if (PrismFontFactory.debugFonts) {</b>
+<b class="nc"><i>659</i>&nbsp;                            e.printStackTrace();</b>
+<i>660</i>&nbsp;                        }
+<b class="nc"><i>661</i>&nbsp;                    }</b>
+<i>662</i>&nbsp;                }
+<i>663</i>&nbsp;            }
+<b class="nc"><i>664</i>&nbsp;            if (file != null) {</b>
+<b class="nc"><i>665</i>&nbsp;                fr = createFontResource(name, file);</b>
+<i>666</i>&nbsp;            }
+<b class="nc"><i>667</i>&nbsp;            if (decoder != null) {</b>
+<b class="nc"><i>668</i>&nbsp;                if (fr != null) {</b>
+<b class="nc"><i>669</i>&nbsp;                    addDecodedFont(fr);</b>
+<i>670</i>&nbsp;                } else {
+<b class="nc"><i>671</i>&nbsp;                    decoder.deleteFile();</b>
+<i>672</i>&nbsp;                }
+<i>673</i>&nbsp;            }
+<b class="nc"><i>674</i>&nbsp;        } else {</b>
+<b class="nc"><i>675</i>&nbsp;            fr = createFontResource(name, file);</b>
+<i>676</i>&nbsp;        }
+<b class="nc"><i>677</i>&nbsp;        return fr;</b>
+<i>678</i>&nbsp;    }
+<i>679</i>&nbsp;
+<i>680</i>&nbsp;    public synchronized PGFont deriveFont(PGFont font, boolean bold,
+<i>681</i>&nbsp;                                          boolean italic, float size) {
+<b class="nc"><i>682</i>&nbsp;        FontResource fr = font.getFontResource();</b>
+<i>683</i>&nbsp;        //TODO honor bold and italic
+<b class="nc"><i>684</i>&nbsp;        return new PrismFont(fr, fr.getFullName(), size);</b>
+<i>685</i>&nbsp;    }
+<i>686</i>&nbsp;
+<i>687</i>&nbsp;    private FontResource lookupResource(String lcName, boolean wantComp) {
+<b class="fc"><i>688</i>&nbsp;        if (wantComp) {</b>
+<b class="nc"><i>689</i>&nbsp;            return compResourceMap.get(lcName);</b>
+<i>690</i>&nbsp;        } else {
+<b class="fc"><i>691</i>&nbsp;            return fontResourceMap.get(lcName);</b>
+<i>692</i>&nbsp;        }
+<i>693</i>&nbsp;    }
+<i>694</i>&nbsp;
+<i>695</i>&nbsp;    public synchronized FontResource getFontResource(String name, String file,
+<i>696</i>&nbsp;                                                     boolean wantComp) {
+<b class="nc"><i>697</i>&nbsp;        FontResource fr = null;</b>
+<i>698</i>&nbsp;
+<i>699</i>&nbsp;        // First check if the font is already known.
+<b class="nc"><i>700</i>&nbsp;        if (name != null) {</b>
+<b class="nc"><i>701</i>&nbsp;            String lcName = name.toLowerCase();</b>
+<i>702</i>&nbsp;
+<i>703</i>&nbsp;            // if requesting a wrapped resource, look in the composite map
+<i>704</i>&nbsp;            // else look in the physical resource map
+<b class="nc"><i>705</i>&nbsp;            FontResource fontResource = lookupResource(lcName, wantComp);</b>
+<b class="nc"><i>706</i>&nbsp;            if (fontResource != null) {</b>
+<b class="nc"><i>707</i>&nbsp;                return fontResource;</b>
+<i>708</i>&nbsp;            }
+<i>709</i>&nbsp;
+<i>710</i>&nbsp;            /* We may have registered this as an embedded font.
+<i>711</i>&nbsp;             * In which case we should also try to locate it in
+<i>712</i>&nbsp;             * the non-composite map before looking elsewhere.
+<i>713</i>&nbsp;             */
+<b class="nc"><i>714</i>&nbsp;            if (embeddedFonts != null &amp;&amp; wantComp) {</b>
+<b class="nc"><i>715</i>&nbsp;                fr = lookupResource(lcName, false);</b>
+<b class="nc"><i>716</i>&nbsp;                if (fr != null) {</b>
+<b class="nc"><i>717</i>&nbsp;                    fr = new PrismCompositeFontResource(fr, lcName);</b>
+<i>718</i>&nbsp;                }
+<b class="nc"><i>719</i>&nbsp;                if (fr != null) {</b>
+<b class="nc"><i>720</i>&nbsp;                    return fr;</b>
+<i>721</i>&nbsp;                }
+<i>722</i>&nbsp;            }
+<i>723</i>&nbsp;        }
+<i>724</i>&nbsp;
+<i>725</i>&nbsp;        /* We have hard coded some of the most commonly used Windows fonts
+<i>726</i>&nbsp;         * so as to avoid the overhead of doing a lookup via GDI.
+<i>727</i>&nbsp;         */
+<b class="nc"><i>728</i>&nbsp;        if (isWindows &amp;&amp; name != null) {</b>
+<b class="nc"><i>729</i>&nbsp;            String lcName = name.toLowerCase();</b>
+<b class="nc"><i>730</i>&nbsp;            String fontFile = WindowsFontMap.findFontFile(lcName, -1);</b>
+<b class="nc"><i>731</i>&nbsp;            if (fontFile != null) {</b>
+<b class="nc"><i>732</i>&nbsp;                fr = createFontResource(null, fontFile);</b>
+<b class="nc"><i>733</i>&nbsp;                if (fr != null) {</b>
+<b class="nc"><i>734</i>&nbsp;                    if (wantComp) {</b>
+<b class="nc"><i>735</i>&nbsp;                        fr = new PrismCompositeFontResource(fr, lcName);</b>
+<i>736</i>&nbsp;                    }
+<b class="nc"><i>737</i>&nbsp;                    return fr;</b>
+<i>738</i>&nbsp;                }
+<i>739</i>&nbsp;            }
+<i>740</i>&nbsp;        }
+<i>741</i>&nbsp;
+<b class="nc"><i>742</i>&nbsp;        getFullNameToFileMap(); // init maps</b>
+<i>743</i>&nbsp;
+<b class="nc"><i>744</i>&nbsp;        if (name != null &amp;&amp; file != null) {</b>
+<i>745</i>&nbsp;            // Typically the TTC case used in font linking.
+<i>746</i>&nbsp;            // The called method adds the resources to the physical
+<i>747</i>&nbsp;            // map so no need  to do it here.
+<b class="nc"><i>748</i>&nbsp;            fr = getFontResource(name, file);</b>
+<b class="nc"><i>749</i>&nbsp;            if (fr != null) {</b>
+<b class="nc"><i>750</i>&nbsp;                if (wantComp) {</b>
+<b class="nc"><i>751</i>&nbsp;                    fr = new PrismCompositeFontResource(fr, name.toLowerCase());</b>
+<i>752</i>&nbsp;                }
+<b class="nc"><i>753</i>&nbsp;                return fr;</b>
+<i>754</i>&nbsp;            }
+<i>755</i>&nbsp;        }
+<i>756</i>&nbsp;
+<b class="nc"><i>757</i>&nbsp;        if (name != null) { // Typically normal application lookup</b>
+<b class="nc"><i>758</i>&nbsp;            fr = getFontResourceByFullName(name, wantComp);</b>
+<b class="nc"><i>759</i>&nbsp;            if (fr != null) {</b>
+<b class="nc"><i>760</i>&nbsp;                return fr;</b>
+<i>761</i>&nbsp;            }
+<i>762</i>&nbsp;        }
+<i>763</i>&nbsp;
+<b class="nc"><i>764</i>&nbsp;        if (file != null) { // Typically the TTF case used in font linking</b>
+<b class="nc"><i>765</i>&nbsp;            fr = getFontResourceByFileName(file, wantComp);</b>
+<b class="nc"><i>766</i>&nbsp;            if (fr != null) {</b>
+<b class="nc"><i>767</i>&nbsp;                return fr;</b>
+<i>768</i>&nbsp;            }
+<i>769</i>&nbsp;        }
+<i>770</i>&nbsp;
+<i>771</i>&nbsp;        /* can&#39;t find the requested font, caller will fall back to default */
+<b class="nc"><i>772</i>&nbsp;        return null;</b>
+<i>773</i>&nbsp;    }
+<i>774</i>&nbsp;
+<i>775</i>&nbsp;    boolean isInstalledFont(String fileName) {
+<i>776</i>&nbsp;        // avoid loading the full windows map. Ignore drive letter
+<i>777</i>&nbsp;        // as its common to install on D: too in multi-boot.
+<i>778</i>&nbsp;        String fileKey;
+<b class="nc"><i>779</i>&nbsp;        if (isWindows) {</b>
+<b class="nc"><i>780</i>&nbsp;            if (fileName.toLowerCase().contains(&quot;\\windows\\fonts&quot;)) {</b>
+<b class="nc"><i>781</i>&nbsp;                return true;</b>
+<i>782</i>&nbsp;            }
+<b class="nc"><i>783</i>&nbsp;            File f = new File(fileName);</b>
+<b class="nc"><i>784</i>&nbsp;            fileKey = f.getName();</b>
+<b class="nc"><i>785</i>&nbsp;        } else {</b>
+<b class="nc"><i>786</i>&nbsp;            if (isMacOSX &amp;&amp; fileName.toLowerCase().contains(&quot;/library/fonts&quot;)) {</b>
+<i>787</i>&nbsp;                // Most fonts are installed in either /System/Library/Fonts/
+<i>788</i>&nbsp;                // or /Library/Fonts/
+<b class="nc"><i>789</i>&nbsp;                return true;</b>
+<i>790</i>&nbsp;            }
+<b class="nc"><i>791</i>&nbsp;            File f = new File(fileName);</b>
+<i>792</i>&nbsp;            // fileToFontMap key is the full path on non-windows
+<b class="nc"><i>793</i>&nbsp;            fileKey = f.getPath();</b>
+<i>794</i>&nbsp;        }
+<i>795</i>&nbsp;
+<b class="nc"><i>796</i>&nbsp;        getFullNameToFileMap();</b>
+<b class="nc"><i>797</i>&nbsp;        return fileToFontMap.get(fileKey.toLowerCase()) != null;</b>
+<i>798</i>&nbsp;    }
+<i>799</i>&nbsp;
+<i>800</i>&nbsp;    /* To be called only by methods that already inited the maps
+<i>801</i>&nbsp;     */
+<i>802</i>&nbsp;    synchronized private FontResource
+<i>803</i>&nbsp;        getFontResourceByFileName(String file, boolean wantComp) {
+<i>804</i>&nbsp;
+<b class="nc"><i>805</i>&nbsp;        if (fontToFileMap.size() &lt;= 1) {</b>
+<b class="nc"><i>806</i>&nbsp;            return null;</b>
+<i>807</i>&nbsp;        }
+<i>808</i>&nbsp;
+<i>809</i>&nbsp;        /* This is a little tricky: we know the file we want but we need
+<i>810</i>&nbsp;         * to check if its already a loaded resource. The maps are set up
+<i>811</i>&nbsp;         * to check if a font is loaded by its name, not file.
+<i>812</i>&nbsp;         * To help I added a map from file-&gt;font for all the windows fonts
+<i>813</i>&nbsp;         * but that is valid only for TTF fonts (not TTC). So it should only
+<i>814</i>&nbsp;         * be used in a context where we know its a TTF (or OTF) file.
+<i>815</i>&nbsp;         */
+<b class="nc"><i>816</i>&nbsp;        String name = fileToFontMap.get(file.toLowerCase()); // basename</b>
+<b class="nc"><i>817</i>&nbsp;        FontResource fontResource = null;</b>
+<b class="nc"><i>818</i>&nbsp;        if (name == null) {</b>
+<i>819</i>&nbsp;            // We should not normally get here with a name that we did
+<i>820</i>&nbsp;            // not find from the platform but any EUDC font is in the
+<i>821</i>&nbsp;            // list of linked fonts but it is not enumerated by Windows.
+<i>822</i>&nbsp;            // So we need to open the file and load it as requested.
+<b class="nc"><i>823</i>&nbsp;           fontResource = createFontResource(file, 0);</b>
+<b class="nc"><i>824</i>&nbsp;           if (fontResource != null) {</b>
+<b class="nc"><i>825</i>&nbsp;               String lcName = fontResource.getFullName().toLowerCase();</b>
+<b class="nc"><i>826</i>&nbsp;               storeInMap(lcName, fontResource);</b>
+<i>827</i>&nbsp;               // Checking wantComp, alhough the linked/fallback font
+<i>828</i>&nbsp;               // case doesn&#39;t use this.
+<b class="nc"><i>829</i>&nbsp;                if (wantComp) {</b>
+<b class="nc"><i>830</i>&nbsp;                    fontResource =</b>
+<i>831</i>&nbsp;                        new PrismCompositeFontResource(fontResource, lcName);
+<i>832</i>&nbsp;                }
+<b class="nc"><i>833</i>&nbsp;           }</b>
+<i>834</i>&nbsp;        } else {
+<b class="nc"><i>835</i>&nbsp;            String lcName = name.toLowerCase();</b>
+<b class="nc"><i>836</i>&nbsp;            fontResource = lookupResource(lcName, wantComp);</b>
+<i>837</i>&nbsp;
+<b class="nc"><i>838</i>&nbsp;            if (fontResource == null) {</b>
+<b class="nc"><i>839</i>&nbsp;                String fullPath = findFile(lcName);</b>
+<b class="nc"><i>840</i>&nbsp;                if (fullPath != null) {</b>
+<b class="nc"><i>841</i>&nbsp;                    fontResource = getFontResource(name, fullPath);</b>
+<b class="nc"><i>842</i>&nbsp;                    if (fontResource != null) {</b>
+<b class="nc"><i>843</i>&nbsp;                        storeInMap(lcName, fontResource);</b>
+<i>844</i>&nbsp;                    }
+<b class="nc"><i>845</i>&nbsp;                    if (wantComp) {</b>
+<i>846</i>&nbsp;                        // wrap with fallback support
+<b class="nc"><i>847</i>&nbsp;                        fontResource =</b>
+<i>848</i>&nbsp;                                new PrismCompositeFontResource(fontResource, lcName);
+<i>849</i>&nbsp;                    }
+<i>850</i>&nbsp;                }
+<i>851</i>&nbsp;            }
+<i>852</i>&nbsp;        }
+<b class="nc"><i>853</i>&nbsp;        return fontResource; // maybe null</b>
+<i>854</i>&nbsp;    }
+<i>855</i>&nbsp;
+<i>856</i>&nbsp;    /* To be called only by methods that already inited the maps
+<i>857</i>&nbsp;     * and checked the font is not already loaded.
+<i>858</i>&nbsp;     */
+<i>859</i>&nbsp;    synchronized private FontResource
+<i>860</i>&nbsp;        getFontResourceByFullName(String name, boolean wantComp) {
+<i>861</i>&nbsp;
+<b class="nc"><i>862</i>&nbsp;        String lcName = name.toLowerCase();</b>
+<i>863</i>&nbsp;
+<b class="nc"><i>864</i>&nbsp;        if (fontToFileMap.size() &lt;= 1) {</b>
+<i>865</i>&nbsp;            // Do this even though findFile also fails over to Lucida, as
+<i>866</i>&nbsp;            // without this step, we&#39;d create new instances.
+<b class="nc"><i>867</i>&nbsp;            name = jreDefaultFont;</b>
+<i>868</i>&nbsp;        }
+<i>869</i>&nbsp;
+<b class="nc"><i>870</i>&nbsp;        FontResource fontResource = null;</b>
+<b class="nc"><i>871</i>&nbsp;        String file = findFile(lcName);</b>
+<b class="nc"><i>872</i>&nbsp;        if (file != null) {</b>
+<b class="nc"><i>873</i>&nbsp;            fontResource = getFontResource(name, file);</b>
+<b class="nc"><i>874</i>&nbsp;            if (fontResource != null) {</b>
+<b class="nc"><i>875</i>&nbsp;                storeInMap(lcName, fontResource);</b>
+<b class="nc"><i>876</i>&nbsp;                if (wantComp) {</b>
+<i>877</i>&nbsp;                    // wrap with fallback support
+<b class="nc"><i>878</i>&nbsp;                    fontResource =</b>
+<i>879</i>&nbsp;                        new PrismCompositeFontResource(fontResource, lcName);
+<i>880</i>&nbsp;                }
+<i>881</i>&nbsp;            }
+<i>882</i>&nbsp;        }
+<b class="nc"><i>883</i>&nbsp;        return fontResource;</b>
+<i>884</i>&nbsp;    }
+<i>885</i>&nbsp;
+<i>886</i>&nbsp;    FontResource getDefaultFontResource(boolean wantComp) {
+<b class="nc"><i>887</i>&nbsp;        FontResource fontResource = lookupResource(jreDefaultFontLC, wantComp);</b>
+<b class="nc"><i>888</i>&nbsp;        if (fontResource == null) {</b>
+<b class="nc"><i>889</i>&nbsp;            fontResource = createFontResource(jreDefaultFont,</b>
+<i>890</i>&nbsp;                                              jreFontDir+jreDefaultFontFile);
+<b class="nc"><i>891</i>&nbsp;            if (fontResource == null) {</b>
+<i>892</i>&nbsp;                // Normally use the JRE default font as the last fallback.
+<i>893</i>&nbsp;                // If we can&#39;t find even that, use any platform font;
+<b class="nc"><i>894</i>&nbsp;                for (String font : fontToFileMap.keySet()) {</b>
+<b class="nc"><i>895</i>&nbsp;                    String file = findFile(font); // gets full path</b>
+<b class="nc"><i>896</i>&nbsp;                    fontResource = createFontResource(jreDefaultFontLC, file);</b>
+<b class="nc"><i>897</i>&nbsp;                    if (fontResource != null) {</b>
+<b class="nc"><i>898</i>&nbsp;                        break;</b>
+<i>899</i>&nbsp;                    }
+<b class="nc"><i>900</i>&nbsp;                }</b>
+<b class="nc"><i>901</i>&nbsp;                if (fontResource == null &amp;&amp; isLinux) {</b>
+<b class="nc"><i>902</i>&nbsp;                    String path = FontConfigManager.getDefaultFontPath();</b>
+<b class="nc"><i>903</i>&nbsp;                    if (path != null) {</b>
+<b class="nc"><i>904</i>&nbsp;                        fontResource = createFontResource(jreDefaultFontLC,</b>
+<i>905</i>&nbsp;                                                          path);
+<i>906</i>&nbsp;                    }
+<i>907</i>&nbsp;                }
+<b class="nc"><i>908</i>&nbsp;                if (fontResource == null) {</b>
+<b class="nc"><i>909</i>&nbsp;                    return null; // We tried really hard!</b>
+<i>910</i>&nbsp;                }
+<i>911</i>&nbsp;            }
+<b class="nc"><i>912</i>&nbsp;            storeInMap(jreDefaultFontLC, fontResource);</b>
+<b class="nc"><i>913</i>&nbsp;            if (wantComp) {  // wrap primary for map key</b>
+<b class="nc"><i>914</i>&nbsp;                fontResource =</b>
+<i>915</i>&nbsp;                    new PrismCompositeFontResource(fontResource,
+<i>916</i>&nbsp;                                                 jreDefaultFontLC);
+<i>917</i>&nbsp;            }
+<i>918</i>&nbsp;        }
+<b class="nc"><i>919</i>&nbsp;        return fontResource;</b>
+<i>920</i>&nbsp;    }
+<i>921</i>&nbsp;
+<i>922</i>&nbsp;    private String findFile(String name) {
+<i>923</i>&nbsp;
+<b class="nc"><i>924</i>&nbsp;        if (name.equals(jreDefaultFontLC)) {</b>
+<b class="nc"><i>925</i>&nbsp;            return jreFontDir+jreDefaultFontFile;</b>
+<i>926</i>&nbsp;        }
+<b class="nc"><i>927</i>&nbsp;        getFullNameToFileMap();</b>
+<b class="nc"><i>928</i>&nbsp;        String filename = fontToFileMap.get(name);</b>
+<b class="nc"><i>929</i>&nbsp;        if (isWindows) {</b>
+<b class="nc"><i>930</i>&nbsp;            filename = getPathNameWindows(filename);</b>
+<i>931</i>&nbsp;        }
+<i>932</i>&nbsp;
+<i>933</i>&nbsp;        // Caller needs to check for null and explicitly request
+<i>934</i>&nbsp;        // the JRE default font, if that is what is needed.
+<i>935</i>&nbsp;        // since we don&#39;t want the JRE&#39;s Lucida font to be the
+<i>936</i>&nbsp;        // default for &quot;unknown&quot; fonts.
+<b class="nc"><i>937</i>&nbsp;        return filename;</b>
+<i>938</i>&nbsp;    }
+<i>939</i>&nbsp;
+<i>940</i>&nbsp;    /* Used to indicate required return type from toArray(..); */
+<b class="fc"><i>941</i>&nbsp;    private static final String[] STR_ARRAY = new String[0];</b>
+<i>942</i>&nbsp;
+<i>943</i>&nbsp;    /* Obtained from Platform APIs (windows only)
+<i>944</i>&nbsp;     * Map from lower-case font full name to basename of font file.
+<i>945</i>&nbsp;     * Eg &quot;arial bold&quot; -&gt; ARIALBD.TTF.
+<i>946</i>&nbsp;     * For TTC files, there is a mapping for each font in the file.
+<i>947</i>&nbsp;     */
+<b class="fc"><i>948</i>&nbsp;    private volatile HashMap&lt;String,String&gt; fontToFileMap = null;</b>
+<i>949</i>&nbsp;
+<i>950</i>&nbsp;    /*  TTF/OTF Font File to Font Full Name */
+<b class="fc"><i>951</i>&nbsp;    private HashMap&lt;String,String&gt; fileToFontMap = null;</b>
+<i>952</i>&nbsp;
+<i>953</i>&nbsp;    /* Obtained from Platform APIs (windows only)
+<i>954</i>&nbsp;     * Map from lower-case font full name to the name of its font family
+<i>955</i>&nbsp;     * Eg &quot;arial bold&quot; -&gt; &quot;Arial&quot;
+<i>956</i>&nbsp;     */
+<b class="fc"><i>957</i>&nbsp;    private HashMap&lt;String,String&gt; fontToFamilyNameMap = null;</b>
+<i>958</i>&nbsp;
+<i>959</i>&nbsp;    /* Obtained from Platform APIs (windows only)
+<i>960</i>&nbsp;     * Map from a lower-case family name to a list of full names of
+<i>961</i>&nbsp;     * the member fonts, eg:
+<i>962</i>&nbsp;     * &quot;arial&quot; -&gt; [&quot;Arial&quot;, &quot;Arial Bold&quot;, &quot;Arial Italic&quot;,&quot;Arial Bold Italic&quot;]
+<i>963</i>&nbsp;     */
+<b class="fc"><i>964</i>&nbsp;    private HashMap&lt;String,ArrayList&lt;String&gt;&gt; familyToFontListMap= null;</b>
+<i>965</i>&nbsp;
+<i>966</i>&nbsp;
+<i>967</i>&nbsp;    /* For a terminal server there may be two font directories */
+<b class="fc"><i>968</i>&nbsp;    private static String sysFontDir = null;</b>
+<b class="fc"><i>969</i>&nbsp;    private static String userFontDir = null;</b>
+<i>970</i>&nbsp;
+<i>971</i>&nbsp;    private static native byte[] getFontPath();
+<i>972</i>&nbsp;    private static native String regReadFontLink(String searchfont);
+<i>973</i>&nbsp;    private static native String getEUDCFontFile();
+<i>974</i>&nbsp;
+<i>975</i>&nbsp;    private static void getPlatformFontDirs() {
+<i>976</i>&nbsp;
+<b class="fc"><i>977</i>&nbsp;        if (userFontDir != null || sysFontDir != null) {</b>
+<b class="fc"><i>978</i>&nbsp;            return;</b>
+<i>979</i>&nbsp;        }
+<b class="fc"><i>980</i>&nbsp;        byte [] pathBytes = getFontPath();</b>
+<b class="fc"><i>981</i>&nbsp;        String path = new String(pathBytes);</b>
+<i>982</i>&nbsp;
+<b class="fc"><i>983</i>&nbsp;        int scIdx = path.indexOf(&#39;;&#39;);</b>
+<b class="fc"><i>984</i>&nbsp;        if (scIdx &lt; 0) {</b>
+<b class="fc"><i>985</i>&nbsp;            sysFontDir = path;</b>
+<i>986</i>&nbsp;        } else {
+<b class="nc"><i>987</i>&nbsp;            sysFontDir = path.substring(0, scIdx);</b>
+<b class="nc"><i>988</i>&nbsp;            userFontDir = path.substring(scIdx+1, path.length());</b>
+<i>989</i>&nbsp;        }
+<b class="fc"><i>990</i>&nbsp;    }</b>
+<i>991</i>&nbsp;
+<i>992</i>&nbsp;    /**
+<i>993</i>&nbsp;      * This will return an array of size 2, each element being an array
+<i>994</i>&nbsp;      * list of &lt;code&gt;String&lt;/code&gt;. The first (zeroth) array holds file
+<i>995</i>&nbsp;      * names, and, the second array holds the corresponding fontnames.
+<i>996</i>&nbsp;      * If the file does not have a corresponding font name, its corresponding
+<i>997</i>&nbsp;      * name is assigned an empty string &quot;&quot;.
+<i>998</i>&nbsp;      * As a further complication, Windows 7 frequently lists a font twice,
+<i>999</i>&nbsp;      * once with some scaling values, and again without. We don&#39;t use this
+<i>1000</i>&nbsp;      * so find these and exclude duplicates.
+<i>1001</i>&nbsp;      */
+<i>1002</i>&nbsp;    static ArrayList&lt;String&gt; [] getLinkedFonts(String searchFont,
+<i>1003</i>&nbsp;                                               boolean addSearchFont) {
+<i>1004</i>&nbsp;
+<i>1005</i>&nbsp;
+<b class="fc"><i>1006</i>&nbsp;        ArrayList&lt;String&gt; [] fontRegInfo = new ArrayList[2];</b>
+<i>1007</i>&nbsp;        // index 0 = file names, 1 = font name.
+<i>1008</i>&nbsp;        // the name is only specified for TTC files.
+<b class="fc"><i>1009</i>&nbsp;        fontRegInfo[0] = new ArrayList&lt;String&gt;();</b>
+<b class="fc"><i>1010</i>&nbsp;        fontRegInfo[1] = new ArrayList&lt;String&gt;();</b>
+<i>1011</i>&nbsp;
+<b class="fc"><i>1012</i>&nbsp;        if (isMacOSX) {</b>
+<i>1013</i>&nbsp;            // Hotkey implementation of fallback font on Mac
+<b class="nc"><i>1014</i>&nbsp;            fontRegInfo[0].add(&quot;/Library/Fonts/Arial Unicode.ttf&quot;);</b>
+<b class="nc"><i>1015</i>&nbsp;            fontRegInfo[1].add(&quot;Arial Unicode MS&quot;);</b>
+<i>1016</i>&nbsp;
+<i>1017</i>&nbsp;            // Add Lucida Sans Regular to Mac OS X fallback list
+<b class="nc"><i>1018</i>&nbsp;            fontRegInfo[0].add(jreFontDir + jreDefaultFontFile);</b>
+<b class="nc"><i>1019</i>&nbsp;            fontRegInfo[1].add(jreDefaultFont);</b>
+<i>1020</i>&nbsp;
+<i>1021</i>&nbsp;            // Add Apple Symbols to Mac OS X fallback list
+<b class="nc"><i>1022</i>&nbsp;            fontRegInfo[0].add(&quot;/System/Library/Fonts/Apple Symbols.ttf&quot;);</b>
+<b class="nc"><i>1023</i>&nbsp;            fontRegInfo[1].add(&quot;Apple Symbols&quot;);</b>
+<i>1024</i>&nbsp;
+<i>1025</i>&nbsp;            // Add CJK Ext B supplementary characters.
+<b class="nc"><i>1026</i>&nbsp;            fontRegInfo[0].add(&quot;/System/Library/Fonts/STHeiti Light.ttf&quot;);</b>
+<b class="nc"><i>1027</i>&nbsp;            fontRegInfo[1].add(&quot;Heiti SC Light&quot;);</b>
+<i>1028</i>&nbsp;
+<b class="nc"><i>1029</i>&nbsp;            return fontRegInfo;</b>
+<i>1030</i>&nbsp;        }
+<b class="fc"><i>1031</i>&nbsp;        if (!isWindows) {</b>
+<b class="nc"><i>1032</i>&nbsp;            return fontRegInfo;</b>
+<i>1033</i>&nbsp;        }
+<i>1034</i>&nbsp;
+<b class="fc"><i>1035</i>&nbsp;        if (addSearchFont) {</b>
+<b class="fc"><i>1036</i>&nbsp;            fontRegInfo[0].add(null);</b>
+<b class="fc"><i>1037</i>&nbsp;            fontRegInfo[1].add(searchFont);</b>
+<i>1038</i>&nbsp;        }
+<i>1039</i>&nbsp;
+<b class="fc"><i>1040</i>&nbsp;        String fontRegBuf = regReadFontLink(searchFont);</b>
+<b class="fc"><i>1041</i>&nbsp;        if (fontRegBuf != null &amp;&amp; fontRegBuf.length() &gt; 0) {</b>
+<i>1042</i>&nbsp;            // split registry data into null terminated strings
+<b class="fc"><i>1043</i>&nbsp;            String[] fontRegList = fontRegBuf.split(&quot;\u0000&quot;);</b>
+<b class="fc"><i>1044</i>&nbsp;            int linkListLen = fontRegList.length;</b>
+<b class="fc"><i>1045</i>&nbsp;            for (int i=0; i &lt; linkListLen; i++) {</b>
+<b class="fc"><i>1046</i>&nbsp;                String[] splitFontData = fontRegList[i].split(&quot;,&quot;);</b>
+<b class="fc"><i>1047</i>&nbsp;                int len = splitFontData.length;</b>
+<b class="fc"><i>1048</i>&nbsp;                String file = getPathNameWindows(splitFontData[0]);</b>
+<b class="fc"><i>1049</i>&nbsp;                String name = (len &gt; 1) ? splitFontData[1] : null;</b>
+<b class="fc"><i>1050</i>&nbsp;                if (name != null &amp;&amp; fontRegInfo[1].contains(name)) {</b>
+<b class="nc"><i>1051</i>&nbsp;                    continue;</b>
+<b class="fc"><i>1052</i>&nbsp;                } else if (name == null &amp;&amp; fontRegInfo[0].contains(file)) {</b>
+<b class="nc"><i>1053</i>&nbsp;                    continue;</b>
+<i>1054</i>&nbsp;                }
+<b class="fc"><i>1055</i>&nbsp;                fontRegInfo[0].add(file);</b>
+<b class="fc"><i>1056</i>&nbsp;                fontRegInfo[1].add(name);</b>
+<i>1057</i>&nbsp;            }
+<i>1058</i>&nbsp;        }
+<i>1059</i>&nbsp;
+<b class="fc"><i>1060</i>&nbsp;        String eudcFontFile = getEUDCFontFile();</b>
+<b class="fc"><i>1061</i>&nbsp;        if (eudcFontFile != null) {</b>
+<b class="nc"><i>1062</i>&nbsp;            fontRegInfo[0].add(eudcFontFile);</b>
+<b class="nc"><i>1063</i>&nbsp;            fontRegInfo[1].add(null);</b>
+<i>1064</i>&nbsp;        }
+<i>1065</i>&nbsp;
+<i>1066</i>&nbsp;        // Add Lucida Sans Regular to Windows fallback list
+<b class="fc"><i>1067</i>&nbsp;        fontRegInfo[0].add(jreFontDir + jreDefaultFontFile);</b>
+<b class="fc"><i>1068</i>&nbsp;        fontRegInfo[1].add(jreDefaultFont);</b>
+<i>1069</i>&nbsp;
+<b class="fc"><i>1070</i>&nbsp;        if (PlatformUtil.isWinVistaOrLater()) {</b>
+<i>1071</i>&nbsp;            // CJK Ext B Supplementary character fallbacks.
+<b class="fc"><i>1072</i>&nbsp;            fontRegInfo[0].add(getPathNameWindows(&quot;mingliub.ttc&quot;));</b>
+<b class="fc"><i>1073</i>&nbsp;            fontRegInfo[1].add(&quot;MingLiU-ExtB&quot;);</b>
+<i>1074</i>&nbsp;
+<b class="fc"><i>1075</i>&nbsp;            if (PlatformUtil.isWin7OrLater()) {</b>
+<i>1076</i>&nbsp;                // Add Segoe UI Symbol to Windows 7 or later fallback list
+<b class="fc"><i>1077</i>&nbsp;                fontRegInfo[0].add(getPathNameWindows(&quot;seguisym.ttf&quot;));</b>
+<b class="fc"><i>1078</i>&nbsp;                fontRegInfo[1].add(&quot;Segoe UI Symbol&quot;);</b>
+<i>1079</i>&nbsp;            } else {
+<i>1080</i>&nbsp;                // Add Cambria Math to Windows Vista fallback list
+<b class="nc"><i>1081</i>&nbsp;                fontRegInfo[0].add(getPathNameWindows(&quot;cambria.ttc&quot;));</b>
+<b class="nc"><i>1082</i>&nbsp;                fontRegInfo[1].add(&quot;Cambria Math&quot;);</b>
+<i>1083</i>&nbsp;            }
+<i>1084</i>&nbsp;        }
+<b class="fc"><i>1085</i>&nbsp;        return fontRegInfo;</b>
+<i>1086</i>&nbsp;    }
+<i>1087</i>&nbsp;
+<i>1088</i>&nbsp;    /* This is needed since some windows registry names don&#39;t match
+<i>1089</i>&nbsp;     * the font names.
+<i>1090</i>&nbsp;     * - UPC styled font names have a double space, but the
+<i>1091</i>&nbsp;     * registry entry mapping to a file doesn&#39;t.
+<i>1092</i>&nbsp;     * - Marlett is in a hidden file not listed in the registry
+<i>1093</i>&nbsp;     * - The registry advertises that the file david.ttf contains a
+<i>1094</i>&nbsp;     * font with the full name &quot;David Regular&quot; when in fact its
+<i>1095</i>&nbsp;     * just &quot;David&quot;.
+<i>1096</i>&nbsp;     * Directly fix up these known cases as this is faster.
+<i>1097</i>&nbsp;     * If a font which doesn&#39;t match these known cases has no file,
+<i>1098</i>&nbsp;     * it may be a font that has been temporarily added to the known set
+<i>1099</i>&nbsp;     * or it may be an installed font with a missing registry entry.
+<i>1100</i>&nbsp;     * Installed fonts are those in the windows font directories.
+<i>1101</i>&nbsp;     * Make a best effort attempt to locate these.
+<i>1102</i>&nbsp;     * We obtain the list of TrueType fonts in these directories and
+<i>1103</i>&nbsp;     * filter out all the font files we already know about from the registry.
+<i>1104</i>&nbsp;     * What remains may be &quot;bad&quot; fonts, duplicate fonts, or perhaps the
+<i>1105</i>&nbsp;     * missing font(s) we are looking for.
+<i>1106</i>&nbsp;     * Open each of these files to find out.
+<i>1107</i>&nbsp;     */
+<i>1108</i>&nbsp;    private void resolveWindowsFonts
+<i>1109</i>&nbsp;        (HashMap&lt;String,String&gt; fontToFileMap,
+<i>1110</i>&nbsp;         HashMap&lt;String,String&gt; fontToFamilyNameMap,
+<i>1111</i>&nbsp;         HashMap&lt;String,ArrayList&lt;String&gt;&gt; familyToFontListMap) {
+<i>1112</i>&nbsp;
+<b class="nc"><i>1113</i>&nbsp;        ArrayList&lt;String&gt; unmappedFontNames = null;</b>
+<b class="nc"><i>1114</i>&nbsp;        for (String font : fontToFamilyNameMap.keySet()) {</b>
+<b class="nc"><i>1115</i>&nbsp;            String file = fontToFileMap.get(font);</b>
+<b class="nc"><i>1116</i>&nbsp;            if (file == null) {</b>
+<b class="nc"><i>1117</i>&nbsp;                int dsi = font.indexOf(&quot;  &quot;);</b>
+<b class="nc"><i>1118</i>&nbsp;                if (dsi &gt; 0) {</b>
+<b class="nc"><i>1119</i>&nbsp;                    String newName = font.substring(0, dsi);</b>
+<b class="nc"><i>1120</i>&nbsp;                    newName = newName.concat(font.substring(dsi+1));</b>
+<b class="nc"><i>1121</i>&nbsp;                    file = fontToFileMap.get(newName);</b>
+<i>1122</i>&nbsp;                    /* If this name exists and isn&#39;t for a valid name
+<i>1123</i>&nbsp;                     * replace the mapping to the file with this font
+<i>1124</i>&nbsp;                     */
+<b class="nc"><i>1125</i>&nbsp;                    if (file != null &amp;&amp;</b>
+<b class="nc"><i>1126</i>&nbsp;                        !fontToFamilyNameMap.containsKey(newName)) {</b>
+<b class="nc"><i>1127</i>&nbsp;                        fontToFileMap.remove(newName);</b>
+<b class="nc"><i>1128</i>&nbsp;                        fontToFileMap.put(font, file);</b>
+<i>1129</i>&nbsp;                    }
+<b class="nc"><i>1130</i>&nbsp;                } else if (font.equals(&quot;marlett&quot;)) {</b>
+<b class="nc"><i>1131</i>&nbsp;                    fontToFileMap.put(font, &quot;marlett.ttf&quot;);</b>
+<b class="nc"><i>1132</i>&nbsp;                } else if (font.equals(&quot;david&quot;)) {</b>
+<b class="nc"><i>1133</i>&nbsp;                    file = fontToFileMap.get(&quot;david regular&quot;);</b>
+<b class="nc"><i>1134</i>&nbsp;                    if (file != null) {</b>
+<b class="nc"><i>1135</i>&nbsp;                        fontToFileMap.remove(&quot;david regular&quot;);</b>
+<b class="nc"><i>1136</i>&nbsp;                        fontToFileMap.put(&quot;david&quot;, file);</b>
+<i>1137</i>&nbsp;                    }
+<i>1138</i>&nbsp;                } else {
+<b class="nc"><i>1139</i>&nbsp;                    if (unmappedFontNames == null) {</b>
+<b class="nc"><i>1140</i>&nbsp;                        unmappedFontNames = new ArrayList&lt;String&gt;();</b>
+<i>1141</i>&nbsp;                    }
+<b class="nc"><i>1142</i>&nbsp;                    unmappedFontNames.add(font);</b>
+<i>1143</i>&nbsp;                }
+<i>1144</i>&nbsp;            }
+<b class="nc"><i>1145</i>&nbsp;        }</b>
+<i>1146</i>&nbsp;
+<b class="nc"><i>1147</i>&nbsp;        if (unmappedFontNames != null) {</b>
+<b class="nc"><i>1148</i>&nbsp;            HashSet&lt;String&gt; unmappedFontFiles = new HashSet&lt;String&gt;();</b>
+<i>1149</i>&nbsp;
+<i>1150</i>&nbsp;            // Used HashMap.clone() on SE but TV didn&#39;t support it.
+<b class="nc"><i>1151</i>&nbsp;            HashMap&lt;String,String&gt; ffmapCopy = new HashMap&lt;String,String&gt;();</b>
+<b class="nc"><i>1152</i>&nbsp;            ffmapCopy.putAll(fontToFileMap);</b>
+<b class="nc"><i>1153</i>&nbsp;            for (String key : fontToFamilyNameMap.keySet()) {</b>
+<b class="nc"><i>1154</i>&nbsp;                ffmapCopy.remove(key);</b>
+<b class="nc"><i>1155</i>&nbsp;            }</b>
+<b class="nc"><i>1156</i>&nbsp;            for (String key : ffmapCopy.keySet()) {</b>
+<b class="nc"><i>1157</i>&nbsp;                unmappedFontFiles.add(ffmapCopy.get(key));</b>
+<b class="nc"><i>1158</i>&nbsp;                fontToFileMap.remove(key);</b>
+<b class="nc"><i>1159</i>&nbsp;            }</b>
+<b class="nc"><i>1160</i>&nbsp;            resolveFontFiles(unmappedFontFiles,</b>
+<i>1161</i>&nbsp;                             unmappedFontNames,
+<i>1162</i>&nbsp;                             fontToFileMap,
+<i>1163</i>&nbsp;                             fontToFamilyNameMap,
+<i>1164</i>&nbsp;                             familyToFontListMap);
+<i>1165</i>&nbsp;
+<i>1166</i>&nbsp;            /* remove from the set of names that will be returned to the
+<i>1167</i>&nbsp;             * user any fonts that can&#39;t be mapped to files.
+<i>1168</i>&nbsp;             */
+<b class="nc"><i>1169</i>&nbsp;            if (unmappedFontNames.size() &gt; 0) {</b>
+<b class="nc"><i>1170</i>&nbsp;                int sz = unmappedFontNames.size();</b>
+<b class="nc"><i>1171</i>&nbsp;                for (int i=0; i&lt;sz; i++) {</b>
+<b class="nc"><i>1172</i>&nbsp;                    String name = unmappedFontNames.get(i);</b>
+<b class="nc"><i>1173</i>&nbsp;                    String familyName = fontToFamilyNameMap.get(name);</b>
+<b class="nc"><i>1174</i>&nbsp;                    if (familyName != null) {</b>
+<b class="nc"><i>1175</i>&nbsp;                        ArrayList&lt;String&gt; family = familyToFontListMap.get(familyName);</b>
+<b class="nc"><i>1176</i>&nbsp;                        if (family != null) {</b>
+<b class="nc"><i>1177</i>&nbsp;                            if (family.size() &lt;= 1) {</b>
+<b class="nc"><i>1178</i>&nbsp;                                familyToFontListMap.remove(familyName);</b>
+<i>1179</i>&nbsp;                            }
+<i>1180</i>&nbsp;                        }
+<i>1181</i>&nbsp;                    }
+<b class="nc"><i>1182</i>&nbsp;                    fontToFamilyNameMap.remove(name);</b>
+<i>1183</i>&nbsp;                }
+<i>1184</i>&nbsp;            }
+<i>1185</i>&nbsp;        }
+<b class="nc"><i>1186</i>&nbsp;    }</b>
+<i>1187</i>&nbsp;
+<i>1188</i>&nbsp;    private void resolveFontFiles(HashSet&lt;String&gt; unmappedFiles,
+<i>1189</i>&nbsp;         ArrayList&lt;String&gt; unmappedFonts,
+<i>1190</i>&nbsp;         HashMap&lt;String,String&gt; fontToFileMap,
+<i>1191</i>&nbsp;         HashMap&lt;String,String&gt; fontToFamilyNameMap,
+<i>1192</i>&nbsp;         HashMap&lt;String,ArrayList&lt;String&gt;&gt; familyToFontListMap) {
+<i>1193</i>&nbsp;
+<b class="nc"><i>1194</i>&nbsp;        for (String file : unmappedFiles) {</b>
+<i>1195</i>&nbsp;            try {
+<b class="nc"><i>1196</i>&nbsp;                int fn = 0;</b>
+<i>1197</i>&nbsp;                PrismFontFile ttf;
+<b class="nc"><i>1198</i>&nbsp;                String fullPath = getPathNameWindows(file);</b>
+<i>1199</i>&nbsp;                do {
+<b class="nc"><i>1200</i>&nbsp;                    ttf = createFontResource(fullPath, fn++);</b>
+<b class="nc"><i>1201</i>&nbsp;                    if (ttf == null) {</b>
+<b class="nc"><i>1202</i>&nbsp;                        break;</b>
+<i>1203</i>&nbsp;                    }
+<b class="nc"><i>1204</i>&nbsp;                    String fontNameLC = ttf.getFullName().toLowerCase();</b>
+<b class="nc"><i>1205</i>&nbsp;                    String localeNameLC =ttf.getLocaleFullName().toLowerCase();</b>
+<b class="nc"><i>1206</i>&nbsp;                    if (unmappedFonts.contains(fontNameLC) ||</b>
+<b class="nc"><i>1207</i>&nbsp;                        unmappedFonts.contains(localeNameLC)) {</b>
+<b class="nc"><i>1208</i>&nbsp;                        fontToFileMap.put(fontNameLC, file);</b>
+<b class="nc"><i>1209</i>&nbsp;                        unmappedFonts.remove(fontNameLC);</b>
+<i>1210</i>&nbsp;                        /* If GDI reported names using locale specific style
+<i>1211</i>&nbsp;                         * strings we&#39;ll have those as the unmapped keys in
+<i>1212</i>&nbsp;                         * the font to family list and also in the value
+<i>1213</i>&nbsp;                         * array list mapped by the family.
+<i>1214</i>&nbsp;                         * We can spot these if the localeName is what is
+<i>1215</i>&nbsp;                         * actually in the unmapped font list, and we&#39;ll
+<i>1216</i>&nbsp;                         * then replace all occurrences of the locale name with
+<i>1217</i>&nbsp;                         * the English name.
+<i>1218</i>&nbsp;                         */
+<b class="nc"><i>1219</i>&nbsp;                        if (unmappedFonts.contains(localeNameLC)) {</b>
+<b class="nc"><i>1220</i>&nbsp;                            unmappedFonts.remove(localeNameLC);</b>
+<b class="nc"><i>1221</i>&nbsp;                            String family = ttf.getFamilyName();</b>
+<b class="nc"><i>1222</i>&nbsp;                            String familyLC = family.toLowerCase();</b>
+<b class="nc"><i>1223</i>&nbsp;                            fontToFamilyNameMap.remove(localeNameLC);</b>
+<b class="nc"><i>1224</i>&nbsp;                            fontToFamilyNameMap.put(fontNameLC, family);</b>
+<b class="nc"><i>1225</i>&nbsp;                            ArrayList&lt;String&gt; familylist =</b>
+<b class="nc"><i>1226</i>&nbsp;                                familyToFontListMap.get(familyLC);</b>
+<b class="nc"><i>1227</i>&nbsp;                            if (familylist != null) {</b>
+<b class="nc"><i>1228</i>&nbsp;                                familylist.remove(ttf.getLocaleFullName());</b>
+<i>1229</i>&nbsp;                            } else {
+<i>1230</i>&nbsp;                                /* The family name was not English.
+<i>1231</i>&nbsp;                                 * Remove the non-English family list
+<i>1232</i>&nbsp;                                 * and replace it with the English one
+<i>1233</i>&nbsp;                                 */
+<b class="nc"><i>1234</i>&nbsp;                                String localeFamilyLC =</b>
+<b class="nc"><i>1235</i>&nbsp;                                    ttf.getLocaleFamilyName().toLowerCase();</b>
+<b class="nc"><i>1236</i>&nbsp;                                familylist =</b>
+<b class="nc"><i>1237</i>&nbsp;                                    familyToFontListMap.get(localeFamilyLC);</b>
+<b class="nc"><i>1238</i>&nbsp;                                if (familylist != null) {</b>
+<b class="nc"><i>1239</i>&nbsp;                                    familyToFontListMap.remove(localeFamilyLC);</b>
+<i>1240</i>&nbsp;                                }
+<b class="nc"><i>1241</i>&nbsp;                                familylist = new ArrayList&lt;String&gt;();</b>
+<b class="nc"><i>1242</i>&nbsp;                                familyToFontListMap.put(familyLC, familylist);</b>
+<i>1243</i>&nbsp;                            }
+<b class="nc"><i>1244</i>&nbsp;                            familylist.add(ttf.getFullName());</b>
+<i>1245</i>&nbsp;                        }
+<i>1246</i>&nbsp;                    }
+<i>1247</i>&nbsp;
+<i>1248</i>&nbsp;                }
+<b class="nc"><i>1249</i>&nbsp;                while (fn &lt; ttf.getFontCount());</b>
+<b class="nc"><i>1250</i>&nbsp;            } catch (Exception e) {</b>
+<b class="nc"><i>1251</i>&nbsp;                if (debugFonts) {</b>
+<b class="nc"><i>1252</i>&nbsp;                    e.printStackTrace();</b>
+<i>1253</i>&nbsp;                }
+<b class="nc"><i>1254</i>&nbsp;            }</b>
+<b class="nc"><i>1255</i>&nbsp;        }</b>
+<b class="nc"><i>1256</i>&nbsp;    }</b>
+<i>1257</i>&nbsp;
+<i>1258</i>&nbsp;    static native void
+<i>1259</i>&nbsp;        populateFontFileNameMap(HashMap&lt;String,String&gt; fontToFileMap,
+<i>1260</i>&nbsp;                                 HashMap&lt;String,String&gt; fontToFamilyNameMap,
+<i>1261</i>&nbsp;                                 HashMap&lt;String,ArrayList&lt;String&gt;&gt;
+<i>1262</i>&nbsp;                                     familyToFontListMap,
+<i>1263</i>&nbsp;                                 Locale locale);
+<i>1264</i>&nbsp;
+<i>1265</i>&nbsp;    static String getPathNameWindows(final String filename) {
+<b class="fc"><i>1266</i>&nbsp;        if (filename == null) {</b>
+<b class="nc"><i>1267</i>&nbsp;            return null;</b>
+<i>1268</i>&nbsp;        }
+<i>1269</i>&nbsp;
+<b class="fc"><i>1270</i>&nbsp;        getPlatformFontDirs();</b>
+<b class="fc"><i>1271</i>&nbsp;        File f = new File(filename);</b>
+<b class="fc"><i>1272</i>&nbsp;        if (f.isAbsolute()) {</b>
+<b class="nc"><i>1273</i>&nbsp;            return filename;</b>
+<i>1274</i>&nbsp;        }
+<b class="fc"><i>1275</i>&nbsp;        if (userFontDir == null) {</b>
+<b class="fc"><i>1276</i>&nbsp;            return sysFontDir+&quot;\\&quot;+filename;</b>
+<i>1277</i>&nbsp;        }
+<i>1278</i>&nbsp;
+<b class="nc"><i>1279</i>&nbsp;        String path = AccessController.doPrivileged(</b>
+<i>1280</i>&nbsp;            new PrivilegedAction&lt;String&gt;() {
+<i>1281</i>&nbsp;                public String run() {
+<i>1282</i>&nbsp;                    File f = new File(sysFontDir+&quot;\\&quot;+filename);
+<i>1283</i>&nbsp;                    if (f.exists()) {
+<i>1284</i>&nbsp;                        return f.getAbsolutePath();
+<i>1285</i>&nbsp;                    }
+<i>1286</i>&nbsp;                    else {
+<i>1287</i>&nbsp;                        return userFontDir+&quot;\\&quot;+filename;
+<i>1288</i>&nbsp;                    }
+<i>1289</i>&nbsp;                }
+<i>1290</i>&nbsp;            });
+<i>1291</i>&nbsp;
+<b class="nc"><i>1292</i>&nbsp;            if (path != null) {</b>
+<b class="nc"><i>1293</i>&nbsp;                return path;</b>
+<i>1294</i>&nbsp;            }
+<b class="nc"><i>1295</i>&nbsp;        return null; //  shouldn&#39;t happen.</b>
+<i>1296</i>&nbsp;    }
+<i>1297</i>&nbsp;
+<i>1298</i>&nbsp;    private static ArrayList&lt;String&gt; allFamilyNames;
+<i>1299</i>&nbsp;    public String[] getFontFamilyNames() {
+<b class="nc"><i>1300</i>&nbsp;        if (allFamilyNames == null) {</b>
+<i>1301</i>&nbsp;            /* Create an array list and add the families for :
+<i>1302</i>&nbsp;             * - logical fonts
+<i>1303</i>&nbsp;             * - Embedded fonts
+<i>1304</i>&nbsp;             * - Fonts found on the platform (includes JRE fonts)..
+<i>1305</i>&nbsp;             */
+<b class="nc"><i>1306</i>&nbsp;            ArrayList&lt;String&gt; familyNames = new ArrayList&lt;String&gt;();</b>
+<b class="nc"><i>1307</i>&nbsp;            LogicalFont.addFamilies(familyNames);</b>
+<i>1308</i>&nbsp;            //  Putting this in here is dependendent on the FontLoader
+<i>1309</i>&nbsp;            // loading embedded fonts before calling into here. If
+<i>1310</i>&nbsp;            // embedded fonts can be added then we need to add these
+<i>1311</i>&nbsp;            // dynamically for each call to this method.
+<i>1312</i>&nbsp;
+<b class="nc"><i>1313</i>&nbsp;            if (embeddedFonts != null) {</b>
+<b class="nc"><i>1314</i>&nbsp;                for (PrismFontFile embeddedFont : embeddedFonts.values()) {</b>
+<b class="nc"><i>1315</i>&nbsp;                    if (!familyNames.contains(embeddedFont.getFamilyName()))</b>
+<b class="nc"><i>1316</i>&nbsp;                        familyNames.add(embeddedFont.getFamilyName());</b>
+<b class="nc"><i>1317</i>&nbsp;                }</b>
+<i>1318</i>&nbsp;            }
+<b class="nc"><i>1319</i>&nbsp;            getFullNameToFileMap();</b>
+<b class="nc"><i>1320</i>&nbsp;            for (String f : fontToFamilyNameMap.values()) {</b>
+<b class="nc"><i>1321</i>&nbsp;                if (!familyNames.contains(f)) {</b>
+<b class="nc"><i>1322</i>&nbsp;                    familyNames.add(f);</b>
+<i>1323</i>&nbsp;                }
+<b class="nc"><i>1324</i>&nbsp;            }</b>
+<b class="nc"><i>1325</i>&nbsp;            Collections.sort(familyNames);</b>
+<b class="nc"><i>1326</i>&nbsp;            allFamilyNames = new ArrayList&lt;String&gt;(familyNames);</b>
+<i>1327</i>&nbsp;        }
+<b class="nc"><i>1328</i>&nbsp;        return allFamilyNames.toArray(STR_ARRAY);</b>
+<i>1329</i>&nbsp;    }
+<i>1330</i>&nbsp;
+<i>1331</i>&nbsp;    private static ArrayList&lt;String&gt; allFontNames;
+<i>1332</i>&nbsp;    public String[] getFontFullNames() {
+<b class="nc"><i>1333</i>&nbsp;        if (allFontNames == null) {</b>
+<i>1334</i>&nbsp;            /* Create an array list and add
+<i>1335</i>&nbsp;             * - logical fonts
+<i>1336</i>&nbsp;             * - Embedded fonts
+<i>1337</i>&nbsp;             * - Fonts found on the platform (includes JRE fonts).
+<i>1338</i>&nbsp;             */
+<b class="nc"><i>1339</i>&nbsp;            ArrayList&lt;String&gt; fontNames = new ArrayList&lt;String&gt;();</b>
+<b class="nc"><i>1340</i>&nbsp;            LogicalFont.addFullNames(fontNames);</b>
+<b class="nc"><i>1341</i>&nbsp;            if (embeddedFonts != null) {</b>
+<b class="nc"><i>1342</i>&nbsp;                for (PrismFontFile embeddedFont : embeddedFonts.values()) {</b>
+<b class="nc"><i>1343</i>&nbsp;                    if (!fontNames.contains(embeddedFont.getFullName())) {</b>
+<b class="nc"><i>1344</i>&nbsp;                        fontNames.add(embeddedFont.getFullName());</b>
+<i>1345</i>&nbsp;                    }
+<b class="nc"><i>1346</i>&nbsp;                }</b>
+<i>1347</i>&nbsp;            }
+<b class="nc"><i>1348</i>&nbsp;            getFullNameToFileMap();</b>
+<b class="nc"><i>1349</i>&nbsp;            for (ArrayList&lt;String&gt; a : familyToFontListMap.values()) {</b>
+<b class="nc"><i>1350</i>&nbsp;                for (String s : a) {</b>
+<b class="nc"><i>1351</i>&nbsp;                    fontNames.add(s);</b>
+<b class="nc"><i>1352</i>&nbsp;                }</b>
+<b class="nc"><i>1353</i>&nbsp;            }</b>
+<b class="nc"><i>1354</i>&nbsp;            Collections.sort(fontNames);</b>
+<b class="nc"><i>1355</i>&nbsp;            allFontNames = fontNames;</b>
+<i>1356</i>&nbsp;        }
+<b class="nc"><i>1357</i>&nbsp;        return allFontNames.toArray(STR_ARRAY);</b>
+<i>1358</i>&nbsp;    }
+<i>1359</i>&nbsp;
+<i>1360</i>&nbsp;    public String[] getFontFullNames(String family) {
+<i>1361</i>&nbsp;
+<i>1362</i>&nbsp;        // First check if its a logical font family.
+<b class="nc"><i>1363</i>&nbsp;        String[] logFonts = LogicalFont.getFontsInFamily(family);</b>
+<b class="nc"><i>1364</i>&nbsp;        if (logFonts != null) {</b>
+<i>1365</i>&nbsp;            // Caller will clone/wrap this before returning it to API
+<b class="nc"><i>1366</i>&nbsp;            return logFonts;</b>
+<i>1367</i>&nbsp;        }
+<i>1368</i>&nbsp;        // Next check if its an embedded font family
+<b class="nc"><i>1369</i>&nbsp;        if (embeddedFonts != null) {</b>
+<b class="nc"><i>1370</i>&nbsp;            ArrayList&lt;String&gt; embeddedFamily = null;</b>
+<b class="nc"><i>1371</i>&nbsp;            for (PrismFontFile embeddedFont : embeddedFonts.values()) {</b>
+<b class="nc"><i>1372</i>&nbsp;                if (embeddedFont.getFamilyName().equalsIgnoreCase(family)) {</b>
+<b class="nc"><i>1373</i>&nbsp;                    if (embeddedFamily == null) {</b>
+<b class="nc"><i>1374</i>&nbsp;                        embeddedFamily = new ArrayList&lt;String&gt;();</b>
+<i>1375</i>&nbsp;                    }
+<b class="nc"><i>1376</i>&nbsp;                    embeddedFamily.add(embeddedFont.getFullName());</b>
+<i>1377</i>&nbsp;                }
+<b class="nc"><i>1378</i>&nbsp;            }</b>
+<b class="nc"><i>1379</i>&nbsp;            if (embeddedFamily != null) {</b>
+<b class="nc"><i>1380</i>&nbsp;                return embeddedFamily.toArray(STR_ARRAY);</b>
+<i>1381</i>&nbsp;            }
+<i>1382</i>&nbsp;        }
+<i>1383</i>&nbsp;
+<b class="nc"><i>1384</i>&nbsp;        getFullNameToFileMap();</b>
+<b class="nc"><i>1385</i>&nbsp;        family = family.toLowerCase();</b>
+<b class="nc"><i>1386</i>&nbsp;        ArrayList&lt;String&gt; familyFonts = familyToFontListMap.get(family);</b>
+<b class="nc"><i>1387</i>&nbsp;        if (familyFonts != null) {</b>
+<b class="nc"><i>1388</i>&nbsp;            return familyFonts.toArray(STR_ARRAY);</b>
+<i>1389</i>&nbsp;        } else {
+<b class="nc"><i>1390</i>&nbsp;            return STR_ARRAY; // zero-length therefore immutable.</b>
+<i>1391</i>&nbsp;        }
+<i>1392</i>&nbsp;    }
+<i>1393</i>&nbsp;
+<i>1394</i>&nbsp;    public final int getSubPixelMode() {
+<b class="fc"><i>1395</i>&nbsp;        return subPixelMode;</b>
+<i>1396</i>&nbsp;    }
+<i>1397</i>&nbsp;
+<i>1398</i>&nbsp;    public boolean isLCDTextSupported() {
+<b class="fc"><i>1399</i>&nbsp;        return lcdEnabled;</b>
+<i>1400</i>&nbsp;    }
+<i>1401</i>&nbsp;
+<i>1402</i>&nbsp;    @Override
+<i>1403</i>&nbsp;    public boolean isPlatformFont(String name) {
+<b class="fc"><i>1404</i>&nbsp;        if (name == null) return false;</b>
+<i>1405</i>&nbsp;        /* Using String#startsWith as name can be either a fullName or a family name */
+<b class="fc"><i>1406</i>&nbsp;        String lcName = name.toLowerCase();</b>
+<b class="fc"><i>1407</i>&nbsp;        if (LogicalFont.isLogicalFont(lcName)) return true;</b>
+<b class="nc"><i>1408</i>&nbsp;        if (lcName.startsWith(&quot;lucida sans&quot;)) return true;</b>
+<b class="nc"><i>1409</i>&nbsp;        String systemFamily = getSystemFont(LogicalFont.SYSTEM).toLowerCase();</b>
+<b class="nc"><i>1410</i>&nbsp;        if (lcName.startsWith(systemFamily)) return true;</b>
+<b class="nc"><i>1411</i>&nbsp;        return false;</b>
+<i>1412</i>&nbsp;    }
+<i>1413</i>&nbsp;
+<i>1414</i>&nbsp;    public static boolean isJreFont(FontResource fr) {
+<b class="nc"><i>1415</i>&nbsp;        String file = fr.getFileName();</b>
+<b class="nc"><i>1416</i>&nbsp;        return file.startsWith(jreFontDir);</b>
+<i>1417</i>&nbsp;    }
+<i>1418</i>&nbsp;
+<i>1419</i>&nbsp;    public static float getLCDContrast() {
+<b class="fc"><i>1420</i>&nbsp;        if (lcdContrast == -1) {</b>
+<b class="fc"><i>1421</i>&nbsp;            if (isWindows) {</b>
+<b class="fc"><i>1422</i>&nbsp;                lcdContrast = getLCDContrastWin32() / 1000f;</b>
+<i>1423</i>&nbsp;            } else {
+<i>1424</i>&nbsp;                /* REMIND: When using CoreText it likely already applies gamma
+<i>1425</i>&nbsp;                 * correction to the glyph images. The current implementation does
+<i>1426</i>&nbsp;                 * not take this into account when rasterizing the glyph. Thus,
+<i>1427</i>&nbsp;                 * it is possible gamma correction is been applied twice to the
+<i>1428</i>&nbsp;                 * final result.
+<i>1429</i>&nbsp;                 * Consider using &quot;1&quot; for lcdContrast possibly produces visually
+<i>1430</i>&nbsp;                 * more appealing results (although not strictly correct).
+<i>1431</i>&nbsp;                 */
+<b class="nc"><i>1432</i>&nbsp;                lcdContrast = 1.3f;</b>
+<i>1433</i>&nbsp;            }
+<i>1434</i>&nbsp;        }
+<b class="fc"><i>1435</i>&nbsp;        return lcdContrast;</b>
+<i>1436</i>&nbsp;    }
+<i>1437</i>&nbsp;
+<b class="fc"><i>1438</i>&nbsp;    private static Thread fileCloser = null;</b>
+<i>1439</i>&nbsp;
+<i>1440</i>&nbsp;    private synchronized void addFileCloserHook() {
+<b class="nc"><i>1441</i>&nbsp;        if (fileCloser == null) {</b>
+<b class="nc"><i>1442</i>&nbsp;            final Runnable fileCloserRunnable = () -&gt; {</b>
+<b class="nc"><i>1443</i>&nbsp;                if (embeddedFonts != null) {</b>
+<b class="nc"><i>1444</i>&nbsp;                    for (PrismFontFile font : embeddedFonts.values()) {</b>
+<b class="nc"><i>1445</i>&nbsp;                        font.disposeOnShutdown();</b>
+<b class="nc"><i>1446</i>&nbsp;                    }</b>
+<i>1447</i>&nbsp;                }
+<b class="nc"><i>1448</i>&nbsp;                if (tmpFonts != null) {</b>
+<b class="nc"><i>1449</i>&nbsp;                    for (WeakReference&lt;PrismFontFile&gt; ref : tmpFonts) {</b>
+<b class="nc"><i>1450</i>&nbsp;                        PrismFontFile font = ref.get();</b>
+<b class="nc"><i>1451</i>&nbsp;                        if (font != null) {</b>
+<b class="nc"><i>1452</i>&nbsp;                            font.disposeOnShutdown();</b>
+<i>1453</i>&nbsp;                        }
+<b class="nc"><i>1454</i>&nbsp;                    }</b>
+<i>1455</i>&nbsp;                }
+<b class="nc"><i>1456</i>&nbsp;            };</b>
+<b class="nc"><i>1457</i>&nbsp;            java.security.AccessController.doPrivileged(</b>
+<i>1458</i>&nbsp;                    (PrivilegedAction&lt;Object&gt;) () -&gt; {
+<i>1459</i>&nbsp;                        /* The thread must be a member of a thread group
+<i>1460</i>&nbsp;                         * which will not get GCed before VM exit.
+<i>1461</i>&nbsp;                         * Make its parent the top-level thread group.
+<i>1462</i>&nbsp;                         */
+<b class="nc"><i>1463</i>&nbsp;                        ThreadGroup tg = Thread.currentThread().getThreadGroup();</b>
+<b class="nc"><i>1464</i>&nbsp;                        for (ThreadGroup tgn = tg;</b>
+<b class="nc"><i>1465</i>&nbsp;                             tgn != null; tg = tgn, tgn = tg.getParent());</b>
+<b class="nc"><i>1466</i>&nbsp;                        fileCloser = new Thread(tg, fileCloserRunnable);</b>
+<b class="nc"><i>1467</i>&nbsp;                        fileCloser.setContextClassLoader(null);</b>
+<b class="nc"><i>1468</i>&nbsp;                        Runtime.getRuntime().addShutdownHook(fileCloser);</b>
+<b class="nc"><i>1469</i>&nbsp;                        return null;</b>
+<i>1470</i>&nbsp;                    }
+<i>1471</i>&nbsp;            );
+<i>1472</i>&nbsp;        }
+<b class="nc"><i>1473</i>&nbsp;    }</b>
+<i>1474</i>&nbsp;
+<i>1475</i>&nbsp;    private HashMap&lt;String, PrismFontFile&gt; embeddedFonts;
+<i>1476</i>&nbsp;
+<i>1477</i>&nbsp;    public PGFont[] loadEmbeddedFont(String name, InputStream fontStream,
+<i>1478</i>&nbsp;                                     float size,
+<i>1479</i>&nbsp;                                     boolean register,
+<i>1480</i>&nbsp;                                     boolean loadAll) {
+<b class="nc"><i>1481</i>&nbsp;        if (!hasPermission()) {</b>
+<b class="nc"><i>1482</i>&nbsp;            return new PGFont[] { createFont(DEFAULT_FULLNAME, size) } ;</b>
+<i>1483</i>&nbsp;        }
+<b class="nc"><i>1484</i>&nbsp;        if (FontFileWriter.hasTempPermission()) {</b>
+<b class="nc"><i>1485</i>&nbsp;            return loadEmbeddedFont0(name, fontStream, size, register, loadAll);</b>
+<i>1486</i>&nbsp;        }
+<i>1487</i>&nbsp;
+<i>1488</i>&nbsp;        // Otherwise, be extra conscious of pending temp file creation and
+<i>1489</i>&nbsp;        // resourcefully handle the temp file resources, among other things.
+<i>1490</i>&nbsp;        FontFileWriter.FontTracker tracker =
+<b class="nc"><i>1491</i>&nbsp;            FontFileWriter.FontTracker.getTracker();</b>
+<b class="nc"><i>1492</i>&nbsp;        boolean acquired = false;</b>
+<i>1493</i>&nbsp;        try {
+<b class="nc"><i>1494</i>&nbsp;            acquired = tracker.acquirePermit();</b>
+<b class="nc"><i>1495</i>&nbsp;            if (!acquired) {</b>
+<i>1496</i>&nbsp;                // Timed out waiting for resources.
+<b class="nc"><i>1497</i>&nbsp;                return null;</b>
+<i>1498</i>&nbsp;            }
+<b class="nc"><i>1499</i>&nbsp;            return loadEmbeddedFont0(name, fontStream, size, register, loadAll);</b>
+<b class="nc"><i>1500</i>&nbsp;        } catch (InterruptedException e) {</b>
+<i>1501</i>&nbsp;            // Interrupted while waiting to acquire a permit.
+<b class="nc"><i>1502</i>&nbsp;            return null;</b>
+<i>1503</i>&nbsp;        } finally {
+<b class="nc"><i>1504</i>&nbsp;            if (acquired) {</b>
+<b class="nc"><i>1505</i>&nbsp;                tracker.releasePermit();</b>
+<i>1506</i>&nbsp;            }
+<i>1507</i>&nbsp;        }
+<i>1508</i>&nbsp;    }
+<i>1509</i>&nbsp;
+<i>1510</i>&nbsp;    private PGFont[] loadEmbeddedFont0(String name, InputStream fontStream,
+<i>1511</i>&nbsp;                                       float size,
+<i>1512</i>&nbsp;                                       boolean register,
+<i>1513</i>&nbsp;                                       boolean loadAll) {
+<b class="nc"><i>1514</i>&nbsp;        PrismFontFile[] fr = null;</b>
+<b class="nc"><i>1515</i>&nbsp;        FontFileWriter fontWriter = new FontFileWriter();</b>
+<i>1516</i>&nbsp;        try {
+<i>1517</i>&nbsp;            // We use a shutdown hook to close all open tmp files
+<i>1518</i>&nbsp;            // created via this API and delete them.
+<b class="nc"><i>1519</i>&nbsp;            final File tFile = fontWriter.openFile();</b>
+<b class="nc"><i>1520</i>&nbsp;            byte[] buf = new byte[8192];</b>
+<i>1521</i>&nbsp;            for (;;) {
+<b class="nc"><i>1522</i>&nbsp;                int bytesRead = fontStream.read(buf);</b>
+<b class="nc"><i>1523</i>&nbsp;                if (bytesRead &lt; 0) {</b>
+<b class="nc"><i>1524</i>&nbsp;                    break;</b>
+<i>1525</i>&nbsp;                }
+<b class="nc"><i>1526</i>&nbsp;                fontWriter.writeBytes(buf, 0, bytesRead);</b>
+<b class="nc"><i>1527</i>&nbsp;            }</b>
+<b class="nc"><i>1528</i>&nbsp;            fontWriter.closeFile();</b>
+<i>1529</i>&nbsp;
+<b class="nc"><i>1530</i>&nbsp;            fr = loadEmbeddedFont1(name, tFile.getPath(), register, true,</b>
+<b class="nc"><i>1531</i>&nbsp;                                   fontWriter.isTracking(), loadAll);</b>
+<i>1532</i>&nbsp;
+<b class="nc"><i>1533</i>&nbsp;            if (fr != null &amp;&amp; fr.length &gt; 0) {</b>
+<i>1534</i>&nbsp;                /* Delete the file downloaded if it was decoded
+<i>1535</i>&nbsp;                 * to another file */
+<b class="nc"><i>1536</i>&nbsp;                if (fr[0].isDecoded()) {</b>
+<b class="nc"><i>1537</i>&nbsp;                    fontWriter.deleteFile();</b>
+<i>1538</i>&nbsp;                }
+<i>1539</i>&nbsp;            }
+<i>1540</i>&nbsp;
+<i>1541</i>&nbsp;            /* We don&#39;t want to leave the temp files around after exit.
+<i>1542</i>&nbsp;             * Also in a shared applet-type context, after all references to
+<i>1543</i>&nbsp;             * the applet and therefore the font are dropped, the file
+<i>1544</i>&nbsp;             * should be removed. This isn&#39;t so much an issue so long as
+<i>1545</i>&nbsp;             * the VM exists to serve a single FX app, but will be
+<i>1546</i>&nbsp;             * important in an app-context model.
+<i>1547</i>&nbsp;             * But also fonts that are over-written by new versions
+<i>1548</i>&nbsp;             * need to be cleaned up and that applies even in the single
+<i>1549</i>&nbsp;             * context.
+<i>1550</i>&nbsp;             * We also need to decrement the byte count by the size
+<i>1551</i>&nbsp;             * of the file.
+<i>1552</i>&nbsp;             */
+<b class="nc"><i>1553</i>&nbsp;            addFileCloserHook();</b>
+<b class="nc"><i>1554</i>&nbsp;        } catch (Exception e) {</b>
+<b class="nc"><i>1555</i>&nbsp;            fontWriter.deleteFile();</b>
+<i>1556</i>&nbsp;        } finally {
+<i>1557</i>&nbsp;            /* If the data isn&#39;t a valid font, so that registering it
+<i>1558</i>&nbsp;             * returns null, or we didn&#39;t get so far as copying the data,
+<i>1559</i>&nbsp;             * delete the tmp file and decrement the byte count
+<i>1560</i>&nbsp;             * in the tracker object before returning.
+<i>1561</i>&nbsp;             */
+<b class="nc"><i>1562</i>&nbsp;            if (fr == null) {</b>
+<b class="nc"><i>1563</i>&nbsp;                fontWriter.deleteFile();</b>
+<i>1564</i>&nbsp;            }
+<i>1565</i>&nbsp;        }
+<b class="nc"><i>1566</i>&nbsp;        if (fr != null &amp;&amp; fr.length &gt; 0) {</b>
+<b class="nc"><i>1567</i>&nbsp;            if (size &lt;= 0) size = getSystemFontSize();</b>
+<b class="nc"><i>1568</i>&nbsp;            int num = fr.length;</b>
+<b class="nc"><i>1569</i>&nbsp;            PrismFont[] pFonts = new PrismFont[num];</b>
+<b class="nc"><i>1570</i>&nbsp;            for (int i=0; i&lt;num; i++) {</b>
+<b class="nc"><i>1571</i>&nbsp;                pFonts[i] = new PrismFont(fr[i], fr[i].getFullName(), size);</b>
+<i>1572</i>&nbsp;            }
+<b class="nc"><i>1573</i>&nbsp;            return pFonts;</b>
+<i>1574</i>&nbsp;        }
+<b class="nc"><i>1575</i>&nbsp;        return null;</b>
+<i>1576</i>&nbsp;    }
+<i>1577</i>&nbsp;
+<i>1578</i>&nbsp;    /**
+<i>1579</i>&nbsp;     * registerEmbeddedFont(String name, String path) is a small subset of
+<i>1580</i>&nbsp;     * registerEmbeddedFont(String name, InputStream fontStream)
+<i>1581</i>&nbsp;     * It does not attempt to create a temporary file and has different
+<i>1582</i>&nbsp;     * parameters.
+<i>1583</i>&nbsp;     *
+<i>1584</i>&nbsp;     * @param name font name
+<i>1585</i>&nbsp;     * @param path Path name to system file
+<i>1586</i>&nbsp;     * @param size font size
+<i>1587</i>&nbsp;     * @param register whether the font should be registered.
+<i>1588</i>&nbsp;     * @param loadAll whether to load all fonts if it is a TTC
+<i>1589</i>&nbsp;     * @return font name extracted from font file
+<i>1590</i>&nbsp;     */
+<i>1591</i>&nbsp;    public PGFont[] loadEmbeddedFont(String name, String path,
+<i>1592</i>&nbsp;                                     float size,
+<i>1593</i>&nbsp;                                     boolean register,
+<i>1594</i>&nbsp;                                     boolean loadAll) {
+<b class="nc"><i>1595</i>&nbsp;        if (!hasPermission()) {</b>
+<b class="nc"><i>1596</i>&nbsp;            return new PGFont[] { createFont(DEFAULT_FULLNAME, size) };</b>
+<i>1597</i>&nbsp;        }
+<b class="nc"><i>1598</i>&nbsp;        addFileCloserHook();</b>
+<b class="nc"><i>1599</i>&nbsp;        FontResource[] frArr =</b>
+<b class="nc"><i>1600</i>&nbsp;          loadEmbeddedFont1(name, path, register, false, false, loadAll);</b>
+<b class="nc"><i>1601</i>&nbsp;        if (frArr != null &amp;&amp; frArr.length &gt; 0) {</b>
+<b class="nc"><i>1602</i>&nbsp;            if (size &lt;= 0) size = getSystemFontSize();</b>
+<b class="nc"><i>1603</i>&nbsp;            int num = frArr.length;</b>
+<b class="nc"><i>1604</i>&nbsp;            PGFont[] pgFonts = new PGFont[num];</b>
+<b class="nc"><i>1605</i>&nbsp;            for (int i=0; i&lt;num; i++) {</b>
+<b class="nc"><i>1606</i>&nbsp;                pgFonts[i] =</b>
+<b class="nc"><i>1607</i>&nbsp;                    new PrismFont(frArr[i], frArr[i].getFullName(), size);</b>
+<i>1608</i>&nbsp;            }
+<b class="nc"><i>1609</i>&nbsp;            return pgFonts;</b>
+<i>1610</i>&nbsp;        }
+<b class="nc"><i>1611</i>&nbsp;        return null;</b>
+<i>1612</i>&nbsp;    }
+<i>1613</i>&nbsp;
+<i>1614</i>&nbsp;    /* This should make the embedded font eligible for reclaimation
+<i>1615</i>&nbsp;     * and subsequently, disposal of native resources, once any existing
+<i>1616</i>&nbsp;     * strong refs by the application are released.
+<i>1617</i>&nbsp;     */
+<i>1618</i>&nbsp;    private void removeEmbeddedFont(String name) {
+<b class="nc"><i>1619</i>&nbsp;        PrismFontFile font = embeddedFonts.get(name);</b>
+<b class="nc"><i>1620</i>&nbsp;        if (font == null) {</b>
+<b class="nc"><i>1621</i>&nbsp;            return;</b>
+<i>1622</i>&nbsp;        }
+<b class="nc"><i>1623</i>&nbsp;        embeddedFonts.remove(name);</b>
+<b class="nc"><i>1624</i>&nbsp;        String lcName = name.toLowerCase();</b>
+<b class="nc"><i>1625</i>&nbsp;        fontResourceMap.remove(lcName);</b>
+<b class="nc"><i>1626</i>&nbsp;        compResourceMap.remove(lcName);</b>
+<i>1627</i>&nbsp;        // The following looks tedious, but if the compMap could have
+<i>1628</i>&nbsp;        // the font referenced via some lookup name that applies a style
+<i>1629</i>&nbsp;        // or used the family name, we need to find it and remove all
+<i>1630</i>&nbsp;        // references to it, so it can be collected.
+<b class="nc"><i>1631</i>&nbsp;        Iterator&lt;CompositeFontResource&gt; fi = compResourceMap.values().iterator();</b>
+<b class="nc"><i>1632</i>&nbsp;            while (fi.hasNext()) {</b>
+<b class="nc"><i>1633</i>&nbsp;            CompositeFontResource compFont = fi.next();</b>
+<b class="nc"><i>1634</i>&nbsp;            if (compFont.getSlotResource(0) == font) {</b>
+<b class="nc"><i>1635</i>&nbsp;                fi.remove();</b>
+<i>1636</i>&nbsp;            }
+<b class="nc"><i>1637</i>&nbsp;        }</b>
+<b class="nc"><i>1638</i>&nbsp;    }</b>
+<i>1639</i>&nbsp;
+<i>1640</i>&nbsp;    protected boolean registerEmbeddedFont(String path) {
+<b class="nc"><i>1641</i>&nbsp;        return true;</b>
+<i>1642</i>&nbsp;    }
+<i>1643</i>&nbsp;
+<i>1644</i>&nbsp;    // Used for testing
+<b class="fc"><i>1645</i>&nbsp;    private int numEmbeddedFonts = 0;</b>
+<i>1646</i>&nbsp;    public int test_getNumEmbeddedFonts() {
+<b class="nc"><i>1647</i>&nbsp;        return numEmbeddedFonts;</b>
+<i>1648</i>&nbsp;    }
+<i>1649</i>&nbsp;
+<i>1650</i>&nbsp;    private synchronized
+<i>1651</i>&nbsp;        PrismFontFile[] loadEmbeddedFont1(String name, String path,
+<i>1652</i>&nbsp;                                          boolean register, boolean copy,
+<i>1653</i>&nbsp;                                          boolean tracked, boolean loadAll) {
+<i>1654</i>&nbsp;
+<b class="nc"><i>1655</i>&nbsp;        ++numEmbeddedFonts;</b>
+<i>1656</i>&nbsp;        /*
+<i>1657</i>&nbsp;         * Fonts that aren&#39;t platform installed include those in the
+<i>1658</i>&nbsp;         * application jar, WOFF fonts that are downloaded, and fonts
+<i>1659</i>&nbsp;         * created via Font.loadFont. If copy==true, we can infer its
+<i>1660</i>&nbsp;         * one of these, but its also possible for a font to be file-system
+<i>1661</i>&nbsp;         * installed as part of the application but not known to the
+<i>1662</i>&nbsp;         * platform. In this case copy==false, but we still need to flag
+<i>1663</i>&nbsp;         * to the system its not a platform font so that other pipelines
+<i>1664</i>&nbsp;         * know to reference the file directly.
+<i>1665</i>&nbsp;         */
+<b class="nc"><i>1666</i>&nbsp;        PrismFontFile[] frArr = createFontResources(name, path, register,</b>
+<i>1667</i>&nbsp;                                                    true, copy, tracked,
+<i>1668</i>&nbsp;                                                    loadAll);
+<b class="nc"><i>1669</i>&nbsp;        if (frArr == null || frArr.length == 0) {</b>
+<b class="nc"><i>1670</i>&nbsp;            return null; // yes, this means the caller needs to handle null.</b>
+<i>1671</i>&nbsp;        }
+<i>1672</i>&nbsp;
+<i>1673</i>&nbsp;        /* Before we return or register, make sure names are present
+<i>1674</i>&nbsp;         * check whether any of the fonts duplicate an OS font.
+<i>1675</i>&nbsp;         */
+<i>1676</i>&nbsp;
+<b class="nc"><i>1677</i>&nbsp;        if (embeddedFonts == null) {</b>
+<b class="nc"><i>1678</i>&nbsp;            embeddedFonts = new HashMap&lt;String, PrismFontFile&gt;();</b>
+<i>1679</i>&nbsp;        }
+<i>1680</i>&nbsp;
+<b class="nc"><i>1681</i>&nbsp;        boolean registerEmbedded = true;</b>
+<b class="nc"><i>1682</i>&nbsp;        for (int i=0; i&lt;frArr.length; i++) {</b>
+<b class="nc"><i>1683</i>&nbsp;            PrismFontFile fr = frArr[i];</b>
+<b class="nc"><i>1684</i>&nbsp;            String family = fr.getFamilyName();</b>
+<b class="nc"><i>1685</i>&nbsp;            if (family == null || family.length() == 0) return null;</b>
+<b class="nc"><i>1686</i>&nbsp;            String fullname = fr.getFullName();</b>
+<b class="nc"><i>1687</i>&nbsp;            if (fullname == null || fullname.length() == 0) return null;</b>
+<b class="nc"><i>1688</i>&nbsp;            String psname = fr.getPSName();</b>
+<b class="nc"><i>1689</i>&nbsp;            if (psname == null || psname.length() == 0) return null;</b>
+<i>1690</i>&nbsp;
+<b class="nc"><i>1691</i>&nbsp;            FontResource resource = embeddedFonts.get(fullname);</b>
+<b class="nc"><i>1692</i>&nbsp;            if (resource != null &amp;&amp; fr.equals(resource)) {</b>
+<i>1693</i>&nbsp;                /* Do not register the same font twice in the OS */
+<b class="nc"><i>1694</i>&nbsp;                registerEmbedded = false;</b>
+<i>1695</i>&nbsp;            }
+<i>1696</i>&nbsp;        }
+<i>1697</i>&nbsp;
+<b class="nc"><i>1698</i>&nbsp;        if (registerEmbedded) {</b>
+<i>1699</i>&nbsp;            /* Use filename from the resource so woff fonts are handled */
+<b class="nc"><i>1700</i>&nbsp;            if (!registerEmbeddedFont(frArr[0].getFileName())) {</b>
+<i>1701</i>&nbsp;                /* This font file can&#39;t be used by the underlying rasterizer */
+<b class="nc"><i>1702</i>&nbsp;                return null;</b>
+<i>1703</i>&nbsp;            }
+<i>1704</i>&nbsp;        }
+<i>1705</i>&nbsp;
+<i>1706</i>&nbsp;        /* If a temporary font is a copy but it is not decoded then it
+<i>1707</i>&nbsp;         * will not be anywhere the shutdown hook can see.
+<i>1708</i>&nbsp;         * That means if the font is keep for the entire life of the VM
+<i>1709</i>&nbsp;         * its file will not be deleted.
+<i>1710</i>&nbsp;         * The fix is to add this font to the list of temporary fonts.
+<i>1711</i>&nbsp;         */
+<b class="nc"><i>1712</i>&nbsp;        if (copy &amp;&amp; !frArr[0].isDecoded()) {</b>
+<b class="nc"><i>1713</i>&nbsp;            addTmpFont(frArr[0]);</b>
+<i>1714</i>&nbsp;        }
+<i>1715</i>&nbsp;
+<b class="nc"><i>1716</i>&nbsp;        if (!register) {</b>
+<b class="nc"><i>1717</i>&nbsp;            return frArr;</b>
+<i>1718</i>&nbsp;        }
+<i>1719</i>&nbsp;
+<i>1720</i>&nbsp;        /* If a font name is provided then we will also store that in the
+<i>1721</i>&nbsp;         * map as an alias, otherwise should use the only the real name,
+<i>1722</i>&nbsp;         * REMIND: its possible that either name may hide some installed
+<i>1723</i>&nbsp;         * version of the font, possibly one we haven&#39;t seen yet. But
+<i>1724</i>&nbsp;         * without loading all the platform fonts (expensive) this is
+<i>1725</i>&nbsp;         * difficult to ascertain. A contains() check here is therefore
+<i>1726</i>&nbsp;         * probably mostly futile.
+<i>1727</i>&nbsp;         */
+<b class="nc"><i>1728</i>&nbsp;        if (name != null &amp;&amp; !name.isEmpty()) {</b>
+<b class="nc"><i>1729</i>&nbsp;            embeddedFonts.put(name, frArr[0]);</b>
+<b class="nc"><i>1730</i>&nbsp;            storeInMap(name, frArr[0]);</b>
+<i>1731</i>&nbsp;        }
+<i>1732</i>&nbsp;
+<b class="nc"><i>1733</i>&nbsp;        for (int i=0; i&lt;frArr.length; i++) {</b>
+<b class="nc"><i>1734</i>&nbsp;            PrismFontFile fr = frArr[i];</b>
+<b class="nc"><i>1735</i>&nbsp;            String family = fr.getFamilyName();</b>
+<b class="nc"><i>1736</i>&nbsp;            String fullname = fr.getFullName();</b>
+<b class="nc"><i>1737</i>&nbsp;            removeEmbeddedFont(fullname);</b>
+<b class="nc"><i>1738</i>&nbsp;            embeddedFonts.put(fullname, fr);</b>
+<b class="nc"><i>1739</i>&nbsp;            storeInMap(fullname, fr);</b>
+<b class="nc"><i>1740</i>&nbsp;            family = family + dotStyleStr(fr.isBold(), fr.isItalic());</b>
+<b class="nc"><i>1741</i>&nbsp;            storeInMap(family, fr);</b>
+<i>1742</i>&nbsp;            /* The remove call is to assist the case where we have
+<i>1743</i>&nbsp;             * previously mapped into the composite map a different style
+<i>1744</i>&nbsp;             * in this family as a partial match for the application request.
+<i>1745</i>&nbsp;             * This can occur when an application requested a bold font before
+<i>1746</i>&nbsp;             * it called Font.loadFont to register the bold font. It won&#39;t
+<i>1747</i>&nbsp;             * fix the cases that already happened, but will fix the future ones.
+<i>1748</i>&nbsp;             */
+<b class="nc"><i>1749</i>&nbsp;            compResourceMap.remove(family.toLowerCase());</b>
+<i>1750</i>&nbsp;        }
+<b class="nc"><i>1751</i>&nbsp;        return frArr;</b>
+<i>1752</i>&nbsp;    }
+<i>1753</i>&nbsp;
+<i>1754</i>&nbsp;    private void
+<i>1755</i>&nbsp;        logFontInfo(String message,
+<i>1756</i>&nbsp;                    HashMap&lt;String,String&gt; fontToFileMap,
+<i>1757</i>&nbsp;                    HashMap&lt;String,String&gt; fontToFamilyNameMap,
+<i>1758</i>&nbsp;                    HashMap&lt;String,ArrayList&lt;String&gt;&gt; familyToFontListMap) {
+<i>1759</i>&nbsp;
+<b class="nc"><i>1760</i>&nbsp;        System.err.println(message);</b>
+<b class="nc"><i>1761</i>&nbsp;        for (String keyName : fontToFileMap.keySet()) {</b>
+<b class="nc"><i>1762</i>&nbsp;            System.err.println(&quot;font=&quot;+keyName+&quot; file=&quot;+</b>
+<b class="nc"><i>1763</i>&nbsp;                               fontToFileMap.get(keyName));</b>
+<b class="nc"><i>1764</i>&nbsp;        }</b>
+<b class="nc"><i>1765</i>&nbsp;        for (String keyName : fontToFamilyNameMap.keySet()) {</b>
+<b class="nc"><i>1766</i>&nbsp;            System.err.println(&quot;font=&quot;+keyName+&quot; family=&quot;+</b>
+<b class="nc"><i>1767</i>&nbsp;                               fontToFamilyNameMap.get(keyName));</b>
+<b class="nc"><i>1768</i>&nbsp;        }</b>
+<b class="nc"><i>1769</i>&nbsp;        for (String keyName : familyToFontListMap.keySet()) {</b>
+<b class="nc"><i>1770</i>&nbsp;            System.err.println(&quot;family=&quot;+keyName+ &quot; fonts=&quot;+</b>
+<b class="nc"><i>1771</i>&nbsp;                               familyToFontListMap.get(keyName));</b>
+<b class="nc"><i>1772</i>&nbsp;        }</b>
+<b class="nc"><i>1773</i>&nbsp;    }</b>
+<i>1774</i>&nbsp;
+<i>1775</i>&nbsp;    private synchronized HashMap&lt;String,String&gt; getFullNameToFileMap() {
+<b class="nc"><i>1776</i>&nbsp;        if (fontToFileMap == null) {</b>
+<i>1777</i>&nbsp;
+<i>1778</i>&nbsp;            HashMap&lt;String, String&gt;
+<b class="nc"><i>1779</i>&nbsp;                tmpFontToFileMap = new HashMap&lt;String,String&gt;(100);</b>
+<b class="nc"><i>1780</i>&nbsp;            fontToFamilyNameMap = new HashMap&lt;String,String&gt;(100);</b>
+<b class="nc"><i>1781</i>&nbsp;            familyToFontListMap = new HashMap&lt;String,ArrayList&lt;String&gt;&gt;(50);</b>
+<b class="nc"><i>1782</i>&nbsp;            fileToFontMap = new HashMap&lt;String,String&gt;(100);</b>
+<i>1783</i>&nbsp;
+<b class="nc"><i>1784</i>&nbsp;            if (isWindows) {</b>
+<b class="nc"><i>1785</i>&nbsp;                getPlatformFontDirs();</b>
+<b class="nc"><i>1786</i>&nbsp;                populateFontFileNameMap(tmpFontToFileMap,</b>
+<i>1787</i>&nbsp;                                        fontToFamilyNameMap,
+<i>1788</i>&nbsp;                                        familyToFontListMap,
+<i>1789</i>&nbsp;                                        Locale.ENGLISH);
+<i>1790</i>&nbsp;
+<b class="nc"><i>1791</i>&nbsp;                if (debugFonts) {</b>
+<b class="nc"><i>1792</i>&nbsp;                    System.err.println(&quot;Windows Locale ID=&quot; + getSystemLCID());</b>
+<b class="nc"><i>1793</i>&nbsp;                    logFontInfo(&quot; *** WINDOWS FONTS BEFORE RESOLVING&quot;,</b>
+<i>1794</i>&nbsp;                                tmpFontToFileMap,
+<i>1795</i>&nbsp;                                fontToFamilyNameMap,
+<i>1796</i>&nbsp;                                familyToFontListMap);
+<i>1797</i>&nbsp;                }
+<i>1798</i>&nbsp;
+<b class="nc"><i>1799</i>&nbsp;                resolveWindowsFonts(tmpFontToFileMap,</b>
+<i>1800</i>&nbsp;                                    fontToFamilyNameMap,
+<i>1801</i>&nbsp;                                    familyToFontListMap);
+<i>1802</i>&nbsp;
+<b class="nc"><i>1803</i>&nbsp;                if (debugFonts) {</b>
+<b class="nc"><i>1804</i>&nbsp;                    logFontInfo(&quot; *** WINDOWS FONTS AFTER RESOLVING&quot;,</b>
+<i>1805</i>&nbsp;                                tmpFontToFileMap,
+<i>1806</i>&nbsp;                                fontToFamilyNameMap,
+<i>1807</i>&nbsp;                                familyToFontListMap);
+<i>1808</i>&nbsp;                }
+<i>1809</i>&nbsp;
+<b class="nc"><i>1810</i>&nbsp;            } else if (isMacOSX || isIOS) {</b>
+<b class="nc"><i>1811</i>&nbsp;                MacFontFinder.populateFontFileNameMap(tmpFontToFileMap,</b>
+<i>1812</i>&nbsp;                                                      fontToFamilyNameMap,
+<i>1813</i>&nbsp;                                                      familyToFontListMap,
+<i>1814</i>&nbsp;                                                      Locale.ENGLISH);
+<i>1815</i>&nbsp;
+<b class="nc"><i>1816</i>&nbsp;            } else if (isLinux) {</b>
+<b class="nc"><i>1817</i>&nbsp;                FontConfigManager.populateMaps(tmpFontToFileMap,</b>
+<i>1818</i>&nbsp;                                               fontToFamilyNameMap,
+<i>1819</i>&nbsp;                                               familyToFontListMap,
+<b class="nc"><i>1820</i>&nbsp;                                               Locale.getDefault());</b>
+<b class="nc"><i>1821</i>&nbsp;                if (debugFonts) {</b>
+<b class="nc"><i>1822</i>&nbsp;                    logFontInfo(&quot; *** FONTCONFIG LOCATED FONTS:&quot;,</b>
+<i>1823</i>&nbsp;                                tmpFontToFileMap,
+<i>1824</i>&nbsp;                                fontToFamilyNameMap,
+<i>1825</i>&nbsp;                                familyToFontListMap);
+<i>1826</i>&nbsp;                }
+<b class="nc"><i>1827</i>&nbsp;            } else if (isAndroid) {</b>
+<b class="nc"><i>1828</i>&nbsp;               AndroidFontFinder.populateFontFileNameMap(tmpFontToFileMap,</b>
+<i>1829</i>&nbsp;                        fontToFamilyNameMap,
+<i>1830</i>&nbsp;                        familyToFontListMap,
+<i>1831</i>&nbsp;                        Locale.ENGLISH);
+<i>1832</i>&nbsp;           } else { /* unrecognised OS */
+<b class="nc"><i>1833</i>&nbsp;                fontToFileMap = tmpFontToFileMap;</b>
+<b class="nc"><i>1834</i>&nbsp;                return fontToFileMap;</b>
+<i>1835</i>&nbsp;            }
+<i>1836</i>&nbsp;
+<i>1837</i>&nbsp;            /* Reverse map from file to font. file name is base name
+<i>1838</i>&nbsp;             * not a full path.
+<i>1839</i>&nbsp;             */
+<b class="nc"><i>1840</i>&nbsp;            for (String font : tmpFontToFileMap.keySet()) {</b>
+<b class="nc"><i>1841</i>&nbsp;                String file = tmpFontToFileMap.get(font);</b>
+<b class="nc"><i>1842</i>&nbsp;                fileToFontMap.put(file.toLowerCase(), font);</b>
+<b class="nc"><i>1843</i>&nbsp;            }</b>
+<i>1844</i>&nbsp;
+<b class="nc"><i>1845</i>&nbsp;            fontToFileMap = tmpFontToFileMap;</b>
+<b class="nc"><i>1846</i>&nbsp;            if (isAndroid) {</b>
+<b class="nc"><i>1847</i>&nbsp;                populateFontFileNameMapGeneric(</b>
+<b class="nc"><i>1848</i>&nbsp;                       AndroidFontFinder.getSystemFontsDir());</b>
+<i>1849</i>&nbsp;            }
+<b class="nc"><i>1850</i>&nbsp;            populateFontFileNameMapGeneric(jreFontDir);</b>
+<i>1851</i>&nbsp;
+<i>1852</i>&nbsp;//             for (String keyName : fontToFileMap.keySet()) {
+<i>1853</i>&nbsp;//               System.out.println(&quot;font=&quot;+keyName+&quot; file=&quot;+ fontToFileMap.get(keyName));
+<i>1854</i>&nbsp;//             }
+<i>1855</i>&nbsp;
+<i>1856</i>&nbsp;//             for (String keyName : familyToFontListMap.keySet()) {
+<i>1857</i>&nbsp;//               System.out.println(&quot;family=&quot;+keyName);
+<i>1858</i>&nbsp;//             }
+<i>1859</i>&nbsp;        }
+<b class="nc"><i>1860</i>&nbsp;        return fontToFileMap;</b>
+<i>1861</i>&nbsp;    }
+<i>1862</i>&nbsp;
+<i>1863</i>&nbsp;    public final boolean hasPermission() {
+<i>1864</i>&nbsp;        try {
+<b class="nc"><i>1865</i>&nbsp;            SecurityManager sm = System.getSecurityManager();</b>
+<b class="nc"><i>1866</i>&nbsp;            if (sm != null) {</b>
+<b class="nc"><i>1867</i>&nbsp;                sm.checkPermission(LOAD_FONT_PERMISSION);</b>
+<i>1868</i>&nbsp;            }
+<b class="nc"><i>1869</i>&nbsp;            return true;</b>
+<b class="nc"><i>1870</i>&nbsp;        } catch (SecurityException ex) {</b>
+<b class="nc"><i>1871</i>&nbsp;            return false;</b>
+<i>1872</i>&nbsp;        }
+<i>1873</i>&nbsp;    }
+<i>1874</i>&nbsp;
+<i>1875</i>&nbsp;    private static class TTFilter implements FilenameFilter {
+<i>1876</i>&nbsp;        public boolean accept(File dir,String name) {
+<i>1877</i>&nbsp;            /* all conveniently have the same suffix length */
+<i>1878</i>&nbsp;            int offset = name.length()-4;
+<i>1879</i>&nbsp;            if (offset &lt;= 0) { /* must be at least A.ttf */
+<i>1880</i>&nbsp;                return false;
+<i>1881</i>&nbsp;            } else {
+<i>1882</i>&nbsp;                return(name.startsWith(&quot;.ttf&quot;, offset) ||
+<i>1883</i>&nbsp;                       name.startsWith(&quot;.TTF&quot;, offset) ||
+<i>1884</i>&nbsp;                       name.startsWith(&quot;.ttc&quot;, offset) ||
+<i>1885</i>&nbsp;                       name.startsWith(&quot;.TTC&quot;, offset) ||
+<i>1886</i>&nbsp;                       name.startsWith(&quot;.otf&quot;, offset) ||
+<i>1887</i>&nbsp;                       name.startsWith(&quot;.OTF&quot;, offset));
+<i>1888</i>&nbsp;            }
+<i>1889</i>&nbsp;        }
+<i>1890</i>&nbsp;
+<i>1891</i>&nbsp;        private TTFilter() {
+<i>1892</i>&nbsp;        }
+<i>1893</i>&nbsp;
+<i>1894</i>&nbsp;        static TTFilter ttFilter;
+<i>1895</i>&nbsp;        static TTFilter getInstance() {
+<i>1896</i>&nbsp;            if (ttFilter == null) {
+<i>1897</i>&nbsp;                ttFilter = new TTFilter();
+<i>1898</i>&nbsp;            }
+<i>1899</i>&nbsp;            return ttFilter;
+<i>1900</i>&nbsp;        }
+<i>1901</i>&nbsp;    }
+<i>1902</i>&nbsp;
+<i>1903</i>&nbsp;    void addToMaps(PrismFontFile fr) {
+<i>1904</i>&nbsp;
+<b class="nc"><i>1905</i>&nbsp;        if (fr == null) {</b>
+<b class="nc"><i>1906</i>&nbsp;            return;</b>
+<i>1907</i>&nbsp;        }
+<i>1908</i>&nbsp;
+<b class="nc"><i>1909</i>&nbsp;        String fullName = fr.getFullName();</b>
+<b class="nc"><i>1910</i>&nbsp;        String familyName = fr.getFamilyName();</b>
+<i>1911</i>&nbsp;
+<b class="nc"><i>1912</i>&nbsp;        if (fullName == null || familyName == null) {</b>
+<b class="nc"><i>1913</i>&nbsp;            return;</b>
+<i>1914</i>&nbsp;        }
+<i>1915</i>&nbsp;
+<b class="nc"><i>1916</i>&nbsp;        String lcFullName = fullName.toLowerCase();</b>
+<b class="nc"><i>1917</i>&nbsp;        String lcFamilyName = familyName.toLowerCase();</b>
+<i>1918</i>&nbsp;
+<b class="nc"><i>1919</i>&nbsp;        fontToFileMap.put(lcFullName, fr.getFileName());</b>
+<b class="nc"><i>1920</i>&nbsp;        fontToFamilyNameMap.put(lcFullName, familyName);</b>
+<b class="nc"><i>1921</i>&nbsp;        ArrayList&lt;String&gt; familyList = familyToFontListMap.get(lcFamilyName);</b>
+<b class="nc"><i>1922</i>&nbsp;        if (familyList == null) {</b>
+<b class="nc"><i>1923</i>&nbsp;            familyList = new ArrayList&lt;String&gt;();</b>
+<b class="nc"><i>1924</i>&nbsp;            familyToFontListMap.put(lcFamilyName, familyList);</b>
+<i>1925</i>&nbsp;        }
+<b class="nc"><i>1926</i>&nbsp;        familyList.add(fullName);</b>
+<b class="nc"><i>1927</i>&nbsp;    }</b>
+<i>1928</i>&nbsp;
+<i>1929</i>&nbsp;    void populateFontFileNameMapGeneric(String fontDir) {
+<b class="nc"><i>1930</i>&nbsp;        final File dir = new File(fontDir);</b>
+<b class="nc"><i>1931</i>&nbsp;        String[] files = null;</b>
+<i>1932</i>&nbsp;        try {
+<b class="nc"><i>1933</i>&nbsp;            files = AccessController.doPrivileged(</b>
+<b class="nc"><i>1934</i>&nbsp;                    (PrivilegedExceptionAction&lt;String[]&gt;) () -&gt; dir.list(TTFilter.getInstance())</b>
+<i>1935</i>&nbsp;            );
+<b class="nc"><i>1936</i>&nbsp;        } catch (Exception e) {</b>
+<b class="nc"><i>1937</i>&nbsp;        }</b>
+<i>1938</i>&nbsp;
+<b class="nc"><i>1939</i>&nbsp;        if (files == null) {</b>
+<b class="nc"><i>1940</i>&nbsp;            return;</b>
+<i>1941</i>&nbsp;        }
+<i>1942</i>&nbsp;
+<b class="nc"><i>1943</i>&nbsp;        for (int i=0;i&lt;files.length;i++) {</b>
+<i>1944</i>&nbsp;            try {
+<b class="nc"><i>1945</i>&nbsp;                String path = fontDir+File.separator+files[i];</b>
+<i>1946</i>&nbsp;
+<i>1947</i>&nbsp;                /* Use filename from the resource so woff fonts are handled */
+<b class="nc"><i>1948</i>&nbsp;                if (!registerEmbeddedFont(path)) {</b>
+<i>1949</i>&nbsp;                    /* This font file can&#39;t be used by the underlying rasterizer */
+<b class="nc"><i>1950</i>&nbsp;                    continue;</b>
+<i>1951</i>&nbsp;                }
+<i>1952</i>&nbsp;
+<b class="nc"><i>1953</i>&nbsp;                int index = 0;</b>
+<b class="nc"><i>1954</i>&nbsp;                PrismFontFile fr = createFontResource(path, index++);</b>
+<b class="nc"><i>1955</i>&nbsp;                if (fr == null) {</b>
+<b class="nc"><i>1956</i>&nbsp;                    continue;</b>
+<i>1957</i>&nbsp;                }
+<b class="nc"><i>1958</i>&nbsp;                addToMaps(fr);</b>
+<b class="nc"><i>1959</i>&nbsp;                while (index &lt; fr.getFontCount()) {</b>
+<b class="nc"><i>1960</i>&nbsp;                    fr = createFontResource(path, index++);</b>
+<b class="nc"><i>1961</i>&nbsp;                    if (fr == null) {</b>
+<b class="nc"><i>1962</i>&nbsp;                        break;</b>
+<i>1963</i>&nbsp;                    }
+<b class="nc"><i>1964</i>&nbsp;                    addToMaps(fr);</b>
+<i>1965</i>&nbsp;                }
+<b class="nc"><i>1966</i>&nbsp;            } catch (Exception e) {</b>
+<i>1967</i>&nbsp;                /* Keep going if anything bad happens with a font */
+<b class="nc"><i>1968</i>&nbsp;            }</b>
+<i>1969</i>&nbsp;        }
+<b class="nc"><i>1970</i>&nbsp;    }</b>
+<i>1971</i>&nbsp;
+<i>1972</i>&nbsp;    static native int getLCDContrastWin32();
+<i>1973</i>&nbsp;    private static native float getSystemFontSizeNative();
+<i>1974</i>&nbsp;    private static native String getSystemFontNative();
+<i>1975</i>&nbsp;    private static float systemFontSize;
+<b class="fc"><i>1976</i>&nbsp;    private static String systemFontFamily = null;</b>
+<b class="fc"><i>1977</i>&nbsp;    private static String monospaceFontFamily = null;</b>
+<i>1978</i>&nbsp;
+<i>1979</i>&nbsp;    public static float getSystemFontSize() {
+<b class="fc"><i>1980</i>&nbsp;        if (systemFontSize == -1) {</b>
+<b class="fc"><i>1981</i>&nbsp;            if (isWindows) {</b>
+<b class="fc"><i>1982</i>&nbsp;                systemFontSize = getSystemFontSizeNative();</b>
+<b class="nc"><i>1983</i>&nbsp;            } else if (isMacOSX || isIOS) {</b>
+<b class="nc"><i>1984</i>&nbsp;                systemFontSize = MacFontFinder.getSystemFontSize();</b>
+<b class="nc"><i>1985</i>&nbsp;            } else if (isAndroid) {</b>
+<b class="nc"><i>1986</i>&nbsp;               systemFontSize = AndroidFontFinder.getSystemFontSize();</b>
+<b class="nc"><i>1987</i>&nbsp;            } else if (isEmbedded) {</b>
+<i>1988</i>&nbsp;                try {
+<b class="nc"><i>1989</i>&nbsp;                    int screenDPI = Screen.getMainScreen().getResolutionY();</b>
+<b class="nc"><i>1990</i>&nbsp;                    systemFontSize = ((float) screenDPI) / 6f; // 12 points</b>
+<b class="nc"><i>1991</i>&nbsp;                } catch (NullPointerException npe) {</b>
+<i>1992</i>&nbsp;                    // if no screen is defined
+<b class="nc"><i>1993</i>&nbsp;                    systemFontSize = 13f; // same as desktop Linux</b>
+<b class="nc"><i>1994</i>&nbsp;                }</b>
+<i>1995</i>&nbsp;            } else {
+<b class="nc"><i>1996</i>&nbsp;                systemFontSize = 13f; // Gnome uses 13.</b>
+<i>1997</i>&nbsp;            }
+<i>1998</i>&nbsp;        }
+<b class="fc"><i>1999</i>&nbsp;        return systemFontSize;</b>
+<i>2000</i>&nbsp;    }
+<i>2001</i>&nbsp;
+<i>2002</i>&nbsp;    /* Applies to Windows and Mac. Not used on Linux */
+<i>2003</i>&nbsp;    public static String getSystemFont(String name) {
+<b class="fc"><i>2004</i>&nbsp;        if (name.equals(LogicalFont.SYSTEM)) {</b>
+<b class="fc"><i>2005</i>&nbsp;            if (systemFontFamily == null) {</b>
+<b class="fc"><i>2006</i>&nbsp;                if (isWindows) {</b>
+<b class="fc"><i>2007</i>&nbsp;                    systemFontFamily = getSystemFontNative();</b>
+<b class="fc"><i>2008</i>&nbsp;                    if (systemFontFamily == null) {</b>
+<b class="nc"><i>2009</i>&nbsp;                        systemFontFamily = &quot;Arial&quot;; // play it safe.</b>
+<i>2010</i>&nbsp;                    }
+<b class="nc"><i>2011</i>&nbsp;                } else if (isMacOSX || isIOS) {</b>
+<b class="nc"><i>2012</i>&nbsp;                    systemFontFamily = MacFontFinder.getSystemFont();</b>
+<b class="nc"><i>2013</i>&nbsp;                    if (systemFontFamily == null) {</b>
+<b class="nc"><i>2014</i>&nbsp;                        systemFontFamily = &quot;Lucida Grande&quot;;</b>
+<i>2015</i>&nbsp;                    }
+<b class="nc"><i>2016</i>&nbsp;                } else if (isAndroid) {</b>
+<b class="nc"><i>2017</i>&nbsp;                   systemFontFamily = AndroidFontFinder.getSystemFont();</b>
+<i>2018</i>&nbsp;                } else {
+<b class="nc"><i>2019</i>&nbsp;                    systemFontFamily = &quot;Lucida Sans&quot;; // for now.</b>
+<i>2020</i>&nbsp;                }
+<i>2021</i>&nbsp;            }
+<b class="fc"><i>2022</i>&nbsp;            return systemFontFamily;</b>
+<b class="nc"><i>2023</i>&nbsp;        } else if (name.equals(LogicalFont.SANS_SERIF)) {</b>
+<b class="nc"><i>2024</i>&nbsp;            return &quot;Arial&quot;;</b>
+<b class="nc"><i>2025</i>&nbsp;        } else if (name.equals(LogicalFont.SERIF)) {</b>
+<b class="nc"><i>2026</i>&nbsp;            return &quot;Times New Roman&quot;;</b>
+<i>2027</i>&nbsp;        } else /* if (name.equals(LogicalFont.MONOSPACED)) */ {
+<b class="nc"><i>2028</i>&nbsp;            if (monospaceFontFamily == null) {</b>
+<b class="nc"><i>2029</i>&nbsp;                if (isMacOSX) {</b>
+<i>2030</i>&nbsp;                    /* This code is intentionally commented:
+<i>2031</i>&nbsp;                     * On the OS X the preferred monospaced font is Monaco,
+<i>2032</i>&nbsp;                     * although this can be a good choice for most Mac application
+<i>2033</i>&nbsp;                     * it is not suitable for JavaFX because Monaco does not
+<i>2034</i>&nbsp;                     * have neither bold nor italic.
+<i>2035</i>&nbsp;                     */
+<i>2036</i>&nbsp;//                    monospaceFontFamily = MacFontFinder.getMonospacedFont();
+<i>2037</i>&nbsp;                }
+<i>2038</i>&nbsp;            }
+<b class="nc"><i>2039</i>&nbsp;            if (monospaceFontFamily == null) {</b>
+<b class="nc"><i>2040</i>&nbsp;                monospaceFontFamily = &quot;Courier New&quot;;</b>
+<i>2041</i>&nbsp;            }
+<b class="nc"><i>2042</i>&nbsp;            return monospaceFontFamily;</b>
+<i>2043</i>&nbsp;        }
+<i>2044</i>&nbsp;    }
+<i>2045</i>&nbsp;
+<i>2046</i>&nbsp;    /* Called from T2KFontFile which caches the return value */
+<i>2047</i>&nbsp;    static native short getSystemLCID();
+<i>2048</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2017-12-04 21:49</div>
+</div>
+</body>
+</html>

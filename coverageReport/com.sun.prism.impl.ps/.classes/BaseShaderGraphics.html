@@ -1,0 +1,2241 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: BaseShaderGraphics</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.prism.impl.ps</a> ]
+</div>
+
+<h1>Coverage Summary for Class: BaseShaderGraphics (com.sun.prism.impl.ps)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">BaseShaderGraphics</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    41.2%
+  </span>
+  <span class="absValue">
+    (21/ 51)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    19.8%
+  </span>
+  <span class="absValue">
+    (226/ 1141)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright (c) 2009, 2015, Oracle and/or its affiliates. All rights reserved.
+<i>3</i>&nbsp; * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+<i>4</i>&nbsp; *
+<i>5</i>&nbsp; *
+<i>6</i>&nbsp; *
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; *
+<i>11</i>&nbsp; *
+<i>12</i>&nbsp; *
+<i>13</i>&nbsp; *
+<i>14</i>&nbsp; *
+<i>15</i>&nbsp; *
+<i>16</i>&nbsp; *
+<i>17</i>&nbsp; *
+<i>18</i>&nbsp; *
+<i>19</i>&nbsp; *
+<i>20</i>&nbsp; *
+<i>21</i>&nbsp; *
+<i>22</i>&nbsp; *
+<i>23</i>&nbsp; *
+<i>24</i>&nbsp; */
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;package com.sun.prism.impl.ps;
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;import java.security.AccessController;
+<i>29</i>&nbsp;import java.security.PrivilegedAction;
+<i>30</i>&nbsp;import com.sun.javafx.font.FontResource;
+<i>31</i>&nbsp;import com.sun.javafx.font.FontStrike;
+<i>32</i>&nbsp;import com.sun.javafx.font.Metrics;
+<i>33</i>&nbsp;import com.sun.javafx.font.PrismFontFactory;
+<i>34</i>&nbsp;import com.sun.javafx.geom.BaseBounds;
+<i>35</i>&nbsp;import com.sun.javafx.geom.Point2D;
+<i>36</i>&nbsp;import com.sun.javafx.geom.RectBounds;
+<i>37</i>&nbsp;import com.sun.javafx.geom.Rectangle;
+<i>38</i>&nbsp;import com.sun.javafx.geom.Shape;
+<i>39</i>&nbsp;import com.sun.javafx.geom.transform.Affine2D;
+<i>40</i>&nbsp;import com.sun.javafx.geom.transform.Affine3D;
+<i>41</i>&nbsp;import com.sun.javafx.geom.transform.AffineBase;
+<i>42</i>&nbsp;import com.sun.javafx.geom.transform.BaseTransform;
+<i>43</i>&nbsp;import com.sun.javafx.geom.transform.NoninvertibleTransformException;
+<i>44</i>&nbsp;import com.sun.javafx.scene.text.GlyphList;
+<i>45</i>&nbsp;import com.sun.javafx.sg.prism.NGLightBase;
+<i>46</i>&nbsp;import com.sun.prism.BasicStroke;
+<i>47</i>&nbsp;import com.sun.prism.CompositeMode;
+<i>48</i>&nbsp;import com.sun.prism.MaskTextureGraphics;
+<i>49</i>&nbsp;import com.sun.prism.MultiTexture;
+<i>50</i>&nbsp;import com.sun.prism.PixelFormat;
+<i>51</i>&nbsp;import com.sun.prism.RTTexture;
+<i>52</i>&nbsp;import com.sun.prism.ReadbackGraphics;
+<i>53</i>&nbsp;import com.sun.prism.ReadbackRenderTarget;
+<i>54</i>&nbsp;import com.sun.prism.RenderTarget;
+<i>55</i>&nbsp;import com.sun.prism.Texture;
+<i>56</i>&nbsp;import com.sun.prism.impl.BaseGraphics;
+<i>57</i>&nbsp;import com.sun.prism.impl.GlyphCache;
+<i>58</i>&nbsp;import com.sun.prism.impl.PrismSettings;
+<i>59</i>&nbsp;import com.sun.prism.impl.VertexBuffer;
+<i>60</i>&nbsp;import com.sun.prism.impl.ps.BaseShaderContext.MaskType;
+<i>61</i>&nbsp;import com.sun.prism.impl.shape.MaskData;
+<i>62</i>&nbsp;import com.sun.prism.impl.shape.ShapeUtil;
+<i>63</i>&nbsp;import com.sun.prism.paint.Color;
+<i>64</i>&nbsp;import com.sun.prism.paint.Gradient;
+<i>65</i>&nbsp;import com.sun.prism.paint.ImagePattern;
+<i>66</i>&nbsp;import com.sun.prism.paint.LinearGradient;
+<i>67</i>&nbsp;import com.sun.prism.paint.Paint;
+<i>68</i>&nbsp;import com.sun.prism.paint.RadialGradient;
+<i>69</i>&nbsp;import com.sun.prism.ps.Shader;
+<i>70</i>&nbsp;import com.sun.prism.ps.ShaderGraphics;
+<i>71</i>&nbsp;
+<i>72</i>&nbsp;public abstract class BaseShaderGraphics
+<i>73</i>&nbsp;    extends BaseGraphics
+<i>74</i>&nbsp;    implements ShaderGraphics, ReadbackGraphics, MaskTextureGraphics
+<i>75</i>&nbsp;{
+<b class="fc"><i>76</i>&nbsp;    private static Affine2D TEMP_TX2D = new Affine2D();</b>
+<b class="fc"><i>77</i>&nbsp;    private static Affine3D TEMP_TX3D = new Affine3D();</b>
+<i>78</i>&nbsp;
+<i>79</i>&nbsp;    private final BaseShaderContext context;
+<i>80</i>&nbsp;    private Shader externalShader;
+<i>81</i>&nbsp;    private boolean isComplexPaint;
+<i>82</i>&nbsp;
+<i>83</i>&nbsp;    protected BaseShaderGraphics(BaseShaderContext context,
+<i>84</i>&nbsp;                                 RenderTarget renderTarget)
+<i>85</i>&nbsp;    {
+<b class="fc"><i>86</i>&nbsp;        super(context, renderTarget);</b>
+<b class="fc"><i>87</i>&nbsp;        this.context = context;</b>
+<b class="fc"><i>88</i>&nbsp;    }</b>
+<i>89</i>&nbsp;
+<i>90</i>&nbsp;    BaseShaderContext getContext() {
+<b class="fc"><i>91</i>&nbsp;        return context;</b>
+<i>92</i>&nbsp;    }
+<i>93</i>&nbsp;
+<i>94</i>&nbsp;    boolean isComplexPaint() {
+<b class="fc"><i>95</i>&nbsp;        return isComplexPaint;</b>
+<i>96</i>&nbsp;    }
+<i>97</i>&nbsp;
+<i>98</i>&nbsp;    public void getPaintShaderTransform(Affine3D ret) {
+<b class="fc"><i>99</i>&nbsp;        ret.setTransform(getTransformNoClone());</b>
+<b class="fc"><i>100</i>&nbsp;    }</b>
+<i>101</i>&nbsp;
+<i>102</i>&nbsp;    public Shader getExternalShader() {
+<b class="nc"><i>103</i>&nbsp;        return externalShader;</b>
+<i>104</i>&nbsp;    }
+<i>105</i>&nbsp;
+<i>106</i>&nbsp;    public void setExternalShader(Shader shader) {
+<b class="fc"><i>107</i>&nbsp;        this.externalShader = shader;</b>
+<b class="fc"><i>108</i>&nbsp;        context.setExternalShader(this, shader);</b>
+<b class="fc"><i>109</i>&nbsp;    }</b>
+<i>110</i>&nbsp;
+<i>111</i>&nbsp;    @Override
+<i>112</i>&nbsp;    public void setPaint(Paint paint) {
+<b class="fc"><i>113</i>&nbsp;        if (paint.getType().isGradient()) {</b>
+<b class="fc"><i>114</i>&nbsp;            Gradient grad = (Gradient)paint;</b>
+<b class="fc"><i>115</i>&nbsp;            isComplexPaint = grad.getNumStops() &gt; PaintHelper.MULTI_MAX_FRACTIONS;</b>
+<b class="fc"><i>116</i>&nbsp;        } else {</b>
+<b class="fc"><i>117</i>&nbsp;            isComplexPaint = false;</b>
+<i>118</i>&nbsp;        }
+<b class="fc"><i>119</i>&nbsp;        super.setPaint(paint);</b>
+<b class="fc"><i>120</i>&nbsp;    }</b>
+<i>121</i>&nbsp;
+<b class="fc"><i>122</i>&nbsp;    private NGLightBase lights[] = null;</b>
+<i>123</i>&nbsp;
+<b class="fc"><i>124</i>&nbsp;    public void setLights(NGLightBase lights[]) { this.lights = lights; }</b>
+<i>125</i>&nbsp;
+<b class="nc"><i>126</i>&nbsp;    public final NGLightBase[] getLights() { return this.lights; }</b>
+<i>127</i>&nbsp;
+<i>128</i>&nbsp;    @Override
+<i>129</i>&nbsp;    public void drawTexture(Texture tex,
+<i>130</i>&nbsp;                            float dx1, float dy1, float dx2, float dy2,
+<i>131</i>&nbsp;                            float sx1, float sy1, float sx2, float sy2)
+<i>132</i>&nbsp;    {
+<i>133</i>&nbsp;        // intercept MultiTexture operations
+<i>134</i>&nbsp;        // FIXME: this should be pushed up to Graphics interface so that non-shader
+<i>135</i>&nbsp;        //        renderers can use MultiTexture too
+<b class="fc"><i>136</i>&nbsp;        if (tex instanceof MultiTexture) {</b>
+<b class="nc"><i>137</i>&nbsp;            drawMultiTexture((MultiTexture)tex, dx1, dy1, dx2, dy2, sx1, sy1, sx2, sy2);</b>
+<i>138</i>&nbsp;        } else {
+<b class="fc"><i>139</i>&nbsp;            super.drawTexture(tex, dx1, dy1, dx2, dy2, sx1, sy1, sx2, sy2);</b>
+<i>140</i>&nbsp;        }
+<b class="fc"><i>141</i>&nbsp;    }</b>
+<i>142</i>&nbsp;
+<i>143</i>&nbsp;    @Override
+<i>144</i>&nbsp;    public void drawTexture3SliceH(Texture tex,
+<i>145</i>&nbsp;                                   float dx1, float dy1, float dx2, float dy2,
+<i>146</i>&nbsp;                                   float sx1, float sy1, float sx2, float sy2,
+<i>147</i>&nbsp;                                   float dh1, float dh2, float sh1, float sh2)
+<i>148</i>&nbsp;    {
+<b class="fc"><i>149</i>&nbsp;        if (!(tex instanceof MultiTexture)) {</b>
+<b class="fc"><i>150</i>&nbsp;            super.drawTexture3SliceH(tex,</b>
+<i>151</i>&nbsp;                                     dx1, dy1, dx2, dy2,
+<i>152</i>&nbsp;                                     sx1, sy1, sx2, sy2,
+<i>153</i>&nbsp;                                     dh1, dh2, sh1, sh2);
+<b class="fc"><i>154</i>&nbsp;            return;</b>
+<i>155</i>&nbsp;        }
+<b class="nc"><i>156</i>&nbsp;        MultiTexture mtex = (MultiTexture) tex;</b>
+<b class="nc"><i>157</i>&nbsp;        drawMultiTexture(mtex, dx1, dy1, dh1, dy2, sx1, sy1, sh1, sy2);</b>
+<b class="nc"><i>158</i>&nbsp;        drawMultiTexture(mtex, dh1, dy1, dh2, dy2, sh1, sy1, sh2, sy2);</b>
+<b class="nc"><i>159</i>&nbsp;        drawMultiTexture(mtex, dh2, dy1, dx2, dy2, sh2, sy1, sx2, sy2);</b>
+<b class="nc"><i>160</i>&nbsp;    }</b>
+<i>161</i>&nbsp;
+<i>162</i>&nbsp;    @Override
+<i>163</i>&nbsp;    public void drawTexture3SliceV(Texture tex,
+<i>164</i>&nbsp;                                   float dx1, float dy1, float dx2, float dy2,
+<i>165</i>&nbsp;                                   float sx1, float sy1, float sx2, float sy2,
+<i>166</i>&nbsp;                                   float dv1, float dv2, float sv1, float sv2)
+<i>167</i>&nbsp;    {
+<b class="nc"><i>168</i>&nbsp;        if (!(tex instanceof MultiTexture)) {</b>
+<b class="nc"><i>169</i>&nbsp;            super.drawTexture3SliceV(tex,</b>
+<i>170</i>&nbsp;                                     dx1, dy1, dx2, dy2,
+<i>171</i>&nbsp;                                     sx1, sy1, sx2, sy2,
+<i>172</i>&nbsp;                                     dv1, dv2, sv1, sv2);
+<b class="nc"><i>173</i>&nbsp;            return;</b>
+<i>174</i>&nbsp;        }
+<b class="nc"><i>175</i>&nbsp;        MultiTexture mtex = (MultiTexture) tex;</b>
+<b class="nc"><i>176</i>&nbsp;        drawMultiTexture(mtex, dx1, dy1, dx2, dv1, sx1, sy1, sx2, sv1);</b>
+<b class="nc"><i>177</i>&nbsp;        drawMultiTexture(mtex, dx1, dv1, dx2, dv2, sx1, sv1, sx2, sv2);</b>
+<b class="nc"><i>178</i>&nbsp;        drawMultiTexture(mtex, dx1, dv2, dx2, dy2, sx1, sv2, sx2, sy2);</b>
+<b class="nc"><i>179</i>&nbsp;    }</b>
+<i>180</i>&nbsp;
+<i>181</i>&nbsp;    @Override
+<i>182</i>&nbsp;    public void drawTexture9Slice(Texture tex,
+<i>183</i>&nbsp;                                  float dx1, float dy1, float dx2, float dy2,
+<i>184</i>&nbsp;                                  float sx1, float sy1, float sx2, float sy2,
+<i>185</i>&nbsp;                                  float dh1, float dv1, float dh2, float dv2,
+<i>186</i>&nbsp;                                  float sh1, float sv1, float sh2, float sv2)
+<i>187</i>&nbsp;    {
+<b class="nc"><i>188</i>&nbsp;        if (!(tex instanceof MultiTexture)) {</b>
+<b class="nc"><i>189</i>&nbsp;            super.drawTexture9Slice(tex,</b>
+<i>190</i>&nbsp;                                    dx1, dy1, dx2, dy2,
+<i>191</i>&nbsp;                                    sx1, sy1, sx2, sy2,
+<i>192</i>&nbsp;                                    dh1, dv1, dh2, dv2,
+<i>193</i>&nbsp;                                    sh1, sv1, sh2, sv2);
+<b class="nc"><i>194</i>&nbsp;            return;</b>
+<i>195</i>&nbsp;        }
+<b class="nc"><i>196</i>&nbsp;        MultiTexture mtex = (MultiTexture) tex;</b>
+<b class="nc"><i>197</i>&nbsp;        drawMultiTexture(mtex, dx1, dy1, dh1, dv1, sx1, sy1, sh1, sv1);</b>
+<b class="nc"><i>198</i>&nbsp;        drawMultiTexture(mtex, dh1, dy1, dh2, dv1, sh1, sy1, sh2, sv1);</b>
+<b class="nc"><i>199</i>&nbsp;        drawMultiTexture(mtex, dh2, dy1, dx2, dv1, sh2, sy1, sx2, sv1);</b>
+<i>200</i>&nbsp;
+<b class="nc"><i>201</i>&nbsp;        drawMultiTexture(mtex, dx1, dv1, dh1, dv2, sx1, sv1, sh1, sv2);</b>
+<b class="nc"><i>202</i>&nbsp;        drawMultiTexture(mtex, dh1, dv1, dh2, dv2, sh1, sv1, sh2, sv2);</b>
+<b class="nc"><i>203</i>&nbsp;        drawMultiTexture(mtex, dh2, dv1, dx2, dv2, sh2, sv1, sx2, sv2);</b>
+<i>204</i>&nbsp;
+<b class="nc"><i>205</i>&nbsp;        drawMultiTexture(mtex, dx1, dv2, dh1, dy2, sx1, sv2, sh1, sy2);</b>
+<b class="nc"><i>206</i>&nbsp;        drawMultiTexture(mtex, dh1, dv2, dh2, dy2, sh1, sv2, sh2, sy2);</b>
+<b class="nc"><i>207</i>&nbsp;        drawMultiTexture(mtex, dh2, dv2, dx2, dy2, sh2, sv2, sx2, sy2);</b>
+<b class="nc"><i>208</i>&nbsp;    }</b>
+<i>209</i>&nbsp;
+<i>210</i>&nbsp;    private static float calculateScaleFactor(float contentDim, float physicalDim) {
+<b class="nc"><i>211</i>&nbsp;        if (contentDim == physicalDim) {</b>
+<b class="nc"><i>212</i>&nbsp;            return 1f;</b>
+<i>213</i>&nbsp;        }
+<i>214</i>&nbsp;        // we have to subtract 1 to eliminate the &quot;green line of death&quot;
+<b class="nc"><i>215</i>&nbsp;        return (contentDim-1) / physicalDim;</b>
+<i>216</i>&nbsp;    }
+<i>217</i>&nbsp;
+<i>218</i>&nbsp;    protected void drawMultiTexture(MultiTexture tex,
+<i>219</i>&nbsp;                                  float dx1, float dy1, float dx2, float dy2,
+<i>220</i>&nbsp;                                  float sx1, float sy1, float sx2, float sy2)
+<i>221</i>&nbsp;    {
+<i>222</i>&nbsp;        // The following is safe; this method does not mutate the transform
+<b class="nc"><i>223</i>&nbsp;        BaseTransform xform = getTransformNoClone();</b>
+<b class="nc"><i>224</i>&nbsp;        if (isSimpleTranslate) {</b>
+<b class="nc"><i>225</i>&nbsp;            xform = IDENT;</b>
+<b class="nc"><i>226</i>&nbsp;            dx1 += transX;</b>
+<b class="nc"><i>227</i>&nbsp;            dy1 += transY;</b>
+<b class="nc"><i>228</i>&nbsp;            dx2 += transX;</b>
+<b class="nc"><i>229</i>&nbsp;            dy2 += transY;</b>
+<i>230</i>&nbsp;        }
+<i>231</i>&nbsp;
+<b class="nc"><i>232</i>&nbsp;        Texture textures[] = ((MultiTexture)tex).getTextures();</b>
+<b class="nc"><i>233</i>&nbsp;        Shader shader = context.validateTextureOp(this, xform, textures, tex.getPixelFormat());</b>
+<i>234</i>&nbsp;
+<b class="nc"><i>235</i>&nbsp;        if (null == shader) {</b>
+<i>236</i>&nbsp;            // FIXME: throw exception?? We can&#39;t do anything without the shader..
+<b class="nc"><i>237</i>&nbsp;            return;</b>
+<i>238</i>&nbsp;        }
+<i>239</i>&nbsp;
+<b class="nc"><i>240</i>&nbsp;        if (tex.getPixelFormat() == PixelFormat.MULTI_YCbCr_420) {</b>
+<b class="nc"><i>241</i>&nbsp;            Texture lumaTex = textures[PixelFormat.YCBCR_PLANE_LUMA];</b>
+<b class="nc"><i>242</i>&nbsp;            Texture cbTex = textures[PixelFormat.YCBCR_PLANE_CHROMABLUE];</b>
+<b class="nc"><i>243</i>&nbsp;            Texture crTex = textures[PixelFormat.YCBCR_PLANE_CHROMARED];</b>
+<i>244</i>&nbsp;
+<i>245</i>&nbsp;            // sampler scaling factors
+<b class="nc"><i>246</i>&nbsp;            float imgWidth = (float)tex.getContentWidth();</b>
+<b class="nc"><i>247</i>&nbsp;            float imgHeight = (float)tex.getContentHeight();</b>
+<i>248</i>&nbsp;            float lumaScaleX, lumaScaleY;
+<i>249</i>&nbsp;            float alphaScaleX, alphaScaleY;
+<i>250</i>&nbsp;            float cbScaleX, cbScaleY;
+<i>251</i>&nbsp;            float crScaleX, crScaleY;
+<i>252</i>&nbsp;
+<b class="nc"><i>253</i>&nbsp;            lumaScaleX = calculateScaleFactor(imgWidth, (float)lumaTex.getPhysicalWidth());</b>
+<b class="nc"><i>254</i>&nbsp;            lumaScaleY = calculateScaleFactor(imgHeight, (float)lumaTex.getPhysicalHeight());</b>
+<i>255</i>&nbsp;
+<b class="nc"><i>256</i>&nbsp;            if (textures.length &gt; 3) {</b>
+<b class="nc"><i>257</i>&nbsp;                Texture alphaTex = textures[PixelFormat.YCBCR_PLANE_ALPHA];</b>
+<b class="nc"><i>258</i>&nbsp;                alphaScaleX = calculateScaleFactor(imgWidth, (float)alphaTex.getPhysicalWidth());</b>
+<b class="nc"><i>259</i>&nbsp;                alphaScaleY = calculateScaleFactor(imgHeight, (float)alphaTex.getPhysicalHeight());</b>
+<b class="nc"><i>260</i>&nbsp;            } else {</b>
+<b class="nc"><i>261</i>&nbsp;                alphaScaleX = alphaScaleY = 0f;</b>
+<i>262</i>&nbsp;            }
+<i>263</i>&nbsp;
+<b class="nc"><i>264</i>&nbsp;            float chromaWidth = (float)Math.floor((double)imgWidth/2.0);</b>
+<b class="nc"><i>265</i>&nbsp;            float chromaHeight = (float)Math.floor((double)imgHeight/2.0);</b>
+<i>266</i>&nbsp;
+<b class="nc"><i>267</i>&nbsp;            cbScaleX = calculateScaleFactor(chromaWidth, (float)cbTex.getPhysicalWidth());</b>
+<b class="nc"><i>268</i>&nbsp;            cbScaleY = calculateScaleFactor(chromaHeight, (float)cbTex.getPhysicalHeight());</b>
+<b class="nc"><i>269</i>&nbsp;            crScaleX = calculateScaleFactor(chromaWidth, (float)crTex.getPhysicalWidth());</b>
+<b class="nc"><i>270</i>&nbsp;            crScaleY = calculateScaleFactor(chromaHeight, (float)crTex.getPhysicalHeight());</b>
+<i>271</i>&nbsp;
+<b class="nc"><i>272</i>&nbsp;            shader.setConstant(&quot;lumaAlphaScale&quot;, lumaScaleX, lumaScaleY, alphaScaleX, alphaScaleY);</b>
+<b class="nc"><i>273</i>&nbsp;            shader.setConstant(&quot;cbCrScale&quot;, cbScaleX, cbScaleY, crScaleX, crScaleY);</b>
+<i>274</i>&nbsp;
+<b class="nc"><i>275</i>&nbsp;            float tx1 = sx1 / imgWidth;</b>
+<b class="nc"><i>276</i>&nbsp;            float ty1 = sy1 / imgHeight;</b>
+<b class="nc"><i>277</i>&nbsp;            float tx2 = sx2 / imgWidth;</b>
+<b class="nc"><i>278</i>&nbsp;            float ty2 = sy2 / imgHeight;</b>
+<i>279</i>&nbsp;
+<b class="nc"><i>280</i>&nbsp;            VertexBuffer vb = context.getVertexBuffer();</b>
+<b class="nc"><i>281</i>&nbsp;            vb.addQuad(dx1, dy1, dx2, dy2, tx1, ty1, tx2, ty2);</b>
+<b class="nc"><i>282</i>&nbsp;        } else {</b>
+<i>283</i>&nbsp;            // should have been caught by validateTextureOp, but just in case
+<b class="nc"><i>284</i>&nbsp;            throw new UnsupportedOperationException(&quot;Unsupported multitexture format &quot;+tex.getPixelFormat());</b>
+<i>285</i>&nbsp;        }
+<b class="nc"><i>286</i>&nbsp;    }</b>
+<i>287</i>&nbsp;
+<i>288</i>&nbsp;    public void drawTextureRaw2(Texture src1, Texture src2,
+<i>289</i>&nbsp;                                float dx1, float dy1, float dx2, float dy2,
+<i>290</i>&nbsp;                                float t1x1, float t1y1, float t1x2, float t1y2,
+<i>291</i>&nbsp;                                float t2x1, float t2y1, float t2x2, float t2y2)
+<i>292</i>&nbsp;    {
+<i>293</i>&nbsp;        // The following is safe; this method does not mutate the transform
+<b class="nc"><i>294</i>&nbsp;        BaseTransform xform = getTransformNoClone();</b>
+<b class="nc"><i>295</i>&nbsp;        if (isSimpleTranslate) {</b>
+<b class="nc"><i>296</i>&nbsp;            xform = IDENT;</b>
+<b class="nc"><i>297</i>&nbsp;            dx1 += transX;</b>
+<b class="nc"><i>298</i>&nbsp;            dy1 += transY;</b>
+<b class="nc"><i>299</i>&nbsp;            dx2 += transX;</b>
+<b class="nc"><i>300</i>&nbsp;            dy2 += transY;</b>
+<i>301</i>&nbsp;        }
+<b class="nc"><i>302</i>&nbsp;        context.validateTextureOp(this, xform, src1, src2,</b>
+<i>303</i>&nbsp;                                  PixelFormat.INT_ARGB_PRE);
+<i>304</i>&nbsp;
+<b class="nc"><i>305</i>&nbsp;        VertexBuffer vb = context.getVertexBuffer();</b>
+<b class="nc"><i>306</i>&nbsp;        vb.addQuad(dx1, dy1, dx2, dy2,</b>
+<i>307</i>&nbsp;                   t1x1, t1y1, t1x2, t1y2,
+<i>308</i>&nbsp;                   t2x1, t2y1, t2x2, t2y2);
+<b class="nc"><i>309</i>&nbsp;    }</b>
+<i>310</i>&nbsp;
+<i>311</i>&nbsp;    public void drawMappedTextureRaw2(Texture src1, Texture src2,
+<i>312</i>&nbsp;                                      float dx1, float dy1, float dx2, float dy2,
+<i>313</i>&nbsp;                                      float t1x11, float t1y11, float t1x21, float t1y21,
+<i>314</i>&nbsp;                                      float t1x12, float t1y12, float t1x22, float t1y22,
+<i>315</i>&nbsp;                                      float t2x11, float t2y11, float t2x21, float t2y21,
+<i>316</i>&nbsp;                                      float t2x12, float t2y12, float t2x22, float t2y22)
+<i>317</i>&nbsp;    {
+<i>318</i>&nbsp;        // The following is safe; this method does not mutate the transform
+<b class="nc"><i>319</i>&nbsp;        BaseTransform xform = getTransformNoClone();</b>
+<b class="nc"><i>320</i>&nbsp;        if (isSimpleTranslate) {</b>
+<b class="nc"><i>321</i>&nbsp;            xform = IDENT;</b>
+<b class="nc"><i>322</i>&nbsp;            dx1 += transX;</b>
+<b class="nc"><i>323</i>&nbsp;            dy1 += transY;</b>
+<b class="nc"><i>324</i>&nbsp;            dx2 += transX;</b>
+<b class="nc"><i>325</i>&nbsp;            dy2 += transY;</b>
+<i>326</i>&nbsp;        }
+<b class="nc"><i>327</i>&nbsp;        context.validateTextureOp(this, xform, src1, src2,</b>
+<i>328</i>&nbsp;                                  PixelFormat.INT_ARGB_PRE);
+<i>329</i>&nbsp;
+<b class="nc"><i>330</i>&nbsp;        VertexBuffer vb = context.getVertexBuffer();</b>
+<b class="nc"><i>331</i>&nbsp;        vb.addMappedQuad(dx1, dy1, dx2, dy2,</b>
+<i>332</i>&nbsp;                         t1x11, t1y11, t1x21, t1y21,
+<i>333</i>&nbsp;                         t1x12, t1y12, t1x22, t1y22,
+<i>334</i>&nbsp;                         t2x11, t2y11, t2x21, t2y21,
+<i>335</i>&nbsp;                         t2x12, t2y12, t2x22, t2y22);
+<b class="nc"><i>336</i>&nbsp;    }</b>
+<i>337</i>&nbsp;
+<i>338</i>&nbsp;    public void drawPixelsMasked(RTTexture imgtex, RTTexture masktex,
+<i>339</i>&nbsp;                                 int dx, int dy, int dw, int dh,
+<i>340</i>&nbsp;                                 int ix, int iy, int mx, int my)
+<i>341</i>&nbsp;    {
+<b class="nc"><i>342</i>&nbsp;        if (dw &lt;= 0 || dh &lt;= 0) return;</b>
+<b class="nc"><i>343</i>&nbsp;        float iw = imgtex.getPhysicalWidth();</b>
+<b class="nc"><i>344</i>&nbsp;        float ih = imgtex.getPhysicalHeight();</b>
+<b class="nc"><i>345</i>&nbsp;        float mw = masktex.getPhysicalWidth();</b>
+<b class="nc"><i>346</i>&nbsp;        float mh = masktex.getPhysicalHeight();</b>
+<b class="nc"><i>347</i>&nbsp;        float dx1 = dx;</b>
+<b class="nc"><i>348</i>&nbsp;        float dy1 = dy;</b>
+<b class="nc"><i>349</i>&nbsp;        float dx2 = dx + dw;</b>
+<b class="nc"><i>350</i>&nbsp;        float dy2 = dy + dh;</b>
+<b class="nc"><i>351</i>&nbsp;        float ix1 = ix / iw;</b>
+<b class="nc"><i>352</i>&nbsp;        float iy1 = iy / ih;</b>
+<b class="nc"><i>353</i>&nbsp;        float ix2 = (ix + dw) / iw;</b>
+<b class="nc"><i>354</i>&nbsp;        float iy2 = (iy + dh) / ih;</b>
+<b class="nc"><i>355</i>&nbsp;        float mx1 = mx / mw;</b>
+<b class="nc"><i>356</i>&nbsp;        float my1 = my / mh;</b>
+<b class="nc"><i>357</i>&nbsp;        float mx2 = (mx + dw) / mw;</b>
+<b class="nc"><i>358</i>&nbsp;        float my2 = (my + dh) / mh;</b>
+<b class="nc"><i>359</i>&nbsp;        context.validateMaskTextureOp(this, IDENT, imgtex, masktex,</b>
+<i>360</i>&nbsp;                                      PixelFormat.INT_ARGB_PRE);
+<b class="nc"><i>361</i>&nbsp;        VertexBuffer vb = context.getVertexBuffer();</b>
+<b class="nc"><i>362</i>&nbsp;        vb.addQuad(dx1, dy1, dx2, dy2,</b>
+<i>363</i>&nbsp;                   ix1, iy1, ix2, iy2,
+<i>364</i>&nbsp;                   mx1, my1, mx2, my2);
+<b class="nc"><i>365</i>&nbsp;    }</b>
+<i>366</i>&nbsp;
+<i>367</i>&nbsp;    public void maskInterpolatePixels(RTTexture imgtex, RTTexture masktex,
+<i>368</i>&nbsp;                                      int dx, int dy, int dw, int dh,
+<i>369</i>&nbsp;                                      int ix, int iy, int mx, int my)
+<i>370</i>&nbsp;    {
+<b class="nc"><i>371</i>&nbsp;        if (dw &lt;= 0 || dh &lt;= 0) return;</b>
+<b class="nc"><i>372</i>&nbsp;        float iw = imgtex.getPhysicalWidth();</b>
+<b class="nc"><i>373</i>&nbsp;        float ih = imgtex.getPhysicalHeight();</b>
+<b class="nc"><i>374</i>&nbsp;        float mw = masktex.getPhysicalWidth();</b>
+<b class="nc"><i>375</i>&nbsp;        float mh = masktex.getPhysicalHeight();</b>
+<b class="nc"><i>376</i>&nbsp;        float dx1 = dx;</b>
+<b class="nc"><i>377</i>&nbsp;        float dy1 = dy;</b>
+<b class="nc"><i>378</i>&nbsp;        float dx2 = dx + dw;</b>
+<b class="nc"><i>379</i>&nbsp;        float dy2 = dy + dh;</b>
+<b class="nc"><i>380</i>&nbsp;        float ix1 = ix / iw;</b>
+<b class="nc"><i>381</i>&nbsp;        float iy1 = iy / ih;</b>
+<b class="nc"><i>382</i>&nbsp;        float ix2 = (ix + dw) / iw;</b>
+<b class="nc"><i>383</i>&nbsp;        float iy2 = (iy + dh) / ih;</b>
+<b class="nc"><i>384</i>&nbsp;        float mx1 = mx / mw;</b>
+<b class="nc"><i>385</i>&nbsp;        float my1 = my / mh;</b>
+<b class="nc"><i>386</i>&nbsp;        float mx2 = (mx + dw) / mw;</b>
+<b class="nc"><i>387</i>&nbsp;        float my2 = (my + dh) / mh;</b>
+<b class="nc"><i>388</i>&nbsp;        CompositeMode oldmode = getCompositeMode();</b>
+<b class="nc"><i>389</i>&nbsp;        setCompositeMode(CompositeMode.DST_OUT);</b>
+<b class="nc"><i>390</i>&nbsp;        context.validateTextureOp(this, IDENT, masktex,</b>
+<i>391</i>&nbsp;                                  PixelFormat.INT_ARGB_PRE);
+<b class="nc"><i>392</i>&nbsp;        VertexBuffer vb = context.getVertexBuffer();</b>
+<b class="nc"><i>393</i>&nbsp;        vb.addQuad(dx1, dy1, dx2, dy2,</b>
+<i>394</i>&nbsp;                   mx1, my1, mx2, my2);
+<i>395</i>&nbsp;
+<b class="nc"><i>396</i>&nbsp;        setCompositeMode(CompositeMode.ADD);</b>
+<b class="nc"><i>397</i>&nbsp;        context.validateMaskTextureOp(this, IDENT, imgtex, masktex,</b>
+<i>398</i>&nbsp;                                      PixelFormat.INT_ARGB_PRE);
+<b class="nc"><i>399</i>&nbsp;        vb.addQuad(dx1, dy1, dx2, dy2,</b>
+<i>400</i>&nbsp;                   ix1, iy1, ix2, iy2,
+<i>401</i>&nbsp;                   mx1, my1, mx2, my2);
+<i>402</i>&nbsp;
+<b class="nc"><i>403</i>&nbsp;        setCompositeMode(oldmode);</b>
+<b class="nc"><i>404</i>&nbsp;    }</b>
+<i>405</i>&nbsp;
+<i>406</i>&nbsp;    private void renderWithComplexPaint(Shape shape, BasicStroke stroke,
+<i>407</i>&nbsp;                                        float bx, float by, float bw, float bh)
+<i>408</i>&nbsp;    {
+<i>409</i>&nbsp;        // creating/updating the mask texture may unset the current
+<i>410</i>&nbsp;        // texture used by pending vertices, so flush the vertex buffer first
+<b class="nc"><i>411</i>&nbsp;        context.flushVertexBuffer();</b>
+<i>412</i>&nbsp;
+<i>413</i>&nbsp;        // The following is safe; this method does not mutate the transform
+<b class="nc"><i>414</i>&nbsp;        BaseTransform xform = getTransformNoClone();</b>
+<b class="nc"><i>415</i>&nbsp;        MaskData maskData =</b>
+<b class="nc"><i>416</i>&nbsp;            ShapeUtil.rasterizeShape(shape, stroke, getFinalClipNoClone(), xform, true, isAntialiasedShape());</b>
+<b class="nc"><i>417</i>&nbsp;        int maskW = maskData.getWidth();</b>
+<b class="nc"><i>418</i>&nbsp;        int maskH = maskData.getHeight();</b>
+<i>419</i>&nbsp;
+<b class="nc"><i>420</i>&nbsp;        float dx1 = maskData.getOriginX();</b>
+<b class="nc"><i>421</i>&nbsp;        float dy1 = maskData.getOriginY();</b>
+<b class="nc"><i>422</i>&nbsp;        float dx2 = dx1 + maskW;</b>
+<b class="nc"><i>423</i>&nbsp;        float dy2 = dy1 + maskH;</b>
+<i>424</i>&nbsp;
+<i>425</i>&nbsp;        // Note that we could use multitexturing here (upload mask
+<i>426</i>&nbsp;        // data to texture unit 0 and paint data to texture unit 1
+<i>427</i>&nbsp;        // then set the texture mode to modulate) but this operation is
+<i>428</i>&nbsp;        // already plenty slow and not worth optimizing at this time,
+<i>429</i>&nbsp;        // so for now we will merge the mask with the paint data in software.
+<b class="nc"><i>430</i>&nbsp;        Gradient grad = (Gradient)paint;</b>
+<b class="nc"><i>431</i>&nbsp;        TEMP_TX2D.setToTranslation(-dx1, -dy1);</b>
+<b class="nc"><i>432</i>&nbsp;        TEMP_TX2D.concatenate(xform);</b>
+<b class="nc"><i>433</i>&nbsp;        Texture tex = context.getGradientTexture(grad, TEMP_TX2D,</b>
+<i>434</i>&nbsp;                                                 maskW, maskH, maskData,
+<i>435</i>&nbsp;                                                 bx, by, bw, bh);
+<i>436</i>&nbsp;
+<b class="nc"><i>437</i>&nbsp;        float tx1 = 0f;</b>
+<b class="nc"><i>438</i>&nbsp;        float ty1 = 0f;</b>
+<b class="nc"><i>439</i>&nbsp;        float tx2 = tx1 + ((float)maskW) / tex.getPhysicalWidth();</b>
+<b class="nc"><i>440</i>&nbsp;        float ty2 = ty1 + ((float)maskH) / tex.getPhysicalHeight();</b>
+<i>441</i>&nbsp;
+<i>442</i>&nbsp;        // the mask has been generated in device space, so we use
+<i>443</i>&nbsp;        // identity transform here
+<b class="nc"><i>444</i>&nbsp;        VertexBuffer vb = context.getVertexBuffer();</b>
+<b class="nc"><i>445</i>&nbsp;        context.validateTextureOp(this, IDENT, tex, null, tex.getPixelFormat());</b>
+<b class="nc"><i>446</i>&nbsp;        vb.addQuad(dx1, dy1, dx2, dy2, tx1, ty1, tx2, ty2);</b>
+<b class="nc"><i>447</i>&nbsp;        tex.unlock();</b>
+<b class="nc"><i>448</i>&nbsp;    }</b>
+<i>449</i>&nbsp;
+<b class="fc"><i>450</i>&nbsp;    private static RectBounds TMP_BOUNDS = new RectBounds();</b>
+<i>451</i>&nbsp;    @Override
+<i>452</i>&nbsp;    protected void renderShape(Shape shape, BasicStroke stroke,
+<i>453</i>&nbsp;                               float bx, float by, float bw, float bh)
+<i>454</i>&nbsp;    {
+<b class="fc"><i>455</i>&nbsp;        if (isComplexPaint) {</b>
+<b class="nc"><i>456</i>&nbsp;            renderWithComplexPaint(shape, stroke, bx, by, bw, bh);</b>
+<b class="nc"><i>457</i>&nbsp;            return;</b>
+<i>458</i>&nbsp;        }
+<i>459</i>&nbsp;
+<i>460</i>&nbsp;        // The following is safe; this method does not mutate the transform
+<b class="fc"><i>461</i>&nbsp;        BaseTransform xform = getTransformNoClone();</b>
+<b class="fc"><i>462</i>&nbsp;        MaskData maskData =</b>
+<b class="fc"><i>463</i>&nbsp;            ShapeUtil.rasterizeShape(shape, stroke, getFinalClipNoClone(), xform, true, isAntialiasedShape());</b>
+<b class="fc"><i>464</i>&nbsp;        Texture maskTex = context.validateMaskTexture(maskData, false);</b>
+<i>465</i>&nbsp;
+<i>466</i>&nbsp;        AffineBase paintTx;
+<b class="fc"><i>467</i>&nbsp;        if (PrismSettings.primTextureSize != 0) {</b>
+<i>468</i>&nbsp;            // the mask has been generated in device space, so we use
+<i>469</i>&nbsp;            // identity transform here
+<b class="nc"><i>470</i>&nbsp;            Shader shader =</b>
+<b class="nc"><i>471</i>&nbsp;                context.validatePaintOp(this, IDENT, MaskType.ALPHA_TEXTURE, maskTex,</b>
+<i>472</i>&nbsp;                                        bx, by, bw, bh);
+<i>473</i>&nbsp;
+<b class="nc"><i>474</i>&nbsp;            paintTx = getPaintTextureTx(xform, shader, bx, by, bw, bh);</b>
+<b class="nc"><i>475</i>&nbsp;        } else {</b>
+<i>476</i>&nbsp;            // the mask has been generated in device space, so we use
+<i>477</i>&nbsp;            // identity transform here
+<b class="fc"><i>478</i>&nbsp;            context.validatePaintOp(this, IDENT, maskTex, bx, by, bw, bh);</b>
+<b class="fc"><i>479</i>&nbsp;            paintTx = null;</b>
+<i>480</i>&nbsp;        }
+<i>481</i>&nbsp;
+<b class="fc"><i>482</i>&nbsp;        context.updateMaskTexture(maskData, TMP_BOUNDS, false);</b>
+<i>483</i>&nbsp;
+<b class="fc"><i>484</i>&nbsp;        float dx1 = maskData.getOriginX();</b>
+<b class="fc"><i>485</i>&nbsp;        float dy1 = maskData.getOriginY();</b>
+<b class="fc"><i>486</i>&nbsp;        float dx2 = dx1 + maskData.getWidth();</b>
+<b class="fc"><i>487</i>&nbsp;        float dy2 = dy1 + maskData.getHeight();</b>
+<b class="fc"><i>488</i>&nbsp;        float tx1 = TMP_BOUNDS.getMinX();</b>
+<b class="fc"><i>489</i>&nbsp;        float ty1 = TMP_BOUNDS.getMinY();</b>
+<b class="fc"><i>490</i>&nbsp;        float tx2 = TMP_BOUNDS.getMaxX();</b>
+<b class="fc"><i>491</i>&nbsp;        float ty2 = TMP_BOUNDS.getMaxY();</b>
+<i>492</i>&nbsp;
+<b class="fc"><i>493</i>&nbsp;        VertexBuffer vb = context.getVertexBuffer();</b>
+<b class="fc"><i>494</i>&nbsp;        vb.addQuad(dx1, dy1, dx2, dy2, tx1, ty1, tx2, ty2, paintTx);</b>
+<i>495</i>&nbsp;
+<b class="fc"><i>496</i>&nbsp;        maskTex.unlock();</b>
+<b class="fc"><i>497</i>&nbsp;    }</b>
+<i>498</i>&nbsp;
+<i>499</i>&nbsp;    private static float getStrokeExpansionFactor(BasicStroke stroke) {
+<b class="nc"><i>500</i>&nbsp;        if (stroke.getType() == BasicStroke.TYPE_OUTER) {</b>
+<b class="nc"><i>501</i>&nbsp;            return 1f;</b>
+<b class="nc"><i>502</i>&nbsp;        } else if (stroke.getType() == BasicStroke.TYPE_CENTERED) {</b>
+<b class="nc"><i>503</i>&nbsp;            return 0.5f;</b>
+<i>504</i>&nbsp;        } else {
+<b class="nc"><i>505</i>&nbsp;            return 0f;</b>
+<i>506</i>&nbsp;        }
+<i>507</i>&nbsp;    }
+<i>508</i>&nbsp;
+<i>509</i>&nbsp;    private static final float FRINGE_FACTOR;
+<i>510</i>&nbsp;    static {
+<b class="fc"><i>511</i>&nbsp;        String v = (String) AccessController.doPrivileged((PrivilegedAction) () -&gt; System.getProperty(&quot;prism.primshaderpad&quot;));</b>
+<b class="fc"><i>512</i>&nbsp;        if (v == null) {</b>
+<b class="fc"><i>513</i>&nbsp;            FRINGE_FACTOR = -0.5f;</b>
+<i>514</i>&nbsp;        } else {
+<b class="nc"><i>515</i>&nbsp;            FRINGE_FACTOR = -Float.valueOf(v);</b>
+<b class="nc"><i>516</i>&nbsp;            System.out.println(&quot;Prism ShaderGraphics primitive shader pad = &quot;+FRINGE_FACTOR);</b>
+<i>517</i>&nbsp;        }
+<i>518</i>&nbsp;    }
+<i>519</i>&nbsp;
+<i>520</i>&nbsp;    private BaseTransform extract3Dremainder(BaseTransform xform) {
+<b class="fc"><i>521</i>&nbsp;        if (xform.is2D()) {</b>
+<b class="fc"><i>522</i>&nbsp;            return IDENT;</b>
+<i>523</i>&nbsp;        }
+<b class="nc"><i>524</i>&nbsp;        TEMP_TX3D.setTransform(xform);</b>
+<b class="nc"><i>525</i>&nbsp;        TEMP_TX2D.setTransform(xform.getMxx(), xform.getMyx(),</b>
+<b class="nc"><i>526</i>&nbsp;                               xform.getMxy(), xform.getMyy(),</b>
+<b class="nc"><i>527</i>&nbsp;                               xform.getMxt(), xform.getMyt());</b>
+<i>528</i>&nbsp;        try {
+<b class="nc"><i>529</i>&nbsp;            TEMP_TX2D.invert();</b>
+<b class="nc"><i>530</i>&nbsp;            TEMP_TX3D.concatenate(TEMP_TX2D);</b>
+<b class="nc"><i>531</i>&nbsp;        } catch (NoninvertibleTransformException ex) {</b>
+<b class="nc"><i>532</i>&nbsp;        }</b>
+<b class="nc"><i>533</i>&nbsp;        return TEMP_TX3D;</b>
+<i>534</i>&nbsp;    }
+<i>535</i>&nbsp;
+<i>536</i>&nbsp;    private void renderGeneralRoundedRect(float rx, float ry, float rw, float rh,
+<i>537</i>&nbsp;                                          float arcw, float arch,
+<i>538</i>&nbsp;                                          MaskType type, BasicStroke stroke)
+<i>539</i>&nbsp;    {
+<i>540</i>&nbsp;        // NOTE: using floats here for now, not sure if it&#39;s a problem yet...
+<i>541</i>&nbsp;        float bx, by, bw, bh, ifractw, ifracth;
+<i>542</i>&nbsp;        float ox, oy, wdx, wdy, hdx, hdy;
+<b class="fc"><i>543</i>&nbsp;        if (stroke == null) {</b>
+<b class="fc"><i>544</i>&nbsp;            bx = rx;</b>
+<b class="fc"><i>545</i>&nbsp;            by = ry;</b>
+<b class="fc"><i>546</i>&nbsp;            bw = rw;</b>
+<b class="fc"><i>547</i>&nbsp;            bh = rh;</b>
+<b class="fc"><i>548</i>&nbsp;            ifractw = ifracth = 0f;</b>
+<i>549</i>&nbsp;        } else {
+<b class="nc"><i>550</i>&nbsp;            float sw = stroke.getLineWidth();</b>
+<b class="nc"><i>551</i>&nbsp;            float ow = getStrokeExpansionFactor(stroke) * sw;</b>
+<b class="nc"><i>552</i>&nbsp;            bx = rx - ow;</b>
+<b class="nc"><i>553</i>&nbsp;            by = ry - ow;</b>
+<b class="nc"><i>554</i>&nbsp;            ow *= 2f;</b>
+<b class="nc"><i>555</i>&nbsp;            bw = rw + ow;</b>
+<b class="nc"><i>556</i>&nbsp;            bh = rh + ow;</b>
+<b class="nc"><i>557</i>&nbsp;            if (arcw &gt; 0 &amp;&amp; arch &gt; 0) {</b>
+<b class="nc"><i>558</i>&nbsp;                arcw += ow;</b>
+<b class="nc"><i>559</i>&nbsp;                arch += ow;</b>
+<i>560</i>&nbsp;            } else {
+<b class="nc"><i>561</i>&nbsp;                if (stroke.getLineJoin() == BasicStroke.JOIN_ROUND) {</b>
+<b class="nc"><i>562</i>&nbsp;                    arcw = arch = ow;</b>
+<b class="nc"><i>563</i>&nbsp;                    type = MaskType.DRAW_ROUNDRECT;</b>
+<i>564</i>&nbsp;                } else {
+<b class="nc"><i>565</i>&nbsp;                    arcw = arch = 0f;</b>
+<i>566</i>&nbsp;                }
+<i>567</i>&nbsp;            }
+<b class="nc"><i>568</i>&nbsp;            ifractw = (bw - sw * 2f) / bw;</b>
+<b class="nc"><i>569</i>&nbsp;            ifracth = (bh - sw * 2f) / bh;</b>
+<b class="nc"><i>570</i>&nbsp;            if (ifractw &lt;= 0f || ifracth &lt;= 0f) {</b>
+<b class="nc"><i>571</i>&nbsp;                type = type.getFillType();</b>
+<i>572</i>&nbsp;            }
+<i>573</i>&nbsp;        }
+<i>574</i>&nbsp;
+<i>575</i>&nbsp;        // The following is safe; this method does not mutate the transform
+<b class="fc"><i>576</i>&nbsp;        BaseTransform xform = getTransformNoClone();</b>
+<i>577</i>&nbsp;        BaseTransform rendertx;
+<b class="fc"><i>578</i>&nbsp;        if (isSimpleTranslate) {</b>
+<b class="fc"><i>579</i>&nbsp;            wdx = hdy = 1f;</b>
+<b class="fc"><i>580</i>&nbsp;            wdy = hdx = 0f;</b>
+<b class="fc"><i>581</i>&nbsp;            ox = bx + transX;</b>
+<b class="fc"><i>582</i>&nbsp;            oy = by + transY;</b>
+<b class="fc"><i>583</i>&nbsp;            rendertx = IDENT;</b>
+<i>584</i>&nbsp;        } else {
+<b class="fc"><i>585</i>&nbsp;            rendertx = extract3Dremainder(xform);</b>
+<b class="fc"><i>586</i>&nbsp;            wdx = (float)xform.getMxx();</b>
+<b class="fc"><i>587</i>&nbsp;            hdx = (float)xform.getMxy();</b>
+<b class="fc"><i>588</i>&nbsp;            wdy = (float)xform.getMyx();</b>
+<b class="fc"><i>589</i>&nbsp;            hdy = (float)xform.getMyy();</b>
+<b class="fc"><i>590</i>&nbsp;            ox = (bx * wdx) + (by * hdx) + (float)xform.getMxt();</b>
+<b class="fc"><i>591</i>&nbsp;            oy = (bx * wdy) + (by * hdy) + (float)xform.getMyt();</b>
+<i>592</i>&nbsp;        }
+<i>593</i>&nbsp;
+<b class="fc"><i>594</i>&nbsp;        wdx *= bw;</b>
+<b class="fc"><i>595</i>&nbsp;        wdy *= bw;</b>
+<b class="fc"><i>596</i>&nbsp;        hdx *= bh;</b>
+<b class="fc"><i>597</i>&nbsp;        hdy *= bh;</b>
+<i>598</i>&nbsp;
+<b class="fc"><i>599</i>&nbsp;        float arcfractw = arcw / bw;</b>
+<b class="fc"><i>600</i>&nbsp;        float arcfracth = arch / bh;</b>
+<b class="fc"><i>601</i>&nbsp;        renderGeneralRoundedPgram(ox, oy, wdx, wdy, hdx, hdy,</b>
+<i>602</i>&nbsp;                                  arcfractw, arcfracth, ifractw, ifracth,
+<i>603</i>&nbsp;                                  rendertx, type, rx, ry, rw, rh);
+<b class="fc"><i>604</i>&nbsp;    }</b>
+<i>605</i>&nbsp;
+<i>606</i>&nbsp;    private void renderGeneralRoundedPgram(float ox, float oy,
+<i>607</i>&nbsp;                                           float wvecx, float wvecy,
+<i>608</i>&nbsp;                                           float hvecx, float hvecy,
+<i>609</i>&nbsp;                                           float arcfractw, float arcfracth,
+<i>610</i>&nbsp;                                           float ifractw, float ifracth,
+<i>611</i>&nbsp;                                           BaseTransform rendertx, MaskType type,
+<i>612</i>&nbsp;                                           float rx, float ry, float rw, float rh)
+<i>613</i>&nbsp;    {
+<b class="fc"><i>614</i>&nbsp;        float wlen = len(wvecx, wvecy);</b>
+<b class="fc"><i>615</i>&nbsp;        float hlen = len(hvecx, hvecy);</b>
+<b class="fc"><i>616</i>&nbsp;        if (wlen == 0 || hlen == 0) {</b>
+<i>617</i>&nbsp;            // parallelogram has collapsed to a line or point
+<b class="nc"><i>618</i>&nbsp;            return;</b>
+<i>619</i>&nbsp;        }
+<i>620</i>&nbsp;
+<i>621</i>&nbsp;        // Calculate the 4 corners of the pgram in device space.
+<i>622</i>&nbsp;        // Note that the UL,UR,LL,LR (Upper/Lower Left/Right) designations
+<i>623</i>&nbsp;        // are virtual since the wdxy and hdxy vectors can point in any
+<i>624</i>&nbsp;        // direction depending on the transform being applied.
+<b class="fc"><i>625</i>&nbsp;        float xUL = ox;</b>
+<b class="fc"><i>626</i>&nbsp;        float yUL = oy;</b>
+<b class="fc"><i>627</i>&nbsp;        float xUR = ox + wvecx;</b>
+<b class="fc"><i>628</i>&nbsp;        float yUR = oy + wvecy;</b>
+<b class="fc"><i>629</i>&nbsp;        float xLL = ox + hvecx;</b>
+<b class="fc"><i>630</i>&nbsp;        float yLL = oy + hvecy;</b>
+<b class="fc"><i>631</i>&nbsp;        float xLR = xUR + hvecx;</b>
+<b class="fc"><i>632</i>&nbsp;        float yLR = yUR + hvecy;</b>
+<i>633</i>&nbsp;
+<i>634</i>&nbsp;        // Calculate the unit vectors along each side of the pgram as well
+<i>635</i>&nbsp;        // as the device space perpendicular dimension across the pgram
+<i>636</i>&nbsp;        // (which is different than the lengths of the two pairs of sides
+<i>637</i>&nbsp;        //  since it is measured perpendicular to the &quot;other&quot; sides, not
+<i>638</i>&nbsp;        //  along the original sides).
+<i>639</i>&nbsp;        // The perpendicular dimension is the dot product of the perpendicular
+<i>640</i>&nbsp;        // of the unit vector for one pair of sides with the displacement
+<i>641</i>&nbsp;        // vector for the other pair of sides.
+<i>642</i>&nbsp;        // The unit vector perpendicular to (dx,dy) is given by:
+<i>643</i>&nbsp;        // normx = dx / len(dx, dy);
+<i>644</i>&nbsp;        // normy = dy / len(dx, dy);
+<i>645</i>&nbsp;        // The (ccw) perpendicular vectors would then be:
+<i>646</i>&nbsp;        // unitperpx = +normy = +dy / len;
+<i>647</i>&nbsp;        // unitperpy = -normx = -dx / len;
+<i>648</i>&nbsp;        // Thus the perpendicular width and height distances are:
+<i>649</i>&nbsp;        // pwdist = wvec.uphvec = wvecx * (hvecy/hlen) - wvecy * (hvecx/hlen)
+<i>650</i>&nbsp;        // phdist = hvec.upwvec = hvecx * (wvecy/wlen) - hvecy * (wvecx/wlen)
+<i>651</i>&nbsp;        // If we factor out the divide by the lengths then we are left
+<i>652</i>&nbsp;        // with numerators that are simply negations of each other:
+<i>653</i>&nbsp;        // pwdist = (wvecx * hvecy - wvecy * hvecx) / hlen
+<i>654</i>&nbsp;        // phdist = (hvecx * wvecy - hvecy * wvecx) / wlen
+<i>655</i>&nbsp;        // Finally we multiply by 0.5 since we want the distance to the
+<i>656</i>&nbsp;        // edges of the parallelgram from the center point, not across the
+<i>657</i>&nbsp;        // whole pgram.  And, since we want the absolute value, we can
+<i>658</i>&nbsp;        // ignore the fact that the numerator is negated between the two
+<i>659</i>&nbsp;        // formulas since we will just have to negate one of the 2 values
+<i>660</i>&nbsp;        // afterwards anyway to make them both positive.
+<i>661</i>&nbsp;        // Note that the numerators are the formula for the area of the
+<i>662</i>&nbsp;        // parallelogram (without the abs() operation).  Dividing by the
+<i>663</i>&nbsp;        // length of one of the sides would then give the length of the
+<i>664</i>&nbsp;        // perpendicular across to the other side.
+<b class="fc"><i>665</i>&nbsp;        float halfarea = (wvecx * hvecy - wvecy * hvecx) * 0.5f;</b>
+<b class="fc"><i>666</i>&nbsp;        float pwdist = halfarea / hlen;</b>
+<b class="fc"><i>667</i>&nbsp;        float phdist = halfarea / wlen;</b>
+<b class="fc"><i>668</i>&nbsp;        if (pwdist &lt; 0) pwdist = -pwdist;</b>
+<b class="fc"><i>669</i>&nbsp;        if (phdist &lt; 0) phdist = -phdist;</b>
+<i>670</i>&nbsp;
+<i>671</i>&nbsp;        // Now we calculate the normalized unit vectors.
+<b class="fc"><i>672</i>&nbsp;        float nwvecx = wvecx / wlen;</b>
+<b class="fc"><i>673</i>&nbsp;        float nwvecy = wvecy / wlen;</b>
+<b class="fc"><i>674</i>&nbsp;        float nhvecx = hvecx / hlen;</b>
+<b class="fc"><i>675</i>&nbsp;        float nhvecy = hvecy / hlen;</b>
+<i>676</i>&nbsp;
+<i>677</i>&nbsp;        // Bias the parallelogram corner coordinates &quot;outward&quot; by half a
+<i>678</i>&nbsp;        // pixel distance.
+<i>679</i>&nbsp;        // The most general way to do this is to move each parallelogram
+<i>680</i>&nbsp;        // edge outward by a specified distance and then find the new
+<i>681</i>&nbsp;        // intersection point.
+<i>682</i>&nbsp;        // The general form for the intersection of 2 lines is:
+<i>683</i>&nbsp;        // line1 = (x1,y1) -&gt; (x2,y2)
+<i>684</i>&nbsp;        // line2 = (x3,y3) -&gt; (x4,y4)
+<i>685</i>&nbsp;        // t = ((x4-x3)(y1-y3) - (y4-y3)(x1-x3))
+<i>686</i>&nbsp;        //   / ((y4-y3)(x2-x1) - (x4-x3)(y2-y1))
+<i>687</i>&nbsp;        // intersection point = (x1 + t*(x2-x1), y1 + t*(y2-y1))
+<i>688</i>&nbsp;        // Now consider if these lines are displaced versions of 2
+<i>689</i>&nbsp;        // other lines which share a common end point (such as is the
+<i>690</i>&nbsp;        // case of pushing 2 adjacent edges of the pgram outward:
+<i>691</i>&nbsp;        // line1 = (xa+dx1, ya+dy1) -&gt; (xb+dx1, yb+dy1)
+<i>692</i>&nbsp;        // line2 = (xa+dx2, ya+dy2) -&gt; (xc+dx2, yc+dy2)
+<i>693</i>&nbsp;        // &quot;x4-x3&quot; = (xc+dx2) - (xa+dx2) = xc-xa
+<i>694</i>&nbsp;        // &quot;y4-y3&quot; = (yc+dy2) - (ya+dy2) = yc-ya
+<i>695</i>&nbsp;        // &quot;x2-x1&quot; = (xb+dx1) - (xa+dx1) = xb-xa
+<i>696</i>&nbsp;        // &quot;y2-y1&quot; = (yb+dy1) - (ya+dy1) = yb-ya
+<i>697</i>&nbsp;        // &quot;y1-y3&quot; = (y1+dy1) - (y1+dy2) = dy1 - dy2
+<i>698</i>&nbsp;        // &quot;x1-x3&quot; = (xa+dx1) - (xa+dx2) = dx1 - dx2
+<i>699</i>&nbsp;        // t = ((xc-xa)(dy1-dy2) - ((yc-ya)(dx1-dx2))
+<i>700</i>&nbsp;        //   / ((yc-ya)(xb-xa) - (xc-xa)(yb-ya))
+<i>701</i>&nbsp;        // Now we need to displace these 2 lines &quot;outward&quot; by half a
+<i>702</i>&nbsp;        // pixel distance.  We will start by looking at applying a unit
+<i>703</i>&nbsp;        // pixel distance and then cutting the adjustment in half (it
+<i>704</i>&nbsp;        // can be seen to scale linearly when you look at the final
+<i>705</i>&nbsp;        // equations).  This is achieved by applying one of our unit
+<i>706</i>&nbsp;        // vectors with a cw rotation to one line and the other unit
+<i>707</i>&nbsp;        // vector with a ccw rotation to the other line.  Ideally we
+<i>708</i>&nbsp;        // would choose which to apply cw vs. ccw by the way that this
+<i>709</i>&nbsp;        // corner of the pgram is turning, but as it turns out, the
+<i>710</i>&nbsp;        // consequences of getting it backward is that our &quot;t&quot; will
+<i>711</i>&nbsp;        // turn out negative (just negate all of the d[xy][12] values
+<i>712</i>&nbsp;        // in the t equation above and you will see that it changes
+<i>713</i>&nbsp;        // sign.  Since we are calculating the new corner using the
+<i>714</i>&nbsp;        // equation newx = (xa+dx1) + t*(xb-xa), we want the value of
+<i>715</i>&nbsp;        // t that drives the point &quot;away from xb,yb&quot;, in other words,
+<i>716</i>&nbsp;        // we want the negative t.  So, if t is positive then we want
+<i>717</i>&nbsp;        // to use negative t and reverse the perpendicular offset we
+<i>718</i>&nbsp;        // applied to xa:
+<i>719</i>&nbsp;        // t &lt; 0 =&gt; newx = (xa+dx) + t*(xb-xa) = xa + (dx + t*(xb-xa))
+<i>720</i>&nbsp;        // t &gt; 0 =&gt; newx = (xa-dx) - t*(xb-xa) = xa - (dx + t*(xb-xa))
+<i>721</i>&nbsp;        // where (copying t equation from above again):
+<i>722</i>&nbsp;        // t = ((xc-xa)(dy1-dy2) - ((yc-ya)(dx1-dx2))
+<i>723</i>&nbsp;        //   / ((yc-ya)(xb-xa) - (xc-xa)(yb-ya))
+<i>724</i>&nbsp;        // For xa,ya = xUL,yUL and xb,yb = xUR,yUR and xc,yc = xLL,yLL:
+<i>725</i>&nbsp;        // [xy]b - [xy]a = [xy]UR - [xy]UL = wvec
+<i>726</i>&nbsp;        // [xy]c - [xy]a = [xy]LL - [xy]UL = hvec
+<i>727</i>&nbsp;        // dx1,dy1 = +nwvecy, -nwvecx  // ccw on xa-&gt;xb
+<i>728</i>&nbsp;        // dx2,dy2 = -nhvecy, +nhvecx  //  cw on xa-&gt;xc
+<i>729</i>&nbsp;        // dx1 - dx2 = +nwvecy - -nhvecy = nwvecy + nhvecy
+<i>730</i>&nbsp;        // dy1 - dy2 = -nwvecx - +nhvecx = -(nwvecx + nhvecx)
+<b class="fc"><i>731</i>&nbsp;        float num = -hvecx*(nwvecx + nhvecx) - hvecy*(nwvecy + nhvecy);</b>
+<b class="fc"><i>732</i>&nbsp;        float den = hvecy*wvecx - hvecx*wvecy;</b>
+<b class="fc"><i>733</i>&nbsp;        float t = num / den;</b>
+<i>734</i>&nbsp;        // Negating the sign of t and multiplying by 0.5 gets us the
+<i>735</i>&nbsp;        // proper sign for the offset and cuts it down to half a pixel
+<b class="fc"><i>736</i>&nbsp;        float factor = FRINGE_FACTOR * Math.signum(t);</b>
+<b class="fc"><i>737</i>&nbsp;        float offx = (t * wvecx + nwvecy) * factor;</b>
+<b class="fc"><i>738</i>&nbsp;        float offy = (t * wvecy - nwvecx) * factor;</b>
+<b class="fc"><i>739</i>&nbsp;        xUL += offx; yUL += offy;</b>
+<i>740</i>&nbsp;        // x22 is offset by the reverse amounts
+<b class="fc"><i>741</i>&nbsp;        xLR -= offx; yLR -= offy;</b>
+<i>742</i>&nbsp;        // For xa,ya = xUR,yUR and xb,yb = xLR,yLR and xc,yc = xUL,yUL
+<i>743</i>&nbsp;        // Note that xa,ya =&gt; xc,yc is negative of wvec
+<i>744</i>&nbsp;        // [xy]b - [xy]a = [xy]LR - [xy]UR = +hvec
+<i>745</i>&nbsp;        // [xy]c - [xy]a = [xy]UL - [xy]UR = -wvec
+<i>746</i>&nbsp;        // dx1,dy1                          = +nhvecy, -nhvecx
+<i>747</i>&nbsp;        // dx2,dy2 = -(-nwvecy), +(-nwvecx) = +nwvecy, -nwvecx
+<i>748</i>&nbsp;        // dx1 - dx2                     = nhvecy - nwvecy
+<i>749</i>&nbsp;        // dy1 - dy2 = -nhvecx - -nwvecx = nwvecx - nhvecx
+<i>750</i>&nbsp;        // den = -wvecy * hvecx - -wvecx * hvecy
+<i>751</i>&nbsp;        //     = hvecy * wvecx - hvecx * wvecy (already computed)
+<i>752</i>&nbsp;        // num = -wvecx * (nwvecx - nhvecx) - -wvecy * (nhvecy - nwvecy)
+<i>753</i>&nbsp;        //     = wvecy * (nhvecy - nwvecy) - wvecx * (nwvecx - nhvecx)
+<b class="fc"><i>754</i>&nbsp;        num = wvecy * (nhvecy - nwvecy) - wvecx * (nwvecx - nhvecx);</b>
+<b class="fc"><i>755</i>&nbsp;        t = num / den;</b>
+<b class="fc"><i>756</i>&nbsp;        factor = FRINGE_FACTOR * Math.signum(t);</b>
+<b class="fc"><i>757</i>&nbsp;        offx = (t * hvecx + nhvecy) * factor;</b>
+<b class="fc"><i>758</i>&nbsp;        offy = (t * hvecy - nhvecx) * factor;</b>
+<b class="fc"><i>759</i>&nbsp;        xUR += offx; yUR += offy;</b>
+<b class="fc"><i>760</i>&nbsp;        xLL -= offx; yLL -= offy;</b>
+<i>761</i>&nbsp;
+<i>762</i>&nbsp;        // texture coordinates (uv) will be calculated using a transform
+<i>763</i>&nbsp;        // by the perpendicular unit vectors so that the texture U
+<i>764</i>&nbsp;        // coordinates measure our progress along the pwdist axis (i.e.
+<i>765</i>&nbsp;        // perpendicular to hvec and the texture V coordinates measure
+<i>766</i>&nbsp;        // our progress along phdist (perpendicular to wvec):
+<i>767</i>&nbsp;        // u = x * nhvecy - y * nhvecx;
+<i>768</i>&nbsp;        // v = x * nwvecy - y * nwvecx;
+<i>769</i>&nbsp;
+<i>770</i>&nbsp;        // We now calculate the uv paramters for the 4 corners such that
+<i>771</i>&nbsp;        //     uv(cx,cy) = 0,0
+<i>772</i>&nbsp;        //     uv(corners - center) = +/-(wlen/2), +/-(hlen/2)
+<i>773</i>&nbsp;        // Note that:
+<i>774</i>&nbsp;        //     uv(corner - center) = uv(corner) - uv(center)
+<i>775</i>&nbsp;        // Calculate the center of the parallelogram and its uv values
+<b class="fc"><i>776</i>&nbsp;        float xC = (xUL + xLR) * 0.5f;</b>
+<b class="fc"><i>777</i>&nbsp;        float yC = (yUL + yLR) * 0.5f;</b>
+<b class="fc"><i>778</i>&nbsp;        float uC = xC * nhvecy - yC * nhvecx;</b>
+<b class="fc"><i>779</i>&nbsp;        float vC = xC * nwvecy - yC * nwvecx;</b>
+<i>780</i>&nbsp;        // Now use that to calculate the corner values relative to the center
+<b class="fc"><i>781</i>&nbsp;        float uUL = xUL * nhvecy - yUL * nhvecx - uC;</b>
+<b class="fc"><i>782</i>&nbsp;        float vUL = xUL * nwvecy - yUL * nwvecx - vC;</b>
+<b class="fc"><i>783</i>&nbsp;        float uUR = xUR * nhvecy - yUR * nhvecx - uC;</b>
+<b class="fc"><i>784</i>&nbsp;        float vUR = xUR * nwvecy - yUR * nwvecx - vC;</b>
+<b class="fc"><i>785</i>&nbsp;        float uLL = xLL * nhvecy - yLL * nhvecx - uC;</b>
+<b class="fc"><i>786</i>&nbsp;        float vLL = xLL * nwvecy - yLL * nwvecx - vC;</b>
+<b class="fc"><i>787</i>&nbsp;        float uLR = xLR * nhvecy - yLR * nhvecx - uC;</b>
+<b class="fc"><i>788</i>&nbsp;        float vLR = xLR * nwvecy - yLR * nwvecx - vC;</b>
+<i>789</i>&nbsp;
+<i>790</i>&nbsp;        // the pgram params have been calculated in device space, so we use
+<i>791</i>&nbsp;        // identity transform here
+<b class="fc"><i>792</i>&nbsp;        if (type == MaskType.DRAW_ROUNDRECT || type == MaskType.FILL_ROUNDRECT) {</b>
+<b class="nc"><i>793</i>&nbsp;            float oarcw = pwdist * arcfractw;</b>
+<b class="nc"><i>794</i>&nbsp;            float oarch = phdist * arcfracth;</b>
+<b class="nc"><i>795</i>&nbsp;            if (oarcw &lt; 0.5 || oarch &lt; 0.5) {</b>
+<i>796</i>&nbsp;                // The pgram renderer fades the entire primitive if the arc
+<i>797</i>&nbsp;                // sizes fall below 0.5 pixels since the interiors act as if
+<i>798</i>&nbsp;                // they are sampled at the center of the indicated circle and
+<i>799</i>&nbsp;                // radii smaller than that produce less than full coverage
+<i>800</i>&nbsp;                // even at the circle center.  If the arcwh are less than
+<i>801</i>&nbsp;                // 0.5 then the difference in area of the corner pixels
+<i>802</i>&nbsp;                // compared to a PGRAM primitive of the same size is just the
+<i>803</i>&nbsp;                // tiny corner cutout of area (4-PI)/16 which is less than
+<i>804</i>&nbsp;                // .06 pixels.  Thus, we can convert the primitive to a
+<i>805</i>&nbsp;                // PGRAM without any loss of precision.
+<b class="nc"><i>806</i>&nbsp;                type = (type == MaskType.DRAW_ROUNDRECT)</b>
+<b class="nc"><i>807</i>&nbsp;                    ? MaskType.DRAW_PGRAM : MaskType.FILL_PGRAM;</b>
+<i>808</i>&nbsp;            } else {
+<b class="nc"><i>809</i>&nbsp;                float flatw = pwdist - oarcw;</b>
+<b class="nc"><i>810</i>&nbsp;                float flath = phdist - oarch;</b>
+<i>811</i>&nbsp;                float ivalw, ivalh;
+<b class="nc"><i>812</i>&nbsp;                if (type == MaskType.DRAW_ROUNDRECT) {</b>
+<b class="nc"><i>813</i>&nbsp;                    float iwdist = pwdist * ifractw;</b>
+<b class="nc"><i>814</i>&nbsp;                    float ihdist = phdist * ifracth;</b>
+<i>815</i>&nbsp;                    // First we calculate the inner arc radii and see if they
+<i>816</i>&nbsp;                    // are large enough to render.
+<b class="nc"><i>817</i>&nbsp;                    ivalw = iwdist - flatw;</b>
+<b class="nc"><i>818</i>&nbsp;                    ivalh = ihdist - flath;</b>
+<i>819</i>&nbsp;                    // As above we need to fix things if we get inner arc
+<i>820</i>&nbsp;                    // radii below half a pixel.  We have a special shader
+<i>821</i>&nbsp;                    // for doing a &quot;semi round&quot; rect which has a round outer
+<i>822</i>&nbsp;                    // shell and a rectangular (pgram) inner shell...
+<b class="nc"><i>823</i>&nbsp;                    if (ivalw &lt; 0.5f || ivalh &lt; 0.5f) {</b>
+<i>824</i>&nbsp;                        // inner val is idim
+<b class="nc"><i>825</i>&nbsp;                        ivalw = iwdist;</b>
+<b class="nc"><i>826</i>&nbsp;                        ivalh = ihdist;</b>
+<b class="nc"><i>827</i>&nbsp;                        type = MaskType.DRAW_SEMIROUNDRECT;</b>
+<i>828</i>&nbsp;                    } else {
+<i>829</i>&nbsp;                        // inner val is invarcradii
+<b class="nc"><i>830</i>&nbsp;                        ivalw = 1.0f / ivalw;</b>
+<b class="nc"><i>831</i>&nbsp;                        ivalh = 1.0f / ivalh;</b>
+<i>832</i>&nbsp;                    }
+<b class="nc"><i>833</i>&nbsp;                } else {</b>
+<i>834</i>&nbsp;                    // Not used by FILL_ROUNDRECT, but we need constant
+<i>835</i>&nbsp;                    // values that will not cause an unnecessary vertex
+<i>836</i>&nbsp;                    // buffer flush in the validateOp below.
+<b class="nc"><i>837</i>&nbsp;                    ivalw = ivalh = 0f;</b>
+<i>838</i>&nbsp;                }
+<b class="nc"><i>839</i>&nbsp;                oarcw = 1.0f / oarcw;</b>
+<b class="nc"><i>840</i>&nbsp;                oarch = 1.0f / oarch;</b>
+<b class="nc"><i>841</i>&nbsp;                Shader shader =</b>
+<b class="nc"><i>842</i>&nbsp;                    context.validatePaintOp(this, rendertx, type,</b>
+<i>843</i>&nbsp;                                            rx, ry, rw, rh,
+<i>844</i>&nbsp;                                            oarcw, oarch,
+<i>845</i>&nbsp;                                            ivalw, ivalh, 0, 0);
+<b class="nc"><i>846</i>&nbsp;                shader.setConstant(&quot;oinvarcradii&quot;, oarcw, oarch);</b>
+<b class="nc"><i>847</i>&nbsp;                if (type == MaskType.DRAW_ROUNDRECT) {</b>
+<b class="nc"><i>848</i>&nbsp;                    shader.setConstant(&quot;iinvarcradii&quot;, ivalw, ivalh);</b>
+<b class="nc"><i>849</i>&nbsp;                } else if (type == MaskType.DRAW_SEMIROUNDRECT) {</b>
+<b class="nc"><i>850</i>&nbsp;                    shader.setConstant(&quot;idim&quot;, ivalw, ivalh);</b>
+<i>851</i>&nbsp;                }
+<b class="nc"><i>852</i>&nbsp;                pwdist = flatw;</b>
+<b class="nc"><i>853</i>&nbsp;                phdist = flath;</b>
+<i>854</i>&nbsp;            }
+<i>855</i>&nbsp;        } // no else here as we may have converted an RRECT to a PGRAM above
+<b class="fc"><i>856</i>&nbsp;        if (type == MaskType.DRAW_PGRAM || type == MaskType.DRAW_ELLIPSE) {</b>
+<b class="nc"><i>857</i>&nbsp;            float idimw = pwdist * ifractw;</b>
+<b class="nc"><i>858</i>&nbsp;            float idimh = phdist * ifracth;</b>
+<b class="nc"><i>859</i>&nbsp;            if (type == MaskType.DRAW_ELLIPSE) {</b>
+<b class="nc"><i>860</i>&nbsp;                if (Math.abs(pwdist - phdist) &lt; .01) {</b>
+<b class="nc"><i>861</i>&nbsp;                    type = MaskType.DRAW_CIRCLE;</b>
+<i>862</i>&nbsp;                    // The phdist and idimh parameters will not be used by this
+<i>863</i>&nbsp;                    // shader, but we do need the maximum single pixel coverage
+<i>864</i>&nbsp;                    // so we coopt them to be min(1.0, area):
+<b class="nc"><i>865</i>&nbsp;                    phdist = (float) Math.min(1.0, phdist * phdist * Math.PI);</b>
+<b class="nc"><i>866</i>&nbsp;                    idimh = (float) Math.min(1.0, idimh * idimh * Math.PI);</b>
+<i>867</i>&nbsp;                } else {
+<i>868</i>&nbsp;                    // the ellipse drawing shader uses inverted arc dimensions
+<i>869</i>&nbsp;                    // to turn divides into multiplies
+<b class="nc"><i>870</i>&nbsp;                    pwdist = 1.0f / pwdist;</b>
+<b class="nc"><i>871</i>&nbsp;                    phdist = 1.0f / phdist;</b>
+<b class="nc"><i>872</i>&nbsp;                    idimw = 1.0f / idimw;</b>
+<b class="nc"><i>873</i>&nbsp;                    idimh = 1.0f / idimh;</b>
+<i>874</i>&nbsp;                }
+<i>875</i>&nbsp;            }
+<b class="nc"><i>876</i>&nbsp;            Shader shader =</b>
+<b class="nc"><i>877</i>&nbsp;                context.validatePaintOp(this, rendertx, type,</b>
+<i>878</i>&nbsp;                                        rx, ry, rw, rh,
+<i>879</i>&nbsp;                                        idimw, idimh, 0f, 0f, 0f, 0f);
+<b class="nc"><i>880</i>&nbsp;            shader.setConstant(&quot;idim&quot;, idimw, idimh);</b>
+<b class="nc"><i>881</i>&nbsp;        } else if (type == MaskType.FILL_ELLIPSE) {</b>
+<b class="nc"><i>882</i>&nbsp;            if (Math.abs(pwdist - phdist) &lt; .01) {</b>
+<b class="nc"><i>883</i>&nbsp;                type = MaskType.FILL_CIRCLE;</b>
+<i>884</i>&nbsp;                // The phdist parameter will not be used by this shader,
+<i>885</i>&nbsp;                // but we do need the maximum single pixel contribution
+<i>886</i>&nbsp;                // so we coopt the value to be min(1.0, area):
+<b class="nc"><i>887</i>&nbsp;                phdist = (float) Math.min(1.0, phdist * phdist * Math.PI);</b>
+<i>888</i>&nbsp;            } else {
+<i>889</i>&nbsp;                // the ellipse filling shader uses inverted arc dimensions to
+<i>890</i>&nbsp;                // turn divides into multiplies:
+<b class="nc"><i>891</i>&nbsp;                pwdist = 1.0f / pwdist;</b>
+<b class="nc"><i>892</i>&nbsp;                phdist = 1.0f / phdist;</b>
+<b class="nc"><i>893</i>&nbsp;                uUL *= pwdist;    vUL *= phdist;</b>
+<b class="nc"><i>894</i>&nbsp;                uUR *= pwdist;    vUR *= phdist;</b>
+<b class="nc"><i>895</i>&nbsp;                uLL *= pwdist;    vLL *= phdist;</b>
+<b class="nc"><i>896</i>&nbsp;                uLR *= pwdist;    vLR *= phdist;</b>
+<i>897</i>&nbsp;            }
+<b class="nc"><i>898</i>&nbsp;            context.validatePaintOp(this, rendertx, type, rx, ry, rw, rh);</b>
+<b class="fc"><i>899</i>&nbsp;        } else if (type == MaskType.FILL_PGRAM) {</b>
+<b class="fc"><i>900</i>&nbsp;            context.validatePaintOp(this, rendertx, type, rx, ry, rw, rh);</b>
+<i>901</i>&nbsp;        }
+<i>902</i>&nbsp;
+<b class="fc"><i>903</i>&nbsp;        context.getVertexBuffer().addMappedPgram(xUL, yUL, xUR, yUR,</b>
+<i>904</i>&nbsp;                                                 xLL, yLL, xLR, yLR,
+<i>905</i>&nbsp;                                                 uUL, vUL, uUR, vUR,
+<i>906</i>&nbsp;                                                 uLL, vLL, uLR, vLR,
+<i>907</i>&nbsp;                                                 pwdist, phdist);
+<b class="fc"><i>908</i>&nbsp;    }</b>
+<i>909</i>&nbsp;
+<i>910</i>&nbsp;    AffineBase getPaintTextureTx(BaseTransform renderTx, Shader shader,
+<i>911</i>&nbsp;                                 float rx, float ry, float rw, float rh)
+<i>912</i>&nbsp;    {
+<b class="nc"><i>913</i>&nbsp;        switch (paint.getType()) {</b>
+<i>914</i>&nbsp;            case COLOR:
+<b class="nc"><i>915</i>&nbsp;                return null;</b>
+<i>916</i>&nbsp;            case LINEAR_GRADIENT:
+<b class="nc"><i>917</i>&nbsp;                return PaintHelper.getLinearGradientTx((LinearGradient) paint,</b>
+<i>918</i>&nbsp;                                                       shader, renderTx,
+<i>919</i>&nbsp;                                                       rx, ry, rw, rh);
+<i>920</i>&nbsp;            case RADIAL_GRADIENT:
+<b class="nc"><i>921</i>&nbsp;                return PaintHelper.getRadialGradientTx((RadialGradient) paint,</b>
+<i>922</i>&nbsp;                                                       shader, renderTx,
+<i>923</i>&nbsp;                                                       rx, ry, rw, rh);
+<i>924</i>&nbsp;            case IMAGE_PATTERN:
+<b class="nc"><i>925</i>&nbsp;                return PaintHelper.getImagePatternTx(this, (ImagePattern) paint,</b>
+<i>926</i>&nbsp;                                                     shader, renderTx,
+<i>927</i>&nbsp;                                                     rx, ry, rw, rh);
+<i>928</i>&nbsp;        }
+<b class="nc"><i>929</i>&nbsp;        throw new InternalError(&quot;Unrecogized paint type: &quot;+paint);</b>
+<i>930</i>&nbsp;    }
+<i>931</i>&nbsp;
+<i>932</i>&nbsp;    // The second set of rectangular bounds are for validating a
+<i>933</i>&nbsp;    // proportional paint.  They should be identical to the first
+<i>934</i>&nbsp;    // set for a fillRect() operation, but they may be different
+<i>935</i>&nbsp;    // for a vertical or horizontal drawLine() operation.
+<i>936</i>&nbsp;    boolean fillPrimRect(float x, float y, float w, float h,
+<i>937</i>&nbsp;                         Texture rectTex, Texture wrapTex,
+<i>938</i>&nbsp;                         float bx, float by, float bw, float bh)
+<i>939</i>&nbsp;    {
+<b class="nc"><i>940</i>&nbsp;        BaseTransform xform = getTransformNoClone();</b>
+<b class="nc"><i>941</i>&nbsp;        float mxx = (float) xform.getMxx();</b>
+<b class="nc"><i>942</i>&nbsp;        float mxy = (float) xform.getMxy();</b>
+<b class="nc"><i>943</i>&nbsp;        float mxt = (float) xform.getMxt();</b>
+<b class="nc"><i>944</i>&nbsp;        float myx = (float) xform.getMyx();</b>
+<b class="nc"><i>945</i>&nbsp;        float myy = (float) xform.getMyy();</b>
+<b class="nc"><i>946</i>&nbsp;        float myt = (float) xform.getMyt();</b>
+<b class="nc"><i>947</i>&nbsp;        float dxdist = len(mxx, myx);</b>
+<b class="nc"><i>948</i>&nbsp;        float dydist = len(mxy, myy);</b>
+<b class="nc"><i>949</i>&nbsp;        if (dxdist == 0.0f || dydist == 0.0f) {</b>
+<i>950</i>&nbsp;            // entire path has collapsed and occupies no area
+<b class="nc"><i>951</i>&nbsp;            return true;</b>
+<i>952</i>&nbsp;        }
+<b class="nc"><i>953</i>&nbsp;        float pixelw = 1.0f / dxdist;</b>
+<b class="nc"><i>954</i>&nbsp;        float pixelh = 1.0f / dydist;</b>
+<b class="nc"><i>955</i>&nbsp;        float x0 = x - pixelw * 0.5f;</b>
+<b class="nc"><i>956</i>&nbsp;        float y0 = y - pixelh * 0.5f;</b>
+<b class="nc"><i>957</i>&nbsp;        float x1 = x + w + pixelw * 0.5f;</b>
+<b class="nc"><i>958</i>&nbsp;        float y1 = y + h + pixelh * 0.5f;</b>
+<b class="nc"><i>959</i>&nbsp;        int cellw = (int) Math.ceil(w * dxdist - 1.0f/512.0f);</b>
+<b class="nc"><i>960</i>&nbsp;        int cellh = (int) Math.ceil(h * dydist - 1.0f/512.0f);</b>
+<b class="nc"><i>961</i>&nbsp;        VertexBuffer vb = context.getVertexBuffer();</b>
+<b class="nc"><i>962</i>&nbsp;        int max = context.getRectTextureMaxSize();</b>
+<b class="nc"><i>963</i>&nbsp;        if (cellw &lt;= max &amp;&amp; cellh &lt;= max) {</b>
+<b class="nc"><i>964</i>&nbsp;            float u0 = ((cellw * (cellw + 1)) / 2) - 0.5f;</b>
+<b class="nc"><i>965</i>&nbsp;            float v0 = ((cellh * (cellh + 1)) / 2) - 0.5f;</b>
+<b class="nc"><i>966</i>&nbsp;            float u1 = u0 + cellw + 1.0f;</b>
+<b class="nc"><i>967</i>&nbsp;            float v1 = v0 + cellh + 1.0f;</b>
+<b class="nc"><i>968</i>&nbsp;            u0 /= rectTex.getPhysicalWidth();</b>
+<b class="nc"><i>969</i>&nbsp;            v0 /= rectTex.getPhysicalHeight();</b>
+<b class="nc"><i>970</i>&nbsp;            u1 /= rectTex.getPhysicalWidth();</b>
+<b class="nc"><i>971</i>&nbsp;            v1 /= rectTex.getPhysicalHeight();</b>
+<b class="nc"><i>972</i>&nbsp;            if (xform.isTranslateOrIdentity()) {</b>
+<b class="nc"><i>973</i>&nbsp;                x0 += mxt;</b>
+<b class="nc"><i>974</i>&nbsp;                y0 += myt;</b>
+<b class="nc"><i>975</i>&nbsp;                x1 += mxt;</b>
+<b class="nc"><i>976</i>&nbsp;                y1 += myt;</b>
+<b class="nc"><i>977</i>&nbsp;                xform = IDENT;</b>
+<b class="nc"><i>978</i>&nbsp;            } else if (xform.is2D()) {</b>
+<b class="nc"><i>979</i>&nbsp;                Shader shader =</b>
+<b class="nc"><i>980</i>&nbsp;                    context.validatePaintOp(this, IDENT, MaskType.ALPHA_TEXTURE, rectTex,</b>
+<i>981</i>&nbsp;                                            bx, by, bw, bh);
+<b class="nc"><i>982</i>&nbsp;                AffineBase paintTx = getPaintTextureTx(IDENT, shader, bx, by, bw, bh);</b>
+<b class="nc"><i>983</i>&nbsp;                if (paintTx == null) {</b>
+<b class="nc"><i>984</i>&nbsp;                    vb.addMappedPgram(x0 * mxx + y0 * mxy + mxt, x0 * myx + y0 * myy + myt,</b>
+<i>985</i>&nbsp;                                      x1 * mxx + y0 * mxy + mxt, x1 * myx + y0 * myy + myt,
+<i>986</i>&nbsp;                                      x0 * mxx + y1 * mxy + mxt, x0 * myx + y1 * myy + myt,
+<i>987</i>&nbsp;                                      x1 * mxx + y1 * mxy + mxt, x1 * myx + y1 * myy + myt,
+<i>988</i>&nbsp;                                      u0, v0, u1, v0, u0, v1, u1, v1, 0, 0);
+<i>989</i>&nbsp;                } else {
+<b class="nc"><i>990</i>&nbsp;                    vb.addMappedPgram(x0 * mxx + y0 * mxy + mxt, x0 * myx + y0 * myy + myt,</b>
+<i>991</i>&nbsp;                                      x1 * mxx + y0 * mxy + mxt, x1 * myx + y0 * myy + myt,
+<i>992</i>&nbsp;                                      x0 * mxx + y1 * mxy + mxt, x0 * myx + y1 * myy + myt,
+<i>993</i>&nbsp;                                      x1 * mxx + y1 * mxy + mxt, x1 * myx + y1 * myy + myt,
+<i>994</i>&nbsp;                                      u0, v0, u1, v0, u0, v1, u1, v1,
+<i>995</i>&nbsp;                                      x0, y0, x1, y1, paintTx);
+<i>996</i>&nbsp;                }
+<b class="nc"><i>997</i>&nbsp;                return true;</b>
+<i>998</i>&nbsp;            } else {
+<b class="nc"><i>999</i>&nbsp;                System.out.println(&quot;Not a 2d transform!&quot;);</b>
+<b class="nc"><i>1000</i>&nbsp;                mxt = myt = 0.0f;</b>
+<i>1001</i>&nbsp;            }
+<b class="nc"><i>1002</i>&nbsp;            Shader shader =</b>
+<b class="nc"><i>1003</i>&nbsp;                context.validatePaintOp(this, xform, MaskType.ALPHA_TEXTURE, rectTex,</b>
+<i>1004</i>&nbsp;                                        bx, by, bw, bh);
+<b class="nc"><i>1005</i>&nbsp;            AffineBase paintTx = getPaintTextureTx(IDENT, shader, bx, by, bw, bh);</b>
+<b class="nc"><i>1006</i>&nbsp;            if (paintTx == null) {</b>
+<b class="nc"><i>1007</i>&nbsp;                vb.addQuad(x0, y0, x1, y1,</b>
+<i>1008</i>&nbsp;                           u0, v0, u1, v1);
+<i>1009</i>&nbsp;            } else {
+<b class="nc"><i>1010</i>&nbsp;                paintTx.translate(-mxt, -myt);</b>
+<b class="nc"><i>1011</i>&nbsp;                vb.addQuad(x0, y0, x1, y1,</b>
+<i>1012</i>&nbsp;                           u0, v0, u1, v1,
+<i>1013</i>&nbsp;                           paintTx);
+<i>1014</i>&nbsp;            }
+<b class="nc"><i>1015</i>&nbsp;            return true;</b>
+<i>1016</i>&nbsp;        }
+<b class="nc"><i>1017</i>&nbsp;        if (wrapTex == null) {</b>
+<b class="nc"><i>1018</i>&nbsp;            return false;</b>
+<i>1019</i>&nbsp;        }
+<b class="nc"><i>1020</i>&nbsp;        float u0 = 0.5f / wrapTex.getPhysicalWidth();</b>
+<b class="nc"><i>1021</i>&nbsp;        float v0 = 0.5f / wrapTex.getPhysicalHeight();</b>
+<b class="nc"><i>1022</i>&nbsp;        float uc = (cellw * 0.5f + 1.0f) / wrapTex.getPhysicalWidth();</b>
+<b class="nc"><i>1023</i>&nbsp;        float vc = (cellh * 0.5f + 1.0f) / wrapTex.getPhysicalHeight();</b>
+<b class="nc"><i>1024</i>&nbsp;        float xc = x + w * 0.5f;</b>
+<b class="nc"><i>1025</i>&nbsp;        float yc = y + h * 0.5f;</b>
+<b class="nc"><i>1026</i>&nbsp;        if (xform.isTranslateOrIdentity()) {</b>
+<b class="nc"><i>1027</i>&nbsp;            x0 += mxt;</b>
+<b class="nc"><i>1028</i>&nbsp;            y0 += myt;</b>
+<b class="nc"><i>1029</i>&nbsp;            xc += mxt;</b>
+<b class="nc"><i>1030</i>&nbsp;            yc += myt;</b>
+<b class="nc"><i>1031</i>&nbsp;            x1 += mxt;</b>
+<b class="nc"><i>1032</i>&nbsp;            y1 += myt;</b>
+<b class="nc"><i>1033</i>&nbsp;            xform = IDENT;</b>
+<b class="nc"><i>1034</i>&nbsp;        } else if (xform.is2D()) {</b>
+<b class="nc"><i>1035</i>&nbsp;            Shader shader =</b>
+<b class="nc"><i>1036</i>&nbsp;                context.validatePaintOp(this, IDENT, MaskType.ALPHA_TEXTURE, wrapTex,</b>
+<i>1037</i>&nbsp;                                        bx, by, bw, bh);
+<b class="nc"><i>1038</i>&nbsp;            AffineBase paintTx = getPaintTextureTx(IDENT, shader, bx, by, bw, bh);</b>
+<b class="nc"><i>1039</i>&nbsp;            float mxx_x0 = mxx * x0, myx_x0 = myx * x0;</b>
+<b class="nc"><i>1040</i>&nbsp;            float mxy_y0 = mxy * y0, myy_y0 = myy * y0;</b>
+<b class="nc"><i>1041</i>&nbsp;            float mxx_xc = mxx * xc, myx_xc = myx * xc;</b>
+<b class="nc"><i>1042</i>&nbsp;            float mxy_yc = mxy * yc, myy_yc = myy * yc;</b>
+<b class="nc"><i>1043</i>&nbsp;            float mxx_x1 = mxx * x1, myx_x1 = myx * x1;</b>
+<b class="nc"><i>1044</i>&nbsp;            float mxy_y1 = mxy * y1, myy_y1 = myy * y1;</b>
+<i>1045</i>&nbsp;            // xcc,ycc used in all 4 quads
+<b class="nc"><i>1046</i>&nbsp;            float xcc = mxx_xc + mxy_yc + mxt;</b>
+<b class="nc"><i>1047</i>&nbsp;            float ycc = myx_xc + myy_yc + myt;</b>
+<i>1048</i>&nbsp;            // xcn, ycn and xnc, ync all used in 2 quads each
+<b class="nc"><i>1049</i>&nbsp;            float xc0 = mxx_xc + mxy_y0 + mxt;</b>
+<b class="nc"><i>1050</i>&nbsp;            float yc0 = myx_xc + myy_y0 + myt;</b>
+<b class="nc"><i>1051</i>&nbsp;            float x0c = mxx_x0 + mxy_yc + mxt;</b>
+<b class="nc"><i>1052</i>&nbsp;            float y0c = myx_x0 + myy_yc + myt;</b>
+<b class="nc"><i>1053</i>&nbsp;            float xc1 = mxx_xc + mxy_y1 + mxt;</b>
+<b class="nc"><i>1054</i>&nbsp;            float yc1 = myx_xc + myy_y1 + myt;</b>
+<b class="nc"><i>1055</i>&nbsp;            float x1c = mxx_x1 + mxy_yc + mxt;</b>
+<b class="nc"><i>1056</i>&nbsp;            float y1c = myx_x1 + myy_yc + myt;</b>
+<i>1057</i>&nbsp;            // Note that all quads use same 00-&gt;c0-&gt;0c-&gt;cc coordinates for
+<i>1058</i>&nbsp;            // the inner and outer uv texture coordinates regardless of the
+<i>1059</i>&nbsp;            // reflection of the quad of vertex coordinates
+<i>1060</i>&nbsp;
+<b class="nc"><i>1061</i>&nbsp;            if (paintTx == null) {</b>
+<i>1062</i>&nbsp;                // quad1 - 00 -&gt; c0 -&gt; 0c -&gt; cc
+<b class="nc"><i>1063</i>&nbsp;                vb.addMappedPgram(x0 * mxx + y0 * mxy + mxt, x0 * myx + y0 * myy + myt,</b>
+<i>1064</i>&nbsp;                                           xc0, yc0, x0c, y0c, xcc, ycc,
+<i>1065</i>&nbsp;                                  u0,  v0,  uc,  v0,  u0,  vc,  uc,  vc, 0, 0);
+<i>1066</i>&nbsp;                // quad2 - 10 -&gt; c0 -&gt; 1c -&gt; cc (reflect quad1 around x=c)
+<b class="nc"><i>1067</i>&nbsp;                vb.addMappedPgram(x1 * mxx + y0 * mxy + mxt, x1 * myx + y0 * myy + myt,</b>
+<i>1068</i>&nbsp;                                           xc0, yc0, x1c, y1c, xcc, ycc,
+<i>1069</i>&nbsp;                                  u0,  v0,  uc,  v0,  u0,  vc,  uc,  vc, 0, 0);
+<i>1070</i>&nbsp;                // quad3 - 01 -&gt; c1 -&gt; 0c -&gt; cc (reflect quad1 around y=c)
+<b class="nc"><i>1071</i>&nbsp;                vb.addMappedPgram(x0 * mxx + y1 * mxy + mxt, x0 * myx + y1 * myy + myt,</b>
+<i>1072</i>&nbsp;                                           xc1, yc1, x0c, y0c, xcc, ycc,
+<i>1073</i>&nbsp;                                  u0,  v0,  uc,  v0,  u0,  vc,  uc,  vc, 0, 0);
+<i>1074</i>&nbsp;                // quad4 - 11 -&gt; c1 -&gt; 1c -&gt; cc (reflect quad1 around x=c and y=c)
+<b class="nc"><i>1075</i>&nbsp;                vb.addMappedPgram(x1 * mxx + y1 * mxy + mxt, x1 * myx + y1 * myy + myt,</b>
+<i>1076</i>&nbsp;                                           xc1, yc1, x1c, y1c, xcc, ycc,
+<i>1077</i>&nbsp;                                  u0,  v0,  uc,  v0,  u0,  vc,  uc,  vc, 0, 0);
+<i>1078</i>&nbsp;            } else {
+<i>1079</i>&nbsp;                // quad1 - 00 -&gt; c0 -&gt; 0c -&gt; cc
+<b class="nc"><i>1080</i>&nbsp;                vb.addMappedPgram(x0 * mxx + y0 * mxy + mxt, x0 * myx + y0 * myy + myt,</b>
+<i>1081</i>&nbsp;                                           xc0, yc0, x0c, y0c, xcc, ycc,
+<i>1082</i>&nbsp;                                  u0,  v0,  uc,  v0,  u0,  vc,  uc,  vc,
+<i>1083</i>&nbsp;                                  x0, y0, xc, yc, paintTx);
+<i>1084</i>&nbsp;                // quad2 - 10 -&gt; c0 -&gt; 1c -&gt; cc (reflect quad1 around x=c)
+<b class="nc"><i>1085</i>&nbsp;                vb.addMappedPgram(x1 * mxx + y0 * mxy + mxt, x1 * myx + y0 * myy + myt,</b>
+<i>1086</i>&nbsp;                                           xc0, yc0, x1c, y1c, xcc, ycc,
+<i>1087</i>&nbsp;                                  u0,  v0,  uc,  v0,  u0,  vc,  uc,  vc,
+<i>1088</i>&nbsp;                                  x1, y0, xc, yc, paintTx);
+<i>1089</i>&nbsp;                // quad3 - 01 -&gt; c1 -&gt; 0c -&gt; cc (reflect quad1 around y=c)
+<b class="nc"><i>1090</i>&nbsp;                vb.addMappedPgram(x0 * mxx + y1 * mxy + mxt, x0 * myx + y1 * myy + myt,</b>
+<i>1091</i>&nbsp;                                           xc1, yc1, x0c, y0c, xcc, ycc,
+<i>1092</i>&nbsp;                                  u0,  v0,  uc,  v0,  u0,  vc,  uc,  vc,
+<i>1093</i>&nbsp;                                  x0, y1, xc, yc, paintTx);
+<i>1094</i>&nbsp;                // quad4 - 11 -&gt; c1 -&gt; 1c -&gt; cc (reflect quad1 around x=c and y=c)
+<b class="nc"><i>1095</i>&nbsp;                vb.addMappedPgram(x1 * mxx + y1 * mxy + mxt, x1 * myx + y1 * myy + myt,</b>
+<i>1096</i>&nbsp;                                           xc1, yc1, x1c, y1c, xcc, ycc,
+<i>1097</i>&nbsp;                                  u0,  v0,  uc,  v0,  u0,  vc,  uc,  vc,
+<i>1098</i>&nbsp;                                  x1, y1, xc, yc, paintTx);
+<i>1099</i>&nbsp;            }
+<b class="nc"><i>1100</i>&nbsp;            return true;</b>
+<i>1101</i>&nbsp;        } else {
+<b class="nc"><i>1102</i>&nbsp;            System.out.println(&quot;Not a 2d transform!&quot;);</b>
+<b class="nc"><i>1103</i>&nbsp;            mxt = myt = 0;</b>
+<i>1104</i>&nbsp;        }
+<b class="nc"><i>1105</i>&nbsp;        Shader shader =</b>
+<b class="nc"><i>1106</i>&nbsp;            context.validatePaintOp(this, xform, MaskType.ALPHA_TEXTURE, wrapTex,</b>
+<i>1107</i>&nbsp;                                    bx, by, bw, bh);
+<b class="nc"><i>1108</i>&nbsp;        AffineBase paintTx = getPaintTextureTx(IDENT, shader, bx, by, bw, bh);</b>
+<b class="nc"><i>1109</i>&nbsp;        if (paintTx != null) {</b>
+<b class="nc"><i>1110</i>&nbsp;            paintTx.translate(-mxt, -myt);</b>
+<i>1111</i>&nbsp;        }
+<b class="nc"><i>1112</i>&nbsp;        vb.addQuad(x0, y0, xc, yc,</b>
+<i>1113</i>&nbsp;                   u0, v0, uc, vc,
+<i>1114</i>&nbsp;                   paintTx);
+<b class="nc"><i>1115</i>&nbsp;        vb.addQuad(x1, y0, xc, yc,</b>
+<i>1116</i>&nbsp;                   u0, v0, uc, vc,
+<i>1117</i>&nbsp;                   paintTx);
+<b class="nc"><i>1118</i>&nbsp;        vb.addQuad(x0, y1, xc, yc,</b>
+<i>1119</i>&nbsp;                   u0, v0, uc, vc,
+<i>1120</i>&nbsp;                   paintTx);
+<b class="nc"><i>1121</i>&nbsp;        vb.addQuad(x1, y1, xc, yc,</b>
+<i>1122</i>&nbsp;                   u0, v0, uc, vc,
+<i>1123</i>&nbsp;                   paintTx);
+<b class="nc"><i>1124</i>&nbsp;        return true;</b>
+<i>1125</i>&nbsp;    }
+<i>1126</i>&nbsp;
+<i>1127</i>&nbsp;    boolean drawPrimRect(float x, float y, float w, float h) {
+<b class="nc"><i>1128</i>&nbsp;        float lw = stroke.getLineWidth();</b>
+<b class="nc"><i>1129</i>&nbsp;        float pad = getStrokeExpansionFactor(stroke) * lw;</b>
+<b class="nc"><i>1130</i>&nbsp;        BaseTransform xform = getTransformNoClone();</b>
+<b class="nc"><i>1131</i>&nbsp;        float mxx = (float) xform.getMxx();</b>
+<b class="nc"><i>1132</i>&nbsp;        float mxy = (float) xform.getMxy();</b>
+<b class="nc"><i>1133</i>&nbsp;        float mxt = (float) xform.getMxt();</b>
+<b class="nc"><i>1134</i>&nbsp;        float myx = (float) xform.getMyx();</b>
+<b class="nc"><i>1135</i>&nbsp;        float myy = (float) xform.getMyy();</b>
+<b class="nc"><i>1136</i>&nbsp;        float myt = (float) xform.getMyt();</b>
+<b class="nc"><i>1137</i>&nbsp;        float dxdist = len(mxx, myx);</b>
+<b class="nc"><i>1138</i>&nbsp;        float dydist = len(mxy, myy);</b>
+<b class="nc"><i>1139</i>&nbsp;        if (dxdist == 0.0f || dydist == 0.0f) {</b>
+<i>1140</i>&nbsp;            // entire path has collapsed and occupies no area
+<b class="nc"><i>1141</i>&nbsp;            return true;</b>
+<i>1142</i>&nbsp;        }
+<b class="nc"><i>1143</i>&nbsp;        float pixelw = 1.0f / dxdist;</b>
+<b class="nc"><i>1144</i>&nbsp;        float pixelh = 1.0f / dydist;</b>
+<b class="nc"><i>1145</i>&nbsp;        float x0 = x - pad - pixelw * 0.5f;</b>
+<b class="nc"><i>1146</i>&nbsp;        float y0 = y - pad - pixelh * 0.5f;</b>
+<b class="nc"><i>1147</i>&nbsp;        float xc = x + w * 0.5f;</b>
+<b class="nc"><i>1148</i>&nbsp;        float yc = y + h * 0.5f;</b>
+<b class="nc"><i>1149</i>&nbsp;        float x1 = x + w + pad + pixelw * 0.5f;</b>
+<b class="nc"><i>1150</i>&nbsp;        float y1 = y + h + pad + pixelh * 0.5f;</b>
+<b class="nc"><i>1151</i>&nbsp;        Texture rTex = context.getWrapRectTexture();</b>
+<b class="nc"><i>1152</i>&nbsp;        float wscale = 1.0f / rTex.getPhysicalWidth();</b>
+<b class="nc"><i>1153</i>&nbsp;        float hscale = 1.0f / rTex.getPhysicalHeight();</b>
+<b class="nc"><i>1154</i>&nbsp;        float ou0 = 0.5f * wscale;</b>
+<b class="nc"><i>1155</i>&nbsp;        float ov0 = 0.5f * hscale;</b>
+<b class="nc"><i>1156</i>&nbsp;        float ouc = ((w * 0.5f + pad) * dxdist + 1.0f) * wscale;</b>
+<b class="nc"><i>1157</i>&nbsp;        float ovc = ((h * 0.5f + pad) * dydist + 1.0f) * hscale;</b>
+<b class="nc"><i>1158</i>&nbsp;        float offsetx = lw * dxdist * wscale;</b>
+<b class="nc"><i>1159</i>&nbsp;        float offsety = lw * dydist * hscale;</b>
+<b class="nc"><i>1160</i>&nbsp;        VertexBuffer vb = context.getVertexBuffer();</b>
+<b class="nc"><i>1161</i>&nbsp;        if (xform.isTranslateOrIdentity()) {</b>
+<b class="nc"><i>1162</i>&nbsp;            x0 += mxt;</b>
+<b class="nc"><i>1163</i>&nbsp;            y0 += myt;</b>
+<b class="nc"><i>1164</i>&nbsp;            xc += mxt;</b>
+<b class="nc"><i>1165</i>&nbsp;            yc += myt;</b>
+<b class="nc"><i>1166</i>&nbsp;            x1 += mxt;</b>
+<b class="nc"><i>1167</i>&nbsp;            y1 += myt;</b>
+<b class="nc"><i>1168</i>&nbsp;            xform = IDENT;</b>
+<b class="nc"><i>1169</i>&nbsp;        } else if (xform.is2D()) {</b>
+<b class="nc"><i>1170</i>&nbsp;            Shader shader =</b>
+<b class="nc"><i>1171</i>&nbsp;                context.validatePaintOp(this, IDENT, MaskType.ALPHA_TEXTURE_DIFF,</b>
+<i>1172</i>&nbsp;                                        rTex, x, y, w, h,
+<i>1173</i>&nbsp;                                        offsetx, offsety, 0, 0, 0, 0);
+<b class="nc"><i>1174</i>&nbsp;            shader.setConstant(&quot;innerOffset&quot;, offsetx, offsety);</b>
+<b class="nc"><i>1175</i>&nbsp;            AffineBase paintTx = getPaintTextureTx(IDENT, shader, x, y, w, h);</b>
+<b class="nc"><i>1176</i>&nbsp;            float mxx_x0 = mxx * x0, myx_x0 = myx * x0;</b>
+<b class="nc"><i>1177</i>&nbsp;            float mxy_y0 = mxy * y0, myy_y0 = myy * y0;</b>
+<b class="nc"><i>1178</i>&nbsp;            float mxx_xc = mxx * xc, myx_xc = myx * xc;</b>
+<b class="nc"><i>1179</i>&nbsp;            float mxy_yc = mxy * yc, myy_yc = myy * yc;</b>
+<b class="nc"><i>1180</i>&nbsp;            float mxx_x1 = mxx * x1, myx_x1 = myx * x1;</b>
+<b class="nc"><i>1181</i>&nbsp;            float mxy_y1 = mxy * y1, myy_y1 = myy * y1;</b>
+<i>1182</i>&nbsp;
+<i>1183</i>&nbsp;            // xcc,ycc used in all 4 quads
+<b class="nc"><i>1184</i>&nbsp;            float xcc = mxx_xc + mxy_yc + mxt;</b>
+<b class="nc"><i>1185</i>&nbsp;            float ycc = myx_xc + myy_yc + myt;</b>
+<i>1186</i>&nbsp;            // xcn, ycn and xnc, ync all used in 2 quads each
+<b class="nc"><i>1187</i>&nbsp;            float xc0 = mxx_xc + mxy_y0 + mxt;</b>
+<b class="nc"><i>1188</i>&nbsp;            float yc0 = myx_xc + myy_y0 + myt;</b>
+<b class="nc"><i>1189</i>&nbsp;            float x0c = mxx_x0 + mxy_yc + mxt;</b>
+<b class="nc"><i>1190</i>&nbsp;            float y0c = myx_x0 + myy_yc + myt;</b>
+<b class="nc"><i>1191</i>&nbsp;            float xc1 = mxx_xc + mxy_y1 + mxt;</b>
+<b class="nc"><i>1192</i>&nbsp;            float yc1 = myx_xc + myy_y1 + myt;</b>
+<b class="nc"><i>1193</i>&nbsp;            float x1c = mxx_x1 + mxy_yc + mxt;</b>
+<b class="nc"><i>1194</i>&nbsp;            float y1c = myx_x1 + myy_yc + myt;</b>
+<i>1195</i>&nbsp;            // Note that all quads use same 00-&gt;c0-&gt;0c-&gt;cc coordinates for
+<i>1196</i>&nbsp;            // the inner and outer uv texture coordinates regardless of the
+<i>1197</i>&nbsp;            // reflection of the quad of vertex coordinates
+<i>1198</i>&nbsp;
+<b class="nc"><i>1199</i>&nbsp;            if (paintTx == null) {</b>
+<i>1200</i>&nbsp;                // quad1 - 00 -&gt; c0 -&gt; 0c -&gt; cc
+<b class="nc"><i>1201</i>&nbsp;                vb.addMappedPgram(mxx_x0 + mxy_y0 + mxt, myx_x0 + myy_y0 + myt,</b>
+<i>1202</i>&nbsp;                                            xc0, yc0, x0c, y0c, xcc, ycc,
+<i>1203</i>&nbsp;                                  ou0, ov0, ouc, ov0, ou0, ovc, ouc, ovc,
+<i>1204</i>&nbsp;                                  0, 0);
+<i>1205</i>&nbsp;                // quad2 - 10 -&gt; c0 -&gt; 1c -&gt; cc (reflect quad1 around x=c)
+<b class="nc"><i>1206</i>&nbsp;                vb.addMappedPgram(mxx_x1 + mxy_y0 + mxt, myx_x1 + myy_y0 + myt,</b>
+<i>1207</i>&nbsp;                                            xc0, yc0, x1c, y1c, xcc, ycc,
+<i>1208</i>&nbsp;                                  ou0, ov0, ouc, ov0, ou0, ovc, ouc, ovc,
+<i>1209</i>&nbsp;                                  0, 0);
+<i>1210</i>&nbsp;                // quad3 - 01 -&gt; c1 -&gt; 0c -&gt; cc (reflect quad1 around y=c)
+<b class="nc"><i>1211</i>&nbsp;                vb.addMappedPgram(mxx_x0 + mxy_y1 + mxt, myx_x0 + myy_y1 + myt,</b>
+<i>1212</i>&nbsp;                                            xc1, yc1, x0c, y0c, xcc, ycc,
+<i>1213</i>&nbsp;                                  ou0, ov0, ouc, ov0, ou0, ovc, ouc, ovc,
+<i>1214</i>&nbsp;                                  0, 0);
+<i>1215</i>&nbsp;                // quad4 - 11 -&gt; c1 -&gt; 1c -&gt; cc (reflect quad1 around x=c and y=c)
+<b class="nc"><i>1216</i>&nbsp;                vb.addMappedPgram(mxx_x1 + mxy_y1 + mxt, myx_x1 + myy_y1 + myt,</b>
+<i>1217</i>&nbsp;                                            xc1, yc1, x1c, y1c, xcc, ycc,
+<i>1218</i>&nbsp;                                  ou0, ov0, ouc, ov0, ou0, ovc, ouc, ovc,
+<i>1219</i>&nbsp;                                  0, 0);
+<i>1220</i>&nbsp;            } else {
+<i>1221</i>&nbsp;                // quad1 - 00 -&gt; c0 -&gt; 0c -&gt; cc
+<b class="nc"><i>1222</i>&nbsp;                vb.addMappedPgram(mxx_x0 + mxy_y0 + mxt, myx_x0 + myy_y0 + myt,</b>
+<i>1223</i>&nbsp;                                            xc0, yc0, x0c, y0c, xcc, ycc,
+<i>1224</i>&nbsp;                                  ou0, ov0, ouc, ov0, ou0, ovc, ouc, ovc,
+<i>1225</i>&nbsp;                                  x0, y0, xc, yc, paintTx);
+<i>1226</i>&nbsp;                // quad2 - 10 -&gt; c0 -&gt; 1c -&gt; cc (reflect quad1 around x=c)
+<b class="nc"><i>1227</i>&nbsp;                vb.addMappedPgram(mxx_x1 + mxy_y0 + mxt, myx_x1 + myy_y0 + myt,</b>
+<i>1228</i>&nbsp;                                            xc0, yc0, x1c, y1c, xcc, ycc,
+<i>1229</i>&nbsp;                                  ou0, ov0, ouc, ov0, ou0, ovc, ouc, ovc,
+<i>1230</i>&nbsp;                                  x1, y0, xc, yc, paintTx);
+<i>1231</i>&nbsp;                // quad3 - 01 -&gt; c1 -&gt; 0c -&gt; cc (reflect quad1 around y=c)
+<b class="nc"><i>1232</i>&nbsp;                vb.addMappedPgram(mxx_x0 + mxy_y1 + mxt, myx_x0 + myy_y1 + myt,</b>
+<i>1233</i>&nbsp;                                            xc1, yc1, x0c, y0c, xcc, ycc,
+<i>1234</i>&nbsp;                                  ou0, ov0, ouc, ov0, ou0, ovc, ouc, ovc,
+<i>1235</i>&nbsp;                                  x0, y1, xc, yc, paintTx);
+<i>1236</i>&nbsp;                // quad4 - 11 -&gt; c1 -&gt; 1c -&gt; cc (reflect quad1 around x=c and y=c)
+<b class="nc"><i>1237</i>&nbsp;                vb.addMappedPgram(mxx_x1 + mxy_y1 + mxt, myx_x1 + myy_y1 + myt,</b>
+<i>1238</i>&nbsp;                                            xc1, yc1, x1c, y1c, xcc, ycc,
+<i>1239</i>&nbsp;                                  ou0, ov0, ouc, ov0, ou0, ovc, ouc, ovc,
+<i>1240</i>&nbsp;                                  x1, y1, xc, yc, paintTx);
+<i>1241</i>&nbsp;            }
+<b class="nc"><i>1242</i>&nbsp;            rTex.unlock();</b>
+<b class="nc"><i>1243</i>&nbsp;            return true;</b>
+<i>1244</i>&nbsp;        } else {
+<b class="nc"><i>1245</i>&nbsp;            System.out.println(&quot;Not a 2d transform!&quot;);</b>
+<b class="nc"><i>1246</i>&nbsp;            mxt = myt = 0.0f;</b>
+<i>1247</i>&nbsp;        }
+<b class="nc"><i>1248</i>&nbsp;        Shader shader =</b>
+<b class="nc"><i>1249</i>&nbsp;            context.validatePaintOp(this, xform, MaskType.ALPHA_TEXTURE_DIFF,</b>
+<i>1250</i>&nbsp;                                    rTex, x, y, w, h,
+<i>1251</i>&nbsp;                                    offsetx, offsety, 0, 0, 0, 0);
+<b class="nc"><i>1252</i>&nbsp;        shader.setConstant(&quot;innerOffset&quot;, offsetx, offsety);</b>
+<b class="nc"><i>1253</i>&nbsp;        AffineBase paintTx = getPaintTextureTx(IDENT, shader, x, y, w, h);</b>
+<b class="nc"><i>1254</i>&nbsp;        if (paintTx != null) {</b>
+<b class="nc"><i>1255</i>&nbsp;            paintTx.translate(-mxt, -myt);</b>
+<i>1256</i>&nbsp;        }
+<b class="nc"><i>1257</i>&nbsp;        vb.addQuad( x0,  y0,  xc,  yc,</b>
+<i>1258</i>&nbsp;                   ou0, ov0, ouc, ovc,
+<i>1259</i>&nbsp;                   paintTx);
+<b class="nc"><i>1260</i>&nbsp;        vb.addQuad( x1,  y0,  xc,  yc,</b>
+<i>1261</i>&nbsp;                   ou0, ov0, ouc, ovc,
+<i>1262</i>&nbsp;                   paintTx);
+<b class="nc"><i>1263</i>&nbsp;        vb.addQuad( x0,  y1,  xc,  yc,</b>
+<i>1264</i>&nbsp;                   ou0, ov0, ouc, ovc,
+<i>1265</i>&nbsp;                   paintTx);
+<b class="nc"><i>1266</i>&nbsp;        vb.addQuad( x1,  y1,  xc,  yc,</b>
+<i>1267</i>&nbsp;                   ou0, ov0, ouc, ovc,
+<i>1268</i>&nbsp;                   paintTx);
+<b class="nc"><i>1269</i>&nbsp;        rTex.unlock();</b>
+<b class="nc"><i>1270</i>&nbsp;        return true;</b>
+<i>1271</i>&nbsp;    }
+<i>1272</i>&nbsp;
+<i>1273</i>&nbsp;    boolean drawPrimDiagonal(float x1, float y1, float x2, float y2,
+<i>1274</i>&nbsp;                             float lw, int cap,
+<i>1275</i>&nbsp;                             float bx, float by, float bw, float bh)
+<i>1276</i>&nbsp;    {
+<i>1277</i>&nbsp;        // assert x1 != x2 &amp;&amp; y1 != y2, otherwise caller would have
+<i>1278</i>&nbsp;        // vectored us to fillPrimRect()
+<b class="nc"><i>1279</i>&nbsp;        if (stroke.getType() == BasicStroke.TYPE_CENTERED) {</b>
+<b class="nc"><i>1280</i>&nbsp;            lw *= 0.5f;</b>
+<i>1281</i>&nbsp;        }
+<b class="nc"><i>1282</i>&nbsp;        float dx = x2 - x1;</b>
+<b class="nc"><i>1283</i>&nbsp;        float dy = y2 - y1;</b>
+<b class="nc"><i>1284</i>&nbsp;        float len = len(dx, dy);</b>
+<b class="nc"><i>1285</i>&nbsp;        dx /= len;</b>
+<b class="nc"><i>1286</i>&nbsp;        dy /= len;</b>
+<b class="nc"><i>1287</i>&nbsp;        float ldx = dx * lw;</b>
+<b class="nc"><i>1288</i>&nbsp;        float ldy = dy * lw;</b>
+<i>1289</i>&nbsp;        // First expand perpendicularly using (ldy, -ldx)
+<b class="nc"><i>1290</i>&nbsp;        float xUL = x1 + ldy,  yUL = y1 - ldx;</b>
+<b class="nc"><i>1291</i>&nbsp;        float xUR = x2 + ldy,  yUR = y2 - ldx;</b>
+<b class="nc"><i>1292</i>&nbsp;        float xLL = x1 - ldy,  yLL = y1 + ldx;</b>
+<b class="nc"><i>1293</i>&nbsp;        float xLR = x2 - ldy,  yLR = y2 + ldx;</b>
+<b class="nc"><i>1294</i>&nbsp;        if (cap == BasicStroke.CAP_SQUARE) {</b>
+<i>1295</i>&nbsp;            // Then add SQUARE end caps using (ldx, ldy) if needed
+<b class="nc"><i>1296</i>&nbsp;            xUL -= ldx;  yUL -= ldy;</b>
+<b class="nc"><i>1297</i>&nbsp;            xLL -= ldx;  yLL -= ldy;</b>
+<b class="nc"><i>1298</i>&nbsp;            xUR += ldx;  yUR += ldy;</b>
+<b class="nc"><i>1299</i>&nbsp;            xLR += ldx;  yLR += ldy;</b>
+<i>1300</i>&nbsp;        }
+<i>1301</i>&nbsp;
+<i>1302</i>&nbsp;        float hdx, hdy, vdx, vdy;
+<i>1303</i>&nbsp;        int cellw, cellh;
+<b class="nc"><i>1304</i>&nbsp;        BaseTransform xform = getTransformNoClone();</b>
+<b class="nc"><i>1305</i>&nbsp;        float mxt = (float) xform.getMxt();</b>
+<b class="nc"><i>1306</i>&nbsp;        float myt = (float) xform.getMyt();</b>
+<b class="nc"><i>1307</i>&nbsp;        if (xform.isTranslateOrIdentity()) {</b>
+<b class="nc"><i>1308</i>&nbsp;            hdx = dx;  hdy =  dy;</b>
+<b class="nc"><i>1309</i>&nbsp;            vdx = dy;  vdy = -dx;</b>
+<b class="nc"><i>1310</i>&nbsp;            cellw = (int) Math.ceil(len(xUR - xUL, yUR - yUL));</b>
+<b class="nc"><i>1311</i>&nbsp;            cellh = (int) Math.ceil(len(xLL - xUL, yLL - yUL));</b>
+<b class="nc"><i>1312</i>&nbsp;            xform = IDENT;</b>
+<b class="nc"><i>1313</i>&nbsp;        } else if (xform.is2D()) {</b>
+<b class="nc"><i>1314</i>&nbsp;            float mxx = (float) xform.getMxx();</b>
+<b class="nc"><i>1315</i>&nbsp;            float mxy = (float) xform.getMxy();</b>
+<b class="nc"><i>1316</i>&nbsp;            float myx = (float) xform.getMyx();</b>
+<b class="nc"><i>1317</i>&nbsp;            float myy = (float) xform.getMyy();</b>
+<i>1318</i>&nbsp;            float tx, ty;
+<b class="nc"><i>1319</i>&nbsp;            tx = mxx * xUL + mxy * yUL;</b>
+<b class="nc"><i>1320</i>&nbsp;            ty = myx * xUL + myy * yUL;</b>
+<b class="nc"><i>1321</i>&nbsp;            xUL = tx;  yUL = ty;</b>
+<b class="nc"><i>1322</i>&nbsp;            tx = mxx * xUR + mxy * yUR;</b>
+<b class="nc"><i>1323</i>&nbsp;            ty = myx * xUR + myy * yUR;</b>
+<b class="nc"><i>1324</i>&nbsp;            xUR = tx;  yUR = ty;</b>
+<b class="nc"><i>1325</i>&nbsp;            tx = mxx * xLL + mxy * yLL;</b>
+<b class="nc"><i>1326</i>&nbsp;            ty = myx * xLL + myy * yLL;</b>
+<b class="nc"><i>1327</i>&nbsp;            xLL = tx;  yLL = ty;</b>
+<b class="nc"><i>1328</i>&nbsp;            tx = mxx * xLR + mxy * yLR;</b>
+<b class="nc"><i>1329</i>&nbsp;            ty = myx * xLR + myy * yLR;</b>
+<b class="nc"><i>1330</i>&nbsp;            xLR = tx;  yLR = ty;</b>
+<i>1331</i>&nbsp;            // hdx, hdy are transformed unit vectors along the line
+<b class="nc"><i>1332</i>&nbsp;            hdx = mxx * dx + mxy * dy;</b>
+<b class="nc"><i>1333</i>&nbsp;            hdy = myx * dx + myy * dy;</b>
+<b class="nc"><i>1334</i>&nbsp;            float dlen = len(hdx, hdy);</b>
+<b class="nc"><i>1335</i>&nbsp;            if (dlen == 0.0f) return true;</b>
+<b class="nc"><i>1336</i>&nbsp;            hdx /= dlen;</b>
+<b class="nc"><i>1337</i>&nbsp;            hdy /= dlen;</b>
+<i>1338</i>&nbsp;            // vdx, vdy are transformed perpendicular unit vectors
+<i>1339</i>&nbsp;            // (perpendicular to the line in user space, but then transformed)
+<b class="nc"><i>1340</i>&nbsp;            vdx = mxx * dy - mxy * dx;</b>
+<b class="nc"><i>1341</i>&nbsp;            vdy = myx * dy - myy * dx;</b>
+<b class="nc"><i>1342</i>&nbsp;            dlen = len(vdx, vdy);</b>
+<b class="nc"><i>1343</i>&nbsp;            if (dlen == 0.0f) return true;</b>
+<b class="nc"><i>1344</i>&nbsp;            vdx /= dlen;</b>
+<b class="nc"><i>1345</i>&nbsp;            vdy /= dlen;</b>
+<b class="nc"><i>1346</i>&nbsp;            cellw = (int) Math.ceil(Math.abs((xUR - xUL) * hdx + (yUR - yUL) * hdy));</b>
+<b class="nc"><i>1347</i>&nbsp;            cellh = (int) Math.ceil(Math.abs((xLL - xUL) * vdx + (yLL - yUL) * vdy));</b>
+<b class="nc"><i>1348</i>&nbsp;            xform = IDENT;</b>
+<b class="nc"><i>1349</i>&nbsp;        } else {</b>
+<b class="nc"><i>1350</i>&nbsp;            System.out.println(&quot;Not a 2d transform!&quot;);</b>
+<b class="nc"><i>1351</i>&nbsp;            return false;</b>
+<i>1352</i>&nbsp;        }
+<b class="nc"><i>1353</i>&nbsp;        hdx *= 0.5f;</b>
+<b class="nc"><i>1354</i>&nbsp;        hdy *= 0.5f;</b>
+<b class="nc"><i>1355</i>&nbsp;        vdx *= 0.5f;</b>
+<b class="nc"><i>1356</i>&nbsp;        vdy *= 0.5f;</b>
+<b class="nc"><i>1357</i>&nbsp;        xUL = xUL + mxt + vdx - hdx;</b>
+<b class="nc"><i>1358</i>&nbsp;        yUL = yUL + myt + vdy - hdy;</b>
+<b class="nc"><i>1359</i>&nbsp;        xUR = xUR + mxt + vdx + hdx;</b>
+<b class="nc"><i>1360</i>&nbsp;        yUR = yUR + myt + vdy + hdy;</b>
+<b class="nc"><i>1361</i>&nbsp;        xLL = xLL + mxt - vdx - hdx;</b>
+<b class="nc"><i>1362</i>&nbsp;        yLL = yLL + myt - vdy - hdy;</b>
+<b class="nc"><i>1363</i>&nbsp;        xLR = xLR + mxt - vdx + hdx;</b>
+<b class="nc"><i>1364</i>&nbsp;        yLR = yLR + myt - vdy + hdy;</b>
+<b class="nc"><i>1365</i>&nbsp;        VertexBuffer vb = context.getVertexBuffer();</b>
+<b class="nc"><i>1366</i>&nbsp;        int cellmax = context.getRectTextureMaxSize();</b>
+<b class="nc"><i>1367</i>&nbsp;        if (cellh &lt;= cellmax) {</b>
+<b class="nc"><i>1368</i>&nbsp;            float v0 = ((cellh * (cellh + 1)) / 2) - 0.5f;</b>
+<b class="nc"><i>1369</i>&nbsp;            float v1 = v0 + cellh + 1.0f;</b>
+<b class="nc"><i>1370</i>&nbsp;            Texture rTex = context.getRectTexture();</b>
+<b class="nc"><i>1371</i>&nbsp;            v0 /= rTex.getPhysicalHeight();</b>
+<b class="nc"><i>1372</i>&nbsp;            v1 /= rTex.getPhysicalHeight();</b>
+<b class="nc"><i>1373</i>&nbsp;            if (cellw &lt;= cellmax) {</b>
+<b class="nc"><i>1374</i>&nbsp;                float u0 = ((cellw * (cellw + 1)) / 2) - 0.5f;</b>
+<b class="nc"><i>1375</i>&nbsp;                float u1 = u0 + cellw + 1.0f;</b>
+<b class="nc"><i>1376</i>&nbsp;                u0 /= rTex.getPhysicalWidth();</b>
+<b class="nc"><i>1377</i>&nbsp;                u1 /= rTex.getPhysicalWidth();</b>
+<b class="nc"><i>1378</i>&nbsp;                context.validatePaintOp(this, xform, MaskType.ALPHA_TEXTURE, rTex,</b>
+<i>1379</i>&nbsp;                                        bx, by, bw, bh);
+<b class="nc"><i>1380</i>&nbsp;                vb.addMappedPgram(xUL, yUL, xUR, yUR, xLL, yLL, xLR, yLR,</b>
+<i>1381</i>&nbsp;                                   u0,  v0,  u1,  v0,  u0,  v1,  u1,  v1,
+<i>1382</i>&nbsp;                                  0, 0);
+<i>1383</i>&nbsp;//                System.out.print(&quot;1&quot;); System.out.flush();
+<b class="nc"><i>1384</i>&nbsp;                rTex.unlock();</b>
+<b class="nc"><i>1385</i>&nbsp;                return true;</b>
+<i>1386</i>&nbsp;            }
+<i>1387</i>&nbsp;            // long thin line (cellw is along the line, cellh is across it)
+<b class="nc"><i>1388</i>&nbsp;            if (cellw &lt;= cellmax * 2 - 1) {</b>
+<i>1389</i>&nbsp;                // 2-slice the line at its midpoint.
+<i>1390</i>&nbsp;                // use the cellmax,cellh cell for maximum coverage of each half
+<i>1391</i>&nbsp;                // we can use at most (cellmax-0.5) per half so that we do not
+<i>1392</i>&nbsp;                // see the antialias drop off on the last half pixel of the far
+<i>1393</i>&nbsp;                // end of the cell.  This lets us support a line of &quot;length&quot; up
+<i>1394</i>&nbsp;                // to (cellmax-0.5 + cellmax-0.5) or (cellmax*2-1).
+<b class="nc"><i>1395</i>&nbsp;                float xUC = (xUL + xUR) * 0.5f;</b>
+<b class="nc"><i>1396</i>&nbsp;                float yUC = (yUL + yUR) * 0.5f;</b>
+<b class="nc"><i>1397</i>&nbsp;                float xLC = (xLL + xLR) * 0.5f;</b>
+<b class="nc"><i>1398</i>&nbsp;                float yLC = (yLL + yLR) * 0.5f;</b>
+<b class="nc"><i>1399</i>&nbsp;                float u0 = ((cellmax * (cellmax + 1)) / 2) - 0.5f;</b>
+<b class="nc"><i>1400</i>&nbsp;                float u1 = u0 + 0.5f + cellw * 0.5f;</b>
+<b class="nc"><i>1401</i>&nbsp;                u0 /= rTex.getPhysicalWidth();</b>
+<b class="nc"><i>1402</i>&nbsp;                u1 /= rTex.getPhysicalWidth();</b>
+<b class="nc"><i>1403</i>&nbsp;                context.validatePaintOp(this, xform, MaskType.ALPHA_TEXTURE, rTex,</b>
+<i>1404</i>&nbsp;                                        bx, by, bw, bh);
+<i>1405</i>&nbsp;                // first half of line x1,y1 -&gt; midpoint
+<b class="nc"><i>1406</i>&nbsp;                vb.addMappedPgram(xUL, yUL, xUC, yUC, xLL, yLL, xLC, yLC,</b>
+<i>1407</i>&nbsp;                                   u0,  v0,  u1,  v0,  u0,  v1,  u1,  v1,
+<i>1408</i>&nbsp;                                  0, 0);
+<i>1409</i>&nbsp;                // second half of line midpoint -&gt; x2,y2
+<b class="nc"><i>1410</i>&nbsp;                vb.addMappedPgram(xUR, yUR, xUC, yUC, xLR, yLR, xLC, yLC,</b>
+<i>1411</i>&nbsp;                                   u0,  v0,  u1,  v0,  u0,  v1,  u1,  v1,
+<i>1412</i>&nbsp;                                  0, 0);
+<i>1413</i>&nbsp;//                System.out.print(&quot;2&quot;); System.out.flush();
+<b class="nc"><i>1414</i>&nbsp;                rTex.unlock();</b>
+<b class="nc"><i>1415</i>&nbsp;                return true;</b>
+<i>1416</i>&nbsp;            }
+<i>1417</i>&nbsp;            // Finally, 3-slice the line (left edge, huge middle, right edge)
+<b class="nc"><i>1418</i>&nbsp;            float u0 = 0.5f / rTex.getPhysicalWidth();</b>
+<b class="nc"><i>1419</i>&nbsp;            float u1 = 1.5f / rTex.getPhysicalWidth();</b>
+<i>1420</i>&nbsp;            // The lower case L or R indicates &quot;inner left&quot; or &quot;inner right&quot;
+<b class="nc"><i>1421</i>&nbsp;            hdx *= 2.0f;</b>
+<b class="nc"><i>1422</i>&nbsp;            hdy *= 2.0f;</b>
+<b class="nc"><i>1423</i>&nbsp;            float xUl = xUL + hdx;</b>
+<b class="nc"><i>1424</i>&nbsp;            float yUl = yUL + hdy;</b>
+<b class="nc"><i>1425</i>&nbsp;            float xUr = xUR - hdx;</b>
+<b class="nc"><i>1426</i>&nbsp;            float yUr = yUR - hdy;</b>
+<b class="nc"><i>1427</i>&nbsp;            float xLl = xLL + hdx;</b>
+<b class="nc"><i>1428</i>&nbsp;            float yLl = yLL + hdy;</b>
+<b class="nc"><i>1429</i>&nbsp;            float xLr = xLR - hdx;</b>
+<b class="nc"><i>1430</i>&nbsp;            float yLr = yLR - hdy;</b>
+<b class="nc"><i>1431</i>&nbsp;            context.validatePaintOp(this, xform, MaskType.ALPHA_TEXTURE, rTex,</b>
+<i>1432</i>&nbsp;                                    bx, by, bw, bh);
+<i>1433</i>&nbsp;            // first pixel of line x1,y1 -&gt; x1,y1+pixel
+<b class="nc"><i>1434</i>&nbsp;            vb.addMappedPgram(xUL, yUL, xUl, yUl, xLL, yLL, xLl, yLl,</b>
+<i>1435</i>&nbsp;                               u0,  v0,  u1,  v0,  u0,  v1,  u1,  v1,
+<i>1436</i>&nbsp;                              0, 0);
+<i>1437</i>&nbsp;            // middle part of line x1,y1+pixel -&gt; x2,y2-pixel
+<b class="nc"><i>1438</i>&nbsp;            vb.addMappedPgram(xUl, yUl, xUr, yUr, xLl, yLl, xLr, yLr,</b>
+<i>1439</i>&nbsp;                               u1,  v0,  u1,  v0,  u1,  v1,  u1,  v1,
+<i>1440</i>&nbsp;                              0, 0);
+<i>1441</i>&nbsp;            // last part of line x2,y2-pixel -&gt; x2,y2
+<b class="nc"><i>1442</i>&nbsp;            vb.addMappedPgram(xUr, yUr, xUR, yUR, xLr, yLr, xLR, yLR,</b>
+<i>1443</i>&nbsp;                               u1,  v0,  u0,  v0,  u1,  v1,  u0,  v1,
+<i>1444</i>&nbsp;                              0, 0);
+<i>1445</i>&nbsp;//            System.out.print(&quot;3&quot;); System.out.flush();
+<b class="nc"><i>1446</i>&nbsp;            rTex.unlock();</b>
+<b class="nc"><i>1447</i>&nbsp;            return true;</b>
+<i>1448</i>&nbsp;        }
+<i>1449</i>&nbsp;        // we could 2 and 3 slice extremely wide short lines, but they
+<i>1450</i>&nbsp;        // are very rare in practice so we just jump straight to a
+<i>1451</i>&nbsp;        // standard 4-slice off of the wrap-rect texture
+<b class="nc"><i>1452</i>&nbsp;        float xUC = (xUL + xUR) * 0.5f;</b>
+<b class="nc"><i>1453</i>&nbsp;        float yUC = (yUL + yUR) * 0.5f;</b>
+<b class="nc"><i>1454</i>&nbsp;        float xLC = (xLL + xLR) * 0.5f;</b>
+<b class="nc"><i>1455</i>&nbsp;        float yLC = (yLL + yLR) * 0.5f;</b>
+<b class="nc"><i>1456</i>&nbsp;        float xCL = (xUL + xLL) * 0.5f;</b>
+<b class="nc"><i>1457</i>&nbsp;        float yCL = (yUL + yLL) * 0.5f;</b>
+<b class="nc"><i>1458</i>&nbsp;        float xCR = (xUR + xLR) * 0.5f;</b>
+<b class="nc"><i>1459</i>&nbsp;        float yCR = (yUR + yLR) * 0.5f;</b>
+<b class="nc"><i>1460</i>&nbsp;        float xCC = (xUC + xLC) * 0.5f;</b>
+<b class="nc"><i>1461</i>&nbsp;        float yCC = (yUC + yLC) * 0.5f;</b>
+<b class="nc"><i>1462</i>&nbsp;        Texture rTex = context.getWrapRectTexture();</b>
+<b class="nc"><i>1463</i>&nbsp;        float u0 = 0.5f / rTex.getPhysicalWidth();</b>
+<b class="nc"><i>1464</i>&nbsp;        float v0 = 0.5f / rTex.getPhysicalHeight();</b>
+<b class="nc"><i>1465</i>&nbsp;        float uc = (cellw * 0.5f + 1.0f) / rTex.getPhysicalWidth();</b>
+<b class="nc"><i>1466</i>&nbsp;        float vc = (cellh * 0.5f + 1.0f) / rTex.getPhysicalHeight();</b>
+<b class="nc"><i>1467</i>&nbsp;        context.validatePaintOp(this, xform, MaskType.ALPHA_TEXTURE, rTex,</b>
+<i>1468</i>&nbsp;                                bx, by, bw, bh);
+<b class="nc"><i>1469</i>&nbsp;        vb.addMappedPgram(xUL, yUL, xUC, yUC, xCL, yCL, xCC, yCC,</b>
+<i>1470</i>&nbsp;                            u0,  v0,  uc,  v0,  u0,  vc,  uc,  vc,
+<i>1471</i>&nbsp;                            0, 0);
+<b class="nc"><i>1472</i>&nbsp;        vb.addMappedPgram(xUR, yUR, xUC, yUC, xCR, yCR, xCC, yCC,</b>
+<i>1473</i>&nbsp;                            u0,  v0,  uc,  v0,  u0,  vc,  uc,  vc,
+<i>1474</i>&nbsp;                            0, 0);
+<b class="nc"><i>1475</i>&nbsp;        vb.addMappedPgram(xLL, yLL, xLC, yLC, xCL, yCL, xCC, yCC,</b>
+<i>1476</i>&nbsp;                            u0,  v0,  uc,  v0,  u0,  vc,  uc,  vc,
+<i>1477</i>&nbsp;                            0, 0);
+<b class="nc"><i>1478</i>&nbsp;        vb.addMappedPgram(xLR, yLR, xLC, yLC, xCR, yCR, xCC, yCC,</b>
+<i>1479</i>&nbsp;                            u0,  v0,  uc,  v0,  u0,  vc,  uc,  vc,
+<i>1480</i>&nbsp;                            0, 0);
+<i>1481</i>&nbsp;//        System.out.print(&quot;4&quot;); System.out.flush();
+<b class="nc"><i>1482</i>&nbsp;        rTex.unlock();</b>
+<b class="nc"><i>1483</i>&nbsp;        return true;</b>
+<i>1484</i>&nbsp;    }
+<i>1485</i>&nbsp;
+<i>1486</i>&nbsp;    public void fillRect(float x, float y, float w, float h) {
+<b class="fc"><i>1487</i>&nbsp;        if (w &lt;= 0 || h &lt;= 0) {</b>
+<b class="nc"><i>1488</i>&nbsp;            return;</b>
+<i>1489</i>&nbsp;        }
+<b class="fc"><i>1490</i>&nbsp;        if (!isAntialiasedShape()) {</b>
+<b class="nc"><i>1491</i>&nbsp;           fillQuad(x, y, x + w, y + h);</b>
+<b class="nc"><i>1492</i>&nbsp;           return;</b>
+<i>1493</i>&nbsp;        }
+<b class="fc"><i>1494</i>&nbsp;        if (isComplexPaint) {</b>
+<b class="nc"><i>1495</i>&nbsp;            scratchRRect.setRoundRect(x, y, w, h, 0, 0);</b>
+<b class="nc"><i>1496</i>&nbsp;            renderWithComplexPaint(scratchRRect, null, x, y, w, h);</b>
+<b class="nc"><i>1497</i>&nbsp;            return;</b>
+<i>1498</i>&nbsp;        }
+<b class="fc"><i>1499</i>&nbsp;        if (PrismSettings.primTextureSize != 0) {</b>
+<b class="nc"><i>1500</i>&nbsp;            Texture rTex = context.getRectTexture();</b>
+<b class="nc"><i>1501</i>&nbsp;            Texture wTex = context.getWrapRectTexture();</b>
+<b class="nc"><i>1502</i>&nbsp;            boolean success = fillPrimRect(x, y, w, h, rTex, wTex, x, y, w, h);</b>
+<b class="nc"><i>1503</i>&nbsp;            rTex.unlock();</b>
+<b class="nc"><i>1504</i>&nbsp;            wTex.unlock();</b>
+<b class="nc"><i>1505</i>&nbsp;            if (success) return;</b>
+<i>1506</i>&nbsp;        }
+<b class="fc"><i>1507</i>&nbsp;        renderGeneralRoundedRect(x, y, w, h, 0f, 0f,</b>
+<i>1508</i>&nbsp;                                 MaskType.FILL_PGRAM, null);
+<b class="fc"><i>1509</i>&nbsp;    }</b>
+<i>1510</i>&nbsp;
+<i>1511</i>&nbsp;    public void fillEllipse(float x, float y, float w, float h) {
+<b class="nc"><i>1512</i>&nbsp;        if (w &lt;= 0 || h &lt;= 0) {</b>
+<b class="nc"><i>1513</i>&nbsp;            return;</b>
+<i>1514</i>&nbsp;        }
+<b class="nc"><i>1515</i>&nbsp;        if (isComplexPaint) {</b>
+<b class="nc"><i>1516</i>&nbsp;            scratchEllipse.setFrame(x, y, w, h);</b>
+<b class="nc"><i>1517</i>&nbsp;            renderWithComplexPaint(scratchEllipse, null, x, y, w, h);</b>
+<b class="nc"><i>1518</i>&nbsp;            return;</b>
+<i>1519</i>&nbsp;        }
+<b class="nc"><i>1520</i>&nbsp;        if (!isAntialiasedShape()) {</b>
+<b class="nc"><i>1521</i>&nbsp;            scratchEllipse.setFrame(x, y, w, h);</b>
+<b class="nc"><i>1522</i>&nbsp;            renderShape(scratchEllipse, null, x, y, w, h);</b>
+<b class="nc"><i>1523</i>&nbsp;            return;</b>
+<i>1524</i>&nbsp;        }
+<b class="nc"><i>1525</i>&nbsp;        if (PrismSettings.primTextureSize != 0) {</b>
+<b class="nc"><i>1526</i>&nbsp;            if (fillPrimRect(x, y, w, h,</b>
+<b class="nc"><i>1527</i>&nbsp;                             context.getOvalTexture(),</b>
+<i>1528</i>&nbsp;                             null,
+<i>1529</i>&nbsp;                             x, y, w, h))
+<i>1530</i>&nbsp;            {
+<b class="nc"><i>1531</i>&nbsp;                return;</b>
+<i>1532</i>&nbsp;            }
+<i>1533</i>&nbsp;        }
+<b class="nc"><i>1534</i>&nbsp;        renderGeneralRoundedRect(x, y, w, h, w, h,</b>
+<i>1535</i>&nbsp;                                 MaskType.FILL_ELLIPSE, null);
+<b class="nc"><i>1536</i>&nbsp;    }</b>
+<i>1537</i>&nbsp;
+<i>1538</i>&nbsp;    public void fillRoundRect(float x, float y, float w, float h,
+<i>1539</i>&nbsp;                              float arcw, float arch)
+<i>1540</i>&nbsp;    {
+<b class="nc"><i>1541</i>&nbsp;        arcw = Math.min(Math.abs(arcw), w);</b>
+<b class="nc"><i>1542</i>&nbsp;        arch = Math.min(Math.abs(arch), h);</b>
+<i>1543</i>&nbsp;
+<b class="nc"><i>1544</i>&nbsp;        if (w &lt;= 0 || h &lt;= 0) {</b>
+<b class="nc"><i>1545</i>&nbsp;            return;</b>
+<i>1546</i>&nbsp;        }
+<b class="nc"><i>1547</i>&nbsp;        if (isComplexPaint) {</b>
+<b class="nc"><i>1548</i>&nbsp;            scratchRRect.setRoundRect(x, y, w, h, arcw, arch);</b>
+<b class="nc"><i>1549</i>&nbsp;            renderWithComplexPaint(scratchRRect, null, x, y, w, h);</b>
+<b class="nc"><i>1550</i>&nbsp;            return;</b>
+<i>1551</i>&nbsp;        }
+<b class="nc"><i>1552</i>&nbsp;        if (!isAntialiasedShape()) {</b>
+<b class="nc"><i>1553</i>&nbsp;            scratchRRect.setRoundRect(x, y, w, h, arcw, arch);</b>
+<b class="nc"><i>1554</i>&nbsp;            renderShape(scratchRRect, null, x, y, w, h);</b>
+<b class="nc"><i>1555</i>&nbsp;            return;</b>
+<i>1556</i>&nbsp;        }
+<b class="nc"><i>1557</i>&nbsp;        renderGeneralRoundedRect(x, y, w, h, arcw, arch,</b>
+<i>1558</i>&nbsp;                                 MaskType.FILL_ROUNDRECT, null);
+<b class="nc"><i>1559</i>&nbsp;    }</b>
+<i>1560</i>&nbsp;
+<i>1561</i>&nbsp;    public void fillQuad(float x1, float y1, float x2, float y2) {
+<i>1562</i>&nbsp;        float bx, by, bw, bh;
+<b class="nc"><i>1563</i>&nbsp;        if (x1 &lt;= x2) {</b>
+<b class="nc"><i>1564</i>&nbsp;            bx = x1;</b>
+<b class="nc"><i>1565</i>&nbsp;            bw = x2 - x1;</b>
+<i>1566</i>&nbsp;        } else {
+<b class="nc"><i>1567</i>&nbsp;            bx = x2;</b>
+<b class="nc"><i>1568</i>&nbsp;            bw = x1 - x2;</b>
+<i>1569</i>&nbsp;        }
+<b class="nc"><i>1570</i>&nbsp;        if (y1 &lt;= y2) {</b>
+<b class="nc"><i>1571</i>&nbsp;            by = y1;</b>
+<b class="nc"><i>1572</i>&nbsp;            bh = y2 - y1;</b>
+<i>1573</i>&nbsp;        } else {
+<b class="nc"><i>1574</i>&nbsp;            by = y2;</b>
+<b class="nc"><i>1575</i>&nbsp;            bh = y1 - y2;</b>
+<i>1576</i>&nbsp;        }
+<i>1577</i>&nbsp;
+<b class="nc"><i>1578</i>&nbsp;        if (isComplexPaint) {</b>
+<b class="nc"><i>1579</i>&nbsp;            scratchRRect.setRoundRect(bx, by, bw, bh, 0, 0);</b>
+<b class="nc"><i>1580</i>&nbsp;            renderWithComplexPaint(scratchRRect, null, bx, by, bw, bh);</b>
+<b class="nc"><i>1581</i>&nbsp;            return;</b>
+<i>1582</i>&nbsp;        }
+<i>1583</i>&nbsp;
+<b class="nc"><i>1584</i>&nbsp;        BaseTransform xform = getTransformNoClone();</b>
+<b class="nc"><i>1585</i>&nbsp;        if (PrismSettings.primTextureSize != 0) {</b>
+<i>1586</i>&nbsp;            float mxt, myt;
+<b class="nc"><i>1587</i>&nbsp;            if (xform.isTranslateOrIdentity()) {</b>
+<b class="nc"><i>1588</i>&nbsp;                mxt = (float) xform.getMxt();</b>
+<b class="nc"><i>1589</i>&nbsp;                myt = (float) xform.getMyt();</b>
+<b class="nc"><i>1590</i>&nbsp;                xform = IDENT;</b>
+<b class="nc"><i>1591</i>&nbsp;                x1 += mxt;</b>
+<b class="nc"><i>1592</i>&nbsp;                y1 += myt;</b>
+<b class="nc"><i>1593</i>&nbsp;                x2 += mxt;</b>
+<b class="nc"><i>1594</i>&nbsp;                y2 += myt;</b>
+<i>1595</i>&nbsp;            } else {
+<b class="nc"><i>1596</i>&nbsp;                mxt = myt = 0.0f;</b>
+<i>1597</i>&nbsp;            }
+<b class="nc"><i>1598</i>&nbsp;            Shader shader =</b>
+<b class="nc"><i>1599</i>&nbsp;                context.validatePaintOp(this, xform, MaskType.ALPHA_ONE, null,</b>
+<i>1600</i>&nbsp;                                        bx, by, bw, bh);
+<b class="nc"><i>1601</i>&nbsp;            AffineBase paintTx = getPaintTextureTx(IDENT, shader, bx, by, bw, bh);</b>
+<b class="nc"><i>1602</i>&nbsp;            if (paintTx != null) {</b>
+<b class="nc"><i>1603</i>&nbsp;                paintTx.translate(-mxt, -myt);</b>
+<i>1604</i>&nbsp;            }
+<b class="nc"><i>1605</i>&nbsp;            context.getVertexBuffer().addQuad(x1, y1, x2, y2, 0, 0, 0, 0, paintTx);</b>
+<b class="nc"><i>1606</i>&nbsp;            return;</b>
+<i>1607</i>&nbsp;        }
+<b class="nc"><i>1608</i>&nbsp;        if (isSimpleTranslate) {</b>
+<b class="nc"><i>1609</i>&nbsp;            xform = IDENT;</b>
+<b class="nc"><i>1610</i>&nbsp;            bx += transX;</b>
+<b class="nc"><i>1611</i>&nbsp;            by += transY;</b>
+<i>1612</i>&nbsp;        }
+<b class="nc"><i>1613</i>&nbsp;        context.validatePaintOp(this, xform, MaskType.SOLID, bx, by, bw, bh);</b>
+<i>1614</i>&nbsp;
+<b class="nc"><i>1615</i>&nbsp;        VertexBuffer vb = context.getVertexBuffer();</b>
+<b class="nc"><i>1616</i>&nbsp;        vb.addQuad(bx, by, bx+bw, by+bh);</b>
+<b class="nc"><i>1617</i>&nbsp;    }</b>
+<i>1618</i>&nbsp;
+<b class="fc"><i>1619</i>&nbsp;    private static final double SQRT_2 = Math.sqrt(2.0);</b>
+<i>1620</i>&nbsp;    private static boolean canUseStrokeShader(BasicStroke bs) {
+<i>1621</i>&nbsp;        // RT-27378
+<i>1622</i>&nbsp;        // TODO: Expand the cases that renderGeneralRoundRect() can handle...
+<b class="nc"><i>1623</i>&nbsp;        return (!bs.isDashed() &amp;&amp;</b>
+<b class="nc"><i>1624</i>&nbsp;                (bs.getType() == BasicStroke.TYPE_INNER ||</b>
+<b class="nc"><i>1625</i>&nbsp;                 bs.getLineJoin() == BasicStroke.JOIN_ROUND ||</b>
+<b class="nc"><i>1626</i>&nbsp;                 (bs.getLineJoin() == BasicStroke.JOIN_MITER &amp;&amp;</b>
+<b class="nc"><i>1627</i>&nbsp;                  bs.getMiterLimit() &gt;= SQRT_2)));</b>
+<i>1628</i>&nbsp;    }
+<i>1629</i>&nbsp;
+<i>1630</i>&nbsp;    public void blit(RTTexture srcTex, RTTexture dstTex,
+<i>1631</i>&nbsp;                     int srcX0, int srcY0, int srcX1, int srcY1,
+<i>1632</i>&nbsp;                     int dstX0, int dstY0, int dstX1, int dstY1) {
+<b class="nc"><i>1633</i>&nbsp;        if (dstTex == null) {</b>
+<b class="nc"><i>1634</i>&nbsp;            context.setRenderTarget(this);</b>
+<i>1635</i>&nbsp;        } else {
+<b class="nc"><i>1636</i>&nbsp;            context.setRenderTarget((BaseGraphics)dstTex.createGraphics());</b>
+<i>1637</i>&nbsp;        }
+<b class="nc"><i>1638</i>&nbsp;        context.blit(srcTex, dstTex, srcX0, srcY0, srcX1, srcY1,</b>
+<i>1639</i>&nbsp;                dstX0, dstY0, dstX1, dstY1);
+<b class="nc"><i>1640</i>&nbsp;    }</b>
+<i>1641</i>&nbsp;
+<i>1642</i>&nbsp;    public void drawRect(float x, float y, float w, float h) {
+<b class="nc"><i>1643</i>&nbsp;        if (w &lt; 0 || h &lt; 0) {</b>
+<b class="nc"><i>1644</i>&nbsp;            return;</b>
+<i>1645</i>&nbsp;        }
+<b class="nc"><i>1646</i>&nbsp;        if (w == 0 || h == 0) {</b>
+<b class="nc"><i>1647</i>&nbsp;            drawLine(x, y, x + w, y + h);</b>
+<b class="nc"><i>1648</i>&nbsp;            return;</b>
+<i>1649</i>&nbsp;        }
+<b class="nc"><i>1650</i>&nbsp;        if (isComplexPaint) {</b>
+<b class="nc"><i>1651</i>&nbsp;            scratchRRect.setRoundRect(x, y, w, h, 0, 0);</b>
+<b class="nc"><i>1652</i>&nbsp;            renderWithComplexPaint(scratchRRect, stroke, x, y, w, h);</b>
+<b class="nc"><i>1653</i>&nbsp;            return;</b>
+<i>1654</i>&nbsp;        }
+<b class="nc"><i>1655</i>&nbsp;        if (!isAntialiasedShape()) {</b>
+<b class="nc"><i>1656</i>&nbsp;            scratchRRect.setRoundRect(x, y, w, h, 0, 0);</b>
+<b class="nc"><i>1657</i>&nbsp;            renderShape(scratchRRect, stroke, x, y, w, h);</b>
+<b class="nc"><i>1658</i>&nbsp;            return;</b>
+<i>1659</i>&nbsp;        }
+<b class="nc"><i>1660</i>&nbsp;        if (canUseStrokeShader(stroke)) {</b>
+<b class="nc"><i>1661</i>&nbsp;            if (PrismSettings.primTextureSize != 0 &amp;&amp;</b>
+<b class="nc"><i>1662</i>&nbsp;                stroke.getLineJoin() != BasicStroke.CAP_ROUND)</b>
+<i>1663</i>&nbsp;            {
+<b class="nc"><i>1664</i>&nbsp;                if (drawPrimRect(x, y, w, h)) {</b>
+<b class="nc"><i>1665</i>&nbsp;                    return;</b>
+<i>1666</i>&nbsp;                }
+<i>1667</i>&nbsp;            }
+<b class="nc"><i>1668</i>&nbsp;            renderGeneralRoundedRect(x, y, w, h, 0f, 0f,</b>
+<i>1669</i>&nbsp;                                     MaskType.DRAW_PGRAM, stroke);
+<b class="nc"><i>1670</i>&nbsp;            return;</b>
+<i>1671</i>&nbsp;        }
+<b class="nc"><i>1672</i>&nbsp;        scratchRRect.setRoundRect(x, y, w, h, 0, 0);</b>
+<b class="nc"><i>1673</i>&nbsp;        renderShape(scratchRRect, stroke, x, y, w, h);</b>
+<b class="nc"><i>1674</i>&nbsp;    }</b>
+<i>1675</i>&nbsp;
+<i>1676</i>&nbsp;    private boolean checkInnerCurvature(float arcw, float arch) {
+<i>1677</i>&nbsp;        // Test to see if inner ellipse satisfies (flattening &lt; 0.5)
+<i>1678</i>&nbsp;        // otherwise it will not be approximated by a &quot;parallel ellipse&quot;
+<i>1679</i>&nbsp;        // very well and we should just use shape rendering.
+<i>1680</i>&nbsp;
+<i>1681</i>&nbsp;        // RT-27378
+<i>1682</i>&nbsp;        // TODO: Implement better &quot;distance to ellipse&quot; formulas in the shaders
+<b class="nc"><i>1683</i>&nbsp;        float inset = stroke.getLineWidth() *</b>
+<b class="nc"><i>1684</i>&nbsp;            (1f - getStrokeExpansionFactor(stroke));</b>
+<b class="nc"><i>1685</i>&nbsp;        arcw -= inset;</b>
+<b class="nc"><i>1686</i>&nbsp;        arch -= inset;</b>
+<i>1687</i>&nbsp;        // Note that if either inset arcw,h go to &lt;= 0 then we will invoke the
+<i>1688</i>&nbsp;        // fill primitive for ellipse, or the round rect primitive will
+<i>1689</i>&nbsp;        // invoke its &quot;tiny inner corner&quot; fixes and we will be safe
+<b class="nc"><i>1690</i>&nbsp;        return (arcw &lt;= 0 || arch &lt;= 0 ||</b>
+<i>1691</i>&nbsp;                (arcw * 2f &gt; arch &amp;&amp; arch * 2f &gt; arcw));
+<i>1692</i>&nbsp;    }
+<i>1693</i>&nbsp;
+<i>1694</i>&nbsp;    public void drawEllipse(float x, float y, float w, float h) {
+<b class="nc"><i>1695</i>&nbsp;        if (w &lt; 0 || h &lt; 0) {</b>
+<b class="nc"><i>1696</i>&nbsp;            return;</b>
+<i>1697</i>&nbsp;        }
+<b class="nc"><i>1698</i>&nbsp;        if (!isComplexPaint &amp;&amp; !stroke.isDashed() &amp;&amp;</b>
+<b class="nc"><i>1699</i>&nbsp;            checkInnerCurvature(w, h) &amp;&amp; isAntialiasedShape())</b>
+<i>1700</i>&nbsp;        {
+<b class="nc"><i>1701</i>&nbsp;            renderGeneralRoundedRect(x, y, w, h, w, h,</b>
+<i>1702</i>&nbsp;                                     MaskType.DRAW_ELLIPSE, stroke);
+<b class="nc"><i>1703</i>&nbsp;            return;</b>
+<i>1704</i>&nbsp;        }
+<b class="nc"><i>1705</i>&nbsp;        scratchEllipse.setFrame(x, y, w, h);</b>
+<b class="nc"><i>1706</i>&nbsp;        renderShape(scratchEllipse, stroke, x, y, w, h);</b>
+<b class="nc"><i>1707</i>&nbsp;    }</b>
+<i>1708</i>&nbsp;
+<i>1709</i>&nbsp;    public void drawRoundRect(float x, float y, float w, float h,
+<i>1710</i>&nbsp;                              float arcw, float arch)
+<i>1711</i>&nbsp;    {
+<b class="nc"><i>1712</i>&nbsp;        arcw = Math.min(Math.abs(arcw), w);</b>
+<b class="nc"><i>1713</i>&nbsp;        arch = Math.min(Math.abs(arch), h);</b>
+<i>1714</i>&nbsp;
+<b class="nc"><i>1715</i>&nbsp;        if (w &lt; 0 || h &lt; 0) {</b>
+<b class="nc"><i>1716</i>&nbsp;            return;</b>
+<i>1717</i>&nbsp;        }
+<b class="nc"><i>1718</i>&nbsp;        if (!isComplexPaint &amp;&amp; !stroke.isDashed() &amp;&amp;</b>
+<b class="nc"><i>1719</i>&nbsp;            checkInnerCurvature(arcw, arch) &amp;&amp; isAntialiasedShape())</b>
+<i>1720</i>&nbsp;        {
+<b class="nc"><i>1721</i>&nbsp;            renderGeneralRoundedRect(x, y, w, h, arcw, arch,</b>
+<i>1722</i>&nbsp;                                     MaskType.DRAW_ROUNDRECT, stroke);
+<b class="nc"><i>1723</i>&nbsp;            return;</b>
+<i>1724</i>&nbsp;        }
+<b class="nc"><i>1725</i>&nbsp;        scratchRRect.setRoundRect(x, y, w, h, arcw, arch);</b>
+<b class="nc"><i>1726</i>&nbsp;        renderShape(scratchRRect, stroke, x, y, w, h);</b>
+<b class="nc"><i>1727</i>&nbsp;    }</b>
+<i>1728</i>&nbsp;
+<i>1729</i>&nbsp;    public void drawLine(float x1, float y1, float x2, float y2) {
+<i>1730</i>&nbsp;        float bx, by, bw, bh;
+<b class="nc"><i>1731</i>&nbsp;        if (x1 &lt;= x2) {</b>
+<b class="nc"><i>1732</i>&nbsp;            bx = x1;</b>
+<b class="nc"><i>1733</i>&nbsp;            bw = x2 - x1;</b>
+<i>1734</i>&nbsp;        } else {
+<b class="nc"><i>1735</i>&nbsp;            bx = x2;</b>
+<b class="nc"><i>1736</i>&nbsp;            bw = x1 - x2;</b>
+<i>1737</i>&nbsp;        }
+<b class="nc"><i>1738</i>&nbsp;        if (y1 &lt;= y2) {</b>
+<b class="nc"><i>1739</i>&nbsp;            by = y1;</b>
+<b class="nc"><i>1740</i>&nbsp;            bh = y2 - y1;</b>
+<i>1741</i>&nbsp;        } else {
+<b class="nc"><i>1742</i>&nbsp;            by = y2;</b>
+<b class="nc"><i>1743</i>&nbsp;            bh = y1 - y2;</b>
+<i>1744</i>&nbsp;        }
+<i>1745</i>&nbsp;
+<i>1746</i>&nbsp;        // RT-27378
+<i>1747</i>&nbsp;        // TODO: casting down to floats everywhere here; evaluate later
+<i>1748</i>&nbsp;        // to see if this is enough precision...
+<i>1749</i>&nbsp;        // TODO: stroke normalization control?
+<b class="nc"><i>1750</i>&nbsp;        if (stroke.getType() == BasicStroke.TYPE_INNER) {</b>
+<b class="nc"><i>1751</i>&nbsp;            return;</b>
+<i>1752</i>&nbsp;        }
+<b class="nc"><i>1753</i>&nbsp;        if (isComplexPaint) {</b>
+<b class="nc"><i>1754</i>&nbsp;            scratchLine.setLine(x1, y1, x2, y2);</b>
+<b class="nc"><i>1755</i>&nbsp;            renderWithComplexPaint(scratchLine, stroke, bx, by, bw, bh);</b>
+<b class="nc"><i>1756</i>&nbsp;            return;</b>
+<i>1757</i>&nbsp;        }
+<b class="nc"><i>1758</i>&nbsp;        if (!isAntialiasedShape()) {</b>
+<b class="nc"><i>1759</i>&nbsp;            scratchLine.setLine(x1, y1, x2, y2);</b>
+<b class="nc"><i>1760</i>&nbsp;            renderShape(scratchLine, stroke, bx, by, bw, bh);</b>
+<b class="nc"><i>1761</i>&nbsp;            return;</b>
+<i>1762</i>&nbsp;        }
+<b class="nc"><i>1763</i>&nbsp;        int cap = stroke.getEndCap();</b>
+<b class="nc"><i>1764</i>&nbsp;        if (stroke.isDashed()) {</b>
+<i>1765</i>&nbsp;            // NOTE: we could construct the GeneralPath directly
+<i>1766</i>&nbsp;            // for CAP_ROUND and save a lot of processing in that case...
+<i>1767</i>&nbsp;            // And again, we would need to deal with dropout control...
+<b class="nc"><i>1768</i>&nbsp;            scratchLine.setLine(x1, y1, x2, y2);</b>
+<b class="nc"><i>1769</i>&nbsp;            renderShape(scratchLine, stroke, bx, by, bw, bh);</b>
+<b class="nc"><i>1770</i>&nbsp;            return;</b>
+<i>1771</i>&nbsp;        }
+<b class="nc"><i>1772</i>&nbsp;        float lw = stroke.getLineWidth();</b>
+<b class="nc"><i>1773</i>&nbsp;        if (PrismSettings.primTextureSize != 0 &amp;&amp;</b>
+<i>1774</i>&nbsp;            cap != BasicStroke.CAP_ROUND)
+<i>1775</i>&nbsp;        {
+<b class="nc"><i>1776</i>&nbsp;            float pad = lw;</b>
+<b class="nc"><i>1777</i>&nbsp;            if (stroke.getType() == BasicStroke.TYPE_CENTERED) {</b>
+<b class="nc"><i>1778</i>&nbsp;                pad *= 0.5f;</b>
+<i>1779</i>&nbsp;            }
+<b class="nc"><i>1780</i>&nbsp;            if (bw == 0.0f || bh == 0.0f) {</b>
+<i>1781</i>&nbsp;                float padx, pady;
+<b class="nc"><i>1782</i>&nbsp;                if (cap == BasicStroke.CAP_SQUARE) {</b>
+<i>1783</i>&nbsp;                    // CAP_SQUARE pads the same on all sides
+<b class="nc"><i>1784</i>&nbsp;                    padx = pady = pad;</b>
+<i>1785</i>&nbsp;//                    System.out.print(&quot;S&quot;); System.out.flush();
+<b class="nc"><i>1786</i>&nbsp;                } else if (bw != 0.0f) {</b>
+<i>1787</i>&nbsp;                    // Horizontal CAP_BUTT line - widen vertically
+<b class="nc"><i>1788</i>&nbsp;                    padx = 0.0f;</b>
+<b class="nc"><i>1789</i>&nbsp;                    pady = pad;</b>
+<i>1790</i>&nbsp;//                    System.out.print(&quot;H&quot;); System.out.flush();
+<b class="nc"><i>1791</i>&nbsp;                } else if (bh != 0.0f) {</b>
+<i>1792</i>&nbsp;                    // Vertical CAP_BUTT line - widen horizontally
+<b class="nc"><i>1793</i>&nbsp;                    padx = pad;</b>
+<b class="nc"><i>1794</i>&nbsp;                    pady = 0.0f;</b>
+<i>1795</i>&nbsp;//                    System.out.print(&quot;V&quot;); System.out.flush();
+<i>1796</i>&nbsp;                } else {
+<i>1797</i>&nbsp;//                    System.out.print(&quot;0&quot;); System.out.flush();
+<i>1798</i>&nbsp;                    // Zero length line - NOP for CAP_BUTT
+<b class="nc"><i>1799</i>&nbsp;                    return;</b>
+<i>1800</i>&nbsp;                }
+<b class="nc"><i>1801</i>&nbsp;                Texture rTex = context.getRectTexture();</b>
+<b class="nc"><i>1802</i>&nbsp;                Texture wTex = context.getWrapRectTexture();</b>
+<b class="nc"><i>1803</i>&nbsp;                boolean success = fillPrimRect(bx - padx,        by - pady,</b>
+<i>1804</i>&nbsp;                                               bw + padx + padx, bh + pady + pady,
+<i>1805</i>&nbsp;                                               rTex, wTex, bx, by, bw, bh);
+<b class="nc"><i>1806</i>&nbsp;                rTex.unlock();</b>
+<b class="nc"><i>1807</i>&nbsp;                wTex.unlock();</b>
+<b class="nc"><i>1808</i>&nbsp;                if (success) return;</b>
+<b class="nc"><i>1809</i>&nbsp;            } else {</b>
+<b class="nc"><i>1810</i>&nbsp;                if (drawPrimDiagonal(x1, y1, x2, y2, lw, cap,</b>
+<i>1811</i>&nbsp;                                     bx, by, bw, bh))
+<i>1812</i>&nbsp;                {
+<b class="nc"><i>1813</i>&nbsp;                    return;</b>
+<i>1814</i>&nbsp;                }
+<i>1815</i>&nbsp;            }
+<i>1816</i>&nbsp;        }
+<i>1817</i>&nbsp;//        System.out.print(&quot;#&quot;); System.out.flush();
+<b class="nc"><i>1818</i>&nbsp;        if (stroke.getType() == BasicStroke.TYPE_OUTER) {</b>
+<b class="nc"><i>1819</i>&nbsp;            lw *= 2f;</b>
+<i>1820</i>&nbsp;        }
+<b class="nc"><i>1821</i>&nbsp;        float dx = x2 - x1;</b>
+<b class="nc"><i>1822</i>&nbsp;        float dy = y2 - y1;</b>
+<b class="nc"><i>1823</i>&nbsp;        float len = len(dx, dy);</b>
+<i>1824</i>&nbsp;        float ldx, ldy;  // lw length vector in direction of line in user space
+<b class="nc"><i>1825</i>&nbsp;        if (len == 0) {</b>
+<b class="nc"><i>1826</i>&nbsp;            if (cap == BasicStroke.CAP_BUTT) {</b>
+<b class="nc"><i>1827</i>&nbsp;                return;</b>
+<i>1828</i>&nbsp;            }
+<b class="nc"><i>1829</i>&nbsp;            ldx = lw;</b>
+<b class="nc"><i>1830</i>&nbsp;            ldy = 0;</b>
+<i>1831</i>&nbsp;        } else {
+<b class="nc"><i>1832</i>&nbsp;            ldx = lw * dx / len;</b>
+<b class="nc"><i>1833</i>&nbsp;            ldy = lw * dy / len;</b>
+<i>1834</i>&nbsp;        }
+<i>1835</i>&nbsp;        // The following is safe; this method does not mutate the transform
+<b class="nc"><i>1836</i>&nbsp;        BaseTransform xform = getTransformNoClone();</b>
+<i>1837</i>&nbsp;        BaseTransform rendertx;
+<i>1838</i>&nbsp;        float pdx, pdy;  // ldx,ldy rotated 90 in user space then transformed
+<b class="nc"><i>1839</i>&nbsp;        if (isSimpleTranslate) {</b>
+<b class="nc"><i>1840</i>&nbsp;            double tx = xform.getMxt();</b>
+<b class="nc"><i>1841</i>&nbsp;            double ty = xform.getMyt();</b>
+<b class="nc"><i>1842</i>&nbsp;            x1 += tx;</b>
+<b class="nc"><i>1843</i>&nbsp;            y1 += ty;</b>
+<b class="nc"><i>1844</i>&nbsp;            x2 += tx;</b>
+<b class="nc"><i>1845</i>&nbsp;            y2 += ty;</b>
+<b class="nc"><i>1846</i>&nbsp;            pdx = ldy;</b>
+<b class="nc"><i>1847</i>&nbsp;            pdy = -ldx;</b>
+<b class="nc"><i>1848</i>&nbsp;            rendertx = IDENT;</b>
+<b class="nc"><i>1849</i>&nbsp;        } else {</b>
+<b class="nc"><i>1850</i>&nbsp;            rendertx = extract3Dremainder(xform);</b>
+<b class="nc"><i>1851</i>&nbsp;            double coords[] = {x1, y1, x2, y2};</b>
+<b class="nc"><i>1852</i>&nbsp;            xform.transform(coords, 0, coords, 0, 2);</b>
+<b class="nc"><i>1853</i>&nbsp;            x1 = (float)coords[0];</b>
+<b class="nc"><i>1854</i>&nbsp;            y1 = (float)coords[1];</b>
+<b class="nc"><i>1855</i>&nbsp;            x2 = (float)coords[2];</b>
+<b class="nc"><i>1856</i>&nbsp;            y2 = (float)coords[3];</b>
+<b class="nc"><i>1857</i>&nbsp;            dx = x2 - x1;</b>
+<b class="nc"><i>1858</i>&nbsp;            dy = y2 - y1;</b>
+<b class="nc"><i>1859</i>&nbsp;            coords[0] = ldx;</b>
+<b class="nc"><i>1860</i>&nbsp;            coords[1] = ldy;</b>
+<b class="nc"><i>1861</i>&nbsp;            coords[2] = ldy;</b>
+<b class="nc"><i>1862</i>&nbsp;            coords[3] = -ldx;</b>
+<b class="nc"><i>1863</i>&nbsp;            xform.deltaTransform(coords, 0, coords, 0, 2);</b>
+<b class="nc"><i>1864</i>&nbsp;            ldx = (float) coords[0];</b>
+<b class="nc"><i>1865</i>&nbsp;            ldy = (float) coords[1];</b>
+<b class="nc"><i>1866</i>&nbsp;            pdx = (float) coords[2];</b>
+<b class="nc"><i>1867</i>&nbsp;            pdy = (float) coords[3];</b>
+<i>1868</i>&nbsp;        }
+<b class="nc"><i>1869</i>&nbsp;        float px = x1 - pdx / 2f;</b>
+<b class="nc"><i>1870</i>&nbsp;        float py = y1 - pdy / 2f;</b>
+<i>1871</i>&nbsp;        float arcfractw, arcfracth;
+<i>1872</i>&nbsp;        MaskType type;
+<b class="nc"><i>1873</i>&nbsp;        if (cap != BasicStroke.CAP_BUTT) {</b>
+<b class="nc"><i>1874</i>&nbsp;            px -= ldx / 2f;</b>
+<b class="nc"><i>1875</i>&nbsp;            py -= ldy / 2f;</b>
+<b class="nc"><i>1876</i>&nbsp;            dx += ldx;</b>
+<b class="nc"><i>1877</i>&nbsp;            dy += ldy;</b>
+<b class="nc"><i>1878</i>&nbsp;            if (cap == BasicStroke.CAP_ROUND) {</b>
+<b class="nc"><i>1879</i>&nbsp;                arcfractw = len(ldx, ldy) / len(dx, dy);</b>
+<b class="nc"><i>1880</i>&nbsp;                arcfracth = 1f;</b>
+<b class="nc"><i>1881</i>&nbsp;                type = MaskType.FILL_ROUNDRECT;</b>
+<i>1882</i>&nbsp;            } else {
+<b class="nc"><i>1883</i>&nbsp;                arcfractw = arcfracth = 0f;</b>
+<b class="nc"><i>1884</i>&nbsp;                type = MaskType.FILL_PGRAM;</b>
+<i>1885</i>&nbsp;            }
+<i>1886</i>&nbsp;        } else {
+<b class="nc"><i>1887</i>&nbsp;            arcfractw = arcfracth = 0f;</b>
+<b class="nc"><i>1888</i>&nbsp;            type = MaskType.FILL_PGRAM;</b>
+<i>1889</i>&nbsp;        }
+<b class="nc"><i>1890</i>&nbsp;        renderGeneralRoundedPgram(px, py, dx, dy, pdx, pdy,</b>
+<i>1891</i>&nbsp;                                  arcfractw, arcfracth, 0f, 0f,
+<i>1892</i>&nbsp;                                  rendertx, type,
+<i>1893</i>&nbsp;                                  bx, by, bw, bh);
+<b class="nc"><i>1894</i>&nbsp;    }</b>
+<i>1895</i>&nbsp;
+<i>1896</i>&nbsp;    private static float len(float x, float y) {
+<b class="fc"><i>1897</i>&nbsp;        return ((x == 0f) ? Math.abs(y)</b>
+<b class="fc"><i>1898</i>&nbsp;                : ((y == 0f) ? Math.abs(x)</b>
+<b class="nc"><i>1899</i>&nbsp;                   : (float)Math.sqrt(x * x + y * y)));</b>
+<i>1900</i>&nbsp;    }
+<i>1901</i>&nbsp;
+<b class="fc"><i>1902</i>&nbsp;    private boolean lcdSampleInvalid = false;</b>
+<i>1903</i>&nbsp;
+<i>1904</i>&nbsp;    public void setNodeBounds(RectBounds bounds) {
+<b class="fc"><i>1905</i>&nbsp;        nodeBounds = bounds;</b>
+<b class="fc"><i>1906</i>&nbsp;        lcdSampleInvalid = bounds != null;</b>
+<b class="fc"><i>1907</i>&nbsp;    }</b>
+<i>1908</i>&nbsp;
+<i>1909</i>&nbsp;    private void initLCDSampleRT() {
+<b class="fc"><i>1910</i>&nbsp;        if (lcdSampleInvalid) {</b>
+<b class="fc"><i>1911</i>&nbsp;            RectBounds textBounds = new RectBounds();</b>
+<b class="fc"><i>1912</i>&nbsp;            getTransformNoClone().transform(nodeBounds, textBounds);</b>
+<b class="fc"><i>1913</i>&nbsp;            Rectangle clipRect = getClipRectNoClone();</b>
+<b class="fc"><i>1914</i>&nbsp;            if (clipRect != null &amp;&amp; !clipRect.isEmpty()) {</b>
+<i>1915</i>&nbsp;                // Reduce sample area if there is any clipping bounds set
+<b class="fc"><i>1916</i>&nbsp;                textBounds.intersectWith(clipRect);</b>
+<i>1917</i>&nbsp;            }
+<i>1918</i>&nbsp;            // LCD mixing with background will often lead to extra pixel at edge
+<i>1919</i>&nbsp;            // thus adding a single pixel, as padding, at edges and bottom.
+<b class="fc"><i>1920</i>&nbsp;            float bx = textBounds.getMinX() - 1.0f;</b>
+<b class="fc"><i>1921</i>&nbsp;            float by = textBounds.getMinY();</b>
+<b class="fc"><i>1922</i>&nbsp;            float bw = textBounds.getWidth() + 2.0f;</b>
+<b class="fc"><i>1923</i>&nbsp;            float bh = textBounds.getHeight() + 1.0f;</b>
+<i>1924</i>&nbsp;
+<b class="fc"><i>1925</i>&nbsp;            context.validateLCDBuffer(getRenderTarget());</b>
+<i>1926</i>&nbsp;
+<i>1927</i>&nbsp;            // Create a graphics for us to render into the LCDBuffer
+<i>1928</i>&nbsp;            // Note this also sets the current RenderTarget as the LCDBuffer
+<b class="fc"><i>1929</i>&nbsp;            BaseShaderGraphics bsg = (BaseShaderGraphics) context.getLCDBuffer().createGraphics();</b>
+<b class="fc"><i>1930</i>&nbsp;            bsg.setCompositeMode(CompositeMode.SRC);</b>
+<b class="fc"><i>1931</i>&nbsp;            context.validateLCDOp(bsg, IDENT, (Texture) getRenderTarget(), null, true, null);</b>
+<i>1932</i>&nbsp;
+<b class="fc"><i>1933</i>&nbsp;            int srch = getRenderTarget().getPhysicalHeight();</b>
+<b class="fc"><i>1934</i>&nbsp;            int srcw = getRenderTarget().getPhysicalWidth();</b>
+<b class="fc"><i>1935</i>&nbsp;            float tx1 = bx / srcw;</b>
+<b class="fc"><i>1936</i>&nbsp;            float ty1 = by / srch;</b>
+<b class="fc"><i>1937</i>&nbsp;            float tx2 = (bx + bw) / srcw;</b>
+<b class="fc"><i>1938</i>&nbsp;            float ty2 = (by + bh) / srch;</b>
+<i>1939</i>&nbsp;
+<i>1940</i>&nbsp;            //sample the source RT in the following bounds and store it in the LCDBuffer RT.
+<b class="fc"><i>1941</i>&nbsp;            bsg.drawLCDBuffer(bx, by, bw, bh, tx1, ty1, tx2, ty2);</b>
+<b class="fc"><i>1942</i>&nbsp;            context.setRenderTarget(this);</b>
+<i>1943</i>&nbsp;        }
+<b class="fc"><i>1944</i>&nbsp;        lcdSampleInvalid = false;</b>
+<b class="fc"><i>1945</i>&nbsp;    }</b>
+<i>1946</i>&nbsp;
+<i>1947</i>&nbsp;    public void drawString(GlyphList gl, FontStrike strike, float x, float y,
+<i>1948</i>&nbsp;                           Color selectColor, int selectStart, int selectEnd) {
+<i>1949</i>&nbsp;
+<b class="fc"><i>1950</i>&nbsp;        if (isComplexPaint ||</b>
+<b class="fc"><i>1951</i>&nbsp;            paint.getType().isImagePattern() ||</b>
+<b class="fc"><i>1952</i>&nbsp;            strike.drawAsShapes())</b>
+<i>1953</i>&nbsp;        {
+<i>1954</i>&nbsp;            // FontStrike.drawAsShapes() may be true for very large font sizes
+<i>1955</i>&nbsp;            // in which case so no glyph images are cached.
+<i>1956</i>&nbsp;            // The Prism Text node handles such cases directly, but Webnode relies
+<i>1957</i>&nbsp;            // upon Prism&#39;s drawString method, so we need to handle it here too.
+<i>1958</i>&nbsp;
+<i>1959</i>&nbsp;            // this is not a very optimal approach and may not hit exactly
+<i>1960</i>&nbsp;            // the same pixels that we would hit in the case where the
+<i>1961</i>&nbsp;            // glyph cache is used, but the complex paint case is not
+<i>1962</i>&nbsp;            // common enough to warrant further optimization
+<b class="nc"><i>1963</i>&nbsp;            BaseTransform xform = BaseTransform.getTranslateInstance(x, y);</b>
+<b class="nc"><i>1964</i>&nbsp;            Shape shape = strike.getOutline(gl, xform);</b>
+<b class="nc"><i>1965</i>&nbsp;            fill(shape);</b>
+<b class="nc"><i>1966</i>&nbsp;            return;</b>
+<i>1967</i>&nbsp;        }
+<i>1968</i>&nbsp;
+<b class="fc"><i>1969</i>&nbsp;        BaseTransform xform = getTransformNoClone();</b>
+<i>1970</i>&nbsp;
+<b class="fc"><i>1971</i>&nbsp;        Paint textPaint = getPaint();</b>
+<b class="fc"><i>1972</i>&nbsp;        Color textColor = textPaint.getType() == Paint.Type.COLOR ?</b>
+<b class="fc"><i>1973</i>&nbsp;                          (Color) textPaint : null;</b>
+<i>1974</i>&nbsp;
+<b class="fc"><i>1975</i>&nbsp;        CompositeMode blendMode = getCompositeMode();</b>
+<i>1976</i>&nbsp;        // LCD support requires several attributes to function:
+<i>1977</i>&nbsp;        // FontStrike supports LCD, SRC_OVER CompositeMode and Paint is a COLOR
+<b class="fc"><i>1978</i>&nbsp;        boolean lcdSupported = blendMode == CompositeMode.SRC_OVER &amp;&amp;</b>
+<i>1979</i>&nbsp;                               textColor != null &amp;&amp;
+<b class="fc"><i>1980</i>&nbsp;                               xform.is2D() &amp;&amp;</b>
+<b class="fc"><i>1981</i>&nbsp;                               !getRenderTarget().isMSAA();</b>
+<i>1982</i>&nbsp;
+<i>1983</i>&nbsp;        /* If the surface can&#39;t support LCD text we need to replace an
+<i>1984</i>&nbsp;         * LCD mode strike with the equivalent grey scale one.
+<i>1985</i>&nbsp;         */
+<b class="fc"><i>1986</i>&nbsp;        if (strike.getAAMode() == FontResource.AA_LCD &amp;&amp; !lcdSupported) {</b>
+<b class="nc"><i>1987</i>&nbsp;            FontResource fr = strike.getFontResource();</b>
+<b class="nc"><i>1988</i>&nbsp;            float size = strike.getSize();</b>
+<b class="nc"><i>1989</i>&nbsp;            BaseTransform tx = strike.getTransform();</b>
+<b class="nc"><i>1990</i>&nbsp;            strike = fr.getStrike(size, tx, FontResource.AA_GREYSCALE);</b>
+<i>1991</i>&nbsp;        }
+<i>1992</i>&nbsp;
+<b class="fc"><i>1993</i>&nbsp;        float bx = 0f, by = 0f, bw = 0f, bh = 0f;</b>
+<b class="fc"><i>1994</i>&nbsp;        if (paint.getType().isGradient() &amp;&amp; ((Gradient)paint).isProportional()) {</b>
+<i>1995</i>&nbsp;            // If drawString is called directly without using setNodeBounds,
+<i>1996</i>&nbsp;            // then nodeBounds is null, and we must determine the bounds based
+<i>1997</i>&nbsp;            // on the str(vs. the node).
+<b class="nc"><i>1998</i>&nbsp;            RectBounds textBounds = nodeBounds;</b>
+<b class="nc"><i>1999</i>&nbsp;            if (textBounds == null) {</b>
+<b class="nc"><i>2000</i>&nbsp;                Metrics m = strike.getMetrics();</b>
+<b class="nc"><i>2001</i>&nbsp;                float pad = -m.getAscent() * 0.4f;</b>
+<b class="nc"><i>2002</i>&nbsp;                textBounds = new RectBounds(-pad,</b>
+<b class="nc"><i>2003</i>&nbsp;                                            m.getAscent(),</b>
+<b class="nc"><i>2004</i>&nbsp;                                            gl.getWidth() + 2.0f *pad,</b>
+<b class="nc"><i>2005</i>&nbsp;                                            m.getDescent() + m.getLineGap());</b>
+<b class="nc"><i>2006</i>&nbsp;                bx = x;</b>
+<b class="nc"><i>2007</i>&nbsp;                by = y;</b>
+<i>2008</i>&nbsp;            }
+<i>2009</i>&nbsp;
+<b class="nc"><i>2010</i>&nbsp;            bx += textBounds.getMinX();</b>
+<b class="nc"><i>2011</i>&nbsp;            by += textBounds.getMinY();</b>
+<b class="nc"><i>2012</i>&nbsp;            bw = textBounds.getWidth();</b>
+<b class="nc"><i>2013</i>&nbsp;            bh = textBounds.getHeight();</b>
+<i>2014</i>&nbsp;        }
+<i>2015</i>&nbsp;
+<b class="fc"><i>2016</i>&nbsp;        BaseBounds clip = null;</b>
+<b class="fc"><i>2017</i>&nbsp;        Point2D p2d = new Point2D(x, y);</b>
+<b class="fc"><i>2018</i>&nbsp;        if (isSimpleTranslate) {</b>
+<i>2019</i>&nbsp;            /* Only use clip for simple transforms so that coordinates in the
+<i>2020</i>&nbsp;             * glyph list (user space) and the coordinates of the clip
+<i>2021</i>&nbsp;             * (device space) can be intersected.
+<i>2022</i>&nbsp;             */
+<b class="fc"><i>2023</i>&nbsp;            clip = getFinalClipNoClone();</b>
+<b class="fc"><i>2024</i>&nbsp;            xform = IDENT;</b>
+<b class="fc"><i>2025</i>&nbsp;            p2d.x += transX;</b>
+<b class="fc"><i>2026</i>&nbsp;            p2d.y += transY;</b>
+<i>2027</i>&nbsp;        }
+<i>2028</i>&nbsp;
+<i>2029</i>&nbsp;        /* Cache look up needs to be on the font as rendered, including
+<i>2030</i>&nbsp;         * AA mode, metrics mode, glyph transform (pt size combined with
+<i>2031</i>&nbsp;         * the full graphics transform). Most of this info is expected to
+<i>2032</i>&nbsp;         * be in the font, which here is close to being a full strike
+<i>2033</i>&nbsp;         * description.
+<i>2034</i>&nbsp;         */
+<b class="fc"><i>2035</i>&nbsp;        GlyphCache glyphCache = context.getGlyphCache(strike);</b>
+<b class="fc"><i>2036</i>&nbsp;        Texture cacheTex = glyphCache.getBackingStore();</b>
+<i>2037</i>&nbsp;
+<i>2038</i>&nbsp;        //Since we currently cannot support LCD text on transparant surfaces, we
+<i>2039</i>&nbsp;        //verify that we are drawing to an opaque surface.
+<b class="fc"><i>2040</i>&nbsp;        if (strike.getAAMode() == FontResource.AA_LCD) {</b>
+<b class="fc"><i>2041</i>&nbsp;            if (nodeBounds == null) {</b>
+<i>2042</i>&nbsp;                // If drawString is called directly without using
+<i>2043</i>&nbsp;                // setNodeBounds then we must determine the bounds of the str,
+<i>2044</i>&nbsp;                // before we render background to texture.
+<i>2045</i>&nbsp;                // This is slow, but required by webnode.
+<i>2046</i>&nbsp;
+<b class="nc"><i>2047</i>&nbsp;                Metrics m = strike.getMetrics();</b>
+<i>2048</i>&nbsp;                // Ruff guess for padding, since lots of glyphs exceed advance
+<b class="nc"><i>2049</i>&nbsp;                RectBounds textBounds =</b>
+<i>2050</i>&nbsp;                        new RectBounds(x - 2,
+<b class="nc"><i>2051</i>&nbsp;                                       y + m.getAscent(),</b>
+<b class="nc"><i>2052</i>&nbsp;                                       x + 2 + gl.getWidth(),</b>
+<b class="nc"><i>2053</i>&nbsp;                                       y + 1 + m.getDescent() + m.getLineGap());</b>
+<i>2054</i>&nbsp;
+<b class="nc"><i>2055</i>&nbsp;                setNodeBounds(textBounds);</b>
+<b class="nc"><i>2056</i>&nbsp;                initLCDSampleRT();</b>
+<b class="nc"><i>2057</i>&nbsp;                setNodeBounds(null);</b>
+<b class="nc"><i>2058</i>&nbsp;            } else {</b>
+<b class="fc"><i>2059</i>&nbsp;                initLCDSampleRT();</b>
+<i>2060</i>&nbsp;            }
+<b class="fc"><i>2061</i>&nbsp;            float invgamma = PrismFontFactory.getLCDContrast();</b>
+<b class="fc"><i>2062</i>&nbsp;            float gamma = 1.0f/invgamma;</b>
+<b class="fc"><i>2063</i>&nbsp;            textColor = new Color((float)Math.pow(textColor.getRed(),   invgamma),</b>
+<b class="fc"><i>2064</i>&nbsp;                                  (float)Math.pow(textColor.getGreen(), invgamma),</b>
+<b class="fc"><i>2065</i>&nbsp;                                  (float)Math.pow(textColor.getBlue(),  invgamma),</b>
+<b class="fc"><i>2066</i>&nbsp;                                  (float)Math.pow(textColor.getAlpha(), invgamma));</b>
+<b class="fc"><i>2067</i>&nbsp;            if (selectColor != null) {</b>
+<b class="fc"><i>2068</i>&nbsp;                selectColor = new Color(</b>
+<b class="fc"><i>2069</i>&nbsp;                        (float)Math.pow(selectColor.getRed(),   invgamma),</b>
+<b class="fc"><i>2070</i>&nbsp;                        (float)Math.pow(selectColor.getGreen(), invgamma),</b>
+<b class="fc"><i>2071</i>&nbsp;                        (float)Math.pow(selectColor.getBlue(),  invgamma),</b>
+<b class="fc"><i>2072</i>&nbsp;                        (float)Math.pow(selectColor.getAlpha(), invgamma));</b>
+<i>2073</i>&nbsp;            }
+<i>2074</i>&nbsp;
+<i>2075</i>&nbsp;            // In order to handle transparency, the LCD shader need to manually
+<i>2076</i>&nbsp;            // composite source with destination. Thus, SRC_OVER compositing
+<i>2077</i>&nbsp;            // needs to be set to SRC, while shader is active.
+<b class="fc"><i>2078</i>&nbsp;            setCompositeMode(CompositeMode.SRC);</b>
+<i>2079</i>&nbsp;
+<i>2080</i>&nbsp;            //set our 2nd LCD shader.
+<b class="fc"><i>2081</i>&nbsp;            Shader shader = context.validateLCDOp(this, IDENT,</b>
+<b class="fc"><i>2082</i>&nbsp;                                                context.getLCDBuffer(),</b>
+<i>2083</i>&nbsp;                                                cacheTex, false, textColor);
+<i>2084</i>&nbsp;
+<b class="fc"><i>2085</i>&nbsp;            float unitXCoord = 1.0f/((float)cacheTex.getPhysicalWidth());</b>
+<b class="fc"><i>2086</i>&nbsp;            shader.setConstant(&quot;gamma&quot;, gamma, invgamma, unitXCoord);</b>
+<b class="fc"><i>2087</i>&nbsp;            setCompositeMode(blendMode); // Restore composite mode</b>
+<b class="fc"><i>2088</i>&nbsp;        } else {</b>
+<b class="fc"><i>2089</i>&nbsp;            context.validatePaintOp(this, IDENT, cacheTex, bx, by, bw, bh);</b>
+<i>2090</i>&nbsp;        }
+<b class="fc"><i>2091</i>&nbsp;        if (isSimpleTranslate) {</b>
+<i>2092</i>&nbsp;            // Applying this rounding allows for smoother text animation,
+<i>2093</i>&nbsp;            // when animating simple translated text.
+<i>2094</i>&nbsp;            // Asking glyph textures to be rendered at non-integral
+<i>2095</i>&nbsp;            // locations produces very poor text. This doesn&#39;t solve
+<i>2096</i>&nbsp;            // the problem for scaled (etc) cases, but addresses a
+<i>2097</i>&nbsp;            // common case.
+<b class="fc"><i>2098</i>&nbsp;            p2d.y = Math.round(p2d.y);</b>
+<b class="fc"><i>2099</i>&nbsp;            p2d.x = Math.round(p2d.x);</b>
+<i>2100</i>&nbsp;        }
+<b class="fc"><i>2101</i>&nbsp;        glyphCache.render(context, gl, p2d.x, p2d.y, selectStart, selectEnd,</b>
+<i>2102</i>&nbsp;                          selectColor, textColor, xform, clip);
+<b class="fc"><i>2103</i>&nbsp;    }</b>
+<i>2104</i>&nbsp;
+<i>2105</i>&nbsp;    //This function is used by the LCD path to render a quad into the
+<i>2106</i>&nbsp;    //LCD RTT Texture. here the presentable is set as input and
+<i>2107</i>&nbsp;    //sampled using texture coordinates. This is later used in a
+<i>2108</i>&nbsp;    //second pass to provide the dst color as input.
+<i>2109</i>&nbsp;    private void drawLCDBuffer(float bx, float by, float bw, float bh,
+<i>2110</i>&nbsp;            float tx1, float ty1, float tx2, float ty2)
+<i>2111</i>&nbsp;    {
+<b class="fc"><i>2112</i>&nbsp;        context.setRenderTarget(this);</b>
+<b class="fc"><i>2113</i>&nbsp;        context.getVertexBuffer().addQuad(bx, by, bx + bw, by + bh, tx1, ty1, tx2, ty2);</b>
+<b class="fc"><i>2114</i>&nbsp;    }</b>
+<i>2115</i>&nbsp;
+<i>2116</i>&nbsp;    public boolean canReadBack() {
+<b class="nc"><i>2117</i>&nbsp;        RenderTarget rt = getRenderTarget();</b>
+<b class="nc"><i>2118</i>&nbsp;        return rt instanceof ReadbackRenderTarget &amp;&amp;</b>
+<b class="nc"><i>2119</i>&nbsp;            ((ReadbackRenderTarget) rt).getBackBuffer() != null;</b>
+<i>2120</i>&nbsp;    }
+<i>2121</i>&nbsp;
+<i>2122</i>&nbsp;    public RTTexture readBack(Rectangle view) {
+<b class="nc"><i>2123</i>&nbsp;        RenderTarget rt = getRenderTarget();</b>
+<b class="nc"><i>2124</i>&nbsp;        context.flushVertexBuffer();</b>
+<b class="nc"><i>2125</i>&nbsp;        context.validateLCDBuffer(rt);</b>
+<b class="nc"><i>2126</i>&nbsp;        RTTexture lcdrtt = context.getLCDBuffer();</b>
+<b class="nc"><i>2127</i>&nbsp;        Texture bbtex = ((ReadbackRenderTarget) rt).getBackBuffer();</b>
+<i>2128</i>&nbsp;
+<b class="nc"><i>2129</i>&nbsp;        float x1 = view.x;</b>
+<b class="nc"><i>2130</i>&nbsp;        float y1 = view.y;</b>
+<b class="nc"><i>2131</i>&nbsp;        float x2 = x1 + view.width;</b>
+<b class="nc"><i>2132</i>&nbsp;        float y2 = y1 + view.height;</b>
+<i>2133</i>&nbsp;
+<i>2134</i>&nbsp;        // Create a graphics for us to render into the LCDBuffer
+<i>2135</i>&nbsp;        // Note this also sets the current RenderTarget as the LCDBuffer
+<b class="nc"><i>2136</i>&nbsp;        BaseShaderGraphics bsg = (BaseShaderGraphics) lcdrtt.createGraphics();</b>
+<b class="nc"><i>2137</i>&nbsp;        bsg.setCompositeMode(CompositeMode.SRC);</b>
+<b class="nc"><i>2138</i>&nbsp;        context.validateTextureOp(bsg, IDENT, bbtex, bbtex.getPixelFormat());</b>
+<i>2139</i>&nbsp;
+<i>2140</i>&nbsp;        // sample the source RT in the following bounds and store it in the LCDBuffer RT.
+<b class="nc"><i>2141</i>&nbsp;        bsg.drawTexture(bbtex, 0, 0, view.width, view.height, x1, y1, x2, y2);</b>
+<b class="nc"><i>2142</i>&nbsp;        context.flushVertexBuffer();</b>
+<i>2143</i>&nbsp;
+<i>2144</i>&nbsp;        // set the RenderTarget back to this.
+<b class="nc"><i>2145</i>&nbsp;        context.setRenderTarget(this);</b>
+<b class="nc"><i>2146</i>&nbsp;        return lcdrtt;</b>
+<i>2147</i>&nbsp;    }
+<i>2148</i>&nbsp;
+<i>2149</i>&nbsp;    public void releaseReadBackBuffer(RTTexture rtt) {
+<i>2150</i>&nbsp;        // This will be needed when we track LCD buffer locks and uses.
+<i>2151</i>&nbsp;        // (See RT-29488)
+<i>2152</i>&nbsp;//        context.releaseLCDBuffer();
+<b class="nc"><i>2153</i>&nbsp;    }</b>
+<i>2154</i>&nbsp;
+<i>2155</i>&nbsp;    public void setup3DRendering() {
+<b class="nc"><i>2156</i>&nbsp;        context.setRenderTarget(this);</b>
+<b class="nc"><i>2157</i>&nbsp;    }</b>
+<i>2158</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2017-12-04 21:49</div>
+</div>
+</body>
+</html>

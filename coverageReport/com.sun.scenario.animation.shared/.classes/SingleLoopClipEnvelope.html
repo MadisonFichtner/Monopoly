@@ -1,0 +1,207 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: SingleLoopClipEnvelope</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.scenario.animation.shared</a> ]
+</div>
+
+<h1>Coverage Summary for Class: SingleLoopClipEnvelope (com.sun.scenario.animation.shared)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">SingleLoopClipEnvelope</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    88.9%
+  </span>
+  <span class="absValue">
+    (8/ 9)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    74.4%
+  </span>
+  <span class="absValue">
+    (32/ 43)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright (c) 2011, 2013, Oracle and/or its affiliates. All rights reserved.
+<i>3</i>&nbsp; * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+<i>4</i>&nbsp; *
+<i>5</i>&nbsp; *
+<i>6</i>&nbsp; *
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; *
+<i>11</i>&nbsp; *
+<i>12</i>&nbsp; *
+<i>13</i>&nbsp; *
+<i>14</i>&nbsp; *
+<i>15</i>&nbsp; *
+<i>16</i>&nbsp; *
+<i>17</i>&nbsp; *
+<i>18</i>&nbsp; *
+<i>19</i>&nbsp; *
+<i>20</i>&nbsp; *
+<i>21</i>&nbsp; *
+<i>22</i>&nbsp; *
+<i>23</i>&nbsp; *
+<i>24</i>&nbsp; */
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;package com.sun.scenario.animation.shared;
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;import javafx.animation.Animation;
+<i>29</i>&nbsp;import javafx.animation.Animation.Status;
+<i>30</i>&nbsp;import javafx.util.Duration;
+<i>31</i>&nbsp;
+<i>32</i>&nbsp;public class SingleLoopClipEnvelope extends ClipEnvelope {
+<i>33</i>&nbsp;
+<i>34</i>&nbsp;    private int cycleCount;
+<i>35</i>&nbsp;
+<i>36</i>&nbsp;    @Override
+<i>37</i>&nbsp;    public void setRate(double rate) {
+<b class="nc"><i>38</i>&nbsp;        final Status status = animation.getStatus();</b>
+<b class="nc"><i>39</i>&nbsp;        if (status != Status.STOPPED) {</b>
+<b class="nc"><i>40</i>&nbsp;            if (status == Status.RUNNING) {</b>
+<b class="nc"><i>41</i>&nbsp;                setCurrentRate((Math.abs(currentRate - this.rate) &lt; EPSILON) ? rate : -rate);</b>
+<i>42</i>&nbsp;            }
+<b class="nc"><i>43</i>&nbsp;            deltaTicks = ticks - Math.round((ticks - deltaTicks) * rate / this.rate);</b>
+<b class="nc"><i>44</i>&nbsp;            abortCurrentPulse();</b>
+<i>45</i>&nbsp;        }
+<b class="nc"><i>46</i>&nbsp;        this.rate = rate;</b>
+<b class="nc"><i>47</i>&nbsp;    }</b>
+<i>48</i>&nbsp;
+<i>49</i>&nbsp;    @Override
+<i>50</i>&nbsp;    public void setAutoReverse(boolean autoReverse) {
+<i>51</i>&nbsp;        // ignore autoReverse
+<b class="fc"><i>52</i>&nbsp;    }</b>
+<i>53</i>&nbsp;
+<i>54</i>&nbsp;    @Override
+<i>55</i>&nbsp;    protected double calculateCurrentRate() {
+<b class="fc"><i>56</i>&nbsp;        return rate;</b>
+<i>57</i>&nbsp;    }
+<i>58</i>&nbsp;
+<i>59</i>&nbsp;    protected SingleLoopClipEnvelope(Animation animation) {
+<b class="fc"><i>60</i>&nbsp;        super(animation);</b>
+<b class="fc"><i>61</i>&nbsp;        if (animation != null) {</b>
+<b class="fc"><i>62</i>&nbsp;            cycleCount = animation.getCycleCount();</b>
+<i>63</i>&nbsp;        }
+<b class="fc"><i>64</i>&nbsp;    }</b>
+<i>65</i>&nbsp;
+<i>66</i>&nbsp;    @Override
+<i>67</i>&nbsp;    public boolean wasSynched() {
+<b class="fc"><i>68</i>&nbsp;        return super.wasSynched() &amp;&amp; cycleCount != 0;</b>
+<i>69</i>&nbsp;    }
+<i>70</i>&nbsp;
+<i>71</i>&nbsp;    @Override
+<i>72</i>&nbsp;    public ClipEnvelope setCycleDuration(Duration cycleDuration) {
+<b class="fc"><i>73</i>&nbsp;        if ((cycleCount != 1) &amp;&amp; !cycleDuration.isIndefinite()) {</b>
+<b class="nc"><i>74</i>&nbsp;            return create(animation);</b>
+<i>75</i>&nbsp;        }
+<b class="fc"><i>76</i>&nbsp;        updateCycleTicks(cycleDuration);</b>
+<b class="fc"><i>77</i>&nbsp;        return this;</b>
+<i>78</i>&nbsp;    }
+<i>79</i>&nbsp;
+<i>80</i>&nbsp;    @Override
+<i>81</i>&nbsp;    public ClipEnvelope setCycleCount(int cycleCount) {
+<b class="fc"><i>82</i>&nbsp;        if ((cycleCount != 1) &amp;&amp; (cycleTicks != ClipEnvelope.INDEFINITE)) {</b>
+<b class="fc"><i>83</i>&nbsp;            return create(animation);</b>
+<i>84</i>&nbsp;        }
+<b class="fc"><i>85</i>&nbsp;        this.cycleCount = cycleCount;</b>
+<b class="fc"><i>86</i>&nbsp;        return this;</b>
+<i>87</i>&nbsp;    }
+<i>88</i>&nbsp;
+<i>89</i>&nbsp;    @Override
+<i>90</i>&nbsp;    public void timePulse(long currentTick) {
+<b class="fc"><i>91</i>&nbsp;        if (cycleTicks == 0L) {</b>
+<b class="nc"><i>92</i>&nbsp;            return;</b>
+<i>93</i>&nbsp;        }
+<b class="fc"><i>94</i>&nbsp;        aborted = false;</b>
+<b class="fc"><i>95</i>&nbsp;        inTimePulse = true;</b>
+<i>96</i>&nbsp;
+<i>97</i>&nbsp;        try {
+<b class="fc"><i>98</i>&nbsp;            ticks = ClipEnvelope.checkBounds(deltaTicks + Math.round(currentTick * currentRate), cycleTicks);</b>
+<b class="fc"><i>99</i>&nbsp;            AnimationAccessor.getDefault().playTo(animation, ticks, cycleTicks);</b>
+<i>100</i>&nbsp;
+<b class="fc"><i>101</i>&nbsp;            final boolean reachedEnd = (currentRate &gt; 0)? (ticks == cycleTicks) : (ticks == 0);</b>
+<b class="fc"><i>102</i>&nbsp;            if(reachedEnd &amp;&amp; !aborted) {</b>
+<b class="fc"><i>103</i>&nbsp;                AnimationAccessor.getDefault().finished(animation);</b>
+<i>104</i>&nbsp;            }
+<i>105</i>&nbsp;        } finally {
+<b class="fc"><i>106</i>&nbsp;            inTimePulse = false;</b>
+<b class="fc"><i>107</i>&nbsp;        }</b>
+<b class="fc"><i>108</i>&nbsp;    }</b>
+<i>109</i>&nbsp;
+<i>110</i>&nbsp;    @Override
+<i>111</i>&nbsp;    public void jumpTo(long ticks) {
+<b class="fc"><i>112</i>&nbsp;        if (cycleTicks == 0L) {</b>
+<b class="nc"><i>113</i>&nbsp;            return;</b>
+<i>114</i>&nbsp;        }
+<b class="fc"><i>115</i>&nbsp;        final long newTicks = ClipEnvelope.checkBounds(ticks, cycleTicks);</b>
+<b class="fc"><i>116</i>&nbsp;        deltaTicks += (newTicks - this.ticks);</b>
+<b class="fc"><i>117</i>&nbsp;        this.ticks = newTicks;</b>
+<i>118</i>&nbsp;
+<b class="fc"><i>119</i>&nbsp;        AnimationAccessor.getDefault().jumpTo(animation, newTicks, cycleTicks, false);</b>
+<i>120</i>&nbsp;
+<b class="fc"><i>121</i>&nbsp;        abortCurrentPulse();</b>
+<b class="fc"><i>122</i>&nbsp;    }</b>
+<i>123</i>&nbsp;
+<i>124</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2017-12-04 21:49</div>
+</div>
+</body>
+</html>

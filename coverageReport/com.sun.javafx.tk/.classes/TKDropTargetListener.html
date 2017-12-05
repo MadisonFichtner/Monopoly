@@ -1,0 +1,144 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: TKDropTargetListener</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.javafx.tk</a> ]
+</div>
+
+<h1>Coverage Summary for Class: TKDropTargetListener (com.sun.javafx.tk)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+</tr>
+<tr>
+  <td class="name">TKDropTargetListener</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright (c) 2009, 2013, Oracle and/or its affiliates. All rights reserved.
+<i>3</i>&nbsp; * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+<i>4</i>&nbsp; *
+<i>5</i>&nbsp; *
+<i>6</i>&nbsp; *
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; *
+<i>11</i>&nbsp; *
+<i>12</i>&nbsp; *
+<i>13</i>&nbsp; *
+<i>14</i>&nbsp; *
+<i>15</i>&nbsp; *
+<i>16</i>&nbsp; *
+<i>17</i>&nbsp; *
+<i>18</i>&nbsp; *
+<i>19</i>&nbsp; *
+<i>20</i>&nbsp; *
+<i>21</i>&nbsp; *
+<i>22</i>&nbsp; *
+<i>23</i>&nbsp; *
+<i>24</i>&nbsp; */
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;package com.sun.javafx.tk;
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;import javafx.scene.input.TransferMode;
+<i>29</i>&nbsp;
+<i>30</i>&nbsp;/**
+<i>31</i>&nbsp; * Listens for drop target events on a TKScene.
+<i>32</i>&nbsp; * &lt;br&gt;
+<i>33</i>&nbsp; * The implementation of this interface uses the event objects&#39; pointer position
+<i>34</i>&nbsp; * to determine if any nodes in the scene graph are to be notified
+<i>35</i>&nbsp; * of drag gesture events.
+<i>36</i>&nbsp; * &lt;br&gt;
+<i>37</i>&nbsp; * TODO: extend this interface to include dropActionChanged() notification
+<i>38</i>&nbsp; */
+<i>39</i>&nbsp;public interface TKDropTargetListener {
+<i>40</i>&nbsp;
+<i>41</i>&nbsp;    /**
+<i>42</i>&nbsp;     * Called during a drag gesture, when the mouse pointer enters
+<i>43</i>&nbsp;     * the operable part of the Scene.
+<i>44</i>&nbsp;     *
+<i>45</i>&nbsp;     * @return transfer mode chosen by potential target
+<i>46</i>&nbsp;     */
+<i>47</i>&nbsp;    public TransferMode dragEnter(double x, double y, double screenX, double screenY,
+<i>48</i>&nbsp;                                  TransferMode transferMode, TKClipboard dragboard);
+<i>49</i>&nbsp;
+<i>50</i>&nbsp;    /**
+<i>51</i>&nbsp;     * Called during a drag gesture, while the mouse pointer is still
+<i>52</i>&nbsp;     * over (is moving over) the operable part of the Sceme.
+<i>53</i>&nbsp;     *
+<i>54</i>&nbsp;     * @return transfer mode chosen by potential target
+<i>55</i>&nbsp;     */
+<i>56</i>&nbsp;    public TransferMode dragOver(double x, double y, double screenX, double screenY,
+<i>57</i>&nbsp;                                 TransferMode transferMode);
+<i>58</i>&nbsp;
+<i>59</i>&nbsp;    /**
+<i>60</i>&nbsp;     * Called during a drag gesture, when the mouse pointer exits
+<i>61</i>&nbsp;     * the operable part of the Scene.
+<i>62</i>&nbsp;     */
+<i>63</i>&nbsp;    public void dragExit(double x, double y, double screenX, double screenY);
+<i>64</i>&nbsp;
+<i>65</i>&nbsp;    /**
+<i>66</i>&nbsp;     * Called when the drag gesture is being terminated with a drop on
+<i>67</i>&nbsp;     * the operable part Scene.
+<i>68</i>&nbsp;     * &lt;br&gt;
+<i>69</i>&nbsp;     * This method is responsible for undertaking
+<i>70</i>&nbsp;     * the transfer of the data associated with the
+<i>71</i>&nbsp;     * gesture. The &lt;code&gt;dropTargetDropEvent&lt;/code&gt;
+<i>72</i>&nbsp;     * provides a means to obtain an
+<i>73</i>&nbsp;     * object that represents the data object(s) to
+<i>74</i>&nbsp;     * be transfered.
+<i>75</i>&nbsp;     * &lt;br&gt;
+<i>76</i>&nbsp;     * From this method, the implemenation needs to
+<i>77</i>&nbsp;     * allow {javafx.scene.transfer.DragEvent#accept()} or
+<i>78</i>&nbsp;     * {javafx.scene.transfer.DragEvent#reject()} to be called from a drop
+<i>79</i>&nbsp;     * target node in the scene graph.
+<i>80</i>&nbsp;     * &lt;br&gt;
+<i>81</i>&nbsp;     * Subsequent to {javafx.scene.transfer.DragEvent#accept()}, the target
+<i>82</i>&nbsp;     * node should retrieve the drag gesture&#39;s data via the
+<i>83</i>&nbsp;     * {javafx.scene.transfer.DragEvent#dragboard}
+<i>84</i>&nbsp;     * &lt;br&gt;
+<i>85</i>&nbsp;     * At the completion of a drop, the target node is required to call
+<i>86</i>&nbsp;     * {javafx.scene.transfer.DragEvent#dropComplete(boolean))}.
+<i>87</i>&nbsp;     * &lt;br&gt;
+<i>88</i>&nbsp;     * Note: The data transfer should be completed before the call to
+<i>89</i>&nbsp;     * {javafx.scene.transfer.DragEvent#dropComplete(boolean))}.
+<i>90</i>&nbsp;     * After that, the transfer of data can only succeed if the data transfer is
+<i>91</i>&nbsp;     * local (within the same VM hosting the running JavaFX code).
+<i>92</i>&nbsp;     * &lt;br&gt;
+<i>93</i>&nbsp;     * @return transfer mode chosen by target
+<i>94</i>&nbsp;     */
+<i>95</i>&nbsp;    public TransferMode drop(double x, double y, double screenX, double screenY,
+<i>96</i>&nbsp;                             TransferMode transferMode);
+<i>97</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2017-12-04 21:49</div>
+</div>
+</body>
+</html>

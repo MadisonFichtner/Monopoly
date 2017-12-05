@@ -1,0 +1,1018 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: SubScene</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">javafx.scene</a> ]
+</div>
+
+<h1>Coverage Summary for Class: SubScene (javafx.scene)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">SubScene</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 51)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 209)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright (c) 2013, 2017, Oracle and/or its affiliates. All rights reserved.
+<i>3</i>&nbsp; * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+<i>4</i>&nbsp; *
+<i>5</i>&nbsp; *
+<i>6</i>&nbsp; *
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; *
+<i>11</i>&nbsp; *
+<i>12</i>&nbsp; *
+<i>13</i>&nbsp; *
+<i>14</i>&nbsp; *
+<i>15</i>&nbsp; *
+<i>16</i>&nbsp; *
+<i>17</i>&nbsp; *
+<i>18</i>&nbsp; *
+<i>19</i>&nbsp; *
+<i>20</i>&nbsp; *
+<i>21</i>&nbsp; *
+<i>22</i>&nbsp; *
+<i>23</i>&nbsp; *
+<i>24</i>&nbsp; */
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;package javafx.scene;
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;import com.sun.javafx.css.StyleManager;
+<i>29</i>&nbsp;import com.sun.javafx.scene.traversal.Direction;
+<i>30</i>&nbsp;import com.sun.javafx.scene.traversal.SubSceneTraversalEngine;
+<i>31</i>&nbsp;import com.sun.javafx.scene.traversal.TopMostTraversalEngine;
+<i>32</i>&nbsp;import javafx.application.ConditionalFeature;
+<i>33</i>&nbsp;import javafx.application.Platform;
+<i>34</i>&nbsp;import javafx.beans.NamedArg;
+<i>35</i>&nbsp;import javafx.beans.property.*;
+<i>36</i>&nbsp;import javafx.geometry.NodeOrientation;
+<i>37</i>&nbsp;import javafx.geometry.Point3D;
+<i>38</i>&nbsp;import javafx.scene.input.PickResult;
+<i>39</i>&nbsp;import javafx.scene.paint.Paint;
+<i>40</i>&nbsp;
+<i>41</i>&nbsp;import java.util.ArrayList;
+<i>42</i>&nbsp;import java.util.List;
+<i>43</i>&nbsp;
+<i>44</i>&nbsp;import com.sun.javafx.geom.BaseBounds;
+<i>45</i>&nbsp;import com.sun.javafx.geom.PickRay;
+<i>46</i>&nbsp;import com.sun.javafx.geom.transform.BaseTransform;
+<i>47</i>&nbsp;import com.sun.javafx.jmx.MXNodeAlgorithm;
+<i>48</i>&nbsp;import com.sun.javafx.jmx.MXNodeAlgorithmContext;
+<i>49</i>&nbsp;import com.sun.javafx.scene.CssFlags;
+<i>50</i>&nbsp;import com.sun.javafx.scene.DirtyBits;
+<i>51</i>&nbsp;import com.sun.javafx.scene.NodeHelper;
+<i>52</i>&nbsp;import com.sun.javafx.scene.SubSceneHelper;
+<i>53</i>&nbsp;import com.sun.javafx.scene.input.PickResultChooser;
+<i>54</i>&nbsp;import com.sun.javafx.sg.prism.NGCamera;
+<i>55</i>&nbsp;import com.sun.javafx.sg.prism.NGLightBase;
+<i>56</i>&nbsp;import com.sun.javafx.sg.prism.NGNode;
+<i>57</i>&nbsp;import com.sun.javafx.sg.prism.NGSubScene;
+<i>58</i>&nbsp;import com.sun.javafx.tk.Toolkit;
+<i>59</i>&nbsp;
+<i>60</i>&nbsp;import sun.util.logging.PlatformLogger;
+<i>61</i>&nbsp;
+<i>62</i>&nbsp;/**
+<i>63</i>&nbsp; * The {@code SubScene} class is the container for content in a scene graph.
+<i>64</i>&nbsp; * {@code SubScene} provides separation of different parts of a scene, each
+<i>65</i>&nbsp; * of which can be rendered with a different camera, depth buffer, or scene
+<i>66</i>&nbsp; * anti-aliasing. A {@code SubScene} is embedded into the main scene or another
+<i>67</i>&nbsp; * sub-scene.
+<i>68</i>&nbsp; * &lt;p&gt;
+<i>69</i>&nbsp; * An application may request depth buffer support or scene anti-aliasing
+<i>70</i>&nbsp; * support at the creation of a {@code SubScene}. A sub-scene with only 2D
+<i>71</i>&nbsp; * shapes and without any 3D transforms does not need a depth buffer nor scene
+<i>72</i>&nbsp; * anti-aliasing support. A sub-scene containing 3D shapes or 2D shapes with 3D
+<i>73</i>&nbsp; * transforms may use depth buffer support for proper depth sorted rendering; to
+<i>74</i>&nbsp; * avoid depth fighting (also known as Z fighting), disable depth testing on 2D
+<i>75</i>&nbsp; * shapes that have no 3D transforms. See
+<i>76</i>&nbsp; * {@link Node#depthTestProperty depthTest} for more information. A sub-scene
+<i>77</i>&nbsp; * with 3D shapes may enable scene anti-aliasing to improve its rendering
+<i>78</i>&nbsp; * quality.
+<i>79</i>&nbsp; * &lt;p&gt;
+<i>80</i>&nbsp; * The depthBuffer and antiAliasing flags are conditional features. With the
+<i>81</i>&nbsp; * respective default values of: false and {@code SceneAntialiasing.DISABLED}.
+<i>82</i>&nbsp; * See {@link javafx.application.ConditionalFeature#SCENE3D ConditionalFeature.SCENE3D}
+<i>83</i>&nbsp; * for more information.
+<i>84</i>&nbsp; *
+<i>85</i>&nbsp; * &lt;p&gt;
+<i>86</i>&nbsp; * Possible use cases are:
+<i>87</i>&nbsp; * &lt;ul&gt;
+<i>88</i>&nbsp; * &lt;li&gt; Mixing 2D and 3D content &lt;/li&gt;
+<i>89</i>&nbsp; * &lt;li&gt; Overlay for UI controls &lt;/li&gt;
+<i>90</i>&nbsp; * &lt;li&gt; Underlay for background &lt;/li&gt;
+<i>91</i>&nbsp; * &lt;li&gt; Heads-up display &lt;/li&gt;
+<i>92</i>&nbsp; * &lt;/ul&gt;
+<i>93</i>&nbsp; *
+<i>94</i>&nbsp; * &lt;p&gt;
+<i>95</i>&nbsp; * A default headlight will be added to a {@code SubScene} that contains one or more
+<i>96</i>&nbsp; * {@code Shape3D} nodes, but no light nodes. This light source is a
+<i>97</i>&nbsp; * {@code Color.WHITE} {@code PointLight} placed at the camera position.
+<i>98</i>&nbsp; * &lt;/p&gt;
+<i>99</i>&nbsp; *
+<i>100</i>&nbsp; * @since JavaFX 8.0
+<i>101</i>&nbsp; */
+<b class="nc"><i>102</i>&nbsp;public class SubScene extends Node {</b>
+<i>103</i>&nbsp;    static {
+<i>104</i>&nbsp;        // This is used by classes in different packages to get access to
+<i>105</i>&nbsp;        // private and package private methods.
+<b class="nc"><i>106</i>&nbsp;        SubSceneHelper.setSubSceneAccessor(new SubSceneHelper.SubSceneAccessor() {</b>
+<i>107</i>&nbsp;            @Override
+<i>108</i>&nbsp;            public NGNode doCreatePeer(Node node) {
+<i>109</i>&nbsp;                return ((SubScene) node).doCreatePeer();
+<i>110</i>&nbsp;            }
+<i>111</i>&nbsp;
+<i>112</i>&nbsp;            @Override
+<i>113</i>&nbsp;            public void doUpdatePeer(Node node) {
+<i>114</i>&nbsp;                ((SubScene) node).doUpdatePeer();
+<i>115</i>&nbsp;            }
+<i>116</i>&nbsp;
+<i>117</i>&nbsp;            @Override
+<i>118</i>&nbsp;            public BaseBounds doComputeGeomBounds(Node node,
+<i>119</i>&nbsp;                    BaseBounds bounds, BaseTransform tx) {
+<i>120</i>&nbsp;                return ((SubScene) node).doComputeGeomBounds(bounds, tx);
+<i>121</i>&nbsp;            }
+<i>122</i>&nbsp;
+<i>123</i>&nbsp;            @Override
+<i>124</i>&nbsp;            public boolean doComputeContains(Node node, double localX, double localY) {
+<i>125</i>&nbsp;                return ((SubScene) node).doComputeContains(localX, localY);
+<i>126</i>&nbsp;            }
+<i>127</i>&nbsp;
+<i>128</i>&nbsp;            @Override
+<i>129</i>&nbsp;            public void doProcessCSS(Node node) {
+<i>130</i>&nbsp;                ((SubScene) node).doProcessCSS();
+<i>131</i>&nbsp;            }
+<i>132</i>&nbsp;
+<i>133</i>&nbsp;            @Override
+<i>134</i>&nbsp;            public Object doProcessMXNode(Node node, MXNodeAlgorithm alg, MXNodeAlgorithmContext ctx) {
+<i>135</i>&nbsp;                return ((SubScene) node).doProcessMXNode(alg, ctx);
+<i>136</i>&nbsp;            }
+<i>137</i>&nbsp;
+<i>138</i>&nbsp;            @Override
+<i>139</i>&nbsp;            public void doPickNodeLocal(Node node, PickRay localPickRay,
+<i>140</i>&nbsp;                    PickResultChooser result) {
+<i>141</i>&nbsp;                ((SubScene) node).doPickNodeLocal(localPickRay, result);
+<i>142</i>&nbsp;            }
+<i>143</i>&nbsp;
+<i>144</i>&nbsp;            @Override
+<i>145</i>&nbsp;            public boolean isDepthBuffer(SubScene subScene) {
+<i>146</i>&nbsp;                return subScene.isDepthBufferInternal();
+<i>147</i>&nbsp;            };
+<i>148</i>&nbsp;
+<i>149</i>&nbsp;            @Override
+<i>150</i>&nbsp;            public Camera getEffectiveCamera(SubScene subScene) {
+<i>151</i>&nbsp;                return subScene.getEffectiveCamera();
+<i>152</i>&nbsp;            }
+<i>153</i>&nbsp;
+<i>154</i>&nbsp;        });
+<i>155</i>&nbsp;    }
+<i>156</i>&nbsp;
+<i>157</i>&nbsp;    {
+<i>158</i>&nbsp;        // To initialize the class helper at the begining each constructor of this class
+<b class="nc"><i>159</i>&nbsp;        SubSceneHelper.initHelper(this);</b>
+<i>160</i>&nbsp;    }
+<i>161</i>&nbsp;    /**
+<i>162</i>&nbsp;     * Creates a {@code SubScene} for a specific root Node with a specific size.
+<i>163</i>&nbsp;     *
+<i>164</i>&nbsp;     * @param root The root node of the scene graph
+<i>165</i>&nbsp;     * @param width The width of the sub-scene
+<i>166</i>&nbsp;     * @param height The height of the sub-scene
+<i>167</i>&nbsp;     *
+<i>168</i>&nbsp;     * @throws NullPointerException if root is null
+<i>169</i>&nbsp;     */
+<i>170</i>&nbsp;    public SubScene(@NamedArg(&quot;root&quot;) Parent root, @NamedArg(&quot;width&quot;) double width, @NamedArg(&quot;height&quot;) double height) {
+<b class="nc"><i>171</i>&nbsp;        this(root, width, height, false, SceneAntialiasing.DISABLED);</b>
+<b class="nc"><i>172</i>&nbsp;    }</b>
+<i>173</i>&nbsp;
+<i>174</i>&nbsp;    /**
+<i>175</i>&nbsp;     * Constructs a {@code SubScene} consisting of a root, with a dimension of width and
+<i>176</i>&nbsp;     * height, specifies whether a depth buffer is created for this scene and
+<i>177</i>&nbsp;     * specifies whether scene anti-aliasing is requested.
+<i>178</i>&nbsp;     * &lt;p&gt;
+<i>179</i>&nbsp;     * A sub-scene with only 2D shapes and without any 3D transforms does not
+<i>180</i>&nbsp;     * need a depth buffer nor scene anti-aliasing support. A sub-scene
+<i>181</i>&nbsp;     * containing 3D shapes or 2D shapes with 3D transforms may use depth buffer
+<i>182</i>&nbsp;     * support for proper depth sorted rendering; to avoid depth fighting (also
+<i>183</i>&nbsp;     * known as Z fighting), disable depth testing on 2D shapes that have no 3D
+<i>184</i>&nbsp;     * transforms. See {@link Node#depthTestProperty depthTest} for more
+<i>185</i>&nbsp;     * information. A sub-scene with 3D shapes may enable scene anti-aliasing to
+<i>186</i>&nbsp;     * improve its rendering quality.
+<i>187</i>&nbsp;     *
+<i>188</i>&nbsp;     * @param root The root node of the scene graph
+<i>189</i>&nbsp;     * @param width The width of the sub-scene
+<i>190</i>&nbsp;     * @param height The height of the sub-scene
+<i>191</i>&nbsp;     * @param depthBuffer The depth buffer flag
+<i>192</i>&nbsp;     * @param antiAliasing The sub-scene anti-aliasing attribute. A value of
+<i>193</i>&nbsp;     * {@code null} is treated as DISABLED.
+<i>194</i>&nbsp;     * &lt;p&gt;
+<i>195</i>&nbsp;     * The depthBuffer and antiAliasing flags are conditional features. With the
+<i>196</i>&nbsp;     * respective default values of: false and {@code SceneAntialiasing.DISABLED}.
+<i>197</i>&nbsp;     * See {@link javafx.application.ConditionalFeature#SCENE3D ConditionalFeature.SCENE3D}
+<i>198</i>&nbsp;     * for more information.
+<i>199</i>&nbsp;     *
+<i>200</i>&nbsp;     * @throws NullPointerException if root is null
+<i>201</i>&nbsp;     *
+<i>202</i>&nbsp;     * @see javafx.scene.Node#setDepthTest(DepthTest)
+<i>203</i>&nbsp;     */
+<i>204</i>&nbsp;    public SubScene(@NamedArg(&quot;root&quot;) Parent root, @NamedArg(&quot;width&quot;) double width, @NamedArg(&quot;height&quot;) double height,
+<i>205</i>&nbsp;            @NamedArg(&quot;depthBuffer&quot;) boolean depthBuffer, @NamedArg(&quot;antiAliasing&quot;) SceneAntialiasing antiAliasing)
+<b class="nc"><i>206</i>&nbsp;    {</b>
+<b class="nc"><i>207</i>&nbsp;        this.depthBuffer = depthBuffer;</b>
+<b class="nc"><i>208</i>&nbsp;        this.antiAliasing = antiAliasing;</b>
+<b class="nc"><i>209</i>&nbsp;        boolean isAntiAliasing = !(antiAliasing == null || antiAliasing == SceneAntialiasing.DISABLED);</b>
+<b class="nc"><i>210</i>&nbsp;        setRoot(root);</b>
+<b class="nc"><i>211</i>&nbsp;        setWidth(width);</b>
+<b class="nc"><i>212</i>&nbsp;        setHeight(height);</b>
+<i>213</i>&nbsp;
+<b class="nc"><i>214</i>&nbsp;        if ((depthBuffer || isAntiAliasing) &amp;&amp; !is3DSupported) {</b>
+<b class="nc"><i>215</i>&nbsp;            String logname = SubScene.class.getName();</b>
+<b class="nc"><i>216</i>&nbsp;            PlatformLogger.getLogger(logname).warning(&quot;System can&#39;t support &quot;</b>
+<i>217</i>&nbsp;                    + &quot;ConditionalFeature.SCENE3D&quot;);
+<i>218</i>&nbsp;        }
+<b class="nc"><i>219</i>&nbsp;        if (isAntiAliasing &amp;&amp; !Toolkit.getToolkit().isMSAASupported()) {</b>
+<b class="nc"><i>220</i>&nbsp;            String logname = SubScene.class.getName();</b>
+<b class="nc"><i>221</i>&nbsp;            PlatformLogger.getLogger(logname).warning(&quot;System can&#39;t support &quot;</b>
+<i>222</i>&nbsp;                    + &quot;antiAliasing&quot;);
+<i>223</i>&nbsp;        }
+<b class="nc"><i>224</i>&nbsp;    }</b>
+<i>225</i>&nbsp;
+<b class="nc"><i>226</i>&nbsp;    private static boolean is3DSupported =</b>
+<b class="nc"><i>227</i>&nbsp;            Platform.isSupported(ConditionalFeature.SCENE3D);</b>
+<i>228</i>&nbsp;
+<i>229</i>&nbsp;    private final SceneAntialiasing antiAliasing;
+<i>230</i>&nbsp;
+<i>231</i>&nbsp;    /**
+<i>232</i>&nbsp;     * Return the defined {@code SceneAntialiasing} for this {@code SubScene}.
+<i>233</i>&nbsp;     * &lt;p&gt;
+<i>234</i>&nbsp;     * Note: this is a conditional feature. See
+<i>235</i>&nbsp;     * {@link javafx.application.ConditionalFeature#SCENE3D ConditionalFeature.SCENE3D}
+<i>236</i>&nbsp;     * and {@link javafx.scene.SceneAntialiasing SceneAntialiasing}
+<i>237</i>&nbsp;     * for more information.
+<i>238</i>&nbsp;     * @return the SceneAntialiasing for this sub-scene
+<i>239</i>&nbsp;     * @since JavaFX 8.0
+<i>240</i>&nbsp;     */
+<i>241</i>&nbsp;    public final SceneAntialiasing getAntiAliasing() {
+<b class="nc"><i>242</i>&nbsp;        return antiAliasing;</b>
+<i>243</i>&nbsp;    }
+<i>244</i>&nbsp;
+<i>245</i>&nbsp;    private final boolean depthBuffer;
+<i>246</i>&nbsp;
+<i>247</i>&nbsp;    /**
+<i>248</i>&nbsp;     * Retrieves the depth buffer attribute for this {@code SubScene}.
+<i>249</i>&nbsp;     * @return the depth buffer attribute.
+<i>250</i>&nbsp;     */
+<i>251</i>&nbsp;    public final boolean isDepthBuffer() {
+<b class="nc"><i>252</i>&nbsp;        return depthBuffer;</b>
+<i>253</i>&nbsp;    }
+<i>254</i>&nbsp;
+<i>255</i>&nbsp;    private boolean isDepthBufferInternal() {
+<b class="nc"><i>256</i>&nbsp;        return is3DSupported ? depthBuffer : false;</b>
+<i>257</i>&nbsp;    }
+<i>258</i>&nbsp;
+<i>259</i>&nbsp;    /**
+<i>260</i>&nbsp;     * Defines the root {@code Node} of the {@code SubScene} scene graph.
+<i>261</i>&nbsp;     * If a {@code Group} is used as the root, the
+<i>262</i>&nbsp;     * contents of the scene graph will be clipped by the {@code SubScene}&#39;s width and height.
+<i>263</i>&nbsp;     *
+<i>264</i>&nbsp;     * {@code SubScene} doesn&#39;t accept null root.
+<i>265</i>&nbsp;     *
+<i>266</i>&nbsp;     */
+<i>267</i>&nbsp;    private ObjectProperty&lt;Parent&gt; root;
+<i>268</i>&nbsp;
+<i>269</i>&nbsp;    public final void setRoot(Parent value) {
+<b class="nc"><i>270</i>&nbsp;        rootProperty().set(value);</b>
+<b class="nc"><i>271</i>&nbsp;    }</b>
+<i>272</i>&nbsp;
+<i>273</i>&nbsp;    public final Parent getRoot() {
+<b class="nc"><i>274</i>&nbsp;        return root == null ? null : root.get();</b>
+<i>275</i>&nbsp;    }
+<i>276</i>&nbsp;
+<i>277</i>&nbsp;    public final ObjectProperty&lt;Parent&gt; rootProperty() {
+<b class="nc"><i>278</i>&nbsp;        if (root == null) {</b>
+<b class="nc"><i>279</i>&nbsp;            root = new ObjectPropertyBase&lt;Parent&gt;() {</b>
+<i>280</i>&nbsp;                private Parent oldRoot;
+<i>281</i>&nbsp;
+<i>282</i>&nbsp;                private void forceUnbind() {
+<i>283</i>&nbsp;                    System.err.println(&quot;Unbinding illegal root.&quot;);
+<i>284</i>&nbsp;                    unbind();
+<i>285</i>&nbsp;                }
+<i>286</i>&nbsp;
+<i>287</i>&nbsp;                @Override
+<i>288</i>&nbsp;                protected void invalidated() {
+<i>289</i>&nbsp;                    Parent _value = get();
+<i>290</i>&nbsp;
+<i>291</i>&nbsp;                    if (_value == null) {
+<i>292</i>&nbsp;                        if (isBound()) { forceUnbind(); }
+<i>293</i>&nbsp;                        throw new NullPointerException(&quot;Scene&#39;s root cannot be null&quot;);
+<i>294</i>&nbsp;                    }
+<i>295</i>&nbsp;                    if (_value.getParent() != null) {
+<i>296</i>&nbsp;                        if (isBound()) { forceUnbind(); }
+<i>297</i>&nbsp;                        throw new IllegalArgumentException(_value +
+<i>298</i>&nbsp;                                &quot;is already inside a scene-graph and cannot be set as root&quot;);
+<i>299</i>&nbsp;                    }
+<i>300</i>&nbsp;                    if (_value.getClipParent() != null) {
+<i>301</i>&nbsp;                        if (isBound()) forceUnbind();
+<i>302</i>&nbsp;                        throw new IllegalArgumentException(_value +
+<i>303</i>&nbsp;                                &quot;is set as a clip on another node, so cannot be set as root&quot;);
+<i>304</i>&nbsp;                    }
+<i>305</i>&nbsp;                    if ((_value.getScene() != null &amp;&amp;
+<i>306</i>&nbsp;                            _value.getScene().getRoot() == _value) ||
+<i>307</i>&nbsp;                            (_value.getSubScene() != null &amp;&amp;
+<i>308</i>&nbsp;                            _value.getSubScene().getRoot() == _value &amp;&amp;
+<i>309</i>&nbsp;                            _value.getSubScene() != SubScene.this))
+<i>310</i>&nbsp;                    {
+<i>311</i>&nbsp;                        if (isBound()) { forceUnbind(); }
+<i>312</i>&nbsp;                        throw new IllegalArgumentException(_value +
+<i>313</i>&nbsp;                                &quot;is already set as root of another scene or subScene&quot;);
+<i>314</i>&nbsp;                    }
+<i>315</i>&nbsp;
+<i>316</i>&nbsp;                    // disabled, isTreeVisible and isTreeShowing properties are inherited
+<i>317</i>&nbsp;                    _value.setTreeVisible(isTreeVisible());
+<i>318</i>&nbsp;                    _value.setDisabled(isDisabled());
+<i>319</i>&nbsp;                    _value.setTreeShowing(isTreeShowing());
+<i>320</i>&nbsp;
+<i>321</i>&nbsp;                    if (oldRoot != null) {
+<i>322</i>&nbsp;                        StyleManager.getInstance().forget(SubScene.this);
+<i>323</i>&nbsp;                        oldRoot.setScenes(null, null, /* reapplyCSS*/ false);
+<i>324</i>&nbsp;                    }
+<i>325</i>&nbsp;                    oldRoot = _value;
+<i>326</i>&nbsp;                    _value.getStyleClass().add(0, &quot;root&quot;);
+<i>327</i>&nbsp;                    _value.setScenes(getScene(), SubScene.this, /* reapplyCSS*/ true);
+<i>328</i>&nbsp;                    markDirty(SubSceneDirtyBits.ROOT_SG_DIRTY);
+<i>329</i>&nbsp;                    _value.resize(getWidth(), getHeight()); // maybe no-op if root is not resizable
+<i>330</i>&nbsp;                    _value.requestLayout();
+<i>331</i>&nbsp;                }
+<i>332</i>&nbsp;
+<i>333</i>&nbsp;                @Override
+<i>334</i>&nbsp;                public Object getBean() {
+<i>335</i>&nbsp;                    return SubScene.this;
+<i>336</i>&nbsp;                }
+<i>337</i>&nbsp;
+<i>338</i>&nbsp;                @Override
+<i>339</i>&nbsp;                public String getName() {
+<i>340</i>&nbsp;                    return &quot;root&quot;;
+<i>341</i>&nbsp;                }
+<i>342</i>&nbsp;            };
+<i>343</i>&nbsp;        }
+<b class="nc"><i>344</i>&nbsp;        return root;</b>
+<i>345</i>&nbsp;    }
+<i>346</i>&nbsp;
+<i>347</i>&nbsp;    /**
+<i>348</i>&nbsp;     * Specifies the type of camera use for rendering this {@code SubScene}.
+<i>349</i>&nbsp;     * If {@code camera} is null, a parallel camera is used for rendering.
+<i>350</i>&nbsp;     * It is illegal to set a camera that belongs to other {@code Scene}
+<i>351</i>&nbsp;     * or {@code SubScene}.
+<i>352</i>&nbsp;     * &lt;p&gt;
+<i>353</i>&nbsp;     * Note: this is a conditional feature. See
+<i>354</i>&nbsp;     * {@link javafx.application.ConditionalFeature#SCENE3D ConditionalFeature.SCENE3D}
+<i>355</i>&nbsp;     * for more information.
+<i>356</i>&nbsp;     *
+<i>357</i>&nbsp;     * @defaultValue null
+<i>358</i>&nbsp;     */
+<i>359</i>&nbsp;    private ObjectProperty&lt;Camera&gt; camera;
+<i>360</i>&nbsp;
+<i>361</i>&nbsp;    public final void setCamera(Camera value) {
+<b class="nc"><i>362</i>&nbsp;        cameraProperty().set(value);</b>
+<b class="nc"><i>363</i>&nbsp;    }</b>
+<i>364</i>&nbsp;
+<i>365</i>&nbsp;    public final Camera getCamera() {
+<b class="nc"><i>366</i>&nbsp;        return camera == null ? null : camera.get();</b>
+<i>367</i>&nbsp;    }
+<i>368</i>&nbsp;
+<i>369</i>&nbsp;    public final ObjectProperty&lt;Camera&gt; cameraProperty() {
+<b class="nc"><i>370</i>&nbsp;        if (camera == null) {</b>
+<b class="nc"><i>371</i>&nbsp;            camera = new ObjectPropertyBase&lt;Camera&gt;() {</b>
+<i>372</i>&nbsp;                Camera oldCamera = null;
+<i>373</i>&nbsp;
+<i>374</i>&nbsp;                @Override
+<i>375</i>&nbsp;                protected void invalidated() {
+<i>376</i>&nbsp;                    Camera _value = get();
+<i>377</i>&nbsp;                    if (_value != null) {
+<i>378</i>&nbsp;                        if (_value instanceof PerspectiveCamera
+<i>379</i>&nbsp;                                &amp;&amp; !SubScene.is3DSupported) {
+<i>380</i>&nbsp;                            String logname = SubScene.class.getName();
+<i>381</i>&nbsp;                            PlatformLogger.getLogger(logname).warning(&quot;System can&#39;t support &quot;
+<i>382</i>&nbsp;                                    + &quot;ConditionalFeature.SCENE3D&quot;);
+<i>383</i>&nbsp;                        }
+<i>384</i>&nbsp;                        // Illegal value if it belongs to any scene or other subscene
+<i>385</i>&nbsp;                        if ((_value.getScene() != null || _value.getSubScene() != null)
+<i>386</i>&nbsp;                                &amp;&amp; (_value.getScene() != getScene() || _value.getSubScene() != SubScene.this)) {
+<i>387</i>&nbsp;                            throw new IllegalArgumentException(_value
+<i>388</i>&nbsp;                                    + &quot;is already part of other scene or subscene&quot;);
+<i>389</i>&nbsp;                        }
+<i>390</i>&nbsp;                        // throws exception if the camera already has a different owner
+<i>391</i>&nbsp;                        _value.setOwnerSubScene(SubScene.this);
+<i>392</i>&nbsp;                        _value.setViewWidth(getWidth());
+<i>393</i>&nbsp;                        _value.setViewHeight(getHeight());
+<i>394</i>&nbsp;                    }
+<i>395</i>&nbsp;                    markDirty(SubSceneDirtyBits.CAMERA_DIRTY);
+<i>396</i>&nbsp;                    if (oldCamera != null &amp;&amp; oldCamera != _value) {
+<i>397</i>&nbsp;                        oldCamera.setOwnerSubScene(null);
+<i>398</i>&nbsp;                    }
+<i>399</i>&nbsp;                    oldCamera = _value;
+<i>400</i>&nbsp;                }
+<i>401</i>&nbsp;
+<i>402</i>&nbsp;                @Override
+<i>403</i>&nbsp;                public Object getBean() {
+<i>404</i>&nbsp;                    return SubScene.this;
+<i>405</i>&nbsp;                }
+<i>406</i>&nbsp;
+<i>407</i>&nbsp;                @Override
+<i>408</i>&nbsp;                public String getName() {
+<i>409</i>&nbsp;                    return &quot;camera&quot;;
+<i>410</i>&nbsp;                }
+<i>411</i>&nbsp;            };
+<i>412</i>&nbsp;        }
+<b class="nc"><i>413</i>&nbsp;        return camera;</b>
+<i>414</i>&nbsp;    }
+<i>415</i>&nbsp;
+<i>416</i>&nbsp;    private Camera defaultCamera;
+<i>417</i>&nbsp;
+<i>418</i>&nbsp;    Camera getEffectiveCamera() {
+<b class="nc"><i>419</i>&nbsp;        final Camera cam = getCamera();</b>
+<b class="nc"><i>420</i>&nbsp;        if (cam == null</b>
+<i>421</i>&nbsp;                || (cam instanceof PerspectiveCamera &amp;&amp; !is3DSupported)) {
+<b class="nc"><i>422</i>&nbsp;            if (defaultCamera == null) {</b>
+<b class="nc"><i>423</i>&nbsp;                defaultCamera = new ParallelCamera();</b>
+<b class="nc"><i>424</i>&nbsp;                defaultCamera.setOwnerSubScene(this);</b>
+<b class="nc"><i>425</i>&nbsp;                defaultCamera.setViewWidth(getWidth());</b>
+<b class="nc"><i>426</i>&nbsp;                defaultCamera.setViewHeight(getHeight());</b>
+<i>427</i>&nbsp;            }
+<b class="nc"><i>428</i>&nbsp;            return defaultCamera;</b>
+<i>429</i>&nbsp;        }
+<i>430</i>&nbsp;
+<b class="nc"><i>431</i>&nbsp;        return cam;</b>
+<i>432</i>&nbsp;    }
+<i>433</i>&nbsp;
+<i>434</i>&nbsp;    // Used by the camera
+<i>435</i>&nbsp;    final void markContentDirty() {
+<b class="nc"><i>436</i>&nbsp;        markDirty(SubSceneDirtyBits.CONTENT_DIRTY);</b>
+<b class="nc"><i>437</i>&nbsp;    }</b>
+<i>438</i>&nbsp;
+<i>439</i>&nbsp;    /**
+<i>440</i>&nbsp;     * Defines the width of this {@code SubScene}
+<i>441</i>&nbsp;     *
+<i>442</i>&nbsp;     * @defaultValue 0.0
+<i>443</i>&nbsp;     */
+<i>444</i>&nbsp;    private DoubleProperty width;
+<i>445</i>&nbsp;
+<i>446</i>&nbsp;    public final void setWidth(double value) {
+<b class="nc"><i>447</i>&nbsp;        widthProperty().set(value);</b>
+<b class="nc"><i>448</i>&nbsp;    }</b>
+<i>449</i>&nbsp;
+<i>450</i>&nbsp;    public final double getWidth() {
+<b class="nc"><i>451</i>&nbsp;        return width == null ? 0.0 : width.get();</b>
+<i>452</i>&nbsp;    }
+<i>453</i>&nbsp;
+<i>454</i>&nbsp;    public final DoubleProperty widthProperty() {
+<b class="nc"><i>455</i>&nbsp;        if (width == null) {</b>
+<b class="nc"><i>456</i>&nbsp;            width = new DoublePropertyBase() {</b>
+<i>457</i>&nbsp;
+<i>458</i>&nbsp;                @Override
+<i>459</i>&nbsp;                public void invalidated() {
+<i>460</i>&nbsp;                    final Parent _root = getRoot();
+<i>461</i>&nbsp;                    //TODO - use a better method to update mirroring
+<i>462</i>&nbsp;                    if (_root.getEffectiveNodeOrientation() == NodeOrientation.RIGHT_TO_LEFT) {
+<i>463</i>&nbsp;                        NodeHelper.transformsChanged(_root);
+<i>464</i>&nbsp;                    }
+<i>465</i>&nbsp;                    if (_root.isResizable()) {
+<i>466</i>&nbsp;                        _root.resize(get() - _root.getLayoutX() - _root.getTranslateX(), _root.getLayoutBounds().getHeight());
+<i>467</i>&nbsp;                    }
+<i>468</i>&nbsp;                    markDirty(SubSceneDirtyBits.SIZE_DIRTY);
+<i>469</i>&nbsp;                    NodeHelper.geomChanged(SubScene.this);
+<i>470</i>&nbsp;
+<i>471</i>&nbsp;                    getEffectiveCamera().setViewWidth(get());
+<i>472</i>&nbsp;                }
+<i>473</i>&nbsp;
+<i>474</i>&nbsp;                @Override
+<i>475</i>&nbsp;                public Object getBean() {
+<i>476</i>&nbsp;                    return SubScene.this;
+<i>477</i>&nbsp;                }
+<i>478</i>&nbsp;
+<i>479</i>&nbsp;                @Override
+<i>480</i>&nbsp;                public String getName() {
+<i>481</i>&nbsp;                    return &quot;width&quot;;
+<i>482</i>&nbsp;                }
+<i>483</i>&nbsp;            };
+<i>484</i>&nbsp;        }
+<b class="nc"><i>485</i>&nbsp;        return width;</b>
+<i>486</i>&nbsp;    }
+<i>487</i>&nbsp;
+<i>488</i>&nbsp;    /**
+<i>489</i>&nbsp;     * Defines the height of this {@code SubScene}
+<i>490</i>&nbsp;     *
+<i>491</i>&nbsp;     * @defaultValue 0.0
+<i>492</i>&nbsp;     */
+<i>493</i>&nbsp;    private DoubleProperty height;
+<i>494</i>&nbsp;
+<i>495</i>&nbsp;    public final void setHeight(double value) {
+<b class="nc"><i>496</i>&nbsp;        heightProperty().set(value);</b>
+<b class="nc"><i>497</i>&nbsp;    }</b>
+<i>498</i>&nbsp;
+<i>499</i>&nbsp;    public final double getHeight() {
+<b class="nc"><i>500</i>&nbsp;        return height == null ? 0.0 : height.get();</b>
+<i>501</i>&nbsp;    }
+<i>502</i>&nbsp;
+<i>503</i>&nbsp;    public final DoubleProperty heightProperty() {
+<b class="nc"><i>504</i>&nbsp;        if (height == null) {</b>
+<b class="nc"><i>505</i>&nbsp;            height = new DoublePropertyBase() {</b>
+<i>506</i>&nbsp;
+<i>507</i>&nbsp;                @Override
+<i>508</i>&nbsp;                public void invalidated() {
+<i>509</i>&nbsp;                    final Parent _root = getRoot();
+<i>510</i>&nbsp;                    if (_root.isResizable()) {
+<i>511</i>&nbsp;                        _root.resize(_root.getLayoutBounds().getWidth(), get() - _root.getLayoutY() - _root.getTranslateY());
+<i>512</i>&nbsp;                    }
+<i>513</i>&nbsp;                    markDirty(SubSceneDirtyBits.SIZE_DIRTY);
+<i>514</i>&nbsp;                    NodeHelper.geomChanged(SubScene.this);
+<i>515</i>&nbsp;
+<i>516</i>&nbsp;                    getEffectiveCamera().setViewHeight(get());
+<i>517</i>&nbsp;                }
+<i>518</i>&nbsp;
+<i>519</i>&nbsp;                @Override
+<i>520</i>&nbsp;                public Object getBean() {
+<i>521</i>&nbsp;                    return SubScene.this;
+<i>522</i>&nbsp;                }
+<i>523</i>&nbsp;
+<i>524</i>&nbsp;                @Override
+<i>525</i>&nbsp;                public String getName() {
+<i>526</i>&nbsp;                    return &quot;height&quot;;
+<i>527</i>&nbsp;                }
+<i>528</i>&nbsp;            };
+<i>529</i>&nbsp;        }
+<b class="nc"><i>530</i>&nbsp;        return height;</b>
+<i>531</i>&nbsp;    }
+<i>532</i>&nbsp;
+<i>533</i>&nbsp;    /**
+<i>534</i>&nbsp;     * Defines the background fill of this {@code SubScene}. Both a {@code null}
+<i>535</i>&nbsp;     * value meaning paint no background and a {@link javafx.scene.paint.Paint}
+<i>536</i>&nbsp;     * with transparency are supported. The default value is null.
+<i>537</i>&nbsp;     *
+<i>538</i>&nbsp;     * @defaultValue null
+<i>539</i>&nbsp;     */
+<i>540</i>&nbsp;    private ObjectProperty&lt;Paint&gt; fill;
+<i>541</i>&nbsp;
+<i>542</i>&nbsp;    public final void setFill(Paint value) {
+<b class="nc"><i>543</i>&nbsp;        fillProperty().set(value);</b>
+<b class="nc"><i>544</i>&nbsp;    }</b>
+<i>545</i>&nbsp;
+<i>546</i>&nbsp;    public final Paint getFill() {
+<b class="nc"><i>547</i>&nbsp;        return fill == null ? null : fill.get();</b>
+<i>548</i>&nbsp;    }
+<i>549</i>&nbsp;
+<i>550</i>&nbsp;    public final ObjectProperty&lt;Paint&gt; fillProperty() {
+<b class="nc"><i>551</i>&nbsp;        if (fill == null) {</b>
+<b class="nc"><i>552</i>&nbsp;            fill = new ObjectPropertyBase&lt;Paint&gt;(null) {</b>
+<i>553</i>&nbsp;
+<i>554</i>&nbsp;                @Override
+<i>555</i>&nbsp;                protected void invalidated() {
+<i>556</i>&nbsp;                    markDirty(SubSceneDirtyBits.FILL_DIRTY);
+<i>557</i>&nbsp;                }
+<i>558</i>&nbsp;
+<i>559</i>&nbsp;                @Override
+<i>560</i>&nbsp;                public Object getBean() {
+<i>561</i>&nbsp;                    return SubScene.this;
+<i>562</i>&nbsp;                }
+<i>563</i>&nbsp;
+<i>564</i>&nbsp;                @Override
+<i>565</i>&nbsp;                public String getName() {
+<i>566</i>&nbsp;                    return &quot;fill&quot;;
+<i>567</i>&nbsp;                }
+<i>568</i>&nbsp;            };
+<i>569</i>&nbsp;        }
+<b class="nc"><i>570</i>&nbsp;        return fill;</b>
+<i>571</i>&nbsp;    }
+<i>572</i>&nbsp;
+<i>573</i>&nbsp;    /*
+<i>574</i>&nbsp;     * Note: This method MUST only be called via its accessor method.
+<i>575</i>&nbsp;     */
+<i>576</i>&nbsp;    private void doUpdatePeer() {
+<i>577</i>&nbsp;        // TODO deal with clip node
+<i>578</i>&nbsp;
+<b class="nc"><i>579</i>&nbsp;        dirtyNodes = false;</b>
+<b class="nc"><i>580</i>&nbsp;        if (isDirty()) {</b>
+<b class="nc"><i>581</i>&nbsp;            NGSubScene peer = getPeer();</b>
+<b class="nc"><i>582</i>&nbsp;            final Camera cam = getEffectiveCamera();</b>
+<b class="nc"><i>583</i>&nbsp;            boolean contentChanged = false;</b>
+<b class="nc"><i>584</i>&nbsp;            if (cam.getSubScene() == null &amp;&amp;</b>
+<b class="nc"><i>585</i>&nbsp;                    isDirty(SubSceneDirtyBits.CONTENT_DIRTY)) {</b>
+<i>586</i>&nbsp;                // When camera is not a part of the graph, then its
+<i>587</i>&nbsp;                // owner(subscene) must take care of syncing it. And when a
+<i>588</i>&nbsp;                // property on the camera changes it will mark subscenes
+<i>589</i>&nbsp;                // CONTENT_DIRTY.
+<b class="nc"><i>590</i>&nbsp;                cam.syncPeer();</b>
+<i>591</i>&nbsp;            }
+<b class="nc"><i>592</i>&nbsp;            if (isDirty(SubSceneDirtyBits.FILL_DIRTY)) {</b>
+<b class="nc"><i>593</i>&nbsp;                Object platformPaint = getFill() == null ? null :</b>
+<b class="nc"><i>594</i>&nbsp;                        Toolkit.getPaintAccessor().getPlatformPaint(getFill());</b>
+<b class="nc"><i>595</i>&nbsp;                peer.setFillPaint(platformPaint);</b>
+<b class="nc"><i>596</i>&nbsp;                contentChanged = true;</b>
+<i>597</i>&nbsp;            }
+<b class="nc"><i>598</i>&nbsp;            if (isDirty(SubSceneDirtyBits.SIZE_DIRTY)) {</b>
+<i>599</i>&nbsp;                // Note change in size is a geom change and is handled by peer
+<b class="nc"><i>600</i>&nbsp;                peer.setWidth((float)getWidth());</b>
+<b class="nc"><i>601</i>&nbsp;                peer.setHeight((float)getHeight());</b>
+<i>602</i>&nbsp;            }
+<b class="nc"><i>603</i>&nbsp;            if (isDirty(SubSceneDirtyBits.CAMERA_DIRTY)) {</b>
+<b class="nc"><i>604</i>&nbsp;                peer.setCamera((NGCamera) cam.getPeer());</b>
+<b class="nc"><i>605</i>&nbsp;                contentChanged = true;</b>
+<i>606</i>&nbsp;            }
+<b class="nc"><i>607</i>&nbsp;            if (isDirty(SubSceneDirtyBits.ROOT_SG_DIRTY)) {</b>
+<b class="nc"><i>608</i>&nbsp;                peer.setRoot(getRoot().getPeer());</b>
+<b class="nc"><i>609</i>&nbsp;                contentChanged = true;</b>
+<i>610</i>&nbsp;            }
+<b class="nc"><i>611</i>&nbsp;            contentChanged |= syncLights();</b>
+<b class="nc"><i>612</i>&nbsp;            if (contentChanged || isDirty(SubSceneDirtyBits.CONTENT_DIRTY)) {</b>
+<b class="nc"><i>613</i>&nbsp;                peer.markContentDirty();</b>
+<i>614</i>&nbsp;            }
+<i>615</i>&nbsp;
+<b class="nc"><i>616</i>&nbsp;            clearDirtyBits();</b>
+<i>617</i>&nbsp;        }
+<i>618</i>&nbsp;
+<b class="nc"><i>619</i>&nbsp;    }</b>
+<i>620</i>&nbsp;
+<i>621</i>&nbsp;    @Override
+<i>622</i>&nbsp;    void nodeResolvedOrientationChanged() {
+<b class="nc"><i>623</i>&nbsp;        getRoot().parentResolvedOrientationInvalidated();</b>
+<b class="nc"><i>624</i>&nbsp;    }</b>
+<i>625</i>&nbsp;
+<i>626</i>&nbsp;    /***********************************************************************
+<i>627</i>&nbsp;     *                         CSS                                         *
+<i>628</i>&nbsp;     **********************************************************************/
+<i>629</i>&nbsp;    /*
+<i>630</i>&nbsp;     * Note: This method MUST only be called via its accessor method.
+<i>631</i>&nbsp;     */
+<i>632</i>&nbsp;    private void doProcessCSS() {
+<i>633</i>&nbsp;        // Nothing to do...
+<b class="nc"><i>634</i>&nbsp;        if (cssFlag == CssFlags.CLEAN) { return; }</b>
+<i>635</i>&nbsp;
+<b class="nc"><i>636</i>&nbsp;        if (getRoot().cssFlag == CssFlags.CLEAN) {</b>
+<b class="nc"><i>637</i>&nbsp;            getRoot().cssFlag = cssFlag;</b>
+<i>638</i>&nbsp;        }
+<b class="nc"><i>639</i>&nbsp;        SubSceneHelper.superProcessCSS(this);</b>
+<b class="nc"><i>640</i>&nbsp;        getRoot().processCSS();</b>
+<b class="nc"><i>641</i>&nbsp;    }</b>
+<i>642</i>&nbsp;
+<i>643</i>&nbsp;    @Override
+<i>644</i>&nbsp;    void processCSS() {
+<b class="nc"><i>645</i>&nbsp;        Parent root = getRoot();</b>
+<b class="nc"><i>646</i>&nbsp;        if (root.isDirty(DirtyBits.NODE_CSS)) {</b>
+<b class="nc"><i>647</i>&nbsp;            root.clearDirty(DirtyBits.NODE_CSS);</b>
+<b class="nc"><i>648</i>&nbsp;            if (cssFlag == CssFlags.CLEAN) { cssFlag = CssFlags.UPDATE; }</b>
+<i>649</i>&nbsp;        }
+<b class="nc"><i>650</i>&nbsp;        super.processCSS();</b>
+<b class="nc"><i>651</i>&nbsp;    }</b>
+<i>652</i>&nbsp;
+<b class="nc"><i>653</i>&nbsp;    private ObjectProperty&lt;String&gt; userAgentStylesheet = null;</b>
+<i>654</i>&nbsp;    /**
+<i>655</i>&nbsp;     * @return the userAgentStylesheet property.
+<i>656</i>&nbsp;     * @see #getUserAgentStylesheet()
+<i>657</i>&nbsp;     * @see #setUserAgentStylesheet(String)
+<i>658</i>&nbsp;     * @since  JavaFX 8u20
+<i>659</i>&nbsp;     */
+<i>660</i>&nbsp;    public final ObjectProperty&lt;String&gt; userAgentStylesheetProperty() {
+<b class="nc"><i>661</i>&nbsp;        if (userAgentStylesheet == null) {</b>
+<b class="nc"><i>662</i>&nbsp;            userAgentStylesheet = new SimpleObjectProperty&lt;String&gt;(SubScene.this, &quot;userAgentStylesheet&quot;, null) {</b>
+<i>663</i>&nbsp;                @Override protected void invalidated() {
+<i>664</i>&nbsp;                    StyleManager.getInstance().forget(SubScene.this);
+<i>665</i>&nbsp;                    reapplyCSS();
+<i>666</i>&nbsp;                }
+<i>667</i>&nbsp;            };
+<i>668</i>&nbsp;        }
+<b class="nc"><i>669</i>&nbsp;        return userAgentStylesheet;</b>
+<i>670</i>&nbsp;    }
+<i>671</i>&nbsp;
+<i>672</i>&nbsp;    /**
+<i>673</i>&nbsp;     * Get the URL of the user-agent stylesheet that will be used by this SubScene. If the URL has not been set,
+<i>674</i>&nbsp;     * the platform-default user-agent stylesheet will be used.
+<i>675</i>&nbsp;     * &lt;p&gt;
+<i>676</i>&nbsp;     * For additional information about using CSS with the scene graph,
+<i>677</i>&nbsp;     * see the &lt;a href=&quot;doc-files/cssref.html&quot;&gt;CSS Reference Guide&lt;/a&gt;.
+<i>678</i>&nbsp;     * &lt;/p&gt;
+<i>679</i>&nbsp;     * @return The URL of the user-agent stylesheet that will be used by this SubScene,
+<i>680</i>&nbsp;     * or null if has not been set.
+<i>681</i>&nbsp;     * @since  JavaFX 8u20
+<i>682</i>&nbsp;     */
+<i>683</i>&nbsp;    public final String getUserAgentStylesheet() {
+<b class="nc"><i>684</i>&nbsp;        return userAgentStylesheet == null ? null : userAgentStylesheet.get();</b>
+<i>685</i>&nbsp;    }
+<i>686</i>&nbsp;
+<i>687</i>&nbsp;    /**
+<i>688</i>&nbsp;     * Set the URL of the user-agent stylesheet that will be used by this SubScene in place of the
+<i>689</i>&nbsp;     * the platform-default user-agent stylesheet. If the URL does not resolve to a valid location,
+<i>690</i>&nbsp;     * the platform-default user-agent stylesheet will be used.
+<i>691</i>&nbsp;     * &lt;p&gt;
+<i>692</i>&nbsp;     * For additional information about using CSS with the scene graph,
+<i>693</i>&nbsp;     * see the &lt;a href=&quot;doc-files/cssref.html&quot;&gt;CSS Reference Guide&lt;/a&gt;.
+<i>694</i>&nbsp;     * &lt;/p&gt;
+<i>695</i>&nbsp;     * @param url The URL is a hierarchical URI of the form [scheme:][//authority][path]. If the URL
+<i>696</i>&nbsp;     * does not have a [scheme:] component, the URL is considered to be the [path] component only.
+<i>697</i>&nbsp;     * Any leading &#39;/&#39; character of the [path] is ignored and the [path] is treated as a path relative to
+<i>698</i>&nbsp;     * the root of the application&#39;s classpath.
+<i>699</i>&nbsp;     * @since  JavaFX 8u20
+<i>700</i>&nbsp;     */
+<i>701</i>&nbsp;    public final void setUserAgentStylesheet(String url) {
+<b class="nc"><i>702</i>&nbsp;        userAgentStylesheetProperty().set(url);</b>
+<b class="nc"><i>703</i>&nbsp;    }</b>
+<i>704</i>&nbsp;
+<i>705</i>&nbsp;    @Override void updateBounds() {
+<b class="nc"><i>706</i>&nbsp;        super.updateBounds();</b>
+<b class="nc"><i>707</i>&nbsp;        getRoot().updateBounds();</b>
+<b class="nc"><i>708</i>&nbsp;    }</b>
+<i>709</i>&nbsp;
+<i>710</i>&nbsp;    /*
+<i>711</i>&nbsp;     * Note: This method MUST only be called via its accessor method.
+<i>712</i>&nbsp;     */
+<i>713</i>&nbsp;    private NGNode doCreatePeer() {
+<b class="nc"><i>714</i>&nbsp;        if (!is3DSupported) {</b>
+<b class="nc"><i>715</i>&nbsp;            return new NGSubScene(false, false);</b>
+<i>716</i>&nbsp;        }
+<b class="nc"><i>717</i>&nbsp;        boolean aa = !(antiAliasing == null || antiAliasing == SceneAntialiasing.DISABLED);</b>
+<b class="nc"><i>718</i>&nbsp;        return new NGSubScene(depthBuffer, aa &amp;&amp; Toolkit.getToolkit().isMSAASupported());</b>
+<i>719</i>&nbsp;    }
+<i>720</i>&nbsp;
+<i>721</i>&nbsp;    /*
+<i>722</i>&nbsp;     * Note: This method MUST only be called via its accessor method.
+<i>723</i>&nbsp;     */
+<i>724</i>&nbsp;    private BaseBounds doComputeGeomBounds(BaseBounds bounds, BaseTransform tx) {
+<b class="nc"><i>725</i>&nbsp;        int w = (int)Math.ceil(width.get());</b>
+<b class="nc"><i>726</i>&nbsp;        int h = (int)Math.ceil(height.get());</b>
+<b class="nc"><i>727</i>&nbsp;        bounds = bounds.deriveWithNewBounds(0.0f, 0.0f, 0.0f,</b>
+<i>728</i>&nbsp;                                            w, h, 0.0f);
+<b class="nc"><i>729</i>&nbsp;        bounds = tx.transform(bounds, bounds);</b>
+<b class="nc"><i>730</i>&nbsp;        return bounds;</b>
+<i>731</i>&nbsp;    }
+<i>732</i>&nbsp;
+<i>733</i>&nbsp;    /***********************************************************************
+<i>734</i>&nbsp;     *                         Dirty Bits                                  *
+<i>735</i>&nbsp;     **********************************************************************/
+<b class="nc"><i>736</i>&nbsp;    boolean dirtyLayout = false;</b>
+<i>737</i>&nbsp;    void setDirtyLayout(Parent p) {
+<b class="nc"><i>738</i>&nbsp;        if (!dirtyLayout &amp;&amp; p != null &amp;&amp; p.getSubScene() == this &amp;&amp;</b>
+<b class="nc"><i>739</i>&nbsp;                this.getScene() != null) {</b>
+<b class="nc"><i>740</i>&nbsp;            dirtyLayout = true;</b>
+<b class="nc"><i>741</i>&nbsp;            markDirtyLayoutBranch();</b>
+<b class="nc"><i>742</i>&nbsp;            markDirty(SubSceneDirtyBits.CONTENT_DIRTY);</b>
+<i>743</i>&nbsp;        }
+<b class="nc"><i>744</i>&nbsp;    }</b>
+<i>745</i>&nbsp;
+<b class="nc"><i>746</i>&nbsp;    private boolean dirtyNodes = false;</b>
+<i>747</i>&nbsp;    void setDirty(Node n) {
+<b class="nc"><i>748</i>&nbsp;        if (!dirtyNodes &amp;&amp; n != null &amp;&amp; n.getSubScene() == this &amp;&amp;</b>
+<b class="nc"><i>749</i>&nbsp;                this.getScene() != null) {</b>
+<b class="nc"><i>750</i>&nbsp;            dirtyNodes = true;</b>
+<b class="nc"><i>751</i>&nbsp;            markDirty(SubSceneDirtyBits.CONTENT_DIRTY);</b>
+<i>752</i>&nbsp;        }
+<b class="nc"><i>753</i>&nbsp;    }</b>
+<i>754</i>&nbsp;
+<i>755</i>&nbsp;    void layoutPass() {
+<b class="nc"><i>756</i>&nbsp;        if (dirtyLayout) {</b>
+<b class="nc"><i>757</i>&nbsp;            Parent r = getRoot();</b>
+<b class="nc"><i>758</i>&nbsp;            if (r != null) {</b>
+<b class="nc"><i>759</i>&nbsp;                r.layout();</b>
+<i>760</i>&nbsp;            }
+<b class="nc"><i>761</i>&nbsp;            dirtyLayout = false;</b>
+<i>762</i>&nbsp;        }
+<b class="nc"><i>763</i>&nbsp;    }</b>
+<i>764</i>&nbsp;
+<b class="nc"><i>765</i>&nbsp;    private TopMostTraversalEngine traversalEngine = new SubSceneTraversalEngine(this);</b>
+<i>766</i>&nbsp;
+<i>767</i>&nbsp;    boolean traverse(Node node, Direction dir) {
+<b class="nc"><i>768</i>&nbsp;        return traversalEngine.trav(node, dir) != null;</b>
+<i>769</i>&nbsp;    }
+<i>770</i>&nbsp;
+<i>771</i>&nbsp;    private enum SubSceneDirtyBits {
+<i>772</i>&nbsp;        SIZE_DIRTY,
+<i>773</i>&nbsp;        FILL_DIRTY,
+<i>774</i>&nbsp;        ROOT_SG_DIRTY,
+<i>775</i>&nbsp;        CAMERA_DIRTY,
+<i>776</i>&nbsp;        LIGHTS_DIRTY,
+<i>777</i>&nbsp;        CONTENT_DIRTY;
+<i>778</i>&nbsp;
+<i>779</i>&nbsp;        private int mask;
+<i>780</i>&nbsp;
+<i>781</i>&nbsp;        private SubSceneDirtyBits() { mask = 1 &lt;&lt; ordinal(); }
+<i>782</i>&nbsp;
+<i>783</i>&nbsp;        public final int getMask() { return mask; }
+<i>784</i>&nbsp;    }
+<i>785</i>&nbsp;
+<b class="nc"><i>786</i>&nbsp;    private int dirtyBits = ~0;</b>
+<i>787</i>&nbsp;
+<b class="nc"><i>788</i>&nbsp;    private void clearDirtyBits() { dirtyBits = 0; }</b>
+<i>789</i>&nbsp;
+<b class="nc"><i>790</i>&nbsp;    private boolean isDirty() { return dirtyBits != 0; }</b>
+<i>791</i>&nbsp;
+<i>792</i>&nbsp;    // Should not be called directly, instead use markDirty
+<i>793</i>&nbsp;    private void setDirty(SubSceneDirtyBits dirtyBit) {
+<b class="nc"><i>794</i>&nbsp;        this.dirtyBits |= dirtyBit.getMask();</b>
+<b class="nc"><i>795</i>&nbsp;    }</b>
+<i>796</i>&nbsp;
+<i>797</i>&nbsp;    private boolean isDirty(SubSceneDirtyBits dirtyBit) {
+<b class="nc"><i>798</i>&nbsp;        return ((this.dirtyBits &amp; dirtyBit.getMask()) != 0);</b>
+<i>799</i>&nbsp;    }
+<i>800</i>&nbsp;
+<i>801</i>&nbsp;    private void markDirty(SubSceneDirtyBits dirtyBit) {
+<b class="nc"><i>802</i>&nbsp;        if (!isDirty()) {</b>
+<i>803</i>&nbsp;            // Force SubScene to redraw
+<b class="nc"><i>804</i>&nbsp;            NodeHelper.markDirty(this, DirtyBits.NODE_CONTENTS);</b>
+<i>805</i>&nbsp;        }
+<b class="nc"><i>806</i>&nbsp;        setDirty(dirtyBit);</b>
+<b class="nc"><i>807</i>&nbsp;    }</b>
+<i>808</i>&nbsp;
+<i>809</i>&nbsp;    /***********************************************************************
+<i>810</i>&nbsp;     *                           Picking                                   *
+<i>811</i>&nbsp;     **********************************************************************/
+<i>812</i>&nbsp;
+<i>813</i>&nbsp;    /*
+<i>814</i>&nbsp;     * Note: This method MUST only be called via its accessor method.
+<i>815</i>&nbsp;     */
+<i>816</i>&nbsp;    private boolean doComputeContains(double localX, double localY) {
+<b class="nc"><i>817</i>&nbsp;        if (subSceneComputeContains(localX, localY)) {</b>
+<b class="nc"><i>818</i>&nbsp;            return true;</b>
+<i>819</i>&nbsp;        } else {
+<b class="nc"><i>820</i>&nbsp;            return NodeHelper.computeContains(getRoot(), localX, localY);</b>
+<i>821</i>&nbsp;        }
+<i>822</i>&nbsp;    }
+<i>823</i>&nbsp;
+<i>824</i>&nbsp;    /**
+<i>825</i>&nbsp;     * Determines whether {@code SubScene} contains the given point.
+<i>826</i>&nbsp;     * It does not consider the contained nodes, only {@code SubScene}&#39;s
+<i>827</i>&nbsp;     * size and fills.
+<i>828</i>&nbsp;     * @param localX horizontal coordinate in the local space of the {@code SubScene} node
+<i>829</i>&nbsp;     * @param localY vertical coordinate in the local space of the {@code SubScene} node
+<i>830</i>&nbsp;     * @return true if the point is inside {@code SubScene}&#39;s area covered by its fill
+<i>831</i>&nbsp;     */
+<i>832</i>&nbsp;    private boolean subSceneComputeContains(double localX, double localY) {
+<b class="nc"><i>833</i>&nbsp;        if (localX &lt; 0 || localY &lt; 0 || localX &gt; getWidth() || localY &gt; getHeight()) {</b>
+<b class="nc"><i>834</i>&nbsp;            return false;</b>
+<i>835</i>&nbsp;        }
+<b class="nc"><i>836</i>&nbsp;        return getFill() != null;</b>
+<i>837</i>&nbsp;    }
+<i>838</i>&nbsp;
+<i>839</i>&nbsp;    /*
+<i>840</i>&nbsp;     * Generates a pick ray based on local coordinates and camera. Then finds a
+<i>841</i>&nbsp;     * top-most child node that intersects the pick ray.
+<i>842</i>&nbsp;     */
+<i>843</i>&nbsp;    private PickResult pickRootSG(double localX, double localY) {
+<b class="nc"><i>844</i>&nbsp;        final double viewWidth = getWidth();</b>
+<b class="nc"><i>845</i>&nbsp;        final double viewHeight = getHeight();</b>
+<b class="nc"><i>846</i>&nbsp;        if (localX &lt; 0 || localY &lt; 0 || localX &gt; viewWidth || localY &gt; viewHeight) {</b>
+<b class="nc"><i>847</i>&nbsp;            return null;</b>
+<i>848</i>&nbsp;        }
+<b class="nc"><i>849</i>&nbsp;        final PickResultChooser result = new PickResultChooser();</b>
+<b class="nc"><i>850</i>&nbsp;        final PickRay pickRay = getEffectiveCamera().computePickRay(localX, localY, new PickRay());</b>
+<b class="nc"><i>851</i>&nbsp;        pickRay.getDirectionNoClone().normalize();</b>
+<b class="nc"><i>852</i>&nbsp;        getRoot().pickNode(pickRay, result);</b>
+<b class="nc"><i>853</i>&nbsp;        return result.toPickResult();</b>
+<i>854</i>&nbsp;    }
+<i>855</i>&nbsp;
+<i>856</i>&nbsp;    /**
+<i>857</i>&nbsp;     * Finds a top-most child node that contains the given local coordinates.
+<i>858</i>&nbsp;     *
+<i>859</i>&nbsp;     * Returns the picked node, null if no such node was found.
+<i>860</i>&nbsp;     *
+<i>861</i>&nbsp;     * Note: This method MUST only be called via its accessor method.
+<i>862</i>&nbsp;     */
+<i>863</i>&nbsp;    private void doPickNodeLocal(PickRay localPickRay, PickResultChooser result) {
+<b class="nc"><i>864</i>&nbsp;        final double boundsDistance = intersectsBounds(localPickRay);</b>
+<b class="nc"><i>865</i>&nbsp;        if (!Double.isNaN(boundsDistance) &amp;&amp; result.isCloser(boundsDistance)) {</b>
+<b class="nc"><i>866</i>&nbsp;            final Point3D intersectPt = PickResultChooser.computePoint(</b>
+<i>867</i>&nbsp;                    localPickRay, boundsDistance);
+<b class="nc"><i>868</i>&nbsp;            final PickResult subSceneResult =</b>
+<b class="nc"><i>869</i>&nbsp;                    pickRootSG(intersectPt.getX(), intersectPt.getY());</b>
+<b class="nc"><i>870</i>&nbsp;            if (subSceneResult != null) {</b>
+<b class="nc"><i>871</i>&nbsp;                result.offerSubScenePickResult(this, subSceneResult, boundsDistance);</b>
+<b class="nc"><i>872</i>&nbsp;            } else if (isPickOnBounds() ||</b>
+<b class="nc"><i>873</i>&nbsp;                    subSceneComputeContains(intersectPt.getX(), intersectPt.getY())) {</b>
+<b class="nc"><i>874</i>&nbsp;                result.offer(this, boundsDistance, intersectPt);</b>
+<i>875</i>&nbsp;            }
+<i>876</i>&nbsp;        }
+<b class="nc"><i>877</i>&nbsp;    }</b>
+<i>878</i>&nbsp;
+<i>879</i>&nbsp;    /*
+<i>880</i>&nbsp;     * Note: This method MUST only be called via its accessor method.
+<i>881</i>&nbsp;     */
+<i>882</i>&nbsp;    private Object doProcessMXNode(MXNodeAlgorithm alg, MXNodeAlgorithmContext ctx) {
+<b class="nc"><i>883</i>&nbsp;        throw new UnsupportedOperationException(&quot;Not supported yet.&quot;);</b>
+<i>884</i>&nbsp;    }
+<i>885</i>&nbsp;
+<i>886</i>&nbsp;
+<b class="nc"><i>887</i>&nbsp;    private List&lt;LightBase&gt; lights = new ArrayList&lt;&gt;();</b>
+<i>888</i>&nbsp;
+<i>889</i>&nbsp;    // @param light must not be null
+<i>890</i>&nbsp;    final void addLight(LightBase light) {
+<b class="nc"><i>891</i>&nbsp;        if (!lights.contains(light)) {</b>
+<b class="nc"><i>892</i>&nbsp;            markDirty(SubSceneDirtyBits.LIGHTS_DIRTY);</b>
+<b class="nc"><i>893</i>&nbsp;            lights.add(light);</b>
+<i>894</i>&nbsp;        }
+<b class="nc"><i>895</i>&nbsp;    }</b>
+<i>896</i>&nbsp;
+<i>897</i>&nbsp;    final void removeLight(LightBase light) {
+<b class="nc"><i>898</i>&nbsp;        if (lights.remove(light)) {</b>
+<b class="nc"><i>899</i>&nbsp;            markDirty(SubSceneDirtyBits.LIGHTS_DIRTY);</b>
+<i>900</i>&nbsp;        }
+<b class="nc"><i>901</i>&nbsp;    }</b>
+<i>902</i>&nbsp;
+<i>903</i>&nbsp;    /**
+<i>904</i>&nbsp;     * PG Light synchronizer.
+<i>905</i>&nbsp;     */
+<i>906</i>&nbsp;    private boolean syncLights() {
+<b class="nc"><i>907</i>&nbsp;        boolean lightOwnerChanged = false;</b>
+<b class="nc"><i>908</i>&nbsp;        if (!isDirty(SubSceneDirtyBits.LIGHTS_DIRTY)) {</b>
+<b class="nc"><i>909</i>&nbsp;            return lightOwnerChanged;</b>
+<i>910</i>&nbsp;        }
+<b class="nc"><i>911</i>&nbsp;        NGSubScene pgSubScene = getPeer();</b>
+<b class="nc"><i>912</i>&nbsp;        NGLightBase peerLights[] = pgSubScene.getLights();</b>
+<b class="nc"><i>913</i>&nbsp;        if (!lights.isEmpty() || (peerLights != null)) {</b>
+<b class="nc"><i>914</i>&nbsp;            if (lights.isEmpty()) {</b>
+<b class="nc"><i>915</i>&nbsp;                pgSubScene.setLights(null);</b>
+<i>916</i>&nbsp;            } else {
+<b class="nc"><i>917</i>&nbsp;                if (peerLights == null || peerLights.length &lt; lights.size()) {</b>
+<b class="nc"><i>918</i>&nbsp;                    peerLights = new NGLightBase[lights.size()];</b>
+<i>919</i>&nbsp;                }
+<b class="nc"><i>920</i>&nbsp;                int i = 0;</b>
+<b class="nc"><i>921</i>&nbsp;                for (; i &lt; lights.size(); i++) {</b>
+<b class="nc"><i>922</i>&nbsp;                    peerLights[i] = lights.get(i).getPeer();</b>
+<i>923</i>&nbsp;                }
+<i>924</i>&nbsp;                // Clear the rest of the list
+<b class="nc"><i>925</i>&nbsp;                while (i &lt; peerLights.length &amp;&amp; peerLights[i] != null) {</b>
+<b class="nc"><i>926</i>&nbsp;                    peerLights[i++] = null;</b>
+<i>927</i>&nbsp;                }
+<b class="nc"><i>928</i>&nbsp;                pgSubScene.setLights(peerLights);</b>
+<i>929</i>&nbsp;            }
+<b class="nc"><i>930</i>&nbsp;            lightOwnerChanged = true;</b>
+<i>931</i>&nbsp;        }
+<b class="nc"><i>932</i>&nbsp;        return lightOwnerChanged;</b>
+<i>933</i>&nbsp;    }
+<i>934</i>&nbsp;
+<i>935</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2017-12-04 21:49</div>
+</div>
+</body>
+</html>

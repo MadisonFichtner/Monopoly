@@ -1,0 +1,766 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: ImageCursor</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">javafx.scene</a> ]
+</div>
+
+<h1>Coverage Summary for Class: ImageCursor (javafx.scene)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">ImageCursor</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 27)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 167)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright (c) 2010, 2016, Oracle and/or its affiliates. All rights reserved.
+<i>3</i>&nbsp; * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+<i>4</i>&nbsp; *
+<i>5</i>&nbsp; *
+<i>6</i>&nbsp; *
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; *
+<i>11</i>&nbsp; *
+<i>12</i>&nbsp; *
+<i>13</i>&nbsp; *
+<i>14</i>&nbsp; *
+<i>15</i>&nbsp; *
+<i>16</i>&nbsp; *
+<i>17</i>&nbsp; *
+<i>18</i>&nbsp; *
+<i>19</i>&nbsp; *
+<i>20</i>&nbsp; *
+<i>21</i>&nbsp; *
+<i>22</i>&nbsp; *
+<i>23</i>&nbsp; *
+<i>24</i>&nbsp; */
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;package javafx.scene;
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;import java.util.HashMap;
+<i>29</i>&nbsp;import java.util.Map;
+<i>30</i>&nbsp;
+<i>31</i>&nbsp;import javafx.beans.InvalidationListener;
+<i>32</i>&nbsp;import javafx.beans.Observable;
+<i>33</i>&nbsp;import javafx.beans.property.ReadOnlyDoubleProperty;
+<i>34</i>&nbsp;import javafx.beans.property.ReadOnlyDoublePropertyBase;
+<i>35</i>&nbsp;import javafx.beans.property.ReadOnlyObjectProperty;
+<i>36</i>&nbsp;import javafx.beans.property.ReadOnlyObjectPropertyBase;
+<i>37</i>&nbsp;import javafx.geometry.Dimension2D;
+<i>38</i>&nbsp;import javafx.scene.image.Image;
+<i>39</i>&nbsp;
+<i>40</i>&nbsp;import com.sun.javafx.cursor.CursorFrame;
+<i>41</i>&nbsp;import com.sun.javafx.cursor.ImageCursorFrame;
+<i>42</i>&nbsp;import com.sun.javafx.tk.Toolkit;
+<i>43</i>&nbsp;import java.util.Arrays;
+<i>44</i>&nbsp;import javafx.beans.NamedArg;
+<i>45</i>&nbsp;
+<i>46</i>&nbsp;
+<i>47</i>&nbsp;/**
+<i>48</i>&nbsp; * A custom image representation of the mouse cursor. On platforms that don&#39;t
+<i>49</i>&nbsp; * support custom cursors, {@code Cursor.DEFAULT} will be used in place of the
+<i>50</i>&nbsp; * specified ImageCursor.
+<i>51</i>&nbsp; *
+<i>52</i>&nbsp; * &lt;p&gt;Example:
+<i>53</i>&nbsp; * &lt;pre&gt;
+<i>54</i>&nbsp;import javafx.scene.*;
+<i>55</i>&nbsp;import javafx.scene.image.*;
+<i>56</i>&nbsp;
+<i>57</i>&nbsp;Image image = new Image(&quot;mycursor.png&quot;);
+<i>58</i>&nbsp;
+<i>59</i>&nbsp;Scene scene = new Scene(400, 300);
+<i>60</i>&nbsp;scene.setCursor(new ImageCursor(image,
+<i>61</i>&nbsp;                                image.getWidth() / 2,
+<i>62</i>&nbsp;                                image.getHeight() /2));
+<i>63</i>&nbsp; * &lt;/pre&gt;
+<i>64</i>&nbsp; *
+<i>65</i>&nbsp; * @since JavaFX 2.0
+<i>66</i>&nbsp; */
+<b class="nc"><i>67</i>&nbsp;public class ImageCursor extends Cursor {</b>
+<i>68</i>&nbsp;    /**
+<i>69</i>&nbsp;     * The image to display when the cursor is active. If the image is null,
+<i>70</i>&nbsp;     * {@code Cursor.DEFAULT} will be used.
+<i>71</i>&nbsp;     *
+<i>72</i>&nbsp;     * @defaultValue null
+<i>73</i>&nbsp;     */
+<i>74</i>&nbsp;    private ObjectPropertyImpl&lt;Image&gt; image;
+<i>75</i>&nbsp;
+<i>76</i>&nbsp;    public final Image getImage() {
+<b class="nc"><i>77</i>&nbsp;        return image == null ? null : image.get();</b>
+<i>78</i>&nbsp;    }
+<i>79</i>&nbsp;
+<i>80</i>&nbsp;    public final ReadOnlyObjectProperty&lt;Image&gt; imageProperty() {
+<b class="nc"><i>81</i>&nbsp;        return imagePropertyImpl();</b>
+<i>82</i>&nbsp;    }
+<i>83</i>&nbsp;
+<i>84</i>&nbsp;    private ObjectPropertyImpl&lt;Image&gt; imagePropertyImpl() {
+<b class="nc"><i>85</i>&nbsp;        if (image == null) {</b>
+<b class="nc"><i>86</i>&nbsp;            image = new ObjectPropertyImpl&lt;Image&gt;(&quot;image&quot;);</b>
+<i>87</i>&nbsp;        }
+<i>88</i>&nbsp;
+<b class="nc"><i>89</i>&nbsp;        return image;</b>
+<i>90</i>&nbsp;    }
+<i>91</i>&nbsp;
+<i>92</i>&nbsp;    /**
+<i>93</i>&nbsp;     * The X coordinate of the cursor&#39;s hot spot. This hotspot represents the
+<i>94</i>&nbsp;     * location within the cursor image that will be displayed at the mouse
+<i>95</i>&nbsp;     * position. This must be in the range of [0,image.width-1]. A value
+<i>96</i>&nbsp;     * less than 0 will be set to 0. A value greater than
+<i>97</i>&nbsp;     * image.width-1 will be set to image.width-1.
+<i>98</i>&nbsp;     *
+<i>99</i>&nbsp;     * @defaultValue 0
+<i>100</i>&nbsp;     */
+<i>101</i>&nbsp;    private DoublePropertyImpl hotspotX;
+<i>102</i>&nbsp;
+<i>103</i>&nbsp;    public final double getHotspotX() {
+<b class="nc"><i>104</i>&nbsp;        return hotspotX == null ? 0.0 : hotspotX.get();</b>
+<i>105</i>&nbsp;    }
+<i>106</i>&nbsp;
+<i>107</i>&nbsp;    public final ReadOnlyDoubleProperty hotspotXProperty() {
+<b class="nc"><i>108</i>&nbsp;        return hotspotXPropertyImpl();</b>
+<i>109</i>&nbsp;    }
+<i>110</i>&nbsp;
+<i>111</i>&nbsp;    private DoublePropertyImpl hotspotXPropertyImpl() {
+<b class="nc"><i>112</i>&nbsp;        if (hotspotX == null) {</b>
+<b class="nc"><i>113</i>&nbsp;            hotspotX = new DoublePropertyImpl(&quot;hotspotX&quot;);</b>
+<i>114</i>&nbsp;        }
+<i>115</i>&nbsp;
+<b class="nc"><i>116</i>&nbsp;        return hotspotX;</b>
+<i>117</i>&nbsp;    }
+<i>118</i>&nbsp;
+<i>119</i>&nbsp;    /**
+<i>120</i>&nbsp;     * The Y coordinate of the cursor&#39;s hot spot. This hotspot represents the
+<i>121</i>&nbsp;     * location within the cursor image that will be displayed at the mouse
+<i>122</i>&nbsp;     * position. This must be in the range of [0,image.height-1]. A value
+<i>123</i>&nbsp;     * less than 0 will be set to 0. A value greater than
+<i>124</i>&nbsp;     * image.height-1 will be set to image.height-1.
+<i>125</i>&nbsp;     *
+<i>126</i>&nbsp;     * @defaultValue 0
+<i>127</i>&nbsp;     */
+<i>128</i>&nbsp;    private DoublePropertyImpl hotspotY;
+<i>129</i>&nbsp;
+<i>130</i>&nbsp;    public final double getHotspotY() {
+<b class="nc"><i>131</i>&nbsp;        return hotspotY == null ? 0.0 : hotspotY.get();</b>
+<i>132</i>&nbsp;    }
+<i>133</i>&nbsp;
+<i>134</i>&nbsp;    public final ReadOnlyDoubleProperty hotspotYProperty() {
+<b class="nc"><i>135</i>&nbsp;        return hotspotYPropertyImpl();</b>
+<i>136</i>&nbsp;    }
+<i>137</i>&nbsp;
+<i>138</i>&nbsp;    private DoublePropertyImpl hotspotYPropertyImpl() {
+<b class="nc"><i>139</i>&nbsp;        if (hotspotY == null) {</b>
+<b class="nc"><i>140</i>&nbsp;            hotspotY = new DoublePropertyImpl(&quot;hotspotY&quot;);</b>
+<i>141</i>&nbsp;        }
+<i>142</i>&nbsp;
+<b class="nc"><i>143</i>&nbsp;        return hotspotY;</b>
+<i>144</i>&nbsp;    }
+<i>145</i>&nbsp;
+<i>146</i>&nbsp;    private CursorFrame currentCursorFrame;
+<i>147</i>&nbsp;
+<i>148</i>&nbsp;    /**
+<i>149</i>&nbsp;     * Stores the first cursor frame. For non-animated cursors there is only one
+<i>150</i>&nbsp;     * frame and so the {@code restCursorFrames} is {@code null}.
+<i>151</i>&nbsp;     */
+<i>152</i>&nbsp;    private ImageCursorFrame firstCursorFrame;
+<i>153</i>&nbsp;
+<i>154</i>&nbsp;    /**
+<i>155</i>&nbsp;     * Maps platform images to cursor frames. It doesn&#39;t store the first cursor
+<i>156</i>&nbsp;     * frame and so it needs to be created only for animated cursors.
+<i>157</i>&nbsp;     */
+<i>158</i>&nbsp;    private Map&lt;Object, ImageCursorFrame&gt; otherCursorFrames;
+<i>159</i>&nbsp;
+<i>160</i>&nbsp;    /**
+<i>161</i>&nbsp;     * Indicates whether the image cursor is currently in use. The active cursor
+<i>162</i>&nbsp;     * is bound to the image and invalidates its platform cursor when the image
+<i>163</i>&nbsp;     * changes.
+<i>164</i>&nbsp;     */
+<i>165</i>&nbsp;    private int activeCounter;
+<i>166</i>&nbsp;
+<i>167</i>&nbsp;    /**
+<i>168</i>&nbsp;     * Constructs a new empty {@code ImageCursor} which will look as
+<i>169</i>&nbsp;     * {@code Cursor.DEFAULT}.
+<i>170</i>&nbsp;     */
+<b class="nc"><i>171</i>&nbsp;    public ImageCursor() {</b>
+<b class="nc"><i>172</i>&nbsp;    }</b>
+<i>173</i>&nbsp;
+<i>174</i>&nbsp;    /**
+<i>175</i>&nbsp;     * Constructs an {@code ImageCursor} from the specified image. The cursor&#39;s
+<i>176</i>&nbsp;     * hot spot will default to the upper left corner.
+<i>177</i>&nbsp;     *
+<i>178</i>&nbsp;     * @param image the image
+<i>179</i>&nbsp;     */
+<i>180</i>&nbsp;    public ImageCursor(@NamedArg(&quot;image&quot;) final Image image) {
+<b class="nc"><i>181</i>&nbsp;        this(image, 0f, 0f);</b>
+<b class="nc"><i>182</i>&nbsp;    }</b>
+<i>183</i>&nbsp;
+<i>184</i>&nbsp;    /**
+<i>185</i>&nbsp;     * Constructs an {@code ImageCursor} from the specified image and hotspot
+<i>186</i>&nbsp;     * coordinates.
+<i>187</i>&nbsp;     *
+<i>188</i>&nbsp;     * @param image the image
+<i>189</i>&nbsp;     * @param hotspotX the X coordinate of the cursor&#39;s hot spot
+<i>190</i>&nbsp;     * @param hotspotY the Y coordinate of the cursor&#39;s hot spot
+<i>191</i>&nbsp;     */
+<i>192</i>&nbsp;    public ImageCursor(@NamedArg(&quot;image&quot;) final Image image,
+<i>193</i>&nbsp;                       @NamedArg(&quot;hotspotX&quot;) double hotspotX,
+<b class="nc"><i>194</i>&nbsp;                       @NamedArg(&quot;hotspotY&quot;) double hotspotY) {</b>
+<b class="nc"><i>195</i>&nbsp;        if ((image != null) &amp;&amp; (image.getProgress() &lt; 1)) {</b>
+<b class="nc"><i>196</i>&nbsp;            DelayedInitialization.applyTo(</b>
+<i>197</i>&nbsp;                    this, image, hotspotX, hotspotY);
+<i>198</i>&nbsp;        } else {
+<b class="nc"><i>199</i>&nbsp;            initialize(image, hotspotX, hotspotY);</b>
+<i>200</i>&nbsp;        }
+<b class="nc"><i>201</i>&nbsp;    }</b>
+<i>202</i>&nbsp;
+<i>203</i>&nbsp;    /**
+<i>204</i>&nbsp;     * Gets the supported cursor size that is closest to the specified preferred
+<i>205</i>&nbsp;     * size. A value of (0,0) is returned if the platform does not support
+<i>206</i>&nbsp;     * custom cursors.
+<i>207</i>&nbsp;     *
+<i>208</i>&nbsp;     * &lt;p&gt;
+<i>209</i>&nbsp;     * Note: if an image is used whose dimensions don&#39;t match a supported size
+<i>210</i>&nbsp;     * (as returned by this method), the implementation will resize the image to
+<i>211</i>&nbsp;     * a supported size. This may result in a loss of quality.
+<i>212</i>&nbsp;     *
+<i>213</i>&nbsp;     * &lt;p&gt;
+<i>214</i>&nbsp;     * Note: These values can vary between operating systems, graphics cards and
+<i>215</i>&nbsp;     * screen resolution, but at the time of this writing, a sample Windows
+<i>216</i>&nbsp;     * Vista machine returned 32x32 for all requested sizes, while sample Mac
+<i>217</i>&nbsp;     * and Linux machines returned the requested size up to a maximum of 64x64.
+<i>218</i>&nbsp;     * Applications should provide a 32x32 cursor, which will work well on all
+<i>219</i>&nbsp;     * platforms, and may optionally wish to provide a 64x64 cursor for those
+<i>220</i>&nbsp;     * platforms on which it is supported.
+<i>221</i>&nbsp;     *
+<i>222</i>&nbsp;     * @param preferredWidth the preferred width of the cursor
+<i>223</i>&nbsp;     * @param preferredHeight the preferred height of the cursor
+<i>224</i>&nbsp;     * @return the supported cursor size
+<i>225</i>&nbsp;     */
+<i>226</i>&nbsp;    public static Dimension2D getBestSize(double preferredWidth,
+<i>227</i>&nbsp;                                          double preferredHeight) {
+<b class="nc"><i>228</i>&nbsp;        return Toolkit.getToolkit().getBestCursorSize((int) preferredWidth,</b>
+<i>229</i>&nbsp;                                                      (int) preferredHeight);
+<i>230</i>&nbsp;    }
+<i>231</i>&nbsp;
+<i>232</i>&nbsp;    /**
+<i>233</i>&nbsp;     * Returns the maximum number of colors supported in a custom image cursor
+<i>234</i>&nbsp;     * palette.
+<i>235</i>&nbsp;     *
+<i>236</i>&nbsp;     * &lt;p&gt;
+<i>237</i>&nbsp;     * Note: if an image is used which has more colors in its palette than the
+<i>238</i>&nbsp;     * supported maximum, the implementation will attempt to flatten the
+<i>239</i>&nbsp;     * palette to the maximum. This may result in a loss of quality.
+<i>240</i>&nbsp;     *
+<i>241</i>&nbsp;     * &lt;p&gt;
+<i>242</i>&nbsp;     * Note: These values can vary between operating systems, graphics cards and
+<i>243</i>&nbsp;     * screen resolution,  but at the time of this writing, a sample Windows
+<i>244</i>&nbsp;     * Vista machine returned 256, a sample Mac machine returned
+<i>245</i>&nbsp;     * Integer.MAX_VALUE, indicating support for full color cursors, and
+<i>246</i>&nbsp;     * a sample Linux machine returned 2. Applications may want to target these
+<i>247</i>&nbsp;     * three color depths for an optimal cursor on each platform.
+<i>248</i>&nbsp;     *
+<i>249</i>&nbsp;     * @return the maximum number of colors supported in a custom image cursor
+<i>250</i>&nbsp;     *      palette
+<i>251</i>&nbsp;     */
+<i>252</i>&nbsp;    public static int getMaximumColors() {
+<b class="nc"><i>253</i>&nbsp;        return Toolkit.getToolkit().getMaximumCursorColors();</b>
+<i>254</i>&nbsp;    }
+<i>255</i>&nbsp;
+<i>256</i>&nbsp;    /**
+<i>257</i>&nbsp;     * Creates a custom image cursor from one of the specified images. This function
+<i>258</i>&nbsp;     * will choose the image whose size most closely matched the best cursor size.
+<i>259</i>&nbsp;     * The hotpotX of the returned ImageCursor is scaled by
+<i>260</i>&nbsp;     * chosenImage.width/images[0].width and the hotspotY is scaled by
+<i>261</i>&nbsp;     * chosenImage.height/images[0].height.
+<i>262</i>&nbsp;     * &lt;p&gt;
+<i>263</i>&nbsp;     * On platforms that don&#39;t support custom cursors, {@code Cursor.DEFAULT} will
+<i>264</i>&nbsp;     * be used in place of the returned ImageCursor.
+<i>265</i>&nbsp;     *
+<i>266</i>&nbsp;     * @param images a sequence of images from which to choose, in order of preference
+<i>267</i>&nbsp;     * @param hotspotX the X coordinate of the hotspot within the first image
+<i>268</i>&nbsp;     *        in the images sequence
+<i>269</i>&nbsp;     * @param hotspotY the Y coordinate of the hotspot within the first image
+<i>270</i>&nbsp;     *        in the images sequence
+<i>271</i>&nbsp;     * @return a cursor created from the best image
+<i>272</i>&nbsp;     */
+<i>273</i>&nbsp;    public static ImageCursor chooseBestCursor(
+<i>274</i>&nbsp;            final Image[] images, final double hotspotX, final double hotspotY) {
+<b class="nc"><i>275</i>&nbsp;        final ImageCursor imageCursor = new ImageCursor();</b>
+<i>276</i>&nbsp;
+<b class="nc"><i>277</i>&nbsp;        if (needsDelayedInitialization(images)) {</b>
+<b class="nc"><i>278</i>&nbsp;            DelayedInitialization.applyTo(</b>
+<i>279</i>&nbsp;                    imageCursor, images, hotspotX, hotspotY);
+<i>280</i>&nbsp;        } else {
+<b class="nc"><i>281</i>&nbsp;            imageCursor.initialize(images, hotspotX, hotspotY);</b>
+<i>282</i>&nbsp;        }
+<i>283</i>&nbsp;
+<b class="nc"><i>284</i>&nbsp;        return imageCursor;</b>
+<i>285</i>&nbsp;    }
+<i>286</i>&nbsp;
+<i>287</i>&nbsp;    @Override CursorFrame getCurrentFrame() {
+<b class="nc"><i>288</i>&nbsp;        if (currentCursorFrame != null) {</b>
+<b class="nc"><i>289</i>&nbsp;            return currentCursorFrame;</b>
+<i>290</i>&nbsp;        }
+<i>291</i>&nbsp;
+<b class="nc"><i>292</i>&nbsp;        final Image cursorImage = getImage();</b>
+<i>293</i>&nbsp;
+<b class="nc"><i>294</i>&nbsp;        if (cursorImage == null) {</b>
+<b class="nc"><i>295</i>&nbsp;            currentCursorFrame = Cursor.DEFAULT.getCurrentFrame();</b>
+<b class="nc"><i>296</i>&nbsp;            return currentCursorFrame;</b>
+<i>297</i>&nbsp;        }
+<i>298</i>&nbsp;
+<b class="nc"><i>299</i>&nbsp;        final Object cursorPlatformImage = Toolkit.getImageAccessor().getPlatformImage(cursorImage);</b>
+<b class="nc"><i>300</i>&nbsp;        if (cursorPlatformImage == null) {</b>
+<b class="nc"><i>301</i>&nbsp;            currentCursorFrame = Cursor.DEFAULT.getCurrentFrame();</b>
+<b class="nc"><i>302</i>&nbsp;            return currentCursorFrame;</b>
+<i>303</i>&nbsp;        }
+<i>304</i>&nbsp;
+<b class="nc"><i>305</i>&nbsp;        if (firstCursorFrame == null) {</b>
+<b class="nc"><i>306</i>&nbsp;            firstCursorFrame =</b>
+<i>307</i>&nbsp;                    new ImageCursorFrame(cursorPlatformImage,
+<b class="nc"><i>308</i>&nbsp;                                         cursorImage.getWidth(),</b>
+<b class="nc"><i>309</i>&nbsp;                                         cursorImage.getHeight(),</b>
+<b class="nc"><i>310</i>&nbsp;                                         getHotspotX(),</b>
+<b class="nc"><i>311</i>&nbsp;                                         getHotspotY());</b>
+<b class="nc"><i>312</i>&nbsp;            currentCursorFrame = firstCursorFrame;</b>
+<b class="nc"><i>313</i>&nbsp;        } else if (firstCursorFrame.getPlatformImage() == cursorPlatformImage) {</b>
+<b class="nc"><i>314</i>&nbsp;            currentCursorFrame = firstCursorFrame;</b>
+<i>315</i>&nbsp;        } else {
+<b class="nc"><i>316</i>&nbsp;            if (otherCursorFrames == null) {</b>
+<b class="nc"><i>317</i>&nbsp;                otherCursorFrames = new HashMap&lt;Object, ImageCursorFrame&gt;();</b>
+<i>318</i>&nbsp;            }
+<i>319</i>&nbsp;
+<b class="nc"><i>320</i>&nbsp;            currentCursorFrame = otherCursorFrames.get(cursorPlatformImage);</b>
+<b class="nc"><i>321</i>&nbsp;            if (currentCursorFrame == null) {</b>
+<i>322</i>&nbsp;                // cursor frame not created yet
+<b class="nc"><i>323</i>&nbsp;                final ImageCursorFrame newCursorFrame =</b>
+<i>324</i>&nbsp;                        new ImageCursorFrame(cursorPlatformImage,
+<b class="nc"><i>325</i>&nbsp;                                             cursorImage.getWidth(),</b>
+<b class="nc"><i>326</i>&nbsp;                                             cursorImage.getHeight(),</b>
+<b class="nc"><i>327</i>&nbsp;                                             getHotspotX(),</b>
+<b class="nc"><i>328</i>&nbsp;                                             getHotspotY());</b>
+<i>329</i>&nbsp;
+<b class="nc"><i>330</i>&nbsp;                otherCursorFrames.put(cursorPlatformImage, newCursorFrame);</b>
+<b class="nc"><i>331</i>&nbsp;                currentCursorFrame = newCursorFrame;</b>
+<i>332</i>&nbsp;            }
+<i>333</i>&nbsp;        }
+<i>334</i>&nbsp;
+<b class="nc"><i>335</i>&nbsp;        return currentCursorFrame;</b>
+<i>336</i>&nbsp;     }
+<i>337</i>&nbsp;
+<i>338</i>&nbsp;    private void invalidateCurrentFrame() {
+<b class="nc"><i>339</i>&nbsp;        currentCursorFrame = null;</b>
+<b class="nc"><i>340</i>&nbsp;    }</b>
+<i>341</i>&nbsp;
+<i>342</i>&nbsp;    @Override
+<i>343</i>&nbsp;    void activate() {
+<b class="nc"><i>344</i>&nbsp;        if (++activeCounter == 1) {</b>
+<b class="nc"><i>345</i>&nbsp;            bindImage(getImage());</b>
+<b class="nc"><i>346</i>&nbsp;            invalidateCurrentFrame();</b>
+<i>347</i>&nbsp;        }
+<b class="nc"><i>348</i>&nbsp;    }</b>
+<i>349</i>&nbsp;
+<i>350</i>&nbsp;    @Override
+<i>351</i>&nbsp;    void deactivate() {
+<b class="nc"><i>352</i>&nbsp;        if (--activeCounter == 0) {</b>
+<b class="nc"><i>353</i>&nbsp;            unbindImage(getImage());</b>
+<i>354</i>&nbsp;        }
+<b class="nc"><i>355</i>&nbsp;    }</b>
+<i>356</i>&nbsp;
+<i>357</i>&nbsp;    private void initialize(final Image[] images,
+<i>358</i>&nbsp;                            final double hotspotX,
+<i>359</i>&nbsp;                            final double hotspotY) {
+<b class="nc"><i>360</i>&nbsp;        final Dimension2D dim = getBestSize(1f, 1f);</b>
+<i>361</i>&nbsp;
+<i>362</i>&nbsp;        // If no valid image or if custom cursors are not supported, leave
+<i>363</i>&nbsp;        // the default image cursor
+<b class="nc"><i>364</i>&nbsp;        if ((images.length == 0) || (dim.getWidth() == 0f)</b>
+<b class="nc"><i>365</i>&nbsp;                                 || (dim.getHeight() == 0f)) {</b>
+<b class="nc"><i>366</i>&nbsp;            return;</b>
+<i>367</i>&nbsp;        }
+<i>368</i>&nbsp;
+<i>369</i>&nbsp;        // If only a single image, use it to construct a custom cursor
+<b class="nc"><i>370</i>&nbsp;        if (images.length == 1) {</b>
+<b class="nc"><i>371</i>&nbsp;            initialize(images[0], hotspotX, hotspotY);</b>
+<b class="nc"><i>372</i>&nbsp;            return;</b>
+<i>373</i>&nbsp;        }
+<i>374</i>&nbsp;
+<b class="nc"><i>375</i>&nbsp;        final Image bestImage = findBestImage(images);</b>
+<b class="nc"><i>376</i>&nbsp;        final double scaleX = bestImage.getWidth() / images[0].getWidth();</b>
+<b class="nc"><i>377</i>&nbsp;        final double scaleY = bestImage.getHeight() / images[0].getHeight();</b>
+<i>378</i>&nbsp;
+<b class="nc"><i>379</i>&nbsp;        initialize(bestImage, hotspotX * scaleX, hotspotY * scaleY);</b>
+<b class="nc"><i>380</i>&nbsp;    }</b>
+<i>381</i>&nbsp;
+<i>382</i>&nbsp;    private void initialize(Image newImage,
+<i>383</i>&nbsp;                            double newHotspotX,
+<i>384</i>&nbsp;                            double newHotspotY) {
+<b class="nc"><i>385</i>&nbsp;        final Image oldImage = getImage();</b>
+<b class="nc"><i>386</i>&nbsp;        final double oldHotspotX = getHotspotX();</b>
+<b class="nc"><i>387</i>&nbsp;        final double oldHotspotY = getHotspotY();</b>
+<i>388</i>&nbsp;
+<b class="nc"><i>389</i>&nbsp;        if ((newImage == null) || (newImage.getWidth() &lt; 1f)</b>
+<b class="nc"><i>390</i>&nbsp;                               || (newImage.getHeight() &lt; 1f)) {</b>
+<i>391</i>&nbsp;            // If image is invalid set the hotspot to 0
+<b class="nc"><i>392</i>&nbsp;            newHotspotX = 0f;</b>
+<b class="nc"><i>393</i>&nbsp;            newHotspotY = 0f;</b>
+<i>394</i>&nbsp;        } else {
+<b class="nc"><i>395</i>&nbsp;            if (newHotspotX &lt; 0f) {</b>
+<b class="nc"><i>396</i>&nbsp;                newHotspotX = 0f;</b>
+<i>397</i>&nbsp;            }
+<b class="nc"><i>398</i>&nbsp;            if (newHotspotX &gt; (newImage.getWidth() - 1f)) {</b>
+<b class="nc"><i>399</i>&nbsp;                newHotspotX = newImage.getWidth() - 1f;</b>
+<i>400</i>&nbsp;            }
+<b class="nc"><i>401</i>&nbsp;            if (newHotspotY &lt; 0f) {</b>
+<b class="nc"><i>402</i>&nbsp;                newHotspotY = 0f;</b>
+<i>403</i>&nbsp;            }
+<b class="nc"><i>404</i>&nbsp;            if (newHotspotY &gt; (newImage.getHeight() - 1f)) {</b>
+<b class="nc"><i>405</i>&nbsp;                newHotspotY = newImage.getHeight() - 1f;</b>
+<i>406</i>&nbsp;            }
+<i>407</i>&nbsp;        }
+<i>408</i>&nbsp;
+<b class="nc"><i>409</i>&nbsp;        imagePropertyImpl().store(newImage);</b>
+<b class="nc"><i>410</i>&nbsp;        hotspotXPropertyImpl().store(newHotspotX);</b>
+<b class="nc"><i>411</i>&nbsp;        hotspotYPropertyImpl().store(newHotspotY);</b>
+<i>412</i>&nbsp;
+<b class="nc"><i>413</i>&nbsp;        if (oldImage != newImage) {</b>
+<b class="nc"><i>414</i>&nbsp;            if (activeCounter &gt; 0) {</b>
+<b class="nc"><i>415</i>&nbsp;                unbindImage(oldImage);</b>
+<b class="nc"><i>416</i>&nbsp;                bindImage(newImage);</b>
+<i>417</i>&nbsp;            }
+<i>418</i>&nbsp;
+<b class="nc"><i>419</i>&nbsp;            invalidateCurrentFrame();</b>
+<b class="nc"><i>420</i>&nbsp;            image.fireValueChangedEvent();</b>
+<i>421</i>&nbsp;        }
+<i>422</i>&nbsp;
+<b class="nc"><i>423</i>&nbsp;        if (oldHotspotX != newHotspotX) {</b>
+<b class="nc"><i>424</i>&nbsp;            hotspotX.fireValueChangedEvent();</b>
+<i>425</i>&nbsp;        }
+<i>426</i>&nbsp;
+<b class="nc"><i>427</i>&nbsp;        if (oldHotspotY != newHotspotY) {</b>
+<b class="nc"><i>428</i>&nbsp;            hotspotY.fireValueChangedEvent();</b>
+<i>429</i>&nbsp;        }
+<b class="nc"><i>430</i>&nbsp;    }</b>
+<i>431</i>&nbsp;
+<i>432</i>&nbsp;    private InvalidationListener imageListener;
+<i>433</i>&nbsp;
+<i>434</i>&nbsp;    private InvalidationListener getImageListener() {
+<b class="nc"><i>435</i>&nbsp;        if (imageListener == null) {</b>
+<b class="nc"><i>436</i>&nbsp;            imageListener = valueModel -&gt; invalidateCurrentFrame();</b>
+<i>437</i>&nbsp;        }
+<i>438</i>&nbsp;
+<b class="nc"><i>439</i>&nbsp;        return imageListener;</b>
+<i>440</i>&nbsp;    }
+<i>441</i>&nbsp;
+<i>442</i>&nbsp;    private void bindImage(final Image toImage) {
+<b class="nc"><i>443</i>&nbsp;        if (toImage == null) {</b>
+<b class="nc"><i>444</i>&nbsp;            return;</b>
+<i>445</i>&nbsp;        }
+<i>446</i>&nbsp;
+<b class="nc"><i>447</i>&nbsp;        Toolkit.getImageAccessor().getImageProperty(toImage).addListener(getImageListener());</b>
+<b class="nc"><i>448</i>&nbsp;    }</b>
+<i>449</i>&nbsp;
+<i>450</i>&nbsp;    private void unbindImage(final Image fromImage) {
+<b class="nc"><i>451</i>&nbsp;        if (fromImage == null) {</b>
+<b class="nc"><i>452</i>&nbsp;            return;</b>
+<i>453</i>&nbsp;        }
+<i>454</i>&nbsp;
+<b class="nc"><i>455</i>&nbsp;        Toolkit.getImageAccessor().getImageProperty(fromImage).removeListener(getImageListener());</b>
+<b class="nc"><i>456</i>&nbsp;    }</b>
+<i>457</i>&nbsp;
+<i>458</i>&nbsp;    private static boolean needsDelayedInitialization(final Image[] images) {
+<b class="nc"><i>459</i>&nbsp;        for (final Image image: images) {</b>
+<b class="nc"><i>460</i>&nbsp;            if (image.getProgress() &lt; 1) {</b>
+<b class="nc"><i>461</i>&nbsp;                return true;</b>
+<i>462</i>&nbsp;            }
+<i>463</i>&nbsp;        }
+<i>464</i>&nbsp;
+<b class="nc"><i>465</i>&nbsp;        return false;</b>
+<i>466</i>&nbsp;    }
+<i>467</i>&nbsp;
+<i>468</i>&nbsp;    // Utility function to select the best image
+<i>469</i>&nbsp;    private static Image findBestImage(final Image[] images) {
+<i>470</i>&nbsp;        // Check for exact match and return the first such match
+<b class="nc"><i>471</i>&nbsp;        for (final Image image: images) {</b>
+<b class="nc"><i>472</i>&nbsp;            final Dimension2D dim = getBestSize((int) image.getWidth(),</b>
+<b class="nc"><i>473</i>&nbsp;                                                (int) image.getHeight());</b>
+<b class="nc"><i>474</i>&nbsp;            if ((dim.getWidth() == image.getWidth())</b>
+<b class="nc"><i>475</i>&nbsp;                    &amp;&amp; (dim.getHeight() == image.getHeight())) {</b>
+<b class="nc"><i>476</i>&nbsp;                return image;</b>
+<i>477</i>&nbsp;            }
+<i>478</i>&nbsp;        }
+<i>479</i>&nbsp;
+<i>480</i>&nbsp;        // No exact match, check for closest match without down-scaling
+<i>481</i>&nbsp;        // (i.e., smallest scale &gt;= 1.0)
+<b class="nc"><i>482</i>&nbsp;        Image bestImage = null;</b>
+<b class="nc"><i>483</i>&nbsp;        double bestRatio = Double.MAX_VALUE;</b>
+<b class="nc"><i>484</i>&nbsp;        for (final Image image: images) {</b>
+<b class="nc"><i>485</i>&nbsp;            if ((image.getWidth() &gt; 0) &amp;&amp; (image.getHeight() &gt; 0)) {</b>
+<b class="nc"><i>486</i>&nbsp;                final Dimension2D dim = getBestSize(image.getWidth(),</b>
+<b class="nc"><i>487</i>&nbsp;                                                    image.getHeight());</b>
+<b class="nc"><i>488</i>&nbsp;                final double ratioX = dim.getWidth() / image.getWidth();</b>
+<b class="nc"><i>489</i>&nbsp;                final double ratioY = dim.getHeight() / image.getHeight();</b>
+<b class="nc"><i>490</i>&nbsp;                if ((ratioX &gt;= 1) &amp;&amp; (ratioY &gt;= 1)) {</b>
+<b class="nc"><i>491</i>&nbsp;                    final double ratio = Math.max(ratioX, ratioY);</b>
+<b class="nc"><i>492</i>&nbsp;                    if (ratio &lt; bestRatio) {</b>
+<b class="nc"><i>493</i>&nbsp;                        bestImage = image;</b>
+<b class="nc"><i>494</i>&nbsp;                        bestRatio = ratio;</b>
+<i>495</i>&nbsp;                    }
+<i>496</i>&nbsp;                }
+<i>497</i>&nbsp;            }
+<i>498</i>&nbsp;        }
+<b class="nc"><i>499</i>&nbsp;        if (bestImage != null) {</b>
+<b class="nc"><i>500</i>&nbsp;            return bestImage;</b>
+<i>501</i>&nbsp;        }
+<i>502</i>&nbsp;
+<i>503</i>&nbsp;        // Still no match, check for closest match alowing for down-scaling
+<i>504</i>&nbsp;        // (i.e., smallest up-scale or down-scale &gt;= 1.0)
+<b class="nc"><i>505</i>&nbsp;        for (final Image image: images) {</b>
+<b class="nc"><i>506</i>&nbsp;            if ((image.getWidth() &gt; 0) &amp;&amp; (image.getHeight() &gt; 0)) {</b>
+<b class="nc"><i>507</i>&nbsp;                final Dimension2D dim = getBestSize(image.getWidth(),</b>
+<b class="nc"><i>508</i>&nbsp;                                                    image.getHeight());</b>
+<b class="nc"><i>509</i>&nbsp;                if ((dim.getWidth() &gt; 0) &amp;&amp; (dim.getHeight() &gt; 0)) {</b>
+<b class="nc"><i>510</i>&nbsp;                    double ratioX = dim.getWidth() / image.getWidth();</b>
+<b class="nc"><i>511</i>&nbsp;                    if (ratioX &lt; 1) {</b>
+<b class="nc"><i>512</i>&nbsp;                        ratioX = 1 / ratioX;</b>
+<i>513</i>&nbsp;                    }
+<b class="nc"><i>514</i>&nbsp;                    double ratioY = dim.getHeight() / image.getHeight();</b>
+<b class="nc"><i>515</i>&nbsp;                    if (ratioY &lt; 1) {</b>
+<b class="nc"><i>516</i>&nbsp;                        ratioY = 1 / ratioY;</b>
+<i>517</i>&nbsp;                    }
+<b class="nc"><i>518</i>&nbsp;                    final double ratio = Math.max(ratioX, ratioY);</b>
+<b class="nc"><i>519</i>&nbsp;                    if (ratio &lt; bestRatio) {</b>
+<b class="nc"><i>520</i>&nbsp;                        bestImage = image;</b>
+<b class="nc"><i>521</i>&nbsp;                        bestRatio = ratio;</b>
+<i>522</i>&nbsp;                    }
+<i>523</i>&nbsp;                }
+<i>524</i>&nbsp;            }
+<i>525</i>&nbsp;        }
+<b class="nc"><i>526</i>&nbsp;        if (bestImage != null) {</b>
+<b class="nc"><i>527</i>&nbsp;            return bestImage;</b>
+<i>528</i>&nbsp;        }
+<i>529</i>&nbsp;
+<b class="nc"><i>530</i>&nbsp;        return images[0];</b>
+<i>531</i>&nbsp;    }
+<i>532</i>&nbsp;
+<i>533</i>&nbsp;    private final class DoublePropertyImpl extends ReadOnlyDoublePropertyBase {
+<i>534</i>&nbsp;        private final String name;
+<i>535</i>&nbsp;
+<i>536</i>&nbsp;        private double value;
+<i>537</i>&nbsp;
+<i>538</i>&nbsp;        public DoublePropertyImpl(final String name) {
+<i>539</i>&nbsp;            this.name = name;
+<i>540</i>&nbsp;        }
+<i>541</i>&nbsp;
+<i>542</i>&nbsp;        public void store(final double value) {
+<i>543</i>&nbsp;            this.value = value;
+<i>544</i>&nbsp;        }
+<i>545</i>&nbsp;
+<i>546</i>&nbsp;        @Override
+<i>547</i>&nbsp;        public void fireValueChangedEvent() {
+<i>548</i>&nbsp;            super.fireValueChangedEvent();
+<i>549</i>&nbsp;        }
+<i>550</i>&nbsp;
+<i>551</i>&nbsp;        @Override
+<i>552</i>&nbsp;        public double get() {
+<i>553</i>&nbsp;            return value;
+<i>554</i>&nbsp;        }
+<i>555</i>&nbsp;
+<i>556</i>&nbsp;        @Override
+<i>557</i>&nbsp;        public Object getBean() {
+<i>558</i>&nbsp;            return ImageCursor.this;
+<i>559</i>&nbsp;        }
+<i>560</i>&nbsp;
+<i>561</i>&nbsp;        @Override
+<i>562</i>&nbsp;        public String getName() {
+<i>563</i>&nbsp;            return name;
+<i>564</i>&nbsp;        }
+<i>565</i>&nbsp;    }
+<i>566</i>&nbsp;
+<i>567</i>&nbsp;    private final class ObjectPropertyImpl&lt;T&gt;
+<i>568</i>&nbsp;            extends ReadOnlyObjectPropertyBase&lt;T&gt; {
+<i>569</i>&nbsp;        private final String name;
+<i>570</i>&nbsp;
+<i>571</i>&nbsp;        private T value;
+<i>572</i>&nbsp;
+<i>573</i>&nbsp;        public ObjectPropertyImpl(final String name) {
+<i>574</i>&nbsp;            this.name = name;
+<i>575</i>&nbsp;        }
+<i>576</i>&nbsp;
+<i>577</i>&nbsp;        public void store(final T value) {
+<i>578</i>&nbsp;            this.value = value;
+<i>579</i>&nbsp;        }
+<i>580</i>&nbsp;
+<i>581</i>&nbsp;        @Override
+<i>582</i>&nbsp;        public void fireValueChangedEvent() {
+<i>583</i>&nbsp;            super.fireValueChangedEvent();
+<i>584</i>&nbsp;        }
+<i>585</i>&nbsp;
+<i>586</i>&nbsp;        @Override
+<i>587</i>&nbsp;        public T get() {
+<i>588</i>&nbsp;            return value;
+<i>589</i>&nbsp;        }
+<i>590</i>&nbsp;
+<i>591</i>&nbsp;        @Override
+<i>592</i>&nbsp;        public Object getBean() {
+<i>593</i>&nbsp;            return ImageCursor.this;
+<i>594</i>&nbsp;        }
+<i>595</i>&nbsp;
+<i>596</i>&nbsp;        @Override
+<i>597</i>&nbsp;        public String getName() {
+<i>598</i>&nbsp;            return name;
+<i>599</i>&nbsp;        }
+<i>600</i>&nbsp;    }
+<i>601</i>&nbsp;
+<i>602</i>&nbsp;    private static final class DelayedInitialization
+<i>603</i>&nbsp;            implements InvalidationListener {
+<i>604</i>&nbsp;        private final ImageCursor targetCursor;
+<i>605</i>&nbsp;
+<i>606</i>&nbsp;        private final Image[] images;
+<i>607</i>&nbsp;        private final double hotspotX;
+<i>608</i>&nbsp;        private final double hotspotY;
+<i>609</i>&nbsp;
+<i>610</i>&nbsp;        private final boolean initAsSingle;
+<i>611</i>&nbsp;
+<i>612</i>&nbsp;        private int waitForImages;
+<i>613</i>&nbsp;
+<i>614</i>&nbsp;        private DelayedInitialization(final ImageCursor targetCursor,
+<i>615</i>&nbsp;                                      final Image[] images,
+<i>616</i>&nbsp;                                      final double hotspotX,
+<i>617</i>&nbsp;                                      final double hotspotY,
+<i>618</i>&nbsp;                                      final boolean initAsSingle) {
+<i>619</i>&nbsp;            this.targetCursor = targetCursor;
+<i>620</i>&nbsp;            this.images = images;
+<i>621</i>&nbsp;            this.hotspotX = hotspotX;
+<i>622</i>&nbsp;            this.hotspotY = hotspotY;
+<i>623</i>&nbsp;            this.initAsSingle = initAsSingle;
+<i>624</i>&nbsp;        }
+<i>625</i>&nbsp;
+<i>626</i>&nbsp;
+<i>627</i>&nbsp;        public static void applyTo(final ImageCursor imageCursor,
+<i>628</i>&nbsp;                                   final Image[] images,
+<i>629</i>&nbsp;                                   final double hotspotX,
+<i>630</i>&nbsp;                                   final double hotspotY) {
+<i>631</i>&nbsp;            final DelayedInitialization delayedInitialization =
+<i>632</i>&nbsp;                    new DelayedInitialization(imageCursor,
+<i>633</i>&nbsp;                                              Arrays.copyOf(images, images.length),
+<i>634</i>&nbsp;                                              hotspotX,
+<i>635</i>&nbsp;                                              hotspotY,
+<i>636</i>&nbsp;                                              false);
+<i>637</i>&nbsp;            delayedInitialization.start();
+<i>638</i>&nbsp;        }
+<i>639</i>&nbsp;
+<i>640</i>&nbsp;        public static void applyTo(final ImageCursor imageCursor,
+<i>641</i>&nbsp;                                   final Image image,
+<i>642</i>&nbsp;                                   final double hotspotX,
+<i>643</i>&nbsp;                                   final double hotspotY) {
+<i>644</i>&nbsp;            final DelayedInitialization delayedInitialization =
+<i>645</i>&nbsp;                    new DelayedInitialization(imageCursor,
+<i>646</i>&nbsp;                                              new Image[] { image },
+<i>647</i>&nbsp;                                              hotspotX,
+<i>648</i>&nbsp;                                              hotspotY,
+<i>649</i>&nbsp;                                              true);
+<i>650</i>&nbsp;            delayedInitialization.start();
+<i>651</i>&nbsp;        }
+<i>652</i>&nbsp;
+<i>653</i>&nbsp;        private void start() {
+<i>654</i>&nbsp;            for (final Image image: images) {
+<i>655</i>&nbsp;                if (image.getProgress() &lt; 1) {
+<i>656</i>&nbsp;                    ++waitForImages;
+<i>657</i>&nbsp;                    image.progressProperty().addListener(this);
+<i>658</i>&nbsp;                }
+<i>659</i>&nbsp;            }
+<i>660</i>&nbsp;        }
+<i>661</i>&nbsp;
+<i>662</i>&nbsp;        private void cleanupAndFinishInitialization() {
+<i>663</i>&nbsp;            for (final Image image: images) {
+<i>664</i>&nbsp;                image.progressProperty().removeListener(this);
+<i>665</i>&nbsp;            }
+<i>666</i>&nbsp;
+<i>667</i>&nbsp;            if (initAsSingle) {
+<i>668</i>&nbsp;                targetCursor.initialize(images[0], hotspotX, hotspotY);
+<i>669</i>&nbsp;            } else {
+<i>670</i>&nbsp;                targetCursor.initialize(images, hotspotX, hotspotY);
+<i>671</i>&nbsp;            }
+<i>672</i>&nbsp;        }
+<i>673</i>&nbsp;
+<i>674</i>&nbsp;        @Override
+<i>675</i>&nbsp;        public void invalidated(Observable valueModel) {
+<i>676</i>&nbsp;            if (((ReadOnlyDoubleProperty)valueModel).get() == 1) {
+<i>677</i>&nbsp;                if (--waitForImages == 0) {
+<i>678</i>&nbsp;                    cleanupAndFinishInitialization();
+<i>679</i>&nbsp;                }
+<i>680</i>&nbsp;            }
+<i>681</i>&nbsp;        }
+<i>682</i>&nbsp;    }
+<i>683</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2017-12-04 21:49</div>
+</div>
+</body>
+</html>

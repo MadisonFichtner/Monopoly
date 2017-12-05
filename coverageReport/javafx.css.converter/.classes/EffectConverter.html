@@ -1,0 +1,367 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: EffectConverter</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">javafx.css.converter</a> ]
+</div>
+
+<h1>Coverage Summary for Class: EffectConverter (javafx.css.converter)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">EffectConverter</td>
+<td class="coverageStat">
+  <span class="percent">
+    40%
+  </span>
+  <span class="absValue">
+    (2/ 5)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    50%
+  </span>
+  <span class="absValue">
+    (3/ 6)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">EffectConverter$DropShadowConverter</td>
+<td class="coverageStat">
+  <span class="percent">
+    80%
+  </span>
+  <span class="absValue">
+    (4/ 5)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    96.6%
+  </span>
+  <span class="absValue">
+    (28/ 29)
+  </span>
+</td>
+  </tr>
+  <tr>
+    <td class="name">EffectConverter$Holder</td>
+<td class="coverageStat">
+  <span class="percent">
+    50%
+  </span>
+  <span class="absValue">
+    (1/ 2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    75%
+  </span>
+  <span class="absValue">
+    (3/ 4)
+  </span>
+</td>
+  </tr>
+  <tr>
+    <td class="name">EffectConverter$InnerShadowConverter</td>
+<td class="coverageStat">
+  <span class="percent">
+    80%
+  </span>
+  <span class="absValue">
+    (4/ 5)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    96.6%
+  </span>
+  <span class="absValue">
+    (28/ 29)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    64.7%
+  </span>
+  <span class="absValue">
+    (11/ 17)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    91.2%
+  </span>
+  <span class="absValue">
+    (62/ 68)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright (c) 2011, 2015, Oracle and/or its affiliates. All rights reserved.
+<i>3</i>&nbsp; * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+<i>4</i>&nbsp; *
+<i>5</i>&nbsp; *
+<i>6</i>&nbsp; *
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; *
+<i>11</i>&nbsp; *
+<i>12</i>&nbsp; *
+<i>13</i>&nbsp; *
+<i>14</i>&nbsp; *
+<i>15</i>&nbsp; *
+<i>16</i>&nbsp; *
+<i>17</i>&nbsp; *
+<i>18</i>&nbsp; *
+<i>19</i>&nbsp; *
+<i>20</i>&nbsp; *
+<i>21</i>&nbsp; *
+<i>22</i>&nbsp; *
+<i>23</i>&nbsp; *
+<i>24</i>&nbsp; */
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;package javafx.css.converter;
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;import javafx.css.Size;
+<i>29</i>&nbsp;import javafx.css.ParsedValue;
+<i>30</i>&nbsp;import javafx.css.StyleConverter;
+<i>31</i>&nbsp;import javafx.scene.effect.BlurType;
+<i>32</i>&nbsp;import javafx.scene.effect.DropShadow;
+<i>33</i>&nbsp;import javafx.scene.effect.Effect;
+<i>34</i>&nbsp;import javafx.scene.effect.InnerShadow;
+<i>35</i>&nbsp;import javafx.scene.paint.Color;
+<i>36</i>&nbsp;import javafx.scene.text.Font;
+<i>37</i>&nbsp;
+<i>38</i>&nbsp;import java.util.Map;
+<i>39</i>&nbsp;
+<i>40</i>&nbsp;/**
+<i>41</i>&nbsp; * @since 9
+<i>42</i>&nbsp; */
+<i>43</i>&nbsp;public class EffectConverter extends StyleConverter&lt;ParsedValue[], Effect&gt; {
+<i>44</i>&nbsp;
+<i>45</i>&nbsp;    // lazy, thread-safe instatiation
+<b class="nc"><i>46</i>&nbsp;    private static class Holder {</b>
+<b class="fc"><i>47</i>&nbsp;        static final EffectConverter EFFECT_CONVERTER =</b>
+<i>48</i>&nbsp;                new EffectConverter();
+<b class="fc"><i>49</i>&nbsp;        static final DropShadowConverter DROP_SHADOW_INSTANCE =</b>
+<i>50</i>&nbsp;                new DropShadowConverter();
+<b class="fc"><i>51</i>&nbsp;        static final InnerShadowConverter INNER_SHADOW_INSTANCE =</b>
+<i>52</i>&nbsp;                new InnerShadowConverter();
+<i>53</i>&nbsp;    }
+<i>54</i>&nbsp;
+<i>55</i>&nbsp;    public static StyleConverter&lt;ParsedValue[], Effect&gt; getInstance() {
+<b class="fc"><i>56</i>&nbsp;        return Holder.EFFECT_CONVERTER;</b>
+<i>57</i>&nbsp;    }
+<i>58</i>&nbsp;
+<i>59</i>&nbsp;    @Override
+<i>60</i>&nbsp;    public Effect convert(ParsedValue&lt;ParsedValue[], Effect&gt; value, Font font) {
+<b class="nc"><i>61</i>&nbsp;        throw new IllegalArgumentException(&quot;Parsed value is not an Effect&quot;);</b>
+<i>62</i>&nbsp;    }
+<i>63</i>&nbsp;
+<i>64</i>&nbsp;    protected EffectConverter() {
+<b class="fc"><i>65</i>&nbsp;        super();</b>
+<b class="fc"><i>66</i>&nbsp;    }</b>
+<i>67</i>&nbsp;
+<i>68</i>&nbsp;    @Override
+<i>69</i>&nbsp;    public String toString() {
+<b class="nc"><i>70</i>&nbsp;        return &quot;EffectConverter&quot;;</b>
+<i>71</i>&nbsp;    }
+<i>72</i>&nbsp;
+<b class="fc"><i>73</i>&nbsp;    public static final class DropShadowConverter extends EffectConverter {</b>
+<i>74</i>&nbsp;
+<i>75</i>&nbsp;        public static DropShadowConverter getInstance() {
+<b class="fc"><i>76</i>&nbsp;            return Holder.DROP_SHADOW_INSTANCE;</b>
+<i>77</i>&nbsp;        }
+<i>78</i>&nbsp;
+<i>79</i>&nbsp;        private DropShadowConverter() {
+<b class="fc"><i>80</i>&nbsp;            super();</b>
+<b class="fc"><i>81</i>&nbsp;        }</b>
+<i>82</i>&nbsp;
+<i>83</i>&nbsp;        // dropshadow( &lt;blur-type&gt; , &lt;color&gt; , &lt;number&gt; , &lt;number&gt; , &lt;number&gt; , &lt;number&gt; )
+<i>84</i>&nbsp;        // &lt;blur-type&gt; = [      gaussian | one-pass-box | three-pass-box | two-pass-box ]
+<i>85</i>&nbsp;        // &lt;color&gt; The shadow Color.
+<i>86</i>&nbsp;        // &lt;number&gt; The radius of the shadow blur kernel. In the range
+<i>87</i>&nbsp;        //          [0.0 ... 127.0], typical value 10.
+<i>88</i>&nbsp;        // &lt;number&gt; he spread of the shadow. The spread is the portion of
+<i>89</i>&nbsp;        //          the radius where the contribution of the source material
+<i>90</i>&nbsp;        //          will be 100%. The remaining portion of the radius will
+<i>91</i>&nbsp;        //          have a contribution controlled by the blur kernel. A
+<i>92</i>&nbsp;        //          spread of 0.0 will result in a distribution of the shadow
+<i>93</i>&nbsp;        //          determined entirely by the blur algorithm. A spread of
+<i>94</i>&nbsp;        //          1.0 will result in a solid growth outward of the source
+<i>95</i>&nbsp;        //          material opacity to the limit of the radius with a very
+<i>96</i>&nbsp;        //          sharp cutoff to transparency at the radius. In the range
+<i>97</i>&nbsp;        //          [0.0 ... 1.0] a value of 0.0 is no spread.
+<i>98</i>&nbsp;        // &lt;number&gt; The shadow offset in the x direction, in pixels.
+<i>99</i>&nbsp;        // &lt;number&gt; The shadow offset in the y direction, in pixels.
+<i>100</i>&nbsp;        @Override
+<i>101</i>&nbsp;        public Effect convert(ParsedValue&lt;ParsedValue[], Effect&gt; value, Font font) {
+<i>102</i>&nbsp;
+<b class="fc"><i>103</i>&nbsp;            Effect effect = super.getCachedValue(value);</b>
+<b class="fc"><i>104</i>&nbsp;            if (effect != null) return effect;</b>
+<i>105</i>&nbsp;
+<b class="fc"><i>106</i>&nbsp;            final ParsedValue[] values = value.getValue();</b>
+<b class="fc"><i>107</i>&nbsp;            final BlurType blurType = (BlurType) values[0].convert(font);</b>
+<b class="fc"><i>108</i>&nbsp;            final Color color = (Color) values[1].convert(font);</b>
+<b class="fc"><i>109</i>&nbsp;            final Double radius = ((Size) values[2].convert(font)).pixels(font);</b>
+<b class="fc"><i>110</i>&nbsp;            final Double spread = ((Size) values[3].convert(font)).pixels(font);</b>
+<b class="fc"><i>111</i>&nbsp;            final Double offsetX = ((Size) values[4].convert(font)).pixels(font);</b>
+<b class="fc"><i>112</i>&nbsp;            final Double offsetY = ((Size) values[5].convert(font)).pixels(font);</b>
+<b class="fc"><i>113</i>&nbsp;            DropShadow dropShadow = new DropShadow();</b>
+<b class="fc"><i>114</i>&nbsp;            if (blurType != null) {</b>
+<b class="fc"><i>115</i>&nbsp;                dropShadow.setBlurType(blurType);</b>
+<i>116</i>&nbsp;            }
+<b class="fc"><i>117</i>&nbsp;            if (color != null) {</b>
+<b class="fc"><i>118</i>&nbsp;                dropShadow.setColor(color);</b>
+<i>119</i>&nbsp;            }
+<b class="fc"><i>120</i>&nbsp;            if (spread != null) {</b>
+<b class="fc"><i>121</i>&nbsp;                dropShadow.setSpread(spread);</b>
+<i>122</i>&nbsp;            }
+<b class="fc"><i>123</i>&nbsp;            if (radius != null) {</b>
+<b class="fc"><i>124</i>&nbsp;                dropShadow.setRadius(radius);</b>
+<i>125</i>&nbsp;            }
+<b class="fc"><i>126</i>&nbsp;            if (offsetX != null) {</b>
+<b class="fc"><i>127</i>&nbsp;                dropShadow.setOffsetX(offsetX);</b>
+<i>128</i>&nbsp;            }
+<b class="fc"><i>129</i>&nbsp;            if (offsetY != null) {</b>
+<b class="fc"><i>130</i>&nbsp;                dropShadow.setOffsetY(offsetY);</b>
+<i>131</i>&nbsp;            }
+<i>132</i>&nbsp;
+<b class="fc"><i>133</i>&nbsp;            super.cacheValue(value, dropShadow);</b>
+<i>134</i>&nbsp;
+<b class="fc"><i>135</i>&nbsp;            return dropShadow;</b>
+<i>136</i>&nbsp;        }
+<i>137</i>&nbsp;
+<i>138</i>&nbsp;        @Override
+<i>139</i>&nbsp;        public String toString() {
+<b class="nc"><i>140</i>&nbsp;            return &quot;DropShadowConverter&quot;;</b>
+<i>141</i>&nbsp;        }
+<i>142</i>&nbsp;    }
+<i>143</i>&nbsp;
+<b class="fc"><i>144</i>&nbsp;    public static final class InnerShadowConverter extends EffectConverter {</b>
+<i>145</i>&nbsp;
+<i>146</i>&nbsp;        public static InnerShadowConverter getInstance() {
+<b class="fc"><i>147</i>&nbsp;            return Holder.INNER_SHADOW_INSTANCE;</b>
+<i>148</i>&nbsp;        }
+<i>149</i>&nbsp;
+<i>150</i>&nbsp;        private InnerShadowConverter() {
+<b class="fc"><i>151</i>&nbsp;            super();</b>
+<b class="fc"><i>152</i>&nbsp;        }</b>
+<i>153</i>&nbsp;
+<i>154</i>&nbsp;        // innershadow( &lt;blur-type&gt; , &lt;color&gt; , &lt;number&gt; , &lt;number&gt; , &lt;number&gt; , &lt;number&gt; )
+<i>155</i>&nbsp;        // &lt;blur-type&gt; = [      gaussian | one-pass-box | three-pass-box | two-pass-box ]
+<i>156</i>&nbsp;        // &lt;color&gt; The shadow Color.
+<i>157</i>&nbsp;        // &lt;number&gt; The radius of the shadow blur kernel. In the range
+<i>158</i>&nbsp;        //          [0.0 ... 127.0], typical value 10.
+<i>159</i>&nbsp;        // &lt;number&gt; The choke of the shadow. The choke is the portion of the
+<i>160</i>&nbsp;        //          radius where the contribution of the source material will
+<i>161</i>&nbsp;        //          be 100%. The remaining portion of the radius will have a
+<i>162</i>&nbsp;        //          contribution controlled by the blur kernel. A choke of 0.0
+<i>163</i>&nbsp;        //          will result in a distribution of the shadow determined
+<i>164</i>&nbsp;        //          entirely by the blur algorithm. A choke of 1.0 will result
+<i>165</i>&nbsp;        //          in a solid growth inward of the shadow from the edges to
+<i>166</i>&nbsp;        //          the limit of the radius with a very sharp cutoff to
+<i>167</i>&nbsp;        //          transparency inside the radius. In the range [0.0 ... 1.0]
+<i>168</i>&nbsp;        //          a value of 0.0 is no spread.
+<i>169</i>&nbsp;        // &lt;number&gt; The shadow offset in the x direction, in pixels.
+<i>170</i>&nbsp;        // &lt;number&gt; The shadow offset in the y direction, in pixels.
+<i>171</i>&nbsp;        @Override
+<i>172</i>&nbsp;        public Effect convert(ParsedValue&lt;ParsedValue[], Effect&gt; value, Font font) {
+<i>173</i>&nbsp;
+<b class="fc"><i>174</i>&nbsp;            Effect effect = super.getCachedValue(value);</b>
+<b class="fc"><i>175</i>&nbsp;            if (effect != null) return effect;</b>
+<i>176</i>&nbsp;
+<b class="fc"><i>177</i>&nbsp;            final ParsedValue[] values = value.getValue();</b>
+<b class="fc"><i>178</i>&nbsp;            final BlurType blurType = (BlurType) values[0].convert(font);</b>
+<b class="fc"><i>179</i>&nbsp;            final Color color = (Color) values[1].convert(font);</b>
+<b class="fc"><i>180</i>&nbsp;            final Double radius = ((Size) values[2].convert(font)).pixels(font);</b>
+<b class="fc"><i>181</i>&nbsp;            final Double choke = ((Size) values[3].convert(font)).pixels(font);</b>
+<b class="fc"><i>182</i>&nbsp;            final Double offsetX = ((Size) values[4].convert(font)).pixels(font);</b>
+<b class="fc"><i>183</i>&nbsp;            final Double offsetY = ((Size) values[5].convert(font)).pixels(font);</b>
+<b class="fc"><i>184</i>&nbsp;            InnerShadow innerShadow = new InnerShadow();</b>
+<b class="fc"><i>185</i>&nbsp;            if (blurType != null) {</b>
+<b class="fc"><i>186</i>&nbsp;                innerShadow.setBlurType(blurType);</b>
+<i>187</i>&nbsp;            }
+<b class="fc"><i>188</i>&nbsp;            if (color != null) {</b>
+<b class="fc"><i>189</i>&nbsp;                innerShadow.setColor(color);</b>
+<i>190</i>&nbsp;            }
+<b class="fc"><i>191</i>&nbsp;            if (radius != null) {</b>
+<b class="fc"><i>192</i>&nbsp;                innerShadow.setRadius(radius);</b>
+<i>193</i>&nbsp;            }
+<b class="fc"><i>194</i>&nbsp;            if (choke != null) {</b>
+<b class="fc"><i>195</i>&nbsp;                innerShadow.setChoke(choke);</b>
+<i>196</i>&nbsp;            }
+<b class="fc"><i>197</i>&nbsp;            if (offsetX != null) {</b>
+<b class="fc"><i>198</i>&nbsp;                innerShadow.setOffsetX(offsetX);</b>
+<i>199</i>&nbsp;            }
+<b class="fc"><i>200</i>&nbsp;            if (offsetY != null) {</b>
+<b class="fc"><i>201</i>&nbsp;                innerShadow.setOffsetY(offsetY);</b>
+<i>202</i>&nbsp;            }
+<i>203</i>&nbsp;
+<b class="fc"><i>204</i>&nbsp;            super.cacheValue(value, innerShadow);</b>
+<i>205</i>&nbsp;
+<b class="fc"><i>206</i>&nbsp;            return innerShadow;</b>
+<i>207</i>&nbsp;        }
+<i>208</i>&nbsp;
+<i>209</i>&nbsp;        @Override
+<i>210</i>&nbsp;        public String toString() {
+<b class="nc"><i>211</i>&nbsp;            return &quot;InnerShadowConverter&quot;;</b>
+<i>212</i>&nbsp;        }
+<i>213</i>&nbsp;    }
+<i>214</i>&nbsp;
+<i>215</i>&nbsp;    private static Map&lt;ParsedValue&lt;ParsedValue[], Effect&gt;, Effect&gt; cache;
+<i>216</i>&nbsp;
+<b class="nc"><i>217</i>&nbsp;    public static void clearCache() { if (cache != null) cache.clear(); }</b>
+<i>218</i>&nbsp;
+<i>219</i>&nbsp;}
+<i>220</i>&nbsp;
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2017-12-04 21:49</div>
+</div>
+</body>
+</html>

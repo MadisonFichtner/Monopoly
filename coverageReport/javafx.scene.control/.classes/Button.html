@@ -1,0 +1,357 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: Button</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">javafx.scene.control</a> ]
+</div>
+
+<h1>Coverage Summary for Class: Button (javafx.scene.control)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">Button</td>
+<td class="coverageStat">
+  <span class="percent">
+    64.3%
+  </span>
+  <span class="absValue">
+    (9/ 14)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    67.6%
+  </span>
+  <span class="absValue">
+    (23/ 34)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">Button$1</td>
+<td class="coverageStat">
+  <span class="percent">
+    25%
+  </span>
+  <span class="absValue">
+    (1/ 4)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    20%
+  </span>
+  <span class="absValue">
+    (1/ 5)
+  </span>
+</td>
+  </tr>
+  <tr>
+    <td class="name">Button$2</td>
+<td class="coverageStat">
+  <span class="percent">
+    25%
+  </span>
+  <span class="absValue">
+    (1/ 4)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    20%
+  </span>
+  <span class="absValue">
+    (1/ 5)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    50%
+  </span>
+  <span class="absValue">
+    (11/ 22)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    56.8%
+  </span>
+  <span class="absValue">
+    (25/ 44)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright (c) 2010, 2016, Oracle and/or its affiliates. All rights reserved.
+<i>3</i>&nbsp; * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+<i>4</i>&nbsp; *
+<i>5</i>&nbsp; *
+<i>6</i>&nbsp; *
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; *
+<i>11</i>&nbsp; *
+<i>12</i>&nbsp; *
+<i>13</i>&nbsp; *
+<i>14</i>&nbsp; *
+<i>15</i>&nbsp; *
+<i>16</i>&nbsp; *
+<i>17</i>&nbsp; *
+<i>18</i>&nbsp; *
+<i>19</i>&nbsp; *
+<i>20</i>&nbsp; *
+<i>21</i>&nbsp; *
+<i>22</i>&nbsp; *
+<i>23</i>&nbsp; *
+<i>24</i>&nbsp; */
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;package javafx.scene.control;
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;import javafx.beans.property.BooleanProperty;
+<i>29</i>&nbsp;import javafx.beans.property.BooleanPropertyBase;
+<i>30</i>&nbsp;import javafx.event.ActionEvent;
+<i>31</i>&nbsp;import javafx.scene.AccessibleRole;
+<i>32</i>&nbsp;import javafx.scene.Node;
+<i>33</i>&nbsp;
+<i>34</i>&nbsp;import javafx.css.PseudoClass;
+<i>35</i>&nbsp;import javafx.scene.control.skin.ButtonSkin;
+<i>36</i>&nbsp;
+<i>37</i>&nbsp;/**
+<i>38</i>&nbsp; * &lt;p&gt;A simple button control.  The button control can contain
+<i>39</i>&nbsp; * text and/or a graphic.  A button control has three different modes&lt;/p&gt;
+<i>40</i>&nbsp; * &lt;ul&gt;
+<i>41</i>&nbsp; *   &lt;li&gt;&lt;strong&gt;Normal:&lt;/strong&gt; A normal push button. &lt;/li&gt;
+<i>42</i>&nbsp; *   &lt;li&gt;&lt;strong&gt;Default:&lt;/strong&gt; The default button is rendered differently to make it apparent to users that it should
+<i>43</i>&nbsp; *   be the default choice should they be unclear as to what should be selected. The behavior of the default button differs
+<i>44</i>&nbsp; *   depending on the platform in which it is presented:
+<i>45</i>&nbsp; *      &lt;ul&gt;
+<i>46</i>&nbsp; *          &lt;li&gt;&lt;strong&gt;Windows / Linux:&lt;/strong&gt;  A default Button receives {@link javafx.scene.input.KeyCode#ENTER ENTER}
+<i>47</i>&nbsp; *          key presses when it has focus. When the default button does not have focus, and focus is on another Button
+<i>48</i>&nbsp; *          control, the ENTER key press will be received by the other, non-default Button. When focus is elsewhere in
+<i>49</i>&nbsp; *          the user interface, and not on any Button, the ENTER key press will be received by the default button, if
+<i>50</i>&nbsp; *          one is specified, and if no other node in the scene consumes it first.&lt;/li&gt;
+<i>51</i>&nbsp; *          &lt;li&gt;&lt;strong&gt;Mac OS X:&lt;/strong&gt; A default Button is the only Button in the user interface that responds to the
+<i>52</i>&nbsp; *          ENTER key press. If focus is on another non-default Button and ENTER is pressed, the event is only received
+<i>53</i>&nbsp; *          by the default Button. On macOS, the only way to fire a non-default Button is through the
+<i>54</i>&nbsp; *          {@link javafx.scene.input.KeyCode#SPACE SPACE} key.&lt;/li&gt;
+<i>55</i>&nbsp; *      &lt;/ul&gt;
+<i>56</i>&nbsp; *   &lt;/li&gt;
+<i>57</i>&nbsp; *   &lt;li&gt;&lt;strong&gt;Cancel:&lt;/strong&gt; A Cancel Button is the button that receives a keyboard VK_ESC press, if no other node in
+<i>58</i>&nbsp; *      the scene consumes it.&lt;/li&gt;
+<i>59</i>&nbsp; * &lt;/ul&gt;
+<i>60</i>&nbsp; *
+<i>61</i>&nbsp; * &lt;p&gt;When a button is pressed and released a {@link ActionEvent} is sent.
+<i>62</i>&nbsp; * Your application can perform some action based on this event by implementing an
+<i>63</i>&nbsp; * {@link javafx.event.EventHandler} to process the {@link ActionEvent}.  Buttons can also respond to
+<i>64</i>&nbsp; * mouse events by implementing an {@link javafx.event.EventHandler} to process the {@link javafx.scene.input.MouseEvent}
+<i>65</i>&nbsp; * &lt;/p&gt;
+<i>66</i>&nbsp; *
+<i>67</i>&nbsp; * &lt;p&gt;
+<i>68</i>&nbsp; * MnemonicParsing is enabled by default for Button.
+<i>69</i>&nbsp; * &lt;/p&gt;
+<i>70</i>&nbsp; *
+<i>71</i>&nbsp; * &lt;p&gt;Example:
+<i>72</i>&nbsp; * &lt;pre&gt;&lt;code&gt;Button button = new Button(&quot;Click Me&quot;);&lt;/code&gt;&lt;/pre&gt;
+<i>73</i>&nbsp; * @since JavaFX 2.0
+<i>74</i>&nbsp; */
+<b class="nc"><i>75</i>&nbsp;public class Button extends ButtonBase {</b>
+<i>76</i>&nbsp;
+<i>77</i>&nbsp;    /***************************************************************************
+<i>78</i>&nbsp;     *                                                                         *
+<i>79</i>&nbsp;     * Constructors                                                            *
+<i>80</i>&nbsp;     *                                                                         *
+<i>81</i>&nbsp;     **************************************************************************/
+<i>82</i>&nbsp;
+<i>83</i>&nbsp;    /**
+<i>84</i>&nbsp;     * Creates a button with an empty string for its label.
+<i>85</i>&nbsp;     */
+<b class="fc"><i>86</i>&nbsp;    public Button() {</b>
+<b class="fc"><i>87</i>&nbsp;        initialize();</b>
+<b class="fc"><i>88</i>&nbsp;    }</b>
+<i>89</i>&nbsp;
+<i>90</i>&nbsp;    /**
+<i>91</i>&nbsp;     * Creates a button with the specified text as its label.
+<i>92</i>&nbsp;     *
+<i>93</i>&nbsp;     * @param text A text string for its label.
+<i>94</i>&nbsp;     */
+<i>95</i>&nbsp;    public Button(String text) {
+<b class="nc"><i>96</i>&nbsp;        super(text);</b>
+<b class="nc"><i>97</i>&nbsp;        initialize();</b>
+<b class="nc"><i>98</i>&nbsp;    }</b>
+<i>99</i>&nbsp;
+<i>100</i>&nbsp;    /**
+<i>101</i>&nbsp;     * Creates a button with the specified text and icon for its label.
+<i>102</i>&nbsp;     *
+<i>103</i>&nbsp;     * @param text A text string for its label.
+<i>104</i>&nbsp;     * @param graphic the icon for its label.
+<i>105</i>&nbsp;     */
+<i>106</i>&nbsp;    public Button(String text, Node graphic) {
+<b class="nc"><i>107</i>&nbsp;        super(text, graphic);</b>
+<b class="nc"><i>108</i>&nbsp;        initialize();</b>
+<b class="nc"><i>109</i>&nbsp;    }</b>
+<i>110</i>&nbsp;
+<i>111</i>&nbsp;    private void initialize() {
+<b class="fc"><i>112</i>&nbsp;        getStyleClass().setAll(DEFAULT_STYLE_CLASS);</b>
+<b class="fc"><i>113</i>&nbsp;        setAccessibleRole(AccessibleRole.BUTTON);</b>
+<b class="fc"><i>114</i>&nbsp;        setMnemonicParsing(true);     // enable mnemonic auto-parsing by default</b>
+<b class="fc"><i>115</i>&nbsp;    }</b>
+<i>116</i>&nbsp;
+<i>117</i>&nbsp;    /***************************************************************************
+<i>118</i>&nbsp;     *                                                                         *
+<i>119</i>&nbsp;     * Properties                                                              *
+<i>120</i>&nbsp;     *                                                                         *
+<i>121</i>&nbsp;     **************************************************************************/
+<i>122</i>&nbsp;
+<i>123</i>&nbsp;    /**
+<i>124</i>&nbsp;     * A default Button is the button that receives
+<i>125</i>&nbsp;     * a keyboard VK_ENTER press, if no other node in the scene consumes it.
+<i>126</i>&nbsp;     */
+<i>127</i>&nbsp;    private BooleanProperty defaultButton;
+<i>128</i>&nbsp;    public final void setDefaultButton(boolean value) {
+<b class="nc"><i>129</i>&nbsp;        defaultButtonProperty().set(value);</b>
+<b class="nc"><i>130</i>&nbsp;    }</b>
+<i>131</i>&nbsp;    public final boolean isDefaultButton() {
+<b class="fc"><i>132</i>&nbsp;        return defaultButton == null ? false : defaultButton.get();</b>
+<i>133</i>&nbsp;    }
+<i>134</i>&nbsp;
+<i>135</i>&nbsp;    public final BooleanProperty defaultButtonProperty() {
+<b class="fc"><i>136</i>&nbsp;        if (defaultButton == null) {</b>
+<b class="fc"><i>137</i>&nbsp;            defaultButton = new BooleanPropertyBase(false) {</b>
+<i>138</i>&nbsp;                @Override protected void invalidated() {
+<b class="nc"><i>139</i>&nbsp;                    pseudoClassStateChanged(PSEUDO_CLASS_DEFAULT, get());</b>
+<b class="nc"><i>140</i>&nbsp;                }</b>
+<i>141</i>&nbsp;
+<i>142</i>&nbsp;                @Override
+<i>143</i>&nbsp;                public Object getBean() {
+<b class="nc"><i>144</i>&nbsp;                    return Button.this;</b>
+<i>145</i>&nbsp;                }
+<i>146</i>&nbsp;
+<i>147</i>&nbsp;                @Override
+<i>148</i>&nbsp;                public String getName() {
+<b class="nc"><i>149</i>&nbsp;                    return &quot;defaultButton&quot;;</b>
+<i>150</i>&nbsp;                }
+<i>151</i>&nbsp;            };
+<i>152</i>&nbsp;        }
+<b class="fc"><i>153</i>&nbsp;        return defaultButton;</b>
+<i>154</i>&nbsp;    }
+<i>155</i>&nbsp;
+<i>156</i>&nbsp;
+<i>157</i>&nbsp;    /**
+<i>158</i>&nbsp;     * A Cancel Button is the button that receives
+<i>159</i>&nbsp;     * a keyboard VK_ESC press, if no other node in the scene consumes it.
+<i>160</i>&nbsp;     */
+<i>161</i>&nbsp;    private BooleanProperty cancelButton;
+<i>162</i>&nbsp;    public final void setCancelButton(boolean value) {
+<b class="nc"><i>163</i>&nbsp;        cancelButtonProperty().set(value);</b>
+<b class="nc"><i>164</i>&nbsp;    }</b>
+<i>165</i>&nbsp;    public final boolean isCancelButton() {
+<b class="fc"><i>166</i>&nbsp;        return cancelButton == null ? false : cancelButton.get();</b>
+<i>167</i>&nbsp;    }
+<i>168</i>&nbsp;
+<i>169</i>&nbsp;    public final BooleanProperty cancelButtonProperty() {
+<b class="fc"><i>170</i>&nbsp;        if (cancelButton == null) {</b>
+<b class="fc"><i>171</i>&nbsp;            cancelButton = new BooleanPropertyBase(false) {</b>
+<i>172</i>&nbsp;                @Override protected void invalidated() {
+<b class="nc"><i>173</i>&nbsp;                    pseudoClassStateChanged(PSEUDO_CLASS_CANCEL, get());</b>
+<b class="nc"><i>174</i>&nbsp;                }</b>
+<i>175</i>&nbsp;
+<i>176</i>&nbsp;                @Override
+<i>177</i>&nbsp;                public Object getBean() {
+<b class="nc"><i>178</i>&nbsp;                    return Button.this;</b>
+<i>179</i>&nbsp;                }
+<i>180</i>&nbsp;
+<i>181</i>&nbsp;                @Override
+<i>182</i>&nbsp;                public String getName() {
+<b class="nc"><i>183</i>&nbsp;                    return &quot;cancelButton&quot;;</b>
+<i>184</i>&nbsp;                }
+<i>185</i>&nbsp;            };
+<i>186</i>&nbsp;        }
+<b class="fc"><i>187</i>&nbsp;        return cancelButton;</b>
+<i>188</i>&nbsp;    }
+<i>189</i>&nbsp;
+<i>190</i>&nbsp;
+<i>191</i>&nbsp;    /***************************************************************************
+<i>192</i>&nbsp;     *                                                                         *
+<i>193</i>&nbsp;     * Methods                                                                 *
+<i>194</i>&nbsp;     *                                                                         *
+<i>195</i>&nbsp;     **************************************************************************/
+<i>196</i>&nbsp;
+<i>197</i>&nbsp;    /** {@inheritDoc} */
+<i>198</i>&nbsp;    @Override public void fire() {
+<b class="fc"><i>199</i>&nbsp;        if (!isDisabled()) {</b>
+<b class="fc"><i>200</i>&nbsp;            fireEvent(new ActionEvent());</b>
+<i>201</i>&nbsp;        }
+<b class="fc"><i>202</i>&nbsp;    }</b>
+<i>203</i>&nbsp;
+<i>204</i>&nbsp;    /** {@inheritDoc} */
+<i>205</i>&nbsp;    @Override protected Skin&lt;?&gt; createDefaultSkin() {
+<b class="fc"><i>206</i>&nbsp;        return new ButtonSkin(this);</b>
+<i>207</i>&nbsp;    }
+<i>208</i>&nbsp;
+<i>209</i>&nbsp;
+<i>210</i>&nbsp;    /***************************************************************************
+<i>211</i>&nbsp;     *                                                                         *
+<i>212</i>&nbsp;     * Stylesheet Handling                                                     *
+<i>213</i>&nbsp;     *                                                                         *
+<i>214</i>&nbsp;     **************************************************************************/
+<i>215</i>&nbsp;
+<i>216</i>&nbsp;    /**
+<i>217</i>&nbsp;     * Initialize the style class to &#39;button&#39;.
+<i>218</i>&nbsp;     *
+<i>219</i>&nbsp;     * This is the selector class from which CSS can be used to style
+<i>220</i>&nbsp;     * this control.
+<i>221</i>&nbsp;     */
+<i>222</i>&nbsp;    private static final String DEFAULT_STYLE_CLASS = &quot;button&quot;;
+<i>223</i>&nbsp;
+<b class="fc"><i>224</i>&nbsp;    private static final PseudoClass PSEUDO_CLASS_DEFAULT</b>
+<b class="fc"><i>225</i>&nbsp;            = PseudoClass.getPseudoClass(&quot;default&quot;);</b>
+<b class="fc"><i>226</i>&nbsp;    private static final PseudoClass PSEUDO_CLASS_CANCEL</b>
+<b class="fc"><i>227</i>&nbsp;            = PseudoClass.getPseudoClass(&quot;cancel&quot;);</b>
+<i>228</i>&nbsp;
+<i>229</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2017-12-04 21:49</div>
+</div>
+</body>
+</html>

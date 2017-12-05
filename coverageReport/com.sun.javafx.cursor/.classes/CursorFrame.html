@@ -1,0 +1,156 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: CursorFrame</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.javafx.cursor</a> ]
+</div>
+
+<h1>Coverage Summary for Class: CursorFrame (com.sun.javafx.cursor)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">CursorFrame</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (3/ 3)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    64.3%
+  </span>
+  <span class="absValue">
+    (9/ 14)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright (c) 2011, 2013, Oracle and/or its affiliates. All rights reserved.
+<i>3</i>&nbsp; * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+<i>4</i>&nbsp; *
+<i>5</i>&nbsp; *
+<i>6</i>&nbsp; *
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; *
+<i>11</i>&nbsp; *
+<i>12</i>&nbsp; *
+<i>13</i>&nbsp; *
+<i>14</i>&nbsp; *
+<i>15</i>&nbsp; *
+<i>16</i>&nbsp; *
+<i>17</i>&nbsp; *
+<i>18</i>&nbsp; *
+<i>19</i>&nbsp; *
+<i>20</i>&nbsp; *
+<i>21</i>&nbsp; *
+<i>22</i>&nbsp; *
+<i>23</i>&nbsp; *
+<i>24</i>&nbsp; */
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;package com.sun.javafx.cursor;
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;import java.util.HashMap;
+<i>29</i>&nbsp;import java.util.Map;
+<i>30</i>&nbsp;
+<i>31</i>&nbsp;/**
+<i>32</i>&nbsp; * Represents a frame of an animated cursor (ImageCursor created from an
+<i>33</i>&nbsp; * animated image), non animated cursors and standard cursors have only a single
+<i>34</i>&nbsp; * CursorFrame.
+<i>35</i>&nbsp; */
+<b class="fc"><i>36</i>&nbsp;public abstract class CursorFrame {</b>
+<i>37</i>&nbsp;    public abstract CursorType getCursorType();
+<i>38</i>&nbsp;
+<i>39</i>&nbsp;    private Class&lt;?&gt; firstPlatformCursorClass;
+<i>40</i>&nbsp;    private Object firstPlatformCursor;
+<i>41</i>&nbsp;
+<i>42</i>&nbsp;    private Map&lt;Class&lt;?&gt;, Object&gt; otherPlatformCursors;
+<i>43</i>&nbsp;
+<i>44</i>&nbsp;    public &lt;T&gt; T getPlatformCursor(final Class&lt;T&gt; platformCursorClass) {
+<b class="fc"><i>45</i>&nbsp;        if (firstPlatformCursorClass == platformCursorClass) {</b>
+<b class="fc"><i>46</i>&nbsp;            return (T) firstPlatformCursor;</b>
+<i>47</i>&nbsp;        }
+<i>48</i>&nbsp;
+<b class="fc"><i>49</i>&nbsp;        if (otherPlatformCursors != null) {</b>
+<b class="nc"><i>50</i>&nbsp;            return (T) otherPlatformCursors.get(platformCursorClass);</b>
+<i>51</i>&nbsp;        }
+<i>52</i>&nbsp;
+<b class="fc"><i>53</i>&nbsp;        return null;</b>
+<i>54</i>&nbsp;    }
+<i>55</i>&nbsp;
+<i>56</i>&nbsp;    public &lt;T&gt; void setPlatforCursor(final Class&lt;T&gt; platformCursorClass,
+<i>57</i>&nbsp;                                     final T platformCursor) {
+<i>58</i>&nbsp;
+<b class="fc"><i>59</i>&nbsp;        if ((firstPlatformCursorClass == null)</b>
+<i>60</i>&nbsp;                || (firstPlatformCursorClass == platformCursorClass)) {
+<i>61</i>&nbsp;            // most common case
+<b class="fc"><i>62</i>&nbsp;            firstPlatformCursorClass = platformCursorClass;</b>
+<b class="fc"><i>63</i>&nbsp;            firstPlatformCursor = platformCursor;</b>
+<b class="fc"><i>64</i>&nbsp;            return;</b>
+<i>65</i>&nbsp;        }
+<i>66</i>&nbsp;
+<b class="nc"><i>67</i>&nbsp;        if (otherPlatformCursors == null) {</b>
+<b class="nc"><i>68</i>&nbsp;            otherPlatformCursors = new HashMap&lt;Class&lt;?&gt;, Object&gt;();</b>
+<i>69</i>&nbsp;        }
+<i>70</i>&nbsp;
+<b class="nc"><i>71</i>&nbsp;        otherPlatformCursors.put(platformCursorClass, platformCursor);</b>
+<b class="nc"><i>72</i>&nbsp;    }</b>
+<i>73</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2017-12-04 21:49</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,258 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: PseudoClassState</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.javafx.css</a> ]
+</div>
+
+<h1>Coverage Summary for Class: PseudoClassState (com.sun.javafx.css)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">PseudoClassState</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    63.6%
+  </span>
+  <span class="absValue">
+    (7/ 11)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    42.6%
+  </span>
+  <span class="absValue">
+    (26/ 61)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright (c) 2011, 2014, Oracle and/or its affiliates. All rights reserved.
+<i>3</i>&nbsp; * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+<i>4</i>&nbsp; *
+<i>5</i>&nbsp; *
+<i>6</i>&nbsp; *
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; *
+<i>11</i>&nbsp; *
+<i>12</i>&nbsp; *
+<i>13</i>&nbsp; *
+<i>14</i>&nbsp; *
+<i>15</i>&nbsp; *
+<i>16</i>&nbsp; *
+<i>17</i>&nbsp; *
+<i>18</i>&nbsp; *
+<i>19</i>&nbsp; *
+<i>20</i>&nbsp; *
+<i>21</i>&nbsp; *
+<i>22</i>&nbsp; *
+<i>23</i>&nbsp; *
+<i>24</i>&nbsp; */
+<i>25</i>&nbsp;package com.sun.javafx.css;
+<i>26</i>&nbsp;
+<i>27</i>&nbsp;import javafx.css.PseudoClass;
+<i>28</i>&nbsp;
+<i>29</i>&nbsp;import java.util.ArrayList;
+<i>30</i>&nbsp;import java.util.HashMap;
+<i>31</i>&nbsp;import java.util.Iterator;
+<i>32</i>&nbsp;import java.util.List;
+<i>33</i>&nbsp;import java.util.Map;
+<i>34</i>&nbsp;
+<i>35</i>&nbsp;/**
+<i>36</i>&nbsp; * States represents a set of State. A {@code Node} may be in more than
+<i>37</i>&nbsp; * one pseudo-class state. {@code States} is used to aggregate the active
+<i>38</i>&nbsp; * pseudo-class state of a {@code Node}.
+<i>39</i>&nbsp; */
+<b class="fc"><i>40</i>&nbsp;public final class PseudoClassState extends BitSet&lt;PseudoClass&gt; {</b>
+<i>41</i>&nbsp;
+<i>42</i>&nbsp;    /** Create an empty set of PseudoClass */
+<i>43</i>&nbsp;    public PseudoClassState() {
+<b class="fc"><i>44</i>&nbsp;        super();</b>
+<b class="fc"><i>45</i>&nbsp;    }</b>
+<i>46</i>&nbsp;
+<i>47</i>&nbsp;    PseudoClassState(List&lt;String&gt; pseudoClassNames) {
+<b class="nc"><i>48</i>&nbsp;        super();</b>
+<i>49</i>&nbsp;
+<b class="nc"><i>50</i>&nbsp;        int nMax = pseudoClassNames != null ? pseudoClassNames.size() : 0;</b>
+<b class="nc"><i>51</i>&nbsp;        for(int n=0; n&lt;nMax; n++) {</b>
+<b class="nc"><i>52</i>&nbsp;            final PseudoClass sc = getPseudoClass(pseudoClassNames.get(n));</b>
+<b class="nc"><i>53</i>&nbsp;            add(sc);</b>
+<i>54</i>&nbsp;        }
+<b class="nc"><i>55</i>&nbsp;    }</b>
+<i>56</i>&nbsp;
+<i>57</i>&nbsp;    /** {@inheritDoc} */
+<i>58</i>&nbsp;    @Override
+<i>59</i>&nbsp;    public Object[] toArray() {
+<b class="nc"><i>60</i>&nbsp;        return toArray(new PseudoClass[size()]);</b>
+<i>61</i>&nbsp;    }
+<i>62</i>&nbsp;
+<i>63</i>&nbsp;    /** {@inheritDoc} */
+<i>64</i>&nbsp;    @Override
+<i>65</i>&nbsp;    public &lt;T&gt; T[] toArray(T[] a) {
+<b class="nc"><i>66</i>&nbsp;        if (a.length &lt; size()) {</b>
+<b class="nc"><i>67</i>&nbsp;            a = (T[]) new PseudoClass[size()];</b>
+<i>68</i>&nbsp;        }
+<b class="nc"><i>69</i>&nbsp;        int index = 0;</b>
+<b class="nc"><i>70</i>&nbsp;        while(index &lt; getBits().length) {</b>
+<b class="nc"><i>71</i>&nbsp;            final long state = getBits()[index];</b>
+<b class="nc"><i>72</i>&nbsp;            for(int bit=0; bit&lt;Long.SIZE; bit++) {</b>
+<b class="nc"><i>73</i>&nbsp;                long mask = 1l &lt;&lt; bit;</b>
+<b class="nc"><i>74</i>&nbsp;                if ((state &amp; mask) == mask) {</b>
+<b class="nc"><i>75</i>&nbsp;                    int n = index * Long.SIZE + bit;</b>
+<b class="nc"><i>76</i>&nbsp;                    PseudoClass impl = getPseudoClass(n);</b>
+<b class="nc"><i>77</i>&nbsp;                    a[index++] = (T) impl;</b>
+<i>78</i>&nbsp;                }
+<i>79</i>&nbsp;
+<i>80</i>&nbsp;            }
+<b class="nc"><i>81</i>&nbsp;        }</b>
+<b class="nc"><i>82</i>&nbsp;        return a;</b>
+<i>83</i>&nbsp;    }
+<i>84</i>&nbsp;
+<i>85</i>&nbsp;
+<i>86</i>&nbsp;    @Override
+<i>87</i>&nbsp;    public String toString() {
+<b class="nc"><i>88</i>&nbsp;        List&lt;String&gt; strings = new ArrayList&lt;String&gt;();</b>
+<b class="nc"><i>89</i>&nbsp;        Iterator&lt;PseudoClass&gt; iter = iterator();</b>
+<b class="nc"><i>90</i>&nbsp;        while (iter.hasNext()) {</b>
+<b class="nc"><i>91</i>&nbsp;            strings.add(iter.next().getPseudoClassName());</b>
+<i>92</i>&nbsp;        }
+<b class="nc"><i>93</i>&nbsp;        return strings.toString();</b>
+<i>94</i>&nbsp;    }
+<i>95</i>&nbsp;
+<i>96</i>&nbsp;    @Override
+<i>97</i>&nbsp;    protected PseudoClass cast(Object o) {
+<b class="fc"><i>98</i>&nbsp;        if (o == null) {</b>
+<b class="nc"><i>99</i>&nbsp;            throw new NullPointerException(&quot;null arg&quot;);</b>
+<i>100</i>&nbsp;        }
+<b class="fc"><i>101</i>&nbsp;        PseudoClass pseudoClass = (PseudoClass) o;</b>
+<b class="fc"><i>102</i>&nbsp;        return pseudoClass;</b>
+<i>103</i>&nbsp;    }
+<i>104</i>&nbsp;
+<i>105</i>&nbsp;    @Override
+<i>106</i>&nbsp;    protected PseudoClass getT(int index) {
+<b class="fc"><i>107</i>&nbsp;        return getPseudoClass(index);</b>
+<i>108</i>&nbsp;    }
+<i>109</i>&nbsp;
+<i>110</i>&nbsp;    @Override
+<i>111</i>&nbsp;    protected int getIndex(PseudoClass t) {
+<i>112</i>&nbsp;
+<b class="fc"><i>113</i>&nbsp;        if (t instanceof PseudoClassImpl) {</b>
+<b class="fc"><i>114</i>&nbsp;            return ((PseudoClassImpl)t).getIndex();</b>
+<i>115</i>&nbsp;        }
+<i>116</i>&nbsp;
+<b class="nc"><i>117</i>&nbsp;        final String pseudoClass = t.getPseudoClassName();</b>
+<b class="nc"><i>118</i>&nbsp;        Integer index = pseudoClassMap.get(pseudoClass);</b>
+<i>119</i>&nbsp;
+<b class="nc"><i>120</i>&nbsp;        if (index == null) {</b>
+<b class="nc"><i>121</i>&nbsp;            index = Integer.valueOf(pseudoClasses.size());</b>
+<b class="nc"><i>122</i>&nbsp;            pseudoClasses.add(new PseudoClassImpl(pseudoClass, index.intValue()));</b>
+<b class="nc"><i>123</i>&nbsp;            pseudoClassMap.put(pseudoClass, index);</b>
+<i>124</i>&nbsp;        }
+<b class="nc"><i>125</i>&nbsp;        return index.intValue();</b>
+<i>126</i>&nbsp;
+<i>127</i>&nbsp;    }
+<i>128</i>&nbsp;
+<i>129</i>&nbsp;
+<i>130</i>&nbsp;    /**
+<i>131</i>&nbsp;     * @see javafx.css.PseudoClass#getPseudoClass(String)
+<i>132</i>&nbsp;     */
+<i>133</i>&nbsp;    public static PseudoClass getPseudoClass(String pseudoClass) {
+<i>134</i>&nbsp;
+<b class="fc"><i>135</i>&nbsp;        if (pseudoClass == null || pseudoClass.trim().isEmpty()) {</b>
+<b class="nc"><i>136</i>&nbsp;            throw new IllegalArgumentException(&quot;pseudoClass cannot be null or empty String&quot;);</b>
+<i>137</i>&nbsp;        }
+<i>138</i>&nbsp;
+<b class="fc"><i>139</i>&nbsp;        PseudoClass instance = null;</b>
+<i>140</i>&nbsp;
+<b class="fc"><i>141</i>&nbsp;        final Integer value = pseudoClassMap.get(pseudoClass);</b>
+<b class="fc"><i>142</i>&nbsp;        final int index = value != null ? value.intValue() : -1;</b>
+<i>143</i>&nbsp;
+<b class="fc"><i>144</i>&nbsp;        final int size = pseudoClasses.size();</b>
+<b class="fc"><i>145</i>&nbsp;        assert index &lt; size;</b>
+<i>146</i>&nbsp;
+<b class="fc"><i>147</i>&nbsp;        if (index != -1 &amp;&amp; index &lt; size) {</b>
+<b class="fc"><i>148</i>&nbsp;            instance = pseudoClasses.get(index);</b>
+<i>149</i>&nbsp;        }
+<i>150</i>&nbsp;
+<b class="fc"><i>151</i>&nbsp;        if (instance == null) {</b>
+<b class="fc"><i>152</i>&nbsp;            instance = new PseudoClassImpl(pseudoClass, size);</b>
+<b class="fc"><i>153</i>&nbsp;            pseudoClasses.add(instance);</b>
+<b class="fc"><i>154</i>&nbsp;            pseudoClassMap.put(pseudoClass, Integer.valueOf(size));</b>
+<i>155</i>&nbsp;        }
+<i>156</i>&nbsp;
+<b class="fc"><i>157</i>&nbsp;        return instance;</b>
+<i>158</i>&nbsp;    }
+<i>159</i>&nbsp;
+<i>160</i>&nbsp;    static PseudoClass getPseudoClass(int index) {
+<b class="fc"><i>161</i>&nbsp;       if (0 &lt;= index &amp;&amp; index &lt; pseudoClasses.size()) {</b>
+<b class="fc"><i>162</i>&nbsp;           return pseudoClasses.get(index);</b>
+<i>163</i>&nbsp;       }
+<b class="nc"><i>164</i>&nbsp;       return null;</b>
+<i>165</i>&nbsp;    }
+<i>166</i>&nbsp;
+<i>167</i>&nbsp;    // package private for unit test purposes
+<b class="fc"><i>168</i>&nbsp;    static final Map&lt;String,Integer&gt; pseudoClassMap =</b>
+<i>169</i>&nbsp;            new HashMap&lt;String,Integer&gt;(64);
+<i>170</i>&nbsp;
+<b class="fc"><i>171</i>&nbsp;    static final List&lt;PseudoClass&gt; pseudoClasses =</b>
+<i>172</i>&nbsp;            new ArrayList&lt;PseudoClass&gt;();
+<i>173</i>&nbsp;
+<i>174</i>&nbsp;}
+<i>175</i>&nbsp;
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2017-12-04 21:49</div>
+</div>
+</body>
+</html>

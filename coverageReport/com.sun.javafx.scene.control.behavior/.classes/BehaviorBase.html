@@ -1,0 +1,229 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: BehaviorBase</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.javafx.scene.control.behavior</a> ]
+</div>
+
+<h1>Coverage Summary for Class: BehaviorBase (com.sun.javafx.scene.control.behavior)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">BehaviorBase</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    38.5%
+  </span>
+  <span class="absValue">
+    (5/ 13)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    36.4%
+  </span>
+  <span class="absValue">
+    (16/ 44)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright (c) 2015, Oracle and/or its affiliates. All rights reserved.
+<i>3</i>&nbsp; * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+<i>4</i>&nbsp; *
+<i>5</i>&nbsp; *
+<i>6</i>&nbsp; *
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; *
+<i>11</i>&nbsp; *
+<i>12</i>&nbsp; *
+<i>13</i>&nbsp; *
+<i>14</i>&nbsp; *
+<i>15</i>&nbsp; *
+<i>16</i>&nbsp; *
+<i>17</i>&nbsp; *
+<i>18</i>&nbsp; *
+<i>19</i>&nbsp; *
+<i>20</i>&nbsp; *
+<i>21</i>&nbsp; *
+<i>22</i>&nbsp; *
+<i>23</i>&nbsp; *
+<i>24</i>&nbsp; */
+<i>25</i>&nbsp;package com.sun.javafx.scene.control.behavior;
+<i>26</i>&nbsp;
+<i>27</i>&nbsp;import javafx.scene.Node;
+<i>28</i>&nbsp;import com.sun.javafx.scene.control.inputmap.InputMap;
+<i>29</i>&nbsp;import com.sun.javafx.scene.control.inputmap.InputMap.Mapping;
+<i>30</i>&nbsp;
+<i>31</i>&nbsp;import java.util.ArrayList;
+<i>32</i>&nbsp;import java.util.List;
+<i>33</i>&nbsp;import java.util.function.Consumer;
+<i>34</i>&nbsp;
+<i>35</i>&nbsp;public abstract class BehaviorBase&lt;N extends Node&gt; {
+<i>36</i>&nbsp;
+<i>37</i>&nbsp;    private final N node;
+<i>38</i>&nbsp;    private final List&lt;Mapping&lt;?&gt;&gt; installedDefaultMappings;
+<i>39</i>&nbsp;    private final List&lt;Runnable&gt; childInputMapDisposalHandlers;
+<i>40</i>&nbsp;
+<i>41</i>&nbsp;
+<b class="fc"><i>42</i>&nbsp;    public BehaviorBase(N node) {</b>
+<b class="fc"><i>43</i>&nbsp;        this.node = node;</b>
+<b class="fc"><i>44</i>&nbsp;        this.installedDefaultMappings = new ArrayList&lt;&gt;();</b>
+<b class="fc"><i>45</i>&nbsp;        this.childInputMapDisposalHandlers = new ArrayList&lt;&gt;();</b>
+<b class="fc"><i>46</i>&nbsp;    }</b>
+<i>47</i>&nbsp;
+<i>48</i>&nbsp;    public abstract InputMap&lt;N&gt; getInputMap();
+<i>49</i>&nbsp;
+<i>50</i>&nbsp;    public final N getNode() {
+<b class="fc"><i>51</i>&nbsp;        return node;</b>
+<i>52</i>&nbsp;    }
+<i>53</i>&nbsp;
+<i>54</i>&nbsp;    public void dispose() {
+<i>55</i>&nbsp;        // when we dispose a behavior, we do NOT want to dispose the InputMap,
+<i>56</i>&nbsp;        // as that can remove input mappings that were not installed by the
+<i>57</i>&nbsp;        // behavior. Instead, we want to only remove mappings that the behavior
+<i>58</i>&nbsp;        // itself installed. This can be done by removing all input mappings that
+<i>59</i>&nbsp;        // were installed via the &#39;addDefaultMapping&#39; method.
+<i>60</i>&nbsp;
+<i>61</i>&nbsp;        // remove default mappings only
+<b class="nc"><i>62</i>&nbsp;        for (Mapping&lt;?&gt; mapping : installedDefaultMappings) {</b>
+<b class="nc"><i>63</i>&nbsp;            getInputMap().getMappings().remove(mapping);</b>
+<b class="nc"><i>64</i>&nbsp;        }</b>
+<i>65</i>&nbsp;
+<i>66</i>&nbsp;        // Remove all default child mappings
+<b class="nc"><i>67</i>&nbsp;        for (Runnable r : childInputMapDisposalHandlers) {</b>
+<b class="nc"><i>68</i>&nbsp;            r.run();</b>
+<b class="nc"><i>69</i>&nbsp;        }</b>
+<i>70</i>&nbsp;
+<i>71</i>&nbsp;//        InputMap&lt;N&gt; inputMap = getInputMap();
+<i>72</i>&nbsp;//        if (inputMap != null) {
+<i>73</i>&nbsp;//            inputMap.dispose();
+<i>74</i>&nbsp;//        }
+<b class="nc"><i>75</i>&nbsp;    }</b>
+<i>76</i>&nbsp;
+<i>77</i>&nbsp;    protected void addDefaultMapping(List&lt;Mapping&lt;?&gt;&gt; newMapping) {
+<b class="nc"><i>78</i>&nbsp;        addDefaultMapping(getInputMap(), newMapping.toArray(new Mapping[newMapping.size()]));</b>
+<b class="nc"><i>79</i>&nbsp;    }</b>
+<i>80</i>&nbsp;
+<i>81</i>&nbsp;    protected void addDefaultMapping(Mapping&lt;?&gt;... newMapping) {
+<b class="nc"><i>82</i>&nbsp;        addDefaultMapping(getInputMap(), newMapping);</b>
+<b class="nc"><i>83</i>&nbsp;    }</b>
+<i>84</i>&nbsp;
+<i>85</i>&nbsp;    protected void addDefaultMapping(InputMap&lt;N&gt; inputMap, Mapping&lt;?&gt;... newMapping) {
+<i>86</i>&nbsp;        // make a copy of the existing mappings, so we only check against those
+<b class="fc"><i>87</i>&nbsp;        List&lt;Mapping&lt;?&gt;&gt; existingMappings = new ArrayList&lt;&gt;(inputMap.getMappings());</b>
+<i>88</i>&nbsp;
+<b class="fc"><i>89</i>&nbsp;        for (Mapping&lt;?&gt; mapping : newMapping) {</b>
+<i>90</i>&nbsp;            // check if a mapping already exists, and if so, do not add this mapping
+<i>91</i>&nbsp;            // TODO this is insufficient as we need to check entire InputMap hierarchy
+<i>92</i>&nbsp;//            for (Mapping&lt;?&gt; existingMapping : existingMappings) {
+<i>93</i>&nbsp;//                if (existingMapping != null &amp;&amp; existingMapping.equals(mapping)) {
+<i>94</i>&nbsp;//                    return;
+<i>95</i>&nbsp;//                }
+<i>96</i>&nbsp;//            }
+<b class="fc"><i>97</i>&nbsp;            if (existingMappings.contains(mapping)) continue;</b>
+<i>98</i>&nbsp;
+<b class="fc"><i>99</i>&nbsp;            inputMap.getMappings().add(mapping);</b>
+<b class="fc"><i>100</i>&nbsp;            installedDefaultMappings.add(mapping);</b>
+<i>101</i>&nbsp;        }
+<b class="fc"><i>102</i>&nbsp;    }</b>
+<i>103</i>&nbsp;
+<i>104</i>&nbsp;    protected &lt;T extends Node&gt; void addDefaultChildMap(InputMap&lt;T&gt; parentInputMap, InputMap&lt;T&gt; newChildInputMap) {
+<b class="fc"><i>105</i>&nbsp;        parentInputMap.getChildInputMaps().add(newChildInputMap);</b>
+<i>106</i>&nbsp;
+<b class="fc"><i>107</i>&nbsp;        childInputMapDisposalHandlers.add(() -&gt; parentInputMap.getChildInputMaps().remove(newChildInputMap));</b>
+<b class="fc"><i>108</i>&nbsp;    }</b>
+<i>109</i>&nbsp;
+<i>110</i>&nbsp;    protected InputMap&lt;N&gt; createInputMap() {
+<i>111</i>&nbsp;        // TODO re-enable when InputMap moves back to Node / Control
+<i>112</i>&nbsp;//        return node.getInputMap() != null ?
+<i>113</i>&nbsp;//                (InputMap&lt;N&gt;)node.getInputMap() :
+<i>114</i>&nbsp;//                new InputMap&lt;&gt;(node);
+<b class="fc"><i>115</i>&nbsp;        return new InputMap&lt;&gt;(node);</b>
+<i>116</i>&nbsp;    }
+<i>117</i>&nbsp;
+<i>118</i>&nbsp;    protected void removeMapping(Object key) {
+<b class="nc"><i>119</i>&nbsp;        InputMap&lt;?&gt; inputMap = getInputMap();</b>
+<b class="nc"><i>120</i>&nbsp;        inputMap.lookupMapping(key).ifPresent(mapping -&gt; {</b>
+<b class="nc"><i>121</i>&nbsp;            inputMap.getMappings().remove(mapping);</b>
+<b class="nc"><i>122</i>&nbsp;            installedDefaultMappings.remove(mapping);</b>
+<b class="nc"><i>123</i>&nbsp;        });</b>
+<b class="nc"><i>124</i>&nbsp;    }</b>
+<i>125</i>&nbsp;
+<i>126</i>&nbsp;    void rtl(Node node, Runnable rtlMethod, Runnable nonRtlMethod) {
+<b class="nc"><i>127</i>&nbsp;        switch(node.getEffectiveNodeOrientation()) {</b>
+<b class="nc"><i>128</i>&nbsp;            case RIGHT_TO_LEFT: rtlMethod.run(); break;</b>
+<b class="nc"><i>129</i>&nbsp;            default: nonRtlMethod.run(); break;</b>
+<i>130</i>&nbsp;        }
+<b class="nc"><i>131</i>&nbsp;    }</b>
+<i>132</i>&nbsp;
+<i>133</i>&nbsp;    &lt;T&gt; void rtl(Node node, T object, Consumer&lt;T&gt; rtlMethod, Consumer&lt;T&gt; nonRtlMethod) {
+<b class="nc"><i>134</i>&nbsp;        switch(node.getEffectiveNodeOrientation()) {</b>
+<b class="nc"><i>135</i>&nbsp;            case RIGHT_TO_LEFT: rtlMethod.accept(object); break;</b>
+<b class="nc"><i>136</i>&nbsp;            default: nonRtlMethod.accept(object); break;</b>
+<i>137</i>&nbsp;        }
+<b class="nc"><i>138</i>&nbsp;    }</b>
+<i>139</i>&nbsp;
+<i>140</i>&nbsp;    boolean isRTL(Node n) {
+<b class="nc"><i>141</i>&nbsp;        switch(n.getEffectiveNodeOrientation()) {</b>
+<b class="nc"><i>142</i>&nbsp;            case RIGHT_TO_LEFT: return true;</b>
+<b class="nc"><i>143</i>&nbsp;            default: return false;</b>
+<i>144</i>&nbsp;        }
+<i>145</i>&nbsp;    }
+<i>146</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2017-12-04 21:49</div>
+</div>
+</body>
+</html>

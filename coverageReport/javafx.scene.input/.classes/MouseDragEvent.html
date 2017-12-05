@@ -1,0 +1,373 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: MouseDragEvent</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">javafx.scene.input</a> ]
+</div>
+
+<h1>Coverage Summary for Class: MouseDragEvent (javafx.scene.input)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">MouseDragEvent</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    12.5%
+  </span>
+  <span class="absValue">
+    (1/ 8)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    14.6%
+  </span>
+  <span class="absValue">
+    (7/ 48)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright (c) 2000, 2013, Oracle and/or its affiliates. All rights reserved.
+<i>3</i>&nbsp; * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+<i>4</i>&nbsp; *
+<i>5</i>&nbsp; *
+<i>6</i>&nbsp; *
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; *
+<i>11</i>&nbsp; *
+<i>12</i>&nbsp; *
+<i>13</i>&nbsp; *
+<i>14</i>&nbsp; *
+<i>15</i>&nbsp; *
+<i>16</i>&nbsp; *
+<i>17</i>&nbsp; *
+<i>18</i>&nbsp; *
+<i>19</i>&nbsp; *
+<i>20</i>&nbsp; *
+<i>21</i>&nbsp; *
+<i>22</i>&nbsp; *
+<i>23</i>&nbsp; *
+<i>24</i>&nbsp; */
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;package javafx.scene.input;
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;import javafx.beans.NamedArg;
+<i>29</i>&nbsp;import javafx.event.EventTarget;
+<i>30</i>&nbsp;import javafx.event.EventType;
+<i>31</i>&nbsp;
+<i>32</i>&nbsp;/**
+<i>33</i>&nbsp; * Mouse drag events are delivered to potential gesture targets during
+<i>34</i>&nbsp; * full press-drag-release gestures. The difference among different
+<i>35</i>&nbsp; * gesture types is described at {@link javafx.scene.input.MouseEvent MouseEvent}.
+<i>36</i>&nbsp; * &lt;p&gt;
+<i>37</i>&nbsp; * Full press-drag-release gesture can be started by calling
+<i>38</i>&nbsp; * {@code startFullDrag()} (on a node or scene) inside of a DRAG_DETECTED
+<i>39</i>&nbsp; * event handler. This call activates delivering of {@code MouseDragEvent}s
+<i>40</i>&nbsp; * to the nodes that are under cursor during the dragging gesture.
+<i>41</i>&nbsp; * &lt;p&gt;
+<i>42</i>&nbsp; * When you drag a node, it&#39;s still under cursor, so it is considered
+<i>43</i>&nbsp; * being a potential gesture target during the whole gesture. If you need to
+<i>44</i>&nbsp; * drag a node to a different node and let the other node know about it,
+<i>45</i>&nbsp; * you need to ensure that the nodes under the dragged node are picked
+<i>46</i>&nbsp; * as the potential gesture targets. You can achieve this by calling
+<i>47</i>&nbsp; * {@code setMouseTransparent(true)} on the dragged node in a
+<i>48</i>&nbsp; * {@code MOUSE_PRESSED} handler and returning it back to false in a
+<i>49</i>&nbsp; * {@code MOUSE_RELEASED} handler. This way the nodes under the dragged
+<i>50</i>&nbsp; * node will receive the {@code MouseDragEvent}s, while all the
+<i>51</i>&nbsp; * {@code MouseEvent}s will still be delivered to the (currently mouse
+<i>52</i>&nbsp; * transparent) gesture source.
+<i>53</i>&nbsp; * &lt;p&gt;
+<i>54</i>&nbsp; * The entered/exited events behave similarly to mouse entered/exited
+<i>55</i>&nbsp; * events, please see {@link MouseEvent} overview.
+<i>56</i>&nbsp; * @since JavaFX 2.1
+<i>57</i>&nbsp; */
+<i>58</i>&nbsp;public final class MouseDragEvent extends MouseEvent{
+<i>59</i>&nbsp;
+<i>60</i>&nbsp;    private static final long serialVersionUID = 20121107L;
+<i>61</i>&nbsp;
+<i>62</i>&nbsp;    /**
+<i>63</i>&nbsp;     * Common supertype for all mouse event types.
+<i>64</i>&nbsp;     */
+<b class="fc"><i>65</i>&nbsp;    public static final EventType&lt;MouseDragEvent&gt; ANY =</b>
+<i>66</i>&nbsp;            new EventType&lt;MouseDragEvent&gt;(MouseEvent.ANY, &quot;MOUSE-DRAG&quot;);
+<i>67</i>&nbsp;
+<i>68</i>&nbsp;    /**
+<i>69</i>&nbsp;     * This event occurs when the gesture progresses within this node.
+<i>70</i>&nbsp;     */
+<b class="fc"><i>71</i>&nbsp;    public static final EventType&lt;MouseDragEvent&gt; MOUSE_DRAG_OVER =</b>
+<i>72</i>&nbsp;            new EventType&lt;MouseDragEvent&gt;(MouseDragEvent.ANY, &quot;MOUSE-DRAG_OVER&quot;);
+<i>73</i>&nbsp;
+<i>74</i>&nbsp;    /**
+<i>75</i>&nbsp;     * This event occurs when the gesture ends (by releasing mouse button)
+<i>76</i>&nbsp;     * on this node.
+<i>77</i>&nbsp;     */
+<b class="fc"><i>78</i>&nbsp;    public static final EventType&lt;MouseDragEvent&gt; MOUSE_DRAG_RELEASED =</b>
+<i>79</i>&nbsp;            new EventType&lt;MouseDragEvent&gt;(MouseDragEvent.ANY, &quot;MOUSE-DRAG_RELEASED&quot;);
+<i>80</i>&nbsp;
+<i>81</i>&nbsp;    /**
+<i>82</i>&nbsp;     * This event occurs when the gesture enters a node. It&#39;s the bubbling variant,
+<i>83</i>&nbsp;     * which is delivered also to all parents of the entered node (unless it
+<i>84</i>&nbsp;     * was consumed). When notifications about mouse entering some of node&#39;s
+<i>85</i>&nbsp;     * children are not desired, {@code MOUSE_DRAG_ENTERED} event handler should
+<i>86</i>&nbsp;     * be used.
+<i>87</i>&nbsp;     *
+<i>88</i>&nbsp;     * @see MouseEvent MouseEvent for more information about mouse entered/exited handling
+<i>89</i>&nbsp;     * which is similar
+<i>90</i>&nbsp;     */
+<b class="fc"><i>91</i>&nbsp;    public static final EventType&lt;MouseDragEvent&gt; MOUSE_DRAG_ENTERED_TARGET =</b>
+<i>92</i>&nbsp;            new EventType&lt;MouseDragEvent&gt;(MouseDragEvent.ANY, &quot;MOUSE-DRAG_ENTERED_TARGET&quot;);
+<i>93</i>&nbsp;
+<i>94</i>&nbsp;    /**
+<i>95</i>&nbsp;     * This event occurs when the gesture enters a node. This event type is
+<i>96</i>&nbsp;     * delivered only to the entered node, if parents want to filter it or get
+<i>97</i>&nbsp;     * the bubbling event, they need to use {@code MOUSE_DRAG_ENTERED_TARGET}.
+<i>98</i>&nbsp;     *
+<i>99</i>&nbsp;     * @see MouseEvent MouseEvent for more information about mouse entered/exited handling
+<i>100</i>&nbsp;     * which is similar
+<i>101</i>&nbsp;     */
+<b class="fc"><i>102</i>&nbsp;    public static final EventType&lt;MouseDragEvent&gt; MOUSE_DRAG_ENTERED =</b>
+<i>103</i>&nbsp;            new EventType&lt;MouseDragEvent&gt;(MouseDragEvent.MOUSE_DRAG_ENTERED_TARGET,
+<i>104</i>&nbsp;                    &quot;MOUSE-DRAG_ENTERED&quot;);
+<i>105</i>&nbsp;
+<i>106</i>&nbsp;    /**
+<i>107</i>&nbsp;     * This event occurs when the gesture exits a node. It&#39;s the bubbling variant,
+<i>108</i>&nbsp;     * which is delivered also to all parents of the exited node (unless it
+<i>109</i>&nbsp;     * was consumed). When notifications about mouse exiting some of node&#39;s
+<i>110</i>&nbsp;     * children are not desired, {@code MOUSE_DRAG_EXITED} event handler should
+<i>111</i>&nbsp;     * be used.
+<i>112</i>&nbsp;     *
+<i>113</i>&nbsp;     * @see MouseEvent MouseEvent for more information about mouse entered/exited handling
+<i>114</i>&nbsp;     * which is similar
+<i>115</i>&nbsp;     */
+<b class="fc"><i>116</i>&nbsp;    public static final EventType&lt;MouseDragEvent&gt; MOUSE_DRAG_EXITED_TARGET =</b>
+<i>117</i>&nbsp;            new EventType&lt;MouseDragEvent&gt;(MouseDragEvent.ANY, &quot;MOUSE-DRAG_EXITED_TARGET&quot;);
+<i>118</i>&nbsp;
+<i>119</i>&nbsp;    /**
+<i>120</i>&nbsp;     * This event occurs when the gesture exits a node. This event type is
+<i>121</i>&nbsp;     * delivered only to the exited node, if parents want to filter it or get
+<i>122</i>&nbsp;     * the bubbling event, they need to use {@code MOUSE_DRAG_EXITED_TARGET}.
+<i>123</i>&nbsp;     *
+<i>124</i>&nbsp;     * @see MouseEvent MouseEvent for more information about mouse entered/exited handling
+<i>125</i>&nbsp;     * which is similar
+<i>126</i>&nbsp;     */
+<b class="fc"><i>127</i>&nbsp;    public static final EventType&lt;MouseDragEvent&gt; MOUSE_DRAG_EXITED =</b>
+<i>128</i>&nbsp;            new EventType&lt;MouseDragEvent&gt;(MouseDragEvent.MOUSE_DRAG_EXITED_TARGET,
+<i>129</i>&nbsp;                    &quot;MOUSE-DRAG_EXITED&quot;);
+<i>130</i>&nbsp;
+<i>131</i>&nbsp;    /**
+<i>132</i>&nbsp;     * Constructs new MouseDragEvent event.
+<i>133</i>&nbsp;     * @param source the source of the event. Can be null.
+<i>134</i>&nbsp;     * @param target the target of the event. Can be null.
+<i>135</i>&nbsp;     * @param eventType The type of the event.
+<i>136</i>&nbsp;     * @param x The x with respect to the scene.
+<i>137</i>&nbsp;     * @param y The y with respect to the scene.
+<i>138</i>&nbsp;     * @param screenX The x coordinate relative to screen.
+<i>139</i>&nbsp;     * @param screenY The y coordinate relative to screen.
+<i>140</i>&nbsp;     * @param button the mouse button used
+<i>141</i>&nbsp;     * @param clickCount number of click counts
+<i>142</i>&nbsp;     * @param shiftDown true if shift modifier was pressed.
+<i>143</i>&nbsp;     * @param controlDown true if control modifier was pressed.
+<i>144</i>&nbsp;     * @param altDown true if alt modifier was pressed.
+<i>145</i>&nbsp;     * @param metaDown true if meta modifier was pressed.
+<i>146</i>&nbsp;     * @param primaryButtonDown true if primary button was pressed.
+<i>147</i>&nbsp;     * @param middleButtonDown true if middle button was pressed.
+<i>148</i>&nbsp;     * @param secondaryButtonDown true if secondary button was pressed.
+<i>149</i>&nbsp;     * @param synthesized if this event was synthesized
+<i>150</i>&nbsp;     * @param popupTrigger whether this event denotes a popup trigger for current platform
+<i>151</i>&nbsp;     * @param pickResult pick result. Can be null, in this case a 2D pick result
+<i>152</i>&nbsp;     *                   without any further values is constructed
+<i>153</i>&nbsp;     *                   based on the scene coordinates and target
+<i>154</i>&nbsp;     * @param gestureSource source object of the ongoing gesture.
+<i>155</i>&nbsp;     * @since JavaFX 8.0
+<i>156</i>&nbsp;     */
+<i>157</i>&nbsp;    public MouseDragEvent(@NamedArg(&quot;source&quot;) Object source, @NamedArg(&quot;target&quot;) EventTarget target, @NamedArg(&quot;eventType&quot;) EventType&lt;MouseDragEvent&gt; eventType,
+<i>158</i>&nbsp;            @NamedArg(&quot;x&quot;) double x, @NamedArg(&quot;y&quot;) double y, @NamedArg(&quot;screenX&quot;) double screenX, @NamedArg(&quot;screenY&quot;) double screenY,
+<i>159</i>&nbsp;            @NamedArg(&quot;button&quot;) MouseButton button, @NamedArg(&quot;clickCount&quot;) int clickCount,
+<i>160</i>&nbsp;            @NamedArg(&quot;shiftDown&quot;) boolean shiftDown, @NamedArg(&quot;controlDown&quot;) boolean controlDown, @NamedArg(&quot;altDown&quot;) boolean altDown, @NamedArg(&quot;metaDown&quot;) boolean metaDown,
+<i>161</i>&nbsp;            @NamedArg(&quot;primaryButtonDown&quot;) boolean primaryButtonDown, @NamedArg(&quot;middleButtonDown&quot;) boolean middleButtonDown, @NamedArg(&quot;secondaryButtonDown&quot;) boolean secondaryButtonDown,
+<i>162</i>&nbsp;            @NamedArg(&quot;synthesized&quot;) boolean synthesized, @NamedArg(&quot;popupTrigger&quot;) boolean popupTrigger, @NamedArg(&quot;pickResult&quot;) PickResult pickResult,
+<i>163</i>&nbsp;            @NamedArg(&quot;gestureSource&quot;) Object gestureSource) {
+<b class="nc"><i>164</i>&nbsp;        super(source, target, eventType, x, y, screenX, screenY, button,</b>
+<i>165</i>&nbsp;                clickCount, shiftDown, controlDown, altDown, metaDown,
+<i>166</i>&nbsp;                primaryButtonDown, middleButtonDown, secondaryButtonDown,
+<i>167</i>&nbsp;                synthesized, popupTrigger, false, pickResult);
+<b class="nc"><i>168</i>&nbsp;        this.gestureSource = gestureSource;</b>
+<b class="nc"><i>169</i>&nbsp;    }</b>
+<i>170</i>&nbsp;
+<i>171</i>&nbsp;    /**
+<i>172</i>&nbsp;     * Constructs new MouseDragEvent event with null source and target.
+<i>173</i>&nbsp;     *
+<i>174</i>&nbsp;     * @param eventType The type of the event.
+<i>175</i>&nbsp;     * @param x The x with respect to the scene.
+<i>176</i>&nbsp;     * @param y The y with respect to the scene.
+<i>177</i>&nbsp;     * @param screenX The x coordinate relative to screen.
+<i>178</i>&nbsp;     * @param screenY The y coordinate relative to screen.
+<i>179</i>&nbsp;     * @param button the mouse button used
+<i>180</i>&nbsp;     * @param clickCount number of click counts
+<i>181</i>&nbsp;     * @param shiftDown true if shift modifier was pressed.
+<i>182</i>&nbsp;     * @param controlDown true if control modifier was pressed.
+<i>183</i>&nbsp;     * @param altDown true if alt modifier was pressed.
+<i>184</i>&nbsp;     * @param metaDown true if meta modifier was pressed.
+<i>185</i>&nbsp;     * @param primaryButtonDown true if primary button was pressed.
+<i>186</i>&nbsp;     * @param middleButtonDown true if middle button was pressed.
+<i>187</i>&nbsp;     * @param secondaryButtonDown true if secondary button was pressed.
+<i>188</i>&nbsp;     * @param synthesized if this event was synthesized
+<i>189</i>&nbsp;     * @param popupTrigger whether this event denotes a popup trigger for current platform
+<i>190</i>&nbsp;     * @param pickResult pick result. Can be null, in this case a 2D pick result
+<i>191</i>&nbsp;     *                   without any further values is constructed
+<i>192</i>&nbsp;     *                   based on the scene coordinates
+<i>193</i>&nbsp;     * @param gestureSource source object of the ongoing gesture.
+<i>194</i>&nbsp;     * @since JavaFX 8.0
+<i>195</i>&nbsp;     */
+<i>196</i>&nbsp;    public MouseDragEvent(@NamedArg(&quot;eventType&quot;) EventType&lt;MouseDragEvent&gt; eventType,
+<i>197</i>&nbsp;            @NamedArg(&quot;x&quot;) double x, @NamedArg(&quot;y&quot;) double y, @NamedArg(&quot;screenX&quot;) double screenX, @NamedArg(&quot;screenY&quot;) double screenY,
+<i>198</i>&nbsp;            @NamedArg(&quot;button&quot;) MouseButton button, @NamedArg(&quot;clickCount&quot;) int clickCount,
+<i>199</i>&nbsp;            @NamedArg(&quot;shiftDown&quot;) boolean shiftDown, @NamedArg(&quot;controlDown&quot;) boolean controlDown, @NamedArg(&quot;altDown&quot;) boolean altDown, @NamedArg(&quot;metaDown&quot;) boolean metaDown,
+<i>200</i>&nbsp;            @NamedArg(&quot;primaryButtonDown&quot;) boolean primaryButtonDown, @NamedArg(&quot;middleButtonDown&quot;) boolean middleButtonDown, @NamedArg(&quot;secondaryButtonDown&quot;) boolean secondaryButtonDown,
+<i>201</i>&nbsp;            @NamedArg(&quot;synthesized&quot;) boolean synthesized, @NamedArg(&quot;popupTrigger&quot;) boolean popupTrigger, @NamedArg(&quot;pickResult&quot;) PickResult pickResult,
+<i>202</i>&nbsp;            @NamedArg(&quot;gestureSource&quot;) Object gestureSource) {
+<b class="nc"><i>203</i>&nbsp;        this(null, null, eventType, x, y, screenX, screenY, button, clickCount,</b>
+<i>204</i>&nbsp;                shiftDown, controlDown, altDown, metaDown, primaryButtonDown,
+<i>205</i>&nbsp;                middleButtonDown, secondaryButtonDown, synthesized, popupTrigger,
+<i>206</i>&nbsp;                pickResult, gestureSource);
+<b class="nc"><i>207</i>&nbsp;     }</b>
+<i>208</i>&nbsp;
+<i>209</i>&nbsp;
+<i>210</i>&nbsp;    private final transient Object gestureSource;
+<i>211</i>&nbsp;
+<i>212</i>&nbsp;    /**
+<i>213</i>&nbsp;     * Returns the source object of the ongoing gesture.
+<i>214</i>&nbsp;     * Gesture source is the object that started the full press-drag-release
+<i>215</i>&nbsp;     * gesture (by {@code startFullDrag} method being called on it).
+<i>216</i>&nbsp;     * @return The source object of the gesture.
+<i>217</i>&nbsp;     */
+<i>218</i>&nbsp;    public Object getGestureSource() {
+<b class="nc"><i>219</i>&nbsp;        return gestureSource;</b>
+<i>220</i>&nbsp;    }
+<i>221</i>&nbsp;
+<i>222</i>&nbsp;    /**
+<i>223</i>&nbsp;     * Returns a string representation of this {@code MouseDragEvent} object.
+<i>224</i>&nbsp;     * @return a string representation of this {@code MouseDragEvent} object.
+<i>225</i>&nbsp;     */
+<i>226</i>&nbsp;    @Override public String toString() {
+<b class="nc"><i>227</i>&nbsp;        final StringBuilder sb = new StringBuilder(&quot;MouseDragEvent [&quot;);</b>
+<i>228</i>&nbsp;
+<b class="nc"><i>229</i>&nbsp;        sb.append(&quot;source = &quot;).append(getSource());</b>
+<b class="nc"><i>230</i>&nbsp;        sb.append(&quot;, target = &quot;).append(getTarget());</b>
+<b class="nc"><i>231</i>&nbsp;        sb.append(&quot;, gestureSource = &quot;).append(getGestureSource());</b>
+<b class="nc"><i>232</i>&nbsp;        sb.append(&quot;, eventType = &quot;).append(getEventType());</b>
+<b class="nc"><i>233</i>&nbsp;        sb.append(&quot;, consumed = &quot;).append(isConsumed());</b>
+<i>234</i>&nbsp;
+<b class="nc"><i>235</i>&nbsp;        sb.append(&quot;, x = &quot;).append(getX()).append(&quot;, y = &quot;).append(getY())</b>
+<b class="nc"><i>236</i>&nbsp;                .append(&quot;, z = &quot;).append(getZ());</b>
+<i>237</i>&nbsp;
+<b class="nc"><i>238</i>&nbsp;        if (getButton() != null) {</b>
+<b class="nc"><i>239</i>&nbsp;            sb.append(&quot;, button = &quot;).append(getButton());</b>
+<i>240</i>&nbsp;        }
+<b class="nc"><i>241</i>&nbsp;        if (getClickCount() &gt; 1) {</b>
+<b class="nc"><i>242</i>&nbsp;            sb.append(&quot;, clickCount = &quot;).append(getClickCount());</b>
+<i>243</i>&nbsp;        }
+<b class="nc"><i>244</i>&nbsp;        if (isPrimaryButtonDown()) {</b>
+<b class="nc"><i>245</i>&nbsp;            sb.append(&quot;, primaryButtonDown&quot;);</b>
+<i>246</i>&nbsp;        }
+<b class="nc"><i>247</i>&nbsp;        if (isMiddleButtonDown()) {</b>
+<b class="nc"><i>248</i>&nbsp;            sb.append(&quot;, middleButtonDown&quot;);</b>
+<i>249</i>&nbsp;        }
+<b class="nc"><i>250</i>&nbsp;        if (isSecondaryButtonDown()) {</b>
+<b class="nc"><i>251</i>&nbsp;            sb.append(&quot;, secondaryButtonDown&quot;);</b>
+<i>252</i>&nbsp;        }
+<b class="nc"><i>253</i>&nbsp;        if (isShiftDown()) {</b>
+<b class="nc"><i>254</i>&nbsp;            sb.append(&quot;, shiftDown&quot;);</b>
+<i>255</i>&nbsp;        }
+<b class="nc"><i>256</i>&nbsp;        if (isControlDown()) {</b>
+<b class="nc"><i>257</i>&nbsp;            sb.append(&quot;, controlDown&quot;);</b>
+<i>258</i>&nbsp;        }
+<b class="nc"><i>259</i>&nbsp;        if (isAltDown()) {</b>
+<b class="nc"><i>260</i>&nbsp;            sb.append(&quot;, altDown&quot;);</b>
+<i>261</i>&nbsp;        }
+<b class="nc"><i>262</i>&nbsp;        if (isMetaDown()) {</b>
+<b class="nc"><i>263</i>&nbsp;            sb.append(&quot;, metaDown&quot;);</b>
+<i>264</i>&nbsp;        }
+<b class="nc"><i>265</i>&nbsp;        if (isShortcutDown()) {</b>
+<b class="nc"><i>266</i>&nbsp;            sb.append(&quot;, shortcutDown&quot;);</b>
+<i>267</i>&nbsp;        }
+<b class="nc"><i>268</i>&nbsp;        if (isSynthesized()) {</b>
+<b class="nc"><i>269</i>&nbsp;            sb.append(&quot;, synthesized&quot;);</b>
+<i>270</i>&nbsp;        }
+<b class="nc"><i>271</i>&nbsp;        sb.append(&quot;, pickResult = &quot;).append(getPickResult());</b>
+<i>272</i>&nbsp;
+<b class="nc"><i>273</i>&nbsp;        return sb.append(&quot;]&quot;).toString();</b>
+<i>274</i>&nbsp;    }
+<i>275</i>&nbsp;
+<i>276</i>&nbsp;    @Override
+<i>277</i>&nbsp;    public MouseDragEvent copyFor(Object newSource, EventTarget newTarget) {
+<b class="nc"><i>278</i>&nbsp;        return (MouseDragEvent) super.copyFor(newSource, newTarget);</b>
+<i>279</i>&nbsp;    }
+<i>280</i>&nbsp;
+<i>281</i>&nbsp;    @Override
+<i>282</i>&nbsp;    public MouseDragEvent copyFor(Object newSource, EventTarget newTarget, EventType&lt;? extends MouseEvent&gt; type) {
+<b class="nc"><i>283</i>&nbsp;        return (MouseDragEvent) super.copyFor(newSource, newTarget, type);</b>
+<i>284</i>&nbsp;    }
+<i>285</i>&nbsp;
+<i>286</i>&nbsp;    @Override
+<i>287</i>&nbsp;    public EventType&lt;MouseDragEvent&gt; getEventType() {
+<b class="nc"><i>288</i>&nbsp;        return (EventType&lt;MouseDragEvent&gt;) super.getEventType();</b>
+<i>289</i>&nbsp;    }
+<i>290</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2017-12-04 21:49</div>
+</div>
+</body>
+</html>

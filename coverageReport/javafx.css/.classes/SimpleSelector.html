@@ -1,0 +1,485 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: SimpleSelector</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">javafx.css</a> ]
+</div>
+
+<h1>Coverage Summary for Class: SimpleSelector (javafx.css)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">SimpleSelector</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    61.1%
+  </span>
+  <span class="absValue">
+    (11/ 18)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    49%
+  </span>
+  <span class="absValue">
+    (75/ 153)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright (c) 2008, 2015, Oracle and/or its affiliates. All rights reserved.
+<i>3</i>&nbsp; * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+<i>4</i>&nbsp; *
+<i>5</i>&nbsp; *
+<i>6</i>&nbsp; *
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; *
+<i>11</i>&nbsp; *
+<i>12</i>&nbsp; *
+<i>13</i>&nbsp; *
+<i>14</i>&nbsp; *
+<i>15</i>&nbsp; *
+<i>16</i>&nbsp; *
+<i>17</i>&nbsp; *
+<i>18</i>&nbsp; *
+<i>19</i>&nbsp; *
+<i>20</i>&nbsp; *
+<i>21</i>&nbsp; *
+<i>22</i>&nbsp; *
+<i>23</i>&nbsp; *
+<i>24</i>&nbsp; */
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;package javafx.css;
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;import javafx.geometry.NodeOrientation;
+<i>29</i>&nbsp;import javafx.scene.Node;
+<i>30</i>&nbsp;
+<i>31</i>&nbsp;import java.io.DataInputStream;
+<i>32</i>&nbsp;import java.io.DataOutputStream;
+<i>33</i>&nbsp;import java.io.IOException;
+<i>34</i>&nbsp;import java.util.ArrayList;
+<i>35</i>&nbsp;import java.util.Collections;
+<i>36</i>&nbsp;import java.util.Iterator;
+<i>37</i>&nbsp;import java.util.List;
+<i>38</i>&nbsp;import java.util.Set;
+<i>39</i>&nbsp;
+<i>40</i>&nbsp;import com.sun.javafx.css.PseudoClassState;
+<i>41</i>&nbsp;import com.sun.javafx.css.StyleClassSet;
+<i>42</i>&nbsp;
+<i>43</i>&nbsp;import static javafx.geometry.NodeOrientation.INHERIT;
+<i>44</i>&nbsp;import static javafx.geometry.NodeOrientation.LEFT_TO_RIGHT;
+<i>45</i>&nbsp;import static javafx.geometry.NodeOrientation.RIGHT_TO_LEFT;
+<i>46</i>&nbsp;
+<i>47</i>&nbsp;/**
+<i>48</i>&nbsp; * A simple selector which behaves according to the CSS standard.
+<i>49</i>&nbsp; *
+<i>50</i>&nbsp; * @since 9
+<i>51</i>&nbsp; */
+<i>52</i>&nbsp;final public class SimpleSelector extends Selector {
+<i>53</i>&nbsp;
+<i>54</i>&nbsp;    /**
+<i>55</i>&nbsp;     * If specified in the CSS file, the name of the java class to which
+<i>56</i>&nbsp;     * this selector is applied. For example, if the CSS file had:
+<i>57</i>&nbsp;     * &lt;code&gt;&lt;pre&gt;
+<i>58</i>&nbsp;     *   Rectangle { }
+<i>59</i>&nbsp;     * &lt;/pre&gt;&lt;/code&gt;
+<i>60</i>&nbsp;     * then name would be &quot;Rectangle&quot;.
+<i>61</i>&nbsp;     */
+<i>62</i>&nbsp;    final private String name;
+<i>63</i>&nbsp;    /**
+<i>64</i>&nbsp;     * @return The name of the java class to which this selector is applied, or *.
+<i>65</i>&nbsp;     */
+<i>66</i>&nbsp;    public String getName() {
+<b class="fc"><i>67</i>&nbsp;        return name;</b>
+<i>68</i>&nbsp;    }
+<i>69</i>&nbsp;
+<i>70</i>&nbsp;    /**
+<i>71</i>&nbsp;     * @return Immutable List&amp;lt;String&amp;gt; of style-classes of the selector
+<i>72</i>&nbsp;     */
+<i>73</i>&nbsp;    public List&lt;String&gt; getStyleClasses() {
+<i>74</i>&nbsp;
+<b class="nc"><i>75</i>&nbsp;        final List&lt;String&gt; names = new ArrayList&lt;String&gt;();</b>
+<i>76</i>&nbsp;
+<b class="nc"><i>77</i>&nbsp;        Iterator&lt;StyleClass&gt; iter = styleClassSet.iterator();</b>
+<b class="nc"><i>78</i>&nbsp;        while (iter.hasNext()) {</b>
+<b class="nc"><i>79</i>&nbsp;            names.add(iter.next().getStyleClassName());</b>
+<i>80</i>&nbsp;        }
+<i>81</i>&nbsp;
+<b class="nc"><i>82</i>&nbsp;        return Collections.unmodifiableList(names);</b>
+<i>83</i>&nbsp;    }
+<i>84</i>&nbsp;
+<i>85</i>&nbsp;    public Set&lt;StyleClass&gt; getStyleClassSet() {
+<b class="fc"><i>86</i>&nbsp;        return styleClassSet;</b>
+<i>87</i>&nbsp;    }
+<i>88</i>&nbsp;
+<i>89</i>&nbsp;    /** styleClasses converted to a set of bit masks */
+<i>90</i>&nbsp;    final private StyleClassSet styleClassSet;
+<i>91</i>&nbsp;
+<i>92</i>&nbsp;    final private String id;
+<i>93</i>&nbsp;    /*
+<i>94</i>&nbsp;     * @return The value of the selector id, which may be an empty string.
+<i>95</i>&nbsp;     */
+<i>96</i>&nbsp;    public String getId() {
+<b class="fc"><i>97</i>&nbsp;        return id;</b>
+<i>98</i>&nbsp;    }
+<i>99</i>&nbsp;
+<i>100</i>&nbsp;    // a mask of bits corresponding to the pseudoclasses
+<i>101</i>&nbsp;    final private PseudoClassState pseudoClassState;
+<i>102</i>&nbsp;
+<i>103</i>&nbsp;    Set&lt;PseudoClass&gt; getPseudoClassStates() {
+<b class="nc"><i>104</i>&nbsp;        return pseudoClassState;</b>
+<i>105</i>&nbsp;    }
+<i>106</i>&nbsp;
+<i>107</i>&nbsp;    /**
+<i>108</i>&nbsp;     * @return Immutable List&amp;lt;String&amp;gt; of pseudo-classes of the selector
+<i>109</i>&nbsp;     */
+<i>110</i>&nbsp;    List&lt;String&gt; getPseudoclasses() {
+<i>111</i>&nbsp;
+<b class="nc"><i>112</i>&nbsp;        final List&lt;String&gt; names = new ArrayList&lt;String&gt;();</b>
+<i>113</i>&nbsp;
+<b class="nc"><i>114</i>&nbsp;        Iterator&lt;PseudoClass&gt; iter = pseudoClassState.iterator();</b>
+<b class="nc"><i>115</i>&nbsp;        while (iter.hasNext()) {</b>
+<b class="nc"><i>116</i>&nbsp;            names.add(iter.next().getPseudoClassName());</b>
+<i>117</i>&nbsp;        }
+<i>118</i>&nbsp;
+<b class="nc"><i>119</i>&nbsp;        if (nodeOrientation == RIGHT_TO_LEFT) {</b>
+<b class="nc"><i>120</i>&nbsp;            names.add(&quot;dir(rtl)&quot;);</b>
+<b class="nc"><i>121</i>&nbsp;        } else if (nodeOrientation == LEFT_TO_RIGHT) {</b>
+<b class="nc"><i>122</i>&nbsp;            names.add(&quot;dir(ltr)&quot;);</b>
+<i>123</i>&nbsp;        }
+<i>124</i>&nbsp;
+<b class="nc"><i>125</i>&nbsp;        return Collections.unmodifiableList(names);</b>
+<i>126</i>&nbsp;    }
+<i>127</i>&nbsp;
+<i>128</i>&nbsp;    // true if name is not a wildcard
+<i>129</i>&nbsp;    final private boolean matchOnName;
+<i>130</i>&nbsp;
+<i>131</i>&nbsp;    // true if id given
+<i>132</i>&nbsp;    final private boolean matchOnId;
+<i>133</i>&nbsp;
+<i>134</i>&nbsp;    // true if style class given
+<i>135</i>&nbsp;    final private boolean matchOnStyleClass;
+<i>136</i>&nbsp;
+<i>137</i>&nbsp;    // dir(ltr) or dir(rtl), otherwise inherit
+<i>138</i>&nbsp;    final private NodeOrientation nodeOrientation;
+<i>139</i>&nbsp;
+<i>140</i>&nbsp;    // Used in Match. If nodeOrientation is ltr or rtl,
+<i>141</i>&nbsp;    // then count it as a pseudoclass
+<i>142</i>&nbsp;    public NodeOrientation getNodeOrientation() {
+<b class="fc"><i>143</i>&nbsp;        return nodeOrientation;</b>
+<i>144</i>&nbsp;    }
+<i>145</i>&nbsp;
+<i>146</i>&nbsp;    // TODO: The parser passes styleClasses as a List. Should be array?
+<i>147</i>&nbsp;    SimpleSelector(final String name, final List&lt;String&gt; styleClasses,
+<i>148</i>&nbsp;            final List&lt;String&gt; pseudoClasses, final String id)
+<b class="fc"><i>149</i>&nbsp;    {</b>
+<b class="fc"><i>150</i>&nbsp;        this.name = name == null ? &quot;*&quot; : name;</b>
+<i>151</i>&nbsp;        // if name is not null and not empty or wildcard,
+<i>152</i>&nbsp;        // then match needs to check name
+<b class="fc"><i>153</i>&nbsp;        this.matchOnName = (name != null &amp;&amp; !(&quot;&quot;.equals(name)) &amp;&amp; !(&quot;*&quot;.equals(name)));</b>
+<i>154</i>&nbsp;
+<b class="fc"><i>155</i>&nbsp;        this.styleClassSet = new StyleClassSet();</b>
+<i>156</i>&nbsp;
+<b class="fc"><i>157</i>&nbsp;        int nMax = styleClasses != null ? styleClasses.size() : 0;</b>
+<b class="fc"><i>158</i>&nbsp;        for(int n=0; n&lt;nMax; n++) {</b>
+<i>159</i>&nbsp;
+<b class="fc"><i>160</i>&nbsp;            final String styleClassName = styleClasses.get(n);</b>
+<b class="fc"><i>161</i>&nbsp;            if (styleClassName == null || styleClassName.isEmpty()) continue;</b>
+<i>162</i>&nbsp;
+<b class="fc"><i>163</i>&nbsp;            final StyleClass styleClass = StyleClassSet.getStyleClass(styleClassName);</b>
+<b class="fc"><i>164</i>&nbsp;            this.styleClassSet.add(styleClass);</b>
+<i>165</i>&nbsp;        }
+<i>166</i>&nbsp;
+<b class="fc"><i>167</i>&nbsp;        this.matchOnStyleClass = (this.styleClassSet.size() &gt; 0);</b>
+<i>168</i>&nbsp;
+<b class="fc"><i>169</i>&nbsp;        this.pseudoClassState = new PseudoClassState();</b>
+<i>170</i>&nbsp;
+<b class="fc"><i>171</i>&nbsp;        nMax = pseudoClasses != null ? pseudoClasses.size() : 0;</b>
+<i>172</i>&nbsp;
+<b class="fc"><i>173</i>&nbsp;        NodeOrientation dir = NodeOrientation.INHERIT;</b>
+<b class="fc"><i>174</i>&nbsp;        for(int n=0; n&lt;nMax; n++) {</b>
+<i>175</i>&nbsp;
+<b class="fc"><i>176</i>&nbsp;            final String pclass = pseudoClasses.get(n);</b>
+<b class="fc"><i>177</i>&nbsp;            if (pclass == null || pclass.isEmpty()) continue;</b>
+<i>178</i>&nbsp;
+<i>179</i>&nbsp;            // TODO: This is not how we should handle functional pseudo-classes in the long-run!
+<b class="fc"><i>180</i>&nbsp;            if (&quot;dir(&quot;.regionMatches(true, 0, pclass, 0, 4)) {</b>
+<b class="fc"><i>181</i>&nbsp;                final boolean rtl = &quot;dir(rtl)&quot;.equalsIgnoreCase(pclass);</b>
+<b class="fc"><i>182</i>&nbsp;                dir = rtl ? RIGHT_TO_LEFT : LEFT_TO_RIGHT;</b>
+<b class="fc"><i>183</i>&nbsp;                continue;</b>
+<i>184</i>&nbsp;            }
+<i>185</i>&nbsp;
+<b class="fc"><i>186</i>&nbsp;            final PseudoClass pseudoClass = PseudoClassState.getPseudoClass(pclass);</b>
+<b class="fc"><i>187</i>&nbsp;            this.pseudoClassState.add(pseudoClass);</b>
+<i>188</i>&nbsp;        }
+<i>189</i>&nbsp;
+<b class="fc"><i>190</i>&nbsp;        this.nodeOrientation = dir;</b>
+<b class="fc"><i>191</i>&nbsp;        this.id = id == null ? &quot;&quot; : id;</b>
+<i>192</i>&nbsp;        // if id is not null and not empty, then match needs to check id
+<b class="fc"><i>193</i>&nbsp;        this.matchOnId = (id != null &amp;&amp; !(&quot;&quot;.equals(id)));</b>
+<i>194</i>&nbsp;
+<b class="fc"><i>195</i>&nbsp;    }</b>
+<i>196</i>&nbsp;
+<i>197</i>&nbsp;    @Override public Match createMatch() {
+<b class="fc"><i>198</i>&nbsp;        final int idCount = (matchOnId) ? 1 : 0;</b>
+<b class="fc"><i>199</i>&nbsp;        int styleClassCount = styleClassSet.size();</b>
+<b class="fc"><i>200</i>&nbsp;        return new Match(this, pseudoClassState, idCount, styleClassCount);</b>
+<i>201</i>&nbsp;    }
+<i>202</i>&nbsp;
+<i>203</i>&nbsp;    @Override public boolean applies(Styleable styleable) {
+<i>204</i>&nbsp;
+<i>205</i>&nbsp;        // handle functional pseudo-class :dir()
+<i>206</i>&nbsp;        // INHERIT applies to both :dir(rtl) and :dir(ltr)
+<b class="fc"><i>207</i>&nbsp;        if (nodeOrientation != INHERIT &amp;&amp; styleable instanceof Node) {</b>
+<b class="fc"><i>208</i>&nbsp;            final Node node = (Node)styleable;</b>
+<b class="fc"><i>209</i>&nbsp;            final NodeOrientation orientation = node.getNodeOrientation();</b>
+<i>210</i>&nbsp;
+<b class="fc"><i>211</i>&nbsp;            if (orientation == INHERIT</b>
+<b class="fc"><i>212</i>&nbsp;                    ? node.getEffectiveNodeOrientation() != nodeOrientation</b>
+<i>213</i>&nbsp;                    : orientation != nodeOrientation)
+<i>214</i>&nbsp;            {
+<b class="fc"><i>215</i>&nbsp;                return false;</b>
+<i>216</i>&nbsp;            }
+<i>217</i>&nbsp;        }
+<i>218</i>&nbsp;
+<i>219</i>&nbsp;        // if the selector has an id,
+<i>220</i>&nbsp;        // then bail if it doesn&#39;t match the node&#39;s id
+<i>221</i>&nbsp;        // (do this first since it is potentially the cheapest check)
+<b class="fc"><i>222</i>&nbsp;        if (matchOnId) {</b>
+<b class="nc"><i>223</i>&nbsp;            final String otherId = styleable.getId();</b>
+<b class="nc"><i>224</i>&nbsp;            final boolean idMatch = id.equals(otherId);</b>
+<b class="nc"><i>225</i>&nbsp;            if (!idMatch) return false;</b>
+<i>226</i>&nbsp;        }
+<i>227</i>&nbsp;
+<i>228</i>&nbsp;        // If name is not a wildcard,
+<i>229</i>&nbsp;        // then bail if it doesn&#39;t match the node&#39;s class name
+<i>230</i>&nbsp;        // if not wildcard, then match name with node&#39;s class name
+<b class="fc"><i>231</i>&nbsp;        if (matchOnName) {</b>
+<b class="fc"><i>232</i>&nbsp;            final String otherName = styleable.getTypeSelector();</b>
+<b class="fc"><i>233</i>&nbsp;            final boolean classMatch = this.name.equals(otherName);</b>
+<b class="fc"><i>234</i>&nbsp;            if (!classMatch) return false;</b>
+<i>235</i>&nbsp;        }
+<i>236</i>&nbsp;
+<b class="fc"><i>237</i>&nbsp;        if (matchOnStyleClass) {</b>
+<i>238</i>&nbsp;
+<b class="fc"><i>239</i>&nbsp;            final StyleClassSet otherStyleClassSet = new StyleClassSet();</b>
+<b class="fc"><i>240</i>&nbsp;            final List&lt;String&gt; styleClasses = styleable.getStyleClass();</b>
+<b class="fc"><i>241</i>&nbsp;            for(int n=0, nMax = styleClasses.size(); n&lt;nMax; n++) {</b>
+<i>242</i>&nbsp;
+<b class="fc"><i>243</i>&nbsp;                final String styleClassName = styleClasses.get(n);</b>
+<b class="fc"><i>244</i>&nbsp;                if (styleClassName == null || styleClassName.isEmpty()) continue;</b>
+<i>245</i>&nbsp;
+<b class="fc"><i>246</i>&nbsp;                final StyleClass styleClass = StyleClassSet.getStyleClass(styleClassName);</b>
+<b class="fc"><i>247</i>&nbsp;                otherStyleClassSet.add(styleClass);</b>
+<i>248</i>&nbsp;            }
+<i>249</i>&nbsp;
+<b class="fc"><i>250</i>&nbsp;            boolean styleClassMatch = matchStyleClasses(otherStyleClassSet);</b>
+<b class="fc"><i>251</i>&nbsp;            if (!styleClassMatch) return false;</b>
+<i>252</i>&nbsp;        }
+<i>253</i>&nbsp;
+<b class="fc"><i>254</i>&nbsp;        return true;</b>
+<i>255</i>&nbsp;    }
+<i>256</i>&nbsp;
+<i>257</i>&nbsp;    @Override public boolean applies(Styleable styleable, Set&lt;PseudoClass&gt;[] pseudoClasses, int depth) {
+<i>258</i>&nbsp;
+<i>259</i>&nbsp;
+<b class="fc"><i>260</i>&nbsp;        final boolean applies = applies(styleable);</b>
+<i>261</i>&nbsp;
+<i>262</i>&nbsp;        //
+<i>263</i>&nbsp;        // We only need the pseudo-classes if the selector applies to the node.
+<i>264</i>&nbsp;        //
+<b class="fc"><i>265</i>&nbsp;        if (applies &amp;&amp; pseudoClasses != null &amp;&amp; depth &lt; pseudoClasses.length) {</b>
+<i>266</i>&nbsp;
+<b class="fc"><i>267</i>&nbsp;            if (pseudoClasses[depth] == null) {</b>
+<b class="fc"><i>268</i>&nbsp;                pseudoClasses[depth] = new PseudoClassState();</b>
+<i>269</i>&nbsp;            }
+<i>270</i>&nbsp;
+<b class="fc"><i>271</i>&nbsp;            pseudoClasses[depth].addAll(pseudoClassState);</b>
+<i>272</i>&nbsp;
+<i>273</i>&nbsp;        }
+<b class="fc"><i>274</i>&nbsp;        return applies;</b>
+<i>275</i>&nbsp;    }
+<i>276</i>&nbsp;
+<i>277</i>&nbsp;    @Override public boolean stateMatches(final Styleable styleable, Set&lt;PseudoClass&gt; states) {
+<i>278</i>&nbsp;        // [foo bar] matches [foo bar bang],
+<i>279</i>&nbsp;        // but [foo bar bang] doesn&#39;t match [foo bar]
+<b class="fc"><i>280</i>&nbsp;        return states != null ? states.containsAll(pseudoClassState) : false;</b>
+<i>281</i>&nbsp;    }
+<i>282</i>&nbsp;
+<i>283</i>&nbsp;    // Are the Selector&#39;s style classes a subset of the Node&#39;s style classes?
+<i>284</i>&nbsp;    //
+<i>285</i>&nbsp;    // http://www.w3.org/TR/css3-selectors/#class-html
+<i>286</i>&nbsp;    // The following selector matches any P element whose class attribute has been
+<i>287</i>&nbsp;    // assigned a list of whitespace-separated values that includes both
+<i>288</i>&nbsp;    // pastoral and marine:
+<i>289</i>&nbsp;    //
+<i>290</i>&nbsp;    //     p.pastoral.marine { color: green }
+<i>291</i>&nbsp;    //
+<i>292</i>&nbsp;    // This selector matches when class=&quot;pastoral blue aqua marine&quot; but does not
+<i>293</i>&nbsp;    // match for class=&quot;pastoral blue&quot;.
+<i>294</i>&nbsp;    private boolean matchStyleClasses(StyleClassSet otherStyleClasses) {
+<b class="fc"><i>295</i>&nbsp;        return otherStyleClasses.containsAll(styleClassSet);</b>
+<i>296</i>&nbsp;    }
+<i>297</i>&nbsp;
+<i>298</i>&nbsp;    @Override public boolean equals(Object obj) {
+<b class="nc"><i>299</i>&nbsp;        if (obj == null) {</b>
+<b class="nc"><i>300</i>&nbsp;            return false;</b>
+<i>301</i>&nbsp;        }
+<b class="nc"><i>302</i>&nbsp;        if (getClass() != obj.getClass()) {</b>
+<b class="nc"><i>303</i>&nbsp;            return false;</b>
+<i>304</i>&nbsp;        }
+<b class="nc"><i>305</i>&nbsp;        final SimpleSelector other = (SimpleSelector) obj;</b>
+<b class="nc"><i>306</i>&nbsp;        if ((this.name == null) ? (other.name != null) : !this.name.equals(other.name)) {</b>
+<b class="nc"><i>307</i>&nbsp;            return false;</b>
+<i>308</i>&nbsp;        }
+<b class="nc"><i>309</i>&nbsp;        if ((this.id == null) ? (other.id != null) : !this.id.equals(other.id)) {</b>
+<b class="nc"><i>310</i>&nbsp;            return false;</b>
+<i>311</i>&nbsp;        }
+<b class="nc"><i>312</i>&nbsp;        if (this.styleClassSet.equals(other.styleClassSet) == false) {</b>
+<b class="nc"><i>313</i>&nbsp;            return false;</b>
+<i>314</i>&nbsp;        }
+<b class="nc"><i>315</i>&nbsp;        if (this.pseudoClassState.equals(other.pseudoClassState) == false) {</b>
+<b class="nc"><i>316</i>&nbsp;            return false;</b>
+<i>317</i>&nbsp;        }
+<i>318</i>&nbsp;
+<b class="nc"><i>319</i>&nbsp;        return true;</b>
+<i>320</i>&nbsp;    }
+<i>321</i>&nbsp;
+<i>322</i>&nbsp;    /* Hash code is used in Style&#39;s hash code and Style&#39;s hash
+<i>323</i>&nbsp;       code is used by StyleHelper */
+<i>324</i>&nbsp;    @Override public int hashCode() {
+<b class="nc"><i>325</i>&nbsp;        int hash = 7;</b>
+<b class="nc"><i>326</i>&nbsp;        hash = 31 * (hash + name.hashCode());</b>
+<b class="nc"><i>327</i>&nbsp;        hash = 31 * (hash + styleClassSet.hashCode());</b>
+<b class="nc"><i>328</i>&nbsp;        hash = 31 * (hash + styleClassSet.hashCode());</b>
+<b class="nc"><i>329</i>&nbsp;        hash = (id != null) ? 31 * (hash + id.hashCode()) : 0;</b>
+<b class="nc"><i>330</i>&nbsp;        hash = 31 * (hash + pseudoClassState.hashCode());</b>
+<b class="nc"><i>331</i>&nbsp;        return hash;</b>
+<i>332</i>&nbsp;    }
+<i>333</i>&nbsp;
+<i>334</i>&nbsp;    /** Converts this object to a string. */
+<i>335</i>&nbsp;    @Override public String toString() {
+<i>336</i>&nbsp;
+<b class="nc"><i>337</i>&nbsp;        StringBuilder sbuf = new StringBuilder();</b>
+<b class="nc"><i>338</i>&nbsp;        if (name != null &amp;&amp; name.isEmpty() == false) sbuf.append(name);</b>
+<b class="nc"><i>339</i>&nbsp;        else sbuf.append(&quot;*&quot;);</b>
+<b class="nc"><i>340</i>&nbsp;        Iterator&lt;StyleClass&gt; iter1 = styleClassSet.iterator();</b>
+<b class="nc"><i>341</i>&nbsp;        while(iter1.hasNext()) {</b>
+<b class="nc"><i>342</i>&nbsp;            final StyleClass styleClass = iter1.next();</b>
+<b class="nc"><i>343</i>&nbsp;            sbuf.append(&#39;.&#39;).append(styleClass.getStyleClassName());</b>
+<b class="nc"><i>344</i>&nbsp;        }</b>
+<b class="nc"><i>345</i>&nbsp;        if (id != null &amp;&amp; id.isEmpty() == false) {</b>
+<b class="nc"><i>346</i>&nbsp;            sbuf.append(&#39;#&#39;);</b>
+<b class="nc"><i>347</i>&nbsp;            sbuf.append(id);</b>
+<i>348</i>&nbsp;        }
+<b class="nc"><i>349</i>&nbsp;        Iterator&lt;PseudoClass&gt; iter2 = pseudoClassState.iterator();</b>
+<b class="nc"><i>350</i>&nbsp;        while(iter2.hasNext()) {</b>
+<b class="nc"><i>351</i>&nbsp;            final PseudoClass pseudoClass = iter2.next();</b>
+<b class="nc"><i>352</i>&nbsp;            sbuf.append(&#39;:&#39;).append(pseudoClass.getPseudoClassName());</b>
+<b class="nc"><i>353</i>&nbsp;        }</b>
+<i>354</i>&nbsp;
+<b class="nc"><i>355</i>&nbsp;        return sbuf.toString();</b>
+<i>356</i>&nbsp;    }
+<i>357</i>&nbsp;
+<i>358</i>&nbsp;    @Override protected final void writeBinary(final DataOutputStream os, final StyleConverter.StringStore stringStore)
+<i>359</i>&nbsp;        throws IOException
+<i>360</i>&nbsp;    {
+<b class="nc"><i>361</i>&nbsp;        super.writeBinary(os, stringStore);</b>
+<b class="nc"><i>362</i>&nbsp;        os.writeShort(stringStore.addString(name));</b>
+<b class="nc"><i>363</i>&nbsp;        os.writeShort(styleClassSet.size());</b>
+<b class="nc"><i>364</i>&nbsp;        Iterator&lt;StyleClass&gt; iter1 = styleClassSet.iterator();</b>
+<b class="nc"><i>365</i>&nbsp;        while(iter1.hasNext()) {</b>
+<b class="nc"><i>366</i>&nbsp;            final StyleClass sc = iter1.next();</b>
+<b class="nc"><i>367</i>&nbsp;            os.writeShort(stringStore.addString(sc.getStyleClassName()));</b>
+<b class="nc"><i>368</i>&nbsp;        }</b>
+<b class="nc"><i>369</i>&nbsp;        os.writeShort(stringStore.addString(id));</b>
+<b class="nc"><i>370</i>&nbsp;        int pclassSize = pseudoClassState.size()</b>
+<b class="nc"><i>371</i>&nbsp;                + (nodeOrientation == RIGHT_TO_LEFT || nodeOrientation == LEFT_TO_RIGHT ? 1 : 0);</b>
+<b class="nc"><i>372</i>&nbsp;        os.writeShort(pclassSize);</b>
+<b class="nc"><i>373</i>&nbsp;        Iterator&lt;PseudoClass&gt; iter2 = pseudoClassState.iterator();</b>
+<b class="nc"><i>374</i>&nbsp;        while(iter2.hasNext()) {</b>
+<b class="nc"><i>375</i>&nbsp;            final PseudoClass pc = iter2.next();</b>
+<b class="nc"><i>376</i>&nbsp;            os.writeShort(stringStore.addString(pc.getPseudoClassName()));</b>
+<b class="nc"><i>377</i>&nbsp;        }</b>
+<b class="nc"><i>378</i>&nbsp;        if (nodeOrientation == RIGHT_TO_LEFT) {</b>
+<b class="nc"><i>379</i>&nbsp;            os.writeShort(stringStore.addString(&quot;dir(rtl)&quot;));</b>
+<b class="nc"><i>380</i>&nbsp;        } else if (nodeOrientation == LEFT_TO_RIGHT) {</b>
+<b class="nc"><i>381</i>&nbsp;            os.writeShort(stringStore.addString(&quot;dir(ltr)&quot;));</b>
+<i>382</i>&nbsp;        }
+<b class="nc"><i>383</i>&nbsp;    }</b>
+<i>384</i>&nbsp;
+<i>385</i>&nbsp;    static SimpleSelector readBinary(int bssVersion, final DataInputStream is, final String[] strings)
+<i>386</i>&nbsp;        throws IOException
+<i>387</i>&nbsp;    {
+<b class="fc"><i>388</i>&nbsp;        final String name = strings[is.readShort()];</b>
+<b class="fc"><i>389</i>&nbsp;        final int nStyleClasses = is.readShort();</b>
+<b class="fc"><i>390</i>&nbsp;        final List&lt;String&gt; styleClasses = new ArrayList&lt;String&gt;();</b>
+<b class="fc"><i>391</i>&nbsp;        for (int n=0; n &lt; nStyleClasses; n++) {</b>
+<b class="fc"><i>392</i>&nbsp;            styleClasses.add(strings[is.readShort()]);</b>
+<i>393</i>&nbsp;        }
+<b class="fc"><i>394</i>&nbsp;        final String id = strings[is.readShort()];</b>
+<b class="fc"><i>395</i>&nbsp;        final int nPseudoclasses = is.readShort();</b>
+<b class="fc"><i>396</i>&nbsp;        final List&lt;String&gt; pseudoclasses = new ArrayList&lt;String&gt;();</b>
+<b class="fc"><i>397</i>&nbsp;        for(int n=0; n &lt; nPseudoclasses; n++) {</b>
+<b class="fc"><i>398</i>&nbsp;            pseudoclasses.add(strings[is.readShort()]);</b>
+<i>399</i>&nbsp;        }
+<b class="fc"><i>400</i>&nbsp;        return new SimpleSelector(name, styleClasses, pseudoclasses, id);</b>
+<i>401</i>&nbsp;    }
+<i>402</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2017-12-04 21:49</div>
+</div>
+</body>
+</html>

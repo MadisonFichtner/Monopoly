@@ -1,0 +1,761 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: PNGImageLoader2</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.javafx.iio.png</a> ]
+</div>
+
+<h1>Coverage Summary for Class: PNGImageLoader2 (com.sun.javafx.iio.png)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">PNGImageLoader2</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    54.8%
+  </span>
+  <span class="absValue">
+    (23/ 42)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    39.5%
+  </span>
+  <span class="absValue">
+    (135/ 342)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright (c) 2011, 2015, Oracle and/or its affiliates. All rights reserved.
+<i>3</i>&nbsp; * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+<i>4</i>&nbsp; *
+<i>5</i>&nbsp; *
+<i>6</i>&nbsp; *
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; *
+<i>11</i>&nbsp; *
+<i>12</i>&nbsp; *
+<i>13</i>&nbsp; *
+<i>14</i>&nbsp; *
+<i>15</i>&nbsp; *
+<i>16</i>&nbsp; *
+<i>17</i>&nbsp; *
+<i>18</i>&nbsp; *
+<i>19</i>&nbsp; *
+<i>20</i>&nbsp; *
+<i>21</i>&nbsp; *
+<i>22</i>&nbsp; *
+<i>23</i>&nbsp; *
+<i>24</i>&nbsp; */
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;/*
+<i>27</i>&nbsp; * loader implementation for PNG file format
+<i>28</i>&nbsp; * specification http://www.w3.org/TR/PNG/
+<i>29</i>&nbsp; */
+<i>30</i>&nbsp;package com.sun.javafx.iio.png;
+<i>31</i>&nbsp;
+<i>32</i>&nbsp;import com.sun.javafx.iio.*;
+<i>33</i>&nbsp;import com.sun.javafx.iio.common.*;
+<i>34</i>&nbsp;import java.io.*;
+<i>35</i>&nbsp;import java.nio.ByteBuffer;
+<i>36</i>&nbsp;import java.util.Arrays;
+<i>37</i>&nbsp;import java.util.zip.*;
+<i>38</i>&nbsp;
+<i>39</i>&nbsp;public final class PNGImageLoader2 extends ImageLoaderImpl {
+<i>40</i>&nbsp;
+<i>41</i>&nbsp;    // file signature
+<b class="fc"><i>42</i>&nbsp;    static final byte FILE_SIG[] = {(byte) 137, (byte) 80, (byte) 78,</b>
+<i>43</i>&nbsp;        (byte) 71, (byte) 13, (byte) 10, (byte) 26, (byte) 10};
+<i>44</i>&nbsp;    // Critical chunks
+<i>45</i>&nbsp;    static final int IHDR_TYPE = 0x49484452;
+<i>46</i>&nbsp;    static final int PLTE_TYPE = 0x504c5445;
+<i>47</i>&nbsp;    static final int IDAT_TYPE = 0x49444154;
+<i>48</i>&nbsp;    static final int IEND_TYPE = 0x49454e44;
+<i>49</i>&nbsp;    // Ancillary chunks
+<i>50</i>&nbsp;    static final int tRNS_TYPE = 0x74524e53;
+<i>51</i>&nbsp;    // color model
+<i>52</i>&nbsp;    static final int PNG_COLOR_GRAY = 0;
+<i>53</i>&nbsp;    static final int PNG_COLOR_RGB = 2;
+<i>54</i>&nbsp;    static final int PNG_COLOR_PALETTE = 3;
+<i>55</i>&nbsp;    static final int PNG_COLOR_GRAY_ALPHA = 4;
+<i>56</i>&nbsp;    static final int PNG_COLOR_RGB_ALPHA = 6;
+<i>57</i>&nbsp;    // channels per pixel
+<b class="fc"><i>58</i>&nbsp;    static final int[] numBandsPerColorType = {1, -1, 3, 1, 2, -1, 4};</b>
+<i>59</i>&nbsp;    // filters
+<i>60</i>&nbsp;    static final int PNG_FILTER_NONE = 0;
+<i>61</i>&nbsp;    static final int PNG_FILTER_SUB = 1;
+<i>62</i>&nbsp;    static final int PNG_FILTER_UP = 2;
+<i>63</i>&nbsp;    static final int PNG_FILTER_AVERAGE = 3;
+<i>64</i>&nbsp;    static final int PNG_FILTER_PAETH = 4;
+<i>65</i>&nbsp;    // data stream
+<i>66</i>&nbsp;    private final DataInputStream stream;
+<i>67</i>&nbsp;    private int width, height, bitDepth, colorType;
+<i>68</i>&nbsp;    private boolean isInterlaced;
+<i>69</i>&nbsp;    // transparency information
+<b class="fc"><i>70</i>&nbsp;    private boolean tRNS_present = false;</b>
+<b class="fc"><i>71</i>&nbsp;    private boolean tRNS_GRAY_RGB = false;</b>
+<i>72</i>&nbsp;    private int trnsR, trnsG, trnsB;
+<i>73</i>&nbsp;    // Palette data : r,g,b,[a]  -  alpha optional
+<i>74</i>&nbsp;    private byte palette[][];
+<i>75</i>&nbsp;
+<i>76</i>&nbsp;    public PNGImageLoader2(InputStream input) throws IOException {
+<b class="fc"><i>77</i>&nbsp;        super(PNGDescriptor.getInstance());</b>
+<b class="fc"><i>78</i>&nbsp;        stream = new DataInputStream(input);</b>
+<i>79</i>&nbsp;
+<b class="fc"><i>80</i>&nbsp;        byte signature[] = readBytes(new byte[8]);</b>
+<i>81</i>&nbsp;
+<b class="fc"><i>82</i>&nbsp;        if (!Arrays.equals(FILE_SIG, signature)) {</b>
+<b class="nc"><i>83</i>&nbsp;            throw new IOException(&quot;Bad PNG signature!&quot;);</b>
+<i>84</i>&nbsp;        }
+<i>85</i>&nbsp;
+<b class="fc"><i>86</i>&nbsp;        readHeader();</b>
+<b class="fc"><i>87</i>&nbsp;    }</b>
+<i>88</i>&nbsp;
+<i>89</i>&nbsp;    private void readHeader() throws IOException {
+<b class="fc"><i>90</i>&nbsp;        int hdrData[] = readChunk();</b>
+<i>91</i>&nbsp;
+<b class="fc"><i>92</i>&nbsp;        if (hdrData[1] != IHDR_TYPE &amp;&amp; hdrData[0] != 13) {</b>
+<b class="nc"><i>93</i>&nbsp;            throw new IOException(&quot;Bad PNG header!&quot;);</b>
+<i>94</i>&nbsp;        }
+<i>95</i>&nbsp;
+<b class="fc"><i>96</i>&nbsp;        width = stream.readInt();</b>
+<b class="fc"><i>97</i>&nbsp;        height = stream.readInt();</b>
+<i>98</i>&nbsp;
+<b class="fc"><i>99</i>&nbsp;        if (width == 0 || height == 0) {</b>
+<b class="nc"><i>100</i>&nbsp;            throw new IOException(&quot;Bad PNG image size!&quot;);</b>
+<i>101</i>&nbsp;        }
+<i>102</i>&nbsp;
+<b class="fc"><i>103</i>&nbsp;        bitDepth = stream.readByte();</b>
+<b class="fc"><i>104</i>&nbsp;        if (bitDepth != 1 &amp;&amp; bitDepth != 2 &amp;&amp; bitDepth != 4</b>
+<i>105</i>&nbsp;                &amp;&amp; bitDepth != 8 &amp;&amp; bitDepth != 16) {
+<b class="nc"><i>106</i>&nbsp;            throw new IOException(&quot;Bad PNG bit depth&quot;);</b>
+<i>107</i>&nbsp;        }
+<i>108</i>&nbsp;
+<b class="fc"><i>109</i>&nbsp;        colorType = stream.readByte();</b>
+<i>110</i>&nbsp;
+<b class="fc"><i>111</i>&nbsp;        if (colorType &gt; 6 || colorType == 1 || colorType == 5) {</b>
+<b class="nc"><i>112</i>&nbsp;            throw new IOException(&quot;Bad PNG color type&quot;);</b>
+<i>113</i>&nbsp;        }
+<i>114</i>&nbsp;
+<i>115</i>&nbsp;        // bitDepth&lt;8 only for palette and gray
+<i>116</i>&nbsp;        // bitDepth==16 not for palette
+<b class="fc"><i>117</i>&nbsp;        if ((colorType != PNG_COLOR_PALETTE &amp;&amp; colorType != PNG_COLOR_GRAY &amp;&amp; bitDepth &lt; 8)</b>
+<i>118</i>&nbsp;                || (colorType == PNG_COLOR_PALETTE &amp;&amp; bitDepth == 16)) {
+<b class="nc"><i>119</i>&nbsp;            throw new IOException(&quot;Bad color type/bit depth combination!&quot;);</b>
+<i>120</i>&nbsp;        }
+<i>121</i>&nbsp;
+<b class="fc"><i>122</i>&nbsp;        byte compressionMethod = stream.readByte();</b>
+<b class="fc"><i>123</i>&nbsp;        if (compressionMethod != 0) {</b>
+<b class="nc"><i>124</i>&nbsp;            throw new IOException(&quot;Bad PNG comression!&quot;);</b>
+<i>125</i>&nbsp;        }
+<i>126</i>&nbsp;
+<b class="fc"><i>127</i>&nbsp;        byte filterMethod = stream.readByte();</b>
+<b class="fc"><i>128</i>&nbsp;        if (filterMethod != 0) {</b>
+<b class="nc"><i>129</i>&nbsp;            throw new IOException(&quot;Bad PNG filter method!&quot;);</b>
+<i>130</i>&nbsp;        }
+<i>131</i>&nbsp;
+<b class="fc"><i>132</i>&nbsp;        byte interlaceMethod = stream.readByte();</b>
+<i>133</i>&nbsp;
+<b class="fc"><i>134</i>&nbsp;        if (interlaceMethod != 0 &amp;&amp; interlaceMethod != 1) {</b>
+<b class="nc"><i>135</i>&nbsp;            throw new IOException(&quot;Unknown interlace method (not 0 or 1)!&quot;);</b>
+<i>136</i>&nbsp;        }
+<i>137</i>&nbsp;
+<b class="fc"><i>138</i>&nbsp;        int crc = stream.readInt();</b>
+<i>139</i>&nbsp;
+<b class="fc"><i>140</i>&nbsp;        isInterlaced = interlaceMethod == 1;</b>
+<b class="fc"><i>141</i>&nbsp;    }</b>
+<i>142</i>&nbsp;
+<i>143</i>&nbsp;    private int[] readChunk() throws IOException {
+<b class="fc"><i>144</i>&nbsp;        return new int[]{stream.readInt(), stream.readInt()};</b>
+<i>145</i>&nbsp;    }
+<i>146</i>&nbsp;
+<i>147</i>&nbsp;    private byte[] readBytes(byte data[]) throws IOException {
+<b class="fc"><i>148</i>&nbsp;        return readBytes(data, 0, data.length);</b>
+<i>149</i>&nbsp;    }
+<i>150</i>&nbsp;
+<i>151</i>&nbsp;    private byte[] readBytes(byte data[], int offs, int size) throws IOException {
+<b class="fc"><i>152</i>&nbsp;        stream.readFully(data, offs, size);</b>
+<b class="fc"><i>153</i>&nbsp;        return data;</b>
+<i>154</i>&nbsp;    }
+<i>155</i>&nbsp;
+<i>156</i>&nbsp;    private void skip(int n) throws IOException {
+<b class="fc"><i>157</i>&nbsp;        if (n != stream.skipBytes(n)) {</b>
+<b class="nc"><i>158</i>&nbsp;            throw new EOFException();</b>
+<i>159</i>&nbsp;        }
+<b class="fc"><i>160</i>&nbsp;    }</b>
+<i>161</i>&nbsp;
+<i>162</i>&nbsp;    private void readPaletteChunk(int chunkLength) throws IOException {
+<b class="nc"><i>163</i>&nbsp;        int numEntries = chunkLength / 3;</b>
+<b class="nc"><i>164</i>&nbsp;        int paletteEntries = 1 &lt;&lt; bitDepth;</b>
+<b class="nc"><i>165</i>&nbsp;        if (numEntries &gt; paletteEntries) {</b>
+<b class="nc"><i>166</i>&nbsp;            emitWarning(&quot;PLTE chunk contains too many entries for bit depth, ignoring extras.&quot;);</b>
+<b class="nc"><i>167</i>&nbsp;            numEntries = paletteEntries;</b>
+<i>168</i>&nbsp;        }
+<i>169</i>&nbsp;
+<b class="nc"><i>170</i>&nbsp;        palette = new byte[3][paletteEntries];</b>
+<i>171</i>&nbsp;
+<b class="nc"><i>172</i>&nbsp;        byte paletteData[] = readBytes(new byte[chunkLength]);</b>
+<i>173</i>&nbsp;
+<b class="nc"><i>174</i>&nbsp;        for (int i = 0, idx = 0; i != numEntries; ++i) {</b>
+<b class="nc"><i>175</i>&nbsp;            for (int k = 0; k != 3; ++k) {</b>
+<b class="nc"><i>176</i>&nbsp;                palette[k][i] = paletteData[idx++];</b>
+<i>177</i>&nbsp;            }
+<i>178</i>&nbsp;        }
+<b class="nc"><i>179</i>&nbsp;    }</b>
+<i>180</i>&nbsp;
+<i>181</i>&nbsp;    private void parsePaletteChunk(int chunkLength) throws IOException {
+<b class="nc"><i>182</i>&nbsp;        if (palette != null) {</b>
+<b class="nc"><i>183</i>&nbsp;            emitWarning(</b>
+<i>184</i>&nbsp;                    &quot;A PNG image may not contain more than one PLTE chunk.\n&quot;
+<i>185</i>&nbsp;                    + &quot;The chunk wil be ignored.&quot;);
+<b class="nc"><i>186</i>&nbsp;            skip(chunkLength);</b>
+<b class="nc"><i>187</i>&nbsp;            return;</b>
+<i>188</i>&nbsp;        }
+<i>189</i>&nbsp;
+<b class="nc"><i>190</i>&nbsp;        switch (colorType) {</b>
+<i>191</i>&nbsp;            case PNG_COLOR_PALETTE:
+<b class="nc"><i>192</i>&nbsp;                readPaletteChunk(chunkLength);</b>
+<b class="nc"><i>193</i>&nbsp;                return;</b>
+<i>194</i>&nbsp;            case PNG_COLOR_GRAY:
+<i>195</i>&nbsp;            case PNG_COLOR_GRAY_ALPHA:
+<b class="nc"><i>196</i>&nbsp;                emitWarning(&quot;A PNG gray or gray alpha image cannot have a PLTE chunk.\n&quot;</b>
+<i>197</i>&nbsp;                        + &quot;The chunk wil be ignored.&quot;);
+<i>198</i>&nbsp;            // silently ignore palette for RGB
+<i>199</i>&nbsp;            default:
+<b class="nc"><i>200</i>&nbsp;                skip(chunkLength);</b>
+<i>201</i>&nbsp;        }
+<b class="nc"><i>202</i>&nbsp;    }</b>
+<i>203</i>&nbsp;
+<i>204</i>&nbsp;    private boolean readPaletteTransparency(int chunkLength) throws IOException {
+<b class="nc"><i>205</i>&nbsp;        if (palette == null) {</b>
+<b class="nc"><i>206</i>&nbsp;            emitWarning(&quot;tRNS chunk without prior PLTE chunk, ignoring it.&quot;);</b>
+<b class="nc"><i>207</i>&nbsp;            skip(chunkLength);</b>
+<b class="nc"><i>208</i>&nbsp;            return false;</b>
+<i>209</i>&nbsp;        }
+<i>210</i>&nbsp;
+<b class="nc"><i>211</i>&nbsp;        byte newPal[][] = new byte[4][];</b>
+<i>212</i>&nbsp;
+<b class="nc"><i>213</i>&nbsp;        System.arraycopy(palette, 0, newPal, 0, 3);</b>
+<i>214</i>&nbsp;
+<b class="nc"><i>215</i>&nbsp;        int paletteLength = palette[0].length;</b>
+<b class="nc"><i>216</i>&nbsp;        newPal[3] = new byte[paletteLength];</b>
+<i>217</i>&nbsp;
+<b class="nc"><i>218</i>&nbsp;        int nRead = chunkLength &lt; paletteLength ? chunkLength : paletteLength;</b>
+<b class="nc"><i>219</i>&nbsp;        readBytes(newPal[3], 0, nRead);</b>
+<i>220</i>&nbsp;
+<b class="nc"><i>221</i>&nbsp;        for (int i = nRead; i &lt; paletteLength; ++i) {</b>
+<b class="nc"><i>222</i>&nbsp;            newPal[3][i] = -1;</b>
+<i>223</i>&nbsp;        }
+<i>224</i>&nbsp;
+<b class="nc"><i>225</i>&nbsp;        if (nRead &lt; chunkLength) {</b>
+<b class="nc"><i>226</i>&nbsp;            skip(chunkLength - nRead);</b>
+<i>227</i>&nbsp;        }
+<i>228</i>&nbsp;
+<b class="nc"><i>229</i>&nbsp;        palette = newPal;</b>
+<i>230</i>&nbsp;
+<b class="nc"><i>231</i>&nbsp;        return true;</b>
+<i>232</i>&nbsp;    }
+<i>233</i>&nbsp;
+<i>234</i>&nbsp;    private boolean readGrayTransparency(int chunkLength) throws IOException {
+<b class="nc"><i>235</i>&nbsp;        if (chunkLength == 2) {</b>
+<b class="nc"><i>236</i>&nbsp;            trnsG = stream.readShort();</b>
+<b class="nc"><i>237</i>&nbsp;            return true;</b>
+<i>238</i>&nbsp;        }
+<b class="nc"><i>239</i>&nbsp;        return false;</b>
+<i>240</i>&nbsp;    }
+<i>241</i>&nbsp;
+<i>242</i>&nbsp;    private boolean readRgbTransparency(int chunkLength) throws IOException {
+<b class="nc"><i>243</i>&nbsp;        if (chunkLength == 6) {</b>
+<b class="nc"><i>244</i>&nbsp;            trnsR = stream.readShort();</b>
+<b class="nc"><i>245</i>&nbsp;            trnsG = stream.readShort();</b>
+<b class="nc"><i>246</i>&nbsp;            trnsB = stream.readShort();</b>
+<b class="nc"><i>247</i>&nbsp;            return true;</b>
+<i>248</i>&nbsp;        }
+<b class="nc"><i>249</i>&nbsp;        return false;</b>
+<i>250</i>&nbsp;    }
+<i>251</i>&nbsp;
+<i>252</i>&nbsp;    private void parseTransparencyChunk(int chunkLength) throws IOException {
+<b class="nc"><i>253</i>&nbsp;        switch (colorType) {</b>
+<i>254</i>&nbsp;            case PNG_COLOR_PALETTE:
+<b class="nc"><i>255</i>&nbsp;                tRNS_present = readPaletteTransparency(chunkLength);</b>
+<b class="nc"><i>256</i>&nbsp;                break;</b>
+<i>257</i>&nbsp;            case PNG_COLOR_GRAY:
+<b class="nc"><i>258</i>&nbsp;                tRNS_GRAY_RGB = tRNS_present = readGrayTransparency(chunkLength);</b>
+<b class="nc"><i>259</i>&nbsp;                break;</b>
+<i>260</i>&nbsp;            case PNG_COLOR_RGB:
+<b class="nc"><i>261</i>&nbsp;                tRNS_GRAY_RGB = tRNS_present = readRgbTransparency(chunkLength);</b>
+<b class="nc"><i>262</i>&nbsp;                break;</b>
+<i>263</i>&nbsp;            default:
+<b class="nc"><i>264</i>&nbsp;                emitWarning(&quot;TransparencyChunk may not present when alpha explicitly defined&quot;);</b>
+<b class="nc"><i>265</i>&nbsp;                skip(chunkLength);</b>
+<i>266</i>&nbsp;        }
+<b class="nc"><i>267</i>&nbsp;    }</b>
+<i>268</i>&nbsp;
+<i>269</i>&nbsp;    // return sizeof first IDAT chunk or 0 of error
+<i>270</i>&nbsp;    private int parsePngMeta() throws IOException {
+<i>271</i>&nbsp;        while (true) {
+<b class="fc"><i>272</i>&nbsp;            int chunk[] = readChunk();</b>
+<i>273</i>&nbsp;
+<b class="fc"><i>274</i>&nbsp;            if (chunk[0] &lt; 0) {</b>
+<b class="nc"><i>275</i>&nbsp;                throw new IOException(&quot;Invalid chunk length&quot;);</b>
+<i>276</i>&nbsp;            }
+<b class="fc"><i>277</i>&nbsp;            switch (chunk[1]) {</b>
+<i>278</i>&nbsp;                case IDAT_TYPE:
+<b class="fc"><i>279</i>&nbsp;                    return chunk[0];</b>
+<i>280</i>&nbsp;                case IEND_TYPE:
+<b class="nc"><i>281</i>&nbsp;                    return 0;</b>
+<i>282</i>&nbsp;                case PLTE_TYPE:
+<b class="nc"><i>283</i>&nbsp;                    parsePaletteChunk(chunk[0]);</b>
+<b class="nc"><i>284</i>&nbsp;                    break;</b>
+<i>285</i>&nbsp;                case tRNS_TYPE:
+<b class="nc"><i>286</i>&nbsp;                    parseTransparencyChunk(chunk[0]);</b>
+<b class="nc"><i>287</i>&nbsp;                    break;</b>
+<i>288</i>&nbsp;                default:
+<b class="fc"><i>289</i>&nbsp;                    skip(chunk[0]);</b>
+<i>290</i>&nbsp;            }
+<b class="fc"><i>291</i>&nbsp;            int crc = stream.readInt();</b>
+<b class="fc"><i>292</i>&nbsp;        }</b>
+<i>293</i>&nbsp;    }
+<i>294</i>&nbsp;
+<i>295</i>&nbsp;    public void dispose() {
+<b class="nc"><i>296</i>&nbsp;    }</b>
+<i>297</i>&nbsp;
+<i>298</i>&nbsp;    private ImageStorage.ImageType getType() {
+<b class="fc"><i>299</i>&nbsp;        switch (colorType) {</b>
+<i>300</i>&nbsp;            case PNG_COLOR_GRAY:
+<b class="nc"><i>301</i>&nbsp;                return tRNS_present</b>
+<b class="nc"><i>302</i>&nbsp;                        ? ImageStorage.ImageType.GRAY_ALPHA</b>
+<b class="nc"><i>303</i>&nbsp;                        : ImageStorage.ImageType.GRAY;</b>
+<i>304</i>&nbsp;            case PNG_COLOR_RGB:
+<b class="nc"><i>305</i>&nbsp;                return tRNS_present</b>
+<b class="nc"><i>306</i>&nbsp;                        ? ImageStorage.ImageType.RGBA</b>
+<b class="nc"><i>307</i>&nbsp;                        : ImageStorage.ImageType.RGB;</b>
+<i>308</i>&nbsp;            case PNG_COLOR_PALETTE:
+<b class="nc"><i>309</i>&nbsp;                return ImageStorage.ImageType.PALETTE;</b>
+<i>310</i>&nbsp;            case PNG_COLOR_GRAY_ALPHA:
+<b class="nc"><i>311</i>&nbsp;                return ImageStorage.ImageType.GRAY_ALPHA;</b>
+<i>312</i>&nbsp;            case PNG_COLOR_RGB_ALPHA:
+<b class="fc"><i>313</i>&nbsp;                return ImageStorage.ImageType.RGBA;</b>
+<i>314</i>&nbsp;            default: // unreacheble
+<b class="nc"><i>315</i>&nbsp;                throw new RuntimeException();</b>
+<i>316</i>&nbsp;        }
+<i>317</i>&nbsp;    }
+<i>318</i>&nbsp;
+<i>319</i>&nbsp;    private void doSubFilter(byte line[], int bpp) {
+<b class="fc"><i>320</i>&nbsp;        int l = line.length;</b>
+<b class="fc"><i>321</i>&nbsp;        for (int i = bpp; i != l; ++i) {</b>
+<b class="fc"><i>322</i>&nbsp;            line[i] = (byte) (line[i] + line[i - bpp]);</b>
+<i>323</i>&nbsp;        }
+<b class="fc"><i>324</i>&nbsp;    }</b>
+<i>325</i>&nbsp;
+<i>326</i>&nbsp;    private void doUpFilter(byte line[], byte pline[]) {
+<b class="fc"><i>327</i>&nbsp;        int l = line.length;</b>
+<b class="fc"><i>328</i>&nbsp;        for (int i = 0; i != l; ++i) {</b>
+<b class="fc"><i>329</i>&nbsp;            line[i] = (byte) (line[i] + pline[i]);</b>
+<i>330</i>&nbsp;        }
+<b class="fc"><i>331</i>&nbsp;    }</b>
+<i>332</i>&nbsp;
+<i>333</i>&nbsp;    private void doAvrgFilter(byte line[], byte pline[], int bpp) {
+<b class="fc"><i>334</i>&nbsp;        int l = line.length;</b>
+<b class="fc"><i>335</i>&nbsp;        for (int i = 0; i != bpp; ++i) {</b>
+<b class="fc"><i>336</i>&nbsp;            line[i] = (byte) (line[i] + (pline[i] &amp; 0xFF) / 2);</b>
+<i>337</i>&nbsp;        }
+<b class="fc"><i>338</i>&nbsp;        for (int i = bpp; i != l; ++i) {</b>
+<b class="fc"><i>339</i>&nbsp;            line[i] = (byte) (line[i]</b>
+<i>340</i>&nbsp;                    + (((line[i - bpp] &amp; 0xFF) + (pline[i] &amp; 0xFF))) / 2);
+<i>341</i>&nbsp;        }
+<b class="fc"><i>342</i>&nbsp;    }</b>
+<i>343</i>&nbsp;
+<i>344</i>&nbsp;    private static int paethPr(int a, int b, int c) {
+<i>345</i>&nbsp;        // int p = a + b - c
+<b class="fc"><i>346</i>&nbsp;        int pa = Math.abs(b - c);      // p-a</b>
+<b class="fc"><i>347</i>&nbsp;        int pb = Math.abs(a - c);      // p-b</b>
+<b class="fc"><i>348</i>&nbsp;        int pc = Math.abs(b - c + a - c);  // p-c</b>
+<b class="fc"><i>349</i>&nbsp;        return (pa &lt;= pb &amp;&amp; pa &lt;= pc) ? a : (pb &lt;= pc) ? b : c;</b>
+<i>350</i>&nbsp;    }
+<i>351</i>&nbsp;
+<i>352</i>&nbsp;    private void doPaethFilter(byte line[], byte pline[], int bpp) {
+<b class="fc"><i>353</i>&nbsp;        int l = line.length;</b>
+<b class="fc"><i>354</i>&nbsp;        for (int i = 0; i != bpp; ++i) {</b>
+<b class="fc"><i>355</i>&nbsp;            line[i] = (byte) (line[i] + pline[i]);</b>
+<i>356</i>&nbsp;        }
+<b class="fc"><i>357</i>&nbsp;        for (int i = bpp; i != l; ++i) {</b>
+<b class="fc"><i>358</i>&nbsp;            line[i] = (byte) (line[i]</b>
+<b class="fc"><i>359</i>&nbsp;                    + paethPr(line[i - bpp] &amp; 0xFF, pline[i] &amp; 0xFF, pline[i - bpp] &amp; 0xFF));</b>
+<i>360</i>&nbsp;        }
+<b class="fc"><i>361</i>&nbsp;    }</b>
+<i>362</i>&nbsp;
+<i>363</i>&nbsp;    private void doFilter(byte line[], byte pline[], int fType, int bpp) {
+<b class="fc"><i>364</i>&nbsp;        switch (fType) {</b>
+<i>365</i>&nbsp;            case PNG_FILTER_SUB:
+<b class="fc"><i>366</i>&nbsp;                doSubFilter(line, bpp);</b>
+<b class="fc"><i>367</i>&nbsp;                break;</b>
+<i>368</i>&nbsp;            case PNG_FILTER_UP:
+<b class="fc"><i>369</i>&nbsp;                doUpFilter(line, pline);</b>
+<b class="fc"><i>370</i>&nbsp;                break;</b>
+<i>371</i>&nbsp;            case PNG_FILTER_AVERAGE:
+<b class="fc"><i>372</i>&nbsp;                doAvrgFilter(line, pline, bpp);</b>
+<b class="fc"><i>373</i>&nbsp;                break;</b>
+<i>374</i>&nbsp;            case PNG_FILTER_PAETH:
+<b class="fc"><i>375</i>&nbsp;                doPaethFilter(line, pline, bpp);</b>
+<i>376</i>&nbsp;                break;
+<i>377</i>&nbsp;        }
+<b class="fc"><i>378</i>&nbsp;    }</b>
+<i>379</i>&nbsp;
+<i>380</i>&nbsp;    private void downsample16to8trns_gray(byte line[], byte image[], int pos, int step) {
+<b class="nc"><i>381</i>&nbsp;        int l = line.length / 2;</b>
+<b class="nc"><i>382</i>&nbsp;        for (int i = 0, oPos = pos; i &lt; l; oPos += step * 2, ++i) {</b>
+<b class="nc"><i>383</i>&nbsp;            int gray16 = (short) ((line[i * 2] &amp; 0xFF) * 256 + (line[i * 2 + 1] &amp; 0xFF));</b>
+<b class="nc"><i>384</i>&nbsp;            image[oPos + 0] = line[i * 2];</b>
+<b class="nc"><i>385</i>&nbsp;            image[oPos + 1] = (gray16 == trnsG) ? 0 : (byte) 255;</b>
+<i>386</i>&nbsp;        }
+<b class="nc"><i>387</i>&nbsp;    }</b>
+<i>388</i>&nbsp;
+<i>389</i>&nbsp;    private void downsample16to8trns_rgb(byte line[], byte image[], int pos, int step) {
+<b class="nc"><i>390</i>&nbsp;        int l = line.length / 2 / 3;</b>
+<b class="nc"><i>391</i>&nbsp;        for (int i = 0, oPos = pos; i &lt; l; oPos += step * 4, ++i) {</b>
+<b class="nc"><i>392</i>&nbsp;            int iPos = i * 6;</b>
+<b class="nc"><i>393</i>&nbsp;            int r16 = (short) ((line[iPos + 0] &amp; 0xFF) * 256 + (line[iPos + 1] &amp; 0xFF));</b>
+<b class="nc"><i>394</i>&nbsp;            int g16 = (short) ((line[iPos + 2] &amp; 0xFF) * 256 + (line[iPos + 3] &amp; 0xFF));</b>
+<b class="nc"><i>395</i>&nbsp;            int b16 = (short) ((line[iPos + 4] &amp; 0xFF) * 256 + (line[iPos + 5] &amp; 0xFF));</b>
+<b class="nc"><i>396</i>&nbsp;            image[oPos + 0] = line[iPos + 0];</b>
+<b class="nc"><i>397</i>&nbsp;            image[oPos + 1] = line[iPos + 2];</b>
+<b class="nc"><i>398</i>&nbsp;            image[oPos + 2] = line[iPos + 4];</b>
+<b class="nc"><i>399</i>&nbsp;            image[oPos + 3] =</b>
+<b class="nc"><i>400</i>&nbsp;                    (r16 == trnsR &amp;&amp; g16 == trnsG &amp;&amp; b16 == trnsB) ? 0 : (byte) 255;</b>
+<i>401</i>&nbsp;        }
+<b class="nc"><i>402</i>&nbsp;    }</b>
+<i>403</i>&nbsp;
+<i>404</i>&nbsp;    private void downsample16to8_plain(byte line[], byte image[], int pos, int step, int bpp) {
+<b class="nc"><i>405</i>&nbsp;        int l = (line.length / 2 / bpp) * bpp, stepBpp = step * bpp;</b>
+<b class="nc"><i>406</i>&nbsp;        for (int i = 0, oPos = pos; i != l; oPos += stepBpp, i += bpp) {</b>
+<b class="nc"><i>407</i>&nbsp;            for (int b = 0; b != bpp; ++b) {</b>
+<b class="nc"><i>408</i>&nbsp;                image[oPos + b] = line[(i + b) * 2];</b>
+<i>409</i>&nbsp;            }
+<i>410</i>&nbsp;        }
+<b class="nc"><i>411</i>&nbsp;    }</b>
+<i>412</i>&nbsp;
+<i>413</i>&nbsp;    private void downsample16to8(byte line[], byte image[], int pos, int step, int bpp) {
+<b class="nc"><i>414</i>&nbsp;        if (!tRNS_GRAY_RGB) {</b>
+<b class="nc"><i>415</i>&nbsp;            downsample16to8_plain(line, image, pos, step, bpp);</b>
+<b class="nc"><i>416</i>&nbsp;        } else if (colorType == PNG_COLOR_GRAY) {</b>
+<b class="nc"><i>417</i>&nbsp;            downsample16to8trns_gray(line, image, pos, step);</b>
+<b class="nc"><i>418</i>&nbsp;        } else if (colorType == PNG_COLOR_RGB) {</b>
+<b class="nc"><i>419</i>&nbsp;            downsample16to8trns_rgb(line, image, pos, step);</b>
+<i>420</i>&nbsp;        }
+<b class="nc"><i>421</i>&nbsp;    }</b>
+<i>422</i>&nbsp;
+<i>423</i>&nbsp;    private void copyTrns_gray(byte line[], byte image[], int pos, int step) {
+<b class="nc"><i>424</i>&nbsp;        byte tG = (byte) trnsG;</b>
+<b class="nc"><i>425</i>&nbsp;        for (int i = 0, oPos = pos, l = line.length; i &lt; l; oPos += 2 * step, ++i) {</b>
+<b class="nc"><i>426</i>&nbsp;            byte gray = line[i];</b>
+<b class="nc"><i>427</i>&nbsp;            image[oPos] = gray;</b>
+<b class="nc"><i>428</i>&nbsp;            image[oPos + 1] = (gray == tG) ? 0 : (byte) 255;</b>
+<i>429</i>&nbsp;        }
+<b class="nc"><i>430</i>&nbsp;    }</b>
+<i>431</i>&nbsp;
+<i>432</i>&nbsp;    private void copyTrns_rgb(byte line[], byte image[], int pos, int step) {
+<b class="nc"><i>433</i>&nbsp;        byte tR = (byte) trnsR, tG = (byte) trnsG, tB = (byte) trnsB;</b>
+<b class="nc"><i>434</i>&nbsp;        int l = line.length / 3;</b>
+<b class="nc"><i>435</i>&nbsp;        for (int i = 0, oPos = pos; i &lt; l; oPos += step * 4, ++i) {</b>
+<b class="nc"><i>436</i>&nbsp;            byte r = line[i * 3], g = line[i * 3 + 1], b = line[i * 3 + 2];</b>
+<b class="nc"><i>437</i>&nbsp;            image[oPos + 0] = r;</b>
+<b class="nc"><i>438</i>&nbsp;            image[oPos + 1] = g;</b>
+<b class="nc"><i>439</i>&nbsp;            image[oPos + 2] = b;</b>
+<b class="nc"><i>440</i>&nbsp;            image[oPos + 3] = (r == tR &amp;&amp; g == tG &amp;&amp; b == tB) ? 0 : (byte) 255;</b>
+<i>441</i>&nbsp;        }
+<b class="nc"><i>442</i>&nbsp;    }</b>
+<i>443</i>&nbsp;
+<i>444</i>&nbsp;    private void copy_plain(byte line[], byte image[], int pos, int step, int bpp) {
+<b class="nc"><i>445</i>&nbsp;        int l = line.length, stepBpp = step * bpp;</b>
+<b class="nc"><i>446</i>&nbsp;        for (int i = 0, oPos = pos; i != l; oPos += stepBpp, i += bpp) {</b>
+<b class="nc"><i>447</i>&nbsp;            for (int b = 0; b != bpp; ++b) {</b>
+<b class="nc"><i>448</i>&nbsp;                image[oPos + b] = line[i + b];</b>
+<i>449</i>&nbsp;            }
+<i>450</i>&nbsp;        }
+<b class="nc"><i>451</i>&nbsp;    }</b>
+<i>452</i>&nbsp;
+<i>453</i>&nbsp;    private void copy(byte line[], byte image[], int pos, int step, int resultBpp) {
+<b class="fc"><i>454</i>&nbsp;        if (!tRNS_GRAY_RGB) {</b>
+<b class="fc"><i>455</i>&nbsp;            if (step == 1) {</b>
+<b class="fc"><i>456</i>&nbsp;                System.arraycopy(line, 0, image, pos, line.length);</b>
+<i>457</i>&nbsp;            } else {
+<b class="nc"><i>458</i>&nbsp;                copy_plain(line, image, pos, step, resultBpp);</b>
+<i>459</i>&nbsp;            }
+<b class="nc"><i>460</i>&nbsp;        } else if (colorType == PNG_COLOR_GRAY) {</b>
+<b class="nc"><i>461</i>&nbsp;            copyTrns_gray(line, image, pos, step); // resultBpp==2</b>
+<b class="nc"><i>462</i>&nbsp;        } else if (colorType == PNG_COLOR_RGB) {</b>
+<b class="nc"><i>463</i>&nbsp;            copyTrns_rgb(line, image, pos, step); // resultBpp==4</b>
+<i>464</i>&nbsp;        }
+<b class="fc"><i>465</i>&nbsp;    }</b>
+<i>466</i>&nbsp;
+<i>467</i>&nbsp;    private void upsampleTo8Palette(byte line[], byte image[], int pos, int w, int step) {
+<b class="nc"><i>468</i>&nbsp;        int samplesInByte = 8 / bitDepth;</b>
+<b class="nc"><i>469</i>&nbsp;        int maxV = (1 &lt;&lt; bitDepth) - 1;</b>
+<b class="nc"><i>470</i>&nbsp;        for (int i = 0, k = 0; i &lt; w; k++, i += samplesInByte) {</b>
+<b class="nc"><i>471</i>&nbsp;            int p = (w - i &lt; samplesInByte) ? w - i : samplesInByte;</b>
+<b class="nc"><i>472</i>&nbsp;            int in = line[k] &gt;&gt; (samplesInByte - p) * bitDepth;</b>
+<b class="nc"><i>473</i>&nbsp;            for (int pp = p - 1; pp &gt;= 0; --pp) {</b>
+<b class="nc"><i>474</i>&nbsp;                image[pos + (i + pp) * step] = (byte) (in &amp; maxV);</b>
+<b class="nc"><i>475</i>&nbsp;                in &gt;&gt;= bitDepth;</b>
+<i>476</i>&nbsp;            }
+<i>477</i>&nbsp;        }
+<b class="nc"><i>478</i>&nbsp;    }</b>
+<i>479</i>&nbsp;
+<i>480</i>&nbsp;    private void upsampleTo8Gray(byte line[], byte image[], int pos, int w, int step) {
+<b class="nc"><i>481</i>&nbsp;        int samplesInByte = 8 / bitDepth;</b>
+<b class="nc"><i>482</i>&nbsp;        int maxV = (1 &lt;&lt; bitDepth) - 1, hmaxV = maxV / 2;</b>
+<b class="nc"><i>483</i>&nbsp;        for (int i = 0, k = 0; i &lt; w; k++, i += samplesInByte) {</b>
+<b class="nc"><i>484</i>&nbsp;            int p = (w - i &lt; samplesInByte) ? w - i : samplesInByte;</b>
+<b class="nc"><i>485</i>&nbsp;            int in = line[k] &gt;&gt; (samplesInByte - p) * bitDepth;</b>
+<b class="nc"><i>486</i>&nbsp;            for (int pp = p - 1; pp &gt;= 0; --pp) {</b>
+<b class="nc"><i>487</i>&nbsp;                image[pos + (i + pp) * step] = (byte) (((in &amp; maxV) * 255 + hmaxV) / maxV);</b>
+<b class="nc"><i>488</i>&nbsp;                in &gt;&gt;= bitDepth;</b>
+<i>489</i>&nbsp;            }
+<i>490</i>&nbsp;        }
+<b class="nc"><i>491</i>&nbsp;    }</b>
+<i>492</i>&nbsp;
+<i>493</i>&nbsp;    private void upsampleTo8GrayTrns(byte line[], byte image[], int pos, int w, int step) {
+<b class="nc"><i>494</i>&nbsp;        int samplesInByte = 8 / bitDepth;</b>
+<b class="nc"><i>495</i>&nbsp;        int maxV = (1 &lt;&lt; bitDepth) - 1, hmaxV = maxV / 2;</b>
+<b class="nc"><i>496</i>&nbsp;        for (int i = 0, k = 0; i &lt; w; k++, i += samplesInByte) {</b>
+<b class="nc"><i>497</i>&nbsp;            int p = (w - i &lt; samplesInByte) ? w - i : samplesInByte;</b>
+<b class="nc"><i>498</i>&nbsp;            int in = line[k] &gt;&gt; (samplesInByte - p) * bitDepth;</b>
+<b class="nc"><i>499</i>&nbsp;            for (int pp = p - 1; pp &gt;= 0; --pp) {</b>
+<b class="nc"><i>500</i>&nbsp;                int idx = pos + (i + pp) * step * 2;</b>
+<b class="nc"><i>501</i>&nbsp;                int value = in &amp; maxV;</b>
+<b class="nc"><i>502</i>&nbsp;                image[idx] = (byte) ((value * 255 + hmaxV) / maxV);</b>
+<b class="nc"><i>503</i>&nbsp;                image[idx + 1] = value == trnsG ? 0 : (byte) 255;</b>
+<b class="nc"><i>504</i>&nbsp;                in &gt;&gt;= bitDepth;</b>
+<i>505</i>&nbsp;            }
+<i>506</i>&nbsp;        }
+<b class="nc"><i>507</i>&nbsp;    }</b>
+<i>508</i>&nbsp;
+<i>509</i>&nbsp;    private void upsampleTo8(byte line[], byte image[], int pos, int w, int step, int bpp) {
+<b class="nc"><i>510</i>&nbsp;        if (colorType == PNG_COLOR_PALETTE) { // as is decoder</b>
+<b class="nc"><i>511</i>&nbsp;            upsampleTo8Palette(line, image, pos, w, step);</b>
+<b class="nc"><i>512</i>&nbsp;        } else if (bpp == 1) {</b>
+<b class="nc"><i>513</i>&nbsp;            upsampleTo8Gray(line, image, pos, w, step);</b>
+<b class="nc"><i>514</i>&nbsp;        } else if (tRNS_GRAY_RGB &amp;&amp; bpp == 2) {</b>
+<b class="nc"><i>515</i>&nbsp;            upsampleTo8GrayTrns(line, image, pos, w, step);</b>
+<i>516</i>&nbsp;        }
+<b class="nc"><i>517</i>&nbsp;    }</b>
+<i>518</i>&nbsp;
+<b class="fc"><i>519</i>&nbsp;    private static final int starting_y[] = {0, 0, 4, 0, 2, 0, 1, 0};</b>
+<b class="fc"><i>520</i>&nbsp;    private static final int starting_x[] = {0, 4, 0, 2, 0, 1, 0, 0};</b>
+<b class="fc"><i>521</i>&nbsp;    private static final int increment_y[] = {8, 8, 8, 4, 4, 2, 2, 1};</b>
+<b class="fc"><i>522</i>&nbsp;    private static final int increment_x[] = {8, 8, 4, 4, 2, 2, 1, 1};</b>
+<i>523</i>&nbsp;
+<i>524</i>&nbsp;    private static int mipSize(int size, int mip, int start[], int increment[]) {
+<b class="fc"><i>525</i>&nbsp;        return (size - start[mip] + increment[mip] - 1) / increment[mip];</b>
+<i>526</i>&nbsp;    }
+<i>527</i>&nbsp;
+<i>528</i>&nbsp;    private static int mipPos(int pos, int mip, int start[], int increment[]) {
+<b class="fc"><i>529</i>&nbsp;        return start[mip] + pos * increment[mip];</b>
+<i>530</i>&nbsp;    }
+<i>531</i>&nbsp;
+<i>532</i>&nbsp;    private void loadMip(byte image[], InputStream data, int mip) throws IOException {
+<i>533</i>&nbsp;
+<b class="fc"><i>534</i>&nbsp;        int mipWidth = mipSize(width, mip, starting_x, increment_x);</b>
+<b class="fc"><i>535</i>&nbsp;        int mipHeight = mipSize(height, mip, starting_y, increment_y);</b>
+<i>536</i>&nbsp;
+<b class="fc"><i>537</i>&nbsp;        int scanLineSize = (mipWidth * bitDepth * numBandsPerColorType[colorType] + 7) / 8;</b>
+<b class="fc"><i>538</i>&nbsp;        byte scanLine0[] = new byte[scanLineSize];</b>
+<b class="fc"><i>539</i>&nbsp;        byte scanLine1[] = new byte[scanLineSize];</b>
+<i>540</i>&nbsp;
+<i>541</i>&nbsp;        // numBands might be more than numBandsPerColorType[colorType]
+<i>542</i>&nbsp;        // to support tRNS
+<b class="fc"><i>543</i>&nbsp;        int resultBpp = bpp(), srcBpp = numBandsPerColorType[colorType] * bytesPerColor();</b>
+<i>544</i>&nbsp;
+<b class="fc"><i>545</i>&nbsp;        for (int y = 0; y != mipHeight; ++y) {</b>
+<b class="fc"><i>546</i>&nbsp;            int filterByte = data.read();</b>
+<b class="fc"><i>547</i>&nbsp;            if (filterByte == -1) {</b>
+<b class="nc"><i>548</i>&nbsp;                throw new EOFException();</b>
+<i>549</i>&nbsp;            }
+<i>550</i>&nbsp;
+<b class="fc"><i>551</i>&nbsp;            if (data.read(scanLine0) != scanLineSize) {</b>
+<b class="nc"><i>552</i>&nbsp;                throw new EOFException();</b>
+<i>553</i>&nbsp;            }
+<i>554</i>&nbsp;
+<b class="fc"><i>555</i>&nbsp;            doFilter(scanLine0, scanLine1, filterByte, srcBpp);</b>
+<i>556</i>&nbsp;
+<b class="fc"><i>557</i>&nbsp;            int pos = (mipPos(y, mip, starting_y, increment_y) * width + starting_x[mip]) * resultBpp;</b>
+<b class="fc"><i>558</i>&nbsp;            int step = increment_x[mip];</b>
+<i>559</i>&nbsp;
+<b class="fc"><i>560</i>&nbsp;            if (bitDepth == 16) {</b>
+<b class="nc"><i>561</i>&nbsp;                downsample16to8(scanLine0, image, pos, step, resultBpp);</b>
+<b class="fc"><i>562</i>&nbsp;            } else if (bitDepth &lt; 8) {</b>
+<b class="nc"><i>563</i>&nbsp;                upsampleTo8(scanLine0, image, pos, mipWidth, step, resultBpp);</b>
+<i>564</i>&nbsp;            } else {
+<b class="fc"><i>565</i>&nbsp;                copy(scanLine0, image, pos, step, resultBpp);</b>
+<i>566</i>&nbsp;            }
+<i>567</i>&nbsp;
+<b class="fc"><i>568</i>&nbsp;            byte scanLineSwp[] = scanLine0;</b>
+<b class="fc"><i>569</i>&nbsp;            scanLine0 = scanLine1;</b>
+<b class="fc"><i>570</i>&nbsp;            scanLine1 = scanLineSwp;</b>
+<i>571</i>&nbsp;        }
+<b class="fc"><i>572</i>&nbsp;    }</b>
+<i>573</i>&nbsp;
+<i>574</i>&nbsp;    private void load(byte image[], InputStream data) throws IOException {
+<b class="fc"><i>575</i>&nbsp;        if (isInterlaced) {</b>
+<b class="nc"><i>576</i>&nbsp;            for (int mip = 0; mip != 7; ++mip) {</b>
+<b class="nc"><i>577</i>&nbsp;                if (width &gt; starting_x[mip] &amp;&amp; height &gt; starting_y[mip]) {</b>
+<b class="nc"><i>578</i>&nbsp;                    loadMip(image, data, mip);</b>
+<i>579</i>&nbsp;                }
+<i>580</i>&nbsp;            }
+<i>581</i>&nbsp;        } else {
+<b class="fc"><i>582</i>&nbsp;            loadMip(image, data, 7);</b>
+<i>583</i>&nbsp;        }
+<b class="fc"><i>584</i>&nbsp;    }</b>
+<i>585</i>&nbsp;
+<i>586</i>&nbsp;    private ImageFrame decodePalette(byte srcImage[], ImageMetadata metadata) {
+<b class="nc"><i>587</i>&nbsp;        int bpp = tRNS_present ? 4 : 3;</b>
+<b class="nc"><i>588</i>&nbsp;        byte newImage[] = new byte[width * height * bpp];</b>
+<b class="nc"><i>589</i>&nbsp;        int l = width * height;</b>
+<i>590</i>&nbsp;
+<b class="nc"><i>591</i>&nbsp;        if (tRNS_present) {</b>
+<b class="nc"><i>592</i>&nbsp;            for (int i = 0, j = 0; i != l; j += 4, i++) {</b>
+<b class="nc"><i>593</i>&nbsp;                int index = 0xFF &amp; srcImage[i];</b>
+<b class="nc"><i>594</i>&nbsp;                newImage[j + 0] = palette[0][index];</b>
+<b class="nc"><i>595</i>&nbsp;                newImage[j + 1] = palette[1][index];</b>
+<b class="nc"><i>596</i>&nbsp;                newImage[j + 2] = palette[2][index];</b>
+<b class="nc"><i>597</i>&nbsp;                newImage[j + 3] = palette[3][index];</b>
+<i>598</i>&nbsp;            }
+<i>599</i>&nbsp;        } else {
+<b class="nc"><i>600</i>&nbsp;            for (int i = 0, j = 0; i != l; j += 3, i++) {</b>
+<b class="nc"><i>601</i>&nbsp;                int index = 0xFF &amp; srcImage[i];</b>
+<b class="nc"><i>602</i>&nbsp;                newImage[j + 0] = palette[0][index];</b>
+<b class="nc"><i>603</i>&nbsp;                newImage[j + 1] = palette[1][index];</b>
+<b class="nc"><i>604</i>&nbsp;                newImage[j + 2] = palette[2][index];</b>
+<i>605</i>&nbsp;            }
+<i>606</i>&nbsp;        }
+<i>607</i>&nbsp;
+<b class="nc"><i>608</i>&nbsp;        ImageStorage.ImageType type = tRNS_present</b>
+<b class="nc"><i>609</i>&nbsp;                ? ImageStorage.ImageType.RGBA</b>
+<b class="nc"><i>610</i>&nbsp;                : ImageStorage.ImageType.RGB;</b>
+<i>611</i>&nbsp;
+<b class="nc"><i>612</i>&nbsp;        return new ImageFrame(type, ByteBuffer.wrap(newImage), width, height,</b>
+<i>613</i>&nbsp;                width * bpp, null, metadata);
+<i>614</i>&nbsp;    }
+<i>615</i>&nbsp;
+<i>616</i>&nbsp;    // we won`t decode palette on fly, we will do it later
+<i>617</i>&nbsp;    // it is possible that we might want original paletteized image
+<i>618</i>&nbsp;    // ImageFrame does not support 16 bit color depth,
+<i>619</i>&nbsp;    // numBandsPerColorType == bytesPerColorType
+<i>620</i>&nbsp;    // but we will convert RGB-&gt;RGBA and L-&gt;LA on order to support tRNS
+<i>621</i>&nbsp;    private int bpp() {
+<b class="fc"><i>622</i>&nbsp;        return numBandsPerColorType[colorType] + (tRNS_GRAY_RGB ? 1 : 0);</b>
+<i>623</i>&nbsp;    }
+<i>624</i>&nbsp;
+<i>625</i>&nbsp;    private int bytesPerColor() {
+<b class="fc"><i>626</i>&nbsp;        return bitDepth == 16 ? 2 : 1;</b>
+<i>627</i>&nbsp;    }
+<i>628</i>&nbsp;
+<i>629</i>&nbsp;    public ImageFrame load(int imageIndex, int rWidth, int rHeight,
+<i>630</i>&nbsp;            boolean preserveAspectRatio, boolean smooth) throws IOException {
+<i>631</i>&nbsp;
+<b class="fc"><i>632</i>&nbsp;        if (imageIndex != 0) {</b>
+<b class="fc"><i>633</i>&nbsp;            return null;</b>
+<i>634</i>&nbsp;        }
+<i>635</i>&nbsp;
+<b class="fc"><i>636</i>&nbsp;        int dataSize = parsePngMeta();</b>
+<i>637</i>&nbsp;
+<b class="fc"><i>638</i>&nbsp;        if (dataSize == 0) {</b>
+<b class="nc"><i>639</i>&nbsp;            emitWarning(&quot;No image data in PNG&quot;);</b>
+<b class="nc"><i>640</i>&nbsp;            return null;</b>
+<i>641</i>&nbsp;        }
+<i>642</i>&nbsp;
+<b class="fc"><i>643</i>&nbsp;        int[] outWH = ImageTools.computeDimensions(width, height, rWidth, rHeight, preserveAspectRatio);</b>
+<b class="fc"><i>644</i>&nbsp;        rWidth = outWH[0];</b>
+<b class="fc"><i>645</i>&nbsp;        rHeight = outWH[1];</b>
+<i>646</i>&nbsp;
+<b class="fc"><i>647</i>&nbsp;        ImageMetadata metaData = new ImageMetadata(null, true,</b>
+<b class="fc"><i>648</i>&nbsp;                null, null, null, null, null, rWidth, rHeight, null, null, null);</b>
+<b class="fc"><i>649</i>&nbsp;        updateImageMetadata(metaData);</b>
+<i>650</i>&nbsp;
+<b class="fc"><i>651</i>&nbsp;        int bpp = bpp();</b>
+<b class="fc"><i>652</i>&nbsp;        ByteBuffer bb = ByteBuffer.allocate(bpp * width * height);</b>
+<i>653</i>&nbsp;
+<b class="fc"><i>654</i>&nbsp;        PNGIDATChunkInputStream iDat = new PNGIDATChunkInputStream(stream, dataSize);</b>
+<b class="fc"><i>655</i>&nbsp;        Inflater inf = new Inflater();</b>
+<b class="fc"><i>656</i>&nbsp;        InputStream data = new BufferedInputStream(new InflaterInputStream(iDat, inf));</b>
+<i>657</i>&nbsp;
+<i>658</i>&nbsp;        try {
+<b class="fc"><i>659</i>&nbsp;            load(bb.array(), data);</b>
+<b class="nc"><i>660</i>&nbsp;        } catch (IOException e) {</b>
+<b class="nc"><i>661</i>&nbsp;            throw e;</b>
+<i>662</i>&nbsp;        } finally {
+<b class="fc"><i>663</i>&nbsp;            if (inf != null) {</b>
+<b class="fc"><i>664</i>&nbsp;                inf.end();</b>
+<i>665</i>&nbsp;            }
+<i>666</i>&nbsp;        }
+<i>667</i>&nbsp;
+<b class="fc"><i>668</i>&nbsp;        ImageFrame imgPNG = colorType == PNG_COLOR_PALETTE</b>
+<b class="nc"><i>669</i>&nbsp;                ? decodePalette(bb.array(), metaData)</b>
+<b class="fc"><i>670</i>&nbsp;                : new ImageFrame(getType(), bb, width, height, bpp * width, palette, metaData);</b>
+<i>671</i>&nbsp;
+<b class="fc"><i>672</i>&nbsp;        if (width != rWidth || height != rHeight) {</b>
+<b class="nc"><i>673</i>&nbsp;            imgPNG = ImageTools.scaleImageFrame(imgPNG, rWidth, rHeight, smooth);</b>
+<i>674</i>&nbsp;        }
+<i>675</i>&nbsp;
+<b class="fc"><i>676</i>&nbsp;        return imgPNG;</b>
+<i>677</i>&nbsp;    }
+<i>678</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2017-12-04 21:49</div>
+</div>
+</body>
+</html>

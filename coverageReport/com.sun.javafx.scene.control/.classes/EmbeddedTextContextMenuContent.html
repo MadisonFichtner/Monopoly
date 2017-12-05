@@ -1,0 +1,275 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: EmbeddedTextContextMenuContent</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.javafx.scene.control</a> ]
+</div>
+
+<h1>Coverage Summary for Class: EmbeddedTextContextMenuContent (com.sun.javafx.scene.control)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">EmbeddedTextContextMenuContent</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 9)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 70)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright (c) 2012, 2016, Oracle and/or its affiliates. All rights reserved.
+<i>3</i>&nbsp; * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+<i>4</i>&nbsp; *
+<i>5</i>&nbsp; *
+<i>6</i>&nbsp; *
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; *
+<i>11</i>&nbsp; *
+<i>12</i>&nbsp; *
+<i>13</i>&nbsp; *
+<i>14</i>&nbsp; *
+<i>15</i>&nbsp; *
+<i>16</i>&nbsp; *
+<i>17</i>&nbsp; *
+<i>18</i>&nbsp; *
+<i>19</i>&nbsp; *
+<i>20</i>&nbsp; *
+<i>21</i>&nbsp; *
+<i>22</i>&nbsp; *
+<i>23</i>&nbsp; *
+<i>24</i>&nbsp; */
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;package com.sun.javafx.scene.control;
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;import java.util.Map;
+<i>29</i>&nbsp;
+<i>30</i>&nbsp;import com.sun.javafx.scene.control.skin.*;
+<i>31</i>&nbsp;import javafx.beans.InvalidationListener;
+<i>32</i>&nbsp;import javafx.beans.Observable;
+<i>33</i>&nbsp;import javafx.collections.ListChangeListener;
+<i>34</i>&nbsp;import javafx.event.ActionEvent;
+<i>35</i>&nbsp;import javafx.event.Event;
+<i>36</i>&nbsp;import javafx.geometry.HPos;
+<i>37</i>&nbsp;import javafx.geometry.VPos;
+<i>38</i>&nbsp;import javafx.scene.control.*;
+<i>39</i>&nbsp;import javafx.scene.control.skin.TextAreaSkin;
+<i>40</i>&nbsp;import javafx.scene.control.skin.TextFieldSkin;
+<i>41</i>&nbsp;import javafx.scene.layout.HBox;
+<i>42</i>&nbsp;import javafx.scene.layout.StackPane;
+<i>43</i>&nbsp;
+<i>44</i>&nbsp;/**
+<i>45</i>&nbsp; * The embedded context menu for a text input control.
+<i>46</i>&nbsp; * The menu will be displayed horizontally underneath the cursor
+<i>47</i>&nbsp; * with the available text editing options i.e. cut, copy, paste, select all.
+<i>48</i>&nbsp; *
+<i>49</i>&nbsp; */
+<b class="nc"><i>50</i>&nbsp;public class EmbeddedTextContextMenuContent extends StackPane {</b>
+<i>51</i>&nbsp;
+<i>52</i>&nbsp;    private ContextMenu contextMenu;
+<i>53</i>&nbsp;    private StackPane pointer;
+<i>54</i>&nbsp;    private HBox menuBox;
+<i>55</i>&nbsp;
+<b class="nc"><i>56</i>&nbsp;    public EmbeddedTextContextMenuContent(final ContextMenu popupMenu) {</b>
+<b class="nc"><i>57</i>&nbsp;        this.contextMenu = popupMenu;</b>
+<b class="nc"><i>58</i>&nbsp;        this.menuBox = new HBox();</b>
+<b class="nc"><i>59</i>&nbsp;        this.pointer = new StackPane();</b>
+<b class="nc"><i>60</i>&nbsp;        pointer.getStyleClass().add(&quot;pointer&quot;);</b>
+<i>61</i>&nbsp;
+<b class="nc"><i>62</i>&nbsp;        updateMenuItemContainer();</b>
+<b class="nc"><i>63</i>&nbsp;        getChildren().addAll(pointer, menuBox);</b>
+<i>64</i>&nbsp;
+<b class="nc"><i>65</i>&nbsp;        contextMenu.ownerNodeProperty().addListener(arg0 -&gt; {</b>
+<b class="nc"><i>66</i>&nbsp;            if (contextMenu.getOwnerNode() instanceof TextArea) {</b>
+<b class="nc"><i>67</i>&nbsp;                TextAreaSkin tas = (TextAreaSkin)((TextArea)contextMenu.getOwnerNode()).getSkin();</b>
+<b class="nc"><i>68</i>&nbsp;                tas.getSkinnable().getProperties().addListener(new InvalidationListener() {</b>
+<i>69</i>&nbsp;                    @Override public void invalidated(Observable arg0) {
+<i>70</i>&nbsp;                        requestLayout();
+<i>71</i>&nbsp;                    }
+<i>72</i>&nbsp;                });
+<b class="nc"><i>73</i>&nbsp;            } else if (contextMenu.getOwnerNode() instanceof TextField) {</b>
+<b class="nc"><i>74</i>&nbsp;                TextFieldSkin tfs = (TextFieldSkin)((TextField)contextMenu.getOwnerNode()).getSkin();</b>
+<b class="nc"><i>75</i>&nbsp;                tfs.getSkinnable().getProperties().addListener(new InvalidationListener() {</b>
+<i>76</i>&nbsp;                    @Override public void invalidated(Observable arg0) {
+<i>77</i>&nbsp;                        requestLayout();
+<i>78</i>&nbsp;                    }
+<i>79</i>&nbsp;                });
+<i>80</i>&nbsp;            }
+<b class="nc"><i>81</i>&nbsp;        });</b>
+<i>82</i>&nbsp;
+<b class="nc"><i>83</i>&nbsp;        contextMenu.getItems().addListener((ListChangeListener&lt;MenuItem&gt;) c -&gt; {</b>
+<i>84</i>&nbsp;            // Listener to items in PopupMenu to update items in PopupMenuContent
+<b class="nc"><i>85</i>&nbsp;            updateMenuItemContainer();</b>
+<b class="nc"><i>86</i>&nbsp;        });</b>
+<b class="nc"><i>87</i>&nbsp;    }</b>
+<i>88</i>&nbsp;
+<i>89</i>&nbsp;    private void updateMenuItemContainer() {
+<b class="nc"><i>90</i>&nbsp;        menuBox.getChildren().clear();</b>
+<b class="nc"><i>91</i>&nbsp;        for (MenuItem item: contextMenu.getItems()) {</b>
+<b class="nc"><i>92</i>&nbsp;            MenuItemContainer menuItemContainer = new MenuItemContainer(item);</b>
+<b class="nc"><i>93</i>&nbsp;            menuItemContainer.visibleProperty().bind(item.visibleProperty());</b>
+<b class="nc"><i>94</i>&nbsp;            menuBox.getChildren().add(menuItemContainer);</b>
+<b class="nc"><i>95</i>&nbsp;        }</b>
+<b class="nc"><i>96</i>&nbsp;    }</b>
+<i>97</i>&nbsp;
+<i>98</i>&nbsp;    private void hideAllMenus(MenuItem item) {
+<b class="nc"><i>99</i>&nbsp;        contextMenu.hide();</b>
+<i>100</i>&nbsp;
+<i>101</i>&nbsp;        Menu parentMenu;
+<b class="nc"><i>102</i>&nbsp;        while ((parentMenu = item.getParentMenu()) != null) {</b>
+<b class="nc"><i>103</i>&nbsp;            parentMenu.hide();</b>
+<b class="nc"><i>104</i>&nbsp;            item = parentMenu;</b>
+<i>105</i>&nbsp;        }
+<b class="nc"><i>106</i>&nbsp;        if (parentMenu == null &amp;&amp; item.getParentPopup() != null) {</b>
+<b class="nc"><i>107</i>&nbsp;            item.getParentPopup().hide();</b>
+<i>108</i>&nbsp;        }
+<b class="nc"><i>109</i>&nbsp;    }</b>
+<i>110</i>&nbsp;
+<i>111</i>&nbsp;    @Override protected double computePrefHeight(double width) {
+<b class="nc"><i>112</i>&nbsp;        final double pointerHeight = snapSizeY(pointer.prefHeight(width));</b>
+<b class="nc"><i>113</i>&nbsp;        final double menuBoxHeight = snapSizeY(menuBox.prefHeight(width));</b>
+<b class="nc"><i>114</i>&nbsp;        return snappedTopInset() + pointerHeight + menuBoxHeight + snappedBottomInset();</b>
+<i>115</i>&nbsp;    }
+<i>116</i>&nbsp;
+<i>117</i>&nbsp;    @Override protected double computePrefWidth(double height) {
+<b class="nc"><i>118</i>&nbsp;        final double menuBoxWidth = snapSizeX(menuBox.prefWidth(height));</b>
+<b class="nc"><i>119</i>&nbsp;        return snappedLeftInset() + menuBoxWidth + snappedRightInset();</b>
+<i>120</i>&nbsp;    }
+<i>121</i>&nbsp;
+<i>122</i>&nbsp;    @Override protected void layoutChildren() {
+<b class="nc"><i>123</i>&nbsp;        final double left = snappedLeftInset();</b>
+<b class="nc"><i>124</i>&nbsp;        final double right = snappedRightInset();</b>
+<b class="nc"><i>125</i>&nbsp;        final double top = snappedTopInset();</b>
+<b class="nc"><i>126</i>&nbsp;        final double width = getWidth() - (left + right);</b>
+<b class="nc"><i>127</i>&nbsp;        final double pointerWidth = snapSizeX(Utils.boundedSize(pointer.prefWidth(-1), pointer.minWidth(-1), pointer.maxWidth(-1)));</b>
+<b class="nc"><i>128</i>&nbsp;        final double pointerHeight = snapSizeY(Utils.boundedSize(pointer.prefWidth(-1), pointer.minWidth(-1), pointer.maxWidth(-1)));</b>
+<b class="nc"><i>129</i>&nbsp;        final double menuBoxWidth = snapSizeX(Utils.boundedSize(menuBox.prefWidth(-1), menuBox.minWidth(-1), menuBox.maxWidth(-1)));</b>
+<b class="nc"><i>130</i>&nbsp;        final double menuBoxHeight = snapSizeY(Utils.boundedSize(menuBox.prefWidth(-1), menuBox.minWidth(-1), menuBox.maxWidth(-1)));</b>
+<b class="nc"><i>131</i>&nbsp;        double sceneX = 0;</b>
+<b class="nc"><i>132</i>&nbsp;        double screenX = 0;</b>
+<b class="nc"><i>133</i>&nbsp;        double pointerX = 0;</b>
+<i>134</i>&nbsp;
+<i>135</i>&nbsp;        // Get the positions of the cursor from the TextArea/TextField and draw the arrow underneath it.
+<b class="nc"><i>136</i>&nbsp;        Map&lt;Object,Object&gt; properties = null;</b>
+<b class="nc"><i>137</i>&nbsp;        if (contextMenu.getOwnerNode() instanceof TextArea) {</b>
+<b class="nc"><i>138</i>&nbsp;            properties = ((TextArea)contextMenu.getOwnerNode()).getProperties();</b>
+<b class="nc"><i>139</i>&nbsp;        } else if (contextMenu.getOwnerNode() instanceof TextField) {</b>
+<b class="nc"><i>140</i>&nbsp;            properties = ((TextField)contextMenu.getOwnerNode()).getProperties();</b>
+<i>141</i>&nbsp;        }
+<i>142</i>&nbsp;
+<b class="nc"><i>143</i>&nbsp;        if (properties != null) {</b>
+<b class="nc"><i>144</i>&nbsp;            if (properties.containsKey(&quot;CONTEXT_MENU_SCENE_X&quot;)) {</b>
+<b class="nc"><i>145</i>&nbsp;                sceneX = Double.valueOf(properties.get(&quot;CONTEXT_MENU_SCENE_X&quot;).toString());</b>
+<b class="nc"><i>146</i>&nbsp;                properties.remove(&quot;CONTEXT_MENU_SCENE_X&quot;);</b>
+<i>147</i>&nbsp;            }
+<i>148</i>&nbsp;
+<b class="nc"><i>149</i>&nbsp;            if (properties.containsKey(&quot;CONTEXT_MENU_SCREEN_X&quot;)) {</b>
+<b class="nc"><i>150</i>&nbsp;                screenX = Double.valueOf(properties.get(&quot;CONTEXT_MENU_SCREEN_X&quot;).toString());</b>
+<b class="nc"><i>151</i>&nbsp;                properties.remove(&quot;CONTEXT_MENU_SCREEN_X&quot;);</b>
+<i>152</i>&nbsp;            }
+<i>153</i>&nbsp;        }
+<i>154</i>&nbsp;
+<b class="nc"><i>155</i>&nbsp;        if (sceneX == 0) {</b>
+<b class="nc"><i>156</i>&nbsp;            pointerX = width/2;</b>
+<i>157</i>&nbsp;        } else {
+<b class="nc"><i>158</i>&nbsp;            pointerX = (screenX - sceneX - contextMenu.getX()) + sceneX;</b>
+<i>159</i>&nbsp;        }
+<i>160</i>&nbsp;
+<b class="nc"><i>161</i>&nbsp;        pointer.resize(pointerWidth, pointerHeight);</b>
+<b class="nc"><i>162</i>&nbsp;        positionInArea(pointer, pointerX, top, pointerWidth, pointerHeight, 0, HPos.CENTER, VPos.CENTER);</b>
+<b class="nc"><i>163</i>&nbsp;        menuBox.resize(menuBoxWidth, menuBoxHeight);</b>
+<b class="nc"><i>164</i>&nbsp;        positionInArea(menuBox, left, top + pointerHeight, menuBoxWidth, menuBoxHeight, 0, HPos.CENTER, VPos.CENTER);</b>
+<b class="nc"><i>165</i>&nbsp;    }</b>
+<i>166</i>&nbsp;
+<i>167</i>&nbsp;    class MenuItemContainer extends Button {
+<i>168</i>&nbsp;        private MenuItem item;
+<i>169</i>&nbsp;
+<i>170</i>&nbsp;        public MenuItemContainer(MenuItem item){
+<i>171</i>&nbsp;            getStyleClass().addAll(item.getStyleClass());
+<i>172</i>&nbsp;            setId(item.getId());
+<i>173</i>&nbsp;            this.item = item;
+<i>174</i>&nbsp;            setText(item.getText());
+<i>175</i>&nbsp;            setStyle(item.getStyle());
+<i>176</i>&nbsp;
+<i>177</i>&nbsp;            // bind to text property in menu item
+<i>178</i>&nbsp;            textProperty().bind(item.textProperty());
+<i>179</i>&nbsp;        }
+<i>180</i>&nbsp;
+<i>181</i>&nbsp;        public MenuItem getItem() {
+<i>182</i>&nbsp;            return item;
+<i>183</i>&nbsp;        }
+<i>184</i>&nbsp;
+<i>185</i>&nbsp;        @Override public void fire() {
+<i>186</i>&nbsp;            Event.fireEvent(item, new ActionEvent());
+<i>187</i>&nbsp;            if (!Boolean.TRUE.equals((Boolean)item.getProperties().get(&quot;refreshMenu&quot;))) {
+<i>188</i>&nbsp;                hideAllMenus(item);
+<i>189</i>&nbsp;            }
+<i>190</i>&nbsp;        }
+<i>191</i>&nbsp;    }
+<i>192</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2017-12-04 21:49</div>
+</div>
+</body>
+</html>

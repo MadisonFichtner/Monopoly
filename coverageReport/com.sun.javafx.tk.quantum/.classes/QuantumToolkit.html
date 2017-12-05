@@ -1,0 +1,1782 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: QuantumToolkit</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.javafx.tk.quantum</a> ]
+</div>
+
+<h1>Coverage Summary for Class: QuantumToolkit (com.sun.javafx.tk.quantum)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">QuantumToolkit</td>
+<td class="coverageStat">
+  <span class="percent">
+    63.6%
+  </span>
+  <span class="absValue">
+    (70/ 110)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    48%
+  </span>
+  <span class="absValue">
+    (274/ 571)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">QuantumToolkit$1</td>
+<td class="coverageStat">
+  <span class="percent">
+    50%
+  </span>
+  <span class="absValue">
+    (1/ 2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    33.3%
+  </span>
+  <span class="absValue">
+    (1/ 3)
+  </span>
+</td>
+  </tr>
+  <tr>
+    <td class="name">QuantumToolkit$2</td>
+<td class="coverageStat">
+  <span class="percent">
+    33.3%
+  </span>
+  <span class="absValue">
+    (1/ 3)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    25%
+  </span>
+  <span class="absValue">
+    (1/ 4)
+  </span>
+</td>
+  </tr>
+  <tr>
+    <td class="name">QuantumToolkit$3</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (12/ 12)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (12/ 12)
+  </span>
+</td>
+  </tr>
+  <tr>
+    <td class="name">QuantumToolkit$4</td>
+<td class="coverageStat">
+  <span class="percent">
+    50%
+  </span>
+  <span class="absValue">
+    (1/ 2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    33.3%
+  </span>
+  <span class="absValue">
+    (1/ 3)
+  </span>
+</td>
+  </tr>
+  <tr>
+    <td class="name">QuantumToolkit$6</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    66.2%
+  </span>
+  <span class="absValue">
+    (86/ 130)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    48.8%
+  </span>
+  <span class="absValue">
+    (290/ 594)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright (c) 2010, 2016, Oracle and/or its affiliates. All rights reserved.
+<i>3</i>&nbsp; * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+<i>4</i>&nbsp; *
+<i>5</i>&nbsp; *
+<i>6</i>&nbsp; *
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; *
+<i>11</i>&nbsp; *
+<i>12</i>&nbsp; *
+<i>13</i>&nbsp; *
+<i>14</i>&nbsp; *
+<i>15</i>&nbsp; *
+<i>16</i>&nbsp; *
+<i>17</i>&nbsp; *
+<i>18</i>&nbsp; *
+<i>19</i>&nbsp; *
+<i>20</i>&nbsp; *
+<i>21</i>&nbsp; *
+<i>22</i>&nbsp; *
+<i>23</i>&nbsp; *
+<i>24</i>&nbsp; */
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;package com.sun.javafx.tk.quantum;
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;import javafx.application.ConditionalFeature;
+<i>29</i>&nbsp;import javafx.geometry.Dimension2D;
+<i>30</i>&nbsp;import javafx.scene.image.Image;
+<i>31</i>&nbsp;import javafx.scene.input.Dragboard;
+<i>32</i>&nbsp;import javafx.scene.input.InputMethodRequests;
+<i>33</i>&nbsp;import javafx.scene.input.KeyCode;
+<i>34</i>&nbsp;import javafx.scene.input.KeyEvent;
+<i>35</i>&nbsp;import javafx.scene.input.TransferMode;
+<i>36</i>&nbsp;import javafx.scene.paint.Color;
+<i>37</i>&nbsp;import javafx.scene.paint.CycleMethod;
+<i>38</i>&nbsp;import javafx.scene.paint.ImagePattern;
+<i>39</i>&nbsp;import javafx.scene.paint.LinearGradient;
+<i>40</i>&nbsp;import javafx.scene.paint.RadialGradient;
+<i>41</i>&nbsp;import javafx.scene.paint.Stop;
+<i>42</i>&nbsp;import javafx.scene.shape.ClosePath;
+<i>43</i>&nbsp;import javafx.scene.shape.CubicCurveTo;
+<i>44</i>&nbsp;import javafx.scene.shape.FillRule;
+<i>45</i>&nbsp;import javafx.scene.shape.LineTo;
+<i>46</i>&nbsp;import javafx.scene.shape.MoveTo;
+<i>47</i>&nbsp;import javafx.scene.shape.PathElement;
+<i>48</i>&nbsp;import javafx.scene.shape.QuadCurveTo;
+<i>49</i>&nbsp;import javafx.scene.shape.SVGPath;
+<i>50</i>&nbsp;import javafx.scene.shape.StrokeLineCap;
+<i>51</i>&nbsp;import javafx.scene.shape.StrokeLineJoin;
+<i>52</i>&nbsp;import javafx.scene.shape.StrokeType;
+<i>53</i>&nbsp;import javafx.stage.FileChooser;
+<i>54</i>&nbsp;import javafx.stage.Modality;
+<i>55</i>&nbsp;import javafx.stage.StageStyle;
+<i>56</i>&nbsp;import javafx.stage.Window;
+<i>57</i>&nbsp;import java.io.File;
+<i>58</i>&nbsp;import java.io.InputStream;
+<i>59</i>&nbsp;import java.nio.ByteBuffer;
+<i>60</i>&nbsp;import java.nio.IntBuffer;
+<i>61</i>&nbsp;import java.security.AccessControlContext;
+<i>62</i>&nbsp;import java.security.AccessController;
+<i>63</i>&nbsp;import java.security.PrivilegedAction;
+<i>64</i>&nbsp;import java.util.ArrayList;
+<i>65</i>&nbsp;import java.util.Arrays;
+<i>66</i>&nbsp;import java.util.Collections;
+<i>67</i>&nbsp;import java.util.HashMap;
+<i>68</i>&nbsp;import java.util.List;
+<i>69</i>&nbsp;import java.util.Map;
+<i>70</i>&nbsp;import java.util.Set;
+<i>71</i>&nbsp;import java.util.concurrent.CountDownLatch;
+<i>72</i>&nbsp;import java.util.concurrent.Future;
+<i>73</i>&nbsp;import java.util.concurrent.TimeUnit;
+<i>74</i>&nbsp;import java.util.concurrent.atomic.AtomicBoolean;
+<i>75</i>&nbsp;import java.util.function.Supplier;
+<i>76</i>&nbsp;import com.sun.glass.ui.Application;
+<i>77</i>&nbsp;import com.sun.glass.ui.Clipboard;
+<i>78</i>&nbsp;import com.sun.glass.ui.ClipboardAssistance;
+<i>79</i>&nbsp;import com.sun.glass.ui.CommonDialogs;
+<i>80</i>&nbsp;import com.sun.glass.ui.CommonDialogs.FileChooserResult;
+<i>81</i>&nbsp;import com.sun.glass.ui.EventLoop;
+<i>82</i>&nbsp;import com.sun.glass.ui.Screen;
+<i>83</i>&nbsp;import com.sun.glass.ui.Timer;
+<i>84</i>&nbsp;import com.sun.glass.ui.View;
+<i>85</i>&nbsp;import com.sun.javafx.PlatformUtil;
+<i>86</i>&nbsp;import com.sun.javafx.application.PlatformImpl;
+<i>87</i>&nbsp;import com.sun.javafx.embed.HostInterface;
+<i>88</i>&nbsp;import com.sun.javafx.geom.Path2D;
+<i>89</i>&nbsp;import com.sun.javafx.geom.PathIterator;
+<i>90</i>&nbsp;import com.sun.javafx.geom.Shape;
+<i>91</i>&nbsp;import com.sun.javafx.geom.transform.BaseTransform;
+<i>92</i>&nbsp;import com.sun.javafx.perf.PerformanceTracker;
+<i>93</i>&nbsp;import com.sun.javafx.runtime.async.AbstractRemoteResource;
+<i>94</i>&nbsp;import com.sun.javafx.runtime.async.AsyncOperationListener;
+<i>95</i>&nbsp;import com.sun.javafx.scene.text.TextLayoutFactory;
+<i>96</i>&nbsp;import com.sun.javafx.sg.prism.NGNode;
+<i>97</i>&nbsp;import com.sun.javafx.tk.AppletWindow;
+<i>98</i>&nbsp;import com.sun.javafx.tk.CompletionListener;
+<i>99</i>&nbsp;import com.sun.javafx.tk.FileChooserType;
+<i>100</i>&nbsp;import com.sun.javafx.tk.FontLoader;
+<i>101</i>&nbsp;import com.sun.javafx.tk.ImageLoader;
+<i>102</i>&nbsp;import com.sun.javafx.tk.PlatformImage;
+<i>103</i>&nbsp;import com.sun.javafx.tk.RenderJob;
+<i>104</i>&nbsp;import com.sun.javafx.tk.ScreenConfigurationAccessor;
+<i>105</i>&nbsp;import com.sun.javafx.tk.TKClipboard;
+<i>106</i>&nbsp;import com.sun.javafx.tk.TKDragGestureListener;
+<i>107</i>&nbsp;import com.sun.javafx.tk.TKDragSourceListener;
+<i>108</i>&nbsp;import com.sun.javafx.tk.TKDropTargetListener;
+<i>109</i>&nbsp;import com.sun.javafx.tk.TKScene;
+<i>110</i>&nbsp;import com.sun.javafx.tk.TKScreenConfigurationListener;
+<i>111</i>&nbsp;import com.sun.javafx.tk.TKStage;
+<i>112</i>&nbsp;import com.sun.javafx.tk.TKSystemMenu;
+<i>113</i>&nbsp;import com.sun.javafx.tk.Toolkit;
+<i>114</i>&nbsp;import com.sun.prism.BasicStroke;
+<i>115</i>&nbsp;import com.sun.prism.Graphics;
+<i>116</i>&nbsp;import com.sun.prism.GraphicsPipeline;
+<i>117</i>&nbsp;import com.sun.prism.PixelFormat;
+<i>118</i>&nbsp;import com.sun.prism.RTTexture;
+<i>119</i>&nbsp;import com.sun.prism.ResourceFactory;
+<i>120</i>&nbsp;import com.sun.prism.ResourceFactoryListener;
+<i>121</i>&nbsp;import com.sun.prism.Texture.WrapMode;
+<i>122</i>&nbsp;import com.sun.prism.impl.Disposer;
+<i>123</i>&nbsp;import com.sun.prism.impl.PrismSettings;
+<i>124</i>&nbsp;import com.sun.scenario.DelayedRunnable;
+<i>125</i>&nbsp;import com.sun.scenario.animation.AbstractMasterTimer;
+<i>126</i>&nbsp;import com.sun.scenario.effect.FilterContext;
+<i>127</i>&nbsp;import com.sun.scenario.effect.Filterable;
+<i>128</i>&nbsp;import com.sun.scenario.effect.impl.prism.PrFilterContext;
+<i>129</i>&nbsp;import com.sun.scenario.effect.impl.prism.PrImage;
+<i>130</i>&nbsp;import com.sun.javafx.logging.PulseLogger;
+<i>131</i>&nbsp;import static com.sun.javafx.logging.PulseLogger.PULSE_LOGGING_ENABLED;
+<i>132</i>&nbsp;import com.sun.javafx.scene.input.DragboardHelper;
+<i>133</i>&nbsp;import com.sun.prism.impl.ManagedResource;
+<i>134</i>&nbsp;
+<b class="fc"><i>135</i>&nbsp;public final class QuantumToolkit extends Toolkit {</b>
+<i>136</i>&nbsp;
+<b class="fc"><i>137</i>&nbsp;    public static final boolean verbose =</b>
+<b class="fc"><i>138</i>&nbsp;            AccessController.doPrivileged((PrivilegedAction&lt;Boolean&gt;) () -&gt; Boolean.getBoolean(&quot;quantum.verbose&quot;));</b>
+<i>139</i>&nbsp;
+<b class="fc"><i>140</i>&nbsp;    public static final boolean pulseDebug =</b>
+<b class="fc"><i>141</i>&nbsp;            AccessController.doPrivileged((PrivilegedAction&lt;Boolean&gt;) () -&gt; Boolean.getBoolean(&quot;quantum.pulse&quot;));</b>
+<i>142</i>&nbsp;
+<b class="fc"><i>143</i>&nbsp;    private static final boolean multithreaded =</b>
+<b class="fc"><i>144</i>&nbsp;            AccessController.doPrivileged((PrivilegedAction&lt;Boolean&gt;) () -&gt; {</b>
+<i>145</i>&nbsp;                // If it is not specified, or it is true, then it should
+<i>146</i>&nbsp;                // be true. Otherwise it should be false.
+<b class="fc"><i>147</i>&nbsp;                String value = System.getProperty(&quot;quantum.multithreaded&quot;);</b>
+<b class="fc"><i>148</i>&nbsp;                if (value == null) return true;</b>
+<b class="nc"><i>149</i>&nbsp;                final boolean result = Boolean.parseBoolean(value);</b>
+<b class="nc"><i>150</i>&nbsp;                if (verbose) {</b>
+<b class="nc"><i>151</i>&nbsp;                    System.out.println(result ? &quot;Multi-Threading Enabled&quot; : &quot;Multi-Threading Disabled&quot;);</b>
+<i>152</i>&nbsp;                }
+<b class="nc"><i>153</i>&nbsp;                return result;</b>
+<i>154</i>&nbsp;            });
+<i>155</i>&nbsp;
+<b class="fc"><i>156</i>&nbsp;    private static boolean debug =</b>
+<b class="fc"><i>157</i>&nbsp;            AccessController.doPrivileged((PrivilegedAction&lt;Boolean&gt;) () -&gt; Boolean.getBoolean(&quot;quantum.debug&quot;));</b>
+<i>158</i>&nbsp;
+<b class="fc"><i>159</i>&nbsp;    private static Integer pulseHZ =</b>
+<b class="fc"><i>160</i>&nbsp;            AccessController.doPrivileged((PrivilegedAction&lt;Integer&gt;) () -&gt; Integer.getInteger(&quot;javafx.animation.pulse&quot;));</b>
+<i>161</i>&nbsp;
+<b class="fc"><i>162</i>&nbsp;    static final boolean liveResize =</b>
+<b class="fc"><i>163</i>&nbsp;            AccessController.doPrivileged((PrivilegedAction&lt;Boolean&gt;) () -&gt; {</b>
+<b class="fc"><i>164</i>&nbsp;                boolean isSWT = &quot;swt&quot;.equals(System.getProperty(&quot;glass.platform&quot;));</b>
+<b class="fc"><i>165</i>&nbsp;                String result = (PlatformUtil.isMac() || PlatformUtil.isWindows()) &amp;&amp; !isSWT ? &quot;true&quot; : &quot;false&quot;;</b>
+<b class="fc"><i>166</i>&nbsp;                return &quot;true&quot;.equals(System.getProperty(&quot;javafx.live.resize&quot;, result));</b>
+<i>167</i>&nbsp;            });
+<i>168</i>&nbsp;
+<b class="fc"><i>169</i>&nbsp;    static final boolean drawInPaint =</b>
+<b class="fc"><i>170</i>&nbsp;            AccessController.doPrivileged((PrivilegedAction&lt;Boolean&gt;) () -&gt; {</b>
+<b class="fc"><i>171</i>&nbsp;                boolean isSWT = &quot;swt&quot;.equals(System.getProperty(&quot;glass.platform&quot;));</b>
+<b class="fc"><i>172</i>&nbsp;                String result = PlatformUtil.isMac() &amp;&amp; isSWT ? &quot;true&quot; : &quot;false&quot;;</b>
+<b class="fc"><i>173</i>&nbsp;                return &quot;true&quot;.equals(System.getProperty(&quot;javafx.draw.in.paint&quot;, result));});</b>
+<i>174</i>&nbsp;
+<b class="fc"><i>175</i>&nbsp;    private static boolean singleThreaded =</b>
+<b class="fc"><i>176</i>&nbsp;            AccessController.doPrivileged((PrivilegedAction&lt;Boolean&gt;) () -&gt; {</b>
+<b class="fc"><i>177</i>&nbsp;                Boolean result = Boolean.getBoolean(&quot;quantum.singlethreaded&quot;);</b>
+<b class="fc"><i>178</i>&nbsp;                if (/*verbose &amp;&amp;*/ result) {</b>
+<b class="nc"><i>179</i>&nbsp;                    System.out.println(&quot;Warning: Single GUI Threadiong is enabled, FPS should be slower&quot;);</b>
+<i>180</i>&nbsp;                }
+<b class="fc"><i>181</i>&nbsp;                return result;</b>
+<i>182</i>&nbsp;            });
+<i>183</i>&nbsp;
+<b class="fc"><i>184</i>&nbsp;    private static boolean noRenderJobs =</b>
+<b class="fc"><i>185</i>&nbsp;            AccessController.doPrivileged((PrivilegedAction&lt;Boolean&gt;) () -&gt; {</b>
+<b class="fc"><i>186</i>&nbsp;                Boolean result = Boolean.getBoolean(&quot;quantum.norenderjobs&quot;);</b>
+<b class="fc"><i>187</i>&nbsp;                if (/*verbose &amp;&amp;*/ result) {</b>
+<b class="nc"><i>188</i>&nbsp;                    System.out.println(&quot;Warning: Quantum will not submit render jobs, nothing should draw&quot;);</b>
+<i>189</i>&nbsp;                }
+<b class="fc"><i>190</i>&nbsp;                return result;</b>
+<i>191</i>&nbsp;            });
+<i>192</i>&nbsp;
+<b class="fc"><i>193</i>&nbsp;    private AtomicBoolean           toolkitRunning = new AtomicBoolean(false);</b>
+<b class="fc"><i>194</i>&nbsp;    private AtomicBoolean           animationRunning = new AtomicBoolean(false);</b>
+<b class="fc"><i>195</i>&nbsp;    private AtomicBoolean           nextPulseRequested = new AtomicBoolean(false);</b>
+<b class="fc"><i>196</i>&nbsp;    private AtomicBoolean           pulseRunning = new AtomicBoolean(false);</b>
+<b class="fc"><i>197</i>&nbsp;    private int                     inPulse = 0;</b>
+<b class="fc"><i>198</i>&nbsp;    private CountDownLatch          launchLatch = new CountDownLatch(1);</b>
+<i>199</i>&nbsp;
+<b class="fc"><i>200</i>&nbsp;    final int                       PULSE_INTERVAL = (int)(TimeUnit.SECONDS.toMillis(1L) / getRefreshRate());</b>
+<b class="fc"><i>201</i>&nbsp;    final int                       FULLSPEED_INTERVAL = 1;     // ms</b>
+<b class="fc"><i>202</i>&nbsp;    boolean                         nativeSystemVsync = false;</b>
+<i>203</i>&nbsp;    private float                   _maxPixelScale;
+<i>204</i>&nbsp;    private Runnable                pulseRunnable, userRunnable, timerRunnable;
+<b class="fc"><i>205</i>&nbsp;    private Timer                   pulseTimer = null;</b>
+<b class="fc"><i>206</i>&nbsp;    private Thread                  shutdownHook = null;</b>
+<i>207</i>&nbsp;    private PaintCollector          collector;
+<i>208</i>&nbsp;    private QuantumRenderer         renderer;
+<i>209</i>&nbsp;    private GraphicsPipeline        pipeline;
+<i>210</i>&nbsp;
+<i>211</i>&nbsp;    private ClassLoader             ccl;
+<i>212</i>&nbsp;
+<b class="fc"><i>213</i>&nbsp;    private HashMap&lt;Object,EventLoop&gt; eventLoopMap = null;</b>
+<i>214</i>&nbsp;
+<b class="fc"><i>215</i>&nbsp;    private final PerformanceTracker perfTracker = new PerformanceTrackerImpl();</b>
+<i>216</i>&nbsp;
+<i>217</i>&nbsp;    @Override public boolean init() {
+<i>218</i>&nbsp;        /*
+<i>219</i>&nbsp;         * Glass Mac, X11 need Application.setDeviceDetails to happen prior to Glass Application.Run
+<i>220</i>&nbsp;         */
+<b class="fc"><i>221</i>&nbsp;        renderer = QuantumRenderer.getInstance();</b>
+<b class="fc"><i>222</i>&nbsp;        collector = PaintCollector.createInstance(this);</b>
+<b class="fc"><i>223</i>&nbsp;        pipeline = GraphicsPipeline.getPipeline();</b>
+<i>224</i>&nbsp;
+<i>225</i>&nbsp;        /* shutdown the pipeline on System.exit, ^c
+<i>226</i>&nbsp;         * needed with X11 and Windows, see RT-32501
+<i>227</i>&nbsp;         */
+<b class="fc"><i>228</i>&nbsp;        shutdownHook = new Thread(&quot;Glass/Prism Shutdown Hook&quot;) {</b>
+<i>229</i>&nbsp;            @Override public void run() {
+<b class="nc"><i>230</i>&nbsp;                dispose();</b>
+<b class="nc"><i>231</i>&nbsp;            }</b>
+<i>232</i>&nbsp;        };
+<b class="fc"><i>233</i>&nbsp;        AccessController.doPrivileged((PrivilegedAction&lt;Void&gt;) () -&gt; {</b>
+<b class="fc"><i>234</i>&nbsp;            Runtime.getRuntime().addShutdownHook(shutdownHook);</b>
+<b class="fc"><i>235</i>&nbsp;            return null;</b>
+<i>236</i>&nbsp;        });
+<b class="fc"><i>237</i>&nbsp;        return true;</b>
+<i>238</i>&nbsp;    }
+<i>239</i>&nbsp;
+<i>240</i>&nbsp;    /**
+<i>241</i>&nbsp;     * This method is invoked by PlatformImpl. It is typically called on the main
+<i>242</i>&nbsp;     * thread, NOT the JavaFX Application Thread. The userStartupRunnable will
+<i>243</i>&nbsp;     * be invoked on the JavaFX Application Thread.
+<i>244</i>&nbsp;     *
+<i>245</i>&nbsp;     * @param userStartupRunnable A runnable invoked on the JavaFX Application Thread
+<i>246</i>&nbsp;     *                            that allows the system to perform some startup
+<i>247</i>&nbsp;     *                            functionality after the toolkit has been initialized.
+<i>248</i>&nbsp;     */
+<i>249</i>&nbsp;    @Override public void startup(final Runnable userStartupRunnable) {
+<i>250</i>&nbsp;        // Save the context class loader of the launcher thread
+<b class="fc"><i>251</i>&nbsp;        ccl = Thread.currentThread().getContextClassLoader();</b>
+<i>252</i>&nbsp;
+<i>253</i>&nbsp;        try {
+<b class="fc"><i>254</i>&nbsp;            this.userRunnable = userStartupRunnable;</b>
+<i>255</i>&nbsp;
+<i>256</i>&nbsp;            // Ensure that the toolkit can only be started here
+<b class="fc"><i>257</i>&nbsp;            Application.run(() -&gt; runToolkit());</b>
+<b class="nc"><i>258</i>&nbsp;        } catch (RuntimeException ex) {</b>
+<b class="nc"><i>259</i>&nbsp;            if (verbose) {</b>
+<b class="nc"><i>260</i>&nbsp;                ex.printStackTrace();</b>
+<i>261</i>&nbsp;            }
+<b class="nc"><i>262</i>&nbsp;            throw ex;</b>
+<b class="nc"><i>263</i>&nbsp;        } catch (Throwable t) {</b>
+<b class="nc"><i>264</i>&nbsp;            if (verbose) {</b>
+<b class="nc"><i>265</i>&nbsp;                t.printStackTrace();</b>
+<i>266</i>&nbsp;            }
+<b class="nc"><i>267</i>&nbsp;            throw new RuntimeException(t);</b>
+<b class="fc"><i>268</i>&nbsp;        }</b>
+<i>269</i>&nbsp;
+<i>270</i>&nbsp;        try {
+<b class="fc"><i>271</i>&nbsp;            launchLatch.await();</b>
+<b class="nc"><i>272</i>&nbsp;        } catch (InterruptedException ie) {</b>
+<b class="nc"><i>273</i>&nbsp;            ie.printStackTrace();</b>
+<b class="fc"><i>274</i>&nbsp;        }</b>
+<b class="fc"><i>275</i>&nbsp;    }</b>
+<i>276</i>&nbsp;
+<i>277</i>&nbsp;    // restart the toolkit if previously terminated
+<i>278</i>&nbsp;    private void assertToolkitRunning() {
+<i>279</i>&nbsp;        // not implemented
+<b class="fc"><i>280</i>&nbsp;    }</b>
+<i>281</i>&nbsp;
+<i>282</i>&nbsp;    boolean shouldWaitForRenderingToComplete() {
+<b class="fc"><i>283</i>&nbsp;        return !multithreaded;</b>
+<i>284</i>&nbsp;    }
+<i>285</i>&nbsp;
+<i>286</i>&nbsp;    /**
+<i>287</i>&nbsp;     * Method to initialize the Scene Graph on the JavaFX application thread.
+<i>288</i>&nbsp;     * Specifically, we will do static initialization for those classes in
+<i>289</i>&nbsp;     * the javafx.stage, javafx.scene, and javafx.controls packages necessary
+<i>290</i>&nbsp;     * to allow subsequent construction of the Scene or any Node, including
+<i>291</i>&nbsp;     * a PopupControl, on a background thread.
+<i>292</i>&nbsp;     *
+<i>293</i>&nbsp;     * This method is called on the JavaFX application thread.
+<i>294</i>&nbsp;     */
+<i>295</i>&nbsp;    private static void initSceneGraph() {
+<i>296</i>&nbsp;        // It is both necessary and sufficient to call a static method on the
+<i>297</i>&nbsp;        // Screen class to allow PopupControl instances to be created on any thread.
+<b class="fc"><i>298</i>&nbsp;        javafx.stage.Screen.getPrimary();</b>
+<b class="fc"><i>299</i>&nbsp;    }</b>
+<i>300</i>&nbsp;
+<i>301</i>&nbsp;    // Called by Glass from Application.run()
+<i>302</i>&nbsp;    void runToolkit() {
+<b class="fc"><i>303</i>&nbsp;        Thread user = Thread.currentThread();</b>
+<i>304</i>&nbsp;
+<b class="fc"><i>305</i>&nbsp;        if (!toolkitRunning.getAndSet(true)) {</b>
+<b class="fc"><i>306</i>&nbsp;            user.setName(&quot;JavaFX Application Thread&quot;);</b>
+<i>307</i>&nbsp;            // Set context class loader to the same as the thread that called startup
+<b class="fc"><i>308</i>&nbsp;            user.setContextClassLoader(ccl);</b>
+<b class="fc"><i>309</i>&nbsp;            setFxUserThread(user);</b>
+<i>310</i>&nbsp;
+<i>311</i>&nbsp;            // Glass screens were inited in Application.run(), assign adapters
+<b class="fc"><i>312</i>&nbsp;            assignScreensAdapters();</b>
+<i>313</i>&nbsp;            /*
+<i>314</i>&nbsp;             *  Glass Application instance is now valid - create the ResourceFactory
+<i>315</i>&nbsp;             *  on the render thread
+<i>316</i>&nbsp;             */
+<b class="fc"><i>317</i>&nbsp;            renderer.createResourceFactory();</b>
+<i>318</i>&nbsp;
+<b class="fc"><i>319</i>&nbsp;            pulseRunnable = () -&gt; QuantumToolkit.this.pulseFromQueue();</b>
+<b class="fc"><i>320</i>&nbsp;            timerRunnable = () -&gt; {</b>
+<i>321</i>&nbsp;                try {
+<b class="fc"><i>322</i>&nbsp;                    QuantumToolkit.this.postPulse();</b>
+<b class="nc"><i>323</i>&nbsp;                } catch (Throwable th) {</b>
+<b class="nc"><i>324</i>&nbsp;                    th.printStackTrace(System.err);</b>
+<b class="fc"><i>325</i>&nbsp;                }</b>
+<b class="fc"><i>326</i>&nbsp;            };</b>
+<b class="fc"><i>327</i>&nbsp;            pulseTimer = Application.GetApplication().createTimer(timerRunnable);</b>
+<i>328</i>&nbsp;
+<b class="fc"><i>329</i>&nbsp;            Application.GetApplication().setEventHandler(new Application.EventHandler() {</b>
+<i>330</i>&nbsp;                @Override public void handleQuitAction(Application app, long time) {
+<b class="nc"><i>331</i>&nbsp;                    GlassStage.requestClosingAllWindows();</b>
+<b class="nc"><i>332</i>&nbsp;                }</b>
+<i>333</i>&nbsp;
+<i>334</i>&nbsp;                @Override public boolean handleThemeChanged(String themeName) {
+<b class="nc"><i>335</i>&nbsp;                    return PlatformImpl.setAccessibilityTheme(themeName);</b>
+<i>336</i>&nbsp;                }
+<i>337</i>&nbsp;            });
+<i>338</i>&nbsp;        }
+<i>339</i>&nbsp;        // Initialize JavaFX scene graph
+<b class="fc"><i>340</i>&nbsp;        initSceneGraph();</b>
+<b class="fc"><i>341</i>&nbsp;        launchLatch.countDown();</b>
+<i>342</i>&nbsp;        try {
+<b class="fc"><i>343</i>&nbsp;            Application.invokeAndWait(this.userRunnable);</b>
+<i>344</i>&nbsp;
+<b class="fc"><i>345</i>&nbsp;            if (getMasterTimer().isFullspeed()) {</b>
+<i>346</i>&nbsp;                /*
+<i>347</i>&nbsp;                 * FULLSPEED_INTVERVAL workaround
+<i>348</i>&nbsp;                 *
+<i>349</i>&nbsp;                 * Application.invokeLater(pulseRunnable);
+<i>350</i>&nbsp;                 */
+<b class="nc"><i>351</i>&nbsp;                pulseTimer.start(FULLSPEED_INTERVAL);</b>
+<i>352</i>&nbsp;            } else {
+<b class="fc"><i>353</i>&nbsp;                nativeSystemVsync = Screen.getVideoRefreshPeriod() != 0.0;</b>
+<b class="fc"><i>354</i>&nbsp;                if (nativeSystemVsync) {</b>
+<i>355</i>&nbsp;                    // system supports vsync
+<b class="nc"><i>356</i>&nbsp;                    pulseTimer.start();</b>
+<i>357</i>&nbsp;                } else {
+<i>358</i>&nbsp;                    // rely on millisecond resolution timer to provide
+<i>359</i>&nbsp;                    // nominal pulse sync and use pulse hinting on
+<i>360</i>&nbsp;                    // synchronous pipelines to fine tune the interval
+<b class="fc"><i>361</i>&nbsp;                    pulseTimer.start(PULSE_INTERVAL);</b>
+<i>362</i>&nbsp;                }
+<i>363</i>&nbsp;            }
+<b class="nc"><i>364</i>&nbsp;        } catch (Throwable th) {</b>
+<b class="nc"><i>365</i>&nbsp;            th.printStackTrace(System.err);</b>
+<i>366</i>&nbsp;        } finally {
+<b class="fc"><i>367</i>&nbsp;            if (PrismSettings.verbose) {</b>
+<b class="nc"><i>368</i>&nbsp;                System.err.println(&quot; vsync: &quot; + PrismSettings.isVsyncEnabled +</b>
+<b class="nc"><i>369</i>&nbsp;                                   &quot; vpipe: &quot; + pipeline.isVsyncSupported());</b>
+<i>370</i>&nbsp;            }
+<b class="fc"><i>371</i>&nbsp;            PerformanceTracker.logEvent(&quot;Toolkit.startup - finished&quot;);</b>
+<b class="fc"><i>372</i>&nbsp;        }</b>
+<b class="fc"><i>373</i>&nbsp;    }</b>
+<i>374</i>&nbsp;
+<i>375</i>&nbsp;    /**
+<i>376</i>&nbsp;     * Runs the specified supplier, releasing the renderLock if needed.
+<i>377</i>&nbsp;     * This is called by glass event handlers for Window, View, and
+<i>378</i>&nbsp;     * Accessible.
+<i>379</i>&nbsp;     * @param &lt;T&gt; the type of the return value
+<i>380</i>&nbsp;     * @param supplier the supplier to be run
+<i>381</i>&nbsp;     * @return the return value from calling supplier.get()
+<i>382</i>&nbsp;     */
+<i>383</i>&nbsp;    public static &lt;T&gt; T runWithoutRenderLock(Supplier&lt;T&gt; supplier) {
+<b class="fc"><i>384</i>&nbsp;        final boolean locked = ViewPainter.renderLock.isHeldByCurrentThread();</b>
+<i>385</i>&nbsp;        try {
+<b class="fc"><i>386</i>&nbsp;            if (locked) {</b>
+<b class="fc"><i>387</i>&nbsp;                ViewPainter.renderLock.unlock();</b>
+<i>388</i>&nbsp;            }
+<b class="fc"><i>389</i>&nbsp;            return supplier.get();</b>
+<i>390</i>&nbsp;        } finally {
+<b class="fc"><i>391</i>&nbsp;            if (locked) {</b>
+<b class="fc"><i>392</i>&nbsp;                ViewPainter.renderLock.lock();</b>
+<i>393</i>&nbsp;            }
+<i>394</i>&nbsp;        }
+<i>395</i>&nbsp;    }
+<i>396</i>&nbsp;
+<i>397</i>&nbsp;    /**
+<i>398</i>&nbsp;     * Runs the specified supplier, first acquiring the renderLock.
+<i>399</i>&nbsp;     * The lock is released when done.
+<i>400</i>&nbsp;     * @param &lt;T&gt; the type of the return value
+<i>401</i>&nbsp;     * @param supplier the supplier to be run
+<i>402</i>&nbsp;     * @return the return value from calling supplier.get()
+<i>403</i>&nbsp;     */
+<i>404</i>&nbsp;    public static &lt;T&gt; T runWithRenderLock(Supplier&lt;T&gt; supplier) {
+<b class="fc"><i>405</i>&nbsp;        ViewPainter.renderLock.lock();</b>
+<i>406</i>&nbsp;        try {
+<b class="fc"><i>407</i>&nbsp;            return supplier.get();</b>
+<i>408</i>&nbsp;        } finally {
+<b class="fc"><i>409</i>&nbsp;            ViewPainter.renderLock.unlock();</b>
+<i>410</i>&nbsp;        }
+<i>411</i>&nbsp;    }
+<i>412</i>&nbsp;
+<i>413</i>&nbsp;    boolean hasNativeSystemVsync() {
+<b class="fc"><i>414</i>&nbsp;        return nativeSystemVsync;</b>
+<i>415</i>&nbsp;    }
+<i>416</i>&nbsp;
+<i>417</i>&nbsp;    boolean isVsyncEnabled() {
+<b class="fc"><i>418</i>&nbsp;        return (PrismSettings.isVsyncEnabled &amp;&amp;</b>
+<b class="fc"><i>419</i>&nbsp;                pipeline.isVsyncSupported());</b>
+<i>420</i>&nbsp;    }
+<i>421</i>&nbsp;
+<i>422</i>&nbsp;    @Override public void checkFxUserThread() {
+<b class="fc"><i>423</i>&nbsp;        super.checkFxUserThread();</b>
+<b class="fc"><i>424</i>&nbsp;        renderer.checkRendererIdle();</b>
+<b class="fc"><i>425</i>&nbsp;    }</b>
+<i>426</i>&nbsp;
+<i>427</i>&nbsp;    protected static Thread getFxUserThread() {
+<b class="nc"><i>428</i>&nbsp;        return Toolkit.getFxUserThread();</b>
+<i>429</i>&nbsp;    }
+<i>430</i>&nbsp;
+<i>431</i>&nbsp;    @Override public Future addRenderJob(RenderJob r) {
+<i>432</i>&nbsp;        // Do not run any render jobs (this is for benchmarking only)
+<b class="fc"><i>433</i>&nbsp;        if (noRenderJobs) {</b>
+<b class="nc"><i>434</i>&nbsp;            CompletionListener listener = r.getCompletionListener();</b>
+<b class="nc"><i>435</i>&nbsp;            if (r instanceof PaintRenderJob) {</b>
+<b class="nc"><i>436</i>&nbsp;                ((PaintRenderJob)r).getScene().setPainting(false);</b>
+<i>437</i>&nbsp;            }
+<b class="nc"><i>438</i>&nbsp;            if (listener != null) {</b>
+<i>439</i>&nbsp;                try {
+<b class="nc"><i>440</i>&nbsp;                    listener.done(r);</b>
+<b class="nc"><i>441</i>&nbsp;                } catch (Throwable th) {</b>
+<b class="nc"><i>442</i>&nbsp;                    th.printStackTrace();</b>
+<b class="nc"><i>443</i>&nbsp;                }</b>
+<i>444</i>&nbsp;            }
+<b class="nc"><i>445</i>&nbsp;            return null;</b>
+<i>446</i>&nbsp;        }
+<i>447</i>&nbsp;        // Run the render job in the UI thread (this is for benchmarking only)
+<b class="fc"><i>448</i>&nbsp;        if (singleThreaded) {</b>
+<b class="nc"><i>449</i>&nbsp;            r.run();</b>
+<b class="nc"><i>450</i>&nbsp;            return null;</b>
+<i>451</i>&nbsp;        }
+<b class="fc"><i>452</i>&nbsp;        return (renderer.submitRenderJob(r));</b>
+<i>453</i>&nbsp;    }
+<i>454</i>&nbsp;
+<i>455</i>&nbsp;    void postPulse() {
+<b class="fc"><i>456</i>&nbsp;        if (toolkitRunning.get() &amp;&amp;</b>
+<b class="fc"><i>457</i>&nbsp;            (animationRunning.get() || nextPulseRequested.get() || collector.hasDirty()) &amp;&amp;</b>
+<b class="fc"><i>458</i>&nbsp;            !setPulseRunning()) {</b>
+<i>459</i>&nbsp;
+<b class="fc"><i>460</i>&nbsp;            Application.invokeLater(pulseRunnable);</b>
+<i>461</i>&nbsp;
+<b class="fc"><i>462</i>&nbsp;            if (debug) {</b>
+<b class="nc"><i>463</i>&nbsp;                System.err.println(&quot;QT.postPulse@(&quot; + System.nanoTime() + &quot;): &quot; + pulseString());</b>
+<i>464</i>&nbsp;            }
+<b class="fc"><i>465</i>&nbsp;        } else if (debug) {</b>
+<b class="nc"><i>466</i>&nbsp;            System.err.println(&quot;QT.postPulse#(&quot; + System.nanoTime() + &quot;) DROP: &quot; + pulseString());</b>
+<i>467</i>&nbsp;        }
+<b class="fc"><i>468</i>&nbsp;    }</b>
+<i>469</i>&nbsp;
+<i>470</i>&nbsp;    private String pulseString() {
+<b class="nc"><i>471</i>&nbsp;        return ((toolkitRunning.get() ? &quot;T&quot; : &quot;t&quot;) +</b>
+<b class="nc"><i>472</i>&nbsp;                (animationRunning.get() ? &quot;A&quot; : &quot;a&quot;) +</b>
+<b class="nc"><i>473</i>&nbsp;                (pulseRunning.get() ? &quot;P&quot; : &quot;p&quot;) +</b>
+<b class="nc"><i>474</i>&nbsp;                (nextPulseRequested.get() ? &quot;N&quot; : &quot;n&quot;) +</b>
+<b class="nc"><i>475</i>&nbsp;                (collector.hasDirty() ? &quot;D&quot; : &quot;d&quot;));</b>
+<i>476</i>&nbsp;    }
+<i>477</i>&nbsp;
+<i>478</i>&nbsp;    private boolean setPulseRunning() {
+<b class="fc"><i>479</i>&nbsp;        return (pulseRunning.getAndSet(true));</b>
+<i>480</i>&nbsp;    }
+<i>481</i>&nbsp;
+<i>482</i>&nbsp;    private void endPulseRunning() {
+<b class="fc"><i>483</i>&nbsp;        pulseRunning.set(false);</b>
+<b class="fc"><i>484</i>&nbsp;        if (debug) {</b>
+<b class="nc"><i>485</i>&nbsp;            System.err.println(&quot;QT.endPulse: &quot; + System.nanoTime());</b>
+<i>486</i>&nbsp;        }
+<b class="fc"><i>487</i>&nbsp;    }</b>
+<i>488</i>&nbsp;
+<i>489</i>&nbsp;    void pulseFromQueue() {
+<i>490</i>&nbsp;        try {
+<b class="fc"><i>491</i>&nbsp;            pulse();</b>
+<i>492</i>&nbsp;        } finally {
+<b class="fc"><i>493</i>&nbsp;            endPulseRunning();</b>
+<b class="fc"><i>494</i>&nbsp;        }</b>
+<b class="fc"><i>495</i>&nbsp;    }</b>
+<i>496</i>&nbsp;
+<i>497</i>&nbsp;    protected void pulse() {
+<b class="fc"><i>498</i>&nbsp;        pulse(true);</b>
+<b class="fc"><i>499</i>&nbsp;    }</b>
+<i>500</i>&nbsp;
+<i>501</i>&nbsp;    void pulse(boolean collect) {
+<i>502</i>&nbsp;        try {
+<b class="fc"><i>503</i>&nbsp;            inPulse++;</b>
+<b class="fc"><i>504</i>&nbsp;            if (PULSE_LOGGING_ENABLED) {</b>
+<b class="nc"><i>505</i>&nbsp;                PulseLogger.pulseStart();</b>
+<i>506</i>&nbsp;            }
+<i>507</i>&nbsp;
+<b class="fc"><i>508</i>&nbsp;            if (!toolkitRunning.get()) {</b>
+<b class="nc"><i>509</i>&nbsp;                return;</b>
+<i>510</i>&nbsp;            }
+<b class="fc"><i>511</i>&nbsp;            nextPulseRequested.set(false);</b>
+<b class="fc"><i>512</i>&nbsp;            if (animationRunnable != null) {</b>
+<b class="fc"><i>513</i>&nbsp;                animationRunning.set(true);</b>
+<b class="fc"><i>514</i>&nbsp;                animationRunnable.run();</b>
+<i>515</i>&nbsp;            } else {
+<b class="fc"><i>516</i>&nbsp;                animationRunning.set(false);</b>
+<i>517</i>&nbsp;            }
+<b class="fc"><i>518</i>&nbsp;            firePulse();</b>
+<b class="fc"><i>519</i>&nbsp;            if (collect) collector.renderAll();</b>
+<i>520</i>&nbsp;        } finally {
+<b class="fc"><i>521</i>&nbsp;            inPulse--;</b>
+<b class="fc"><i>522</i>&nbsp;            if (PULSE_LOGGING_ENABLED) {</b>
+<b class="nc"><i>523</i>&nbsp;                PulseLogger.pulseEnd();</b>
+<i>524</i>&nbsp;            }
+<i>525</i>&nbsp;        }
+<b class="fc"><i>526</i>&nbsp;    }</b>
+<i>527</i>&nbsp;
+<i>528</i>&nbsp;    void vsyncHint() {
+<b class="fc"><i>529</i>&nbsp;        if (isVsyncEnabled()) {</b>
+<b class="fc"><i>530</i>&nbsp;            if (debug) {</b>
+<b class="nc"><i>531</i>&nbsp;                System.err.println(&quot;QT.vsyncHint: postPulse: &quot; + System.nanoTime());</b>
+<i>532</i>&nbsp;            }
+<b class="fc"><i>533</i>&nbsp;            postPulse();</b>
+<i>534</i>&nbsp;        }
+<b class="fc"><i>535</i>&nbsp;    }</b>
+<i>536</i>&nbsp;
+<i>537</i>&nbsp;    @Override  public AppletWindow createAppletWindow(long parent, String serverName) {
+<b class="nc"><i>538</i>&nbsp;        GlassAppletWindow parentWindow = new GlassAppletWindow(parent, serverName);</b>
+<i>539</i>&nbsp;        // Make this the parent window for all future Stages
+<b class="nc"><i>540</i>&nbsp;        WindowStage.setAppletWindow(parentWindow);</b>
+<b class="nc"><i>541</i>&nbsp;        return parentWindow;</b>
+<i>542</i>&nbsp;    }
+<i>543</i>&nbsp;
+<i>544</i>&nbsp;    @Override public void closeAppletWindow() {
+<b class="nc"><i>545</i>&nbsp;        GlassAppletWindow gaw = WindowStage.getAppletWindow();</b>
+<b class="nc"><i>546</i>&nbsp;        if (null != gaw) {</b>
+<b class="nc"><i>547</i>&nbsp;            gaw.dispose();</b>
+<b class="nc"><i>548</i>&nbsp;            WindowStage.setAppletWindow(null);</b>
+<i>549</i>&nbsp;            // any further strong refs will be in the applet itself
+<i>550</i>&nbsp;        }
+<b class="nc"><i>551</i>&nbsp;    }</b>
+<i>552</i>&nbsp;
+<i>553</i>&nbsp;    @Override public TKStage createTKStage(Window peerWindow, boolean securityDialog, StageStyle stageStyle, boolean primary, Modality modality, TKStage owner, boolean rtl, AccessControlContext acc) {
+<b class="fc"><i>554</i>&nbsp;        assertToolkitRunning();</b>
+<b class="fc"><i>555</i>&nbsp;        WindowStage stage = new WindowStage(peerWindow, securityDialog, stageStyle, modality, owner);</b>
+<b class="fc"><i>556</i>&nbsp;        stage.setSecurityContext(acc);</b>
+<b class="fc"><i>557</i>&nbsp;        if (primary) {</b>
+<b class="fc"><i>558</i>&nbsp;            stage.setIsPrimary();</b>
+<i>559</i>&nbsp;        }
+<b class="fc"><i>560</i>&nbsp;        stage.setRTL(rtl);</b>
+<b class="fc"><i>561</i>&nbsp;        stage.init(systemMenu);</b>
+<b class="fc"><i>562</i>&nbsp;        return stage;</b>
+<i>563</i>&nbsp;    }
+<i>564</i>&nbsp;
+<i>565</i>&nbsp;    @Override public boolean canStartNestedEventLoop() {
+<b class="nc"><i>566</i>&nbsp;        return inPulse == 0;</b>
+<i>567</i>&nbsp;    }
+<i>568</i>&nbsp;
+<i>569</i>&nbsp;    @Override public Object enterNestedEventLoop(Object key) {
+<b class="nc"><i>570</i>&nbsp;        checkFxUserThread();</b>
+<i>571</i>&nbsp;
+<b class="nc"><i>572</i>&nbsp;        if (key == null) {</b>
+<b class="nc"><i>573</i>&nbsp;            throw new NullPointerException();</b>
+<i>574</i>&nbsp;        }
+<i>575</i>&nbsp;
+<b class="nc"><i>576</i>&nbsp;        if (!canStartNestedEventLoop()) {</b>
+<b class="nc"><i>577</i>&nbsp;            throw new IllegalStateException(&quot;Cannot enter nested loop during animation or layout processing&quot;);</b>
+<i>578</i>&nbsp;        }
+<i>579</i>&nbsp;
+<b class="nc"><i>580</i>&nbsp;        if (eventLoopMap == null) {</b>
+<b class="nc"><i>581</i>&nbsp;            eventLoopMap = new HashMap&lt;&gt;();</b>
+<i>582</i>&nbsp;        }
+<b class="nc"><i>583</i>&nbsp;        if (eventLoopMap.containsKey(key)) {</b>
+<b class="nc"><i>584</i>&nbsp;            throw new IllegalArgumentException(</b>
+<i>585</i>&nbsp;                    &quot;Key already associated with a running event loop: &quot; + key);
+<i>586</i>&nbsp;        }
+<b class="nc"><i>587</i>&nbsp;        EventLoop eventLoop = Application.GetApplication().createEventLoop();</b>
+<b class="nc"><i>588</i>&nbsp;        eventLoopMap.put(key, eventLoop);</b>
+<i>589</i>&nbsp;
+<b class="nc"><i>590</i>&nbsp;        Object ret = eventLoop.enter();</b>
+<i>591</i>&nbsp;
+<b class="nc"><i>592</i>&nbsp;        if (!isNestedLoopRunning()) {</b>
+<b class="nc"><i>593</i>&nbsp;            notifyLastNestedLoopExited();</b>
+<i>594</i>&nbsp;        }
+<i>595</i>&nbsp;
+<b class="nc"><i>596</i>&nbsp;        return ret;</b>
+<i>597</i>&nbsp;    }
+<i>598</i>&nbsp;
+<i>599</i>&nbsp;    @Override public void exitNestedEventLoop(Object key, Object rval) {
+<b class="nc"><i>600</i>&nbsp;        checkFxUserThread();</b>
+<i>601</i>&nbsp;
+<b class="nc"><i>602</i>&nbsp;        if (key == null) {</b>
+<b class="nc"><i>603</i>&nbsp;            throw new NullPointerException();</b>
+<i>604</i>&nbsp;        }
+<b class="nc"><i>605</i>&nbsp;        if (eventLoopMap == null || !eventLoopMap.containsKey(key)) {</b>
+<b class="nc"><i>606</i>&nbsp;            throw new IllegalArgumentException(</b>
+<i>607</i>&nbsp;                    &quot;Key not associated with a running event loop: &quot; + key);
+<i>608</i>&nbsp;        }
+<b class="nc"><i>609</i>&nbsp;        EventLoop eventLoop = eventLoopMap.get(key);</b>
+<b class="nc"><i>610</i>&nbsp;        eventLoopMap.remove(key);</b>
+<b class="nc"><i>611</i>&nbsp;        eventLoop.leave(rval);</b>
+<b class="nc"><i>612</i>&nbsp;    }</b>
+<i>613</i>&nbsp;
+<i>614</i>&nbsp;    @Override public TKStage createTKPopupStage(Window peerWindow,
+<i>615</i>&nbsp;                                                StageStyle popupStyle,
+<i>616</i>&nbsp;                                                TKStage owner,
+<i>617</i>&nbsp;                                                AccessControlContext acc) {
+<b class="fc"><i>618</i>&nbsp;        assertToolkitRunning();</b>
+<b class="fc"><i>619</i>&nbsp;        boolean securityDialog = owner instanceof WindowStage ?</b>
+<b class="fc"><i>620</i>&nbsp;                ((WindowStage)owner).isSecurityDialog() : false;</b>
+<b class="fc"><i>621</i>&nbsp;        WindowStage stage = new WindowStage(peerWindow, securityDialog, popupStyle, null, owner);</b>
+<b class="fc"><i>622</i>&nbsp;        stage.setSecurityContext(acc);</b>
+<b class="fc"><i>623</i>&nbsp;        stage.setIsPopup();</b>
+<b class="fc"><i>624</i>&nbsp;        stage.init(systemMenu);</b>
+<b class="fc"><i>625</i>&nbsp;        return stage;</b>
+<i>626</i>&nbsp;    }
+<i>627</i>&nbsp;
+<i>628</i>&nbsp;    @Override public TKStage createTKEmbeddedStage(HostInterface host, AccessControlContext acc) {
+<b class="nc"><i>629</i>&nbsp;        assertToolkitRunning();</b>
+<b class="nc"><i>630</i>&nbsp;        EmbeddedStage stage = new EmbeddedStage(host);</b>
+<b class="nc"><i>631</i>&nbsp;        stage.setSecurityContext(acc);</b>
+<b class="nc"><i>632</i>&nbsp;        return stage;</b>
+<i>633</i>&nbsp;    }
+<i>634</i>&nbsp;
+<b class="fc"><i>635</i>&nbsp;    private static ScreenConfigurationAccessor screenAccessor =</b>
+<b class="fc"><i>636</i>&nbsp;        new ScreenConfigurationAccessor() {</b>
+<i>637</i>&nbsp;            @Override public int getMinX(Object obj) {
+<b class="fc"><i>638</i>&nbsp;               return ((Screen)obj).getX();</b>
+<i>639</i>&nbsp;            }
+<i>640</i>&nbsp;            @Override public int getMinY(Object obj) {
+<b class="fc"><i>641</i>&nbsp;                return ((Screen)obj).getY();</b>
+<i>642</i>&nbsp;            }
+<i>643</i>&nbsp;            @Override public int getWidth(Object obj) {
+<b class="fc"><i>644</i>&nbsp;                return ((Screen)obj).getWidth();</b>
+<i>645</i>&nbsp;            }
+<i>646</i>&nbsp;            @Override public int getHeight(Object obj) {
+<b class="fc"><i>647</i>&nbsp;                return ((Screen)obj).getHeight();</b>
+<i>648</i>&nbsp;            }
+<i>649</i>&nbsp;            @Override public int getVisualMinX(Object obj) {
+<b class="fc"><i>650</i>&nbsp;                return ((Screen)obj).getVisibleX();</b>
+<i>651</i>&nbsp;            }
+<i>652</i>&nbsp;            @Override public int getVisualMinY(Object obj) {
+<b class="fc"><i>653</i>&nbsp;                return ((Screen)obj).getVisibleY();</b>
+<i>654</i>&nbsp;            }
+<i>655</i>&nbsp;            @Override public int getVisualWidth(Object obj) {
+<b class="fc"><i>656</i>&nbsp;                return ((Screen)obj).getVisibleWidth();</b>
+<i>657</i>&nbsp;            }
+<i>658</i>&nbsp;            @Override public int getVisualHeight(Object obj) {
+<b class="fc"><i>659</i>&nbsp;                return ((Screen)obj).getVisibleHeight();</b>
+<i>660</i>&nbsp;            }
+<i>661</i>&nbsp;            @Override public float getDPI(Object obj) {
+<b class="fc"><i>662</i>&nbsp;                return ((Screen)obj).getResolutionX();</b>
+<i>663</i>&nbsp;            }
+<i>664</i>&nbsp;            @Override public float getRecommendedOutputScaleX(Object obj) {
+<b class="fc"><i>665</i>&nbsp;                return ((Screen)obj).getRecommendedOutputScaleX();</b>
+<i>666</i>&nbsp;            }
+<i>667</i>&nbsp;            @Override public float getRecommendedOutputScaleY(Object obj) {
+<b class="fc"><i>668</i>&nbsp;                return ((Screen)obj).getRecommendedOutputScaleY();</b>
+<i>669</i>&nbsp;            }
+<i>670</i>&nbsp;        };
+<i>671</i>&nbsp;
+<i>672</i>&nbsp;    @Override public ScreenConfigurationAccessor
+<i>673</i>&nbsp;                    setScreenConfigurationListener(final TKScreenConfigurationListener listener) {
+<b class="fc"><i>674</i>&nbsp;        Screen.setEventHandler(new Screen.EventHandler() {</b>
+<i>675</i>&nbsp;            @Override public void handleSettingsChanged() {
+<b class="nc"><i>676</i>&nbsp;                notifyScreenListener(listener);</b>
+<b class="nc"><i>677</i>&nbsp;            }</b>
+<i>678</i>&nbsp;        });
+<b class="fc"><i>679</i>&nbsp;        return screenAccessor;</b>
+<i>680</i>&nbsp;    }
+<i>681</i>&nbsp;
+<i>682</i>&nbsp;    private static void assignScreensAdapters() {
+<b class="fc"><i>683</i>&nbsp;        GraphicsPipeline pipeline = GraphicsPipeline.getPipeline();</b>
+<b class="fc"><i>684</i>&nbsp;        for (Screen screen : Screen.getScreens()) {</b>
+<b class="fc"><i>685</i>&nbsp;            screen.setAdapterOrdinal(pipeline.getAdapterOrdinal(screen));</b>
+<b class="fc"><i>686</i>&nbsp;        }</b>
+<b class="fc"><i>687</i>&nbsp;    }</b>
+<i>688</i>&nbsp;
+<i>689</i>&nbsp;    private static void notifyScreenListener(TKScreenConfigurationListener listener) {
+<b class="nc"><i>690</i>&nbsp;        assignScreensAdapters();</b>
+<b class="nc"><i>691</i>&nbsp;        listener.screenConfigurationChanged();</b>
+<b class="nc"><i>692</i>&nbsp;    }</b>
+<i>693</i>&nbsp;
+<i>694</i>&nbsp;    @Override public Object getPrimaryScreen() {
+<b class="fc"><i>695</i>&nbsp;        return Screen.getMainScreen();</b>
+<i>696</i>&nbsp;    }
+<i>697</i>&nbsp;
+<i>698</i>&nbsp;    @Override public List&lt;?&gt; getScreens() {
+<b class="fc"><i>699</i>&nbsp;        return Screen.getScreens();</b>
+<i>700</i>&nbsp;    }
+<i>701</i>&nbsp;
+<i>702</i>&nbsp;    @Override
+<i>703</i>&nbsp;    public ScreenConfigurationAccessor getScreenConfigurationAccessor() {
+<b class="nc"><i>704</i>&nbsp;        return screenAccessor;</b>
+<i>705</i>&nbsp;    }
+<i>706</i>&nbsp;
+<i>707</i>&nbsp;    @Override
+<i>708</i>&nbsp;    public PerformanceTracker getPerformanceTracker() {
+<b class="fc"><i>709</i>&nbsp;        return perfTracker;</b>
+<i>710</i>&nbsp;    }
+<i>711</i>&nbsp;
+<i>712</i>&nbsp;    @Override
+<i>713</i>&nbsp;    public PerformanceTracker createPerformanceTracker() {
+<b class="nc"><i>714</i>&nbsp;        return new PerformanceTrackerImpl();</b>
+<i>715</i>&nbsp;    }
+<i>716</i>&nbsp;
+<i>717</i>&nbsp;    // Only currently called from the loadImage method below.  We do not
+<i>718</i>&nbsp;    // necessarily know what the worst render scale we will ever see is
+<i>719</i>&nbsp;    // because the user has control over that, but we should be loading
+<i>720</i>&nbsp;    // all dpi variants of an image at all times anyway and then using
+<i>721</i>&nbsp;    // whichever one is needed to respond to a given rendering request
+<i>722</i>&nbsp;    // rather than predetermining which one to use up front.  If we switch
+<i>723</i>&nbsp;    // to making that decision at render time then this method can go away.
+<i>724</i>&nbsp;    private float getMaxRenderScale() {
+<b class="fc"><i>725</i>&nbsp;        if (_maxPixelScale == 0) {</b>
+<b class="fc"><i>726</i>&nbsp;            for (Object o : getScreens()) {</b>
+<b class="fc"><i>727</i>&nbsp;                _maxPixelScale = Math.max(_maxPixelScale, ((Screen) o).getRecommendedOutputScaleX());</b>
+<b class="fc"><i>728</i>&nbsp;                _maxPixelScale = Math.max(_maxPixelScale, ((Screen) o).getRecommendedOutputScaleY());</b>
+<b class="fc"><i>729</i>&nbsp;            }</b>
+<i>730</i>&nbsp;        }
+<b class="fc"><i>731</i>&nbsp;        return _maxPixelScale;</b>
+<i>732</i>&nbsp;    }
+<i>733</i>&nbsp;
+<i>734</i>&nbsp;    @Override public ImageLoader loadImage(String url, int width, int height, boolean preserveRatio, boolean smooth) {
+<b class="fc"><i>735</i>&nbsp;        return new PrismImageLoader2(url, width, height, preserveRatio, getMaxRenderScale(), smooth);</b>
+<i>736</i>&nbsp;    }
+<i>737</i>&nbsp;
+<i>738</i>&nbsp;    @Override public ImageLoader loadImage(InputStream stream, int width, int height,
+<i>739</i>&nbsp;                                           boolean preserveRatio, boolean smooth) {
+<b class="nc"><i>740</i>&nbsp;        return new PrismImageLoader2(stream, width, height, preserveRatio, smooth);</b>
+<i>741</i>&nbsp;    }
+<i>742</i>&nbsp;
+<i>743</i>&nbsp;    @Override public AbstractRemoteResource&lt;? extends ImageLoader&gt; loadImageAsync(
+<i>744</i>&nbsp;            AsyncOperationListener listener, String url,
+<i>745</i>&nbsp;            int width, int height, boolean preserveRatio, boolean smooth) {
+<b class="nc"><i>746</i>&nbsp;        return new PrismImageLoader2.AsyncImageLoader(listener, url, width, height, preserveRatio, smooth);</b>
+<i>747</i>&nbsp;    }
+<i>748</i>&nbsp;
+<i>749</i>&nbsp;    // Note that this method should only be called by PlatformImpl.runLater
+<i>750</i>&nbsp;    // It should not be called directly by other FX code since the underlying
+<i>751</i>&nbsp;    // glass invokeLater method is not thread-safe with respect to toolkit
+<i>752</i>&nbsp;    // shutdown. Calling Platform.runLater *is* thread-safe even when the
+<i>753</i>&nbsp;    // toolkit is shutting down.
+<i>754</i>&nbsp;    @Override public void defer(Runnable runnable) {
+<b class="fc"><i>755</i>&nbsp;        if (!toolkitRunning.get()) return;</b>
+<i>756</i>&nbsp;
+<b class="fc"><i>757</i>&nbsp;        Application.invokeLater(runnable);</b>
+<b class="fc"><i>758</i>&nbsp;    }</b>
+<i>759</i>&nbsp;
+<i>760</i>&nbsp;    @Override public void exit() {
+<i>761</i>&nbsp;        // This method must run on the FX application thread
+<b class="fc"><i>762</i>&nbsp;        checkFxUserThread();</b>
+<i>763</i>&nbsp;
+<i>764</i>&nbsp;        // Turn off pulses so no extraneous runnables are submitted
+<b class="fc"><i>765</i>&nbsp;        pulseTimer.stop();</b>
+<i>766</i>&nbsp;
+<i>767</i>&nbsp;        // We need to wait for the last frame to finish so that the renderer
+<i>768</i>&nbsp;        // is not running while we are shutting down glass.
+<b class="fc"><i>769</i>&nbsp;        PaintCollector.getInstance().waitForRenderingToComplete();</b>
+<i>770</i>&nbsp;
+<b class="fc"><i>771</i>&nbsp;        notifyShutdownHooks();</b>
+<i>772</i>&nbsp;
+<b class="fc"><i>773</i>&nbsp;        runWithRenderLock(() -&gt; {</b>
+<i>774</i>&nbsp;            //TODO - should update glass scene view state
+<i>775</i>&nbsp;            //TODO - doesn&#39;t matter because we are exiting
+<b class="fc"><i>776</i>&nbsp;            Application app = Application.GetApplication();</b>
+<b class="fc"><i>777</i>&nbsp;            app.terminate();</b>
+<b class="fc"><i>778</i>&nbsp;            return null;</b>
+<i>779</i>&nbsp;        });
+<i>780</i>&nbsp;
+<b class="fc"><i>781</i>&nbsp;        dispose();</b>
+<i>782</i>&nbsp;
+<b class="fc"><i>783</i>&nbsp;        super.exit();</b>
+<b class="fc"><i>784</i>&nbsp;    }</b>
+<i>785</i>&nbsp;
+<i>786</i>&nbsp;    public void dispose() {
+<b class="fc"><i>787</i>&nbsp;        if (toolkitRunning.compareAndSet(true, false)) {</b>
+<b class="fc"><i>788</i>&nbsp;            pulseTimer.stop();</b>
+<b class="fc"><i>789</i>&nbsp;            renderer.stopRenderer();</b>
+<i>790</i>&nbsp;
+<i>791</i>&nbsp;            try {
+<b class="fc"><i>792</i>&nbsp;                AccessController.doPrivileged((PrivilegedAction&lt;Void&gt;) () -&gt; {</b>
+<b class="fc"><i>793</i>&nbsp;                    Runtime.getRuntime().removeShutdownHook(shutdownHook);</b>
+<b class="fc"><i>794</i>&nbsp;                    return null;</b>
+<i>795</i>&nbsp;                });
+<b class="nc"><i>796</i>&nbsp;            } catch (IllegalStateException ignore) {</b>
+<i>797</i>&nbsp;                // throw when shutdown hook already removed
+<b class="fc"><i>798</i>&nbsp;            }</b>
+<i>799</i>&nbsp;        }
+<b class="fc"><i>800</i>&nbsp;    }</b>
+<i>801</i>&nbsp;
+<i>802</i>&nbsp;    @Override public boolean isForwardTraversalKey(KeyEvent e) {
+<b class="nc"><i>803</i>&nbsp;        return (e.getCode() == KeyCode.TAB)</b>
+<b class="nc"><i>804</i>&nbsp;                   &amp;&amp; (e.getEventType() == KeyEvent.KEY_PRESSED)</b>
+<b class="nc"><i>805</i>&nbsp;                   &amp;&amp; !e.isShiftDown();</b>
+<i>806</i>&nbsp;    }
+<i>807</i>&nbsp;
+<i>808</i>&nbsp;    @Override public boolean isBackwardTraversalKey(KeyEvent e) {
+<b class="nc"><i>809</i>&nbsp;        return (e.getCode() == KeyCode.TAB)</b>
+<b class="nc"><i>810</i>&nbsp;                   &amp;&amp; (e.getEventType() == KeyEvent.KEY_PRESSED)</b>
+<b class="nc"><i>811</i>&nbsp;                   &amp;&amp; e.isShiftDown();</b>
+<i>812</i>&nbsp;    }
+<i>813</i>&nbsp;
+<b class="fc"><i>814</i>&nbsp;    private Map&lt;Object, Object&gt; contextMap = Collections.synchronizedMap(new HashMap&lt;&gt;());</b>
+<i>815</i>&nbsp;    @Override public Map&lt;Object, Object&gt; getContextMap() {
+<b class="fc"><i>816</i>&nbsp;        return contextMap;</b>
+<i>817</i>&nbsp;    }
+<i>818</i>&nbsp;
+<i>819</i>&nbsp;    @Override public int getRefreshRate() {
+<b class="fc"><i>820</i>&nbsp;        if (pulseHZ == null) {</b>
+<b class="fc"><i>821</i>&nbsp;            return 60;</b>
+<i>822</i>&nbsp;        } else {
+<b class="nc"><i>823</i>&nbsp;            return pulseHZ;</b>
+<i>824</i>&nbsp;        }
+<i>825</i>&nbsp;    }
+<i>826</i>&nbsp;
+<i>827</i>&nbsp;    private DelayedRunnable animationRunnable;
+<i>828</i>&nbsp;    @Override public void setAnimationRunnable(DelayedRunnable animationRunnable) {
+<b class="fc"><i>829</i>&nbsp;        if (animationRunnable != null) {</b>
+<b class="fc"><i>830</i>&nbsp;            animationRunning.set(true);</b>
+<i>831</i>&nbsp;        }
+<b class="fc"><i>832</i>&nbsp;        this.animationRunnable = animationRunnable;</b>
+<b class="fc"><i>833</i>&nbsp;    }</b>
+<i>834</i>&nbsp;
+<i>835</i>&nbsp;    @Override public void requestNextPulse() {
+<b class="fc"><i>836</i>&nbsp;        nextPulseRequested.set(true);</b>
+<b class="fc"><i>837</i>&nbsp;    }</b>
+<i>838</i>&nbsp;
+<i>839</i>&nbsp;    @Override public void waitFor(Task t) {
+<b class="nc"><i>840</i>&nbsp;        if (t.isFinished()) {</b>
+<b class="nc"><i>841</i>&nbsp;            return;</b>
+<i>842</i>&nbsp;        }
+<b class="nc"><i>843</i>&nbsp;    }</b>
+<i>844</i>&nbsp;
+<i>845</i>&nbsp;    @Override protected Object createColorPaint(Color color) {
+<b class="fc"><i>846</i>&nbsp;        return new com.sun.prism.paint.Color(</b>
+<b class="fc"><i>847</i>&nbsp;                (float)color.getRed(), (float)color.getGreen(),</b>
+<b class="fc"><i>848</i>&nbsp;                (float)color.getBlue(), (float)color.getOpacity());</b>
+<i>849</i>&nbsp;    }
+<i>850</i>&nbsp;
+<i>851</i>&nbsp;    private com.sun.prism.paint.Color toPrismColor(Color color) {
+<b class="fc"><i>852</i>&nbsp;        return (com.sun.prism.paint.Color) Toolkit.getPaintAccessor().getPlatformPaint(color);</b>
+<i>853</i>&nbsp;    }
+<i>854</i>&nbsp;
+<i>855</i>&nbsp;    private List&lt;com.sun.prism.paint.Stop&gt; convertStops(List&lt;Stop&gt; paintStops) {
+<b class="fc"><i>856</i>&nbsp;        List&lt;com.sun.prism.paint.Stop&gt; stops =</b>
+<b class="fc"><i>857</i>&nbsp;            new ArrayList&lt;&gt;(paintStops.size());</b>
+<b class="fc"><i>858</i>&nbsp;        for (Stop s : paintStops) {</b>
+<b class="fc"><i>859</i>&nbsp;            stops.add(new com.sun.prism.paint.Stop(toPrismColor(s.getColor()),</b>
+<b class="fc"><i>860</i>&nbsp;                                                   (float) s.getOffset()));</b>
+<b class="fc"><i>861</i>&nbsp;        }</b>
+<b class="fc"><i>862</i>&nbsp;        return stops;</b>
+<i>863</i>&nbsp;    }
+<i>864</i>&nbsp;
+<i>865</i>&nbsp;    @Override protected Object createLinearGradientPaint(LinearGradient paint) {
+<b class="fc"><i>866</i>&nbsp;        int cmi = com.sun.prism.paint.Gradient.REPEAT;</b>
+<b class="fc"><i>867</i>&nbsp;        CycleMethod cycleMethod = paint.getCycleMethod();</b>
+<b class="fc"><i>868</i>&nbsp;        if (cycleMethod == CycleMethod.NO_CYCLE) {</b>
+<b class="fc"><i>869</i>&nbsp;            cmi = com.sun.prism.paint.Gradient.PAD;</b>
+<b class="nc"><i>870</i>&nbsp;        } else if (cycleMethod == CycleMethod.REFLECT) {</b>
+<b class="nc"><i>871</i>&nbsp;            cmi = com.sun.prism.paint.Gradient.REFLECT;</b>
+<i>872</i>&nbsp;        }
+<i>873</i>&nbsp;        // TODO: extract colors/offsets and pass them in directly...
+<b class="fc"><i>874</i>&nbsp;        List&lt;com.sun.prism.paint.Stop&gt; stops = convertStops(paint.getStops());</b>
+<b class="fc"><i>875</i>&nbsp;        return new com.sun.prism.paint.LinearGradient(</b>
+<b class="fc"><i>876</i>&nbsp;            (float)paint.getStartX(), (float)paint.getStartY(), (float)paint.getEndX(), (float)paint.getEndY(),</b>
+<b class="fc"><i>877</i>&nbsp;            null, paint.isProportional(), cmi, stops);</b>
+<i>878</i>&nbsp;    }
+<i>879</i>&nbsp;
+<i>880</i>&nbsp;    @Override
+<i>881</i>&nbsp;    protected Object createRadialGradientPaint(RadialGradient paint) {
+<b class="nc"><i>882</i>&nbsp;        float cx = (float)paint.getCenterX();</b>
+<b class="nc"><i>883</i>&nbsp;        float cy = (float)paint.getCenterY();</b>
+<b class="nc"><i>884</i>&nbsp;        float fa = (float)paint.getFocusAngle();</b>
+<b class="nc"><i>885</i>&nbsp;        float fd = (float)paint.getFocusDistance();</b>
+<i>886</i>&nbsp;
+<b class="nc"><i>887</i>&nbsp;        int cmi = 0;</b>
+<b class="nc"><i>888</i>&nbsp;        if (paint.getCycleMethod() == CycleMethod.NO_CYCLE) {</b>
+<b class="nc"><i>889</i>&nbsp;            cmi = com.sun.prism.paint.Gradient.PAD;</b>
+<b class="nc"><i>890</i>&nbsp;        } else if (paint.getCycleMethod() == CycleMethod.REFLECT) {</b>
+<b class="nc"><i>891</i>&nbsp;            cmi = com.sun.prism.paint.Gradient.REFLECT;</b>
+<i>892</i>&nbsp;        } else {
+<b class="nc"><i>893</i>&nbsp;            cmi = com.sun.prism.paint.Gradient.REPEAT;</b>
+<i>894</i>&nbsp;        }
+<i>895</i>&nbsp;
+<i>896</i>&nbsp;        // TODO: extract colors/offsets and pass them in directly...
+<b class="nc"><i>897</i>&nbsp;        List&lt;com.sun.prism.paint.Stop&gt; stops = convertStops(paint.getStops());</b>
+<b class="nc"><i>898</i>&nbsp;        return new com.sun.prism.paint.RadialGradient(cx, cy, fa, fd,</b>
+<b class="nc"><i>899</i>&nbsp;                (float)paint.getRadius(), null, paint.isProportional(), cmi, stops);</b>
+<i>900</i>&nbsp;    }
+<i>901</i>&nbsp;
+<i>902</i>&nbsp;    @Override
+<i>903</i>&nbsp;    protected Object createImagePatternPaint(ImagePattern paint) {
+<b class="nc"><i>904</i>&nbsp;        if (paint.getImage() == null) {</b>
+<b class="nc"><i>905</i>&nbsp;            return com.sun.prism.paint.Color.TRANSPARENT;</b>
+<i>906</i>&nbsp;        } else {
+<b class="nc"><i>907</i>&nbsp;            return new com.sun.prism.paint.ImagePattern(</b>
+<b class="nc"><i>908</i>&nbsp;                    (com.sun.prism.Image) Toolkit.getImageAccessor().getPlatformImage(paint.getImage()),</b>
+<b class="nc"><i>909</i>&nbsp;                    (float)paint.getX(),</b>
+<b class="nc"><i>910</i>&nbsp;                    (float)paint.getY(),</b>
+<b class="nc"><i>911</i>&nbsp;                    (float)paint.getWidth(),</b>
+<b class="nc"><i>912</i>&nbsp;                    (float)paint.getHeight(),</b>
+<b class="nc"><i>913</i>&nbsp;                    paint.isProportional(),</b>
+<b class="nc"><i>914</i>&nbsp;                    Toolkit.getPaintAccessor().isMutable(paint));</b>
+<i>915</i>&nbsp;        }
+<i>916</i>&nbsp;    }
+<i>917</i>&nbsp;
+<b class="fc"><i>918</i>&nbsp;    static BasicStroke tmpStroke = new BasicStroke();</b>
+<i>919</i>&nbsp;    private void initStroke(StrokeType pgtype, double strokewidth,
+<i>920</i>&nbsp;                            StrokeLineCap pgcap,
+<i>921</i>&nbsp;                            StrokeLineJoin pgjoin, float miterLimit,
+<i>922</i>&nbsp;                            float[] dashArray, float dashOffset)
+<i>923</i>&nbsp;    {
+<i>924</i>&nbsp;        int type;
+<b class="fc"><i>925</i>&nbsp;        if (pgtype == StrokeType.CENTERED) {</b>
+<b class="fc"><i>926</i>&nbsp;            type = BasicStroke.TYPE_CENTERED;</b>
+<b class="nc"><i>927</i>&nbsp;        } else if (pgtype == StrokeType.INSIDE) {</b>
+<b class="nc"><i>928</i>&nbsp;            type = BasicStroke.TYPE_INNER;</b>
+<i>929</i>&nbsp;        } else {
+<b class="nc"><i>930</i>&nbsp;            type = BasicStroke.TYPE_OUTER;</b>
+<i>931</i>&nbsp;        }
+<i>932</i>&nbsp;
+<i>933</i>&nbsp;        int cap;
+<b class="fc"><i>934</i>&nbsp;        if (pgcap == StrokeLineCap.BUTT) {</b>
+<b class="nc"><i>935</i>&nbsp;            cap = BasicStroke.CAP_BUTT;</b>
+<b class="fc"><i>936</i>&nbsp;        } else if (pgcap == StrokeLineCap.SQUARE) {</b>
+<b class="fc"><i>937</i>&nbsp;            cap = BasicStroke.CAP_SQUARE;</b>
+<i>938</i>&nbsp;        } else {
+<b class="nc"><i>939</i>&nbsp;            cap = BasicStroke.CAP_ROUND;</b>
+<i>940</i>&nbsp;        }
+<i>941</i>&nbsp;
+<i>942</i>&nbsp;        int join;
+<b class="fc"><i>943</i>&nbsp;        if (pgjoin == StrokeLineJoin.BEVEL) {</b>
+<b class="nc"><i>944</i>&nbsp;            join = BasicStroke.JOIN_BEVEL;</b>
+<b class="fc"><i>945</i>&nbsp;        } else if (pgjoin == StrokeLineJoin.MITER) {</b>
+<b class="fc"><i>946</i>&nbsp;            join = BasicStroke.JOIN_MITER;</b>
+<i>947</i>&nbsp;        } else {
+<b class="nc"><i>948</i>&nbsp;            join = BasicStroke.JOIN_ROUND;</b>
+<i>949</i>&nbsp;        }
+<i>950</i>&nbsp;
+<b class="fc"><i>951</i>&nbsp;        tmpStroke.set(type, (float) strokewidth, cap, join, miterLimit);</b>
+<b class="fc"><i>952</i>&nbsp;        if ((dashArray != null) &amp;&amp; (dashArray.length &gt; 0)) {</b>
+<b class="nc"><i>953</i>&nbsp;            tmpStroke.set(dashArray, dashOffset);</b>
+<i>954</i>&nbsp;        } else {
+<b class="fc"><i>955</i>&nbsp;            tmpStroke.set((float[])null, 0);</b>
+<i>956</i>&nbsp;        }
+<b class="fc"><i>957</i>&nbsp;    }</b>
+<i>958</i>&nbsp;
+<i>959</i>&nbsp;    @Override
+<i>960</i>&nbsp;    public void accumulateStrokeBounds(Shape shape, float bbox[],
+<i>961</i>&nbsp;                                       StrokeType pgtype,
+<i>962</i>&nbsp;                                       double strokewidth,
+<i>963</i>&nbsp;                                       StrokeLineCap pgcap,
+<i>964</i>&nbsp;                                       StrokeLineJoin pgjoin,
+<i>965</i>&nbsp;                                       float miterLimit,
+<i>966</i>&nbsp;                                       BaseTransform tx)
+<i>967</i>&nbsp;    {
+<i>968</i>&nbsp;
+<b class="fc"><i>969</i>&nbsp;        initStroke(pgtype, strokewidth, pgcap, pgjoin, miterLimit, null, 0);</b>
+<b class="fc"><i>970</i>&nbsp;        if (tx.isTranslateOrIdentity()) {</b>
+<b class="fc"><i>971</i>&nbsp;            tmpStroke.accumulateShapeBounds(bbox, shape, tx);</b>
+<i>972</i>&nbsp;        } else {
+<b class="nc"><i>973</i>&nbsp;            Shape.accumulate(bbox, tmpStroke.createStrokedShape(shape), tx);</b>
+<i>974</i>&nbsp;        }
+<b class="fc"><i>975</i>&nbsp;    }</b>
+<i>976</i>&nbsp;
+<i>977</i>&nbsp;    @Override
+<i>978</i>&nbsp;    public boolean strokeContains(Shape shape, double x, double y,
+<i>979</i>&nbsp;                                  StrokeType pgtype,
+<i>980</i>&nbsp;                                  double strokewidth,
+<i>981</i>&nbsp;                                  StrokeLineCap pgcap,
+<i>982</i>&nbsp;                                  StrokeLineJoin pgjoin,
+<i>983</i>&nbsp;                                  float miterLimit)
+<i>984</i>&nbsp;    {
+<b class="fc"><i>985</i>&nbsp;        initStroke(pgtype, strokewidth, pgcap, pgjoin, miterLimit, null, 0);</b>
+<i>986</i>&nbsp;        // TODO: The contains testing could be done directly without creating a Shape
+<b class="fc"><i>987</i>&nbsp;        return tmpStroke.createStrokedShape(shape).contains((float) x, (float) y);</b>
+<i>988</i>&nbsp;    }
+<i>989</i>&nbsp;
+<i>990</i>&nbsp;    @Override
+<i>991</i>&nbsp;    public Shape createStrokedShape(Shape shape,
+<i>992</i>&nbsp;                                    StrokeType pgtype,
+<i>993</i>&nbsp;                                    double strokewidth,
+<i>994</i>&nbsp;                                    StrokeLineCap pgcap,
+<i>995</i>&nbsp;                                    StrokeLineJoin pgjoin,
+<i>996</i>&nbsp;                                    float miterLimit,
+<i>997</i>&nbsp;                                    float[] dashArray,
+<i>998</i>&nbsp;                                    float dashOffset) {
+<b class="nc"><i>999</i>&nbsp;        initStroke(pgtype, strokewidth, pgcap, pgjoin, miterLimit,</b>
+<i>1000</i>&nbsp;                   dashArray, dashOffset);
+<b class="nc"><i>1001</i>&nbsp;        return tmpStroke.createStrokedShape(shape);</b>
+<i>1002</i>&nbsp;    }
+<i>1003</i>&nbsp;
+<i>1004</i>&nbsp;    @Override public Dimension2D getBestCursorSize(int preferredWidth, int preferredHeight) {
+<b class="nc"><i>1005</i>&nbsp;        return CursorUtils.getBestCursorSize(preferredWidth, preferredHeight);</b>
+<i>1006</i>&nbsp;    }
+<i>1007</i>&nbsp;
+<i>1008</i>&nbsp;    @Override public int getMaximumCursorColors() {
+<b class="nc"><i>1009</i>&nbsp;        return 2;</b>
+<i>1010</i>&nbsp;    }
+<i>1011</i>&nbsp;
+<i>1012</i>&nbsp;    @Override public int getKeyCodeForChar(String character) {
+<b class="nc"><i>1013</i>&nbsp;        return (character.length() == 1)</b>
+<b class="nc"><i>1014</i>&nbsp;                ? com.sun.glass.events.KeyEvent.getKeyCodeForChar(</b>
+<b class="nc"><i>1015</i>&nbsp;                          character.charAt(0))</b>
+<b class="nc"><i>1016</i>&nbsp;                : com.sun.glass.events.KeyEvent.VK_UNDEFINED;</b>
+<i>1017</i>&nbsp;    }
+<i>1018</i>&nbsp;
+<i>1019</i>&nbsp;    @Override public PathElement[] convertShapeToFXPath(Object shape) {
+<b class="nc"><i>1020</i>&nbsp;        if (shape == null) {</b>
+<b class="nc"><i>1021</i>&nbsp;            return new PathElement[0];</b>
+<i>1022</i>&nbsp;        }
+<b class="nc"><i>1023</i>&nbsp;        List&lt;PathElement&gt; elements = new ArrayList&lt;&gt;();</b>
+<i>1024</i>&nbsp;        // iterate over the shape and turn it into a series of path
+<i>1025</i>&nbsp;        // elements
+<b class="nc"><i>1026</i>&nbsp;        com.sun.javafx.geom.Shape geomShape = (com.sun.javafx.geom.Shape) shape;</b>
+<b class="nc"><i>1027</i>&nbsp;        PathIterator itr = geomShape.getPathIterator(null);</b>
+<b class="nc"><i>1028</i>&nbsp;        PathIteratorHelper helper = new PathIteratorHelper(itr);</b>
+<b class="nc"><i>1029</i>&nbsp;        PathIteratorHelper.Struct struct = new PathIteratorHelper.Struct();</b>
+<i>1030</i>&nbsp;
+<b class="nc"><i>1031</i>&nbsp;        while (!helper.isDone()) {</b>
+<i>1032</i>&nbsp;            // true if WIND_EVEN_ODD, false if WIND_NON_ZERO
+<b class="nc"><i>1033</i>&nbsp;            boolean windEvenOdd = helper.getWindingRule() == PathIterator.WIND_EVEN_ODD;</b>
+<b class="nc"><i>1034</i>&nbsp;            int type = helper.currentSegment(struct);</b>
+<i>1035</i>&nbsp;            PathElement el;
+<b class="nc"><i>1036</i>&nbsp;            if (type == PathIterator.SEG_MOVETO) {</b>
+<b class="nc"><i>1037</i>&nbsp;                el = new MoveTo(struct.f0, struct.f1);</b>
+<b class="nc"><i>1038</i>&nbsp;            } else if (type == PathIterator.SEG_LINETO) {</b>
+<b class="nc"><i>1039</i>&nbsp;                el = new LineTo(struct.f0, struct.f1);</b>
+<b class="nc"><i>1040</i>&nbsp;            } else if (type == PathIterator.SEG_QUADTO) {</b>
+<b class="nc"><i>1041</i>&nbsp;                el = new QuadCurveTo(</b>
+<i>1042</i>&nbsp;                    struct.f0,
+<i>1043</i>&nbsp;                    struct.f1,
+<i>1044</i>&nbsp;                    struct.f2,
+<i>1045</i>&nbsp;                    struct.f3);
+<b class="nc"><i>1046</i>&nbsp;            } else if (type == PathIterator.SEG_CUBICTO) {</b>
+<b class="nc"><i>1047</i>&nbsp;                el = new CubicCurveTo (</b>
+<i>1048</i>&nbsp;                    struct.f0,
+<i>1049</i>&nbsp;                    struct.f1,
+<i>1050</i>&nbsp;                    struct.f2,
+<i>1051</i>&nbsp;                    struct.f3,
+<i>1052</i>&nbsp;                    struct.f4,
+<i>1053</i>&nbsp;                    struct.f5);
+<b class="nc"><i>1054</i>&nbsp;            } else if (type == PathIterator.SEG_CLOSE) {</b>
+<b class="nc"><i>1055</i>&nbsp;                el = new ClosePath();</b>
+<i>1056</i>&nbsp;            } else {
+<b class="nc"><i>1057</i>&nbsp;                throw new IllegalStateException(&quot;Invalid element type: &quot; + type);</b>
+<i>1058</i>&nbsp;            }
+<b class="nc"><i>1059</i>&nbsp;            helper.next();</b>
+<b class="nc"><i>1060</i>&nbsp;            elements.add(el);</b>
+<b class="nc"><i>1061</i>&nbsp;        }</b>
+<i>1062</i>&nbsp;
+<b class="nc"><i>1063</i>&nbsp;        return elements.toArray(new PathElement[elements.size()]);</b>
+<i>1064</i>&nbsp;    }
+<i>1065</i>&nbsp;
+<i>1066</i>&nbsp;    @Override public Filterable toFilterable(Image img) {
+<b class="nc"><i>1067</i>&nbsp;        return PrImage.create((com.sun.prism.Image) Toolkit.getImageAccessor().getPlatformImage(img));</b>
+<i>1068</i>&nbsp;    }
+<i>1069</i>&nbsp;
+<i>1070</i>&nbsp;    @Override public FilterContext getFilterContext(Object config) {
+<b class="nc"><i>1071</i>&nbsp;        if (config == null || (!(config instanceof com.sun.glass.ui.Screen))) {</b>
+<b class="nc"><i>1072</i>&nbsp;            return PrFilterContext.getDefaultInstance();</b>
+<i>1073</i>&nbsp;        }
+<b class="nc"><i>1074</i>&nbsp;        Screen screen = (Screen)config;</b>
+<b class="nc"><i>1075</i>&nbsp;        return PrFilterContext.getInstance(screen);</b>
+<i>1076</i>&nbsp;    }
+<i>1077</i>&nbsp;
+<i>1078</i>&nbsp;    @Override public AbstractMasterTimer getMasterTimer() {
+<b class="fc"><i>1079</i>&nbsp;        return MasterTimer.getInstance();</b>
+<i>1080</i>&nbsp;    }
+<i>1081</i>&nbsp;
+<i>1082</i>&nbsp;    @Override public FontLoader getFontLoader() {
+<b class="fc"><i>1083</i>&nbsp;        return com.sun.javafx.font.PrismFontLoader.getInstance();</b>
+<i>1084</i>&nbsp;    }
+<i>1085</i>&nbsp;
+<i>1086</i>&nbsp;    @Override public TextLayoutFactory getTextLayoutFactory() {
+<b class="fc"><i>1087</i>&nbsp;        return com.sun.javafx.text.PrismTextLayoutFactory.getFactory();</b>
+<i>1088</i>&nbsp;    }
+<i>1089</i>&nbsp;
+<i>1090</i>&nbsp;    @Override public Object createSVGPathObject(SVGPath svgpath) {
+<b class="nc"><i>1091</i>&nbsp;        int windingRule = svgpath.getFillRule() == FillRule.NON_ZERO ? PathIterator.WIND_NON_ZERO : PathIterator.WIND_EVEN_ODD;</b>
+<b class="nc"><i>1092</i>&nbsp;        Path2D path = new Path2D(windingRule);</b>
+<b class="nc"><i>1093</i>&nbsp;        path.appendSVGPath(svgpath.getContent());</b>
+<b class="nc"><i>1094</i>&nbsp;        return path;</b>
+<i>1095</i>&nbsp;    }
+<i>1096</i>&nbsp;
+<i>1097</i>&nbsp;    @Override public Path2D createSVGPath2D(SVGPath svgpath) {
+<b class="fc"><i>1098</i>&nbsp;        int windingRule = svgpath.getFillRule() == FillRule.NON_ZERO ? PathIterator.WIND_NON_ZERO : PathIterator.WIND_EVEN_ODD;</b>
+<b class="fc"><i>1099</i>&nbsp;        Path2D path = new Path2D(windingRule);</b>
+<b class="fc"><i>1100</i>&nbsp;        path.appendSVGPath(svgpath.getContent());</b>
+<b class="fc"><i>1101</i>&nbsp;        return path;</b>
+<i>1102</i>&nbsp;    }
+<i>1103</i>&nbsp;
+<i>1104</i>&nbsp;    @Override public boolean imageContains(Object image, float x, float y) {
+<b class="nc"><i>1105</i>&nbsp;        if (image == null) {</b>
+<b class="nc"><i>1106</i>&nbsp;            return false;</b>
+<i>1107</i>&nbsp;        }
+<i>1108</i>&nbsp;
+<b class="nc"><i>1109</i>&nbsp;        com.sun.prism.Image pImage = (com.sun.prism.Image)image;</b>
+<b class="nc"><i>1110</i>&nbsp;        int intX = (int)x + pImage.getMinX();</b>
+<b class="nc"><i>1111</i>&nbsp;        int intY = (int)y + pImage.getMinY();</b>
+<i>1112</i>&nbsp;
+<b class="nc"><i>1113</i>&nbsp;        if (pImage.isOpaque()) {</b>
+<b class="nc"><i>1114</i>&nbsp;            return true;</b>
+<i>1115</i>&nbsp;        }
+<i>1116</i>&nbsp;
+<b class="nc"><i>1117</i>&nbsp;        if (pImage.getPixelFormat() == PixelFormat.INT_ARGB_PRE) {</b>
+<b class="nc"><i>1118</i>&nbsp;            IntBuffer ib = (IntBuffer) pImage.getPixelBuffer();</b>
+<b class="nc"><i>1119</i>&nbsp;            int index = intX + intY * pImage.getRowLength();</b>
+<b class="nc"><i>1120</i>&nbsp;            if (index &gt;= ib.limit()) {</b>
+<b class="nc"><i>1121</i>&nbsp;                return false;</b>
+<i>1122</i>&nbsp;            } else {
+<b class="nc"><i>1123</i>&nbsp;                return (ib.get(index) &amp; 0xff000000) != 0;</b>
+<i>1124</i>&nbsp;            }
+<b class="nc"><i>1125</i>&nbsp;        } else if (pImage.getPixelFormat() == PixelFormat.BYTE_BGRA_PRE) {</b>
+<b class="nc"><i>1126</i>&nbsp;            ByteBuffer bb = (ByteBuffer) pImage.getPixelBuffer();</b>
+<b class="nc"><i>1127</i>&nbsp;            int index = intX * pImage.getBytesPerPixelUnit() + intY * pImage.getScanlineStride() + 3;</b>
+<b class="nc"><i>1128</i>&nbsp;            if (index &gt;= bb.limit()) {</b>
+<b class="nc"><i>1129</i>&nbsp;                return false;</b>
+<i>1130</i>&nbsp;            } else {
+<b class="nc"><i>1131</i>&nbsp;                return (bb.get(index) &amp; 0xff) != 0;</b>
+<i>1132</i>&nbsp;            }
+<b class="nc"><i>1133</i>&nbsp;        } else if (pImage.getPixelFormat() == PixelFormat.BYTE_ALPHA) {</b>
+<b class="nc"><i>1134</i>&nbsp;            ByteBuffer bb = (ByteBuffer) pImage.getPixelBuffer();</b>
+<b class="nc"><i>1135</i>&nbsp;            int index = intX * pImage.getBytesPerPixelUnit() + intY * pImage.getScanlineStride();</b>
+<b class="nc"><i>1136</i>&nbsp;            if (index &gt;= bb.limit()) {</b>
+<b class="nc"><i>1137</i>&nbsp;                return false;</b>
+<i>1138</i>&nbsp;            } else {
+<b class="nc"><i>1139</i>&nbsp;                return (bb.get(index) &amp; 0xff) != 0;</b>
+<i>1140</i>&nbsp;            }
+<i>1141</i>&nbsp;        }
+<b class="nc"><i>1142</i>&nbsp;        return true;</b>
+<i>1143</i>&nbsp;    }
+<i>1144</i>&nbsp;
+<i>1145</i>&nbsp;    @Override
+<i>1146</i>&nbsp;    public boolean isNestedLoopRunning() {
+<b class="fc"><i>1147</i>&nbsp;        return Application.isNestedLoopRunning();</b>
+<i>1148</i>&nbsp;    }
+<i>1149</i>&nbsp;
+<i>1150</i>&nbsp;    @Override
+<i>1151</i>&nbsp;    public boolean isSupported(ConditionalFeature feature) {
+<b class="fc"><i>1152</i>&nbsp;        switch (feature) {</b>
+<i>1153</i>&nbsp;            case SCENE3D:
+<b class="fc"><i>1154</i>&nbsp;                return GraphicsPipeline.getPipeline().is3DSupported();</b>
+<i>1155</i>&nbsp;            case EFFECT:
+<b class="nc"><i>1156</i>&nbsp;                return GraphicsPipeline.getPipeline().isEffectSupported();</b>
+<i>1157</i>&nbsp;            case SHAPE_CLIP:
+<b class="nc"><i>1158</i>&nbsp;                return true;</b>
+<i>1159</i>&nbsp;            case INPUT_METHOD:
+<b class="nc"><i>1160</i>&nbsp;                return Application.GetApplication().supportsInputMethods();</b>
+<i>1161</i>&nbsp;            case TRANSPARENT_WINDOW:
+<b class="fc"><i>1162</i>&nbsp;                return Application.GetApplication().supportsTransparentWindows();</b>
+<i>1163</i>&nbsp;            case UNIFIED_WINDOW:
+<b class="nc"><i>1164</i>&nbsp;                return Application.GetApplication().supportsUnifiedWindows();</b>
+<i>1165</i>&nbsp;            case TWO_LEVEL_FOCUS:
+<b class="fc"><i>1166</i>&nbsp;                return Application.GetApplication().hasTwoLevelFocus();</b>
+<i>1167</i>&nbsp;            case VIRTUAL_KEYBOARD:
+<b class="fc"><i>1168</i>&nbsp;                return Application.GetApplication().hasVirtualKeyboard();</b>
+<i>1169</i>&nbsp;            case INPUT_TOUCH:
+<b class="fc"><i>1170</i>&nbsp;                return Application.GetApplication().hasTouch();</b>
+<i>1171</i>&nbsp;            case INPUT_MULTITOUCH:
+<b class="nc"><i>1172</i>&nbsp;                return Application.GetApplication().hasMultiTouch();</b>
+<i>1173</i>&nbsp;            case INPUT_POINTER:
+<b class="nc"><i>1174</i>&nbsp;                return Application.GetApplication().hasPointer();</b>
+<i>1175</i>&nbsp;            default:
+<b class="nc"><i>1176</i>&nbsp;                return false;</b>
+<i>1177</i>&nbsp;        }
+<i>1178</i>&nbsp;    }
+<i>1179</i>&nbsp;
+<i>1180</i>&nbsp;    @Override
+<i>1181</i>&nbsp;    public boolean isMSAASupported() {
+<b class="fc"><i>1182</i>&nbsp;        return  GraphicsPipeline.getPipeline().isMSAASupported();</b>
+<i>1183</i>&nbsp;    }
+<i>1184</i>&nbsp;
+<i>1185</i>&nbsp;    static TransferMode clipboardActionToTransferMode(final int action) {
+<b class="nc"><i>1186</i>&nbsp;        switch (action) {</b>
+<i>1187</i>&nbsp;            case Clipboard.ACTION_NONE:
+<b class="nc"><i>1188</i>&nbsp;                return null;</b>
+<i>1189</i>&nbsp;            case Clipboard.ACTION_COPY:
+<i>1190</i>&nbsp;            //IE drop action for URL copy
+<i>1191</i>&nbsp;            case Clipboard.ACTION_COPY | Clipboard.ACTION_REFERENCE:
+<b class="nc"><i>1192</i>&nbsp;                return TransferMode.COPY;</b>
+<i>1193</i>&nbsp;            case Clipboard.ACTION_MOVE:
+<i>1194</i>&nbsp;            //IE drop action for URL move
+<i>1195</i>&nbsp;            case Clipboard.ACTION_MOVE | Clipboard.ACTION_REFERENCE:
+<b class="nc"><i>1196</i>&nbsp;                return TransferMode.MOVE;</b>
+<i>1197</i>&nbsp;            case Clipboard.ACTION_REFERENCE:
+<b class="nc"><i>1198</i>&nbsp;                return TransferMode.LINK;</b>
+<i>1199</i>&nbsp;            case Clipboard.ACTION_ANY:
+<b class="nc"><i>1200</i>&nbsp;                return TransferMode.COPY; // select a reasonable trasnfer mode as workaround until RT-22840</b>
+<i>1201</i>&nbsp;        }
+<b class="nc"><i>1202</i>&nbsp;        return null;</b>
+<i>1203</i>&nbsp;    }
+<i>1204</i>&nbsp;
+<i>1205</i>&nbsp;    private QuantumClipboard clipboard;
+<i>1206</i>&nbsp;    @Override public TKClipboard getSystemClipboard() {
+<b class="nc"><i>1207</i>&nbsp;        if (clipboard == null) {</b>
+<b class="nc"><i>1208</i>&nbsp;            clipboard = QuantumClipboard.getClipboardInstance(new ClipboardAssistance(com.sun.glass.ui.Clipboard.SYSTEM));</b>
+<i>1209</i>&nbsp;        }
+<b class="nc"><i>1210</i>&nbsp;        return clipboard;</b>
+<i>1211</i>&nbsp;    }
+<i>1212</i>&nbsp;
+<b class="fc"><i>1213</i>&nbsp;    private GlassSystemMenu systemMenu = new GlassSystemMenu();</b>
+<i>1214</i>&nbsp;    @Override public TKSystemMenu getSystemMenu() {
+<b class="nc"><i>1215</i>&nbsp;        return systemMenu;</b>
+<i>1216</i>&nbsp;    }
+<i>1217</i>&nbsp;
+<i>1218</i>&nbsp;    @Override public TKClipboard getNamedClipboard(String name) {
+<b class="nc"><i>1219</i>&nbsp;        return null;</b>
+<i>1220</i>&nbsp;    }
+<i>1221</i>&nbsp;
+<i>1222</i>&nbsp;    @Override public void startDrag(TKScene scene, Set&lt;TransferMode&gt; tm, TKDragSourceListener l, Dragboard dragboard) {
+<b class="nc"><i>1223</i>&nbsp;        if (dragboard == null) {</b>
+<b class="nc"><i>1224</i>&nbsp;            throw new IllegalArgumentException(&quot;dragboard should not be null&quot;);</b>
+<i>1225</i>&nbsp;        }
+<i>1226</i>&nbsp;
+<b class="nc"><i>1227</i>&nbsp;        GlassScene view = (GlassScene)scene;</b>
+<b class="nc"><i>1228</i>&nbsp;        view.setTKDragSourceListener(l);</b>
+<i>1229</i>&nbsp;
+<b class="nc"><i>1230</i>&nbsp;        QuantumClipboard gc = (QuantumClipboard) DragboardHelper.getPeer(dragboard);</b>
+<b class="nc"><i>1231</i>&nbsp;        gc.setSupportedTransferMode(tm);</b>
+<b class="nc"><i>1232</i>&nbsp;        gc.flush();</b>
+<i>1233</i>&nbsp;
+<i>1234</i>&nbsp;        // flush causes a modal DnD event loop, when we return, close the clipboard
+<b class="nc"><i>1235</i>&nbsp;        gc.close();</b>
+<b class="nc"><i>1236</i>&nbsp;    }</b>
+<i>1237</i>&nbsp;
+<i>1238</i>&nbsp;    @Override public void enableDrop(TKScene s, TKDropTargetListener l) {
+<i>1239</i>&nbsp;
+<b class="fc"><i>1240</i>&nbsp;        assert s instanceof GlassScene;</b>
+<i>1241</i>&nbsp;
+<b class="fc"><i>1242</i>&nbsp;        GlassScene view = (GlassScene)s;</b>
+<b class="fc"><i>1243</i>&nbsp;        view.setTKDropTargetListener(l);</b>
+<b class="fc"><i>1244</i>&nbsp;    }</b>
+<i>1245</i>&nbsp;
+<i>1246</i>&nbsp;    @Override public void registerDragGestureListener(TKScene s, Set&lt;TransferMode&gt; tm, TKDragGestureListener l) {
+<i>1247</i>&nbsp;
+<b class="nc"><i>1248</i>&nbsp;        assert s instanceof GlassScene;</b>
+<i>1249</i>&nbsp;
+<b class="nc"><i>1250</i>&nbsp;        GlassScene view = (GlassScene)s;</b>
+<b class="nc"><i>1251</i>&nbsp;        view.setTKDragGestureListener(l);</b>
+<b class="nc"><i>1252</i>&nbsp;    }</b>
+<i>1253</i>&nbsp;
+<i>1254</i>&nbsp;    @Override
+<i>1255</i>&nbsp;    public void installInputMethodRequests(TKScene scene, InputMethodRequests requests) {
+<i>1256</i>&nbsp;
+<b class="fc"><i>1257</i>&nbsp;        assert scene instanceof GlassScene;</b>
+<i>1258</i>&nbsp;
+<b class="fc"><i>1259</i>&nbsp;        GlassScene view = (GlassScene)scene;</b>
+<b class="fc"><i>1260</i>&nbsp;        view.setInputMethodRequests(requests);</b>
+<b class="fc"><i>1261</i>&nbsp;    }</b>
+<i>1262</i>&nbsp;
+<i>1263</i>&nbsp;    static class QuantumImage implements com.sun.javafx.tk.ImageLoader, ResourceFactoryListener {
+<i>1264</i>&nbsp;
+<i>1265</i>&nbsp;        // cache rt here
+<i>1266</i>&nbsp;        private com.sun.prism.RTTexture rt;
+<i>1267</i>&nbsp;        private com.sun.prism.Image image;
+<i>1268</i>&nbsp;        private ResourceFactory rf;
+<i>1269</i>&nbsp;
+<i>1270</i>&nbsp;        QuantumImage(com.sun.prism.Image image) {
+<i>1271</i>&nbsp;            this.image = image;
+<i>1272</i>&nbsp;        }
+<i>1273</i>&nbsp;
+<i>1274</i>&nbsp;        RTTexture getRT(int w, int h, ResourceFactory rfNew) {
+<i>1275</i>&nbsp;            boolean rttOk = rt != null &amp;&amp; rf == rfNew &amp;&amp;
+<i>1276</i>&nbsp;                    rt.getContentWidth() == w &amp;&amp; rt.getContentHeight() == h;
+<i>1277</i>&nbsp;            if (rttOk) {
+<i>1278</i>&nbsp;                rt.lock();
+<i>1279</i>&nbsp;                if (rt.isSurfaceLost()) {
+<i>1280</i>&nbsp;                    rttOk = false;
+<i>1281</i>&nbsp;                }
+<i>1282</i>&nbsp;            }
+<i>1283</i>&nbsp;
+<i>1284</i>&nbsp;            if (!rttOk) {
+<i>1285</i>&nbsp;                if (rt != null) {
+<i>1286</i>&nbsp;                    rt.dispose();
+<i>1287</i>&nbsp;                }
+<i>1288</i>&nbsp;                if (rf != null) {
+<i>1289</i>&nbsp;                    rf.removeFactoryListener(this);
+<i>1290</i>&nbsp;                    rf = null;
+<i>1291</i>&nbsp;                }
+<i>1292</i>&nbsp;                rt = rfNew.createRTTexture(w, h, WrapMode.CLAMP_TO_ZERO);
+<i>1293</i>&nbsp;                if (rt != null) {
+<i>1294</i>&nbsp;                    rf = rfNew;
+<i>1295</i>&nbsp;                    rf.addFactoryListener(this);
+<i>1296</i>&nbsp;                }
+<i>1297</i>&nbsp;            }
+<i>1298</i>&nbsp;
+<i>1299</i>&nbsp;            return rt;
+<i>1300</i>&nbsp;        }
+<i>1301</i>&nbsp;
+<i>1302</i>&nbsp;        void dispose() {
+<i>1303</i>&nbsp;            if (rt != null) {
+<i>1304</i>&nbsp;                rt.dispose();
+<i>1305</i>&nbsp;                rt = null;
+<i>1306</i>&nbsp;            }
+<i>1307</i>&nbsp;        }
+<i>1308</i>&nbsp;
+<i>1309</i>&nbsp;        void setImage(com.sun.prism.Image img) {
+<i>1310</i>&nbsp;            image = img;
+<i>1311</i>&nbsp;        }
+<i>1312</i>&nbsp;
+<i>1313</i>&nbsp;        @Override
+<i>1314</i>&nbsp;        public Exception getException() {
+<i>1315</i>&nbsp;            return (image == null)
+<i>1316</i>&nbsp;                    ? new IllegalStateException(&quot;Unitialized image&quot;)
+<i>1317</i>&nbsp;                    : null;
+<i>1318</i>&nbsp;        }
+<i>1319</i>&nbsp;        @Override
+<i>1320</i>&nbsp;        public int getFrameCount() { return 1; }
+<i>1321</i>&nbsp;        @Override
+<i>1322</i>&nbsp;        public PlatformImage getFrame(int index) { return image; }
+<i>1323</i>&nbsp;        @Override
+<i>1324</i>&nbsp;        public int getFrameDelay(int index) { return 0; }
+<i>1325</i>&nbsp;        @Override
+<i>1326</i>&nbsp;        public int getLoopCount() { return 0; }
+<i>1327</i>&nbsp;        @Override
+<i>1328</i>&nbsp;        public int getWidth() { return image.getWidth(); }
+<i>1329</i>&nbsp;        @Override
+<i>1330</i>&nbsp;        public int getHeight() { return image.getHeight(); }
+<i>1331</i>&nbsp;        @Override
+<i>1332</i>&nbsp;        public void factoryReset() { dispose(); }
+<i>1333</i>&nbsp;        @Override
+<i>1334</i>&nbsp;        public void factoryReleased() { dispose(); }
+<i>1335</i>&nbsp;    }
+<i>1336</i>&nbsp;
+<i>1337</i>&nbsp;    @Override public ImageLoader loadPlatformImage(Object platformImage) {
+<b class="nc"><i>1338</i>&nbsp;        if (platformImage instanceof QuantumImage) {</b>
+<b class="nc"><i>1339</i>&nbsp;            return (QuantumImage)platformImage;</b>
+<i>1340</i>&nbsp;        }
+<i>1341</i>&nbsp;
+<b class="nc"><i>1342</i>&nbsp;        if (platformImage instanceof com.sun.prism.Image) {</b>
+<b class="nc"><i>1343</i>&nbsp;            return new QuantumImage((com.sun.prism.Image) platformImage);</b>
+<i>1344</i>&nbsp;        }
+<i>1345</i>&nbsp;
+<b class="nc"><i>1346</i>&nbsp;        throw new UnsupportedOperationException(&quot;unsupported class for loadPlatformImage&quot;);</b>
+<i>1347</i>&nbsp;    }
+<i>1348</i>&nbsp;
+<i>1349</i>&nbsp;    @Override
+<i>1350</i>&nbsp;    public PlatformImage createPlatformImage(int w, int h) {
+<b class="nc"><i>1351</i>&nbsp;        ByteBuffer bytebuf = ByteBuffer.allocate(w * h * 4);</b>
+<b class="nc"><i>1352</i>&nbsp;        return com.sun.prism.Image.fromByteBgraPreData(bytebuf, w, h);</b>
+<i>1353</i>&nbsp;    }
+<i>1354</i>&nbsp;
+<i>1355</i>&nbsp;    @Override
+<i>1356</i>&nbsp;    public Object renderToImage(ImageRenderingContext p) {
+<b class="nc"><i>1357</i>&nbsp;        Object saveImage = p.platformImage;</b>
+<b class="nc"><i>1358</i>&nbsp;        final ImageRenderingContext params = p;</b>
+<b class="nc"><i>1359</i>&nbsp;        final com.sun.prism.paint.Paint currentPaint = p.platformPaint instanceof com.sun.prism.paint.Paint ?</b>
+<b class="nc"><i>1360</i>&nbsp;                (com.sun.prism.paint.Paint)p.platformPaint : null;</b>
+<i>1361</i>&nbsp;
+<b class="nc"><i>1362</i>&nbsp;        RenderJob re = new RenderJob(new Runnable() {</b>
+<i>1363</i>&nbsp;
+<i>1364</i>&nbsp;            private com.sun.prism.paint.Color getClearColor() {
+<i>1365</i>&nbsp;                if (currentPaint == null) {
+<i>1366</i>&nbsp;                    return com.sun.prism.paint.Color.WHITE;
+<i>1367</i>&nbsp;                } else if (currentPaint.getType() == com.sun.prism.paint.Paint.Type.COLOR) {
+<i>1368</i>&nbsp;                    return (com.sun.prism.paint.Color) currentPaint;
+<i>1369</i>&nbsp;                } else if (currentPaint.isOpaque()) {
+<i>1370</i>&nbsp;                    return com.sun.prism.paint.Color.TRANSPARENT;
+<i>1371</i>&nbsp;                } else {
+<i>1372</i>&nbsp;                    return com.sun.prism.paint.Color.WHITE;
+<i>1373</i>&nbsp;                }
+<i>1374</i>&nbsp;            }
+<i>1375</i>&nbsp;
+<i>1376</i>&nbsp;            private void draw(Graphics g, int x, int y, int w, int h) {
+<i>1377</i>&nbsp;                g.setLights(params.lights);
+<i>1378</i>&nbsp;                g.setDepthBuffer(params.depthBuffer);
+<i>1379</i>&nbsp;
+<i>1380</i>&nbsp;                g.clear(getClearColor());
+<i>1381</i>&nbsp;                if (currentPaint != null &amp;&amp;
+<i>1382</i>&nbsp;                        currentPaint.getType() != com.sun.prism.paint.Paint.Type.COLOR) {
+<i>1383</i>&nbsp;                    g.getRenderTarget().setOpaque(currentPaint.isOpaque());
+<i>1384</i>&nbsp;                    g.setPaint(currentPaint);
+<i>1385</i>&nbsp;                    g.fillQuad(0, 0, w, h);
+<i>1386</i>&nbsp;                }
+<i>1387</i>&nbsp;
+<i>1388</i>&nbsp;                // Set up transform
+<i>1389</i>&nbsp;                if (x != 0 || y != 0) {
+<i>1390</i>&nbsp;                    g.translate(-x, -y);
+<i>1391</i>&nbsp;                }
+<i>1392</i>&nbsp;                if (params.transform != null) {
+<i>1393</i>&nbsp;                    g.transform(params.transform);
+<i>1394</i>&nbsp;                }
+<i>1395</i>&nbsp;
+<i>1396</i>&nbsp;                if (params.root != null) {
+<i>1397</i>&nbsp;                    if (params.camera != null) {
+<i>1398</i>&nbsp;                        g.setCamera(params.camera);
+<i>1399</i>&nbsp;                    }
+<i>1400</i>&nbsp;                    NGNode ngNode = params.root;
+<i>1401</i>&nbsp;                    ngNode.render(g);
+<i>1402</i>&nbsp;                }
+<i>1403</i>&nbsp;
+<i>1404</i>&nbsp;            }
+<i>1405</i>&nbsp;
+<i>1406</i>&nbsp;            @Override
+<i>1407</i>&nbsp;            public void run() {
+<i>1408</i>&nbsp;
+<i>1409</i>&nbsp;                ResourceFactory rf = GraphicsPipeline.getDefaultResourceFactory();
+<i>1410</i>&nbsp;
+<i>1411</i>&nbsp;                if (!rf.isDeviceReady()) {
+<i>1412</i>&nbsp;                    return;
+<i>1413</i>&nbsp;                }
+<i>1414</i>&nbsp;
+<i>1415</i>&nbsp;                int x = params.x;
+<i>1416</i>&nbsp;                int y = params.y;
+<i>1417</i>&nbsp;                int w = params.width;
+<i>1418</i>&nbsp;                int h = params.height;
+<i>1419</i>&nbsp;
+<i>1420</i>&nbsp;                if (w &lt;= 0 || h &lt;= 0) {
+<i>1421</i>&nbsp;                    return;
+<i>1422</i>&nbsp;                }
+<i>1423</i>&nbsp;
+<i>1424</i>&nbsp;                boolean errored = false;
+<i>1425</i>&nbsp;                try {
+<i>1426</i>&nbsp;                    QuantumImage pImage = (params.platformImage instanceof QuantumImage) ?
+<i>1427</i>&nbsp;                            (QuantumImage)params.platformImage : new QuantumImage(null);
+<i>1428</i>&nbsp;
+<i>1429</i>&nbsp;                    com.sun.prism.RTTexture rt = pImage.getRT(w, h, rf);
+<i>1430</i>&nbsp;
+<i>1431</i>&nbsp;                    if (rt == null) {
+<i>1432</i>&nbsp;                        return;
+<i>1433</i>&nbsp;                    }
+<i>1434</i>&nbsp;
+<i>1435</i>&nbsp;                    Graphics g = rt.createGraphics();
+<i>1436</i>&nbsp;
+<i>1437</i>&nbsp;                    draw(g, x, y, w, h);
+<i>1438</i>&nbsp;
+<i>1439</i>&nbsp;                    int[] pixels = pImage.rt.getPixels();
+<i>1440</i>&nbsp;
+<i>1441</i>&nbsp;                    if (pixels != null) {
+<i>1442</i>&nbsp;                        pImage.setImage(com.sun.prism.Image.fromIntArgbPreData(pixels, w, h));
+<i>1443</i>&nbsp;                    } else {
+<i>1444</i>&nbsp;                        IntBuffer ib = IntBuffer.allocate(w*h);
+<i>1445</i>&nbsp;                        if (pImage.rt.readPixels(ib, pImage.rt.getContentX(),
+<i>1446</i>&nbsp;                                pImage.rt.getContentY(), w, h))
+<i>1447</i>&nbsp;                        {
+<i>1448</i>&nbsp;                            pImage.setImage(com.sun.prism.Image.fromIntArgbPreData(ib, w, h));
+<i>1449</i>&nbsp;                        } else {
+<i>1450</i>&nbsp;                            pImage.dispose();
+<i>1451</i>&nbsp;                            pImage = null;
+<i>1452</i>&nbsp;                        }
+<i>1453</i>&nbsp;                    }
+<i>1454</i>&nbsp;
+<i>1455</i>&nbsp;                    rt.unlock();
+<i>1456</i>&nbsp;
+<i>1457</i>&nbsp;                    params.platformImage = pImage;
+<i>1458</i>&nbsp;
+<i>1459</i>&nbsp;                } catch (Throwable t) {
+<i>1460</i>&nbsp;                    errored = true;
+<i>1461</i>&nbsp;                    t.printStackTrace(System.err);
+<i>1462</i>&nbsp;                } finally {
+<i>1463</i>&nbsp;                    Disposer.cleanUp();
+<i>1464</i>&nbsp;                    rf.getTextureResourcePool().freeDisposalRequestedAndCheckResources(errored);
+<i>1465</i>&nbsp;                }
+<i>1466</i>&nbsp;            }
+<i>1467</i>&nbsp;        });
+<i>1468</i>&nbsp;
+<b class="nc"><i>1469</i>&nbsp;        final CountDownLatch latch = new CountDownLatch(1);</b>
+<b class="nc"><i>1470</i>&nbsp;        re.setCompletionListener(job -&gt; latch.countDown());</b>
+<b class="nc"><i>1471</i>&nbsp;        addRenderJob(re);</b>
+<i>1472</i>&nbsp;
+<i>1473</i>&nbsp;        do {
+<i>1474</i>&nbsp;            try {
+<b class="nc"><i>1475</i>&nbsp;                latch.await();</b>
+<b class="nc"><i>1476</i>&nbsp;                break;</b>
+<b class="nc"><i>1477</i>&nbsp;            } catch (InterruptedException ex) {</b>
+<b class="nc"><i>1478</i>&nbsp;                ex.printStackTrace();</b>
+<i>1479</i>&nbsp;            }
+<b class="nc"><i>1480</i>&nbsp;        } while (true);</b>
+<i>1481</i>&nbsp;
+<b class="nc"><i>1482</i>&nbsp;        Object image = params.platformImage;</b>
+<b class="nc"><i>1483</i>&nbsp;        params.platformImage = saveImage;</b>
+<i>1484</i>&nbsp;
+<b class="nc"><i>1485</i>&nbsp;        return image;</b>
+<i>1486</i>&nbsp;    }
+<i>1487</i>&nbsp;
+<i>1488</i>&nbsp;    @Override
+<i>1489</i>&nbsp;    public FileChooserResult showFileChooser(final TKStage ownerWindow,
+<i>1490</i>&nbsp;                                      final String title,
+<i>1491</i>&nbsp;                                      final File initialDirectory,
+<i>1492</i>&nbsp;                                      final String initialFileName,
+<i>1493</i>&nbsp;                                      final FileChooserType fileChooserType,
+<i>1494</i>&nbsp;                                      final List&lt;FileChooser.ExtensionFilter&gt;
+<i>1495</i>&nbsp;                                              extensionFilters,
+<i>1496</i>&nbsp;                                      final FileChooser.ExtensionFilter selectedFilter) {
+<b class="nc"><i>1497</i>&nbsp;        WindowStage blockedStage = null;</b>
+<i>1498</i>&nbsp;        try {
+<i>1499</i>&nbsp;            // NOTE: we block the owner of the owner deliberately.
+<i>1500</i>&nbsp;            //       The native system blocks the nearest owner itself.
+<i>1501</i>&nbsp;            //       Otherwise sheets on Mac are unusable.
+<b class="nc"><i>1502</i>&nbsp;            blockedStage = blockOwnerStage(ownerWindow);</b>
+<i>1503</i>&nbsp;
+<b class="nc"><i>1504</i>&nbsp;            return CommonDialogs.showFileChooser(</b>
+<b class="nc"><i>1505</i>&nbsp;                    (ownerWindow instanceof WindowStage)</b>
+<b class="nc"><i>1506</i>&nbsp;                            ? ((WindowStage) ownerWindow).getPlatformWindow()</b>
+<b class="nc"><i>1507</i>&nbsp;                            : null,</b>
+<i>1508</i>&nbsp;                    initialDirectory,
+<i>1509</i>&nbsp;                    initialFileName,
+<i>1510</i>&nbsp;                    title,
+<b class="nc"><i>1511</i>&nbsp;                    (fileChooserType == FileChooserType.SAVE)</b>
+<b class="nc"><i>1512</i>&nbsp;                            ? CommonDialogs.Type.SAVE</b>
+<b class="nc"><i>1513</i>&nbsp;                            : CommonDialogs.Type.OPEN,</b>
+<i>1514</i>&nbsp;                    (fileChooserType == FileChooserType.OPEN_MULTIPLE),
+<b class="nc"><i>1515</i>&nbsp;                    convertExtensionFilters(extensionFilters),</b>
+<b class="nc"><i>1516</i>&nbsp;                    extensionFilters.indexOf(selectedFilter));</b>
+<i>1517</i>&nbsp;        } finally {
+<b class="nc"><i>1518</i>&nbsp;            if (blockedStage != null) {</b>
+<b class="nc"><i>1519</i>&nbsp;                blockedStage.setEnabled(true);</b>
+<i>1520</i>&nbsp;            }
+<i>1521</i>&nbsp;        }
+<i>1522</i>&nbsp;    }
+<i>1523</i>&nbsp;
+<i>1524</i>&nbsp;    @Override
+<i>1525</i>&nbsp;    public File showDirectoryChooser(final TKStage ownerWindow,
+<i>1526</i>&nbsp;                                     final String title,
+<i>1527</i>&nbsp;                                     final File initialDirectory) {
+<b class="nc"><i>1528</i>&nbsp;        WindowStage blockedStage = null;</b>
+<i>1529</i>&nbsp;        try {
+<i>1530</i>&nbsp;            // NOTE: we block the owner of the owner deliberately.
+<i>1531</i>&nbsp;            //       The native system blocks the nearest owner itself.
+<i>1532</i>&nbsp;            //       Otherwise sheets on Mac are unusable.
+<b class="nc"><i>1533</i>&nbsp;            blockedStage = blockOwnerStage(ownerWindow);</b>
+<i>1534</i>&nbsp;
+<b class="nc"><i>1535</i>&nbsp;            return CommonDialogs.showFolderChooser(</b>
+<b class="nc"><i>1536</i>&nbsp;                    (ownerWindow instanceof WindowStage)</b>
+<b class="nc"><i>1537</i>&nbsp;                            ? ((WindowStage) ownerWindow).getPlatformWindow()</b>
+<b class="nc"><i>1538</i>&nbsp;                            : null,</b>
+<i>1539</i>&nbsp;                    initialDirectory, title);
+<i>1540</i>&nbsp;        } finally {
+<b class="nc"><i>1541</i>&nbsp;            if (blockedStage != null) {</b>
+<b class="nc"><i>1542</i>&nbsp;                blockedStage.setEnabled(true);</b>
+<i>1543</i>&nbsp;            }
+<i>1544</i>&nbsp;        }
+<i>1545</i>&nbsp;    }
+<i>1546</i>&nbsp;
+<i>1547</i>&nbsp;    private WindowStage blockOwnerStage(final TKStage stage) {
+<b class="nc"><i>1548</i>&nbsp;        if (stage instanceof WindowStage) {</b>
+<b class="nc"><i>1549</i>&nbsp;            final TKStage ownerStage = ((WindowStage) stage).getOwner();</b>
+<b class="nc"><i>1550</i>&nbsp;            if (ownerStage instanceof WindowStage) {</b>
+<b class="nc"><i>1551</i>&nbsp;                final WindowStage ownerWindowStage = (WindowStage) ownerStage;</b>
+<b class="nc"><i>1552</i>&nbsp;                ownerWindowStage.setEnabled(false);</b>
+<b class="nc"><i>1553</i>&nbsp;                return ownerWindowStage;</b>
+<i>1554</i>&nbsp;            }
+<i>1555</i>&nbsp;        }
+<i>1556</i>&nbsp;
+<b class="nc"><i>1557</i>&nbsp;        return null;</b>
+<i>1558</i>&nbsp;    }
+<i>1559</i>&nbsp;
+<i>1560</i>&nbsp;    private static List&lt;CommonDialogs.ExtensionFilter&gt;
+<i>1561</i>&nbsp;            convertExtensionFilters(final List&lt;FileChooser.ExtensionFilter&gt;
+<i>1562</i>&nbsp;                                            extensionFilters) {
+<b class="nc"><i>1563</i>&nbsp;        final CommonDialogs.ExtensionFilter[] glassExtensionFilters =</b>
+<b class="nc"><i>1564</i>&nbsp;                new CommonDialogs.ExtensionFilter[extensionFilters.size()];</b>
+<i>1565</i>&nbsp;
+<b class="nc"><i>1566</i>&nbsp;        int i = 0;</b>
+<i>1567</i>&nbsp;        for (final FileChooser.ExtensionFilter extensionFilter:
+<b class="nc"><i>1568</i>&nbsp;                 extensionFilters) {</b>
+<b class="nc"><i>1569</i>&nbsp;            glassExtensionFilters[i++] =</b>
+<i>1570</i>&nbsp;                    new CommonDialogs.ExtensionFilter(
+<b class="nc"><i>1571</i>&nbsp;                            extensionFilter.getDescription(),</b>
+<b class="nc"><i>1572</i>&nbsp;                            extensionFilter.getExtensions());</b>
+<b class="nc"><i>1573</i>&nbsp;        }</b>
+<i>1574</i>&nbsp;
+<b class="nc"><i>1575</i>&nbsp;        return Arrays.asList(glassExtensionFilters);</b>
+<i>1576</i>&nbsp;    }
+<i>1577</i>&nbsp;
+<i>1578</i>&nbsp;    @Override
+<i>1579</i>&nbsp;    public long getMultiClickTime() {
+<b class="fc"><i>1580</i>&nbsp;        return View.getMultiClickTime();</b>
+<i>1581</i>&nbsp;    }
+<i>1582</i>&nbsp;
+<i>1583</i>&nbsp;    @Override
+<i>1584</i>&nbsp;    public int getMultiClickMaxX() {
+<b class="fc"><i>1585</i>&nbsp;        return View.getMultiClickMaxX();</b>
+<i>1586</i>&nbsp;    }
+<i>1587</i>&nbsp;
+<i>1588</i>&nbsp;    @Override
+<i>1589</i>&nbsp;    public int getMultiClickMaxY() {
+<b class="fc"><i>1590</i>&nbsp;        return View.getMultiClickMaxY();</b>
+<i>1591</i>&nbsp;    }
+<i>1592</i>&nbsp;
+<i>1593</i>&nbsp;    @Override
+<i>1594</i>&nbsp;    public String getThemeName() {
+<b class="fc"><i>1595</i>&nbsp;        return Application.GetApplication().getHighContrastTheme();</b>
+<i>1596</i>&nbsp;    }
+<i>1597</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2017-12-04 21:49</div>
+</div>
+</body>
+</html>

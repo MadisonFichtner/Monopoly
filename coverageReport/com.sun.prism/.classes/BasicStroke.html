@@ -1,0 +1,998 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: BasicStroke</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.prism</a> ]
+</div>
+
+<h1>Coverage Summary for Class: BasicStroke (com.sun.prism)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">BasicStroke</td>
+<td class="coverageStat">
+  <span class="percent">
+    53.7%
+  </span>
+  <span class="absValue">
+    (22/ 41)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    28.5%
+  </span>
+  <span class="absValue">
+    (113/ 396)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">BasicStroke$CAGShapePair</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 10)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    51.2%
+  </span>
+  <span class="absValue">
+    (22/ 43)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    27.8%
+  </span>
+  <span class="absValue">
+    (113/ 406)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright (c) 2009, 2014, Oracle and/or its affiliates. All rights reserved.
+<i>3</i>&nbsp; * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+<i>4</i>&nbsp; *
+<i>5</i>&nbsp; *
+<i>6</i>&nbsp; *
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; *
+<i>11</i>&nbsp; *
+<i>12</i>&nbsp; *
+<i>13</i>&nbsp; *
+<i>14</i>&nbsp; *
+<i>15</i>&nbsp; *
+<i>16</i>&nbsp; *
+<i>17</i>&nbsp; *
+<i>18</i>&nbsp; *
+<i>19</i>&nbsp; *
+<i>20</i>&nbsp; *
+<i>21</i>&nbsp; *
+<i>22</i>&nbsp; *
+<i>23</i>&nbsp; *
+<i>24</i>&nbsp; */
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;package com.sun.prism;
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;import com.sun.javafx.geom.Area;
+<i>29</i>&nbsp;import com.sun.javafx.geom.GeneralShapePair;
+<i>30</i>&nbsp;import com.sun.javafx.geom.Path2D;
+<i>31</i>&nbsp;import com.sun.javafx.geom.PathConsumer2D;
+<i>32</i>&nbsp;import com.sun.javafx.geom.PathIterator;
+<i>33</i>&nbsp;import com.sun.javafx.geom.RoundRectangle2D;
+<i>34</i>&nbsp;import com.sun.javafx.geom.Shape;
+<i>35</i>&nbsp;import com.sun.javafx.geom.ShapePair;
+<i>36</i>&nbsp;import com.sun.javafx.geom.transform.BaseTransform;
+<i>37</i>&nbsp;import com.sun.openpisces.Dasher;
+<i>38</i>&nbsp;import com.sun.openpisces.Stroker;
+<i>39</i>&nbsp;import com.sun.prism.impl.shape.OpenPiscesPrismUtils;
+<i>40</i>&nbsp;
+<i>41</i>&nbsp;public final class BasicStroke {
+<i>42</i>&nbsp;    public static final int CAP_BUTT = Stroker.CAP_BUTT;
+<i>43</i>&nbsp;    public static final int CAP_ROUND = Stroker.CAP_ROUND;
+<i>44</i>&nbsp;    public static final int CAP_SQUARE = Stroker.CAP_SQUARE;
+<i>45</i>&nbsp;
+<i>46</i>&nbsp;    public static final int JOIN_BEVEL = Stroker.JOIN_BEVEL;
+<i>47</i>&nbsp;    public static final int JOIN_MITER = Stroker.JOIN_MITER;
+<i>48</i>&nbsp;    public static final int JOIN_ROUND = Stroker.JOIN_ROUND;
+<i>49</i>&nbsp;
+<i>50</i>&nbsp;    public static final int TYPE_CENTERED = 0;
+<i>51</i>&nbsp;    public static final int TYPE_INNER = 1;
+<i>52</i>&nbsp;    public static final int TYPE_OUTER = 2;
+<i>53</i>&nbsp;
+<i>54</i>&nbsp;    float width;
+<i>55</i>&nbsp;    int type;
+<i>56</i>&nbsp;    int cap;
+<i>57</i>&nbsp;    int join;
+<i>58</i>&nbsp;    float miterLimit;
+<i>59</i>&nbsp;    float dash[];
+<i>60</i>&nbsp;    float dashPhase;
+<i>61</i>&nbsp;
+<b class="fc"><i>62</i>&nbsp;    public BasicStroke() {</b>
+<b class="fc"><i>63</i>&nbsp;        set(TYPE_CENTERED, 1.0f, CAP_SQUARE, JOIN_MITER, 10f);</b>
+<b class="fc"><i>64</i>&nbsp;    }</b>
+<i>65</i>&nbsp;
+<b class="fc"><i>66</i>&nbsp;    public BasicStroke(float width, int cap, int join, float miterLimit) {</b>
+<b class="fc"><i>67</i>&nbsp;        set(TYPE_CENTERED, width, cap, join, miterLimit);</b>
+<b class="fc"><i>68</i>&nbsp;    }</b>
+<i>69</i>&nbsp;
+<i>70</i>&nbsp;    public BasicStroke(int type, float width,
+<i>71</i>&nbsp;                       int cap, int join, float miterLimit)
+<b class="fc"><i>72</i>&nbsp;    {</b>
+<b class="fc"><i>73</i>&nbsp;        set(type, width, cap, join, miterLimit);</b>
+<b class="fc"><i>74</i>&nbsp;    }</b>
+<i>75</i>&nbsp;
+<i>76</i>&nbsp;    public BasicStroke(float width, int cap, int join, float miterLimit,
+<i>77</i>&nbsp;                       float[] dash, float dashPhase)
+<b class="nc"><i>78</i>&nbsp;    {</b>
+<b class="nc"><i>79</i>&nbsp;        set(TYPE_CENTERED, width, cap, join, miterLimit);</b>
+<b class="nc"><i>80</i>&nbsp;        set(dash, dashPhase);</b>
+<b class="nc"><i>81</i>&nbsp;    }</b>
+<i>82</i>&nbsp;
+<i>83</i>&nbsp;    public BasicStroke(float width, int cap, int join, float miterLimit,
+<i>84</i>&nbsp;                       double[] dash, float dashPhase)
+<b class="nc"><i>85</i>&nbsp;    {</b>
+<b class="nc"><i>86</i>&nbsp;        set(TYPE_CENTERED, width, cap, join, miterLimit);</b>
+<b class="nc"><i>87</i>&nbsp;        set(dash, dashPhase);</b>
+<b class="nc"><i>88</i>&nbsp;    }</b>
+<i>89</i>&nbsp;
+<i>90</i>&nbsp;    public BasicStroke(int type, float width, int cap, int join, float miterLimit,
+<i>91</i>&nbsp;                       float[] dash, float dashPhase)
+<b class="fc"><i>92</i>&nbsp;    {</b>
+<b class="fc"><i>93</i>&nbsp;        set(type, width, cap, join, miterLimit);</b>
+<b class="fc"><i>94</i>&nbsp;        set(dash, dashPhase);</b>
+<b class="fc"><i>95</i>&nbsp;    }</b>
+<i>96</i>&nbsp;
+<i>97</i>&nbsp;    public BasicStroke(int type, float width, int cap, int join, float miterLimit,
+<i>98</i>&nbsp;                       double[] dash, float dashPhase)
+<b class="nc"><i>99</i>&nbsp;    {</b>
+<b class="nc"><i>100</i>&nbsp;        set(type, width, cap, join, miterLimit);</b>
+<b class="nc"><i>101</i>&nbsp;        set(dash, dashPhase);</b>
+<b class="nc"><i>102</i>&nbsp;    }</b>
+<i>103</i>&nbsp;
+<i>104</i>&nbsp;    public void set(int type, float width,
+<i>105</i>&nbsp;                    int cap, int join, float miterLimit)
+<i>106</i>&nbsp;    {
+<b class="fc"><i>107</i>&nbsp;        if (type != TYPE_CENTERED &amp;&amp; type != TYPE_INNER &amp;&amp; type != TYPE_OUTER) {</b>
+<b class="nc"><i>108</i>&nbsp;            throw new IllegalArgumentException(&quot;illegal type&quot;);</b>
+<i>109</i>&nbsp;        }
+<b class="fc"><i>110</i>&nbsp;        if (width &lt; 0.0f) {</b>
+<b class="nc"><i>111</i>&nbsp;            throw new IllegalArgumentException(&quot;negative width&quot;);</b>
+<i>112</i>&nbsp;        }
+<b class="fc"><i>113</i>&nbsp;        if (cap != CAP_BUTT &amp;&amp; cap != CAP_ROUND &amp;&amp; cap != CAP_SQUARE) {</b>
+<b class="nc"><i>114</i>&nbsp;            throw new IllegalArgumentException(&quot;illegal end cap value&quot;);</b>
+<i>115</i>&nbsp;        }
+<b class="fc"><i>116</i>&nbsp;        if (join == JOIN_MITER) {</b>
+<b class="fc"><i>117</i>&nbsp;            if (miterLimit &lt; 1.0f) {</b>
+<b class="nc"><i>118</i>&nbsp;                throw new IllegalArgumentException(&quot;miter limit &lt; 1&quot;);</b>
+<i>119</i>&nbsp;            }
+<b class="nc"><i>120</i>&nbsp;        } else if (join != JOIN_ROUND &amp;&amp; join != JOIN_BEVEL) {</b>
+<b class="nc"><i>121</i>&nbsp;            throw new IllegalArgumentException(&quot;illegal line join value&quot;);</b>
+<i>122</i>&nbsp;        }
+<b class="fc"><i>123</i>&nbsp;        this.type = type;</b>
+<b class="fc"><i>124</i>&nbsp;        this.width = width;</b>
+<b class="fc"><i>125</i>&nbsp;        this.cap = cap;</b>
+<b class="fc"><i>126</i>&nbsp;        this.join = join;</b>
+<b class="fc"><i>127</i>&nbsp;        this.miterLimit = miterLimit;</b>
+<b class="fc"><i>128</i>&nbsp;    }</b>
+<i>129</i>&nbsp;
+<i>130</i>&nbsp;    public void set(float dash[], float dashPhase) {
+<b class="fc"><i>131</i>&nbsp;        if (dash != null) {</b>
+<b class="nc"><i>132</i>&nbsp;            boolean allzero = true;</b>
+<b class="nc"><i>133</i>&nbsp;            for (int i = 0; i &lt; dash.length; i++) {</b>
+<b class="nc"><i>134</i>&nbsp;                float d = dash[i];</b>
+<b class="nc"><i>135</i>&nbsp;                if (d &gt; 0.0) {</b>
+<b class="nc"><i>136</i>&nbsp;                    allzero = false;</b>
+<b class="nc"><i>137</i>&nbsp;                } else if (d &lt; 0.0) {</b>
+<b class="nc"><i>138</i>&nbsp;                    throw new IllegalArgumentException(&quot;negative dash length&quot;);</b>
+<i>139</i>&nbsp;                }
+<i>140</i>&nbsp;            }
+<b class="nc"><i>141</i>&nbsp;            if (allzero) {</b>
+<b class="nc"><i>142</i>&nbsp;                throw new IllegalArgumentException(&quot;dash lengths all zero&quot;);</b>
+<i>143</i>&nbsp;            }
+<i>144</i>&nbsp;        }
+<b class="fc"><i>145</i>&nbsp;        this.dash = dash;</b>
+<b class="fc"><i>146</i>&nbsp;        this.dashPhase = dashPhase;</b>
+<b class="fc"><i>147</i>&nbsp;    }</b>
+<i>148</i>&nbsp;
+<i>149</i>&nbsp;    public void set(double dash[], float dashPhase) {
+<b class="nc"><i>150</i>&nbsp;        if (dash != null) {</b>
+<b class="nc"><i>151</i>&nbsp;            float newdashes[] = new float[dash.length];</b>
+<b class="nc"><i>152</i>&nbsp;            boolean allzero = true;</b>
+<b class="nc"><i>153</i>&nbsp;            for (int i = 0; i &lt; dash.length; i++) {</b>
+<b class="nc"><i>154</i>&nbsp;                float d = (float) dash[i];</b>
+<b class="nc"><i>155</i>&nbsp;                if (d &gt; 0.0) {</b>
+<b class="nc"><i>156</i>&nbsp;                    allzero = false;</b>
+<b class="nc"><i>157</i>&nbsp;                } else if (d &lt; 0.0) {</b>
+<b class="nc"><i>158</i>&nbsp;                    throw new IllegalArgumentException(&quot;negative dash length&quot;);</b>
+<i>159</i>&nbsp;                }
+<b class="nc"><i>160</i>&nbsp;                newdashes[i] = d;</b>
+<i>161</i>&nbsp;            }
+<b class="nc"><i>162</i>&nbsp;            if (allzero) {</b>
+<b class="nc"><i>163</i>&nbsp;                throw new IllegalArgumentException(&quot;dash lengths all zero&quot;);</b>
+<i>164</i>&nbsp;            }
+<b class="nc"><i>165</i>&nbsp;            this.dash = newdashes;</b>
+<b class="nc"><i>166</i>&nbsp;        } else {</b>
+<b class="nc"><i>167</i>&nbsp;            this.dash = null;</b>
+<i>168</i>&nbsp;        }
+<b class="nc"><i>169</i>&nbsp;        this.dashPhase = dashPhase;</b>
+<b class="nc"><i>170</i>&nbsp;    }</b>
+<i>171</i>&nbsp;
+<i>172</i>&nbsp;    /**
+<i>173</i>&nbsp;     * Returns the stroke type, one of {@code TYPE_CENTERED},
+<i>174</i>&nbsp;     * {@code TYPE_INNER}, or {@code TYPE_OUTER}.
+<i>175</i>&nbsp;     * @return the stroke type
+<i>176</i>&nbsp;     */
+<i>177</i>&nbsp;    public int getType() {
+<b class="fc"><i>178</i>&nbsp;        return type;</b>
+<i>179</i>&nbsp;    }
+<i>180</i>&nbsp;
+<i>181</i>&nbsp;    /**
+<i>182</i>&nbsp;     * Returns the line width.  Line width is represented in user space,
+<i>183</i>&nbsp;     * which is the default-coordinate space used by Java 2D.  See the
+<i>184</i>&nbsp;     * &lt;code&gt;Graphics2D&lt;/code&gt; class comments for more information on
+<i>185</i>&nbsp;     * the user space coordinate system.
+<i>186</i>&nbsp;     * @return the line width of this &lt;code&gt;BasicStroke&lt;/code&gt;.
+<i>187</i>&nbsp;     */
+<i>188</i>&nbsp;    public float getLineWidth() {
+<b class="fc"><i>189</i>&nbsp;        return width;</b>
+<i>190</i>&nbsp;    }
+<i>191</i>&nbsp;
+<i>192</i>&nbsp;    /**
+<i>193</i>&nbsp;     * Returns the end cap style.
+<i>194</i>&nbsp;     * @return the end cap style of this &lt;code&gt;BasicStroke&lt;/code&gt; as one
+<i>195</i>&nbsp;     * of the static &lt;code&gt;int&lt;/code&gt; values that define possible end cap
+<i>196</i>&nbsp;     * styles.
+<i>197</i>&nbsp;     */
+<i>198</i>&nbsp;    public int getEndCap() {
+<b class="fc"><i>199</i>&nbsp;        return cap;</b>
+<i>200</i>&nbsp;    }
+<i>201</i>&nbsp;
+<i>202</i>&nbsp;    /**
+<i>203</i>&nbsp;     * Returns the line join style.
+<i>204</i>&nbsp;     * @return the line join style of the &lt;code&gt;BasicStroke&lt;/code&gt; as one
+<i>205</i>&nbsp;     * of the static &lt;code&gt;int&lt;/code&gt; values that define possible line
+<i>206</i>&nbsp;     * join styles.
+<i>207</i>&nbsp;     */
+<i>208</i>&nbsp;    public int getLineJoin() {
+<b class="fc"><i>209</i>&nbsp;        return join;</b>
+<i>210</i>&nbsp;    }
+<i>211</i>&nbsp;
+<i>212</i>&nbsp;    /**
+<i>213</i>&nbsp;     * Returns the limit of miter joins.
+<i>214</i>&nbsp;     * @return the limit of miter joins of the &lt;code&gt;BasicStroke&lt;/code&gt;.
+<i>215</i>&nbsp;     */
+<i>216</i>&nbsp;    public float getMiterLimit() {
+<b class="fc"><i>217</i>&nbsp;        return miterLimit;</b>
+<i>218</i>&nbsp;    }
+<i>219</i>&nbsp;
+<i>220</i>&nbsp;    /**
+<i>221</i>&nbsp;     * Returns true if this stroke object will apply dashing attributes
+<i>222</i>&nbsp;     * to the path.
+<i>223</i>&nbsp;     * @return whether the stroke has dashes
+<i>224</i>&nbsp;     */
+<i>225</i>&nbsp;    public boolean isDashed() {
+<b class="nc"><i>226</i>&nbsp;        return (dash != null);</b>
+<i>227</i>&nbsp;    }
+<i>228</i>&nbsp;    /**
+<i>229</i>&nbsp;     * Returns the array representing the lengths of the dash segments.
+<i>230</i>&nbsp;     * Alternate entries in the array represent the user space lengths
+<i>231</i>&nbsp;     * of the opaque and transparent segments of the dashes.
+<i>232</i>&nbsp;     * As the pen moves along the outline of the &lt;code&gt;Shape&lt;/code&gt;
+<i>233</i>&nbsp;     * to be stroked, the user space
+<i>234</i>&nbsp;     * distance that the pen travels is accumulated.  The distance
+<i>235</i>&nbsp;     * value is used to index into the dash array.
+<i>236</i>&nbsp;     * The pen is opaque when its current cumulative distance maps
+<i>237</i>&nbsp;     * to an even element of the dash array and transparent otherwise.
+<i>238</i>&nbsp;     * @return the dash array.
+<i>239</i>&nbsp;     */
+<i>240</i>&nbsp;    public float[] getDashArray() {
+<b class="fc"><i>241</i>&nbsp;        return dash;</b>
+<i>242</i>&nbsp;    }
+<i>243</i>&nbsp;
+<i>244</i>&nbsp;    /**
+<i>245</i>&nbsp;     * Returns the current dash phase.
+<i>246</i>&nbsp;     * The dash phase is a distance specified in user coordinates that
+<i>247</i>&nbsp;     * represents an offset into the dashing pattern. In other words, the dash
+<i>248</i>&nbsp;     * phase defines the point in the dashing pattern that will correspond to
+<i>249</i>&nbsp;     * the beginning of the stroke.
+<i>250</i>&nbsp;     * @return the dash phase as a &lt;code&gt;float&lt;/code&gt; value.
+<i>251</i>&nbsp;     */
+<i>252</i>&nbsp;    public float getDashPhase() {
+<b class="fc"><i>253</i>&nbsp;        return dashPhase;</b>
+<i>254</i>&nbsp;    }
+<i>255</i>&nbsp;
+<i>256</i>&nbsp;    public Shape createStrokedShape(Shape s) {
+<i>257</i>&nbsp;        Shape ret;
+<b class="fc"><i>258</i>&nbsp;        if (s instanceof RoundRectangle2D) {</b>
+<b class="nc"><i>259</i>&nbsp;            ret = strokeRoundRectangle((RoundRectangle2D) s);</b>
+<i>260</i>&nbsp;        } else {
+<b class="fc"><i>261</i>&nbsp;            ret = null;</b>
+<i>262</i>&nbsp;        }
+<b class="fc"><i>263</i>&nbsp;        if (ret != null) {</b>
+<b class="nc"><i>264</i>&nbsp;            return ret;</b>
+<i>265</i>&nbsp;        }
+<i>266</i>&nbsp;
+<b class="fc"><i>267</i>&nbsp;        ret = createCenteredStrokedShape(s);</b>
+<i>268</i>&nbsp;
+<b class="fc"><i>269</i>&nbsp;        if (type == TYPE_INNER) {</b>
+<b class="nc"><i>270</i>&nbsp;            ret = makeIntersectedShape(ret, s);</b>
+<b class="fc"><i>271</i>&nbsp;        } else if (type == TYPE_OUTER) {</b>
+<b class="nc"><i>272</i>&nbsp;            ret = makeSubtractedShape(ret, s);</b>
+<i>273</i>&nbsp;        }
+<b class="fc"><i>274</i>&nbsp;        return ret;</b>
+<i>275</i>&nbsp;    }
+<i>276</i>&nbsp;
+<i>277</i>&nbsp;    private boolean isCW(final float dx1, final float dy1,
+<i>278</i>&nbsp;                         final float dx2, final float dy2)
+<i>279</i>&nbsp;    {
+<b class="nc"><i>280</i>&nbsp;        return dx1 * dy2 &lt;= dy1 * dx2;</b>
+<i>281</i>&nbsp;    }
+<i>282</i>&nbsp;
+<i>283</i>&nbsp;    private void computeOffset(final float lx, final float ly,
+<i>284</i>&nbsp;                               final float w, final float[] m, int off) {
+<b class="fc"><i>285</i>&nbsp;        final float len = (float) Math.sqrt(lx * lx + ly * ly);</b>
+<b class="fc"><i>286</i>&nbsp;        if (len == 0) {</b>
+<b class="nc"><i>287</i>&nbsp;            m[off + 0] = m[off + 1] = 0;</b>
+<i>288</i>&nbsp;        } else {
+<b class="fc"><i>289</i>&nbsp;            m[off + 0] = (ly * w) / len;</b>
+<b class="fc"><i>290</i>&nbsp;            m[off + 1] = -(lx * w) / len;</b>
+<i>291</i>&nbsp;        }
+<b class="fc"><i>292</i>&nbsp;    }</b>
+<i>293</i>&nbsp;
+<i>294</i>&nbsp;    private void computeMiter(final float x0, final float y0,
+<i>295</i>&nbsp;                              final float x1, final float y1,
+<i>296</i>&nbsp;                              final float x0p, final float y0p,
+<i>297</i>&nbsp;                              final float x1p, final float y1p,
+<i>298</i>&nbsp;                              final float[] m, int off)
+<i>299</i>&nbsp;    {
+<b class="nc"><i>300</i>&nbsp;        float x10 = x1 - x0;</b>
+<b class="nc"><i>301</i>&nbsp;        float y10 = y1 - y0;</b>
+<b class="nc"><i>302</i>&nbsp;        float x10p = x1p - x0p;</b>
+<b class="nc"><i>303</i>&nbsp;        float y10p = y1p - y0p;</b>
+<i>304</i>&nbsp;
+<i>305</i>&nbsp;        // if this is 0, the lines are parallel. If they go in the
+<i>306</i>&nbsp;        // same direction, there is no intersection so m[off] and
+<i>307</i>&nbsp;        // m[off+1] will contain infinity, so no miter will be drawn.
+<i>308</i>&nbsp;        // If they go in the same direction that means that the start of the
+<i>309</i>&nbsp;        // current segment and the end of the previous segment have the same
+<i>310</i>&nbsp;        // tangent, in which case this method won&#39;t even be involved in
+<i>311</i>&nbsp;        // miter drawing because it won&#39;t be called by drawMiter (because
+<i>312</i>&nbsp;        // (mx == omx &amp;&amp; my == omy) will be true, and drawMiter will return
+<i>313</i>&nbsp;        // immediately).
+<b class="nc"><i>314</i>&nbsp;        float den = x10*y10p - x10p*y10;</b>
+<b class="nc"><i>315</i>&nbsp;        float t = x10p*(y0-y0p) - y10p*(x0-x0p);</b>
+<b class="nc"><i>316</i>&nbsp;        t /= den;</b>
+<b class="nc"><i>317</i>&nbsp;        m[off++] = x0 + t*x10;</b>
+<b class="nc"><i>318</i>&nbsp;        m[off] = y0 + t*y10;</b>
+<b class="nc"><i>319</i>&nbsp;    }</b>
+<i>320</i>&nbsp;
+<i>321</i>&nbsp;
+<i>322</i>&nbsp;    // taken from com.sun.javafx.geom.Shape.accumulateQuad (added the width)
+<i>323</i>&nbsp;    private void accumulateQuad(float bbox[], int off,
+<i>324</i>&nbsp;                               float v0, float vc, float v1, float w)
+<i>325</i>&nbsp;    {
+<i>326</i>&nbsp;        // Breaking this quad down into a polynomial:
+<i>327</i>&nbsp;        // eqn[0] = v0;
+<i>328</i>&nbsp;        // eqn[1] = vc + vc - v0 - v0;
+<i>329</i>&nbsp;        // eqn[2] = v0 - vc - vc + v1;
+<i>330</i>&nbsp;        // Deriving the polynomial:
+<i>331</i>&nbsp;        // eqn&#39;[0] = 1*eqn[1] = 2*(vc-v0)
+<i>332</i>&nbsp;        // eqn&#39;[1] = 2*eqn[2] = 2*((v1-vc)-(vc-v0))
+<i>333</i>&nbsp;        // Solving for zeroes on the derivative:
+<i>334</i>&nbsp;        // e1*t + e0 = 0
+<i>335</i>&nbsp;        // t = -e0/e1;
+<i>336</i>&nbsp;        // t = -2(vc-v0) / 2((v1-vc)-(vc-v0))
+<i>337</i>&nbsp;        // t = (v0-vc) / (v1-vc+v0-vc)
+<b class="nc"><i>338</i>&nbsp;        float num = v0 - vc;</b>
+<b class="nc"><i>339</i>&nbsp;        float den = v1 - vc + num;</b>
+<b class="nc"><i>340</i>&nbsp;        if (den != 0f) {</b>
+<b class="nc"><i>341</i>&nbsp;            float t = num / den;</b>
+<b class="nc"><i>342</i>&nbsp;            if (t &gt; 0 &amp;&amp; t &lt; 1) {</b>
+<b class="nc"><i>343</i>&nbsp;                float u = 1f - t;</b>
+<b class="nc"><i>344</i>&nbsp;                float v = v0 * u * u + 2 * vc * t * u + v1 * t * t;</b>
+<b class="nc"><i>345</i>&nbsp;                if (bbox[off] &gt; v - w) bbox[off] = v - w;</b>
+<b class="nc"><i>346</i>&nbsp;                if (bbox[off+2] &lt; v + w) bbox[off+2] = v + w;</b>
+<i>347</i>&nbsp;            }
+<i>348</i>&nbsp;        }
+<b class="nc"><i>349</i>&nbsp;    }</b>
+<i>350</i>&nbsp;
+<i>351</i>&nbsp;    // taken from com.sun.javafx.geom.Shape.accumulateCubic (added the width)
+<i>352</i>&nbsp;    private void accumulateCubic(float bbox[], int off, float t,
+<i>353</i>&nbsp;                                float v0, float vc0, float vc1, float v1, float w)
+<i>354</i>&nbsp;    {
+<b class="nc"><i>355</i>&nbsp;        if (t &gt; 0 &amp;&amp; t &lt; 1) {</b>
+<b class="nc"><i>356</i>&nbsp;            float u = 1f - t;</b>
+<b class="nc"><i>357</i>&nbsp;            float v =        v0 * u * u * u</b>
+<i>358</i>&nbsp;                      + 3 * vc0 * t * u * u
+<i>359</i>&nbsp;                      + 3 * vc1 * t * t * u
+<i>360</i>&nbsp;                      +      v1 * t * t * t;
+<b class="nc"><i>361</i>&nbsp;            if (bbox[off] &gt; v - w) bbox[off] = v - w;</b>
+<b class="nc"><i>362</i>&nbsp;            if (bbox[off+2] &lt; v + w) bbox[off+2] = v + w;</b>
+<i>363</i>&nbsp;        }
+<b class="nc"><i>364</i>&nbsp;    }</b>
+<i>365</i>&nbsp;
+<i>366</i>&nbsp;    // taken from com.sun.javafx.geom.Shape.accumulateCubic (added the width)
+<i>367</i>&nbsp;    private void accumulateCubic(float bbox[], int off,
+<i>368</i>&nbsp;                                float v0, float vc0, float vc1, float v1, float w)
+<i>369</i>&nbsp;    {
+<i>370</i>&nbsp;        // Breaking this cubic down into a polynomial:
+<i>371</i>&nbsp;        // eqn[0] = v0;
+<i>372</i>&nbsp;        // eqn[1] = (vc0 - v0) * 3f;
+<i>373</i>&nbsp;        // eqn[2] = (vc1 - vc0 - vc0 + v0) * 3f;
+<i>374</i>&nbsp;        // eqn[3] = v1 + (vc0 - vc1) * 3f - v0;
+<i>375</i>&nbsp;        // Deriving the polynomial:
+<i>376</i>&nbsp;        // eqn&#39;[0] = 1*eqn[1] = 3(vc0-v0)
+<i>377</i>&nbsp;        // eqn&#39;[1] = 2*eqn[2] = 6((vc1-vc0)-(vc0-v0))
+<i>378</i>&nbsp;        // eqn&#39;[2] = 3*eqn[3] = 3((v1-vc1)-2(vc1-vc0)+(vc0-v0))
+<i>379</i>&nbsp;        // Solving for zeroes on the derivative:
+<i>380</i>&nbsp;        // e2*t*t + e1*t + e0 = a*t*t + b*t + c = 0
+<i>381</i>&nbsp;        // Note that in solving for 0 we can divide all e0,e1,e2 by 3
+<i>382</i>&nbsp;        // t = (-b +/- sqrt(b*b-4ac))/2a
+<b class="nc"><i>383</i>&nbsp;        float c = vc0 - v0;</b>
+<b class="nc"><i>384</i>&nbsp;        float b = 2f * ((vc1 - vc0) - c);</b>
+<b class="nc"><i>385</i>&nbsp;        float a = (v1 - vc1) - b - c;</b>
+<b class="nc"><i>386</i>&nbsp;        if (a == 0f) {</b>
+<i>387</i>&nbsp;            // The quadratic parabola has degenerated to a line.
+<b class="nc"><i>388</i>&nbsp;            if (b == 0f) {</b>
+<i>389</i>&nbsp;                // The line has degenerated to a constant.
+<b class="nc"><i>390</i>&nbsp;                return;</b>
+<i>391</i>&nbsp;            }
+<b class="nc"><i>392</i>&nbsp;            accumulateCubic(bbox, off, -c/b, v0, vc0, vc1, v1, w);</b>
+<i>393</i>&nbsp;        } else {
+<i>394</i>&nbsp;            // From Numerical Recipes, 5.6, Quadratic and Cubic Equations
+<b class="nc"><i>395</i>&nbsp;            float d = b * b - 4f * a * c;</b>
+<b class="nc"><i>396</i>&nbsp;            if (d &lt; 0f) {</b>
+<i>397</i>&nbsp;                // If d &lt; 0.0, then there are no roots
+<b class="nc"><i>398</i>&nbsp;                return;</b>
+<i>399</i>&nbsp;            }
+<b class="nc"><i>400</i>&nbsp;            d = (float) Math.sqrt(d);</b>
+<i>401</i>&nbsp;            // For accuracy, calculate one root using:
+<i>402</i>&nbsp;            //     (-b +/- d) / 2a
+<i>403</i>&nbsp;            // and the other using:
+<i>404</i>&nbsp;            //     2c / (-b +/- d)
+<i>405</i>&nbsp;            // Choose the sign of the +/- so that b+d gets larger in magnitude
+<b class="nc"><i>406</i>&nbsp;            if (b &lt; 0f) {</b>
+<b class="nc"><i>407</i>&nbsp;                d = -d;</b>
+<i>408</i>&nbsp;            }
+<b class="nc"><i>409</i>&nbsp;            float q = (b + d) / -2f;</b>
+<i>410</i>&nbsp;            // We already tested a for being 0 above
+<b class="nc"><i>411</i>&nbsp;            accumulateCubic(bbox, off, q/a, v0, vc0, vc1, v1, w);</b>
+<b class="nc"><i>412</i>&nbsp;            if (q != 0f) {</b>
+<b class="nc"><i>413</i>&nbsp;                accumulateCubic(bbox, off, c/q, v0, vc0, vc1, v1, w);</b>
+<i>414</i>&nbsp;            }
+<i>415</i>&nbsp;        }
+<b class="nc"><i>416</i>&nbsp;    }</b>
+<i>417</i>&nbsp;
+<i>418</i>&nbsp;    // Basically any type of transform that does not violate a uniform
+<i>419</i>&nbsp;    // unsheared 2D scale.  We may have to scale the associated line width,
+<i>420</i>&nbsp;    // but we can accumulate everything in device space with no problems.
+<i>421</i>&nbsp;    private static final int SAFE_ACCUMULATE_MASK =
+<i>422</i>&nbsp;        (BaseTransform.TYPE_FLIP |
+<i>423</i>&nbsp;         BaseTransform.TYPE_GENERAL_ROTATION |
+<i>424</i>&nbsp;         BaseTransform.TYPE_QUADRANT_ROTATION |
+<i>425</i>&nbsp;         BaseTransform.TYPE_TRANSLATION |
+<i>426</i>&nbsp;         BaseTransform.TYPE_UNIFORM_SCALE);
+<i>427</i>&nbsp;
+<i>428</i>&nbsp;    public void accumulateShapeBounds(float bbox[], Shape shape, BaseTransform tx) {
+<b class="fc"><i>429</i>&nbsp;        if (type == TYPE_INNER) {</b>
+<b class="nc"><i>430</i>&nbsp;            Shape.accumulate(bbox, shape, tx);</b>
+<b class="nc"><i>431</i>&nbsp;            return;</b>
+<i>432</i>&nbsp;        }
+<b class="fc"><i>433</i>&nbsp;        if ((tx.getType() &amp; ~SAFE_ACCUMULATE_MASK) != 0) {</b>
+<i>434</i>&nbsp;            // This is a work-around for RT-15648.  That bug still applies here
+<i>435</i>&nbsp;            // since we should be optimizing that case, but at least with this
+<i>436</i>&nbsp;            // work-around, someone who calls this method, and is not aware of
+<i>437</i>&nbsp;            // that bug, will not be bitten by a bad answer.
+<b class="nc"><i>438</i>&nbsp;            Shape.accumulate(bbox, createStrokedShape(shape), tx);</b>
+<b class="nc"><i>439</i>&nbsp;            return;</b>
+<i>440</i>&nbsp;        }
+<b class="fc"><i>441</i>&nbsp;        PathIterator pi = shape.getPathIterator(tx);</b>
+<b class="fc"><i>442</i>&nbsp;        boolean lastSegmentMove = true;</b>
+<b class="fc"><i>443</i>&nbsp;        float coords[] = new float[6];</b>
+<b class="fc"><i>444</i>&nbsp;        float w = type == TYPE_CENTERED ? getLineWidth() / 2 : getLineWidth();</b>
+<i>445</i>&nbsp;        // Length(Transform(w, 0)) == w * Length(Transform(1, 0))
+<b class="fc"><i>446</i>&nbsp;        w *= Math.hypot(tx.getMxx(), tx.getMyx());</b>
+<i>447</i>&nbsp;        // starting x,y; previous x0, y0 and current x1,y1
+<b class="fc"><i>448</i>&nbsp;        float sx = 0f, sy = 0f, x0 = 0f, y0 = 0f, x1, y1;</b>
+<i>449</i>&nbsp;        // starting delta x,y; delta x,y; previous delta x,y
+<b class="fc"><i>450</i>&nbsp;        float sdx = 0f, sdy = 0f, dx, dy, pdx = 0f, pdy = 0f;</b>
+<i>451</i>&nbsp;        // current offset
+<b class="fc"><i>452</i>&nbsp;        float o[] = new float[4];</b>
+<i>453</i>&nbsp;        // previous offset; starting offset
+<b class="fc"><i>454</i>&nbsp;        float pox = 0f, poy = 0f, sox = 0f, soy = 0f;</b>
+<i>455</i>&nbsp;
+<b class="fc"><i>456</i>&nbsp;        while (!pi.isDone()) {</b>
+<b class="fc"><i>457</i>&nbsp;            int cur = pi.currentSegment(coords);</b>
+<b class="fc"><i>458</i>&nbsp;            switch (cur) {</b>
+<i>459</i>&nbsp;                case PathIterator.SEG_MOVETO:
+<b class="fc"><i>460</i>&nbsp;                    if (!lastSegmentMove) {</b>
+<b class="nc"><i>461</i>&nbsp;                        accumulateCap(pdx, pdy, x0, y0, pox, poy, bbox, w);</b>
+<b class="nc"><i>462</i>&nbsp;                        accumulateCap(-sdx, -sdy, sx, sy, -sox, -soy, bbox, w);</b>
+<i>463</i>&nbsp;                    }
+<i>464</i>&nbsp;
+<b class="fc"><i>465</i>&nbsp;                    x0 = sx = coords[0];</b>
+<b class="fc"><i>466</i>&nbsp;                    y0 = sy = coords[1];</b>
+<b class="fc"><i>467</i>&nbsp;                    break;</b>
+<i>468</i>&nbsp;                case PathIterator.SEG_LINETO:
+<b class="fc"><i>469</i>&nbsp;                    x1 = coords[0];</b>
+<b class="fc"><i>470</i>&nbsp;                    y1 = coords[1];</b>
+<b class="fc"><i>471</i>&nbsp;                    dx = x1 - x0;</b>
+<b class="fc"><i>472</i>&nbsp;                    dy = y1 - y0;</b>
+<b class="fc"><i>473</i>&nbsp;                    if (dx == 0f &amp;&amp; dy == 0f) {</b>
+<i>474</i>&nbsp;                        // Ideally these segments should be ignored, but both
+<i>475</i>&nbsp;                        // Java 2D and OpenPisces treat this case as if we
+<i>476</i>&nbsp;                        // were joining to a segment that was horizontal.
+<b class="nc"><i>477</i>&nbsp;                        dx = 1f;</b>
+<i>478</i>&nbsp;                    }
+<i>479</i>&nbsp;
+<b class="fc"><i>480</i>&nbsp;                    computeOffset(dx, dy, w, o, 0);</b>
+<i>481</i>&nbsp;
+<b class="fc"><i>482</i>&nbsp;                    if (!lastSegmentMove) {</b>
+<b class="nc"><i>483</i>&nbsp;                        accumulateJoin(pdx, pdy, dx, dy, x0, y0, pox, poy, o[0], o[1], bbox, w);</b>
+<i>484</i>&nbsp;                    }
+<i>485</i>&nbsp;
+<b class="fc"><i>486</i>&nbsp;                    x0 = x1;</b>
+<b class="fc"><i>487</i>&nbsp;                    y0 = y1;</b>
+<b class="fc"><i>488</i>&nbsp;                    pdx = dx;</b>
+<b class="fc"><i>489</i>&nbsp;                    pdy = dy;</b>
+<b class="fc"><i>490</i>&nbsp;                    pox = o[0];</b>
+<b class="fc"><i>491</i>&nbsp;                    poy = o[1];</b>
+<b class="fc"><i>492</i>&nbsp;                    if (lastSegmentMove) {</b>
+<b class="fc"><i>493</i>&nbsp;                        sdx = pdx;</b>
+<b class="fc"><i>494</i>&nbsp;                        sdy = pdy;</b>
+<b class="fc"><i>495</i>&nbsp;                        sox = pox;</b>
+<b class="fc"><i>496</i>&nbsp;                        soy = poy;</b>
+<i>497</i>&nbsp;                    }
+<i>498</i>&nbsp;                    break;
+<i>499</i>&nbsp;                case PathIterator.SEG_QUADTO:
+<b class="nc"><i>500</i>&nbsp;                    x1 = coords[2];</b>
+<b class="nc"><i>501</i>&nbsp;                    y1 = coords[3];</b>
+<b class="nc"><i>502</i>&nbsp;                    dx = coords[0] - x0;</b>
+<b class="nc"><i>503</i>&nbsp;                    dy = coords[1] - y0;</b>
+<i>504</i>&nbsp;
+<b class="nc"><i>505</i>&nbsp;                    computeOffset(dx, dy, w, o, 0);</b>
+<b class="nc"><i>506</i>&nbsp;                    if (!lastSegmentMove) {</b>
+<b class="nc"><i>507</i>&nbsp;                        accumulateJoin(pdx, pdy, dx, dy, x0, y0, pox, poy, o[0], o[1], bbox, w);</b>
+<i>508</i>&nbsp;                    }
+<i>509</i>&nbsp;
+<b class="nc"><i>510</i>&nbsp;                    if (bbox[0] &gt; coords[0] - w || bbox[2] &lt; coords[0] + w) {</b>
+<b class="nc"><i>511</i>&nbsp;                        accumulateQuad(bbox, 0, x0, coords[0], x1, w);</b>
+<i>512</i>&nbsp;                    }
+<b class="nc"><i>513</i>&nbsp;                    if (bbox[1] &gt; coords[1] - w || bbox[3] &lt; coords[1] + w) {</b>
+<b class="nc"><i>514</i>&nbsp;                        accumulateQuad(bbox, 1, y0, coords[1], y1, w);</b>
+<i>515</i>&nbsp;                    }
+<b class="nc"><i>516</i>&nbsp;                    x0 = x1;</b>
+<b class="nc"><i>517</i>&nbsp;                    y0 = y1;</b>
+<b class="nc"><i>518</i>&nbsp;                    if (lastSegmentMove) {</b>
+<b class="nc"><i>519</i>&nbsp;                        sdx = dx;</b>
+<b class="nc"><i>520</i>&nbsp;                        sdy = dy;</b>
+<b class="nc"><i>521</i>&nbsp;                        sox = o[0];</b>
+<b class="nc"><i>522</i>&nbsp;                        soy = o[1];</b>
+<i>523</i>&nbsp;                    }
+<b class="nc"><i>524</i>&nbsp;                    pdx = x1 - coords[0];</b>
+<b class="nc"><i>525</i>&nbsp;                    pdy = y1 - coords[1];</b>
+<b class="nc"><i>526</i>&nbsp;                    computeOffset(pdx, pdy, w, o, 0);</b>
+<b class="nc"><i>527</i>&nbsp;                    pox = o[0];</b>
+<b class="nc"><i>528</i>&nbsp;                    poy = o[1];</b>
+<b class="nc"><i>529</i>&nbsp;                    break;</b>
+<i>530</i>&nbsp;                case PathIterator.SEG_CUBICTO:
+<b class="nc"><i>531</i>&nbsp;                    x1 = coords[4];</b>
+<b class="nc"><i>532</i>&nbsp;                    y1 = coords[5];</b>
+<b class="nc"><i>533</i>&nbsp;                    dx = coords[0] - x0;</b>
+<b class="nc"><i>534</i>&nbsp;                    dy = coords[1] - y0;</b>
+<i>535</i>&nbsp;
+<b class="nc"><i>536</i>&nbsp;                    computeOffset(dx, dy, w, o, 0);</b>
+<b class="nc"><i>537</i>&nbsp;                    if (!lastSegmentMove) {</b>
+<b class="nc"><i>538</i>&nbsp;                        accumulateJoin(pdx, pdy, dx, dy, x0, y0, pox, poy, o[0], o[1], bbox, w);</b>
+<i>539</i>&nbsp;                    }
+<i>540</i>&nbsp;
+<b class="nc"><i>541</i>&nbsp;                    if (bbox[0] &gt; coords[0] - w || bbox[2] &lt; coords[0] + w ||</b>
+<i>542</i>&nbsp;                        bbox[0] &gt; coords[2] - w || bbox[2] &lt; coords[2] + w)
+<i>543</i>&nbsp;                    {
+<b class="nc"><i>544</i>&nbsp;                        accumulateCubic(bbox, 0, x0, coords[0], coords[2], x1, w);</b>
+<i>545</i>&nbsp;                    }
+<b class="nc"><i>546</i>&nbsp;                    if (bbox[1] &gt; coords[1] - w|| bbox[3] &lt; coords[1] + w ||</b>
+<i>547</i>&nbsp;                        bbox[1] &gt; coords[3] - w|| bbox[3] &lt; coords[3] + w)
+<i>548</i>&nbsp;                    {
+<b class="nc"><i>549</i>&nbsp;                        accumulateCubic(bbox, 1, y0, coords[1], coords[3], y1, w);</b>
+<i>550</i>&nbsp;                    }
+<b class="nc"><i>551</i>&nbsp;                    x0 = x1;</b>
+<b class="nc"><i>552</i>&nbsp;                    y0 = y1;</b>
+<b class="nc"><i>553</i>&nbsp;                    if (lastSegmentMove) {</b>
+<b class="nc"><i>554</i>&nbsp;                        sdx = dx;</b>
+<b class="nc"><i>555</i>&nbsp;                        sdy = dy;</b>
+<b class="nc"><i>556</i>&nbsp;                        sox = o[0];</b>
+<b class="nc"><i>557</i>&nbsp;                        soy = o[1];</b>
+<i>558</i>&nbsp;                    }
+<b class="nc"><i>559</i>&nbsp;                    pdx = x1 - coords[2];</b>
+<b class="nc"><i>560</i>&nbsp;                    pdy = y1 - coords[3];</b>
+<b class="nc"><i>561</i>&nbsp;                    computeOffset(pdx, pdy, w, o, 0);</b>
+<b class="nc"><i>562</i>&nbsp;                    pox = o[0];</b>
+<b class="nc"><i>563</i>&nbsp;                    poy = o[1];</b>
+<b class="nc"><i>564</i>&nbsp;                    break;</b>
+<i>565</i>&nbsp;                case PathIterator.SEG_CLOSE:
+<b class="nc"><i>566</i>&nbsp;                    dx = sx - x0;</b>
+<b class="nc"><i>567</i>&nbsp;                    dy = sy - y0;</b>
+<b class="nc"><i>568</i>&nbsp;                    x1 = sx;</b>
+<b class="nc"><i>569</i>&nbsp;                    y1 = sy;</b>
+<i>570</i>&nbsp;
+<b class="nc"><i>571</i>&nbsp;                    if (!lastSegmentMove) {</b>
+<b class="nc"><i>572</i>&nbsp;                        computeOffset(sdx, sdy, w, o, 2);</b>
+<b class="nc"><i>573</i>&nbsp;                        if (dx == 0 &amp;&amp; dy == 0) {</b>
+<b class="nc"><i>574</i>&nbsp;                            accumulateJoin(pdx, pdy, sdx, sdy, sx, sy, pox, poy, o[2], o[3], bbox, w);</b>
+<i>575</i>&nbsp;                        } else {
+<b class="nc"><i>576</i>&nbsp;                            computeOffset(dx, dy, w, o, 0);</b>
+<b class="nc"><i>577</i>&nbsp;                            accumulateJoin(pdx, pdy, dx, dy, x0, y0, pox, poy, o[0], o[1], bbox, w);</b>
+<b class="nc"><i>578</i>&nbsp;                            accumulateJoin(dx, dy, sdx, sdy, x1, y1, o[0], o[1], o[2], o[3], bbox, w);</b>
+<i>579</i>&nbsp;                        }
+<i>580</i>&nbsp;                    }
+<b class="nc"><i>581</i>&nbsp;                    x0 = x1;</b>
+<b class="nc"><i>582</i>&nbsp;                    y0 = y1;</b>
+<i>583</i>&nbsp;                    break;
+<i>584</i>&nbsp;            }
+<i>585</i>&nbsp;            // Close behaves like a move in certain ways - after close, line will draw a cap,
+<i>586</i>&nbsp;            // like if the close implicitely did move to the original coordinates
+<b class="fc"><i>587</i>&nbsp;            lastSegmentMove = cur == PathIterator.SEG_MOVETO || cur == PathIterator.SEG_CLOSE;</b>
+<b class="fc"><i>588</i>&nbsp;            pi.next();</b>
+<b class="fc"><i>589</i>&nbsp;        }</b>
+<i>590</i>&nbsp;
+<b class="fc"><i>591</i>&nbsp;        if (!lastSegmentMove) {</b>
+<b class="fc"><i>592</i>&nbsp;            accumulateCap(pdx, pdy, x0, y0, pox, poy, bbox, w);</b>
+<b class="fc"><i>593</i>&nbsp;            accumulateCap(-sdx, -sdy, sx, sy, -sox, -soy, bbox, w);</b>
+<i>594</i>&nbsp;        }
+<b class="fc"><i>595</i>&nbsp;    }</b>
+<i>596</i>&nbsp;
+<i>597</i>&nbsp;    private void accumulate(float o0, float o1, float o2, float o3, float[] bbox) {
+<b class="fc"><i>598</i>&nbsp;        if (o0 &lt;= o2) {</b>
+<b class="fc"><i>599</i>&nbsp;            if (o0 &lt; bbox[0]) bbox[0] = o0;</b>
+<b class="fc"><i>600</i>&nbsp;            if (o2 &gt; bbox[2]) bbox[2] = o2;</b>
+<i>601</i>&nbsp;        } else {
+<b class="fc"><i>602</i>&nbsp;            if (o2 &lt; bbox[0]) bbox[0] = o2;</b>
+<b class="fc"><i>603</i>&nbsp;            if (o0 &gt; bbox[2]) bbox[2] = o0;</b>
+<i>604</i>&nbsp;        }
+<b class="fc"><i>605</i>&nbsp;        if (o1 &lt;= o3) {</b>
+<b class="fc"><i>606</i>&nbsp;            if (o1 &lt; bbox[1]) bbox[1] = o1;</b>
+<b class="fc"><i>607</i>&nbsp;            if (o3 &gt; bbox[3]) bbox[3] = o3;</b>
+<i>608</i>&nbsp;        } else {
+<b class="nc"><i>609</i>&nbsp;            if (o3 &lt; bbox[1]) bbox[1] = o3;</b>
+<b class="nc"><i>610</i>&nbsp;            if (o1 &gt; bbox[3]) bbox[3] = o1;</b>
+<i>611</i>&nbsp;        }
+<b class="fc"><i>612</i>&nbsp;    }</b>
+<i>613</i>&nbsp;
+<i>614</i>&nbsp;    private void accumulateOrdered(float o0, float o1, float o2, float o3, float[] bbox) {
+<b class="nc"><i>615</i>&nbsp;        if (o0 &lt; bbox[0]) bbox[0] = o0;</b>
+<b class="nc"><i>616</i>&nbsp;        if (o2 &gt; bbox[2]) bbox[2] = o2;</b>
+<b class="nc"><i>617</i>&nbsp;        if (o1 &lt; bbox[1]) bbox[1] = o1;</b>
+<b class="nc"><i>618</i>&nbsp;        if (o3 &gt; bbox[3]) bbox[3] = o3;</b>
+<b class="nc"><i>619</i>&nbsp;    }</b>
+<i>620</i>&nbsp;
+<i>621</i>&nbsp;
+<i>622</i>&nbsp;    private void accumulateJoin(float pdx, float pdy, float dx, float dy, float x0, float y0,
+<i>623</i>&nbsp;                                float pox, float poy, float ox, float oy, float[] bbox, float w) {
+<i>624</i>&nbsp;
+<b class="nc"><i>625</i>&nbsp;        if (join == JOIN_BEVEL) {</b>
+<b class="nc"><i>626</i>&nbsp;            accumulateBevel(x0, y0, pox, poy, ox, oy, bbox);</b>
+<b class="nc"><i>627</i>&nbsp;        } else if (join == JOIN_MITER) {</b>
+<b class="nc"><i>628</i>&nbsp;            accumulateMiter(pdx, pdy, dx, dy, pox, poy, ox, oy, x0, y0, bbox, w);</b>
+<i>629</i>&nbsp;        } else { // JOIN_ROUND
+<b class="nc"><i>630</i>&nbsp;            accumulateOrdered(x0 - w, y0 - w, x0 + w, y0 + w, bbox);</b>
+<i>631</i>&nbsp;        }
+<i>632</i>&nbsp;
+<i>633</i>&nbsp;
+<b class="nc"><i>634</i>&nbsp;    }</b>
+<i>635</i>&nbsp;
+<i>636</i>&nbsp;    private void accumulateCap(float dx, float dy, float x0, float y0,
+<i>637</i>&nbsp;                               float ox, float oy, float[] bbox, float w) {
+<b class="fc"><i>638</i>&nbsp;        if (cap == CAP_SQUARE) {</b>
+<b class="fc"><i>639</i>&nbsp;            accumulate(x0 + ox - oy, y0 + oy + ox, x0 - ox - oy, y0 - oy + ox, bbox);</b>
+<b class="nc"><i>640</i>&nbsp;        } else if (cap == CAP_BUTT) {</b>
+<b class="nc"><i>641</i>&nbsp;            accumulate(x0 + ox, y0 + oy, x0 - ox, y0 - oy, bbox);</b>
+<i>642</i>&nbsp;        } else { //cap == CAP_ROUND
+<b class="nc"><i>643</i>&nbsp;            accumulateOrdered(x0 - w, y0 - w, x0 + w, y0 + w, bbox);</b>
+<i>644</i>&nbsp;        }
+<i>645</i>&nbsp;
+<b class="fc"><i>646</i>&nbsp;    }</b>
+<i>647</i>&nbsp;
+<b class="fc"><i>648</i>&nbsp;    private float[] tmpMiter = new float[2];</b>
+<i>649</i>&nbsp;
+<i>650</i>&nbsp;    private void accumulateMiter(float pdx, float pdy, float dx, float dy,
+<i>651</i>&nbsp;                                    float pox, float poy, float ox, float oy,
+<i>652</i>&nbsp;                                    float x0, float y0, float[] bbox, float w) {
+<i>653</i>&nbsp;        // Always accumulate bevel for cases of degenerate miters...
+<b class="nc"><i>654</i>&nbsp;        accumulateBevel(x0, y0, pox, poy, ox, oy, bbox);</b>
+<i>655</i>&nbsp;
+<b class="nc"><i>656</i>&nbsp;        boolean cw = isCW(pdx, pdy, dx, dy);</b>
+<i>657</i>&nbsp;
+<b class="nc"><i>658</i>&nbsp;        if (cw) {</b>
+<b class="nc"><i>659</i>&nbsp;            pox = -pox;</b>
+<b class="nc"><i>660</i>&nbsp;            poy = -poy;</b>
+<b class="nc"><i>661</i>&nbsp;            ox = -ox;</b>
+<b class="nc"><i>662</i>&nbsp;            oy = -oy;</b>
+<i>663</i>&nbsp;        }
+<i>664</i>&nbsp;
+<b class="nc"><i>665</i>&nbsp;        computeMiter((x0 - pdx) + pox, (y0 - pdy) + poy, x0 + pox, y0 + poy,</b>
+<i>666</i>&nbsp;                     (x0 + dx) + ox, (y0 + dy) + oy, x0 + ox, y0 + oy,
+<i>667</i>&nbsp;                     tmpMiter, 0);
+<b class="nc"><i>668</i>&nbsp;        float lenSq = (tmpMiter[0] - x0) * (tmpMiter[0] - x0) + (tmpMiter[1] - y0) * (tmpMiter[1] - y0);</b>
+<i>669</i>&nbsp;
+<b class="nc"><i>670</i>&nbsp;        float miterLimitWidth = miterLimit * w;</b>
+<b class="nc"><i>671</i>&nbsp;        if (lenSq &lt; miterLimitWidth * miterLimitWidth) {</b>
+<b class="nc"><i>672</i>&nbsp;            accumulateOrdered(tmpMiter[0], tmpMiter[1], tmpMiter[0], tmpMiter[1], bbox);</b>
+<i>673</i>&nbsp;        }
+<b class="nc"><i>674</i>&nbsp;    }</b>
+<i>675</i>&nbsp;
+<i>676</i>&nbsp;
+<i>677</i>&nbsp;    private void accumulateBevel(float x0, float y0, float pox, float poy, float ox, float oy, float[] bbox) {
+<b class="nc"><i>678</i>&nbsp;        accumulate(x0 + pox, y0 + poy, x0 - pox, y0 - poy, bbox);</b>
+<b class="nc"><i>679</i>&nbsp;        accumulate(x0 + ox, y0 + oy, x0 - ox, y0 - oy, bbox);</b>
+<b class="nc"><i>680</i>&nbsp;    }</b>
+<i>681</i>&nbsp;
+<i>682</i>&nbsp;    public Shape createCenteredStrokedShape(Shape s) {
+<b class="fc"><i>683</i>&nbsp;        Path2D p2d = new Path2D(Path2D.WIND_NON_ZERO);</b>
+<b class="fc"><i>684</i>&nbsp;        float lw = (type == TYPE_CENTERED) ? width : width * 2.0f;</b>
+<b class="fc"><i>685</i>&nbsp;        PathConsumer2D pc2d =</b>
+<i>686</i>&nbsp;            new Stroker(p2d, lw, cap, join, miterLimit);
+<b class="fc"><i>687</i>&nbsp;        if (dash != null) {</b>
+<b class="nc"><i>688</i>&nbsp;            pc2d = new Dasher(pc2d, dash, dashPhase);</b>
+<i>689</i>&nbsp;        }
+<b class="fc"><i>690</i>&nbsp;        OpenPiscesPrismUtils.feedConsumer(s.getPathIterator(null), pc2d);</b>
+<b class="fc"><i>691</i>&nbsp;        return p2d;</b>
+<i>692</i>&nbsp;    }
+<i>693</i>&nbsp;
+<b class="fc"><i>694</i>&nbsp;    static final float SQRT_2 = (float) Math.sqrt(2);</b>
+<i>695</i>&nbsp;
+<i>696</i>&nbsp;    Shape strokeRoundRectangle(RoundRectangle2D rr) {
+<b class="nc"><i>697</i>&nbsp;        if (rr.width &lt; 0 || rr.height &lt; 0) {</b>
+<b class="nc"><i>698</i>&nbsp;            return new Path2D();</b>
+<i>699</i>&nbsp;        }
+<b class="nc"><i>700</i>&nbsp;        if (isDashed()) {</b>
+<b class="nc"><i>701</i>&nbsp;            return null;</b>
+<i>702</i>&nbsp;        }
+<i>703</i>&nbsp;        int j;
+<b class="nc"><i>704</i>&nbsp;        float aw = rr.arcWidth;</b>
+<b class="nc"><i>705</i>&nbsp;        float ah = rr.arcHeight;</b>
+<b class="nc"><i>706</i>&nbsp;        if (aw &lt;= 0f || ah &lt;= 0f) {</b>
+<b class="nc"><i>707</i>&nbsp;            aw = ah = 0f;</b>
+<b class="nc"><i>708</i>&nbsp;            if (type == TYPE_INNER) {</b>
+<b class="nc"><i>709</i>&nbsp;                j = JOIN_MITER;</b>
+<i>710</i>&nbsp;            } else {
+<b class="nc"><i>711</i>&nbsp;                j = this.join;</b>
+<b class="nc"><i>712</i>&nbsp;                if (j == JOIN_MITER &amp;&amp; miterLimit &lt; SQRT_2) {</b>
+<b class="nc"><i>713</i>&nbsp;                    j = JOIN_BEVEL;</b>
+<i>714</i>&nbsp;                }
+<i>715</i>&nbsp;            }
+<i>716</i>&nbsp;        } else {
+<b class="nc"><i>717</i>&nbsp;            if (aw &lt; ah * 0.9f || ah &lt; aw * 0.9f) {</b>
+<i>718</i>&nbsp;                // RT-27416
+<i>719</i>&nbsp;                // TODO: Need to check these multipliers and
+<i>720</i>&nbsp;                // optimize this case...
+<b class="nc"><i>721</i>&nbsp;                return null;</b>
+<i>722</i>&nbsp;            }
+<b class="nc"><i>723</i>&nbsp;            j = JOIN_ROUND;</b>
+<i>724</i>&nbsp;        }
+<i>725</i>&nbsp;        float id, od;
+<b class="nc"><i>726</i>&nbsp;        if (type == TYPE_INNER) {</b>
+<b class="nc"><i>727</i>&nbsp;            od = 0f;</b>
+<b class="nc"><i>728</i>&nbsp;            id = this.width;</b>
+<b class="nc"><i>729</i>&nbsp;        } else if (type == TYPE_OUTER) {</b>
+<b class="nc"><i>730</i>&nbsp;            od = this.width;</b>
+<b class="nc"><i>731</i>&nbsp;            id = 0f;</b>
+<i>732</i>&nbsp;        } else {
+<b class="nc"><i>733</i>&nbsp;            od = id = this.width/2f;</b>
+<i>734</i>&nbsp;        }
+<i>735</i>&nbsp;        Shape outer;
+<b class="nc"><i>736</i>&nbsp;        switch (j) {</b>
+<i>737</i>&nbsp;            case JOIN_MITER:
+<b class="nc"><i>738</i>&nbsp;                outer = new RoundRectangle2D(rr.x - od, rr.y - od,</b>
+<i>739</i>&nbsp;                                             rr.width+od*2f, rr.height+od*2f,
+<i>740</i>&nbsp;                                             0f, 0f);
+<b class="nc"><i>741</i>&nbsp;                break;</b>
+<i>742</i>&nbsp;            case JOIN_BEVEL:
+<b class="nc"><i>743</i>&nbsp;                outer = makeBeveledRect(rr.x, rr.y, rr.width, rr.height, od);</b>
+<b class="nc"><i>744</i>&nbsp;                break;</b>
+<i>745</i>&nbsp;            case JOIN_ROUND:
+<b class="nc"><i>746</i>&nbsp;                outer = new RoundRectangle2D(rr.x - od, rr.y - od,</b>
+<i>747</i>&nbsp;                                             rr.width+od*2f, rr.height+od*2f,
+<i>748</i>&nbsp;                                             aw+od*2f, ah+od*2f);
+<b class="nc"><i>749</i>&nbsp;                break;</b>
+<i>750</i>&nbsp;            default:
+<b class="nc"><i>751</i>&nbsp;                throw new InternalError(&quot;Unrecognized line join style&quot;);</b>
+<i>752</i>&nbsp;        }
+<b class="nc"><i>753</i>&nbsp;        if (rr.width &lt;= id*2f || rr.height &lt;= id*2f) {</b>
+<b class="nc"><i>754</i>&nbsp;            return outer;</b>
+<i>755</i>&nbsp;        }
+<b class="nc"><i>756</i>&nbsp;        aw -= id*2f;</b>
+<b class="nc"><i>757</i>&nbsp;        ah -= id*2f;</b>
+<b class="nc"><i>758</i>&nbsp;        if (aw &lt;= 0f || ah &lt;= 0f) {</b>
+<b class="nc"><i>759</i>&nbsp;            aw = ah = 0f;</b>
+<i>760</i>&nbsp;        }
+<b class="nc"><i>761</i>&nbsp;        Shape inner = new RoundRectangle2D(rr.x + id, rr.y + id,</b>
+<i>762</i>&nbsp;                                           rr.width-id*2f, rr.height-id*2f,
+<i>763</i>&nbsp;                                           aw, ah);
+<b class="nc"><i>764</i>&nbsp;        Path2D p2d = (outer instanceof Path2D)</b>
+<b class="nc"><i>765</i>&nbsp;            ? ((Path2D) outer) : new Path2D(outer);</b>
+<b class="nc"><i>766</i>&nbsp;        p2d.setWindingRule(Path2D.WIND_EVEN_ODD);</b>
+<b class="nc"><i>767</i>&nbsp;        p2d.append(inner, false);</b>
+<b class="nc"><i>768</i>&nbsp;        return p2d;</b>
+<i>769</i>&nbsp;    }
+<i>770</i>&nbsp;
+<i>771</i>&nbsp;    static Shape makeBeveledRect(float rx, float ry,
+<i>772</i>&nbsp;                                 float rw, float rh,
+<i>773</i>&nbsp;                                 float d)
+<i>774</i>&nbsp;    {
+<b class="nc"><i>775</i>&nbsp;        float rx0 = rx;</b>
+<b class="nc"><i>776</i>&nbsp;        float ry0 = ry;</b>
+<b class="nc"><i>777</i>&nbsp;        float rx1 = rx + rw;</b>
+<b class="nc"><i>778</i>&nbsp;        float ry1 = ry + rh;</b>
+<b class="nc"><i>779</i>&nbsp;        Path2D p = new Path2D();</b>
+<b class="nc"><i>780</i>&nbsp;        p.moveTo(rx0, ry0 - d);</b>
+<b class="nc"><i>781</i>&nbsp;        p.lineTo(rx1, ry0 - d);</b>
+<b class="nc"><i>782</i>&nbsp;        p.lineTo(rx1 + d, ry0);</b>
+<b class="nc"><i>783</i>&nbsp;        p.lineTo(rx1 + d, ry1);</b>
+<b class="nc"><i>784</i>&nbsp;        p.lineTo(rx1, ry1 + d);</b>
+<b class="nc"><i>785</i>&nbsp;        p.lineTo(rx0, ry1 + d);</b>
+<b class="nc"><i>786</i>&nbsp;        p.lineTo(rx0 - d, ry1);</b>
+<b class="nc"><i>787</i>&nbsp;        p.lineTo(rx0 - d, ry0);</b>
+<b class="nc"><i>788</i>&nbsp;        p.closePath();</b>
+<b class="nc"><i>789</i>&nbsp;        return p;</b>
+<i>790</i>&nbsp;    }
+<i>791</i>&nbsp;
+<i>792</i>&nbsp;    protected Shape makeIntersectedShape(Shape outer, Shape inner) {
+<b class="nc"><i>793</i>&nbsp;        return new CAGShapePair(outer, inner, ShapePair.TYPE_INTERSECT);</b>
+<i>794</i>&nbsp;    }
+<i>795</i>&nbsp;
+<i>796</i>&nbsp;    protected Shape makeSubtractedShape(Shape outer, Shape inner) {
+<b class="nc"><i>797</i>&nbsp;        return new CAGShapePair(outer, inner, ShapePair.TYPE_SUBTRACT);</b>
+<i>798</i>&nbsp;    }
+<i>799</i>&nbsp;
+<i>800</i>&nbsp;    static class CAGShapePair extends GeneralShapePair {
+<i>801</i>&nbsp;        private Shape cagshape;
+<i>802</i>&nbsp;
+<i>803</i>&nbsp;        public CAGShapePair(Shape outer, Shape inner, int type) {
+<b class="nc"><i>804</i>&nbsp;            super(outer, inner, type);</b>
+<b class="nc"><i>805</i>&nbsp;        }</b>
+<i>806</i>&nbsp;
+<i>807</i>&nbsp;        @Override
+<i>808</i>&nbsp;        public PathIterator getPathIterator(BaseTransform tx) {
+<b class="nc"><i>809</i>&nbsp;            if (cagshape == null) {</b>
+<b class="nc"><i>810</i>&nbsp;                Area o = new Area(getOuterShape());</b>
+<b class="nc"><i>811</i>&nbsp;                Area i = new Area(getInnerShape());</b>
+<b class="nc"><i>812</i>&nbsp;                if (getCombinationType() == ShapePair.TYPE_INTERSECT) {</b>
+<b class="nc"><i>813</i>&nbsp;                    o.intersect(i);</b>
+<i>814</i>&nbsp;                } else {
+<b class="nc"><i>815</i>&nbsp;                    o.subtract(i);</b>
+<i>816</i>&nbsp;                }
+<b class="nc"><i>817</i>&nbsp;                cagshape = o;</b>
+<i>818</i>&nbsp;            }
+<b class="nc"><i>819</i>&nbsp;            return cagshape.getPathIterator(tx);</b>
+<i>820</i>&nbsp;        }
+<i>821</i>&nbsp;    }
+<i>822</i>&nbsp;
+<i>823</i>&nbsp;    /**
+<i>824</i>&nbsp;     * Returns the hashcode for this stroke.
+<i>825</i>&nbsp;     * @return      a hash code for this stroke.
+<i>826</i>&nbsp;     */
+<i>827</i>&nbsp;    @Override
+<i>828</i>&nbsp;    public int hashCode() {
+<b class="nc"><i>829</i>&nbsp;        int hash = Float.floatToIntBits(width);</b>
+<b class="nc"><i>830</i>&nbsp;        hash = hash * 31 + join;</b>
+<b class="nc"><i>831</i>&nbsp;        hash = hash * 31 + cap;</b>
+<b class="nc"><i>832</i>&nbsp;        hash = hash * 31 + Float.floatToIntBits(miterLimit);</b>
+<b class="nc"><i>833</i>&nbsp;        if (dash != null) {</b>
+<b class="nc"><i>834</i>&nbsp;            hash = hash * 31 + Float.floatToIntBits(dashPhase);</b>
+<b class="nc"><i>835</i>&nbsp;            for (int i = 0; i &lt; dash.length; i++) {</b>
+<b class="nc"><i>836</i>&nbsp;                hash = hash * 31 + Float.floatToIntBits(dash[i]);</b>
+<i>837</i>&nbsp;            }
+<i>838</i>&nbsp;        }
+<b class="nc"><i>839</i>&nbsp;        return hash;</b>
+<i>840</i>&nbsp;    }
+<i>841</i>&nbsp;
+<i>842</i>&nbsp;    /**
+<i>843</i>&nbsp;     * Tests if a specified object is equal to this &lt;code&gt;BasicStroke&lt;/code&gt;
+<i>844</i>&nbsp;     * by first testing if it is a &lt;code&gt;BasicStroke&lt;/code&gt; and then comparing
+<i>845</i>&nbsp;     * its width, join, cap, miter limit, dash, and dash phase attributes with
+<i>846</i>&nbsp;     * those of this &lt;code&gt;BasicStroke&lt;/code&gt;.
+<i>847</i>&nbsp;     * @param  obj the specified object to compare to this
+<i>848</i>&nbsp;     *              &lt;code&gt;BasicStroke&lt;/code&gt;
+<i>849</i>&nbsp;     * @return &lt;code&gt;true&lt;/code&gt; if the width, join, cap, miter limit, dash, and
+<i>850</i>&nbsp;     *            dash phase are the same for both objects;
+<i>851</i>&nbsp;     *            &lt;code&gt;false&lt;/code&gt; otherwise.
+<i>852</i>&nbsp;     */
+<i>853</i>&nbsp;    @Override
+<i>854</i>&nbsp;    public boolean equals(Object obj) {
+<b class="fc"><i>855</i>&nbsp;        if (!(obj instanceof BasicStroke)) {</b>
+<b class="fc"><i>856</i>&nbsp;            return false;</b>
+<i>857</i>&nbsp;        }
+<b class="nc"><i>858</i>&nbsp;        BasicStroke bs = (BasicStroke) obj;</b>
+<b class="nc"><i>859</i>&nbsp;        if (width != bs.width) {</b>
+<b class="nc"><i>860</i>&nbsp;            return false;</b>
+<i>861</i>&nbsp;        }
+<b class="nc"><i>862</i>&nbsp;        if (join != bs.join) {</b>
+<b class="nc"><i>863</i>&nbsp;            return false;</b>
+<i>864</i>&nbsp;        }
+<b class="nc"><i>865</i>&nbsp;        if (cap != bs.cap) {</b>
+<b class="nc"><i>866</i>&nbsp;            return false;</b>
+<i>867</i>&nbsp;        }
+<b class="nc"><i>868</i>&nbsp;        if (miterLimit != bs.miterLimit) {</b>
+<b class="nc"><i>869</i>&nbsp;            return false;</b>
+<i>870</i>&nbsp;        }
+<b class="nc"><i>871</i>&nbsp;        if (dash != null) {</b>
+<b class="nc"><i>872</i>&nbsp;            if (dashPhase != bs.dashPhase) {</b>
+<b class="nc"><i>873</i>&nbsp;                return false;</b>
+<i>874</i>&nbsp;            }
+<b class="nc"><i>875</i>&nbsp;            if (!java.util.Arrays.equals(dash, bs.dash)) {</b>
+<b class="nc"><i>876</i>&nbsp;                return false;</b>
+<i>877</i>&nbsp;            }
+<i>878</i>&nbsp;        }
+<b class="nc"><i>879</i>&nbsp;        else if (bs.dash != null) {</b>
+<b class="nc"><i>880</i>&nbsp;            return false;</b>
+<i>881</i>&nbsp;        }
+<i>882</i>&nbsp;
+<b class="nc"><i>883</i>&nbsp;        return true;</b>
+<i>884</i>&nbsp;    }
+<i>885</i>&nbsp;
+<i>886</i>&nbsp;    public BasicStroke copy() {
+<b class="fc"><i>887</i>&nbsp;        return new BasicStroke(type, width, cap, join, miterLimit, dash, dashPhase);</b>
+<i>888</i>&nbsp;    }
+<i>889</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2017-12-04 21:49</div>
+</div>
+</body>
+</html>

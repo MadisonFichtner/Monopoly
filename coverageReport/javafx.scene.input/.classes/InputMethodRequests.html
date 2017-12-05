@@ -1,0 +1,137 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: InputMethodRequests</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">javafx.scene.input</a> ]
+</div>
+
+<h1>Coverage Summary for Class: InputMethodRequests (javafx.scene.input)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+</tr>
+<tr>
+  <td class="name">InputMethodRequests</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright (c) 2011, 2013, Oracle and/or its affiliates. All rights reserved.
+<i>3</i>&nbsp; * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+<i>4</i>&nbsp; *
+<i>5</i>&nbsp; *
+<i>6</i>&nbsp; *
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; *
+<i>11</i>&nbsp; *
+<i>12</i>&nbsp; *
+<i>13</i>&nbsp; *
+<i>14</i>&nbsp; *
+<i>15</i>&nbsp; *
+<i>16</i>&nbsp; *
+<i>17</i>&nbsp; *
+<i>18</i>&nbsp; *
+<i>19</i>&nbsp; *
+<i>20</i>&nbsp; *
+<i>21</i>&nbsp; *
+<i>22</i>&nbsp; *
+<i>23</i>&nbsp; *
+<i>24</i>&nbsp; */
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;package javafx.scene.input;
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;import javafx.geometry.Point2D;
+<i>29</i>&nbsp;
+<i>30</i>&nbsp;/**
+<i>31</i>&nbsp; * InputMethodRequests defines the requests that a text editing node
+<i>32</i>&nbsp; * has to handle in order to work with input methods. The node can
+<i>33</i>&nbsp; * implement this interface itself or use a separate object that
+<i>34</i>&nbsp; * implements it. The object implementing this interface must be
+<i>35</i>&nbsp; * returned from the node&#39;s getInputMethodRequests method.
+<i>36</i>&nbsp; *
+<i>37</i>&nbsp; * @since JavaFX 2.0
+<i>38</i>&nbsp; */
+<i>39</i>&nbsp;public interface InputMethodRequests {
+<i>40</i>&nbsp;
+<i>41</i>&nbsp;    /**
+<i>42</i>&nbsp;     * Gets the location of a specified offset in the current composed text,
+<i>43</i>&nbsp;     * or of the selection in committed text. This information is, for example,
+<i>44</i>&nbsp;     * used to position the candidate window near the composed text, or a
+<i>45</i>&nbsp;     * composition window near the location where committed text will be
+<i>46</i>&nbsp;     * inserted.
+<i>47</i>&nbsp;     *
+<i>48</i>&nbsp;     * @param offset the offset within the composed text, if there is
+<i>49</i>&nbsp;     *         composed text; null otherwise
+<i>50</i>&nbsp;     * @return a point representing the screen location of the offset
+<i>51</i>&nbsp;     */
+<i>52</i>&nbsp;    Point2D getTextLocation(int offset);
+<i>53</i>&nbsp;
+<i>54</i>&nbsp;    /**
+<i>55</i>&nbsp;     * Gets the offset within the composed text for the specified absolute x
+<i>56</i>&nbsp;     * and y coordinates on the screen. This information is used, for example
+<i>57</i>&nbsp;     * to handle mouse clicks and the mouse cursor. The offset is relative to
+<i>58</i>&nbsp;     * the composed text, so offset 0 indicates the beginning of the composed
+<i>59</i>&nbsp;     * text.
+<i>60</i>&nbsp;     *
+<i>61</i>&nbsp;     * @param x the absolute x coordinate on screen
+<i>62</i>&nbsp;     * @param y the absolute y coordinate on screen
+<i>63</i>&nbsp;     * @return the offset in the composed text.
+<i>64</i>&nbsp;     */
+<i>65</i>&nbsp;    int getLocationOffset(int x, int y);
+<i>66</i>&nbsp;
+<i>67</i>&nbsp;    /**
+<i>68</i>&nbsp;     * Gets the latest committed text from the text editing node and removes
+<i>69</i>&nbsp;     * it from the node&#39;s text body. This is used for the &quot;Undo Commit&quot;
+<i>70</i>&nbsp;     * feature in some input methods, where the committed text reverts to
+<i>71</i>&nbsp;     * its previous composed state. The composed text will be sent to the
+<i>72</i>&nbsp;     * node using an InputMethodEvent.
+<i>73</i>&nbsp;     */
+<i>74</i>&nbsp;    void cancelLatestCommittedText();
+<i>75</i>&nbsp;
+<i>76</i>&nbsp;    /**
+<i>77</i>&nbsp;     * Gets the currently selected text from the text editing node. This may
+<i>78</i>&nbsp;     * be used for a variety of purposes. One of them is the &quot;Reconvert&quot;
+<i>79</i>&nbsp;     * feature in some input methods. In this case, the input method will
+<i>80</i>&nbsp;     * typically send an input method event to replace the selected text
+<i>81</i>&nbsp;     * with composed text. Depending on the input method&#39;s capabilities,
+<i>82</i>&nbsp;     * this may be the original composed text for the selected text, the
+<i>83</i>&nbsp;     * latest composed text entered anywhere in the text, or a version of
+<i>84</i>&nbsp;     * the text that&#39;s converted back from the selected text.
+<i>85</i>&nbsp;     *
+<i>86</i>&nbsp;     * @return the latest committed text, or null when the &quot;Undo Commit&quot;
+<i>87</i>&nbsp;     *     feature is not supported
+<i>88</i>&nbsp;     */
+<i>89</i>&nbsp;    String getSelectedText();
+<i>90</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2017-12-04 21:49</div>
+</div>
+</body>
+</html>

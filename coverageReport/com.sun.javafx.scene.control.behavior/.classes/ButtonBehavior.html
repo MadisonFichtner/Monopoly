@@ -1,0 +1,317 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: ButtonBehavior</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.javafx.scene.control.behavior</a> ]
+</div>
+
+<h1>Coverage Summary for Class: ButtonBehavior (com.sun.javafx.scene.control.behavior)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">ButtonBehavior</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    50%
+  </span>
+  <span class="absValue">
+    (6/ 12)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    57.8%
+  </span>
+  <span class="absValue">
+    (26/ 45)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright (c) 2010, 2016, Oracle and/or its affiliates. All rights reserved.
+<i>3</i>&nbsp; * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+<i>4</i>&nbsp; *
+<i>5</i>&nbsp; *
+<i>6</i>&nbsp; *
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; *
+<i>11</i>&nbsp; *
+<i>12</i>&nbsp; *
+<i>13</i>&nbsp; *
+<i>14</i>&nbsp; *
+<i>15</i>&nbsp; *
+<i>16</i>&nbsp; *
+<i>17</i>&nbsp; *
+<i>18</i>&nbsp; *
+<i>19</i>&nbsp; *
+<i>20</i>&nbsp; *
+<i>21</i>&nbsp; *
+<i>22</i>&nbsp; *
+<i>23</i>&nbsp; *
+<i>24</i>&nbsp; */
+<i>25</i>&nbsp;package com.sun.javafx.scene.control.behavior;
+<i>26</i>&nbsp;
+<i>27</i>&nbsp;import com.sun.javafx.PlatformUtil;
+<i>28</i>&nbsp;import com.sun.javafx.scene.control.inputmap.KeyBinding;
+<i>29</i>&nbsp;import javafx.beans.Observable;
+<i>30</i>&nbsp;import javafx.scene.control.ButtonBase;
+<i>31</i>&nbsp;import com.sun.javafx.scene.control.inputmap.InputMap;
+<i>32</i>&nbsp;import javafx.scene.input.KeyEvent;
+<i>33</i>&nbsp;import javafx.scene.input.MouseButton;
+<i>34</i>&nbsp;import javafx.scene.input.MouseEvent;
+<i>35</i>&nbsp;
+<i>36</i>&nbsp;import static com.sun.javafx.scene.control.inputmap.InputMap.*;
+<i>37</i>&nbsp;import static javafx.scene.input.KeyCode.ENTER;
+<i>38</i>&nbsp;import static javafx.scene.input.KeyCode.SPACE;
+<i>39</i>&nbsp;
+<i>40</i>&nbsp;/**
+<i>41</i>&nbsp; * All of the &quot;button&quot; types (CheckBox, RadioButton, ToggleButton, and Button)
+<i>42</i>&nbsp; * and also maybe some other types like hyperlinks operate on the &quot;armed&quot;
+<i>43</i>&nbsp; * selection strategy, just like JButton. This behavior class encapsulates that
+<i>44</i>&nbsp; * logic in a way that can be reused and extended by each of the individual
+<i>45</i>&nbsp; * class behaviors.
+<i>46</i>&nbsp; *
+<i>47</i>&nbsp; */
+<i>48</i>&nbsp;public class ButtonBehavior&lt;C extends ButtonBase&gt; extends BehaviorBase&lt;C&gt; {
+<i>49</i>&nbsp;    private final InputMap&lt;C&gt; buttonInputMap;
+<i>50</i>&nbsp;
+<i>51</i>&nbsp;    /**
+<i>52</i>&nbsp;     * Indicates that a keyboard key has been pressed which represents the
+<i>53</i>&nbsp;     * event (this could be space bar for example). As long as keyDown is true,
+<i>54</i>&nbsp;     * we are also armed, and will ignore mouse events related to arming.
+<i>55</i>&nbsp;     * Note this is made package private solely for the sake of testing.
+<i>56</i>&nbsp;     */
+<i>57</i>&nbsp;    private boolean keyDown;
+<i>58</i>&nbsp;
+<i>59</i>&nbsp;
+<i>60</i>&nbsp;
+<i>61</i>&nbsp;    /***************************************************************************
+<i>62</i>&nbsp;     *                                                                         *
+<i>63</i>&nbsp;     * Constructors                                                            *
+<i>64</i>&nbsp;     *                                                                         *
+<i>65</i>&nbsp;     **************************************************************************/
+<i>66</i>&nbsp;
+<i>67</i>&nbsp;    public ButtonBehavior(C control) {
+<b class="fc"><i>68</i>&nbsp;        super(control);</b>
+<i>69</i>&nbsp;
+<i>70</i>&nbsp;        // create a map for button-specific mappings (this reuses the default
+<i>71</i>&nbsp;        // InputMap installed on the control, if it is non-null, allowing us to pick up any user-specified mappings)
+<b class="fc"><i>72</i>&nbsp;        buttonInputMap = createInputMap();</b>
+<i>73</i>&nbsp;
+<i>74</i>&nbsp;        // add focus traversal mappings
+<b class="fc"><i>75</i>&nbsp;        addDefaultMapping(buttonInputMap, FocusTraversalInputMap.getFocusTraversalMappings());</b>
+<i>76</i>&nbsp;
+<i>77</i>&nbsp;        // then button-specific mappings for key and mouse input
+<b class="fc"><i>78</i>&nbsp;        addDefaultMapping(buttonInputMap,</b>
+<i>79</i>&nbsp;            new KeyMapping(SPACE, KeyEvent.KEY_PRESSED, this::keyPressed),
+<i>80</i>&nbsp;            new KeyMapping(SPACE, KeyEvent.KEY_RELEASED, this::keyReleased),
+<i>81</i>&nbsp;            new MouseMapping(MouseEvent.MOUSE_PRESSED, this::mousePressed),
+<i>82</i>&nbsp;            new MouseMapping(MouseEvent.MOUSE_RELEASED, this::mouseReleased),
+<i>83</i>&nbsp;            new MouseMapping(MouseEvent.MOUSE_ENTERED, this::mouseEntered),
+<i>84</i>&nbsp;            new MouseMapping(MouseEvent.MOUSE_EXITED, this::mouseExited),
+<i>85</i>&nbsp;
+<i>86</i>&nbsp;            // on non-Mac OS platforms, we support pressing the ENTER key to activate the button
+<b class="nc"><i>87</i>&nbsp;            new KeyMapping(new KeyBinding(ENTER, KeyEvent.KEY_PRESSED), this::keyPressed, event -&gt; PlatformUtil.isMac()),</b>
+<b class="nc"><i>88</i>&nbsp;            new KeyMapping(new KeyBinding(ENTER, KeyEvent.KEY_RELEASED), this::keyReleased, event -&gt; PlatformUtil.isMac())</b>
+<i>89</i>&nbsp;        );
+<i>90</i>&nbsp;
+<i>91</i>&nbsp;        // Button also cares about focus
+<b class="fc"><i>92</i>&nbsp;        control.focusedProperty().addListener(this::focusChanged);</b>
+<b class="fc"><i>93</i>&nbsp;    }</b>
+<i>94</i>&nbsp;
+<i>95</i>&nbsp;
+<i>96</i>&nbsp;
+<i>97</i>&nbsp;    /***************************************************************************
+<i>98</i>&nbsp;     *                                                                         *
+<i>99</i>&nbsp;     * Implementation of BehaviorBase API                                      *
+<i>100</i>&nbsp;     *                                                                         *
+<i>101</i>&nbsp;     **************************************************************************/
+<i>102</i>&nbsp;
+<i>103</i>&nbsp;    @Override public InputMap&lt;C&gt; getInputMap() {
+<b class="nc"><i>104</i>&nbsp;        return buttonInputMap;</b>
+<i>105</i>&nbsp;    }
+<i>106</i>&nbsp;
+<i>107</i>&nbsp;    @Override public void dispose() {
+<b class="nc"><i>108</i>&nbsp;        super.dispose();</b>
+<i>109</i>&nbsp;
+<i>110</i>&nbsp;        // TODO
+<b class="nc"><i>111</i>&nbsp;        getNode().focusedProperty().removeListener(this::focusChanged);</b>
+<b class="nc"><i>112</i>&nbsp;    }</b>
+<i>113</i>&nbsp;
+<i>114</i>&nbsp;
+<i>115</i>&nbsp;
+<i>116</i>&nbsp;    /***************************************************************************
+<i>117</i>&nbsp;     *                                                                         *
+<i>118</i>&nbsp;     * Focus change handling                                                   *
+<i>119</i>&nbsp;     *                                                                         *
+<i>120</i>&nbsp;     **************************************************************************/
+<i>121</i>&nbsp;
+<i>122</i>&nbsp;    private void focusChanged(Observable o) {
+<i>123</i>&nbsp;        // If we did have the key down, but are now not focused, then we must
+<i>124</i>&nbsp;        // disarm the button.
+<b class="fc"><i>125</i>&nbsp;        final ButtonBase button = getNode();</b>
+<b class="fc"><i>126</i>&nbsp;        if (keyDown &amp;&amp; !button.isFocused()) {</b>
+<b class="nc"><i>127</i>&nbsp;            keyDown = false;</b>
+<b class="nc"><i>128</i>&nbsp;            button.disarm();</b>
+<i>129</i>&nbsp;        }
+<b class="fc"><i>130</i>&nbsp;    }</b>
+<i>131</i>&nbsp;
+<i>132</i>&nbsp;
+<i>133</i>&nbsp;
+<i>134</i>&nbsp;    /***************************************************************************
+<i>135</i>&nbsp;     *                                                                         *
+<i>136</i>&nbsp;     * Key event handling                                                      *
+<i>137</i>&nbsp;     *                                                                         *
+<i>138</i>&nbsp;     **************************************************************************/
+<i>139</i>&nbsp;
+<i>140</i>&nbsp;    /**
+<i>141</i>&nbsp;     * This function is invoked when an appropriate keystroke occurs which
+<i>142</i>&nbsp;     * causes this button to be armed if it is not already armed by a mouse
+<i>143</i>&nbsp;     * press.
+<i>144</i>&nbsp;     */
+<i>145</i>&nbsp;    protected void keyPressed(KeyEvent e) {
+<b class="nc"><i>146</i>&nbsp;        if (! getNode().isPressed() &amp;&amp; ! getNode().isArmed()) {</b>
+<b class="nc"><i>147</i>&nbsp;            keyDown = true;</b>
+<b class="nc"><i>148</i>&nbsp;            getNode().arm();</b>
+<i>149</i>&nbsp;        }
+<b class="nc"><i>150</i>&nbsp;    }</b>
+<i>151</i>&nbsp;
+<i>152</i>&nbsp;    /**
+<i>153</i>&nbsp;     * Invoked when a valid keystroke release occurs which causes the button
+<i>154</i>&nbsp;     * to fire if it was armed by a keyPress.
+<i>155</i>&nbsp;     */
+<i>156</i>&nbsp;    protected void keyReleased(KeyEvent e) {
+<b class="nc"><i>157</i>&nbsp;        if (keyDown) {</b>
+<b class="nc"><i>158</i>&nbsp;            keyDown = false;</b>
+<b class="nc"><i>159</i>&nbsp;            if (getNode().isArmed()) {</b>
+<b class="nc"><i>160</i>&nbsp;                getNode().disarm();</b>
+<b class="nc"><i>161</i>&nbsp;                getNode().fire();</b>
+<i>162</i>&nbsp;            }
+<i>163</i>&nbsp;        }
+<b class="nc"><i>164</i>&nbsp;    }</b>
+<i>165</i>&nbsp;
+<i>166</i>&nbsp;
+<i>167</i>&nbsp;
+<i>168</i>&nbsp;    /***************************************************************************
+<i>169</i>&nbsp;     *                                                                         *
+<i>170</i>&nbsp;     * Mouse event handling                                                    *
+<i>171</i>&nbsp;     *                                                                         *
+<i>172</i>&nbsp;     **************************************************************************/
+<i>173</i>&nbsp;
+<i>174</i>&nbsp;    /**
+<i>175</i>&nbsp;     * Invoked when a mouse press has occurred over the button. In addition to
+<i>176</i>&nbsp;     * potentially arming the Button, this will transfer focus to the button
+<i>177</i>&nbsp;     */
+<i>178</i>&nbsp;    protected void mousePressed(MouseEvent e) {
+<i>179</i>&nbsp;        // if the button is not already focused, then request the focus
+<b class="fc"><i>180</i>&nbsp;        if (! getNode().isFocused() &amp;&amp; getNode().isFocusTraversable()) {</b>
+<b class="fc"><i>181</i>&nbsp;            getNode().requestFocus();</b>
+<i>182</i>&nbsp;        }
+<i>183</i>&nbsp;
+<i>184</i>&nbsp;        // arm the button if it is a valid mouse event
+<i>185</i>&nbsp;        // Note there appears to be a bug where if I press and hold and release
+<i>186</i>&nbsp;        // then there is a clickCount of 0 on the release, whereas a quick click
+<i>187</i>&nbsp;        // has a release clickCount of 1. So here I&#39;ll check clickCount &lt;= 1,
+<i>188</i>&nbsp;        // though it should really be == 1 I think.
+<b class="fc"><i>189</i>&nbsp;        boolean valid = (e.getButton() == MouseButton.PRIMARY &amp;&amp;</b>
+<b class="fc"><i>190</i>&nbsp;                ! (e.isMiddleButtonDown() || e.isSecondaryButtonDown() ||</b>
+<b class="fc"><i>191</i>&nbsp;                        e.isShiftDown() || e.isControlDown() || e.isAltDown() || e.isMetaDown()));</b>
+<i>192</i>&nbsp;
+<b class="fc"><i>193</i>&nbsp;        if (! getNode().isArmed() &amp;&amp; valid) {</b>
+<b class="fc"><i>194</i>&nbsp;            getNode().arm();</b>
+<i>195</i>&nbsp;        }
+<b class="fc"><i>196</i>&nbsp;    }</b>
+<i>197</i>&nbsp;
+<i>198</i>&nbsp;    /**
+<i>199</i>&nbsp;     * Invoked when a mouse release has occurred. We determine whether this
+<i>200</i>&nbsp;     * was done in a manner that would fire the button&#39;s action. This happens
+<i>201</i>&nbsp;     * only if the button was armed by a corresponding mouse press.
+<i>202</i>&nbsp;     */
+<i>203</i>&nbsp;    protected void mouseReleased(MouseEvent e) {
+<i>204</i>&nbsp;        // if armed by a mouse press instead of key press, then fire!
+<b class="fc"><i>205</i>&nbsp;        if (! keyDown &amp;&amp; getNode().isArmed()) {</b>
+<b class="fc"><i>206</i>&nbsp;            getNode().fire();</b>
+<b class="fc"><i>207</i>&nbsp;            getNode().disarm();</b>
+<i>208</i>&nbsp;        }
+<b class="fc"><i>209</i>&nbsp;    }</b>
+<i>210</i>&nbsp;
+<i>211</i>&nbsp;    /**
+<i>212</i>&nbsp;     * Invoked when the mouse enters the Button. If the Button had been armed
+<i>213</i>&nbsp;     * by a mouse press and the mouse is still pressed, then this will cause
+<i>214</i>&nbsp;     * the button to be rearmed.
+<i>215</i>&nbsp;     */
+<i>216</i>&nbsp;    protected void mouseEntered(MouseEvent e) {
+<i>217</i>&nbsp;        // rearm if necessary
+<b class="fc"><i>218</i>&nbsp;        if (! keyDown &amp;&amp; getNode().isPressed()) {</b>
+<b class="nc"><i>219</i>&nbsp;            getNode().arm();</b>
+<i>220</i>&nbsp;        }
+<b class="fc"><i>221</i>&nbsp;    }</b>
+<i>222</i>&nbsp;
+<i>223</i>&nbsp;    /**
+<i>224</i>&nbsp;     * Invoked when the mouse exits the Button. If the Button is armed due to
+<i>225</i>&nbsp;     * a mouse press, then this function will disarm the button upon the mouse
+<i>226</i>&nbsp;     * exiting it.
+<i>227</i>&nbsp;     */
+<i>228</i>&nbsp;    protected void mouseExited(MouseEvent e) {
+<i>229</i>&nbsp;        // Disarm if necessary
+<b class="fc"><i>230</i>&nbsp;        if (! keyDown &amp;&amp; getNode().isArmed()) {</b>
+<b class="fc"><i>231</i>&nbsp;            getNode().disarm();</b>
+<i>232</i>&nbsp;        }
+<b class="fc"><i>233</i>&nbsp;    }</b>
+<i>234</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2017-12-04 21:49</div>
+</div>
+</body>
+</html>

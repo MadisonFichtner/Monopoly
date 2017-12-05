@@ -1,0 +1,332 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: Pixels</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.glass.ui</a> ]
+</div>
+
+<h1>Coverage Summary for Class: Pixels (com.sun.glass.ui)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">Pixels</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    42.1%
+  </span>
+  <span class="absValue">
+    (8/ 19)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    27.5%
+  </span>
+  <span class="absValue">
+    (25/ 91)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright (c) 2010, 2016, Oracle and/or its affiliates. All rights reserved.
+<i>3</i>&nbsp; * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+<i>4</i>&nbsp; *
+<i>5</i>&nbsp; *
+<i>6</i>&nbsp; *
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; *
+<i>11</i>&nbsp; *
+<i>12</i>&nbsp; *
+<i>13</i>&nbsp; *
+<i>14</i>&nbsp; *
+<i>15</i>&nbsp; *
+<i>16</i>&nbsp; *
+<i>17</i>&nbsp; *
+<i>18</i>&nbsp; *
+<i>19</i>&nbsp; *
+<i>20</i>&nbsp; *
+<i>21</i>&nbsp; *
+<i>22</i>&nbsp; *
+<i>23</i>&nbsp; *
+<i>24</i>&nbsp; */
+<i>25</i>&nbsp;package com.sun.glass.ui;
+<i>26</i>&nbsp;
+<i>27</i>&nbsp;import java.lang.annotation.Native;
+<i>28</i>&nbsp;import java.nio.Buffer;
+<i>29</i>&nbsp;import java.nio.ByteBuffer;
+<i>30</i>&nbsp;import java.nio.IntBuffer;
+<i>31</i>&nbsp;import java.nio.ByteOrder;
+<i>32</i>&nbsp;
+<i>33</i>&nbsp;/**
+<i>34</i>&nbsp; * The object wraps the given raw pixels data.
+<i>35</i>&nbsp; *
+<i>36</i>&nbsp; * Pixels class is NOT thread safe.
+<i>37</i>&nbsp; */
+<i>38</i>&nbsp;public abstract class Pixels {
+<i>39</i>&nbsp;    /**
+<i>40</i>&nbsp;     * The Format specifies the native byte order of the
+<i>41</i>&nbsp;     * underlying chunk of image data.
+<i>42</i>&nbsp;     * The data may be either INTs or BYTEs depending on
+<i>43</i>&nbsp;     * the constructor used.
+<i>44</i>&nbsp;     * The format ABCD implies the following byte order:
+<i>45</i>&nbsp;     * BYTE[0] = A
+<i>46</i>&nbsp;     * BYTE[1] = B
+<i>47</i>&nbsp;     * BYTE[2] = C
+<i>48</i>&nbsp;     * BYTE[3] = D
+<i>49</i>&nbsp;     * BYTE[4] = A
+<i>50</i>&nbsp;     * ...
+<i>51</i>&nbsp;     * Calling code should take care of endianness of the platform
+<i>52</i>&nbsp;     * when passing image data as ints.
+<i>53</i>&nbsp;     */
+<i>54</i>&nbsp;    public static class Format {
+<i>55</i>&nbsp;        @Native public static final int BYTE_BGRA_PRE = 1;
+<i>56</i>&nbsp;        @Native public static final int BYTE_ARGB = 2;
+<i>57</i>&nbsp;    }
+<i>58</i>&nbsp;
+<i>59</i>&nbsp;    public static int getNativeFormat() {
+<b class="fc"><i>60</i>&nbsp;        Application.checkEventThread();</b>
+<b class="fc"><i>61</i>&nbsp;        return Application.GetApplication().staticPixels_getNativeFormat();</b>
+<i>62</i>&nbsp;    }
+<i>63</i>&nbsp;
+<i>64</i>&nbsp;    // Need:
+<i>65</i>&nbsp;    // Clipboard:
+<i>66</i>&nbsp;    //    public Pixels(final int width, final int height, final byte[] data)
+<i>67</i>&nbsp;    //
+<i>68</i>&nbsp;    // Robot:
+<i>69</i>&nbsp;    //    public Pixels(final int width, final int height, final int[] data)
+<i>70</i>&nbsp;    //
+<i>71</i>&nbsp;    // PixelUtils == Prism == GlassToolkit :
+<i>72</i>&nbsp;    //    public Pixels(final int width, final int height, final ByteBuffer)
+<i>73</i>&nbsp;    //    public Pixels(final int width, final int height, final IntBuffer)
+<i>74</i>&nbsp;
+<i>75</i>&nbsp;    // The following fields are safe to be protected, since they are final
+<i>76</i>&nbsp;    protected final int width;
+<i>77</i>&nbsp;    protected final int height;
+<i>78</i>&nbsp;    protected final int bytesPerComponent;
+<i>79</i>&nbsp;
+<i>80</i>&nbsp;    // The following fields are safe to be protected, since they are final
+<i>81</i>&nbsp;    protected final ByteBuffer bytes;
+<i>82</i>&nbsp;    protected final IntBuffer ints;
+<i>83</i>&nbsp;
+<i>84</i>&nbsp;    private final float scalex;
+<i>85</i>&nbsp;    private final float scaley;
+<i>86</i>&nbsp;
+<b class="nc"><i>87</i>&nbsp;    protected Pixels(final int width, final int height, final ByteBuffer pixels) {</b>
+<b class="nc"><i>88</i>&nbsp;        this.width = width;</b>
+<b class="nc"><i>89</i>&nbsp;        this.height = height;</b>
+<b class="nc"><i>90</i>&nbsp;        this.bytesPerComponent = 1;</b>
+<b class="nc"><i>91</i>&nbsp;        this.bytes = pixels.slice();</b>
+<b class="nc"><i>92</i>&nbsp;        if ((this.width &lt;= 0) || (this.height &lt;= 0) || ((this.width * this.height * 4) &gt; this.bytes.capacity())) {</b>
+<b class="nc"><i>93</i>&nbsp;            throw new IllegalArgumentException(&quot;Too small byte buffer size &quot;+this.width+&quot;x&quot;+this.height+&quot; [&quot;+(this.width*this.height*4)+&quot;] &gt; &quot;+this.bytes.capacity());</b>
+<i>94</i>&nbsp;        }
+<i>95</i>&nbsp;
+<b class="nc"><i>96</i>&nbsp;        this.ints = null;</b>
+<b class="nc"><i>97</i>&nbsp;        this.scalex = 1.0f;</b>
+<b class="nc"><i>98</i>&nbsp;        this.scaley = 1.0f;</b>
+<b class="nc"><i>99</i>&nbsp;    }</b>
+<i>100</i>&nbsp;
+<b class="nc"><i>101</i>&nbsp;    protected Pixels(final int width, final int height, IntBuffer pixels) {</b>
+<b class="nc"><i>102</i>&nbsp;        this.width = width;</b>
+<b class="nc"><i>103</i>&nbsp;        this.height = height;</b>
+<b class="nc"><i>104</i>&nbsp;        this.bytesPerComponent = 4;</b>
+<b class="nc"><i>105</i>&nbsp;        this.ints = pixels.slice();</b>
+<b class="nc"><i>106</i>&nbsp;        if ((this.width &lt;= 0) || (this.height &lt;= 0) || ((this.width * this.height) &gt; this.ints.capacity())) {</b>
+<b class="nc"><i>107</i>&nbsp;            throw new IllegalArgumentException(&quot;Too small int buffer size &quot;+this.width+&quot;x&quot;+this.height+&quot; [&quot;+(this.width*this.height)+&quot;] &gt; &quot;+this.ints.capacity());</b>
+<i>108</i>&nbsp;        }
+<i>109</i>&nbsp;
+<b class="nc"><i>110</i>&nbsp;        this.bytes = null;</b>
+<b class="nc"><i>111</i>&nbsp;        this.scalex = 1.0f;</b>
+<b class="nc"><i>112</i>&nbsp;        this.scaley = 1.0f;</b>
+<b class="nc"><i>113</i>&nbsp;    }</b>
+<i>114</i>&nbsp;
+<b class="fc"><i>115</i>&nbsp;    protected Pixels(final int width, final int height, IntBuffer pixels, float scalex, float scaley) {</b>
+<b class="fc"><i>116</i>&nbsp;        this.width = width;</b>
+<b class="fc"><i>117</i>&nbsp;        this.height = height;</b>
+<b class="fc"><i>118</i>&nbsp;        this.bytesPerComponent = 4;</b>
+<b class="fc"><i>119</i>&nbsp;        this.ints = pixels.slice();</b>
+<b class="fc"><i>120</i>&nbsp;        if ((this.width &lt;= 0) || (this.height &lt;= 0) || ((this.width * this.height) &gt; this.ints.capacity())) {</b>
+<b class="nc"><i>121</i>&nbsp;            throw new IllegalArgumentException(&quot;Too small int buffer size &quot;+this.width+&quot;x&quot;+this.height+&quot; [&quot;+(this.width*this.height)+&quot;] &gt; &quot;+this.ints.capacity());</b>
+<i>122</i>&nbsp;        }
+<i>123</i>&nbsp;
+<b class="fc"><i>124</i>&nbsp;        this.bytes = null;</b>
+<b class="fc"><i>125</i>&nbsp;        this.scalex = scalex;</b>
+<b class="fc"><i>126</i>&nbsp;        this.scaley = scaley;</b>
+<b class="fc"><i>127</i>&nbsp;    }</b>
+<i>128</i>&nbsp;
+<i>129</i>&nbsp;    public final float getScaleX() {
+<b class="nc"><i>130</i>&nbsp;        Application.checkEventThread();</b>
+<b class="nc"><i>131</i>&nbsp;        return this.scalex;</b>
+<i>132</i>&nbsp;    }
+<i>133</i>&nbsp;
+<i>134</i>&nbsp;    public final float getScaleY() {
+<b class="nc"><i>135</i>&nbsp;        Application.checkEventThread();</b>
+<b class="nc"><i>136</i>&nbsp;        return this.scaley;</b>
+<i>137</i>&nbsp;    }
+<i>138</i>&nbsp;
+<i>139</i>&nbsp;    public final float getScaleXUnsafe() {
+<b class="fc"><i>140</i>&nbsp;        return this.scalex;</b>
+<i>141</i>&nbsp;    }
+<i>142</i>&nbsp;
+<i>143</i>&nbsp;    public final float getScaleYUnsafe() {
+<b class="fc"><i>144</i>&nbsp;        return this.scaley;</b>
+<i>145</i>&nbsp;    }
+<i>146</i>&nbsp;
+<i>147</i>&nbsp;    public final int getWidth() {
+<b class="nc"><i>148</i>&nbsp;        Application.checkEventThread();</b>
+<b class="nc"><i>149</i>&nbsp;        return this.width;</b>
+<i>150</i>&nbsp;    }
+<i>151</i>&nbsp;
+<i>152</i>&nbsp;    public final int getWidthUnsafe() {
+<b class="fc"><i>153</i>&nbsp;        return this.width;</b>
+<i>154</i>&nbsp;    }
+<i>155</i>&nbsp;
+<i>156</i>&nbsp;    public final int getHeight() {
+<b class="nc"><i>157</i>&nbsp;        Application.checkEventThread();</b>
+<b class="nc"><i>158</i>&nbsp;        return this.height;</b>
+<i>159</i>&nbsp;    }
+<i>160</i>&nbsp;
+<i>161</i>&nbsp;    public final int getHeightUnsafe() {
+<b class="fc"><i>162</i>&nbsp;        return this.height;</b>
+<i>163</i>&nbsp;    }
+<i>164</i>&nbsp;
+<i>165</i>&nbsp;    public final int getBytesPerComponent() {
+<b class="nc"><i>166</i>&nbsp;        Application.checkEventThread();</b>
+<b class="nc"><i>167</i>&nbsp;        return this.bytesPerComponent;</b>
+<i>168</i>&nbsp;    }
+<i>169</i>&nbsp;
+<i>170</i>&nbsp;    /*
+<i>171</i>&nbsp;     * Return the original pixels buffer.
+<i>172</i>&nbsp;     */
+<i>173</i>&nbsp;    public final Buffer getPixels() {
+<b class="fc"><i>174</i>&nbsp;        if (this.bytes != null) {</b>
+<b class="nc"><i>175</i>&nbsp;            this.bytes.rewind();</b>
+<b class="nc"><i>176</i>&nbsp;            return this.bytes;</b>
+<b class="fc"><i>177</i>&nbsp;        } else if (this.ints != null) {</b>
+<b class="fc"><i>178</i>&nbsp;            this.ints.rewind();</b>
+<b class="fc"><i>179</i>&nbsp;            return this.ints;</b>
+<i>180</i>&nbsp;        } else {
+<b class="nc"><i>181</i>&nbsp;            throw new RuntimeException(&quot;Unexpected Pixels state.&quot;);</b>
+<i>182</i>&nbsp;        }
+<i>183</i>&nbsp;    }
+<i>184</i>&nbsp;
+<i>185</i>&nbsp;    /*
+<i>186</i>&nbsp;     * Return a copy of pixels as bytes.
+<i>187</i>&nbsp;     */
+<i>188</i>&nbsp;    public final ByteBuffer asByteBuffer() {
+<b class="nc"><i>189</i>&nbsp;        Application.checkEventThread();</b>
+<b class="nc"><i>190</i>&nbsp;        ByteBuffer bb = ByteBuffer.allocateDirect(getWidth()*getHeight()*4);</b>
+<b class="nc"><i>191</i>&nbsp;        bb.order(ByteOrder.nativeOrder());</b>
+<b class="nc"><i>192</i>&nbsp;        bb.rewind();</b>
+<b class="nc"><i>193</i>&nbsp;        asByteBuffer(bb);</b>
+<b class="nc"><i>194</i>&nbsp;        return bb;</b>
+<i>195</i>&nbsp;    }
+<i>196</i>&nbsp;
+<i>197</i>&nbsp;    /*
+<i>198</i>&nbsp;     * Copy pixels into provided byte buffer.
+<i>199</i>&nbsp;     * The ByteBuffer must be direct.
+<i>200</i>&nbsp;     */
+<i>201</i>&nbsp;    public final void asByteBuffer(ByteBuffer bb) {
+<b class="nc"><i>202</i>&nbsp;        Application.checkEventThread();</b>
+<b class="nc"><i>203</i>&nbsp;        if (!bb.isDirect()) {</b>
+<b class="nc"><i>204</i>&nbsp;            throw new RuntimeException(&quot;Expected direct buffer.&quot;);</b>
+<b class="nc"><i>205</i>&nbsp;        } else if (bb.remaining() &lt; (getWidth()*getHeight()*4)) {</b>
+<b class="nc"><i>206</i>&nbsp;            throw new RuntimeException(&quot;Too small buffer.&quot;);</b>
+<i>207</i>&nbsp;        }
+<b class="nc"><i>208</i>&nbsp;        _fillDirectByteBuffer(bb);</b>
+<b class="nc"><i>209</i>&nbsp;    }</b>
+<i>210</i>&nbsp;
+<i>211</i>&nbsp;    // This method is called from the native code to reduce the number of JNI up-calls.
+<i>212</i>&nbsp;    private void attachData(long ptr) {
+<b class="fc"><i>213</i>&nbsp;        if (this.ints != null) {</b>
+<b class="fc"><i>214</i>&nbsp;            int[] array = !this.ints.isDirect() ? this.ints.array() : null;</b>
+<b class="fc"><i>215</i>&nbsp;            _attachInt(ptr, this.width, this.height, this.ints, array, array != null ? this.ints.arrayOffset() : 0);</b>
+<i>216</i>&nbsp;        }
+<b class="fc"><i>217</i>&nbsp;        if (this.bytes != null) {</b>
+<b class="nc"><i>218</i>&nbsp;            byte[] array = !this.bytes.isDirect() ? this.bytes.array() : null;</b>
+<b class="nc"><i>219</i>&nbsp;            _attachByte(ptr, this.width, this.height, this.bytes, array, array != null ? this.bytes.arrayOffset() : 0);</b>
+<i>220</i>&nbsp;        }
+<b class="fc"><i>221</i>&nbsp;    }</b>
+<i>222</i>&nbsp;
+<i>223</i>&nbsp;    protected abstract void _fillDirectByteBuffer(ByteBuffer bb);
+<i>224</i>&nbsp;    protected abstract void _attachInt(long ptr, int w, int h, IntBuffer ints, int[] array, int offset);
+<i>225</i>&nbsp;    protected abstract void _attachByte(long ptr, int w, int h, ByteBuffer bytes, byte[] array, int offset);
+<i>226</i>&nbsp;
+<i>227</i>&nbsp;    @Override public final boolean equals(Object object) {
+<b class="nc"><i>228</i>&nbsp;        Application.checkEventThread();</b>
+<b class="nc"><i>229</i>&nbsp;        boolean equals = ((object != null) &amp;&amp; (getClass().equals(object.getClass())));</b>
+<b class="nc"><i>230</i>&nbsp;        if (equals) {</b>
+<b class="nc"><i>231</i>&nbsp;            Pixels pixels = (Pixels)object;</b>
+<b class="nc"><i>232</i>&nbsp;            equals = ((getWidth() == pixels.getWidth()) &amp;&amp; (getHeight() == pixels.getHeight()));</b>
+<b class="nc"><i>233</i>&nbsp;            if (equals) {</b>
+<b class="nc"><i>234</i>&nbsp;                ByteBuffer b1 = asByteBuffer();</b>
+<b class="nc"><i>235</i>&nbsp;                ByteBuffer b2 = pixels.asByteBuffer();</b>
+<b class="nc"><i>236</i>&nbsp;                equals = (b1.compareTo(b2) == 0);</b>
+<i>237</i>&nbsp;            }
+<i>238</i>&nbsp;        }
+<b class="nc"><i>239</i>&nbsp;        return equals;</b>
+<i>240</i>&nbsp;    }
+<i>241</i>&nbsp;
+<i>242</i>&nbsp;    @Override public final int hashCode() {
+<b class="nc"><i>243</i>&nbsp;        Application.checkEventThread();</b>
+<b class="nc"><i>244</i>&nbsp;        int val = getWidth();</b>
+<b class="nc"><i>245</i>&nbsp;        val = 31*val + getHeight();</b>
+<b class="nc"><i>246</i>&nbsp;        val = 17*val + asByteBuffer().hashCode();</b>
+<b class="nc"><i>247</i>&nbsp;        return val;</b>
+<i>248</i>&nbsp;    }
+<i>249</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2017-12-04 21:49</div>
+</div>
+</body>
+</html>

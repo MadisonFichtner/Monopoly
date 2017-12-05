@@ -1,0 +1,155 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: NodeEventDispatcher</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.javafx.scene</a> ]
+</div>
+
+<h1>Coverage Summary for Class: NodeEventDispatcher (com.sun.javafx.scene)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">NodeEventDispatcher</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    83.3%
+  </span>
+  <span class="absValue">
+    (5/ 6)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    90.9%
+  </span>
+  <span class="absValue">
+    (10/ 11)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright (c) 2011, 2013, Oracle and/or its affiliates. All rights reserved.
+<i>3</i>&nbsp; * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+<i>4</i>&nbsp; *
+<i>5</i>&nbsp; *
+<i>6</i>&nbsp; *
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; *
+<i>11</i>&nbsp; *
+<i>12</i>&nbsp; *
+<i>13</i>&nbsp; *
+<i>14</i>&nbsp; *
+<i>15</i>&nbsp; *
+<i>16</i>&nbsp; *
+<i>17</i>&nbsp; *
+<i>18</i>&nbsp; *
+<i>19</i>&nbsp; *
+<i>20</i>&nbsp; *
+<i>21</i>&nbsp; *
+<i>22</i>&nbsp; *
+<i>23</i>&nbsp; *
+<i>24</i>&nbsp; */
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;package com.sun.javafx.scene;
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;import com.sun.javafx.event.BasicEventDispatcher;
+<i>29</i>&nbsp;import com.sun.javafx.event.CompositeEventDispatcher;
+<i>30</i>&nbsp;import com.sun.javafx.event.EventHandlerManager;
+<i>31</i>&nbsp;
+<i>32</i>&nbsp;/**
+<i>33</i>&nbsp; * An {@code EventDispatcher} for {@code Node}. It is formed by a chain
+<i>34</i>&nbsp; * of {@code MouseEnteredExitedHandler} followed by {@code EventHandlerManager}.
+<i>35</i>&nbsp; */
+<i>36</i>&nbsp;public class NodeEventDispatcher extends CompositeEventDispatcher {
+<i>37</i>&nbsp;    private final EnteredExitedHandler enteredExitedHandler;
+<i>38</i>&nbsp;
+<i>39</i>&nbsp;    private final EventHandlerManager eventHandlerManager;
+<i>40</i>&nbsp;
+<i>41</i>&nbsp;    public NodeEventDispatcher(final Object eventSource) {
+<b class="fc"><i>42</i>&nbsp;        this(new EnteredExitedHandler(eventSource),</b>
+<i>43</i>&nbsp;             new EventHandlerManager(eventSource));
+<b class="fc"><i>44</i>&nbsp;    }</b>
+<i>45</i>&nbsp;
+<i>46</i>&nbsp;    public NodeEventDispatcher(
+<i>47</i>&nbsp;            final EnteredExitedHandler enteredExitedHandler,
+<b class="fc"><i>48</i>&nbsp;            final EventHandlerManager eventHandlerManager) {</b>
+<b class="fc"><i>49</i>&nbsp;        this.enteredExitedHandler = enteredExitedHandler;</b>
+<b class="fc"><i>50</i>&nbsp;        this.eventHandlerManager = eventHandlerManager;</b>
+<i>51</i>&nbsp;
+<b class="fc"><i>52</i>&nbsp;        enteredExitedHandler.insertNextDispatcher(eventHandlerManager);</b>
+<b class="fc"><i>53</i>&nbsp;    }</b>
+<i>54</i>&nbsp;
+<i>55</i>&nbsp;    public final EnteredExitedHandler getEnteredExitedHandler() {
+<b class="nc"><i>56</i>&nbsp;        return enteredExitedHandler;</b>
+<i>57</i>&nbsp;    }
+<i>58</i>&nbsp;
+<i>59</i>&nbsp;    public final EventHandlerManager getEventHandlerManager() {
+<b class="fc"><i>60</i>&nbsp;        return eventHandlerManager;</b>
+<i>61</i>&nbsp;    }
+<i>62</i>&nbsp;
+<i>63</i>&nbsp;    @Override
+<i>64</i>&nbsp;    public BasicEventDispatcher getFirstDispatcher() {
+<b class="fc"><i>65</i>&nbsp;        return enteredExitedHandler;</b>
+<i>66</i>&nbsp;    }
+<i>67</i>&nbsp;
+<i>68</i>&nbsp;    @Override
+<i>69</i>&nbsp;    public BasicEventDispatcher getLastDispatcher() {
+<b class="fc"><i>70</i>&nbsp;        return eventHandlerManager;</b>
+<i>71</i>&nbsp;    }
+<i>72</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2017-12-04 21:49</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,919 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: NumberExpression</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">javafx.beans.binding</a> ]
+</div>
+
+<h1>Coverage Summary for Class: NumberExpression (javafx.beans.binding)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+</tr>
+<tr>
+  <td class="name">NumberExpression</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright (c) 2010, 2017, Oracle and/or its affiliates. All rights reserved.
+<i>3</i>&nbsp; * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+<i>4</i>&nbsp; *
+<i>5</i>&nbsp; *
+<i>6</i>&nbsp; *
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; *
+<i>11</i>&nbsp; *
+<i>12</i>&nbsp; *
+<i>13</i>&nbsp; *
+<i>14</i>&nbsp; *
+<i>15</i>&nbsp; *
+<i>16</i>&nbsp; *
+<i>17</i>&nbsp; *
+<i>18</i>&nbsp; *
+<i>19</i>&nbsp; *
+<i>20</i>&nbsp; *
+<i>21</i>&nbsp; *
+<i>22</i>&nbsp; *
+<i>23</i>&nbsp; *
+<i>24</i>&nbsp; */
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;package javafx.beans.binding;
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;import java.util.Locale;
+<i>29</i>&nbsp;
+<i>30</i>&nbsp;import javafx.beans.value.ObservableNumberValue;
+<i>31</i>&nbsp;
+<i>32</i>&nbsp;/**
+<i>33</i>&nbsp; * {@code NumberExpression} is an
+<i>34</i>&nbsp; * {@link javafx.beans.value.ObservableNumberValue} plus additional convenience
+<i>35</i>&nbsp; * methods to generate bindings in a fluent style.
+<i>36</i>&nbsp; * &lt;p&gt;
+<i>37</i>&nbsp; * This API allows to mix types when defining arithmetic operations. The type of
+<i>38</i>&nbsp; * the result is defined by the same rules as in the Java Language.
+<i>39</i>&nbsp; * &lt;ol&gt;
+<i>40</i>&nbsp; * &lt;li&gt;If one of the operands is a double, the result is a double.&lt;/li&gt;
+<i>41</i>&nbsp; * &lt;li&gt;If not and one of the operands is a float, the result is a float.&lt;/li&gt;
+<i>42</i>&nbsp; * &lt;li&gt;If not and one of the operands is a long, the result is a long.&lt;/li&gt;
+<i>43</i>&nbsp; * &lt;li&gt;The result is an integer otherwise.&lt;/li&gt;
+<i>44</i>&nbsp; * &lt;/ol&gt;
+<i>45</i>&nbsp; * &lt;p&gt;
+<i>46</i>&nbsp; * To be able to deal with an unspecified return type, two interfaces
+<i>47</i>&nbsp; * {@code NumberExpression} and its counterpart
+<i>48</i>&nbsp; * {@link javafx.beans.binding.NumberBinding} were introduced. That means if the
+<i>49</i>&nbsp; * return type is specified as {@code NumberBinding}, the method will either
+<i>50</i>&nbsp; * return a {@link javafx.beans.binding.DoubleBinding},
+<i>51</i>&nbsp; * {@link javafx.beans.binding.FloatBinding},
+<i>52</i>&nbsp; * {@link javafx.beans.binding.LongBinding} or
+<i>53</i>&nbsp; * {@link javafx.beans.binding.IntegerBinding}, depending on the types of the
+<i>54</i>&nbsp; * operands.
+<i>55</i>&nbsp; * &lt;p&gt;
+<i>56</i>&nbsp; * The API tries to do its best in determining the correct return type, e.g.
+<i>57</i>&nbsp; * combining a {@link javafx.beans.value.ObservableNumberValue} with a primitive
+<i>58</i>&nbsp; * double will always result in a {@link javafx.beans.binding.DoubleBinding}. In
+<i>59</i>&nbsp; * cases where the return type is not known by the API, it is the responsibility
+<i>60</i>&nbsp; * of the developer to call the correct getter ({@link #intValue()} etc.). If
+<i>61</i>&nbsp; * the internal representation does not match the type of the getter, a standard
+<i>62</i>&nbsp; * cast is done.
+<i>63</i>&nbsp; * @since JavaFX 2.0
+<i>64</i>&nbsp; */
+<i>65</i>&nbsp;public interface NumberExpression extends ObservableNumberValue {
+<i>66</i>&nbsp;
+<i>67</i>&nbsp;    // ===============================================================
+<i>68</i>&nbsp;    // Negation
+<i>69</i>&nbsp;
+<i>70</i>&nbsp;    /**
+<i>71</i>&nbsp;     * Creates a new {@link javafx.beans.binding.NumberBinding} that calculates
+<i>72</i>&nbsp;     * the negation of {@code NumberExpression}.
+<i>73</i>&nbsp;     *
+<i>74</i>&nbsp;     * @return the new {@code NumberBinding}
+<i>75</i>&nbsp;     */
+<i>76</i>&nbsp;    NumberBinding negate();
+<i>77</i>&nbsp;
+<i>78</i>&nbsp;    // ===============================================================
+<i>79</i>&nbsp;    // Plus
+<i>80</i>&nbsp;
+<i>81</i>&nbsp;    /**
+<i>82</i>&nbsp;     * Creates a new {@link javafx.beans.binding.NumberBinding} that calculates
+<i>83</i>&nbsp;     * the sum of this {@code NumberExpression} and another
+<i>84</i>&nbsp;     * {@link javafx.beans.value.ObservableNumberValue}.
+<i>85</i>&nbsp;     *
+<i>86</i>&nbsp;     * @param other
+<i>87</i>&nbsp;     *            the second {@code ObservableNumberValue}
+<i>88</i>&nbsp;     * @return the new {@code NumberBinding}
+<i>89</i>&nbsp;     * @throws NullPointerException
+<i>90</i>&nbsp;     *             if the other {@code ObservableNumberValue} is {@code null}
+<i>91</i>&nbsp;     */
+<i>92</i>&nbsp;    NumberBinding add(final ObservableNumberValue other);
+<i>93</i>&nbsp;
+<i>94</i>&nbsp;    /**
+<i>95</i>&nbsp;     * Creates a new {@link javafx.beans.binding.NumberBinding} that calculates
+<i>96</i>&nbsp;     * the sum of this {@code NumberExpression} and a constant value.
+<i>97</i>&nbsp;     *
+<i>98</i>&nbsp;     * @param other
+<i>99</i>&nbsp;     *            the constant value
+<i>100</i>&nbsp;     * @return the new {@code NumberBinding}
+<i>101</i>&nbsp;     */
+<i>102</i>&nbsp;    NumberBinding add(final double other);
+<i>103</i>&nbsp;
+<i>104</i>&nbsp;    /**
+<i>105</i>&nbsp;     * Creates a new {@link javafx.beans.binding.NumberBinding} that calculates
+<i>106</i>&nbsp;     * the sum of this {@code NumberExpression} and a constant value.
+<i>107</i>&nbsp;     *
+<i>108</i>&nbsp;     * @param other
+<i>109</i>&nbsp;     *            the constant value
+<i>110</i>&nbsp;     * @return the new {@code NumberBinding}
+<i>111</i>&nbsp;     */
+<i>112</i>&nbsp;    NumberBinding add(final float other);
+<i>113</i>&nbsp;
+<i>114</i>&nbsp;    /**
+<i>115</i>&nbsp;     * Creates a new {@link javafx.beans.binding.NumberBinding} that calculates
+<i>116</i>&nbsp;     * the sum of this {@code NumberExpression} and a constant value.
+<i>117</i>&nbsp;     *
+<i>118</i>&nbsp;     * @param other
+<i>119</i>&nbsp;     *            the constant value
+<i>120</i>&nbsp;     * @return the new {@code NumberBinding}
+<i>121</i>&nbsp;     */
+<i>122</i>&nbsp;    NumberBinding add(final long other);
+<i>123</i>&nbsp;
+<i>124</i>&nbsp;    /**
+<i>125</i>&nbsp;     * Creates a new {@link javafx.beans.binding.NumberBinding} that calculates
+<i>126</i>&nbsp;     * the sum of this {@code NumberExpression} and a constant value.
+<i>127</i>&nbsp;     *
+<i>128</i>&nbsp;     * @param other
+<i>129</i>&nbsp;     *            the constant value
+<i>130</i>&nbsp;     * @return the new {@code NumberBinding}
+<i>131</i>&nbsp;     */
+<i>132</i>&nbsp;    NumberBinding add(final int other);
+<i>133</i>&nbsp;
+<i>134</i>&nbsp;    // ===============================================================
+<i>135</i>&nbsp;    // Minus
+<i>136</i>&nbsp;
+<i>137</i>&nbsp;    /**
+<i>138</i>&nbsp;     * Creates a new {@link javafx.beans.binding.NumberBinding} that calculates
+<i>139</i>&nbsp;     * the difference of this {@code NumberExpression} and another
+<i>140</i>&nbsp;     * {@link javafx.beans.value.ObservableNumberValue}.
+<i>141</i>&nbsp;     *
+<i>142</i>&nbsp;     * @param other
+<i>143</i>&nbsp;     *            the second {@code ObservableNumberValue}
+<i>144</i>&nbsp;     * @return the new {@code NumberBinding}
+<i>145</i>&nbsp;     * @throws NullPointerException
+<i>146</i>&nbsp;     *             if the other {@code ObservableNumberValue} is {@code null}
+<i>147</i>&nbsp;     */
+<i>148</i>&nbsp;    NumberBinding subtract(final ObservableNumberValue other);
+<i>149</i>&nbsp;
+<i>150</i>&nbsp;    /**
+<i>151</i>&nbsp;     * Creates a new {@link javafx.beans.binding.NumberBinding} that calculates
+<i>152</i>&nbsp;     * the difference of this {@code NumberExpression} and a constant value.
+<i>153</i>&nbsp;     *
+<i>154</i>&nbsp;     * @param other
+<i>155</i>&nbsp;     *            the constant value
+<i>156</i>&nbsp;     * @return the new {@code NumberBinding}
+<i>157</i>&nbsp;     */
+<i>158</i>&nbsp;    NumberBinding subtract(final double other);
+<i>159</i>&nbsp;
+<i>160</i>&nbsp;    /**
+<i>161</i>&nbsp;     * Creates a new {@link javafx.beans.binding.NumberBinding} that calculates
+<i>162</i>&nbsp;     * the difference of this {@code NumberExpression} and a constant value.
+<i>163</i>&nbsp;     *
+<i>164</i>&nbsp;     * @param other
+<i>165</i>&nbsp;     *            the constant value
+<i>166</i>&nbsp;     * @return the new {@code NumberBinding}
+<i>167</i>&nbsp;     */
+<i>168</i>&nbsp;    NumberBinding subtract(final float other);
+<i>169</i>&nbsp;
+<i>170</i>&nbsp;    /**
+<i>171</i>&nbsp;     * Creates a new {@link javafx.beans.binding.NumberBinding} that calculates
+<i>172</i>&nbsp;     * the difference of this {@code NumberExpression} and a constant value.
+<i>173</i>&nbsp;     *
+<i>174</i>&nbsp;     * @param other
+<i>175</i>&nbsp;     *            the constant value
+<i>176</i>&nbsp;     * @return the new {@code NumberBinding}
+<i>177</i>&nbsp;     */
+<i>178</i>&nbsp;    NumberBinding subtract(final long other);
+<i>179</i>&nbsp;
+<i>180</i>&nbsp;    /**
+<i>181</i>&nbsp;     * Creates a new {@link javafx.beans.binding.NumberBinding} that calculates
+<i>182</i>&nbsp;     * the difference of this {@code NumberExpression} and a constant value.
+<i>183</i>&nbsp;     *
+<i>184</i>&nbsp;     * @param other
+<i>185</i>&nbsp;     *            the constant value
+<i>186</i>&nbsp;     * @return the new {@code NumberBinding}
+<i>187</i>&nbsp;     */
+<i>188</i>&nbsp;    NumberBinding subtract(final int other);
+<i>189</i>&nbsp;
+<i>190</i>&nbsp;    // ===============================================================
+<i>191</i>&nbsp;    // Times
+<i>192</i>&nbsp;
+<i>193</i>&nbsp;    /**
+<i>194</i>&nbsp;     * Creates a new {@link javafx.beans.binding.NumberBinding} that calculates
+<i>195</i>&nbsp;     * the product of this {@code NumberExpression} and another
+<i>196</i>&nbsp;     * {@link javafx.beans.value.ObservableNumberValue}.
+<i>197</i>&nbsp;     *
+<i>198</i>&nbsp;     * @param other
+<i>199</i>&nbsp;     *            the second {@code ObservableNumberValue}
+<i>200</i>&nbsp;     * @return the new {@code NumberBinding}
+<i>201</i>&nbsp;     * @throws NullPointerException
+<i>202</i>&nbsp;     *             if the other {@code ObservableNumberValue} is {@code null}
+<i>203</i>&nbsp;     */
+<i>204</i>&nbsp;    NumberBinding multiply(final ObservableNumberValue other);
+<i>205</i>&nbsp;
+<i>206</i>&nbsp;    /**
+<i>207</i>&nbsp;     * Creates a new {@link javafx.beans.binding.NumberBinding} that calculates
+<i>208</i>&nbsp;     * the product of this {@code NumberExpression} and a constant value.
+<i>209</i>&nbsp;     *
+<i>210</i>&nbsp;     * @param other
+<i>211</i>&nbsp;     *            the constant value
+<i>212</i>&nbsp;     * @return the new {@code NumberBinding}
+<i>213</i>&nbsp;     */
+<i>214</i>&nbsp;    NumberBinding multiply(final double other);
+<i>215</i>&nbsp;
+<i>216</i>&nbsp;    /**
+<i>217</i>&nbsp;     * Creates a new {@link javafx.beans.binding.NumberBinding} that calculates
+<i>218</i>&nbsp;     * the product of this {@code NumberExpression} and a constant value.
+<i>219</i>&nbsp;     *
+<i>220</i>&nbsp;     * @param other
+<i>221</i>&nbsp;     *            the constant value
+<i>222</i>&nbsp;     * @return the new {@code NumberBinding}
+<i>223</i>&nbsp;     */
+<i>224</i>&nbsp;    NumberBinding multiply(final float other);
+<i>225</i>&nbsp;
+<i>226</i>&nbsp;    /**
+<i>227</i>&nbsp;     * Creates a new {@link javafx.beans.binding.NumberBinding} that calculates
+<i>228</i>&nbsp;     * the product of this {@code NumberExpression} and a constant value.
+<i>229</i>&nbsp;     *
+<i>230</i>&nbsp;     * @param other
+<i>231</i>&nbsp;     *            the constant value
+<i>232</i>&nbsp;     * @return the new {@code NumberBinding}
+<i>233</i>&nbsp;     */
+<i>234</i>&nbsp;    NumberBinding multiply(final long other);
+<i>235</i>&nbsp;
+<i>236</i>&nbsp;    /**
+<i>237</i>&nbsp;     * Creates a new {@link javafx.beans.binding.NumberBinding} that calculates
+<i>238</i>&nbsp;     * the product of this {@code NumberExpression} and a constant value.
+<i>239</i>&nbsp;     *
+<i>240</i>&nbsp;     * @param other
+<i>241</i>&nbsp;     *            the constant value
+<i>242</i>&nbsp;     * @return the new {@code NumberBinding}
+<i>243</i>&nbsp;     */
+<i>244</i>&nbsp;    NumberBinding multiply(final int other);
+<i>245</i>&nbsp;
+<i>246</i>&nbsp;    // ===============================================================
+<i>247</i>&nbsp;    // DividedBy
+<i>248</i>&nbsp;
+<i>249</i>&nbsp;    /**
+<i>250</i>&nbsp;     * Creates a new {@link javafx.beans.binding.NumberBinding} that calculates
+<i>251</i>&nbsp;     * the division of this {@code NumberExpression} and another
+<i>252</i>&nbsp;     * {@link javafx.beans.value.ObservableNumberValue}.
+<i>253</i>&nbsp;     *
+<i>254</i>&nbsp;     * @param other
+<i>255</i>&nbsp;     *            the second {@code ObservableNumberValue}
+<i>256</i>&nbsp;     * @return the new {@code NumberBinding}
+<i>257</i>&nbsp;     * @throws NullPointerException
+<i>258</i>&nbsp;     *             if the other {@code ObservableNumberValue} is {@code null}
+<i>259</i>&nbsp;     */
+<i>260</i>&nbsp;    NumberBinding divide(final ObservableNumberValue other);
+<i>261</i>&nbsp;
+<i>262</i>&nbsp;    /**
+<i>263</i>&nbsp;     * Creates a new {@link javafx.beans.binding.NumberBinding} that calculates
+<i>264</i>&nbsp;     * the division of this {@code NumberExpression} and a constant value.
+<i>265</i>&nbsp;     *
+<i>266</i>&nbsp;     * @param other
+<i>267</i>&nbsp;     *            the constant value
+<i>268</i>&nbsp;     * @return the new {@code NumberBinding}
+<i>269</i>&nbsp;     */
+<i>270</i>&nbsp;    NumberBinding divide(final double other);
+<i>271</i>&nbsp;
+<i>272</i>&nbsp;    /**
+<i>273</i>&nbsp;     * Creates a new {@link javafx.beans.binding.NumberBinding} that calculates
+<i>274</i>&nbsp;     * the division of this {@code NumberExpression} and a constant value.
+<i>275</i>&nbsp;     *
+<i>276</i>&nbsp;     * @param other
+<i>277</i>&nbsp;     *            the constant value
+<i>278</i>&nbsp;     * @return the new {@code NumberBinding}
+<i>279</i>&nbsp;     */
+<i>280</i>&nbsp;    NumberBinding divide(final float other);
+<i>281</i>&nbsp;
+<i>282</i>&nbsp;    /**
+<i>283</i>&nbsp;     * Creates a new {@link javafx.beans.binding.NumberBinding} that calculates
+<i>284</i>&nbsp;     * the division of this {@code NumberExpression} and a constant value.
+<i>285</i>&nbsp;     *
+<i>286</i>&nbsp;     * @param other
+<i>287</i>&nbsp;     *            the constant value
+<i>288</i>&nbsp;     * @return the new {@code NumberBinding}
+<i>289</i>&nbsp;     */
+<i>290</i>&nbsp;    NumberBinding divide(final long other);
+<i>291</i>&nbsp;
+<i>292</i>&nbsp;    /**
+<i>293</i>&nbsp;     * Creates a new {@link javafx.beans.binding.NumberBinding} that calculates
+<i>294</i>&nbsp;     * the division of this {@code NumberExpression} and a constant value.
+<i>295</i>&nbsp;     *
+<i>296</i>&nbsp;     * @param other
+<i>297</i>&nbsp;     *            the constant value
+<i>298</i>&nbsp;     * @return the new {@code NumberBinding}
+<i>299</i>&nbsp;     */
+<i>300</i>&nbsp;    NumberBinding divide(final int other);
+<i>301</i>&nbsp;
+<i>302</i>&nbsp;    // ===============================================================
+<i>303</i>&nbsp;    // IsEqualTo
+<i>304</i>&nbsp;
+<i>305</i>&nbsp;    /**
+<i>306</i>&nbsp;     * Creates a new {@link javafx.beans.binding.BooleanBinding} that holds {@code true}
+<i>307</i>&nbsp;     * if this and another {@link javafx.beans.value.ObservableNumberValue} are
+<i>308</i>&nbsp;     * equal.
+<i>309</i>&nbsp;     * &lt;p&gt;
+<i>310</i>&nbsp;     * When comparing floating-point numbers it is recommended to use the
+<i>311</i>&nbsp;     * {@link #isEqualTo(ObservableNumberValue, double) isEqualTo()} method that
+<i>312</i>&nbsp;     * allows a small tolerance.
+<i>313</i>&nbsp;     *
+<i>314</i>&nbsp;     * @param other
+<i>315</i>&nbsp;     *            the second {@code ObservableNumberValue}
+<i>316</i>&nbsp;     * @return the new {@code BooleanBinding}
+<i>317</i>&nbsp;     * @throws NullPointerException
+<i>318</i>&nbsp;     *             if the other {@code ObservableNumberValue} is {@code null}
+<i>319</i>&nbsp;     */
+<i>320</i>&nbsp;    BooleanBinding isEqualTo(final ObservableNumberValue other);
+<i>321</i>&nbsp;
+<i>322</i>&nbsp;    /**
+<i>323</i>&nbsp;     * Creates a new {@link javafx.beans.binding.BooleanBinding} that holds {@code true}
+<i>324</i>&nbsp;     * if this and another {@link javafx.beans.value.ObservableNumberValue} are
+<i>325</i>&nbsp;     * equal (with a tolerance).
+<i>326</i>&nbsp;     * &lt;p&gt;
+<i>327</i>&nbsp;     * Two operands {@code a} and {@code b} are considered equal if
+<i>328</i>&nbsp;     * {@code Math.abs(a-b) &lt;= epsilon}.
+<i>329</i>&nbsp;     * &lt;p&gt;
+<i>330</i>&nbsp;     * Allowing a small tolerance is recommended when comparing floating-point
+<i>331</i>&nbsp;     * numbers because of rounding-errors.
+<i>332</i>&nbsp;     *
+<i>333</i>&nbsp;     * @param other
+<i>334</i>&nbsp;     *            the second {@code ObservableNumberValue}
+<i>335</i>&nbsp;     * @param epsilon
+<i>336</i>&nbsp;     *            the tolerance
+<i>337</i>&nbsp;     * @return the new {@code BooleanBinding}
+<i>338</i>&nbsp;     * @throws NullPointerException
+<i>339</i>&nbsp;     *             if the other {@code ObservableNumberValue} is {@code null}
+<i>340</i>&nbsp;     */
+<i>341</i>&nbsp;    BooleanBinding isEqualTo(final ObservableNumberValue other, double epsilon);
+<i>342</i>&nbsp;
+<i>343</i>&nbsp;    /**
+<i>344</i>&nbsp;     * Creates a new {@link javafx.beans.binding.BooleanBinding} that holds {@code true}
+<i>345</i>&nbsp;     * if this {@code NumberExpression} is equal to a constant value (with a
+<i>346</i>&nbsp;     * tolerance).
+<i>347</i>&nbsp;     * &lt;p&gt;
+<i>348</i>&nbsp;     * Two operands {@code a} and {@code b} are considered equal if
+<i>349</i>&nbsp;     * {@code Math.abs(a-b) &lt;= epsilon}.
+<i>350</i>&nbsp;     * &lt;p&gt;
+<i>351</i>&nbsp;     * Allowing a small tolerance is recommended when comparing floating-point
+<i>352</i>&nbsp;     * numbers because of rounding-errors.
+<i>353</i>&nbsp;     *
+<i>354</i>&nbsp;     * @param other
+<i>355</i>&nbsp;     *            the constant value
+<i>356</i>&nbsp;     * @param epsilon
+<i>357</i>&nbsp;     *            the permitted tolerance
+<i>358</i>&nbsp;     * @return the new {@code BooleanBinding}
+<i>359</i>&nbsp;     */
+<i>360</i>&nbsp;    BooleanBinding isEqualTo(final double other, double epsilon);
+<i>361</i>&nbsp;
+<i>362</i>&nbsp;    /**
+<i>363</i>&nbsp;     * Creates a new {@link javafx.beans.binding.BooleanBinding} that holds {@code true}
+<i>364</i>&nbsp;     * if this {@code NumberExpression} is equal to a constant value (with a
+<i>365</i>&nbsp;     * tolerance).
+<i>366</i>&nbsp;     * &lt;p&gt;
+<i>367</i>&nbsp;     * Two operands {@code a} and {@code b} are considered equal if
+<i>368</i>&nbsp;     * {@code Math.abs(a-b) &lt;= epsilon}.
+<i>369</i>&nbsp;     * &lt;p&gt;
+<i>370</i>&nbsp;     * Allowing a small tolerance is recommended when comparing floating-point
+<i>371</i>&nbsp;     * numbers because of rounding-errors.
+<i>372</i>&nbsp;     *
+<i>373</i>&nbsp;     * @param other
+<i>374</i>&nbsp;     *            the constant value
+<i>375</i>&nbsp;     * @param epsilon
+<i>376</i>&nbsp;     *            the permitted tolerance
+<i>377</i>&nbsp;     * @return the new {@code BooleanBinding}
+<i>378</i>&nbsp;     */
+<i>379</i>&nbsp;    BooleanBinding isEqualTo(final float other, double epsilon);
+<i>380</i>&nbsp;
+<i>381</i>&nbsp;    /**
+<i>382</i>&nbsp;     * Creates a new {@link javafx.beans.binding.BooleanBinding} that holds {@code true}
+<i>383</i>&nbsp;     * if this {@code NumberExpression} is equal to a constant value.
+<i>384</i>&nbsp;     * &lt;p&gt;
+<i>385</i>&nbsp;     * When comparing floating-point numbers it is recommended to use the
+<i>386</i>&nbsp;     * {@link #isEqualTo(long, double) isEqualTo()} method that allows a small
+<i>387</i>&nbsp;     * tolerance.
+<i>388</i>&nbsp;     *
+<i>389</i>&nbsp;     * @param other
+<i>390</i>&nbsp;     *            the constant value
+<i>391</i>&nbsp;     * @return the new {@code BooleanBinding}
+<i>392</i>&nbsp;     */
+<i>393</i>&nbsp;    BooleanBinding isEqualTo(final long other);
+<i>394</i>&nbsp;
+<i>395</i>&nbsp;    /**
+<i>396</i>&nbsp;     * Creates a new {@link javafx.beans.binding.BooleanBinding} that holds {@code true}
+<i>397</i>&nbsp;     * if this {@code NumberExpression} is equal to a constant value (with a
+<i>398</i>&nbsp;     * tolerance).
+<i>399</i>&nbsp;     * &lt;p&gt;
+<i>400</i>&nbsp;     * Two operands {@code a} and {@code b} are considered equal if
+<i>401</i>&nbsp;     * {@code Math.abs(a-b) &lt;= epsilon}.
+<i>402</i>&nbsp;     * &lt;p&gt;
+<i>403</i>&nbsp;     * Allowing a small tolerance is recommended when comparing floating-point
+<i>404</i>&nbsp;     * numbers because of rounding-errors.
+<i>405</i>&nbsp;     *
+<i>406</i>&nbsp;     * @param other
+<i>407</i>&nbsp;     *            the constant value
+<i>408</i>&nbsp;     * @param epsilon
+<i>409</i>&nbsp;     *            the permitted tolerance
+<i>410</i>&nbsp;     * @return the new {@code BooleanBinding}
+<i>411</i>&nbsp;     */
+<i>412</i>&nbsp;    BooleanBinding isEqualTo(final long other, double epsilon);
+<i>413</i>&nbsp;
+<i>414</i>&nbsp;    /**
+<i>415</i>&nbsp;     * Creates a new {@link javafx.beans.binding.BooleanBinding} that holds {@code true}
+<i>416</i>&nbsp;     * if this {@code NumberExpression} is equal to a constant value.
+<i>417</i>&nbsp;     * &lt;p&gt;
+<i>418</i>&nbsp;     * When comparing floating-point numbers it is recommended to use the
+<i>419</i>&nbsp;     * {@link #isEqualTo(int, double) isEqualTo()} method that allows a small
+<i>420</i>&nbsp;     * tolerance.
+<i>421</i>&nbsp;     *
+<i>422</i>&nbsp;     * @param other
+<i>423</i>&nbsp;     *            the constant value
+<i>424</i>&nbsp;     * @return the new {@code BooleanBinding}
+<i>425</i>&nbsp;     */
+<i>426</i>&nbsp;    BooleanBinding isEqualTo(final int other);
+<i>427</i>&nbsp;
+<i>428</i>&nbsp;    /**
+<i>429</i>&nbsp;     * Creates a new {@link javafx.beans.binding.BooleanBinding} that holds {@code true}
+<i>430</i>&nbsp;     * if this {@code NumberExpression} is equal to a constant value (with a
+<i>431</i>&nbsp;     * tolerance).
+<i>432</i>&nbsp;     * &lt;p&gt;
+<i>433</i>&nbsp;     * Two operands {@code a} and {@code b} are considered equal if
+<i>434</i>&nbsp;     * {@code Math.abs(a-b) &lt;= epsilon}.
+<i>435</i>&nbsp;     * &lt;p&gt;
+<i>436</i>&nbsp;     * Allowing a small tolerance is recommended when comparing floating-point
+<i>437</i>&nbsp;     * numbers.
+<i>438</i>&nbsp;     *
+<i>439</i>&nbsp;     * @param other
+<i>440</i>&nbsp;     *            the constant value
+<i>441</i>&nbsp;     * @param epsilon
+<i>442</i>&nbsp;     *            the permitted tolerance
+<i>443</i>&nbsp;     * @return the new {@code BooleanBinding}
+<i>444</i>&nbsp;     */
+<i>445</i>&nbsp;    BooleanBinding isEqualTo(final int other, double epsilon);
+<i>446</i>&nbsp;
+<i>447</i>&nbsp;    // ===============================================================
+<i>448</i>&nbsp;    // IsNotEqualTo
+<i>449</i>&nbsp;
+<i>450</i>&nbsp;    /**
+<i>451</i>&nbsp;     * Creates a new {@link javafx.beans.binding.BooleanBinding} that holds {@code true}
+<i>452</i>&nbsp;     * if this and another {@link javafx.beans.value.ObservableNumberValue} are
+<i>453</i>&nbsp;     * not equal.
+<i>454</i>&nbsp;     * &lt;p&gt;
+<i>455</i>&nbsp;     * When comparing floating-point numbers it is recommended to use the
+<i>456</i>&nbsp;     * {@link #isNotEqualTo(ObservableNumberValue, double) isNotEqualTo()}
+<i>457</i>&nbsp;     * method that allows a small tolerance.
+<i>458</i>&nbsp;     *
+<i>459</i>&nbsp;     * @param other
+<i>460</i>&nbsp;     *            the second {@code ObservableNumberValue}
+<i>461</i>&nbsp;     * @return the new {@code BooleanBinding}
+<i>462</i>&nbsp;     * @throws NullPointerException
+<i>463</i>&nbsp;     *             if the other {@code ObservableNumberValue} is {@code null}
+<i>464</i>&nbsp;     */
+<i>465</i>&nbsp;    BooleanBinding isNotEqualTo(final ObservableNumberValue other);
+<i>466</i>&nbsp;
+<i>467</i>&nbsp;    /**
+<i>468</i>&nbsp;     * Creates a new {@link javafx.beans.binding.BooleanBinding} that holds {@code true}
+<i>469</i>&nbsp;     * if this and another {@link javafx.beans.value.ObservableNumberValue} are
+<i>470</i>&nbsp;     * not equal (with a tolerance).
+<i>471</i>&nbsp;     * &lt;p&gt;
+<i>472</i>&nbsp;     * Two operands {@code a} and {@code b} are considered not equal if
+<i>473</i>&nbsp;     * {@code Math.abs(a-b) &gt; epsilon}.
+<i>474</i>&nbsp;     * &lt;p&gt;
+<i>475</i>&nbsp;     * Allowing a small tolerance is recommended when comparing floating-point
+<i>476</i>&nbsp;     * numbers because of rounding-errors.
+<i>477</i>&nbsp;     *
+<i>478</i>&nbsp;     * @param other
+<i>479</i>&nbsp;     *            the second {@code ObservableNumberValue}
+<i>480</i>&nbsp;     * @param epsilon
+<i>481</i>&nbsp;     *            the permitted tolerance
+<i>482</i>&nbsp;     * @return the new {@code BooleanBinding}
+<i>483</i>&nbsp;     * @throws NullPointerException
+<i>484</i>&nbsp;     *             if the other {@code ObservableNumberValue} is {@code null}
+<i>485</i>&nbsp;     */
+<i>486</i>&nbsp;    BooleanBinding isNotEqualTo(final ObservableNumberValue other,
+<i>487</i>&nbsp;            double epsilon);
+<i>488</i>&nbsp;
+<i>489</i>&nbsp;    /**
+<i>490</i>&nbsp;     * Creates a new {@link javafx.beans.binding.BooleanBinding} that holds {@code true}
+<i>491</i>&nbsp;     * if this {@code NumberExpression} is not equal to a constant value (with a
+<i>492</i>&nbsp;     * tolerance).
+<i>493</i>&nbsp;     * &lt;p&gt;
+<i>494</i>&nbsp;     * Two operands {@code a} and {@code b} are considered not equal if
+<i>495</i>&nbsp;     * {@code Math.abs(a-b) &gt; epsilon}.
+<i>496</i>&nbsp;     * &lt;p&gt;
+<i>497</i>&nbsp;     * Allowing a small tolerance is recommended when comparing floating-point
+<i>498</i>&nbsp;     * numbers.
+<i>499</i>&nbsp;     *
+<i>500</i>&nbsp;     * @param other
+<i>501</i>&nbsp;     *            the constant value
+<i>502</i>&nbsp;     * @param epsilon
+<i>503</i>&nbsp;     *            the permitted tolerance
+<i>504</i>&nbsp;     * @return the new {@code BooleanBinding}
+<i>505</i>&nbsp;     */
+<i>506</i>&nbsp;    BooleanBinding isNotEqualTo(final double other, double epsilon);
+<i>507</i>&nbsp;
+<i>508</i>&nbsp;    /**
+<i>509</i>&nbsp;     * Creates a new {@link javafx.beans.binding.BooleanBinding} that holds {@code true}
+<i>510</i>&nbsp;     * if this {@code NumberExpression} is not equal to a constant value (with a
+<i>511</i>&nbsp;     * tolerance).
+<i>512</i>&nbsp;     * &lt;p&gt;
+<i>513</i>&nbsp;     * Two operands {@code a} and {@code b} are considered not equal if
+<i>514</i>&nbsp;     * {@code Math.abs(a-b) &gt; epsilon}.
+<i>515</i>&nbsp;     * &lt;p&gt;
+<i>516</i>&nbsp;     * Allowing a small tolerance is recommended when comparing floating-point
+<i>517</i>&nbsp;     * numbers.
+<i>518</i>&nbsp;     *
+<i>519</i>&nbsp;     * @param other
+<i>520</i>&nbsp;     *            the constant value
+<i>521</i>&nbsp;     * @param epsilon
+<i>522</i>&nbsp;     *            the permitted tolerance
+<i>523</i>&nbsp;     * @return the new {@code BooleanBinding}
+<i>524</i>&nbsp;     */
+<i>525</i>&nbsp;    BooleanBinding isNotEqualTo(final float other, double epsilon);
+<i>526</i>&nbsp;
+<i>527</i>&nbsp;    /**
+<i>528</i>&nbsp;     * Creates a new {@link javafx.beans.binding.BooleanBinding} that holds {@code true}
+<i>529</i>&nbsp;     * if this {@code NumberExpression} is not equal to a constant value.
+<i>530</i>&nbsp;     * &lt;p&gt;
+<i>531</i>&nbsp;     * When comparing floating-point numbers it is recommended to use the
+<i>532</i>&nbsp;     * {@link #isNotEqualTo(long, double) isNotEqualTo()} method that allows a
+<i>533</i>&nbsp;     * small tolerance.
+<i>534</i>&nbsp;     *
+<i>535</i>&nbsp;     * @param other
+<i>536</i>&nbsp;     *            the constant value
+<i>537</i>&nbsp;     * @return the new {@code BooleanBinding}
+<i>538</i>&nbsp;     */
+<i>539</i>&nbsp;    BooleanBinding isNotEqualTo(final long other);
+<i>540</i>&nbsp;
+<i>541</i>&nbsp;    /**
+<i>542</i>&nbsp;     * Creates a new {@link javafx.beans.binding.BooleanBinding} that holds {@code true}
+<i>543</i>&nbsp;     * if this {@code NumberExpression} is not equal to a constant value (with a
+<i>544</i>&nbsp;     * tolerance).
+<i>545</i>&nbsp;     * &lt;p&gt;
+<i>546</i>&nbsp;     * Two operands {@code a} and {@code b} are considered not equal if
+<i>547</i>&nbsp;     * {@code Math.abs(a-b) &gt; epsilon}.
+<i>548</i>&nbsp;     * &lt;p&gt;
+<i>549</i>&nbsp;     * Allowing a small tolerance is recommended when comparing floating-point
+<i>550</i>&nbsp;     * numbers.
+<i>551</i>&nbsp;     *
+<i>552</i>&nbsp;     * @param other
+<i>553</i>&nbsp;     *            the constant value
+<i>554</i>&nbsp;     * @param epsilon
+<i>555</i>&nbsp;     *            the permitted tolerance
+<i>556</i>&nbsp;     * @return the new {@code BooleanBinding}
+<i>557</i>&nbsp;     */
+<i>558</i>&nbsp;    BooleanBinding isNotEqualTo(final long other, double epsilon);
+<i>559</i>&nbsp;
+<i>560</i>&nbsp;    /**
+<i>561</i>&nbsp;     * Creates a new {@link javafx.beans.binding.BooleanBinding} that holds {@code true}
+<i>562</i>&nbsp;     * if this {@code NumberExpression} is not equal to a constant value.
+<i>563</i>&nbsp;     * &lt;p&gt;
+<i>564</i>&nbsp;     * When comparing floating-point numbers it is recommended to use the
+<i>565</i>&nbsp;     * {@link #isNotEqualTo(int, double) isNotEqualTo()} method that allows a
+<i>566</i>&nbsp;     * small tolerance.
+<i>567</i>&nbsp;     *
+<i>568</i>&nbsp;     * @param other
+<i>569</i>&nbsp;     *            the constant value
+<i>570</i>&nbsp;     * @return the new {@code BooleanBinding}
+<i>571</i>&nbsp;     */
+<i>572</i>&nbsp;    BooleanBinding isNotEqualTo(final int other);
+<i>573</i>&nbsp;
+<i>574</i>&nbsp;    /**
+<i>575</i>&nbsp;     * Creates a new {@link javafx.beans.binding.BooleanBinding} that holds {@code true}
+<i>576</i>&nbsp;     * if this {@code NumberExpression} is not equal to a constant value (with a
+<i>577</i>&nbsp;     * tolerance).
+<i>578</i>&nbsp;     * &lt;p&gt;
+<i>579</i>&nbsp;     * Two operands {@code a} and {@code b} are considered not equal if
+<i>580</i>&nbsp;     * {@code Math.abs(a-b) &gt; epsilon}.
+<i>581</i>&nbsp;     * &lt;p&gt;
+<i>582</i>&nbsp;     * Allowing a small tolerance is recommended when comparing floating-point
+<i>583</i>&nbsp;     * numbers.
+<i>584</i>&nbsp;     *
+<i>585</i>&nbsp;     * @param other
+<i>586</i>&nbsp;     *            the constant value
+<i>587</i>&nbsp;     * @param epsilon
+<i>588</i>&nbsp;     *            the permitted tolerance
+<i>589</i>&nbsp;     * @return the new {@code BooleanBinding}
+<i>590</i>&nbsp;     */
+<i>591</i>&nbsp;    BooleanBinding isNotEqualTo(final int other, double epsilon);
+<i>592</i>&nbsp;
+<i>593</i>&nbsp;    // ===============================================================
+<i>594</i>&nbsp;    // IsGreaterThan
+<i>595</i>&nbsp;
+<i>596</i>&nbsp;    /**
+<i>597</i>&nbsp;     * Creates a new {@link javafx.beans.binding.BooleanBinding} that holds {@code true}
+<i>598</i>&nbsp;     * if this {@code NumberExpression} is greater than another
+<i>599</i>&nbsp;     * {@link javafx.beans.value.ObservableNumberValue}.
+<i>600</i>&nbsp;     *
+<i>601</i>&nbsp;     * @param other
+<i>602</i>&nbsp;     *            the second {@code ObservableNumberValue}
+<i>603</i>&nbsp;     * @return the new {@code BooleanBinding}
+<i>604</i>&nbsp;     * @throws NullPointerException
+<i>605</i>&nbsp;     *             if the other {@code ObservableNumberValue} is {@code null}
+<i>606</i>&nbsp;     */
+<i>607</i>&nbsp;    BooleanBinding greaterThan(final ObservableNumberValue other);
+<i>608</i>&nbsp;
+<i>609</i>&nbsp;    /**
+<i>610</i>&nbsp;     * Creates a new {@link javafx.beans.binding.BooleanBinding} that holds {@code true}
+<i>611</i>&nbsp;     * if this {@code NumberExpression} is greater than a constant value.
+<i>612</i>&nbsp;     *
+<i>613</i>&nbsp;     * @param other
+<i>614</i>&nbsp;     *            the constant value
+<i>615</i>&nbsp;     * @return the new {@code BooleanBinding}
+<i>616</i>&nbsp;     */
+<i>617</i>&nbsp;    BooleanBinding greaterThan(final double other);
+<i>618</i>&nbsp;
+<i>619</i>&nbsp;    /**
+<i>620</i>&nbsp;     * Creates a new {@link javafx.beans.binding.BooleanBinding} that holds {@code true}
+<i>621</i>&nbsp;     * if this {@code NumberExpression} is greater than a constant value.
+<i>622</i>&nbsp;     *
+<i>623</i>&nbsp;     * @param other
+<i>624</i>&nbsp;     *            the constant value
+<i>625</i>&nbsp;     * @return the new {@code BooleanBinding}
+<i>626</i>&nbsp;     */
+<i>627</i>&nbsp;    BooleanBinding greaterThan(final float other);
+<i>628</i>&nbsp;
+<i>629</i>&nbsp;    /**
+<i>630</i>&nbsp;     * Creates a new {@link javafx.beans.binding.BooleanBinding} that holds {@code true}
+<i>631</i>&nbsp;     * if this {@code NumberExpression} is greater than a constant value.
+<i>632</i>&nbsp;     *
+<i>633</i>&nbsp;     * @param other
+<i>634</i>&nbsp;     *            the constant value
+<i>635</i>&nbsp;     * @return the new {@code BooleanBinding}
+<i>636</i>&nbsp;     */
+<i>637</i>&nbsp;    BooleanBinding greaterThan(final long other);
+<i>638</i>&nbsp;
+<i>639</i>&nbsp;    /**
+<i>640</i>&nbsp;     * Creates a new {@link javafx.beans.binding.BooleanBinding} that holds {@code true}
+<i>641</i>&nbsp;     * if this {@code NumberExpression} is greater than a constant value.
+<i>642</i>&nbsp;     *
+<i>643</i>&nbsp;     * @param other
+<i>644</i>&nbsp;     *            the constant value
+<i>645</i>&nbsp;     * @return the new {@code BooleanBinding}
+<i>646</i>&nbsp;     */
+<i>647</i>&nbsp;    BooleanBinding greaterThan(final int other);
+<i>648</i>&nbsp;
+<i>649</i>&nbsp;    // ===============================================================
+<i>650</i>&nbsp;    // IsLesserThan
+<i>651</i>&nbsp;
+<i>652</i>&nbsp;    /**
+<i>653</i>&nbsp;     * Creates a new {@link javafx.beans.binding.BooleanBinding} that holds {@code true}
+<i>654</i>&nbsp;     * if this {@code NumberExpression} is lesser than another
+<i>655</i>&nbsp;     * {@link javafx.beans.value.ObservableNumberValue}.
+<i>656</i>&nbsp;     *
+<i>657</i>&nbsp;     * @param other
+<i>658</i>&nbsp;     *            the second {@code ObservableNumberValue}
+<i>659</i>&nbsp;     * @return the new {@code BooleanBinding}
+<i>660</i>&nbsp;     * @throws NullPointerException
+<i>661</i>&nbsp;     *             if the other {@code ObservableNumberValue} is {@code null}
+<i>662</i>&nbsp;     */
+<i>663</i>&nbsp;    BooleanBinding lessThan(final ObservableNumberValue other);
+<i>664</i>&nbsp;
+<i>665</i>&nbsp;    /**
+<i>666</i>&nbsp;     * Creates a new {@link javafx.beans.binding.BooleanBinding} that holds {@code true}
+<i>667</i>&nbsp;     * if this {@code NumberExpression} is lesser than a constant value.
+<i>668</i>&nbsp;     *
+<i>669</i>&nbsp;     * @param other
+<i>670</i>&nbsp;     *            the constant value
+<i>671</i>&nbsp;     * @return the new {@code BooleanBinding}
+<i>672</i>&nbsp;     */
+<i>673</i>&nbsp;    BooleanBinding lessThan(final double other);
+<i>674</i>&nbsp;
+<i>675</i>&nbsp;    /**
+<i>676</i>&nbsp;     * Creates a new {@link javafx.beans.binding.BooleanBinding} that holds {@code true}
+<i>677</i>&nbsp;     * if this {@code NumberExpression} is lesser than a constant value.
+<i>678</i>&nbsp;     *
+<i>679</i>&nbsp;     * @param other
+<i>680</i>&nbsp;     *            the constant value
+<i>681</i>&nbsp;     * @return the new {@code BooleanBinding}
+<i>682</i>&nbsp;     */
+<i>683</i>&nbsp;    BooleanBinding lessThan(final float other);
+<i>684</i>&nbsp;
+<i>685</i>&nbsp;    /**
+<i>686</i>&nbsp;     * Creates a new {@link javafx.beans.binding.BooleanBinding} that holds {@code true}
+<i>687</i>&nbsp;     * if this {@code NumberExpression} is lesser than a constant value.
+<i>688</i>&nbsp;     *
+<i>689</i>&nbsp;     * @param other
+<i>690</i>&nbsp;     *            the constant value
+<i>691</i>&nbsp;     * @return the new {@code BooleanBinding}
+<i>692</i>&nbsp;     */
+<i>693</i>&nbsp;    BooleanBinding lessThan(final long other);
+<i>694</i>&nbsp;
+<i>695</i>&nbsp;    /**
+<i>696</i>&nbsp;     * Creates a new {@link javafx.beans.binding.BooleanBinding} that holds {@code true}
+<i>697</i>&nbsp;     * if this {@code NumberExpression} is lesser than a constant value.
+<i>698</i>&nbsp;     *
+<i>699</i>&nbsp;     * @param other
+<i>700</i>&nbsp;     *            the constant value
+<i>701</i>&nbsp;     * @return the new {@code BooleanBinding}
+<i>702</i>&nbsp;     */
+<i>703</i>&nbsp;    BooleanBinding lessThan(final int other);
+<i>704</i>&nbsp;
+<i>705</i>&nbsp;    // ===============================================================
+<i>706</i>&nbsp;    // IsGreaterThanOrEqualTo
+<i>707</i>&nbsp;
+<i>708</i>&nbsp;    /**
+<i>709</i>&nbsp;     * Creates a new {@link javafx.beans.binding.BooleanBinding} that holds {@code true}
+<i>710</i>&nbsp;     * if this {@code NumberExpression} is greater than or equal to another
+<i>711</i>&nbsp;     * {@link javafx.beans.value.ObservableNumberValue}.
+<i>712</i>&nbsp;     *
+<i>713</i>&nbsp;     * @param other
+<i>714</i>&nbsp;     *            the second {@code ObservableNumberValue}
+<i>715</i>&nbsp;     * @return the new {@code BooleanBinding}
+<i>716</i>&nbsp;     * @throws NullPointerException
+<i>717</i>&nbsp;     *             if the other {@code ObservableNumberValue} is {@code null}
+<i>718</i>&nbsp;     */
+<i>719</i>&nbsp;    BooleanBinding greaterThanOrEqualTo(final ObservableNumberValue other);
+<i>720</i>&nbsp;
+<i>721</i>&nbsp;    /**
+<i>722</i>&nbsp;     * Creates a new {@link javafx.beans.binding.BooleanBinding} that holds {@code true}
+<i>723</i>&nbsp;     * if this {@code NumberExpression} is greater than or equal to a constant
+<i>724</i>&nbsp;     * value.
+<i>725</i>&nbsp;     *
+<i>726</i>&nbsp;     * @param other
+<i>727</i>&nbsp;     *            the constant value
+<i>728</i>&nbsp;     * @return the new {@code BooleanBinding}
+<i>729</i>&nbsp;     */
+<i>730</i>&nbsp;    BooleanBinding greaterThanOrEqualTo(final double other);
+<i>731</i>&nbsp;
+<i>732</i>&nbsp;    /**
+<i>733</i>&nbsp;     * Creates a new {@link javafx.beans.binding.BooleanBinding} that holds {@code true}
+<i>734</i>&nbsp;     * if this {@code NumberExpression} is greater than or equal to a constant
+<i>735</i>&nbsp;     * value.
+<i>736</i>&nbsp;     *
+<i>737</i>&nbsp;     * @param other
+<i>738</i>&nbsp;     *            the constant value
+<i>739</i>&nbsp;     * @return the new {@code BooleanBinding}
+<i>740</i>&nbsp;     */
+<i>741</i>&nbsp;    BooleanBinding greaterThanOrEqualTo(final float other);
+<i>742</i>&nbsp;
+<i>743</i>&nbsp;    /**
+<i>744</i>&nbsp;     * Creates a new {@link javafx.beans.binding.BooleanBinding} that holds {@code true}
+<i>745</i>&nbsp;     * if this {@code NumberExpression} is greater than or equal to a constant
+<i>746</i>&nbsp;     * value.
+<i>747</i>&nbsp;     *
+<i>748</i>&nbsp;     * @param other
+<i>749</i>&nbsp;     *            the constant value
+<i>750</i>&nbsp;     * @return the new {@code BooleanBinding}
+<i>751</i>&nbsp;     */
+<i>752</i>&nbsp;    BooleanBinding greaterThanOrEqualTo(final long other);
+<i>753</i>&nbsp;
+<i>754</i>&nbsp;    /**
+<i>755</i>&nbsp;     * Creates a new {@link javafx.beans.binding.BooleanBinding} that holds {@code true}
+<i>756</i>&nbsp;     * if this {@code NumberExpression} is greater than or equal to a constant
+<i>757</i>&nbsp;     * value.
+<i>758</i>&nbsp;     *
+<i>759</i>&nbsp;     * @param other
+<i>760</i>&nbsp;     *            the constant value
+<i>761</i>&nbsp;     * @return the new {@code BooleanBinding}
+<i>762</i>&nbsp;     */
+<i>763</i>&nbsp;    BooleanBinding greaterThanOrEqualTo(final int other);
+<i>764</i>&nbsp;
+<i>765</i>&nbsp;    // ===============================================================
+<i>766</i>&nbsp;    // IsLessThanOrEqualTo
+<i>767</i>&nbsp;
+<i>768</i>&nbsp;    /**
+<i>769</i>&nbsp;     * Creates a new {@link javafx.beans.binding.BooleanBinding} that holds {@code true}
+<i>770</i>&nbsp;     * if this {@code NumberExpression} is less than or equal to another
+<i>771</i>&nbsp;     * {@link javafx.beans.value.ObservableNumberValue}.
+<i>772</i>&nbsp;     *
+<i>773</i>&nbsp;     * @param other
+<i>774</i>&nbsp;     *            the second {@code ObservableNumberValue}
+<i>775</i>&nbsp;     * @return the new {@code BooleanBinding}
+<i>776</i>&nbsp;     * @throws NullPointerException
+<i>777</i>&nbsp;     *             if the other {@code ObservableNumberValue} is {@code null}
+<i>778</i>&nbsp;     */
+<i>779</i>&nbsp;    BooleanBinding lessThanOrEqualTo(final ObservableNumberValue other);
+<i>780</i>&nbsp;
+<i>781</i>&nbsp;    /**
+<i>782</i>&nbsp;     * Creates a new {@link javafx.beans.binding.BooleanBinding} that holds {@code true}
+<i>783</i>&nbsp;     * if this {@code NumberExpression} is less than or equal to a constant
+<i>784</i>&nbsp;     * value.
+<i>785</i>&nbsp;     *
+<i>786</i>&nbsp;     * @param other
+<i>787</i>&nbsp;     *            the constant value
+<i>788</i>&nbsp;     * @return the new {@code BooleanBinding}
+<i>789</i>&nbsp;     */
+<i>790</i>&nbsp;    BooleanBinding lessThanOrEqualTo(final double other);
+<i>791</i>&nbsp;
+<i>792</i>&nbsp;    /**
+<i>793</i>&nbsp;     * Creates a new {@link javafx.beans.binding.BooleanBinding} that holds {@code true}
+<i>794</i>&nbsp;     * if this {@code NumberExpression} is less than or equal to a constant
+<i>795</i>&nbsp;     * value.
+<i>796</i>&nbsp;     *
+<i>797</i>&nbsp;     * @param other
+<i>798</i>&nbsp;     *            the constant value
+<i>799</i>&nbsp;     * @return the new {@code BooleanBinding}
+<i>800</i>&nbsp;     */
+<i>801</i>&nbsp;    BooleanBinding lessThanOrEqualTo(final float other);
+<i>802</i>&nbsp;
+<i>803</i>&nbsp;    /**
+<i>804</i>&nbsp;     * Creates a new {@link javafx.beans.binding.BooleanBinding} that holds {@code true}
+<i>805</i>&nbsp;     * if this {@code NumberExpression} is less than or equal to a constant
+<i>806</i>&nbsp;     * value.
+<i>807</i>&nbsp;     *
+<i>808</i>&nbsp;     * @param other
+<i>809</i>&nbsp;     *            the constant value
+<i>810</i>&nbsp;     * @return the new {@code BooleanBinding}
+<i>811</i>&nbsp;     */
+<i>812</i>&nbsp;    BooleanBinding lessThanOrEqualTo(final long other);
+<i>813</i>&nbsp;
+<i>814</i>&nbsp;    /**
+<i>815</i>&nbsp;     * Creates a new {@link javafx.beans.binding.BooleanBinding} that holds {@code true}
+<i>816</i>&nbsp;     * if this {@code NumberExpression} is less than or equal to a constant
+<i>817</i>&nbsp;     * value.
+<i>818</i>&nbsp;     *
+<i>819</i>&nbsp;     * @param other
+<i>820</i>&nbsp;     *            the constant value
+<i>821</i>&nbsp;     * @return the new {@code BooleanBinding}
+<i>822</i>&nbsp;     */
+<i>823</i>&nbsp;    BooleanBinding lessThanOrEqualTo(final int other);
+<i>824</i>&nbsp;
+<i>825</i>&nbsp;    // ===============================================================
+<i>826</i>&nbsp;    // String conversions
+<i>827</i>&nbsp;
+<i>828</i>&nbsp;    /**
+<i>829</i>&nbsp;     * Creates a {@link javafx.beans.binding.StringBinding} that holds the value
+<i>830</i>&nbsp;     * of the {@code NumberExpression} turned into a {@code String}. If the
+<i>831</i>&nbsp;     * value of this {@code NumberExpression} changes, the value of the
+<i>832</i>&nbsp;     * {@code StringBinding} will be updated automatically.
+<i>833</i>&nbsp;     * &lt;p&gt;
+<i>834</i>&nbsp;     * The conversion is done without any formatting applied.
+<i>835</i>&nbsp;     *
+<i>836</i>&nbsp;     * @return the new {@code StringBinding}
+<i>837</i>&nbsp;     */
+<i>838</i>&nbsp;    StringBinding asString();
+<i>839</i>&nbsp;
+<i>840</i>&nbsp;    /**
+<i>841</i>&nbsp;     * Creates a {@link javafx.beans.binding.StringBinding} that holds the value
+<i>842</i>&nbsp;     * of the {@code NumberExpression} turned into a {@code String}. If the
+<i>843</i>&nbsp;     * value of this {@code NumberExpression} changes, the value of the
+<i>844</i>&nbsp;     * {@code StringBinding} will be updated automatically.
+<i>845</i>&nbsp;     * &lt;p&gt;
+<i>846</i>&nbsp;     * The result is formatted according to the formatting {@code String}. See
+<i>847</i>&nbsp;     * {@code java.util.Formatter} for formatting rules.
+<i>848</i>&nbsp;     *
+<i>849</i>&nbsp;     * @param format
+<i>850</i>&nbsp;     *            the formatting {@code String}
+<i>851</i>&nbsp;     * @return the new {@code StringBinding}
+<i>852</i>&nbsp;     */
+<i>853</i>&nbsp;    StringBinding asString(String format);
+<i>854</i>&nbsp;
+<i>855</i>&nbsp;    /**
+<i>856</i>&nbsp;     * Creates a {@link javafx.beans.binding.StringBinding} that holds the value
+<i>857</i>&nbsp;     * of the {@code NumberExpression} turned into a {@code String}. If the
+<i>858</i>&nbsp;     * value of this {@code NumberExpression} changes, the value of the
+<i>859</i>&nbsp;     * {@code StringBinding} will be updated automatically.
+<i>860</i>&nbsp;     * &lt;p&gt;
+<i>861</i>&nbsp;     * The result is formatted according to the formatting {@code String} and
+<i>862</i>&nbsp;     * the passed in {@code Locale}. See {@code java.util.Formatter} for
+<i>863</i>&nbsp;     * formatting rules. See {@code java.util.Locale} for details on
+<i>864</i>&nbsp;     * {@code Locale}.
+<i>865</i>&nbsp;     *
+<i>866</i>&nbsp;     * @param locale the Locale to be used
+<i>867</i>&nbsp;     * @param format
+<i>868</i>&nbsp;     *            the formatting {@code String}
+<i>869</i>&nbsp;     * @return the new {@code StringBinding}
+<i>870</i>&nbsp;     */
+<i>871</i>&nbsp;    StringBinding asString(Locale locale, String format);
+<i>872</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2017-12-04 21:49</div>
+</div>
+</body>
+</html>

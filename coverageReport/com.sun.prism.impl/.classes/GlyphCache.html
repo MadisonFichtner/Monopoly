@@ -1,0 +1,501 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: GlyphCache</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.prism.impl</a> ]
+</div>
+
+<h1>Coverage Summary for Class: GlyphCache (com.sun.prism.impl)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">GlyphCache</td>
+<td class="coverageStat">
+  <span class="percent">
+    75%
+  </span>
+  <span class="absValue">
+    (6/ 8)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    88.4%
+  </span>
+  <span class="absValue">
+    (130/ 147)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">GlyphCache$GlyphData</td>
+<td class="coverageStat">
+  <span class="percent">
+    71.4%
+  </span>
+  <span class="absValue">
+    (5/ 7)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    85.7%
+  </span>
+  <span class="absValue">
+    (12/ 14)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    73.3%
+  </span>
+  <span class="absValue">
+    (11/ 15)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    88.2%
+  </span>
+  <span class="absValue">
+    (142/ 161)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright (c) 2009, 2016, Oracle and/or its affiliates. All rights reserved.
+<i>3</i>&nbsp; * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+<i>4</i>&nbsp; *
+<i>5</i>&nbsp; *
+<i>6</i>&nbsp; *
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; *
+<i>11</i>&nbsp; *
+<i>12</i>&nbsp; *
+<i>13</i>&nbsp; *
+<i>14</i>&nbsp; *
+<i>15</i>&nbsp; *
+<i>16</i>&nbsp; *
+<i>17</i>&nbsp; *
+<i>18</i>&nbsp; *
+<i>19</i>&nbsp; *
+<i>20</i>&nbsp; *
+<i>21</i>&nbsp; *
+<i>22</i>&nbsp; *
+<i>23</i>&nbsp; *
+<i>24</i>&nbsp; */
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;package com.sun.prism.impl;
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;import com.sun.javafx.font.CharToGlyphMapper;
+<i>29</i>&nbsp;import com.sun.javafx.font.CompositeGlyphMapper;
+<i>30</i>&nbsp;import com.sun.javafx.font.FontResource;
+<i>31</i>&nbsp;import com.sun.javafx.font.FontStrike;
+<i>32</i>&nbsp;import com.sun.javafx.font.Glyph;
+<i>33</i>&nbsp;import com.sun.javafx.geom.BaseBounds;
+<i>34</i>&nbsp;import com.sun.javafx.geom.Rectangle;
+<i>35</i>&nbsp;import com.sun.javafx.geom.Point2D;
+<i>36</i>&nbsp;import com.sun.javafx.geom.transform.BaseTransform;
+<i>37</i>&nbsp;import com.sun.javafx.scene.text.GlyphList;
+<i>38</i>&nbsp;import com.sun.prism.impl.packrect.RectanglePacker;
+<i>39</i>&nbsp;import com.sun.prism.Texture;
+<i>40</i>&nbsp;import com.sun.prism.impl.shape.MaskData;
+<i>41</i>&nbsp;import com.sun.prism.paint.Color;
+<i>42</i>&nbsp;
+<i>43</i>&nbsp;import java.nio.ByteBuffer;
+<i>44</i>&nbsp;import java.util.HashMap;
+<i>45</i>&nbsp;import java.util.WeakHashMap;
+<i>46</i>&nbsp;
+<i>47</i>&nbsp;import static com.sun.javafx.logging.PulseLogger.PULSE_LOGGING_ENABLED;
+<i>48</i>&nbsp;import com.sun.javafx.logging.PulseLogger;
+<i>49</i>&nbsp;
+<i>50</i>&nbsp;import com.sun.prism.ResourceFactory;
+<i>51</i>&nbsp;import com.sun.prism.Texture.WrapMode;
+<i>52</i>&nbsp;
+<i>53</i>&nbsp;public class GlyphCache {
+<i>54</i>&nbsp;
+<i>55</i>&nbsp;    // REMIND: For a less powerful device, the size of this cache
+<i>56</i>&nbsp;    // is likely something we&#39;d want to tune as they may have much less
+<i>57</i>&nbsp;    // VRAM and are less likely to be used for apps that have huge
+<i>58</i>&nbsp;    // text demands.
+<i>59</i>&nbsp;    // 2048 pixels introduced very noticeable pauses when trying
+<i>60</i>&nbsp;    // to free 1/4 of the glyphs, which for spiral text also amounts
+<i>61</i>&nbsp;    // to 1/4 of the strikes.
+<b class="fc"><i>62</i>&nbsp;    private static final int WIDTH = PrismSettings.glyphCacheWidth; // in pixels</b>
+<b class="fc"><i>63</i>&nbsp;    private static final int HEIGHT = PrismSettings.glyphCacheHeight; // in pixels</b>
+<i>64</i>&nbsp;    private static ByteBuffer emptyMask;
+<i>65</i>&nbsp;
+<i>66</i>&nbsp;    private final BaseContext context;
+<i>67</i>&nbsp;    private final FontStrike strike;
+<i>68</i>&nbsp;
+<i>69</i>&nbsp;    // segmented arrays are in blocks of 32 glyphs.
+<i>70</i>&nbsp;    private static final int SEGSHIFT = 5;
+<i>71</i>&nbsp;    private static final int SEGSIZE  = 1 &lt;&lt; SEGSHIFT;
+<b class="fc"><i>72</i>&nbsp;    HashMap&lt;Integer, GlyphData[]&gt;</b>
+<i>73</i>&nbsp;        glyphDataMap = new HashMap&lt;Integer, GlyphData[]&gt;();
+<i>74</i>&nbsp;
+<i>75</i>&nbsp;    // Because of SEGSHIFT the 5 high bit in the key to glyphDataMap are unused
+<i>76</i>&nbsp;    // Using them for subpixel
+<i>77</i>&nbsp;    private static final int SUBPIXEL_SHIFT = 27;
+<i>78</i>&nbsp;
+<i>79</i>&nbsp;    private RectanglePacker packer;
+<i>80</i>&nbsp;
+<i>81</i>&nbsp;    private boolean isLCDCache;
+<i>82</i>&nbsp;
+<i>83</i>&nbsp;    /* Share a RectanglePacker and its associated texture cache
+<i>84</i>&nbsp;     * for all uses on a particular screen.
+<i>85</i>&nbsp;     */
+<b class="fc"><i>86</i>&nbsp;    static WeakHashMap&lt;BaseContext, RectanglePacker&gt; greyPackerMap =</b>
+<i>87</i>&nbsp;        new WeakHashMap&lt;BaseContext, RectanglePacker&gt;();
+<i>88</i>&nbsp;
+<b class="fc"><i>89</i>&nbsp;    static WeakHashMap&lt;BaseContext, RectanglePacker&gt; lcdPackerMap =</b>
+<i>90</i>&nbsp;        new WeakHashMap&lt;BaseContext, RectanglePacker&gt;();
+<i>91</i>&nbsp;
+<b class="fc"><i>92</i>&nbsp;    public GlyphCache(BaseContext context, FontStrike strike) {</b>
+<b class="fc"><i>93</i>&nbsp;        this.context = context;</b>
+<b class="fc"><i>94</i>&nbsp;        this.strike = strike;</b>
+<i>95</i>&nbsp;        //numGlyphs = strike.getNumGlyphs();
+<i>96</i>&nbsp;        //int numSegments = (numGlyphs + SEGSIZE-1)/SEGSIZE;
+<i>97</i>&nbsp;        //this.glyphs = new GlyphData[numSegments][];
+<b class="fc"><i>98</i>&nbsp;        isLCDCache = strike.getAAMode() == FontResource.AA_LCD;</b>
+<i>99</i>&nbsp;        WeakHashMap&lt;BaseContext, RectanglePacker&gt;
+<b class="fc"><i>100</i>&nbsp;            packerMap = isLCDCache ? lcdPackerMap : greyPackerMap;</b>
+<b class="fc"><i>101</i>&nbsp;        packer = packerMap.get(context);</b>
+<b class="fc"><i>102</i>&nbsp;        if (packer == null) {</b>
+<b class="fc"><i>103</i>&nbsp;            ResourceFactory factory = context.getResourceFactory();</b>
+<b class="fc"><i>104</i>&nbsp;            Texture tex = factory.createMaskTexture(WIDTH, HEIGHT,</b>
+<i>105</i>&nbsp;                                                    WrapMode.CLAMP_NOT_NEEDED);
+<b class="fc"><i>106</i>&nbsp;            tex.contentsUseful();</b>
+<b class="fc"><i>107</i>&nbsp;            tex.makePermanent();</b>
+<b class="fc"><i>108</i>&nbsp;            if (!isLCDCache) {</b>
+<b class="fc"><i>109</i>&nbsp;                factory.setGlyphTexture(tex);</b>
+<i>110</i>&nbsp;            }
+<b class="fc"><i>111</i>&nbsp;            tex.setLinearFiltering(false);</b>
+<b class="fc"><i>112</i>&nbsp;            packer = new RectanglePacker(tex, WIDTH, HEIGHT);</b>
+<b class="fc"><i>113</i>&nbsp;            packerMap.put(context, packer);</b>
+<i>114</i>&nbsp;        }
+<b class="fc"><i>115</i>&nbsp;    }</b>
+<i>116</i>&nbsp;
+<i>117</i>&nbsp;    public void render(BaseContext ctx, GlyphList gl, float x, float y,
+<i>118</i>&nbsp;                       int start, int end, Color rangeColor, Color textColor,
+<i>119</i>&nbsp;                       BaseTransform xform, BaseBounds clip) {
+<i>120</i>&nbsp;
+<i>121</i>&nbsp;        int dstw, dsth;
+<b class="fc"><i>122</i>&nbsp;        if (isLCDCache) {</b>
+<b class="fc"><i>123</i>&nbsp;            dstw = ctx.getLCDBuffer().getPhysicalWidth();</b>
+<b class="fc"><i>124</i>&nbsp;            dsth = ctx.getLCDBuffer().getPhysicalHeight();</b>
+<i>125</i>&nbsp;        } else {
+<b class="fc"><i>126</i>&nbsp;            dstw = 1;</b>
+<b class="fc"><i>127</i>&nbsp;            dsth = 1;</b>
+<i>128</i>&nbsp;        }
+<b class="fc"><i>129</i>&nbsp;        Texture tex = getBackingStore();</b>
+<b class="fc"><i>130</i>&nbsp;        VertexBuffer vb = ctx.getVertexBuffer();</b>
+<i>131</i>&nbsp;
+<b class="fc"><i>132</i>&nbsp;        int len = gl.getGlyphCount();</b>
+<b class="fc"><i>133</i>&nbsp;        Color currentColor = null;</b>
+<b class="fc"><i>134</i>&nbsp;        Point2D pt = new Point2D();</b>
+<i>135</i>&nbsp;
+<b class="fc"><i>136</i>&nbsp;        for (int gi = 0; gi &lt; len; gi++) {</b>
+<b class="fc"><i>137</i>&nbsp;            int gc = gl.getGlyphCode(gi);</b>
+<i>138</i>&nbsp;
+<i>139</i>&nbsp;            // If we have a supplementary character, then a special
+<i>140</i>&nbsp;            // glyph is inserted in the list, which is one we skip
+<i>141</i>&nbsp;            // over for rendering. It has no advance.
+<b class="fc"><i>142</i>&nbsp;            if ((gc &amp; CompositeGlyphMapper.GLYPHMASK) == CharToGlyphMapper.INVISIBLE_GLYPH_ID) {</b>
+<b class="nc"><i>143</i>&nbsp;                continue;</b>
+<i>144</i>&nbsp;            }
+<b class="fc"><i>145</i>&nbsp;            pt.setLocation(x + gl.getPosX(gi), y + gl.getPosY(gi));</b>
+<b class="fc"><i>146</i>&nbsp;            xform.transform(pt, pt);</b>
+<b class="fc"><i>147</i>&nbsp;            int subPixel = strike.getQuantizedPosition(pt);</b>
+<b class="fc"><i>148</i>&nbsp;            GlyphData data = getCachedGlyph(gc, subPixel);</b>
+<b class="fc"><i>149</i>&nbsp;            if (data != null) {</b>
+<b class="fc"><i>150</i>&nbsp;                if (clip != null) {</b>
+<i>151</i>&nbsp;                    // Always check clipping using user space.
+<b class="fc"><i>152</i>&nbsp;                    if (x + gl.getPosX(gi) &gt; clip.getMaxX()) break;</b>
+<b class="fc"><i>153</i>&nbsp;                    if (x + gl.getPosX(gi + 1) &lt; clip.getMinX()) continue;</b>
+<i>154</i>&nbsp;                }
+<i>155</i>&nbsp;                /* Will not render selected text for complex
+<i>156</i>&nbsp;                 * paints such as gradient.
+<i>157</i>&nbsp;                 */
+<b class="fc"><i>158</i>&nbsp;                if (rangeColor != null &amp;&amp; textColor != null) {</b>
+<b class="fc"><i>159</i>&nbsp;                    int offset = gl.getCharOffset(gi);</b>
+<b class="fc"><i>160</i>&nbsp;                    if (start &lt;= offset &amp;&amp; offset &lt; end) {</b>
+<b class="fc"><i>161</i>&nbsp;                        if (rangeColor != currentColor) {</b>
+<b class="fc"><i>162</i>&nbsp;                            vb.setPerVertexColor(rangeColor, 1.0f);</b>
+<b class="fc"><i>163</i>&nbsp;                            currentColor = rangeColor;</b>
+<i>164</i>&nbsp;                        }
+<i>165</i>&nbsp;                    } else {
+<b class="nc"><i>166</i>&nbsp;                        if (textColor != currentColor) {</b>
+<b class="nc"><i>167</i>&nbsp;                            vb.setPerVertexColor(textColor, 1.0f);</b>
+<b class="nc"><i>168</i>&nbsp;                            currentColor = textColor;</b>
+<i>169</i>&nbsp;                        }
+<i>170</i>&nbsp;                    }
+<i>171</i>&nbsp;                }
+<b class="fc"><i>172</i>&nbsp;                addDataToQuad(data, vb, tex, pt.x, pt.y, dstw, dsth);</b>
+<i>173</i>&nbsp;            }
+<i>174</i>&nbsp;        }
+<b class="fc"><i>175</i>&nbsp;    }</b>
+<i>176</i>&nbsp;
+<i>177</i>&nbsp;    private void addDataToQuad(GlyphData data, VertexBuffer vb,
+<i>178</i>&nbsp;                               Texture tex, float x, float y,
+<i>179</i>&nbsp;                               float dstw, float dsth) {
+<i>180</i>&nbsp;        // We are sampling texture using nearest point sampling, for clear
+<i>181</i>&nbsp;        // text. As a consequence of nearest point sampling, graphics artifacts
+<i>182</i>&nbsp;        // may occur when sampling close to texel boundaries.
+<i>183</i>&nbsp;        // By rounding the glyph placement we can avoid the texture boundaries.
+<i>184</i>&nbsp;        // REMIND: If we start using linear sampling then we should remove
+<i>185</i>&nbsp;        // rounding.
+<b class="fc"><i>186</i>&nbsp;        y = Math.round(y);</b>
+<b class="fc"><i>187</i>&nbsp;        Rectangle rect = data.getRect();</b>
+<b class="fc"><i>188</i>&nbsp;        if (rect == null) {</b>
+<i>189</i>&nbsp;            // Glyph with no visual representation (whitespace)
+<b class="fc"><i>190</i>&nbsp;            return;</b>
+<i>191</i>&nbsp;        }
+<b class="fc"><i>192</i>&nbsp;        int border = data.getBlankBoundary();</b>
+<b class="fc"><i>193</i>&nbsp;        float gw = rect.width - (border * 2);</b>
+<b class="fc"><i>194</i>&nbsp;        float gh = rect.height - (border * 2);</b>
+<b class="fc"><i>195</i>&nbsp;        float dx1 = data.getOriginX() + x;</b>
+<b class="fc"><i>196</i>&nbsp;        float dy1 = data.getOriginY() + y;</b>
+<i>197</i>&nbsp;        float dx2;
+<b class="fc"><i>198</i>&nbsp;        float dy2 = dy1 + gh;</b>
+<b class="fc"><i>199</i>&nbsp;        float tw = tex.getPhysicalWidth();</b>
+<b class="fc"><i>200</i>&nbsp;        float th = tex.getPhysicalHeight();</b>
+<b class="fc"><i>201</i>&nbsp;        float tx1 = (rect.x + border) / tw;</b>
+<b class="fc"><i>202</i>&nbsp;        float ty1 = (rect.y + border) / th;</b>
+<b class="fc"><i>203</i>&nbsp;        float tx2 = tx1 + (gw / tw);</b>
+<b class="fc"><i>204</i>&nbsp;        float ty2 = ty1 + (gh / th);</b>
+<b class="fc"><i>205</i>&nbsp;        if (isLCDCache) {</b>
+<b class="fc"><i>206</i>&nbsp;            dx1 = Math.round(dx1 * 3.0f) / 3.0f;</b>
+<b class="fc"><i>207</i>&nbsp;            dx2 = dx1 + gw / 3.0f;</b>
+<b class="fc"><i>208</i>&nbsp;            float t2x1 = dx1 / dstw;</b>
+<b class="fc"><i>209</i>&nbsp;            float t2x2 = dx2 / dstw;</b>
+<b class="fc"><i>210</i>&nbsp;            float t2y1 = dy1 / dsth;</b>
+<b class="fc"><i>211</i>&nbsp;            float t2y2 = dy2 / dsth;</b>
+<b class="fc"><i>212</i>&nbsp;            vb.addQuad(dx1, dy1, dx2, dy2, tx1, ty1, tx2, ty2, t2x1, t2y1, t2x2, t2y2);</b>
+<b class="fc"><i>213</i>&nbsp;        } else {</b>
+<b class="fc"><i>214</i>&nbsp;            dx1 = Math.round(dx1);</b>
+<b class="fc"><i>215</i>&nbsp;            dx2 = dx1 + gw;</b>
+<b class="fc"><i>216</i>&nbsp;            if (context.isSuperShaderEnabled()) {</b>
+<b class="fc"><i>217</i>&nbsp;                vb.addSuperQuad(dx1, dy1, dx2, dy2, tx1, ty1, tx2, ty2, true);</b>
+<i>218</i>&nbsp;            } else {
+<b class="fc"><i>219</i>&nbsp;                vb.addQuad(dx1, dy1, dx2, dy2, tx1, ty1, tx2, ty2);</b>
+<i>220</i>&nbsp;            }
+<i>221</i>&nbsp;        }
+<b class="fc"><i>222</i>&nbsp;    }</b>
+<i>223</i>&nbsp;
+<i>224</i>&nbsp;    public Texture getBackingStore() {
+<b class="fc"><i>225</i>&nbsp;        return packer.getBackingStore();</b>
+<i>226</i>&nbsp;    }
+<i>227</i>&nbsp;
+<i>228</i>&nbsp;    public void clear() {
+<b class="nc"><i>229</i>&nbsp;        glyphDataMap.clear();</b>
+<b class="nc"><i>230</i>&nbsp;    }</b>
+<i>231</i>&nbsp;
+<i>232</i>&nbsp;    private void clearAll() {
+<i>233</i>&nbsp;        // flush any pending vertices that may depend on the current state
+<i>234</i>&nbsp;        // of the glyph cache texture.
+<b class="nc"><i>235</i>&nbsp;        context.flushVertexBuffer();</b>
+<b class="nc"><i>236</i>&nbsp;        context.clearGlyphCaches();</b>
+<b class="nc"><i>237</i>&nbsp;        packer.clear();</b>
+<b class="nc"><i>238</i>&nbsp;    }</b>
+<i>239</i>&nbsp;
+<i>240</i>&nbsp;    private GlyphData getCachedGlyph(int glyphCode, int subPixel) {
+<b class="fc"><i>241</i>&nbsp;        int segIndex = glyphCode &gt;&gt; SEGSHIFT;</b>
+<b class="fc"><i>242</i>&nbsp;        int subIndex = glyphCode % SEGSIZE;</b>
+<b class="fc"><i>243</i>&nbsp;        segIndex |= (subPixel &lt;&lt; SUBPIXEL_SHIFT);</b>
+<b class="fc"><i>244</i>&nbsp;        GlyphData[] segment = glyphDataMap.get(segIndex);</b>
+<b class="fc"><i>245</i>&nbsp;        if (segment != null) {</b>
+<b class="fc"><i>246</i>&nbsp;            if (segment[subIndex] != null) {</b>
+<b class="fc"><i>247</i>&nbsp;                return segment[subIndex];</b>
+<i>248</i>&nbsp;            }
+<i>249</i>&nbsp;        } else {
+<b class="fc"><i>250</i>&nbsp;            segment = new GlyphData[SEGSIZE];</b>
+<b class="fc"><i>251</i>&nbsp;            glyphDataMap.put(segIndex, segment);</b>
+<i>252</i>&nbsp;        }
+<i>253</i>&nbsp;
+<i>254</i>&nbsp;        // Render the glyph and insert it in the cache
+<b class="fc"><i>255</i>&nbsp;        GlyphData data = null;</b>
+<b class="fc"><i>256</i>&nbsp;        Glyph glyph = strike.getGlyph(glyphCode);</b>
+<b class="fc"><i>257</i>&nbsp;        if (glyph != null) {</b>
+<b class="fc"><i>258</i>&nbsp;            byte[] glyphImage = glyph.getPixelData(subPixel);</b>
+<b class="fc"><i>259</i>&nbsp;            if (glyphImage == null || glyphImage.length == 0) {</b>
+<b class="fc"><i>260</i>&nbsp;                data = new GlyphData(0, 0, 0,</b>
+<b class="fc"><i>261</i>&nbsp;                                     glyph.getPixelXAdvance(),</b>
+<b class="fc"><i>262</i>&nbsp;                                     glyph.getPixelYAdvance(),</b>
+<i>263</i>&nbsp;                                     null);
+<i>264</i>&nbsp;            } else {
+<i>265</i>&nbsp;                // Rasterize the glyph
+<i>266</i>&nbsp;                // NOTE : if the MaskData can be stored back directly
+<i>267</i>&nbsp;                // in the glyph, even as an opaque type, it should save
+<i>268</i>&nbsp;                // repeated work next time the glyph is used.
+<b class="fc"><i>269</i>&nbsp;                MaskData maskData = MaskData.create(glyphImage,</b>
+<b class="fc"><i>270</i>&nbsp;                                                    glyph.getOriginX(),</b>
+<b class="fc"><i>271</i>&nbsp;                                                    glyph.getOriginY(),</b>
+<b class="fc"><i>272</i>&nbsp;                                                    glyph.getWidth(),</b>
+<b class="fc"><i>273</i>&nbsp;                                                    glyph.getHeight());</b>
+<i>274</i>&nbsp;
+<i>275</i>&nbsp;                // Make room for the rectangle on the backing store
+<b class="fc"><i>276</i>&nbsp;                int border = 1;</b>
+<b class="fc"><i>277</i>&nbsp;                int rectW = maskData.getWidth()  + (2 * border);</b>
+<b class="fc"><i>278</i>&nbsp;                int rectH = maskData.getHeight() + (2 * border);</b>
+<b class="fc"><i>279</i>&nbsp;                int originX = maskData.getOriginX();</b>
+<b class="fc"><i>280</i>&nbsp;                int originY = maskData.getOriginY();</b>
+<b class="fc"><i>281</i>&nbsp;                Rectangle rect = new Rectangle(0, 0, rectW, rectH);</b>
+<b class="fc"><i>282</i>&nbsp;                data = new GlyphData(originX, originY, border,</b>
+<b class="fc"><i>283</i>&nbsp;                                     glyph.getPixelXAdvance(),</b>
+<b class="fc"><i>284</i>&nbsp;                                     glyph.getPixelYAdvance(),</b>
+<i>285</i>&nbsp;                                     rect);
+<i>286</i>&nbsp;
+<b class="fc"><i>287</i>&nbsp;                if (!packer.add(rect)) {</b>
+<b class="nc"><i>288</i>&nbsp;                    if (PULSE_LOGGING_ENABLED) {</b>
+<b class="nc"><i>289</i>&nbsp;                        PulseLogger.incrementCounter(&quot;Font Glyph Cache Cleared&quot;);</b>
+<i>290</i>&nbsp;                    }
+<i>291</i>&nbsp;                    // If add fails,clear up the cache. Try add again.
+<b class="nc"><i>292</i>&nbsp;                    clearAll();</b>
+<b class="nc"><i>293</i>&nbsp;                    packer.add(rect);</b>
+<i>294</i>&nbsp;                }
+<i>295</i>&nbsp;
+<i>296</i>&nbsp;                // We always pass skipFlush=true to backingStore.update()
+<i>297</i>&nbsp;                // since we are in control of the contents of the backingStore
+<i>298</i>&nbsp;                // texture and explicitly flush the vertex buffer only when
+<i>299</i>&nbsp;                // it is truly needed.
+<b class="fc"><i>300</i>&nbsp;                boolean skipFlush = true;</b>
+<i>301</i>&nbsp;
+<i>302</i>&nbsp;                // Upload the an empty byte array to ensure the boundary
+<i>303</i>&nbsp;                // area is filled with zeros. Note that the rectangle
+<i>304</i>&nbsp;                // is already padded on each edge.
+<b class="fc"><i>305</i>&nbsp;                Texture backingStore = getBackingStore();</b>
+<b class="fc"><i>306</i>&nbsp;                int emw = rect.width;</b>
+<b class="fc"><i>307</i>&nbsp;                int emh = rect.height;</b>
+<b class="fc"><i>308</i>&nbsp;                int bpp = backingStore.getPixelFormat().getBytesPerPixelUnit();</b>
+<b class="fc"><i>309</i>&nbsp;                int stride = emw * bpp;</b>
+<b class="fc"><i>310</i>&nbsp;                int size = stride * emh;</b>
+<b class="fc"><i>311</i>&nbsp;                if (emptyMask == null || size &gt; emptyMask.capacity()) {</b>
+<b class="fc"><i>312</i>&nbsp;                    emptyMask = BufferUtil.newByteBuffer(size);</b>
+<i>313</i>&nbsp;                }
+<i>314</i>&nbsp;                // try/catch is a precaution against not fitting into the store.
+<i>315</i>&nbsp;                try {
+<b class="fc"><i>316</i>&nbsp;                    backingStore.update(emptyMask,</b>
+<b class="fc"><i>317</i>&nbsp;                                        backingStore.getPixelFormat(),</b>
+<i>318</i>&nbsp;                                        rect.x, rect.y,
+<i>319</i>&nbsp;                                        0, 0, emw, emh, stride,
+<i>320</i>&nbsp;                                        skipFlush);
+<b class="nc"><i>321</i>&nbsp;                } catch (Exception e) {</b>
+<b class="nc"><i>322</i>&nbsp;                    e.printStackTrace();</b>
+<b class="nc"><i>323</i>&nbsp;                    return null;</b>
+<b class="fc"><i>324</i>&nbsp;                }</b>
+<i>325</i>&nbsp;                // Upload the glyph
+<b class="fc"><i>326</i>&nbsp;                maskData.uploadToTexture(backingStore,</b>
+<i>327</i>&nbsp;                                         border + rect.x,
+<i>328</i>&nbsp;                                         border + rect.y,
+<i>329</i>&nbsp;                                         skipFlush);
+<i>330</i>&nbsp;
+<i>331</i>&nbsp;            }
+<b class="fc"><i>332</i>&nbsp;            segment[subIndex] = data;</b>
+<i>333</i>&nbsp;        }
+<i>334</i>&nbsp;
+<b class="fc"><i>335</i>&nbsp;        return data;</b>
+<i>336</i>&nbsp;    }
+<i>337</i>&nbsp;
+<i>338</i>&nbsp;    static class GlyphData {
+<i>339</i>&nbsp;        // The following must be defined and used VERY precisely. This is
+<i>340</i>&nbsp;        // the offset from the upper-left corner of this rectangle (Java
+<i>341</i>&nbsp;        // 2D coordinate system) at which the string must be rasterized in
+<i>342</i>&nbsp;        // order to fit within the rectangle -- the leftmost point of the
+<i>343</i>&nbsp;        // baseline.
+<i>344</i>&nbsp;        private final int originX;
+<i>345</i>&nbsp;        private final int originY;
+<i>346</i>&nbsp;
+<i>347</i>&nbsp;        // The blank boundary around the real image of the glyph on
+<i>348</i>&nbsp;        // the backing store
+<i>349</i>&nbsp;        private final int blankBoundary;
+<i>350</i>&nbsp;
+<i>351</i>&nbsp;        // The advance of this glyph
+<i>352</i>&nbsp;        private final float xAdvance, yAdvance;
+<i>353</i>&nbsp;
+<i>354</i>&nbsp;        // The rectangle on the backing store corresponding to this glyph
+<i>355</i>&nbsp;        private final Rectangle rect;
+<i>356</i>&nbsp;
+<i>357</i>&nbsp;        GlyphData(int originX, int originY, int blankBoundary,
+<i>358</i>&nbsp;                  float xAdvance, float yAdvance, Rectangle rect)
+<b class="fc"><i>359</i>&nbsp;        {</b>
+<b class="fc"><i>360</i>&nbsp;            this.originX = originX;</b>
+<b class="fc"><i>361</i>&nbsp;            this.originY = originY;</b>
+<b class="fc"><i>362</i>&nbsp;            this.blankBoundary = blankBoundary;</b>
+<b class="fc"><i>363</i>&nbsp;            this.xAdvance = xAdvance;</b>
+<b class="fc"><i>364</i>&nbsp;            this.yAdvance = yAdvance;</b>
+<b class="fc"><i>365</i>&nbsp;            this.rect = rect;</b>
+<b class="fc"><i>366</i>&nbsp;        }</b>
+<i>367</i>&nbsp;
+<i>368</i>&nbsp;        int getOriginX() {
+<b class="fc"><i>369</i>&nbsp;            return originX;</b>
+<i>370</i>&nbsp;        }
+<i>371</i>&nbsp;
+<i>372</i>&nbsp;        int getOriginY() {
+<b class="fc"><i>373</i>&nbsp;            return originY;</b>
+<i>374</i>&nbsp;        }
+<i>375</i>&nbsp;
+<i>376</i>&nbsp;        int getBlankBoundary() {
+<b class="fc"><i>377</i>&nbsp;            return blankBoundary;</b>
+<i>378</i>&nbsp;        }
+<i>379</i>&nbsp;
+<i>380</i>&nbsp;        float getXAdvance() {
+<b class="nc"><i>381</i>&nbsp;            return xAdvance;</b>
+<i>382</i>&nbsp;        }
+<i>383</i>&nbsp;
+<i>384</i>&nbsp;        float getYAdvance() {
+<b class="nc"><i>385</i>&nbsp;            return yAdvance;</b>
+<i>386</i>&nbsp;        }
+<i>387</i>&nbsp;
+<i>388</i>&nbsp;        Rectangle getRect() {
+<b class="fc"><i>389</i>&nbsp;            return rect;</b>
+<i>390</i>&nbsp;        }
+<i>391</i>&nbsp;    }
+<i>392</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2017-12-04 21:49</div>
+</div>
+</body>
+</html>

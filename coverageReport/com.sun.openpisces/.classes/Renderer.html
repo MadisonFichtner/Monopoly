@@ -1,0 +1,668 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: Renderer</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.openpisces</a> ]
+</div>
+
+<h1>Coverage Summary for Class: Renderer (com.sun.openpisces)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">Renderer</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    4%
+  </span>
+  <span class="absValue">
+    (1/ 25)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    4.3%
+  </span>
+  <span class="absValue">
+    (10/ 232)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright (c) 2007, 2016, Oracle and/or its affiliates. All rights reserved.
+<i>3</i>&nbsp; * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+<i>4</i>&nbsp; *
+<i>5</i>&nbsp; *
+<i>6</i>&nbsp; *
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; *
+<i>11</i>&nbsp; *
+<i>12</i>&nbsp; *
+<i>13</i>&nbsp; *
+<i>14</i>&nbsp; *
+<i>15</i>&nbsp; *
+<i>16</i>&nbsp; *
+<i>17</i>&nbsp; *
+<i>18</i>&nbsp; *
+<i>19</i>&nbsp; *
+<i>20</i>&nbsp; *
+<i>21</i>&nbsp; *
+<i>22</i>&nbsp; *
+<i>23</i>&nbsp; *
+<i>24</i>&nbsp; */
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;package com.sun.openpisces;
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;import com.sun.javafx.geom.PathConsumer2D;
+<i>29</i>&nbsp;import java.util.Arrays;
+<i>30</i>&nbsp;
+<i>31</i>&nbsp;/**
+<i>32</i>&nbsp; */
+<b class="nc"><i>33</i>&nbsp;public final class Renderer implements PathConsumer2D {</b>
+<i>34</i>&nbsp;
+<i>35</i>&nbsp;    private final class ScanlineIterator {
+<i>36</i>&nbsp;
+<i>37</i>&nbsp;        private int[] crossings;
+<i>38</i>&nbsp;        private int[] edgePtrs;
+<i>39</i>&nbsp;        private int edgeCount;
+<i>40</i>&nbsp;
+<i>41</i>&nbsp;        // crossing bounds. The bounds are not necessarily tight (the scan line
+<i>42</i>&nbsp;        // at minY, for example, might have no crossings). The x bounds will
+<i>43</i>&nbsp;        // be accumulated as crossings are computed.
+<i>44</i>&nbsp;        private int nextY;
+<i>45</i>&nbsp;
+<i>46</i>&nbsp;        private static final int INIT_CROSSINGS_SIZE = 10;
+<i>47</i>&nbsp;
+<i>48</i>&nbsp;        private ScanlineIterator() {
+<i>49</i>&nbsp;            crossings = new int[INIT_CROSSINGS_SIZE];
+<i>50</i>&nbsp;            edgePtrs = new int[INIT_CROSSINGS_SIZE];
+<i>51</i>&nbsp;            reset();
+<i>52</i>&nbsp;        }
+<i>53</i>&nbsp;
+<i>54</i>&nbsp;        public void reset() {
+<i>55</i>&nbsp;            // We don&#39;t care if we clip some of the line off with ceil, since
+<i>56</i>&nbsp;            // no scan line crossings will be eliminated (in fact, the ceil is
+<i>57</i>&nbsp;            // the y of the first scan line crossing).
+<i>58</i>&nbsp;            nextY = sampleRowMin;
+<i>59</i>&nbsp;            edgeCount = 0;
+<i>60</i>&nbsp;        }
+<i>61</i>&nbsp;
+<i>62</i>&nbsp;        private int next() {
+<i>63</i>&nbsp;            // TODO: make function that convert from y value to bucket idx?
+<i>64</i>&nbsp;            // (RT-26922)
+<i>65</i>&nbsp;            int cury = nextY++;
+<i>66</i>&nbsp;            int bucket = cury - boundsMinY;
+<i>67</i>&nbsp;            int count = this.edgeCount;
+<i>68</i>&nbsp;            int ptrs[] = this.edgePtrs;
+<i>69</i>&nbsp;            float edges[] = Renderer.this.edges;
+<i>70</i>&nbsp;            int bucketcount = edgeBuckets[bucket*2 + 1];
+<i>71</i>&nbsp;            if ((bucketcount &amp; 0x1) != 0) {
+<i>72</i>&nbsp;                int newCount = 0;
+<i>73</i>&nbsp;                for (int i = 0; i &lt; count; i++) {
+<i>74</i>&nbsp;                    int ecur = ptrs[i];
+<i>75</i>&nbsp;                    if (edges[ecur+YMAX] &gt; cury) {
+<i>76</i>&nbsp;                        ptrs[newCount++] = ecur;
+<i>77</i>&nbsp;                    }
+<i>78</i>&nbsp;                }
+<i>79</i>&nbsp;                count = newCount;
+<i>80</i>&nbsp;            }
+<i>81</i>&nbsp;            ptrs = Helpers.widenArray(ptrs, count, bucketcount &gt;&gt; 1);
+<i>82</i>&nbsp;            for (int ecur = edgeBuckets[bucket*2];
+<i>83</i>&nbsp;                 ecur != 0;
+<i>84</i>&nbsp;                 ecur = (int)edges[ecur+NEXT])
+<i>85</i>&nbsp;            {
+<i>86</i>&nbsp;                ptrs[count++] = --ecur;
+<i>87</i>&nbsp;                // REMIND: Adjust start Y if necessary
+<i>88</i>&nbsp;            }
+<i>89</i>&nbsp;            this.edgePtrs = ptrs;
+<i>90</i>&nbsp;            this.edgeCount = count;
+<i>91</i>&nbsp;//            if ((count &amp; 0x1) != 0) {
+<i>92</i>&nbsp;//                System.out.println(&quot;ODD NUMBER OF EDGES!!!!&quot;);
+<i>93</i>&nbsp;//            }
+<i>94</i>&nbsp;            int xings[] = this.crossings;
+<i>95</i>&nbsp;            if (xings.length &lt; count) {
+<i>96</i>&nbsp;                this.crossings = xings = new int[ptrs.length];
+<i>97</i>&nbsp;            }
+<i>98</i>&nbsp;            for (int i = 0; i &lt; count; i++) {
+<i>99</i>&nbsp;                int ecur = ptrs[i];
+<i>100</i>&nbsp;                float curx = edges[ecur+CURX];
+<i>101</i>&nbsp;                int cross = ((int) Math.ceil(curx - 0.5f)) &lt;&lt; 1;
+<i>102</i>&nbsp;                edges[ecur+CURX] = curx + edges[ecur+SLOPE];
+<i>103</i>&nbsp;                if (edges[ecur+OR] &gt; 0) {
+<i>104</i>&nbsp;                    cross |= 1;
+<i>105</i>&nbsp;                }
+<i>106</i>&nbsp;                int j = i;
+<i>107</i>&nbsp;                while (--j &gt;= 0) {
+<i>108</i>&nbsp;                    int jcross = xings[j];
+<i>109</i>&nbsp;                    if (jcross &lt;= cross) {
+<i>110</i>&nbsp;                        break;
+<i>111</i>&nbsp;                    }
+<i>112</i>&nbsp;                    xings[j+1] = jcross;
+<i>113</i>&nbsp;                    ptrs[j+1] = ptrs[j];
+<i>114</i>&nbsp;                }
+<i>115</i>&nbsp;                xings[j+1] = cross;
+<i>116</i>&nbsp;                ptrs[j+1] = ecur;
+<i>117</i>&nbsp;            }
+<i>118</i>&nbsp;            return count;
+<i>119</i>&nbsp;        }
+<i>120</i>&nbsp;
+<i>121</i>&nbsp;        private boolean hasNext() {
+<i>122</i>&nbsp;            return nextY &lt; sampleRowMax;
+<i>123</i>&nbsp;        }
+<i>124</i>&nbsp;
+<i>125</i>&nbsp;        private int curY() {
+<i>126</i>&nbsp;            return nextY - 1;
+<i>127</i>&nbsp;        }
+<i>128</i>&nbsp;    }
+<i>129</i>&nbsp;
+<i>130</i>&nbsp;
+<i>131</i>&nbsp;//////////////////////////////////////////////////////////////////////////////
+<i>132</i>&nbsp;//  EDGE LIST
+<i>133</i>&nbsp;//////////////////////////////////////////////////////////////////////////////
+<i>134</i>&nbsp;// TODO(maybe): very tempting to use fixed point here. A lot of opportunities
+<i>135</i>&nbsp;// for shifts and just removing certain operations altogether. (RT-26922)
+<i>136</i>&nbsp;
+<i>137</i>&nbsp;    // common to all types of input path segments.
+<i>138</i>&nbsp;    private static final int YMAX = 0;
+<i>139</i>&nbsp;    private static final int CURX = 1;
+<i>140</i>&nbsp;    // NEXT and OR are meant to be indeces into &quot;int&quot; fields, but arrays must
+<i>141</i>&nbsp;    // be homogenous, so every field is a float. However floats can represent
+<i>142</i>&nbsp;    // exactly up to 26 bit ints, so we&#39;re ok.
+<i>143</i>&nbsp;    private static final int OR   = 2;
+<i>144</i>&nbsp;    private static final int SLOPE = 3;
+<i>145</i>&nbsp;    private static final int NEXT = 4;
+<i>146</i>&nbsp;    private static final int SIZEOF_EDGE = 5;
+<i>147</i>&nbsp;
+<i>148</i>&nbsp;    private int sampleRowMin;
+<i>149</i>&nbsp;    private int sampleRowMax;
+<i>150</i>&nbsp;    private float edgeMinX;
+<i>151</i>&nbsp;    private float edgeMaxX;
+<i>152</i>&nbsp;
+<i>153</i>&nbsp;    private float[] edges;
+<i>154</i>&nbsp;    private int[] edgeBuckets;
+<i>155</i>&nbsp;    private int numEdges;
+<i>156</i>&nbsp;
+<i>157</i>&nbsp;    private static final float DEC_BND = 1.0f;
+<i>158</i>&nbsp;    private static final float INC_BND = 0.4f;
+<i>159</i>&nbsp;
+<i>160</i>&nbsp;    // each bucket is a linked list. this method adds eptr to the
+<i>161</i>&nbsp;    // start &quot;bucket&quot;th linked list.
+<i>162</i>&nbsp;    private void addEdgeToBucket(final int eptr, final int bucket) {
+<i>163</i>&nbsp;        // we could implement this in terms of insertEdge, but this is a special
+<i>164</i>&nbsp;        // case, so we optimize a bit.
+<b class="nc"><i>165</i>&nbsp;        edges[eptr+NEXT] = edgeBuckets[bucket*2];</b>
+<b class="nc"><i>166</i>&nbsp;        edgeBuckets[bucket*2] = eptr + 1;</b>
+<b class="nc"><i>167</i>&nbsp;        edgeBuckets[bucket*2 + 1] += 2;</b>
+<b class="nc"><i>168</i>&nbsp;    }</b>
+<i>169</i>&nbsp;
+<i>170</i>&nbsp;    // Flattens using adaptive forward differencing. This only carries out
+<i>171</i>&nbsp;    // one iteration of the AFD loop. All it does is update AFD variables (i.e.
+<i>172</i>&nbsp;    // X0, Y0, D*[X|Y], COUNT; not variables used for computing scanline crossings).
+<i>173</i>&nbsp;    private void quadBreakIntoLinesAndAdd(float x0, float y0,
+<i>174</i>&nbsp;                                          final Curve c,
+<i>175</i>&nbsp;                                          final float x2, final float y2)
+<i>176</i>&nbsp;    {
+<i>177</i>&nbsp;        final float QUAD_DEC_BND = 32;
+<i>178</i>&nbsp;        final int countlg = 4;
+<b class="nc"><i>179</i>&nbsp;        int count = 1 &lt;&lt; countlg;</b>
+<b class="nc"><i>180</i>&nbsp;        int countsq = count * count;</b>
+<b class="nc"><i>181</i>&nbsp;        float maxDD = Math.max(c.dbx / countsq, c.dby / countsq);</b>
+<b class="nc"><i>182</i>&nbsp;        while (maxDD &gt; QUAD_DEC_BND) {</b>
+<b class="nc"><i>183</i>&nbsp;            maxDD /= 4;</b>
+<b class="nc"><i>184</i>&nbsp;            count &lt;&lt;= 1;</b>
+<i>185</i>&nbsp;        }
+<i>186</i>&nbsp;
+<b class="nc"><i>187</i>&nbsp;        countsq = count * count;</b>
+<b class="nc"><i>188</i>&nbsp;        final float ddx = c.dbx / countsq;</b>
+<b class="nc"><i>189</i>&nbsp;        final float ddy = c.dby / countsq;</b>
+<b class="nc"><i>190</i>&nbsp;        float dx = c.bx / countsq + c.cx / count;</b>
+<b class="nc"><i>191</i>&nbsp;        float dy = c.by / countsq + c.cy / count;</b>
+<i>192</i>&nbsp;
+<b class="nc"><i>193</i>&nbsp;        while (count-- &gt; 1) {</b>
+<b class="nc"><i>194</i>&nbsp;            float x1 = x0 + dx;</b>
+<b class="nc"><i>195</i>&nbsp;            dx += ddx;</b>
+<b class="nc"><i>196</i>&nbsp;            float y1 = y0 + dy;</b>
+<b class="nc"><i>197</i>&nbsp;            dy += ddy;</b>
+<b class="nc"><i>198</i>&nbsp;            addLine(x0, y0, x1, y1);</b>
+<b class="nc"><i>199</i>&nbsp;            x0 = x1;</b>
+<b class="nc"><i>200</i>&nbsp;            y0 = y1;</b>
+<b class="nc"><i>201</i>&nbsp;        }</b>
+<b class="nc"><i>202</i>&nbsp;        addLine(x0, y0, x2, y2);</b>
+<b class="nc"><i>203</i>&nbsp;    }</b>
+<i>204</i>&nbsp;
+<i>205</i>&nbsp;    // x0, y0 and x3,y3 are the endpoints of the curve. We could compute these
+<i>206</i>&nbsp;    // using c.xat(0),c.yat(0) and c.xat(1),c.yat(1), but this might introduce
+<i>207</i>&nbsp;    // numerical errors, and our callers already have the exact values.
+<i>208</i>&nbsp;    // Another alternative would be to pass all the control points, and call c.set
+<i>209</i>&nbsp;    // here, but then too many numbers are passed around.
+<i>210</i>&nbsp;    private void curveBreakIntoLinesAndAdd(float x0, float y0,
+<i>211</i>&nbsp;                                           final Curve c,
+<i>212</i>&nbsp;                                           final float x3, final float y3)
+<i>213</i>&nbsp;    {
+<i>214</i>&nbsp;        final int countlg = 3;
+<b class="nc"><i>215</i>&nbsp;        int count = 1 &lt;&lt; countlg;</b>
+<i>216</i>&nbsp;
+<i>217</i>&nbsp;        // the dx and dy refer to forward differencing variables, not the last
+<i>218</i>&nbsp;        // coefficients of the &quot;points&quot; polynomial
+<i>219</i>&nbsp;        float dddx, dddy, ddx, ddy, dx, dy;
+<b class="nc"><i>220</i>&nbsp;        dddx = 2f * c.dax / (1 &lt;&lt; (3 * countlg));</b>
+<b class="nc"><i>221</i>&nbsp;        dddy = 2f * c.day / (1 &lt;&lt; (3 * countlg));</b>
+<i>222</i>&nbsp;
+<b class="nc"><i>223</i>&nbsp;        ddx = dddx + c.dbx / (1 &lt;&lt; (2 * countlg));</b>
+<b class="nc"><i>224</i>&nbsp;        ddy = dddy + c.dby / (1 &lt;&lt; (2 * countlg));</b>
+<b class="nc"><i>225</i>&nbsp;        dx = c.ax / (1 &lt;&lt; (3 * countlg)) + c.bx / (1 &lt;&lt; (2 * countlg)) + c.cx / (1 &lt;&lt; countlg);</b>
+<b class="nc"><i>226</i>&nbsp;        dy = c.ay / (1 &lt;&lt; (3 * countlg)) + c.by / (1 &lt;&lt; (2 * countlg)) + c.cy / (1 &lt;&lt; countlg);</b>
+<i>227</i>&nbsp;
+<i>228</i>&nbsp;        // we use x0, y0 to walk the line
+<b class="nc"><i>229</i>&nbsp;        float x1 = x0, y1 = y0;</b>
+<b class="nc"><i>230</i>&nbsp;        while (count &gt; 0) {</b>
+<b class="nc"><i>231</i>&nbsp;            while (Math.abs(ddx) &gt; DEC_BND || Math.abs(ddy) &gt; DEC_BND) {</b>
+<b class="nc"><i>232</i>&nbsp;                dddx /= 8;</b>
+<b class="nc"><i>233</i>&nbsp;                dddy /= 8;</b>
+<b class="nc"><i>234</i>&nbsp;                ddx = ddx/4 - dddx;</b>
+<b class="nc"><i>235</i>&nbsp;                ddy = ddy/4 - dddy;</b>
+<b class="nc"><i>236</i>&nbsp;                dx = (dx - ddx) / 2;</b>
+<b class="nc"><i>237</i>&nbsp;                dy = (dy - ddy) / 2;</b>
+<b class="nc"><i>238</i>&nbsp;                count &lt;&lt;= 1;</b>
+<i>239</i>&nbsp;            }
+<i>240</i>&nbsp;            // can only do this on even &quot;count&quot; values, because we must divide count by 2
+<b class="nc"><i>241</i>&nbsp;            while (count % 2 == 0 &amp;&amp; Math.abs(dx) &lt;= INC_BND &amp;&amp; Math.abs(dy) &lt;= INC_BND) {</b>
+<b class="nc"><i>242</i>&nbsp;                dx = 2 * dx + ddx;</b>
+<b class="nc"><i>243</i>&nbsp;                dy = 2 * dy + ddy;</b>
+<b class="nc"><i>244</i>&nbsp;                ddx = 4 * (ddx + dddx);</b>
+<b class="nc"><i>245</i>&nbsp;                ddy = 4 * (ddy + dddy);</b>
+<b class="nc"><i>246</i>&nbsp;                dddx = 8 * dddx;</b>
+<b class="nc"><i>247</i>&nbsp;                dddy = 8 * dddy;</b>
+<b class="nc"><i>248</i>&nbsp;                count &gt;&gt;= 1;</b>
+<i>249</i>&nbsp;            }
+<b class="nc"><i>250</i>&nbsp;            count--;</b>
+<b class="nc"><i>251</i>&nbsp;            if (count &gt; 0) {</b>
+<b class="nc"><i>252</i>&nbsp;                x1 += dx;</b>
+<b class="nc"><i>253</i>&nbsp;                dx += ddx;</b>
+<b class="nc"><i>254</i>&nbsp;                ddx += dddx;</b>
+<b class="nc"><i>255</i>&nbsp;                y1 += dy;</b>
+<b class="nc"><i>256</i>&nbsp;                dy += ddy;</b>
+<b class="nc"><i>257</i>&nbsp;                ddy += dddy;</b>
+<i>258</i>&nbsp;            } else {
+<b class="nc"><i>259</i>&nbsp;                x1 = x3;</b>
+<b class="nc"><i>260</i>&nbsp;                y1 = y3;</b>
+<i>261</i>&nbsp;            }
+<b class="nc"><i>262</i>&nbsp;            addLine(x0, y0, x1, y1);</b>
+<b class="nc"><i>263</i>&nbsp;            x0 = x1;</b>
+<b class="nc"><i>264</i>&nbsp;            y0 = y1;</b>
+<i>265</i>&nbsp;        }
+<b class="nc"><i>266</i>&nbsp;    }</b>
+<i>267</i>&nbsp;
+<i>268</i>&nbsp;    private void addLine(float x1, float y1, float x2, float y2) {
+<b class="nc"><i>269</i>&nbsp;        float or = 1; // orientation of the line. 1 if y increases, 0 otherwise.</b>
+<b class="nc"><i>270</i>&nbsp;        if (y2 &lt; y1) {</b>
+<b class="nc"><i>271</i>&nbsp;            or = y2; // no need to declare a temp variable. We have or.</b>
+<b class="nc"><i>272</i>&nbsp;            y2 = y1;</b>
+<b class="nc"><i>273</i>&nbsp;            y1 = or;</b>
+<b class="nc"><i>274</i>&nbsp;            or = x2;</b>
+<b class="nc"><i>275</i>&nbsp;            x2 = x1;</b>
+<b class="nc"><i>276</i>&nbsp;            x1 = or;</b>
+<b class="nc"><i>277</i>&nbsp;            or = 0;</b>
+<i>278</i>&nbsp;        }
+<b class="nc"><i>279</i>&nbsp;        final int firstCrossing = Math.max((int) Math.ceil(y1 - 0.5f), boundsMinY);</b>
+<b class="nc"><i>280</i>&nbsp;        final int lastCrossing = Math.min((int) Math.ceil(y2 - 0.5f), boundsMaxY);</b>
+<b class="nc"><i>281</i>&nbsp;        if (firstCrossing &gt;= lastCrossing) {</b>
+<b class="nc"><i>282</i>&nbsp;            return;</b>
+<i>283</i>&nbsp;        }
+<b class="nc"><i>284</i>&nbsp;        if (firstCrossing &lt; sampleRowMin) { sampleRowMin = firstCrossing; }</b>
+<b class="nc"><i>285</i>&nbsp;        if (lastCrossing &gt; sampleRowMax) { sampleRowMax = lastCrossing; }</b>
+<i>286</i>&nbsp;
+<b class="nc"><i>287</i>&nbsp;        final float slope = (x2 - x1) / (y2 - y1);</b>
+<i>288</i>&nbsp;
+<b class="nc"><i>289</i>&nbsp;        if (slope &gt; 0) { // &lt;==&gt; x1 &lt; x2</b>
+<b class="nc"><i>290</i>&nbsp;            if (x1 &lt; edgeMinX) { edgeMinX = x1; }</b>
+<b class="nc"><i>291</i>&nbsp;            if (x2 &gt; edgeMaxX) { edgeMaxX = x2; }</b>
+<i>292</i>&nbsp;        } else {
+<b class="nc"><i>293</i>&nbsp;            if (x2 &lt; edgeMinX) { edgeMinX = x2; }</b>
+<b class="nc"><i>294</i>&nbsp;            if (x1 &gt; edgeMaxX) { edgeMaxX = x1; }</b>
+<i>295</i>&nbsp;        }
+<i>296</i>&nbsp;
+<b class="nc"><i>297</i>&nbsp;        final int ptr = numEdges * SIZEOF_EDGE;</b>
+<b class="nc"><i>298</i>&nbsp;        edges = Helpers.widenArray(edges, ptr, SIZEOF_EDGE);</b>
+<b class="nc"><i>299</i>&nbsp;        numEdges++;</b>
+<b class="nc"><i>300</i>&nbsp;        edges[ptr+OR] = or;</b>
+<b class="nc"><i>301</i>&nbsp;        edges[ptr+CURX] = x1 + (firstCrossing + 0.5f - y1) * slope;</b>
+<b class="nc"><i>302</i>&nbsp;        edges[ptr+SLOPE] = slope;</b>
+<b class="nc"><i>303</i>&nbsp;        edges[ptr+YMAX] = lastCrossing;</b>
+<b class="nc"><i>304</i>&nbsp;        final int bucketIdx = firstCrossing - boundsMinY;</b>
+<b class="nc"><i>305</i>&nbsp;        addEdgeToBucket(ptr, bucketIdx);</b>
+<b class="nc"><i>306</i>&nbsp;        edgeBuckets[(lastCrossing - boundsMinY)*2 + 1] |= 1;</b>
+<b class="nc"><i>307</i>&nbsp;    }</b>
+<i>308</i>&nbsp;
+<i>309</i>&nbsp;// END EDGE LIST
+<i>310</i>&nbsp;//////////////////////////////////////////////////////////////////////////////
+<i>311</i>&nbsp;
+<i>312</i>&nbsp;
+<i>313</i>&nbsp;    public static final int WIND_EVEN_ODD = 0;
+<i>314</i>&nbsp;    public static final int WIND_NON_ZERO = 1;
+<i>315</i>&nbsp;
+<i>316</i>&nbsp;    // Antialiasing
+<i>317</i>&nbsp;    final private int SUBPIXEL_LG_POSITIONS_X;
+<i>318</i>&nbsp;    final private int SUBPIXEL_LG_POSITIONS_Y;
+<i>319</i>&nbsp;    final private int SUBPIXEL_POSITIONS_X;
+<i>320</i>&nbsp;    final private int SUBPIXEL_POSITIONS_Y;
+<i>321</i>&nbsp;    final private int SUBPIXEL_MASK_X;
+<i>322</i>&nbsp;    final private int SUBPIXEL_MASK_Y;
+<i>323</i>&nbsp;    final int MAX_AA_ALPHA;
+<i>324</i>&nbsp;
+<i>325</i>&nbsp;    // Bounds of the drawing region, at subpixel precision.
+<i>326</i>&nbsp;    private int boundsMinX, boundsMinY, boundsMaxX, boundsMaxY;
+<i>327</i>&nbsp;
+<i>328</i>&nbsp;    // Current winding rule
+<i>329</i>&nbsp;    private int windingRule;
+<i>330</i>&nbsp;
+<i>331</i>&nbsp;    // Current drawing position, i.e., final point of last segment
+<i>332</i>&nbsp;    private float x0, y0;
+<i>333</i>&nbsp;
+<i>334</i>&nbsp;    // Position of most recent &#39;moveTo&#39; command
+<i>335</i>&nbsp;    private float pix_sx0, pix_sy0;
+<i>336</i>&nbsp;
+<i>337</i>&nbsp;    public Renderer(int subpixelLgPositionsX, int subpixelLgPositionsY)
+<b class="fc"><i>338</i>&nbsp;    {</b>
+<b class="fc"><i>339</i>&nbsp;        this.SUBPIXEL_LG_POSITIONS_X = subpixelLgPositionsX;</b>
+<b class="fc"><i>340</i>&nbsp;        this.SUBPIXEL_LG_POSITIONS_Y = subpixelLgPositionsY;</b>
+<b class="fc"><i>341</i>&nbsp;        this.SUBPIXEL_POSITIONS_X = 1 &lt;&lt; (SUBPIXEL_LG_POSITIONS_X);</b>
+<b class="fc"><i>342</i>&nbsp;        this.SUBPIXEL_POSITIONS_Y = 1 &lt;&lt; (SUBPIXEL_LG_POSITIONS_Y);</b>
+<b class="fc"><i>343</i>&nbsp;        this.SUBPIXEL_MASK_X = SUBPIXEL_POSITIONS_X - 1;</b>
+<b class="fc"><i>344</i>&nbsp;        this.SUBPIXEL_MASK_Y = SUBPIXEL_POSITIONS_Y - 1;</b>
+<b class="fc"><i>345</i>&nbsp;        this.MAX_AA_ALPHA = (SUBPIXEL_POSITIONS_X * SUBPIXEL_POSITIONS_Y);</b>
+<b class="fc"><i>346</i>&nbsp;    }</b>
+<i>347</i>&nbsp;
+<i>348</i>&nbsp;    public Renderer(int subpixelLgPositionsX, int subpixelLgPositionsY,
+<i>349</i>&nbsp;            int pix_boundsX, int pix_boundsY,
+<i>350</i>&nbsp;            int pix_boundsWidth, int pix_boundsHeight,
+<i>351</i>&nbsp;            int windingRule)
+<i>352</i>&nbsp;    {
+<b class="nc"><i>353</i>&nbsp;        this(subpixelLgPositionsX, subpixelLgPositionsY);</b>
+<b class="nc"><i>354</i>&nbsp;        reset(pix_boundsX, pix_boundsY, pix_boundsWidth, pix_boundsHeight,</b>
+<i>355</i>&nbsp;              windingRule);
+<b class="nc"><i>356</i>&nbsp;    }</b>
+<i>357</i>&nbsp;
+<i>358</i>&nbsp;    public void reset(int pix_boundsX, int pix_boundsY,
+<i>359</i>&nbsp;                      int pix_boundsWidth, int pix_boundsHeight,
+<i>360</i>&nbsp;                      int windingRule)
+<i>361</i>&nbsp;    {
+<b class="nc"><i>362</i>&nbsp;        this.windingRule = windingRule;</b>
+<i>363</i>&nbsp;
+<b class="nc"><i>364</i>&nbsp;        this.boundsMinX = pix_boundsX * SUBPIXEL_POSITIONS_X;</b>
+<b class="nc"><i>365</i>&nbsp;        this.boundsMinY = pix_boundsY * SUBPIXEL_POSITIONS_Y;</b>
+<b class="nc"><i>366</i>&nbsp;        this.boundsMaxX = (pix_boundsX + pix_boundsWidth) * SUBPIXEL_POSITIONS_X;</b>
+<b class="nc"><i>367</i>&nbsp;        this.boundsMaxY = (pix_boundsY + pix_boundsHeight) * SUBPIXEL_POSITIONS_Y;</b>
+<i>368</i>&nbsp;
+<b class="nc"><i>369</i>&nbsp;        this.edgeMinX = Float.POSITIVE_INFINITY;</b>
+<b class="nc"><i>370</i>&nbsp;        this.edgeMaxX = Float.NEGATIVE_INFINITY;</b>
+<b class="nc"><i>371</i>&nbsp;        this.sampleRowMax = boundsMinY;</b>
+<b class="nc"><i>372</i>&nbsp;        this.sampleRowMin = boundsMaxY;</b>
+<i>373</i>&nbsp;
+<b class="nc"><i>374</i>&nbsp;        int numBuckets = boundsMaxY - boundsMinY;</b>
+<b class="nc"><i>375</i>&nbsp;        if (edgeBuckets == null || edgeBuckets.length &lt; numBuckets*2+2) {</b>
+<i>376</i>&nbsp;            // The last 2 entries are ignored and only used to store unused
+<i>377</i>&nbsp;            // values for segments ending on the last line of the bounds
+<i>378</i>&nbsp;            // so we can avoid having to check the bounds on this array.
+<b class="nc"><i>379</i>&nbsp;            edgeBuckets = new int[numBuckets*2 + 2];</b>
+<i>380</i>&nbsp;        } else {
+<i>381</i>&nbsp;            // Only need to fill the first numBuckets*2 entries since the
+<i>382</i>&nbsp;            // last 2 entries are write-only for overflow avoidance only.
+<b class="nc"><i>383</i>&nbsp;            Arrays.fill(edgeBuckets, 0, numBuckets*2, 0);</b>
+<i>384</i>&nbsp;        }
+<b class="nc"><i>385</i>&nbsp;        if (edges == null) {</b>
+<b class="nc"><i>386</i>&nbsp;            edges = new float[SIZEOF_EDGE * 32];</b>
+<i>387</i>&nbsp;        }
+<b class="nc"><i>388</i>&nbsp;        numEdges = 0;</b>
+<b class="nc"><i>389</i>&nbsp;        pix_sx0 = pix_sy0 = x0 = y0 = 0f;</b>
+<b class="nc"><i>390</i>&nbsp;    }</b>
+<i>391</i>&nbsp;
+<i>392</i>&nbsp;    private float tosubpixx(float pix_x) {
+<b class="nc"><i>393</i>&nbsp;        return pix_x * SUBPIXEL_POSITIONS_X;</b>
+<i>394</i>&nbsp;    }
+<i>395</i>&nbsp;    private float tosubpixy(float pix_y) {
+<b class="nc"><i>396</i>&nbsp;        return pix_y * SUBPIXEL_POSITIONS_Y;</b>
+<i>397</i>&nbsp;    }
+<i>398</i>&nbsp;
+<i>399</i>&nbsp;    public void moveTo(float pix_x0, float pix_y0) {
+<b class="nc"><i>400</i>&nbsp;        closePath();</b>
+<b class="nc"><i>401</i>&nbsp;        this.pix_sx0 = pix_x0;</b>
+<b class="nc"><i>402</i>&nbsp;        this.pix_sy0 = pix_y0;</b>
+<b class="nc"><i>403</i>&nbsp;        this.y0 = tosubpixy(pix_y0);</b>
+<b class="nc"><i>404</i>&nbsp;        this.x0 = tosubpixx(pix_x0);</b>
+<b class="nc"><i>405</i>&nbsp;    }</b>
+<i>406</i>&nbsp;
+<i>407</i>&nbsp;    public void lineTo(float pix_x1, float pix_y1) {
+<b class="nc"><i>408</i>&nbsp;        float x1 = tosubpixx(pix_x1);</b>
+<b class="nc"><i>409</i>&nbsp;        float y1 = tosubpixy(pix_y1);</b>
+<b class="nc"><i>410</i>&nbsp;        addLine(x0, y0, x1, y1);</b>
+<b class="nc"><i>411</i>&nbsp;        x0 = x1;</b>
+<b class="nc"><i>412</i>&nbsp;        y0 = y1;</b>
+<b class="nc"><i>413</i>&nbsp;    }</b>
+<i>414</i>&nbsp;
+<b class="fc"><i>415</i>&nbsp;    private Curve c = new Curve();</b>
+<i>416</i>&nbsp;    @Override public void curveTo(float x1, float y1,
+<i>417</i>&nbsp;                                  float x2, float y2,
+<i>418</i>&nbsp;                                  float x3, float y3)
+<i>419</i>&nbsp;    {
+<b class="nc"><i>420</i>&nbsp;        final float xe = tosubpixx(x3);</b>
+<b class="nc"><i>421</i>&nbsp;        final float ye = tosubpixy(y3);</b>
+<b class="nc"><i>422</i>&nbsp;        c.set(x0, y0, tosubpixx(x1), tosubpixy(y1), tosubpixx(x2), tosubpixy(y2), xe, ye);</b>
+<b class="nc"><i>423</i>&nbsp;        curveBreakIntoLinesAndAdd(x0, y0, c, xe, ye);</b>
+<b class="nc"><i>424</i>&nbsp;        x0 = xe;</b>
+<b class="nc"><i>425</i>&nbsp;        y0 = ye;</b>
+<b class="nc"><i>426</i>&nbsp;    }</b>
+<i>427</i>&nbsp;
+<i>428</i>&nbsp;    @Override public void quadTo(float x1, float y1, float x2, float y2) {
+<b class="nc"><i>429</i>&nbsp;        final float xe = tosubpixx(x2);</b>
+<b class="nc"><i>430</i>&nbsp;        final float ye = tosubpixy(y2);</b>
+<b class="nc"><i>431</i>&nbsp;        c.set(x0, y0, tosubpixx(x1), tosubpixy(y1), xe, ye);</b>
+<b class="nc"><i>432</i>&nbsp;        quadBreakIntoLinesAndAdd(x0, y0, c, xe, ye);</b>
+<b class="nc"><i>433</i>&nbsp;        x0 = xe;</b>
+<b class="nc"><i>434</i>&nbsp;        y0 = ye;</b>
+<b class="nc"><i>435</i>&nbsp;    }</b>
+<i>436</i>&nbsp;
+<i>437</i>&nbsp;    public void closePath() {
+<i>438</i>&nbsp;        // lineTo expects its input in pixel coordinates.
+<b class="nc"><i>439</i>&nbsp;        lineTo(pix_sx0, pix_sy0);</b>
+<b class="nc"><i>440</i>&nbsp;    }</b>
+<i>441</i>&nbsp;
+<i>442</i>&nbsp;    public void pathDone() {
+<b class="nc"><i>443</i>&nbsp;        closePath();</b>
+<b class="nc"><i>444</i>&nbsp;    }</b>
+<i>445</i>&nbsp;
+<i>446</i>&nbsp;    private int savedAlpha[];
+<i>447</i>&nbsp;    private ScanlineIterator savedIterator;
+<i>448</i>&nbsp;    public void produceAlphas(AlphaConsumer ac) {
+<b class="nc"><i>449</i>&nbsp;        ac.setMaxAlpha(MAX_AA_ALPHA);</b>
+<i>450</i>&nbsp;
+<i>451</i>&nbsp;        // Mask to determine the relevant bit of the crossing sum
+<i>452</i>&nbsp;        // 0x1 if EVEN_ODD, all bits if NON_ZERO
+<b class="nc"><i>453</i>&nbsp;        int mask = (windingRule == WIND_EVEN_ODD) ? 0x1 : ~0x0;</b>
+<i>454</i>&nbsp;
+<i>455</i>&nbsp;        // add 2 to better deal with the last pixel in a pixel row.
+<b class="nc"><i>456</i>&nbsp;        int width = ac.getWidth();</b>
+<b class="nc"><i>457</i>&nbsp;        int alpha[] = savedAlpha;</b>
+<b class="nc"><i>458</i>&nbsp;        if (alpha == null || alpha.length &lt; width+2) {</b>
+<b class="nc"><i>459</i>&nbsp;            savedAlpha = alpha = new int[width+2];</b>
+<i>460</i>&nbsp;        } else {
+<b class="nc"><i>461</i>&nbsp;            Arrays.fill(alpha, 0, width+2, 0);</b>
+<i>462</i>&nbsp;        }
+<i>463</i>&nbsp;
+<b class="nc"><i>464</i>&nbsp;        int bboxx0 = ac.getOriginX() &lt;&lt; SUBPIXEL_LG_POSITIONS_X;</b>
+<b class="nc"><i>465</i>&nbsp;        int bboxx1 = bboxx0 + (width &lt;&lt; SUBPIXEL_LG_POSITIONS_X);</b>
+<i>466</i>&nbsp;
+<i>467</i>&nbsp;        // Now we iterate through the scanlines. We must tell emitRow the coord
+<i>468</i>&nbsp;        // of the first non-transparent pixel, so we must keep accumulators for
+<i>469</i>&nbsp;        // the first and last pixels of the section of the current pixel row
+<i>470</i>&nbsp;        // that we will emit.
+<i>471</i>&nbsp;        // We also need to accumulate pix_bbox*, but the iterator does it
+<i>472</i>&nbsp;        // for us. We will just get the values from it once this loop is done
+<b class="nc"><i>473</i>&nbsp;        int pix_maxX = bboxx1 &gt;&gt; SUBPIXEL_LG_POSITIONS_X;</b>
+<b class="nc"><i>474</i>&nbsp;        int pix_minX = bboxx0 &gt;&gt; SUBPIXEL_LG_POSITIONS_Y;</b>
+<i>475</i>&nbsp;
+<b class="nc"><i>476</i>&nbsp;        int y = boundsMinY; // needs to be declared here so we emit the last row properly.</b>
+<b class="nc"><i>477</i>&nbsp;        ScanlineIterator it = savedIterator;</b>
+<b class="nc"><i>478</i>&nbsp;        if (it == null) {</b>
+<b class="nc"><i>479</i>&nbsp;            savedIterator = it = new ScanlineIterator();</b>
+<i>480</i>&nbsp;        } else {
+<b class="nc"><i>481</i>&nbsp;            it.reset();</b>
+<i>482</i>&nbsp;        }
+<b class="nc"><i>483</i>&nbsp;        for ( ; it.hasNext(); ) {</b>
+<b class="nc"><i>484</i>&nbsp;            int numCrossings = it.next();</b>
+<b class="nc"><i>485</i>&nbsp;            int[] crossings = it.crossings;</b>
+<b class="nc"><i>486</i>&nbsp;            y = it.curY();</b>
+<i>487</i>&nbsp;
+<b class="nc"><i>488</i>&nbsp;            if (numCrossings &gt; 0) {</b>
+<b class="nc"><i>489</i>&nbsp;                int lowx = crossings[0] &gt;&gt; 1;</b>
+<b class="nc"><i>490</i>&nbsp;                int highx = crossings[numCrossings - 1] &gt;&gt; 1;</b>
+<b class="nc"><i>491</i>&nbsp;                int x0 = Math.max(lowx, bboxx0);</b>
+<b class="nc"><i>492</i>&nbsp;                int x1 = Math.min(highx, bboxx1);</b>
+<i>493</i>&nbsp;
+<b class="nc"><i>494</i>&nbsp;                pix_minX = Math.min(pix_minX, x0 &gt;&gt; SUBPIXEL_LG_POSITIONS_X);</b>
+<b class="nc"><i>495</i>&nbsp;                pix_maxX = Math.max(pix_maxX, x1 &gt;&gt; SUBPIXEL_LG_POSITIONS_X);</b>
+<i>496</i>&nbsp;            }
+<i>497</i>&nbsp;
+<b class="nc"><i>498</i>&nbsp;            int sum = 0;</b>
+<b class="nc"><i>499</i>&nbsp;            int prev = bboxx0;</b>
+<b class="nc"><i>500</i>&nbsp;            for (int i = 0; i &lt; numCrossings; i++) {</b>
+<b class="nc"><i>501</i>&nbsp;                int curxo = crossings[i];</b>
+<b class="nc"><i>502</i>&nbsp;                int curx = curxo &gt;&gt; 1;</b>
+<b class="nc"><i>503</i>&nbsp;                int crorientation = ((curxo &amp; 0x1) &lt;&lt; 1) - 1;</b>
+<b class="nc"><i>504</i>&nbsp;                if ((sum &amp; mask) != 0) {</b>
+<b class="nc"><i>505</i>&nbsp;                    int x0 = Math.max(prev, bboxx0);</b>
+<b class="nc"><i>506</i>&nbsp;                    int x1 = Math.min(curx, bboxx1);</b>
+<b class="nc"><i>507</i>&nbsp;                    if (x0 &lt; x1) {</b>
+<b class="nc"><i>508</i>&nbsp;                        x0 -= bboxx0; // turn x0, x1 from coords to indices</b>
+<b class="nc"><i>509</i>&nbsp;                        x1 -= bboxx0; // in the alpha array.</b>
+<i>510</i>&nbsp;
+<b class="nc"><i>511</i>&nbsp;                        int pix_x = x0 &gt;&gt; SUBPIXEL_LG_POSITIONS_X;</b>
+<b class="nc"><i>512</i>&nbsp;                        int pix_xmaxm1 = (x1 - 1) &gt;&gt; SUBPIXEL_LG_POSITIONS_X;</b>
+<i>513</i>&nbsp;
+<b class="nc"><i>514</i>&nbsp;                        if (pix_x == pix_xmaxm1) {</b>
+<i>515</i>&nbsp;                            // Start and end in same pixel
+<b class="nc"><i>516</i>&nbsp;                            alpha[pix_x] += (x1 - x0);</b>
+<b class="nc"><i>517</i>&nbsp;                            alpha[pix_x+1] -= (x1 - x0);</b>
+<i>518</i>&nbsp;                        } else {
+<b class="nc"><i>519</i>&nbsp;                            int pix_xmax = x1 &gt;&gt; SUBPIXEL_LG_POSITIONS_X;</b>
+<b class="nc"><i>520</i>&nbsp;                            alpha[pix_x] += SUBPIXEL_POSITIONS_X - (x0 &amp; SUBPIXEL_MASK_X);</b>
+<b class="nc"><i>521</i>&nbsp;                            alpha[pix_x+1] += (x0 &amp; SUBPIXEL_MASK_X);</b>
+<b class="nc"><i>522</i>&nbsp;                            alpha[pix_xmax] -= SUBPIXEL_POSITIONS_X - (x1 &amp; SUBPIXEL_MASK_X);</b>
+<b class="nc"><i>523</i>&nbsp;                            alpha[pix_xmax+1] -= (x1 &amp; SUBPIXEL_MASK_X);</b>
+<i>524</i>&nbsp;                        }
+<i>525</i>&nbsp;                    }
+<i>526</i>&nbsp;                }
+<b class="nc"><i>527</i>&nbsp;                sum += crorientation;</b>
+<b class="nc"><i>528</i>&nbsp;                prev = curx;</b>
+<i>529</i>&nbsp;            }
+<i>530</i>&nbsp;
+<i>531</i>&nbsp;            // even if this last row had no crossings, alpha will be zeroed
+<i>532</i>&nbsp;            // from the last emitRow call. But this doesn&#39;t matter because
+<i>533</i>&nbsp;            // maxX &lt; minX, so no row will be emitted to the cache.
+<b class="nc"><i>534</i>&nbsp;            if ((y &amp; SUBPIXEL_MASK_Y) == SUBPIXEL_MASK_Y) {</b>
+<b class="nc"><i>535</i>&nbsp;                ac.setAndClearRelativeAlphas(alpha, y &gt;&gt; SUBPIXEL_LG_POSITIONS_Y,</b>
+<i>536</i>&nbsp;                                             pix_minX, pix_maxX);
+<b class="nc"><i>537</i>&nbsp;                pix_maxX = bboxx1 &gt;&gt; SUBPIXEL_LG_POSITIONS_X;</b>
+<b class="nc"><i>538</i>&nbsp;                pix_minX = bboxx0 &gt;&gt; SUBPIXEL_LG_POSITIONS_Y;</b>
+<i>539</i>&nbsp;            }
+<b class="nc"><i>540</i>&nbsp;        }</b>
+<i>541</i>&nbsp;
+<i>542</i>&nbsp;        // Emit final row.
+<i>543</i>&nbsp;        // Note, if y is on a MASK row then it was already sent above...
+<b class="nc"><i>544</i>&nbsp;        if ((y &amp; SUBPIXEL_MASK_Y) &lt; SUBPIXEL_MASK_Y) {</b>
+<b class="nc"><i>545</i>&nbsp;            ac.setAndClearRelativeAlphas(alpha, y &gt;&gt; SUBPIXEL_LG_POSITIONS_Y,</b>
+<i>546</i>&nbsp;                                         pix_minX, pix_maxX);
+<i>547</i>&nbsp;        }
+<b class="nc"><i>548</i>&nbsp;    }</b>
+<i>549</i>&nbsp;
+<i>550</i>&nbsp;    public int getSubpixMinX() {
+<b class="nc"><i>551</i>&nbsp;        int sampleColMin = (int) Math.ceil(edgeMinX - 0.5f);</b>
+<b class="nc"><i>552</i>&nbsp;        if (sampleColMin &lt; boundsMinX) sampleColMin = boundsMinX;</b>
+<b class="nc"><i>553</i>&nbsp;        return sampleColMin;</b>
+<i>554</i>&nbsp;    }
+<i>555</i>&nbsp;
+<i>556</i>&nbsp;    public int getSubpixMaxX() {
+<b class="nc"><i>557</i>&nbsp;        int sampleColMax = (int) Math.ceil(edgeMaxX - 0.5f);</b>
+<b class="nc"><i>558</i>&nbsp;        if (sampleColMax &gt; boundsMaxX) sampleColMax = boundsMaxX;</b>
+<b class="nc"><i>559</i>&nbsp;        return sampleColMax;</b>
+<i>560</i>&nbsp;    }
+<i>561</i>&nbsp;
+<i>562</i>&nbsp;    public int getSubpixMinY() {
+<b class="nc"><i>563</i>&nbsp;        return sampleRowMin;</b>
+<i>564</i>&nbsp;    }
+<i>565</i>&nbsp;
+<i>566</i>&nbsp;    public int getSubpixMaxY() {
+<b class="nc"><i>567</i>&nbsp;        return sampleRowMax;</b>
+<i>568</i>&nbsp;    }
+<i>569</i>&nbsp;
+<i>570</i>&nbsp;    public int getOutpixMinX() {
+<b class="nc"><i>571</i>&nbsp;        return (getSubpixMinX() &gt;&gt; SUBPIXEL_LG_POSITIONS_X);</b>
+<i>572</i>&nbsp;    }
+<i>573</i>&nbsp;
+<i>574</i>&nbsp;    public int getOutpixMaxX() {
+<b class="nc"><i>575</i>&nbsp;        return (getSubpixMaxX() + SUBPIXEL_MASK_X) &gt;&gt; SUBPIXEL_LG_POSITIONS_X;</b>
+<i>576</i>&nbsp;    }
+<i>577</i>&nbsp;
+<i>578</i>&nbsp;    public int getOutpixMinY() {
+<b class="nc"><i>579</i>&nbsp;        return (sampleRowMin &gt;&gt; SUBPIXEL_LG_POSITIONS_Y);</b>
+<i>580</i>&nbsp;    }
+<i>581</i>&nbsp;
+<i>582</i>&nbsp;    public int getOutpixMaxY() {
+<b class="nc"><i>583</i>&nbsp;        return (sampleRowMax + SUBPIXEL_MASK_Y) &gt;&gt; SUBPIXEL_LG_POSITIONS_Y;</b>
+<i>584</i>&nbsp;    }
+<i>585</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2017-12-04 21:49</div>
+</div>
+</body>
+</html>

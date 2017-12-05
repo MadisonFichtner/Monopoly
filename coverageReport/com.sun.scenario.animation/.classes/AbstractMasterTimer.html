@@ -1,0 +1,473 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: AbstractMasterTimer</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.scenario.animation</a> ]
+</div>
+
+<h1>Coverage Summary for Class: AbstractMasterTimer (com.sun.scenario.animation)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">AbstractMasterTimer</td>
+<td class="coverageStat">
+  <span class="percent">
+    45%
+  </span>
+  <span class="absValue">
+    (9/ 20)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    53.6%
+  </span>
+  <span class="absValue">
+    (59/ 110)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">AbstractMasterTimer$MainLoop</td>
+<td class="coverageStat">
+  <span class="percent">
+    80%
+  </span>
+  <span class="absValue">
+    (4/ 5)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    60%
+  </span>
+  <span class="absValue">
+    (24/ 40)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    52%
+  </span>
+  <span class="absValue">
+    (13/ 25)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    55.3%
+  </span>
+  <span class="absValue">
+    (83/ 150)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright (c) 2007, 2014, Oracle and/or its affiliates. All rights reserved.
+<i>3</i>&nbsp; * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+<i>4</i>&nbsp; *
+<i>5</i>&nbsp; *
+<i>6</i>&nbsp; *
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; *
+<i>11</i>&nbsp; *
+<i>12</i>&nbsp; *
+<i>13</i>&nbsp; *
+<i>14</i>&nbsp; *
+<i>15</i>&nbsp; *
+<i>16</i>&nbsp; *
+<i>17</i>&nbsp; *
+<i>18</i>&nbsp; *
+<i>19</i>&nbsp; *
+<i>20</i>&nbsp; *
+<i>21</i>&nbsp; *
+<i>22</i>&nbsp; *
+<i>23</i>&nbsp; *
+<i>24</i>&nbsp; */
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;package com.sun.scenario.animation;
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;import java.util.Arrays;
+<i>29</i>&nbsp;import javafx.util.Callback;
+<i>30</i>&nbsp;import com.sun.javafx.animation.TickCalculation;
+<i>31</i>&nbsp;import com.sun.scenario.DelayedRunnable;
+<i>32</i>&nbsp;import com.sun.scenario.Settings;
+<i>33</i>&nbsp;import com.sun.scenario.animation.shared.PulseReceiver;
+<i>34</i>&nbsp;import com.sun.scenario.animation.shared.TimerReceiver;
+<i>35</i>&nbsp;
+<b class="fc"><i>36</i>&nbsp;public abstract class AbstractMasterTimer {</b>
+<i>37</i>&nbsp;
+<i>38</i>&nbsp;    protected final static String FULLSPEED_PROP = &quot;javafx.animation.fullspeed&quot;;
+<b class="fc"><i>39</i>&nbsp;    private static boolean fullspeed = Settings.getBoolean(FULLSPEED_PROP);</b>
+<i>40</i>&nbsp;
+<i>41</i>&nbsp;    // enables the code path which estimates the next pulse time to be just
+<i>42</i>&nbsp;    // enough in advance of the vsync to complete rendering before it happens
+<i>43</i>&nbsp;    protected final static String ADAPTIVE_PULSE_PROP = &quot;com.sun.scenario.animation.adaptivepulse&quot;;
+<b class="fc"><i>44</i>&nbsp;    private static boolean useAdaptivePulse = Settings.getBoolean(ADAPTIVE_PULSE_PROP);</b>
+<i>45</i>&nbsp;
+<i>46</i>&nbsp;    // another property which is controlling whether vsync is enabled:
+<i>47</i>&nbsp;    // &quot;com.sun.scenario.animation.vsync&quot;. if true, JSGPanel will enable vsync
+<i>48</i>&nbsp;    // for the toplevel it&#39;s in. See JSGPanel.
+<i>49</i>&nbsp;
+<i>50</i>&nbsp;    // properties to override the default pulse rate (set in hz - number of
+<i>51</i>&nbsp;    // pulses per second)
+<i>52</i>&nbsp;    protected final static String PULSE_PROP = &quot;javafx.animation.pulse&quot;;
+<i>53</i>&nbsp;    protected final static String FRAMERATE_PROP = &quot;javafx.animation.framerate&quot;;
+<i>54</i>&nbsp;    protected final static String FIXED_PULSE_LENGTH_PROP = &quot;com.sun.scenario.animation.fixed.pulse.length&quot;;
+<i>55</i>&nbsp;
+<i>56</i>&nbsp;    // property to enable AnimationPulse data gathering
+<i>57</i>&nbsp;    // note: it can be enabled via the MBean itself too
+<i>58</i>&nbsp;    protected final static String ANIMATION_MBEAN_ENABLED = &quot;com.sun.scenario.animation.AnimationMBean.enabled&quot;;
+<i>59</i>&nbsp;    protected final static boolean enableAnimationMBean = false;
+<i>60</i>&nbsp;
+<b class="fc"><i>61</i>&nbsp;    private final int PULSE_DURATION_NS = getPulseDuration(1000000000);</b>
+<b class="fc"><i>62</i>&nbsp;    private final int PULSE_DURATION_TICKS = getPulseDuration((int)TickCalculation.fromMillis(1000));</b>
+<i>63</i>&nbsp;
+<i>64</i>&nbsp;    // This PropertyChangeListener is added to Settings to listen for changes
+<i>65</i>&nbsp;    // to the nogap and fullspeed properties.
+<b class="fc"><i>66</i>&nbsp;    private static Callback&lt;String, Void&gt; pcl = key -&gt; {</b>
+<b class="nc"><i>67</i>&nbsp;        switch (key) {</b>
+<i>68</i>&nbsp;            case FULLSPEED_PROP:
+<b class="nc"><i>69</i>&nbsp;                fullspeed = Settings.getBoolean(FULLSPEED_PROP);</b>
+<b class="nc"><i>70</i>&nbsp;                break;</b>
+<i>71</i>&nbsp;            case ADAPTIVE_PULSE_PROP:
+<b class="nc"><i>72</i>&nbsp;                useAdaptivePulse = Settings.getBoolean(ADAPTIVE_PULSE_PROP);</b>
+<b class="nc"><i>73</i>&nbsp;                break;</b>
+<i>74</i>&nbsp;            case ANIMATION_MBEAN_ENABLED:
+<b class="nc"><i>75</i>&nbsp;                AnimationPulse.getDefaultBean()</b>
+<b class="nc"><i>76</i>&nbsp;                              .setEnabled(Settings.getBoolean(ANIMATION_MBEAN_ENABLED));</b>
+<i>77</i>&nbsp;                break;
+<i>78</i>&nbsp;        }
+<b class="nc"><i>79</i>&nbsp;        return null;</b>
+<i>80</i>&nbsp;    };
+<i>81</i>&nbsp;
+<b class="fc"><i>82</i>&nbsp;    private boolean paused = false;</b>
+<i>83</i>&nbsp;    private long totalPausedTime;
+<i>84</i>&nbsp;    private long startPauseTime;
+<i>85</i>&nbsp;
+<i>86</i>&nbsp;    // These methods only exist for the sake of testing.
+<b class="nc"><i>87</i>&nbsp;    boolean isPaused() { return paused; }</b>
+<b class="nc"><i>88</i>&nbsp;    long getTotalPausedTime() { return totalPausedTime; }</b>
+<b class="nc"><i>89</i>&nbsp;    long getStartPauseTime() { return startPauseTime; }</b>
+<i>90</i>&nbsp;
+<b class="fc"><i>91</i>&nbsp;    private PulseReceiver receivers[] = new PulseReceiver[2];</b>
+<i>92</i>&nbsp;    private int receiversLength;
+<i>93</i>&nbsp;    private boolean receiversLocked;
+<i>94</i>&nbsp;
+<i>95</i>&nbsp;    // synchronize to update frameJobList and frameJobs
+<b class="fc"><i>96</i>&nbsp;    private TimerReceiver animationTimers[] = new TimerReceiver[2]; // frameJobList</b>
+<i>97</i>&nbsp;                                                                     // snapshot
+<i>98</i>&nbsp;    private int animationTimersLength;
+<i>99</i>&nbsp;    private boolean animationTimersLocked;
+<i>100</i>&nbsp;
+<i>101</i>&nbsp;    // These two variables are ONLY USED if FIXED_PULSE_LENGTH_PROP is true. In this
+<i>102</i>&nbsp;    // case, instead of advancing time based on the system time (nanos etc) we instead
+<i>103</i>&nbsp;    // increment each animation by a fixed length of time for each pulse. This is
+<i>104</i>&nbsp;    // handy while debugging.
+<b class="fc"><i>105</i>&nbsp;    private final long fixedPulseLength = Boolean.getBoolean(FIXED_PULSE_LENGTH_PROP) ? PULSE_DURATION_NS : 0;</b>
+<b class="fc"><i>106</i>&nbsp;    private long debugNanos = 0;</b>
+<i>107</i>&nbsp;
+<b class="fc"><i>108</i>&nbsp;    private final MainLoop theMaster = new MainLoop();</b>
+<i>109</i>&nbsp;
+<i>110</i>&nbsp;
+<i>111</i>&nbsp;    static {
+<b class="fc"><i>112</i>&nbsp;        Settings.addPropertyChangeListener(pcl);</b>
+<b class="fc"><i>113</i>&nbsp;        int pulse = Settings.getInt(PULSE_PROP, -1);</b>
+<b class="fc"><i>114</i>&nbsp;        if (pulse != -1) {</b>
+<b class="nc"><i>115</i>&nbsp;            System.err.println(&quot;Setting PULSE_DURATION to &quot; + pulse + &quot; hz&quot;);</b>
+<i>116</i>&nbsp;        }
+<b class="fc"><i>117</i>&nbsp;    }</b>
+<i>118</i>&nbsp;
+<i>119</i>&nbsp;    // Used by Clip.create() method that doesn&#39;t take a resolution argument
+<i>120</i>&nbsp;    public int getDefaultResolution() {
+<b class="fc"><i>121</i>&nbsp;        return PULSE_DURATION_TICKS;</b>
+<i>122</i>&nbsp;    }
+<i>123</i>&nbsp;
+<i>124</i>&nbsp;    public void pause() {
+<b class="nc"><i>125</i>&nbsp;        if (!paused) {</b>
+<b class="nc"><i>126</i>&nbsp;            startPauseTime = nanos();</b>
+<b class="nc"><i>127</i>&nbsp;            paused = true;</b>
+<i>128</i>&nbsp;        }
+<b class="nc"><i>129</i>&nbsp;    }</b>
+<i>130</i>&nbsp;
+<i>131</i>&nbsp;    public void resume() {
+<b class="nc"><i>132</i>&nbsp;        if (paused) {</b>
+<b class="nc"><i>133</i>&nbsp;            paused = false;</b>
+<b class="nc"><i>134</i>&nbsp;            totalPausedTime += nanos() - startPauseTime;</b>
+<i>135</i>&nbsp;        }
+<b class="nc"><i>136</i>&nbsp;    }</b>
+<i>137</i>&nbsp;
+<i>138</i>&nbsp;    public long nanos() {
+<b class="fc"><i>139</i>&nbsp;        if (fixedPulseLength &gt; 0) {</b>
+<b class="nc"><i>140</i>&nbsp;            return debugNanos;</b>
+<i>141</i>&nbsp;        }
+<i>142</i>&nbsp;
+<b class="fc"><i>143</i>&nbsp;        return paused ? startPauseTime :</b>
+<b class="fc"><i>144</i>&nbsp;                        System.nanoTime() - totalPausedTime;</b>
+<i>145</i>&nbsp;    }
+<i>146</i>&nbsp;
+<i>147</i>&nbsp;    public boolean isFullspeed() {
+<b class="fc"><i>148</i>&nbsp;        return fullspeed;</b>
+<i>149</i>&nbsp;    }
+<i>150</i>&nbsp;
+<i>151</i>&nbsp;    /** Prevent external instantiation of MasterTimer. */
+<b class="fc"><i>152</i>&nbsp;    protected AbstractMasterTimer() {</b>
+<b class="fc"><i>153</i>&nbsp;    }</b>
+<i>154</i>&nbsp;
+<i>155</i>&nbsp;    /**
+<i>156</i>&nbsp;     * Adds a PulseReceiver to the list of targets being tracked against the
+<i>157</i>&nbsp;     * global schedule. The target should already have an absolute start time
+<i>158</i>&nbsp;     * recorded in it and that time will be used to start the clip at the
+<i>159</i>&nbsp;     * appropriate wall clock time as defined by milliTime().
+<i>160</i>&nbsp;     *
+<i>161</i>&nbsp;     * Note that pulseReceiver cannot be removed from the MasterTimer directly.
+<i>162</i>&nbsp;     * It is removed automatically in the timePulse-iteration if timePulse
+<i>163</i>&nbsp;     * returns true.
+<i>164</i>&nbsp;     *
+<i>165</i>&nbsp;     * @param target
+<i>166</i>&nbsp;     *            the Clip to be added to the scheduling queue
+<i>167</i>&nbsp;     */
+<i>168</i>&nbsp;    public void addPulseReceiver(PulseReceiver target) {
+<b class="fc"><i>169</i>&nbsp;        boolean needMoreSize = receiversLength == receivers.length;</b>
+<b class="fc"><i>170</i>&nbsp;        if (receiversLocked || needMoreSize) {</b>
+<b class="nc"><i>171</i>&nbsp;            receivers = Arrays.copyOf(receivers, needMoreSize ? receivers.length * 3 / 2 + 1 : receivers.length);</b>
+<b class="nc"><i>172</i>&nbsp;            receiversLocked = false;</b>
+<i>173</i>&nbsp;        }
+<b class="fc"><i>174</i>&nbsp;        receivers[receiversLength++] = target;</b>
+<b class="fc"><i>175</i>&nbsp;        if (receiversLength == 1) {</b>
+<b class="fc"><i>176</i>&nbsp;            theMaster.updateAnimationRunnable();</b>
+<i>177</i>&nbsp;        }
+<b class="fc"><i>178</i>&nbsp;    }</b>
+<i>179</i>&nbsp;
+<i>180</i>&nbsp;    public void removePulseReceiver(PulseReceiver target) {
+<b class="fc"><i>181</i>&nbsp;        if (receiversLocked) {</b>
+<b class="fc"><i>182</i>&nbsp;            receivers = receivers.clone();</b>
+<b class="fc"><i>183</i>&nbsp;            receiversLocked = false;</b>
+<i>184</i>&nbsp;        }
+<b class="fc"><i>185</i>&nbsp;        for (int i = 0; i &lt; receiversLength; ++i) {</b>
+<b class="fc"><i>186</i>&nbsp;            if (target == receivers[i]) {</b>
+<b class="fc"><i>187</i>&nbsp;                if (i == receiversLength - 1) {</b>
+<b class="fc"><i>188</i>&nbsp;                    receivers[i] = null;</b>
+<i>189</i>&nbsp;                } else {
+<b class="fc"><i>190</i>&nbsp;                    System.arraycopy(receivers, i + 1, receivers, i, receiversLength - i - 1);</b>
+<b class="fc"><i>191</i>&nbsp;                    receivers[receiversLength - 1] = null;</b>
+<i>192</i>&nbsp;                }
+<b class="fc"><i>193</i>&nbsp;                --receiversLength;</b>
+<b class="fc"><i>194</i>&nbsp;                break;</b>
+<i>195</i>&nbsp;            }
+<i>196</i>&nbsp;        }
+<b class="fc"><i>197</i>&nbsp;        if (receiversLength == 0) {</b>
+<b class="fc"><i>198</i>&nbsp;            theMaster.updateAnimationRunnable();</b>
+<i>199</i>&nbsp;        }
+<b class="fc"><i>200</i>&nbsp;    }</b>
+<i>201</i>&nbsp;
+<i>202</i>&nbsp;    public void addAnimationTimer(TimerReceiver timer) {
+<b class="nc"><i>203</i>&nbsp;        boolean needMoreSize = animationTimersLength == animationTimers.length;</b>
+<b class="nc"><i>204</i>&nbsp;        if (animationTimersLocked || needMoreSize) {</b>
+<b class="nc"><i>205</i>&nbsp;            animationTimers = Arrays.copyOf(animationTimers, needMoreSize ? animationTimers.length * 3 / 2 + 1 : animationTimers.length);</b>
+<b class="nc"><i>206</i>&nbsp;            animationTimersLocked = false;</b>
+<i>207</i>&nbsp;        }
+<b class="nc"><i>208</i>&nbsp;        animationTimers[animationTimersLength++] = timer;</b>
+<b class="nc"><i>209</i>&nbsp;        if (animationTimersLength == 1) {</b>
+<b class="nc"><i>210</i>&nbsp;            theMaster.updateAnimationRunnable();</b>
+<i>211</i>&nbsp;        }
+<b class="nc"><i>212</i>&nbsp;    }</b>
+<i>213</i>&nbsp;
+<i>214</i>&nbsp;    public void removeAnimationTimer(TimerReceiver timer) {
+<b class="nc"><i>215</i>&nbsp;        if (animationTimersLocked) {</b>
+<b class="nc"><i>216</i>&nbsp;            animationTimers = animationTimers.clone();</b>
+<b class="nc"><i>217</i>&nbsp;            animationTimersLocked = false;</b>
+<i>218</i>&nbsp;        }
+<b class="nc"><i>219</i>&nbsp;        for (int i = 0; i &lt; animationTimersLength; ++i) {</b>
+<b class="nc"><i>220</i>&nbsp;            if (timer == animationTimers[i]) {</b>
+<b class="nc"><i>221</i>&nbsp;                if (i == animationTimersLength - 1) {</b>
+<b class="nc"><i>222</i>&nbsp;                    animationTimers[i] = null;</b>
+<i>223</i>&nbsp;                } else {
+<b class="nc"><i>224</i>&nbsp;                    System.arraycopy(animationTimers, i + 1, animationTimers, i, animationTimersLength - i - 1);</b>
+<b class="nc"><i>225</i>&nbsp;                    animationTimers[animationTimersLength - 1] = null;</b>
+<i>226</i>&nbsp;                }
+<b class="nc"><i>227</i>&nbsp;                --animationTimersLength;</b>
+<b class="nc"><i>228</i>&nbsp;                break;</b>
+<i>229</i>&nbsp;            }
+<i>230</i>&nbsp;        }
+<b class="nc"><i>231</i>&nbsp;        if (animationTimersLength == 0) {</b>
+<b class="nc"><i>232</i>&nbsp;            theMaster.updateAnimationRunnable();</b>
+<i>233</i>&nbsp;        }
+<b class="nc"><i>234</i>&nbsp;    }</b>
+<i>235</i>&nbsp;
+<i>236</i>&nbsp;    /*
+<i>237</i>&nbsp;     * methods to record times for different stages of a pulse overriden in
+<i>238</i>&nbsp;     * MasterTimer to collect data for AnimationPulse Mbean
+<i>239</i>&nbsp;     */
+<i>240</i>&nbsp;    protected void recordStart(long shiftMillis) {
+<b class="nc"><i>241</i>&nbsp;    }</b>
+<i>242</i>&nbsp;
+<i>243</i>&nbsp;    protected void recordEnd() {
+<b class="nc"><i>244</i>&nbsp;    }</b>
+<i>245</i>&nbsp;
+<i>246</i>&nbsp;    protected void recordAnimationEnd() {
+<b class="nc"><i>247</i>&nbsp;    }</b>
+<i>248</i>&nbsp;
+<i>249</i>&nbsp;    /**
+<i>250</i>&nbsp;     * Hidden inner class to run the main timing loop. This is the
+<i>251</i>&nbsp;     * &quot;AnimationRunnable&quot; for Desktop and TV
+<i>252</i>&nbsp;     */
+<b class="fc"><i>253</i>&nbsp;    private final class MainLoop implements DelayedRunnable {</b>
+<i>254</i>&nbsp;
+<b class="fc"><i>255</i>&nbsp;        private boolean inactive = true;</b>
+<i>256</i>&nbsp;
+<b class="fc"><i>257</i>&nbsp;        private long nextPulseTime = nanos();</b>
+<b class="fc"><i>258</i>&nbsp;        private long lastPulseDuration = Integer.MIN_VALUE;</b>
+<i>259</i>&nbsp;
+<i>260</i>&nbsp;        @Override
+<i>261</i>&nbsp;        public void run() {
+<b class="fc"><i>262</i>&nbsp;            if (paused) {</b>
+<b class="nc"><i>263</i>&nbsp;                return;</b>
+<i>264</i>&nbsp;            }
+<b class="fc"><i>265</i>&nbsp;            final long now = nanos();</b>
+<b class="fc"><i>266</i>&nbsp;            recordStart((nextPulseTime - now) / 1000000);</b>
+<b class="fc"><i>267</i>&nbsp;            timePulseImpl(now);</b>
+<b class="fc"><i>268</i>&nbsp;            recordEnd();</b>
+<b class="fc"><i>269</i>&nbsp;            updateNextPulseTime(now);</b>
+<i>270</i>&nbsp;            // reschedule animation runnable if needed
+<b class="fc"><i>271</i>&nbsp;            updateAnimationRunnable();</b>
+<b class="fc"><i>272</i>&nbsp;        }</b>
+<i>273</i>&nbsp;
+<i>274</i>&nbsp;        @Override
+<i>275</i>&nbsp;        public long getDelay() {
+<b class="nc"><i>276</i>&nbsp;            final long now = nanos();</b>
+<b class="nc"><i>277</i>&nbsp;            final long timeUntilPulse = (nextPulseTime - now) / 1000000;</b>
+<b class="nc"><i>278</i>&nbsp;            return Math.max(0, timeUntilPulse);</b>
+<i>279</i>&nbsp;        }
+<i>280</i>&nbsp;
+<i>281</i>&nbsp;        private void updateNextPulseTime(long pulseStarted) {
+<b class="fc"><i>282</i>&nbsp;            final long now = nanos();</b>
+<b class="fc"><i>283</i>&nbsp;            if (fullspeed) {</b>
+<b class="nc"><i>284</i>&nbsp;                nextPulseTime = now;</b>
+<i>285</i>&nbsp;            } else {
+<b class="fc"><i>286</i>&nbsp;                if (useAdaptivePulse) {</b>
+<i>287</i>&nbsp;                    // Estimate the next pulse time such that we wake up just
+<i>288</i>&nbsp;                    // early enough to finish up the painting and call swap
+<i>289</i>&nbsp;                    // before vsync happens. We try to minimize the amount of
+<i>290</i>&nbsp;                    // time we wait for vsync blocking the EDT thread.
+<b class="nc"><i>291</i>&nbsp;                    nextPulseTime += PULSE_DURATION_NS;</b>
+<b class="nc"><i>292</i>&nbsp;                    long pulseDuration = now - pulseStarted;</b>
+<i>293</i>&nbsp;                    // if the new duration was smaller than the previous one
+<i>294</i>&nbsp;                    // we don&#39;t need to do anything (we have decreased the
+<i>295</i>&nbsp;                    // duration), but if it&#39;s longer to within 1/2ms then we
+<i>296</i>&nbsp;                    // try to halve the next anticipated duration (but not
+<i>297</i>&nbsp;                    // closer
+<i>298</i>&nbsp;                    // than 2ms within the next expected pulse)
+<b class="nc"><i>299</i>&nbsp;                    if (pulseDuration - lastPulseDuration &gt; 500000) {</b>
+<b class="nc"><i>300</i>&nbsp;                        pulseDuration /= 2;</b>
+<i>301</i>&nbsp;                    }
+<b class="nc"><i>302</i>&nbsp;                    if (pulseDuration &lt; 2000000) {</b>
+<b class="nc"><i>303</i>&nbsp;                        pulseDuration = 2000000;</b>
+<i>304</i>&nbsp;                    }
+<i>305</i>&nbsp;                    // if the pulse took longer than pulse_duration_ns we
+<i>306</i>&nbsp;                    // probably missed the vsync
+<b class="nc"><i>307</i>&nbsp;                    if (pulseDuration &gt;= PULSE_DURATION_NS) {</b>
+<b class="nc"><i>308</i>&nbsp;                        pulseDuration = 3 * PULSE_DURATION_NS / 4;</b>
+<i>309</i>&nbsp;                    }
+<b class="nc"><i>310</i>&nbsp;                    lastPulseDuration = pulseDuration;</b>
+<b class="nc"><i>311</i>&nbsp;                    nextPulseTime = nextPulseTime - pulseDuration;</b>
+<b class="nc"><i>312</i>&nbsp;                } else {</b>
+<b class="fc"><i>313</i>&nbsp;                    nextPulseTime = ((nextPulseTime + PULSE_DURATION_NS) / PULSE_DURATION_NS)</b>
+<b class="fc"><i>314</i>&nbsp;                            * PULSE_DURATION_NS;</b>
+<i>315</i>&nbsp;                }
+<i>316</i>&nbsp;            }
+<b class="fc"><i>317</i>&nbsp;        }</b>
+<i>318</i>&nbsp;
+<i>319</i>&nbsp;        private void updateAnimationRunnable() {
+<b class="fc"><i>320</i>&nbsp;            final boolean newInactive = (animationTimersLength == 0 &amp;&amp; receiversLength == 0);</b>
+<b class="fc"><i>321</i>&nbsp;            if (inactive != newInactive) {</b>
+<b class="fc"><i>322</i>&nbsp;                inactive = newInactive;</b>
+<b class="fc"><i>323</i>&nbsp;                final DelayedRunnable animationRunnable = inactive? null : this;</b>
+<b class="fc"><i>324</i>&nbsp;                postUpdateAnimationRunnable(animationRunnable);</b>
+<i>325</i>&nbsp;            }
+<b class="fc"><i>326</i>&nbsp;        }</b>
+<i>327</i>&nbsp;    }
+<i>328</i>&nbsp;
+<i>329</i>&nbsp;    protected abstract void postUpdateAnimationRunnable(
+<i>330</i>&nbsp;            DelayedRunnable animationRunnable);
+<i>331</i>&nbsp;
+<i>332</i>&nbsp;    protected abstract int getPulseDuration(int precision);
+<i>333</i>&nbsp;
+<i>334</i>&nbsp;    protected void timePulseImpl(long now) {
+<b class="fc"><i>335</i>&nbsp;        if (fixedPulseLength &gt; 0) {</b>
+<b class="nc"><i>336</i>&nbsp;            debugNanos += fixedPulseLength;</b>
+<b class="nc"><i>337</i>&nbsp;            now = debugNanos;</b>
+<i>338</i>&nbsp;        }
+<b class="fc"><i>339</i>&nbsp;        final PulseReceiver receiversSnapshot[] = receivers;</b>
+<b class="fc"><i>340</i>&nbsp;        final int rLength = receiversLength;</b>
+<i>341</i>&nbsp;        try {
+<b class="fc"><i>342</i>&nbsp;            receiversLocked = true;</b>
+<b class="fc"><i>343</i>&nbsp;            for (int i = 0; i &lt; rLength; i++) {</b>
+<b class="fc"><i>344</i>&nbsp;                receiversSnapshot[i].timePulse(TickCalculation.fromNano(now));</b>
+<i>345</i>&nbsp;            }
+<i>346</i>&nbsp;        } finally {
+<b class="fc"><i>347</i>&nbsp;            receiversLocked = false;</b>
+<b class="fc"><i>348</i>&nbsp;        }</b>
+<b class="fc"><i>349</i>&nbsp;        recordAnimationEnd();</b>
+<i>350</i>&nbsp;
+<b class="fc"><i>351</i>&nbsp;        final TimerReceiver animationTimersSnapshot[] = animationTimers;</b>
+<b class="fc"><i>352</i>&nbsp;        final int aTLength = animationTimersLength;</b>
+<i>353</i>&nbsp;        try {
+<b class="fc"><i>354</i>&nbsp;            animationTimersLocked = true;</b>
+<i>355</i>&nbsp;            // After every frame, call any frame jobs
+<b class="fc"><i>356</i>&nbsp;            for (int i = 0; i &lt; aTLength; i++) {</b>
+<b class="nc"><i>357</i>&nbsp;                animationTimersSnapshot[i].handle(now);</b>
+<i>358</i>&nbsp;            }
+<i>359</i>&nbsp;        } finally {
+<b class="fc"><i>360</i>&nbsp;            animationTimersLocked = false;</b>
+<b class="fc"><i>361</i>&nbsp;        }</b>
+<b class="fc"><i>362</i>&nbsp;    }</b>
+<i>363</i>&nbsp;
+<i>364</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2017-12-04 21:49</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,555 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: StackPane</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">javafx.scene.layout</a> ]
+</div>
+
+<h1>Coverage Summary for Class: StackPane (javafx.scene.layout)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">StackPane</td>
+<td class="coverageStat">
+  <span class="percent">
+    72.7%
+  </span>
+  <span class="absValue">
+    (16/ 22)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    79.1%
+  </span>
+  <span class="absValue">
+    (68/ 86)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">StackPane$1</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 5)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 6)
+  </span>
+</td>
+  </tr>
+  <tr>
+    <td class="name">StackPane$StyleableProperties</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (2/ 2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (7/ 7)
+  </span>
+</td>
+  </tr>
+  <tr>
+    <td class="name">StackPane$StyleableProperties$1</td>
+<td class="coverageStat">
+  <span class="percent">
+    66.7%
+  </span>
+  <span class="absValue">
+    (2/ 3)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    50%
+  </span>
+  <span class="absValue">
+    (2/ 4)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    62.5%
+  </span>
+  <span class="absValue">
+    (20/ 32)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    74.8%
+  </span>
+  <span class="absValue">
+    (77/ 103)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright (c) 2009, 2017, Oracle and/or its affiliates. All rights reserved.
+<i>3</i>&nbsp; * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+<i>4</i>&nbsp; *
+<i>5</i>&nbsp; *
+<i>6</i>&nbsp; *
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; *
+<i>11</i>&nbsp; *
+<i>12</i>&nbsp; *
+<i>13</i>&nbsp; *
+<i>14</i>&nbsp; *
+<i>15</i>&nbsp; *
+<i>16</i>&nbsp; *
+<i>17</i>&nbsp; *
+<i>18</i>&nbsp; *
+<i>19</i>&nbsp; *
+<i>20</i>&nbsp; *
+<i>21</i>&nbsp; *
+<i>22</i>&nbsp; *
+<i>23</i>&nbsp; *
+<i>24</i>&nbsp; */
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;package javafx.scene.layout;
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;import java.util.ArrayList;
+<i>29</i>&nbsp;import java.util.Collections;
+<i>30</i>&nbsp;import java.util.List;
+<i>31</i>&nbsp;import javafx.beans.property.ObjectProperty;
+<i>32</i>&nbsp;import javafx.css.CssMetaData;
+<i>33</i>&nbsp;import javafx.css.StyleableObjectProperty;
+<i>34</i>&nbsp;import javafx.css.StyleableProperty;
+<i>35</i>&nbsp;import javafx.geometry.Insets;
+<i>36</i>&nbsp;import javafx.geometry.Orientation;
+<i>37</i>&nbsp;import javafx.geometry.Pos;
+<i>38</i>&nbsp;import javafx.geometry.VPos;
+<i>39</i>&nbsp;import javafx.scene.Node;
+<i>40</i>&nbsp;import javafx.css.converter.EnumConverter;
+<i>41</i>&nbsp;import javafx.css.Styleable;
+<i>42</i>&nbsp;import javafx.geometry.HPos;
+<i>43</i>&nbsp;import javafx.util.Callback;
+<i>44</i>&nbsp;
+<i>45</i>&nbsp;/**
+<i>46</i>&nbsp; *
+<i>47</i>&nbsp; * StackPane lays out its children in a back-to-front stack.
+<i>48</i>&nbsp; * &lt;p&gt;
+<i>49</i>&nbsp; * The z-order of the children is defined by the order of the children list
+<i>50</i>&nbsp; * with the 0th child being the bottom and last child on top.  If a border and/or
+<i>51</i>&nbsp; * padding have been set, the children will be layed out within those insets.
+<i>52</i>&nbsp; * &lt;p&gt;
+<i>53</i>&nbsp; * The stackpane will attempt to resize each child to fill its content area.
+<i>54</i>&nbsp; * If the child could not be sized to fill the stackpane (either because it was
+<i>55</i>&nbsp; * not resizable or its max size prevented it) then it will be aligned within
+<i>56</i>&nbsp; * the area using the alignment property, which defaults to Pos.CENTER.
+<i>57</i>&nbsp; * &lt;p&gt;
+<i>58</i>&nbsp; * StackPane example:
+<i>59</i>&nbsp; * &lt;pre&gt;{@code     StackPane stack = new StackPane();
+<i>60</i>&nbsp; *     stack.getChildren().addAll(new Rectangle(100,100,Color.BLUE), new Label(&quot;Go!));
+<i>61</i>&nbsp; * }&lt;/pre&gt;
+<i>62</i>&nbsp; * &lt;p&gt;
+<i>63</i>&nbsp; * StackPane lays out each managed child regardless of the child&#39;s
+<i>64</i>&nbsp; * visible property value; unmanaged children are ignored.&lt;/p&gt;
+<i>65</i>&nbsp; * &lt;p&gt;
+<i>66</i>&nbsp; * StackPane may be styled with backgrounds and borders using CSS.  See
+<i>67</i>&nbsp; * {@link javafx.scene.layout.Region Region} for details.&lt;/p&gt;
+<i>68</i>&nbsp; *
+<i>69</i>&nbsp; * &lt;h3&gt;Resizable Range&lt;/h3&gt;
+<i>70</i>&nbsp; *
+<i>71</i>&nbsp; * &lt;p&gt;
+<i>72</i>&nbsp; * A stackpane&#39;s parent will resize the stackpane within the stackpane&#39;s resizable range
+<i>73</i>&nbsp; * during layout.   By default the stackpane computes this range based on its content
+<i>74</i>&nbsp; * as outlined in the table below.
+<i>75</i>&nbsp; * &lt;/p&gt;
+<i>76</i>&nbsp; *
+<i>77</i>&nbsp; * &lt;table border=&quot;1&quot;&gt;
+<i>78</i>&nbsp; * &lt;caption&gt;StackPane Resize Table&lt;/caption&gt;
+<i>79</i>&nbsp; * &lt;tr&gt;&lt;td&gt;&lt;/td&gt;&lt;th&gt;width&lt;/th&gt;&lt;th&gt;height&lt;/th&gt;&lt;/tr&gt;
+<i>80</i>&nbsp; * &lt;tr&gt;&lt;th&gt;minimum&lt;/th&gt;
+<i>81</i>&nbsp; * &lt;td&gt;left/right insets plus the largest of the children&#39;s min widths.&lt;/td&gt;
+<i>82</i>&nbsp; * &lt;td&gt;top/bottom insets plus the largest of the children&#39;s min heights.&lt;/td&gt;&lt;/tr&gt;
+<i>83</i>&nbsp; * &lt;tr&gt;&lt;th&gt;preferred&lt;/th&gt;
+<i>84</i>&nbsp; * &lt;td&gt;left/right insets plus the largest of the children&#39;s pref widths.&lt;/td&gt;
+<i>85</i>&nbsp; * &lt;td&gt;top/bottom insets plus the largest of the children&#39;s pref heights.&lt;/td&gt;&lt;/tr&gt;
+<i>86</i>&nbsp; * &lt;tr&gt;&lt;th&gt;maximum&lt;/th&gt;
+<i>87</i>&nbsp; * &lt;td&gt;Double.MAX_VALUE&lt;/td&gt;&lt;td&gt;Double.MAX_VALUE&lt;/td&gt;&lt;/tr&gt;
+<i>88</i>&nbsp; * &lt;/table&gt;
+<i>89</i>&nbsp; * &lt;p&gt;
+<i>90</i>&nbsp; * A stackpane&#39;s unbounded maximum width and height are an indication to the parent that
+<i>91</i>&nbsp; * it may be resized beyond its preferred size to fill whatever space is assigned
+<i>92</i>&nbsp; * to it.
+<i>93</i>&nbsp; * &lt;p&gt;
+<i>94</i>&nbsp; * StackPane provides properties for setting the size range directly.  These
+<i>95</i>&nbsp; * properties default to the sentinel value USE_COMPUTED_SIZE, however the
+<i>96</i>&nbsp; * application may set them to other values as needed:
+<i>97</i>&nbsp; * &lt;pre&gt;&lt;code&gt;     // ensure stackpane is never resized beyond it&#39;s preferred size
+<i>98</i>&nbsp; *     &lt;b&gt;stackpane.setMaxSize(Region.USE_PREF_SIZE, Region.USE_PREF_SIZE);&lt;/b&gt;
+<i>99</i>&nbsp; * &lt;/code&gt;&lt;/pre&gt;
+<i>100</i>&nbsp; * Applications may restore the computed values by setting these properties back
+<i>101</i>&nbsp; * to USE_COMPUTED_SIZE.
+<i>102</i>&nbsp; *
+<i>103</i>&nbsp; * &lt;p&gt;
+<i>104</i>&nbsp; * StackPane does not clip its content by default, so it is possible that childrens&#39;
+<i>105</i>&nbsp; * bounds may extend outside its own bounds if a child&#39;s min size prevents it from
+<i>106</i>&nbsp; * being fit within the stackpane.&lt;/p&gt;
+<i>107</i>&nbsp; *
+<i>108</i>&nbsp; * &lt;h3&gt;Optional Layout Constraints&lt;/h3&gt;
+<i>109</i>&nbsp; *
+<i>110</i>&nbsp; * &lt;p&gt;
+<i>111</i>&nbsp; * An application may set constraints on individual children to customize StackPane&#39;s layout.
+<i>112</i>&nbsp; * For each constraint, StackPane provides a static method for setting it on the child.
+<i>113</i>&nbsp; * &lt;/p&gt;
+<i>114</i>&nbsp; *
+<i>115</i>&nbsp; * &lt;table border=&quot;1&quot;&gt;
+<i>116</i>&nbsp; * &lt;caption&gt;StackPane Constraint Table&lt;/caption&gt;
+<i>117</i>&nbsp; * &lt;tr&gt;&lt;th&gt;Constraint&lt;/th&gt;&lt;th&gt;Type&lt;/th&gt;&lt;th&gt;Description&lt;/th&gt;&lt;/tr&gt;
+<i>118</i>&nbsp; * &lt;tr&gt;&lt;td&gt;alignment&lt;/td&gt;&lt;td&gt;javafx.geometry.Pos&lt;/td&gt;&lt;td&gt;The alignment of the child within the stackpane.&lt;/td&gt;&lt;/tr&gt;
+<i>119</i>&nbsp; * &lt;tr&gt;&lt;td&gt;margin&lt;/td&gt;&lt;td&gt;javafx.geometry.Insets&lt;/td&gt;&lt;td&gt;Margin space around the outside of the child.&lt;/td&gt;&lt;/tr&gt;
+<i>120</i>&nbsp; * &lt;/table&gt;
+<i>121</i>&nbsp; * &lt;p&gt;
+<i>122</i>&nbsp; * Examples:
+<i>123</i>&nbsp; * &lt;pre&gt;&lt;code&gt;     // Align the title Label at the bottom-center of the stackpane
+<i>124</i>&nbsp; *     Label title = new Label();
+<i>125</i>&nbsp; *     &lt;b&gt;StackPane.setAlignment(title, Pos.BOTTOM_CENTER);&lt;/b&gt;
+<i>126</i>&nbsp; *     stackpane.getChildren.addAll(new ImageView(...), title);
+<i>127</i>&nbsp; *
+<i>128</i>&nbsp; *     // Create an 8 pixel margin around a listview in the stackpane
+<i>129</i>&nbsp; *     ListView list = new ListView();
+<i>130</i>&nbsp; *     &lt;b&gt;StackPane.setMargin(list, new Insets(8,8,8,8);&lt;/b&gt;
+<i>131</i>&nbsp; *     stackpane.getChildren().add(list);
+<i>132</i>&nbsp; * &lt;/code&gt;&lt;/pre&gt;
+<i>133</i>&nbsp; *
+<i>134</i>&nbsp; * @since JavaFX 2.0
+<i>135</i>&nbsp; */
+<i>136</i>&nbsp;
+<b class="fc"><i>137</i>&nbsp;public class StackPane extends Pane {</b>
+<i>138</i>&nbsp;
+<b class="fc"><i>139</i>&nbsp;    private boolean biasDirty = true;</b>
+<i>140</i>&nbsp;    private Orientation bias;
+<i>141</i>&nbsp;
+<i>142</i>&nbsp;    /********************************************************************
+<i>143</i>&nbsp;     *  BEGIN static methods
+<i>144</i>&nbsp;     ********************************************************************/
+<i>145</i>&nbsp;
+<i>146</i>&nbsp;    private static final String MARGIN_CONSTRAINT = &quot;stackpane-margin&quot;;
+<i>147</i>&nbsp;    private static final String ALIGNMENT_CONSTRAINT = &quot;stackpane-alignment&quot;;
+<i>148</i>&nbsp;
+<i>149</i>&nbsp;   /**
+<i>150</i>&nbsp;     * Sets the alignment for the child when contained by a stackpane.
+<i>151</i>&nbsp;     * If set, will override the stackpane&#39;s default alignment.
+<i>152</i>&nbsp;     * Setting the value to null will remove the constraint.
+<i>153</i>&nbsp;     * @param child the child node of a stackpane
+<i>154</i>&nbsp;     * @param value the alignment position for the child
+<i>155</i>&nbsp;     */
+<i>156</i>&nbsp;    public static void setAlignment(Node child, Pos value) {
+<b class="nc"><i>157</i>&nbsp;        setConstraint(child, ALIGNMENT_CONSTRAINT, value);</b>
+<b class="nc"><i>158</i>&nbsp;    }</b>
+<i>159</i>&nbsp;
+<i>160</i>&nbsp;    /**
+<i>161</i>&nbsp;     * Returns the child&#39;s alignment constraint if set.
+<i>162</i>&nbsp;     * @param child the child node of a stackpane
+<i>163</i>&nbsp;     * @return the alignment position for the child or null if no alignment was set
+<i>164</i>&nbsp;     */
+<i>165</i>&nbsp;    public static Pos getAlignment(Node child) {
+<b class="fc"><i>166</i>&nbsp;        return (Pos)getConstraint(child, ALIGNMENT_CONSTRAINT);</b>
+<i>167</i>&nbsp;    }
+<i>168</i>&nbsp;
+<i>169</i>&nbsp;    /**
+<i>170</i>&nbsp;     * Sets the margin for the child when contained by a stackpane.
+<i>171</i>&nbsp;     * If set, the stackpane will layout the child with the margin space around it.
+<i>172</i>&nbsp;     * Setting the value to null will remove the constraint.
+<i>173</i>&nbsp;     * @param child the child node of a stackpane
+<i>174</i>&nbsp;     * @param value the margin of space around the child
+<i>175</i>&nbsp;     */
+<i>176</i>&nbsp;    public static void setMargin(Node child, Insets value) {
+<b class="nc"><i>177</i>&nbsp;        setConstraint(child, MARGIN_CONSTRAINT, value);</b>
+<b class="nc"><i>178</i>&nbsp;    }</b>
+<i>179</i>&nbsp;
+<i>180</i>&nbsp;    /**
+<i>181</i>&nbsp;     * Returns the child&#39;s margin constraints if set.
+<i>182</i>&nbsp;     * @param child the child node of a stackpane
+<i>183</i>&nbsp;     * @return the margin for the child or null if no margin was set
+<i>184</i>&nbsp;     */
+<i>185</i>&nbsp;    public static Insets getMargin(Node child) {
+<b class="fc"><i>186</i>&nbsp;        return (Insets)getConstraint(child, MARGIN_CONSTRAINT);</b>
+<i>187</i>&nbsp;    }
+<i>188</i>&nbsp;
+<b class="fc"><i>189</i>&nbsp;    private static final Callback&lt;Node, Insets&gt; marginAccessor = n -&gt; getMargin(n);</b>
+<i>190</i>&nbsp;
+<i>191</i>&nbsp;    /**
+<i>192</i>&nbsp;     * Removes all stackpane constraints from the child node.
+<i>193</i>&nbsp;     * @param child the child node
+<i>194</i>&nbsp;     */
+<i>195</i>&nbsp;    public static void clearConstraints(Node child) {
+<b class="nc"><i>196</i>&nbsp;        setAlignment(child, null);</b>
+<b class="nc"><i>197</i>&nbsp;        setMargin(child, null);</b>
+<b class="nc"><i>198</i>&nbsp;    }</b>
+<i>199</i>&nbsp;    /********************************************************************
+<i>200</i>&nbsp;     *  END static methods
+<i>201</i>&nbsp;     ********************************************************************/
+<i>202</i>&nbsp;
+<i>203</i>&nbsp;    /**
+<i>204</i>&nbsp;     * Creates a StackPane layout with default CENTER alignment.
+<i>205</i>&nbsp;     */
+<i>206</i>&nbsp;    public StackPane() {
+<b class="fc"><i>207</i>&nbsp;        super();</b>
+<b class="fc"><i>208</i>&nbsp;    }</b>
+<i>209</i>&nbsp;
+<i>210</i>&nbsp;    /**
+<i>211</i>&nbsp;     * Creates a StackPane layout with default CENTER alignment.
+<i>212</i>&nbsp;     * @param children The initial set of children for this pane.
+<i>213</i>&nbsp;     * @since JavaFX 8.0
+<i>214</i>&nbsp;     */
+<i>215</i>&nbsp;    public StackPane(Node... children) {
+<b class="nc"><i>216</i>&nbsp;        super();</b>
+<b class="nc"><i>217</i>&nbsp;        getChildren().addAll(children);</b>
+<b class="nc"><i>218</i>&nbsp;    }</b>
+<i>219</i>&nbsp;
+<i>220</i>&nbsp;    /**
+<i>221</i>&nbsp;     * The default alignment of children within the stackpane&#39;s width and height.
+<i>222</i>&nbsp;     * This may be overridden on individual children by setting the child&#39;s
+<i>223</i>&nbsp;     * alignment constraint.
+<i>224</i>&nbsp;     * @return the alignment of children within this stackpane
+<i>225</i>&nbsp;     */
+<i>226</i>&nbsp;    public final ObjectProperty&lt;Pos&gt; alignmentProperty() {
+<b class="nc"><i>227</i>&nbsp;        if (alignment == null) {</b>
+<b class="nc"><i>228</i>&nbsp;            alignment = new StyleableObjectProperty&lt;Pos&gt;(Pos.CENTER) {</b>
+<i>229</i>&nbsp;                @Override
+<i>230</i>&nbsp;                public void invalidated() {
+<b class="nc"><i>231</i>&nbsp;                    requestLayout();</b>
+<b class="nc"><i>232</i>&nbsp;                }</b>
+<i>233</i>&nbsp;
+<i>234</i>&nbsp;                @Override
+<i>235</i>&nbsp;                public CssMetaData&lt;StackPane, Pos&gt; getCssMetaData() {
+<b class="nc"><i>236</i>&nbsp;                    return StyleableProperties.ALIGNMENT;</b>
+<i>237</i>&nbsp;                }
+<i>238</i>&nbsp;
+<i>239</i>&nbsp;                @Override
+<i>240</i>&nbsp;                public Object getBean() {
+<b class="nc"><i>241</i>&nbsp;                    return StackPane.this;</b>
+<i>242</i>&nbsp;                }
+<i>243</i>&nbsp;
+<i>244</i>&nbsp;                @Override
+<i>245</i>&nbsp;                public String getName() {
+<b class="nc"><i>246</i>&nbsp;                    return &quot;alignment&quot;;</b>
+<i>247</i>&nbsp;                }
+<i>248</i>&nbsp;            };
+<i>249</i>&nbsp;        }
+<b class="nc"><i>250</i>&nbsp;        return alignment;</b>
+<i>251</i>&nbsp;    }
+<i>252</i>&nbsp;
+<i>253</i>&nbsp;    private ObjectProperty&lt;Pos&gt; alignment;
+<b class="nc"><i>254</i>&nbsp;    public final void setAlignment(Pos value) { alignmentProperty().set(value); }</b>
+<b class="fc"><i>255</i>&nbsp;    public final Pos getAlignment() { return alignment == null ? Pos.CENTER : alignment.get(); }</b>
+<i>256</i>&nbsp;    private Pos getAlignmentInternal() {
+<b class="fc"><i>257</i>&nbsp;        Pos localPos = getAlignment();</b>
+<b class="fc"><i>258</i>&nbsp;        return localPos == null ? Pos.CENTER : localPos;</b>
+<i>259</i>&nbsp;    }
+<i>260</i>&nbsp;
+<i>261</i>&nbsp;    /**
+<i>262</i>&nbsp;     *
+<i>263</i>&nbsp;     * @return the first non-null contentBias of its managed children or null if no managed children
+<i>264</i>&nbsp;     * have a content bias.
+<i>265</i>&nbsp;     */
+<i>266</i>&nbsp;    @Override public Orientation getContentBias() {
+<b class="fc"><i>267</i>&nbsp;        if (biasDirty) {</b>
+<b class="fc"><i>268</i>&nbsp;            bias = null;</b>
+<b class="fc"><i>269</i>&nbsp;            final List&lt;Node&gt; children = getManagedChildren();</b>
+<b class="fc"><i>270</i>&nbsp;            for (Node child : children) {</b>
+<b class="fc"><i>271</i>&nbsp;                Orientation contentBias = child.getContentBias();</b>
+<b class="fc"><i>272</i>&nbsp;                if (contentBias != null) {</b>
+<b class="nc"><i>273</i>&nbsp;                    bias = contentBias;</b>
+<b class="nc"><i>274</i>&nbsp;                    if (contentBias == Orientation.HORIZONTAL) {</b>
+<b class="nc"><i>275</i>&nbsp;                        break;</b>
+<i>276</i>&nbsp;                    }
+<i>277</i>&nbsp;                }
+<b class="fc"><i>278</i>&nbsp;            }</b>
+<b class="fc"><i>279</i>&nbsp;            biasDirty = false;</b>
+<i>280</i>&nbsp;        }
+<b class="fc"><i>281</i>&nbsp;        return bias;</b>
+<i>282</i>&nbsp;    }
+<i>283</i>&nbsp;
+<i>284</i>&nbsp;    @Override protected double computeMinWidth(double height) {
+<b class="fc"><i>285</i>&nbsp;        List&lt;Node&gt;managed = getManagedChildren();</b>
+<b class="fc"><i>286</i>&nbsp;        return getInsets().getLeft() +</b>
+<b class="fc"><i>287</i>&nbsp;               computeMaxMinAreaWidth(managed, marginAccessor, height, true) +</b>
+<b class="fc"><i>288</i>&nbsp;               getInsets().getRight();</b>
+<i>289</i>&nbsp;    }
+<i>290</i>&nbsp;
+<i>291</i>&nbsp;    @Override protected double computeMinHeight(double width) {
+<b class="fc"><i>292</i>&nbsp;        List&lt;Node&gt;managed = getManagedChildren();</b>
+<b class="fc"><i>293</i>&nbsp;        return getInsets().getTop() +</b>
+<b class="fc"><i>294</i>&nbsp;               computeMaxMinAreaHeight(managed, marginAccessor, getAlignmentInternal().getVpos(), width) +</b>
+<b class="fc"><i>295</i>&nbsp;               getInsets().getBottom();</b>
+<i>296</i>&nbsp;    }
+<i>297</i>&nbsp;
+<i>298</i>&nbsp;    @Override protected double computePrefWidth(double height) {
+<b class="fc"><i>299</i>&nbsp;        List&lt;Node&gt;managed = getManagedChildren();</b>
+<b class="fc"><i>300</i>&nbsp;        Insets padding = getInsets();</b>
+<b class="fc"><i>301</i>&nbsp;        return padding.getLeft() +</b>
+<b class="fc"><i>302</i>&nbsp;               computeMaxPrefAreaWidth(managed, marginAccessor,</b>
+<b class="fc"><i>303</i>&nbsp;                                       (height == -1) ? -1 : (height - padding.getTop() - padding.getBottom()), true) +</b>
+<b class="fc"><i>304</i>&nbsp;               padding.getRight();</b>
+<i>305</i>&nbsp;    }
+<i>306</i>&nbsp;
+<i>307</i>&nbsp;    @Override protected double computePrefHeight(double width) {
+<b class="fc"><i>308</i>&nbsp;        List&lt;Node&gt;managed = getManagedChildren();</b>
+<b class="fc"><i>309</i>&nbsp;        Insets padding = getInsets();</b>
+<b class="fc"><i>310</i>&nbsp;        return padding.getTop() +</b>
+<b class="fc"><i>311</i>&nbsp;               computeMaxPrefAreaHeight(managed, marginAccessor,</b>
+<b class="fc"><i>312</i>&nbsp;                                        (width == -1) ? -1 : (width - padding.getLeft() - padding.getRight()),</b>
+<b class="fc"><i>313</i>&nbsp;                                        getAlignmentInternal().getVpos()) +</b>
+<b class="fc"><i>314</i>&nbsp;               padding.getBottom();</b>
+<i>315</i>&nbsp;    }
+<i>316</i>&nbsp;
+<i>317</i>&nbsp;
+<i>318</i>&nbsp;    @Override public void requestLayout() {
+<b class="fc"><i>319</i>&nbsp;        biasDirty = true;</b>
+<b class="fc"><i>320</i>&nbsp;        bias = null;</b>
+<b class="fc"><i>321</i>&nbsp;        super.requestLayout();</b>
+<b class="fc"><i>322</i>&nbsp;    }</b>
+<i>323</i>&nbsp;
+<i>324</i>&nbsp;    @Override protected void layoutChildren() {
+<b class="fc"><i>325</i>&nbsp;        List&lt;Node&gt; managed = getManagedChildren();</b>
+<b class="fc"><i>326</i>&nbsp;        Pos align = getAlignmentInternal();</b>
+<b class="fc"><i>327</i>&nbsp;        HPos alignHpos = align.getHpos();</b>
+<b class="fc"><i>328</i>&nbsp;        VPos alignVpos = align.getVpos();</b>
+<b class="fc"><i>329</i>&nbsp;        final double width = getWidth();</b>
+<b class="fc"><i>330</i>&nbsp;        double height = getHeight();</b>
+<b class="fc"><i>331</i>&nbsp;        double top = getInsets().getTop();</b>
+<b class="fc"><i>332</i>&nbsp;        double right = getInsets().getRight();</b>
+<b class="fc"><i>333</i>&nbsp;        double left = getInsets().getLeft();</b>
+<b class="fc"><i>334</i>&nbsp;        double bottom = getInsets().getBottom();</b>
+<b class="fc"><i>335</i>&nbsp;        double contentWidth = width - left - right;</b>
+<b class="fc"><i>336</i>&nbsp;        double contentHeight = height - top - bottom;</b>
+<b class="fc"><i>337</i>&nbsp;        double baselineOffset = alignVpos == VPos.BASELINE ?</b>
+<b class="nc"><i>338</i>&nbsp;                getAreaBaselineOffset(managed, marginAccessor, i -&gt; width, contentHeight, true)</b>
+<b class="fc"><i>339</i>&nbsp;                                    : 0;</b>
+<b class="fc"><i>340</i>&nbsp;        for (int i = 0, size = managed.size(); i &lt; size; i++) {</b>
+<b class="fc"><i>341</i>&nbsp;            Node child = managed.get(i);</b>
+<b class="fc"><i>342</i>&nbsp;            Pos childAlignment = StackPane.getAlignment(child);</b>
+<b class="fc"><i>343</i>&nbsp;            layoutInArea(child, left, top,</b>
+<i>344</i>&nbsp;                           contentWidth, contentHeight,
+<b class="fc"><i>345</i>&nbsp;                           baselineOffset, getMargin(child),</b>
+<b class="fc"><i>346</i>&nbsp;                           childAlignment != null? childAlignment.getHpos() : alignHpos,</b>
+<b class="fc"><i>347</i>&nbsp;                           childAlignment != null? childAlignment.getVpos() : alignVpos);</b>
+<i>348</i>&nbsp;        }
+<b class="fc"><i>349</i>&nbsp;    }</b>
+<i>350</i>&nbsp;
+<i>351</i>&nbsp;    /***************************************************************************
+<i>352</i>&nbsp;     *                                                                         *
+<i>353</i>&nbsp;     *                         Stylesheet Handling                             *
+<i>354</i>&nbsp;     *                                                                         *
+<i>355</i>&nbsp;     **************************************************************************/
+<i>356</i>&nbsp;
+<i>357</i>&nbsp;     /*
+<i>358</i>&nbsp;      * Super-lazy instantiation pattern from Bill Pugh.
+<i>359</i>&nbsp;      */
+<b class="fc"><i>360</i>&nbsp;     private static class StyleableProperties {</b>
+<b class="fc"><i>361</i>&nbsp;         private static final CssMetaData&lt;StackPane,Pos&gt; ALIGNMENT =</b>
+<i>362</i>&nbsp;             new CssMetaData&lt;StackPane,Pos&gt;(&quot;-fx-alignment&quot;,
+<i>363</i>&nbsp;                 new EnumConverter&lt;Pos&gt;(Pos.class),
+<b class="fc"><i>364</i>&nbsp;                 Pos.CENTER) {</b>
+<i>365</i>&nbsp;
+<i>366</i>&nbsp;            @Override
+<i>367</i>&nbsp;            public boolean isSettable(StackPane node) {
+<b class="fc"><i>368</i>&nbsp;                return node.alignment == null ||</b>
+<b class="nc"><i>369</i>&nbsp;                        !node.alignment.isBound();</b>
+<i>370</i>&nbsp;            }
+<i>371</i>&nbsp;
+<i>372</i>&nbsp;            @Override
+<i>373</i>&nbsp;            public StyleableProperty&lt;Pos&gt; getStyleableProperty(StackPane node) {
+<b class="nc"><i>374</i>&nbsp;                return (StyleableProperty&lt;Pos&gt;)node.alignmentProperty();</b>
+<i>375</i>&nbsp;            }
+<i>376</i>&nbsp;        };
+<i>377</i>&nbsp;
+<i>378</i>&nbsp;         private static final List&lt;CssMetaData&lt;? extends Styleable, ?&gt;&gt; STYLEABLES;
+<i>379</i>&nbsp;         static {
+<b class="fc"><i>380</i>&nbsp;            final List&lt;CssMetaData&lt;? extends Styleable, ?&gt;&gt; styleables =</b>
+<b class="fc"><i>381</i>&nbsp;                new ArrayList&lt;CssMetaData&lt;? extends Styleable, ?&gt;&gt;(Region.getClassCssMetaData());</b>
+<b class="fc"><i>382</i>&nbsp;            styleables.add(ALIGNMENT);</b>
+<b class="fc"><i>383</i>&nbsp;            STYLEABLES = Collections.unmodifiableList(styleables);</b>
+<b class="fc"><i>384</i>&nbsp;         }</b>
+<i>385</i>&nbsp;    }
+<i>386</i>&nbsp;
+<i>387</i>&nbsp;    /**
+<i>388</i>&nbsp;     * @return The CssMetaData associated with this class, which may include the
+<i>389</i>&nbsp;     * CssMetaData of its superclasses.
+<i>390</i>&nbsp;     * @since JavaFX 8.0
+<i>391</i>&nbsp;     */
+<i>392</i>&nbsp;    public static List&lt;CssMetaData&lt;? extends Styleable, ?&gt;&gt; getClassCssMetaData() {
+<b class="fc"><i>393</i>&nbsp;        return StyleableProperties.STYLEABLES;</b>
+<i>394</i>&nbsp;    }
+<i>395</i>&nbsp;
+<i>396</i>&nbsp;    /**
+<i>397</i>&nbsp;     * {@inheritDoc}
+<i>398</i>&nbsp;     *
+<i>399</i>&nbsp;     * @since JavaFX 8.0
+<i>400</i>&nbsp;     */
+<i>401</i>&nbsp;
+<i>402</i>&nbsp;
+<i>403</i>&nbsp;    @Override
+<i>404</i>&nbsp;    public List&lt;CssMetaData&lt;? extends Styleable, ?&gt;&gt; getCssMetaData() {
+<b class="fc"><i>405</i>&nbsp;        return getClassCssMetaData();</b>
+<i>406</i>&nbsp;    }
+<i>407</i>&nbsp;
+<i>408</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2017-12-04 21:49</div>
+</div>
+</body>
+</html>

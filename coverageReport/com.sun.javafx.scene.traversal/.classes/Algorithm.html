@@ -1,0 +1,116 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: Algorithm</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.javafx.scene.traversal</a> ]
+</div>
+
+<h1>Coverage Summary for Class: Algorithm (com.sun.javafx.scene.traversal)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+</tr>
+<tr>
+  <td class="name">Algorithm</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright (c) 2010, 2014, Oracle and/or its affiliates. All rights reserved.
+<i>3</i>&nbsp; * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+<i>4</i>&nbsp; *
+<i>5</i>&nbsp; *
+<i>6</i>&nbsp; *
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; *
+<i>11</i>&nbsp; *
+<i>12</i>&nbsp; *
+<i>13</i>&nbsp; *
+<i>14</i>&nbsp; *
+<i>15</i>&nbsp; *
+<i>16</i>&nbsp; *
+<i>17</i>&nbsp; *
+<i>18</i>&nbsp; *
+<i>19</i>&nbsp; *
+<i>20</i>&nbsp; *
+<i>21</i>&nbsp; *
+<i>22</i>&nbsp; *
+<i>23</i>&nbsp; *
+<i>24</i>&nbsp; */
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;package com.sun.javafx.scene.traversal;
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;import javafx.scene.Node;
+<i>29</i>&nbsp;
+<i>30</i>&nbsp;/**
+<i>31</i>&nbsp; * An algorithm to be used in a traversal engine.
+<i>32</i>&nbsp; *
+<i>33</i>&nbsp; * Note that in order to avoid cycles or dead-ends in traversal the algorithms should respect the following order:
+<i>34</i>&nbsp; * * for NEXT: node -&gt; node&#39;s subtree -&gt; node siblings (first sibling then it&#39;s subtree) -&gt; NEXT_IN_LINE for node&#39;s parent
+<i>35</i>&nbsp; * * for NEXT_IN_LINE: node -&gt; node siblings (first sibling then it&#39;s subtree) -&gt; NEXT_IN_LINE for node&#39;s parent
+<i>36</i>&nbsp; * * for PREVIOUS: node -&gt; node siblings ( ! first subtree then the node itself ! ) -&gt; PREVIOUS for node&#39;s parent
+<i>37</i>&nbsp; *
+<i>38</i>&nbsp; * Basically it ensures that next direction will traverse the same nodes as previous, in the opposite order.
+<i>39</i>&nbsp; *
+<i>40</i>&nbsp; */
+<i>41</i>&nbsp;public interface Algorithm {
+<i>42</i>&nbsp;
+<i>43</i>&nbsp;    /**
+<i>44</i>&nbsp;     * Traverse from owner, in direction dir.
+<i>45</i>&nbsp;     * Return a the new target Node or null if no suitable target is found.
+<i>46</i>&nbsp;     *
+<i>47</i>&nbsp;     * Typically, the implementation of override algorithm handles only parent&#39;s direct children and looks like this:
+<i>48</i>&nbsp;     * 1) Find the nearest parent of the &quot;owner&quot; that is handled by this algorithm (i.e. it&#39;s a direct child of the root).
+<i>49</i>&nbsp;     * 2) select the next node within this direct child using the context.selectInSubtree() and return it
+<i>50</i>&nbsp;     * 2a) if no such node exists, move to the next direct child in the direction (this is where the different order of direct children is defined)
+<i>51</i>&nbsp;     *     or if direct children are not traversable, the select the first node in the next direct child
+<i>52</i>&nbsp;     */
+<i>53</i>&nbsp;    public Node select(Node owner, Direction dir, TraversalContext context);
+<i>54</i>&nbsp;
+<i>55</i>&nbsp;    /**
+<i>56</i>&nbsp;     * Return the first traversable node for the specified context (root).
+<i>57</i>&nbsp;     * @param context the context that contains the root
+<i>58</i>&nbsp;     * @return the first node
+<i>59</i>&nbsp;     */
+<i>60</i>&nbsp;    public Node selectFirst(TraversalContext context);
+<i>61</i>&nbsp;
+<i>62</i>&nbsp;    /**
+<i>63</i>&nbsp;     * Return the last traversable node for the specified context (root).
+<i>64</i>&nbsp;     * @param context the context that contains the root
+<i>65</i>&nbsp;     * @return the last node
+<i>66</i>&nbsp;     */
+<i>67</i>&nbsp;    public Node selectLast(TraversalContext context);
+<i>68</i>&nbsp;
+<i>69</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2017-12-04 21:49</div>
+</div>
+</body>
+</html>

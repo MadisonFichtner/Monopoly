@@ -1,0 +1,172 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: MenuItemBase</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.javafx.menu</a> ]
+</div>
+
+<h1>Coverage Summary for Class: MenuItemBase (com.sun.javafx.menu)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+</tr>
+<tr>
+  <td class="name">MenuItemBase</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright (c) 2010, 2013, Oracle and/or its affiliates. All rights reserved.
+<i>3</i>&nbsp; * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+<i>4</i>&nbsp; *
+<i>5</i>&nbsp; *
+<i>6</i>&nbsp; *
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; *
+<i>11</i>&nbsp; *
+<i>12</i>&nbsp; *
+<i>13</i>&nbsp; *
+<i>14</i>&nbsp; *
+<i>15</i>&nbsp; *
+<i>16</i>&nbsp; *
+<i>17</i>&nbsp; *
+<i>18</i>&nbsp; *
+<i>19</i>&nbsp; *
+<i>20</i>&nbsp; *
+<i>21</i>&nbsp; *
+<i>22</i>&nbsp; *
+<i>23</i>&nbsp; *
+<i>24</i>&nbsp; */
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;package com.sun.javafx.menu;
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;import javafx.beans.property.BooleanProperty;
+<i>29</i>&nbsp;import javafx.beans.property.ObjectProperty;
+<i>30</i>&nbsp;import javafx.beans.property.StringProperty;
+<i>31</i>&nbsp;import javafx.event.ActionEvent;
+<i>32</i>&nbsp;import javafx.event.EventHandler;
+<i>33</i>&nbsp;import javafx.scene.input.KeyCombination;
+<i>34</i>&nbsp;import javafx.scene.Node;
+<i>35</i>&nbsp;
+<i>36</i>&nbsp;
+<i>37</i>&nbsp;public interface MenuItemBase {
+<i>38</i>&nbsp;
+<i>39</i>&nbsp;    /***************************************************************************
+<i>40</i>&nbsp;     *                                                                         *
+<i>41</i>&nbsp;     * Properties                                                              *
+<i>42</i>&nbsp;     *                                                                         *
+<i>43</i>&nbsp;     **************************************************************************/
+<i>44</i>&nbsp;
+<i>45</i>&nbsp;    public void setId(String value);
+<i>46</i>&nbsp;    public String getId();
+<i>47</i>&nbsp;    public StringProperty idProperty();
+<i>48</i>&nbsp;
+<i>49</i>&nbsp;    /**
+<i>50</i>&nbsp;     * The text to display in the menu item.
+<i>51</i>&nbsp;     */
+<i>52</i>&nbsp;    public void setText(String value);
+<i>53</i>&nbsp;    public String getText();
+<i>54</i>&nbsp;    public StringProperty textProperty();
+<i>55</i>&nbsp;
+<i>56</i>&nbsp;    /**
+<i>57</i>&nbsp;     * An optional graphic for the menu item This will normally be
+<i>58</i>&nbsp;     * an {@link javafx.scene.image.ImageView} node, but there is no requirement for this to be
+<i>59</i>&nbsp;     * the case.
+<i>60</i>&nbsp;     */
+<i>61</i>&nbsp;    public void setGraphic(Node value);
+<i>62</i>&nbsp;    public Node getGraphic();
+<i>63</i>&nbsp;    public ObjectProperty&lt;Node&gt; graphicProperty();
+<i>64</i>&nbsp;
+<i>65</i>&nbsp;    /**
+<i>66</i>&nbsp;     * The action, which is invoked whenever the MenuItemBase is fired. This
+<i>67</i>&nbsp;     * may be due to the user clicking on the button with the mouse, or by
+<i>68</i>&nbsp;     * a touch event, or by a key press, or if the developer programatically
+<i>69</i>&nbsp;     * invokes the {@link #fire()} method.
+<i>70</i>&nbsp;     */
+<i>71</i>&nbsp;    public void setOnAction(EventHandler&lt;ActionEvent&gt; value);
+<i>72</i>&nbsp;    public EventHandler&lt;ActionEvent&gt; getOnAction();
+<i>73</i>&nbsp;    public ObjectProperty&lt;EventHandler&lt;ActionEvent&gt;&gt; onActionProperty();
+<i>74</i>&nbsp;
+<i>75</i>&nbsp;
+<i>76</i>&nbsp;    // --- Disable
+<i>77</i>&nbsp;    public void setDisable(boolean value);
+<i>78</i>&nbsp;    public boolean isDisable();
+<i>79</i>&nbsp;    public BooleanProperty disableProperty();
+<i>80</i>&nbsp;
+<i>81</i>&nbsp;    // --- Visible
+<i>82</i>&nbsp;    public void setVisible(boolean value);
+<i>83</i>&nbsp;    public boolean isVisible();
+<i>84</i>&nbsp;    public BooleanProperty visibleProperty();
+<i>85</i>&nbsp;
+<i>86</i>&nbsp;
+<i>87</i>&nbsp;    // --- Accelerator
+<i>88</i>&nbsp;    public void setAccelerator(KeyCombination value);
+<i>89</i>&nbsp;    public KeyCombination getAccelerator();
+<i>90</i>&nbsp;    public ObjectProperty&lt;KeyCombination&gt; acceleratorProperty();
+<i>91</i>&nbsp;
+<i>92</i>&nbsp;    /**
+<i>93</i>&nbsp;     * MnemonicParsing property to enable/disable text parsing.
+<i>94</i>&nbsp;     * If this is set to true, then the MenuItemBase text will be
+<i>95</i>&nbsp;     * parsed to see if it contains the mnemonic parsing character &#39;_&#39;.
+<i>96</i>&nbsp;     * When a mnemonic is detected the key combination will
+<i>97</i>&nbsp;     * be determined based on the succeeding character, and the mnemonic
+<i>98</i>&nbsp;     * added.
+<i>99</i>&nbsp;     *
+<i>100</i>&nbsp;     * &lt;p&gt;
+<i>101</i>&nbsp;     * The default value for MenuItemBase is true.
+<i>102</i>&nbsp;     * &lt;/p&gt;
+<i>103</i>&nbsp;     */
+<i>104</i>&nbsp;    public void setMnemonicParsing(boolean value);
+<i>105</i>&nbsp;    public boolean isMnemonicParsing();
+<i>106</i>&nbsp;    public BooleanProperty mnemonicParsingProperty();
+<i>107</i>&nbsp;
+<i>108</i>&nbsp;
+<i>109</i>&nbsp;    /***************************************************************************
+<i>110</i>&nbsp;     *                                                                         *
+<i>111</i>&nbsp;     * Public API                                                              *
+<i>112</i>&nbsp;     *                                                                         *
+<i>113</i>&nbsp;     **************************************************************************/
+<i>114</i>&nbsp;
+<i>115</i>&nbsp;    /**
+<i>116</i>&nbsp;     * Fires a new ActionEvent.
+<i>117</i>&nbsp;     */
+<i>118</i>&nbsp;    public void fire();
+<i>119</i>&nbsp;
+<i>120</i>&nbsp;    /**
+<i>121</i>&nbsp;     * Fires when the accelerator for this MenuItem is invoked.
+<i>122</i>&nbsp;     */
+<i>123</i>&nbsp;    public void fireValidation();
+<i>124</i>&nbsp;
+<i>125</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2017-12-04 21:49</div>
+</div>
+</body>
+</html>

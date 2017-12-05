@@ -1,0 +1,149 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: Binding</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">javafx.beans.binding</a> ]
+</div>
+
+<h1>Coverage Summary for Class: Binding (javafx.beans.binding)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+</tr>
+<tr>
+  <td class="name">Binding</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright (c) 2010, 2017, Oracle and/or its affiliates. All rights reserved.
+<i>3</i>&nbsp; * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+<i>4</i>&nbsp; *
+<i>5</i>&nbsp; *
+<i>6</i>&nbsp; *
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; *
+<i>11</i>&nbsp; *
+<i>12</i>&nbsp; *
+<i>13</i>&nbsp; *
+<i>14</i>&nbsp; *
+<i>15</i>&nbsp; *
+<i>16</i>&nbsp; *
+<i>17</i>&nbsp; *
+<i>18</i>&nbsp; *
+<i>19</i>&nbsp; *
+<i>20</i>&nbsp; *
+<i>21</i>&nbsp; *
+<i>22</i>&nbsp; *
+<i>23</i>&nbsp; *
+<i>24</i>&nbsp; */
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;package javafx.beans.binding;
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;import javafx.beans.value.ObservableValue;
+<i>29</i>&nbsp;import javafx.collections.ObservableList;
+<i>30</i>&nbsp;
+<i>31</i>&nbsp;/**
+<i>32</i>&nbsp; * A {@code Binding} calculates a value that depends on one or more sources. The
+<i>33</i>&nbsp; * sources are usually called the dependency of a binding. A binding observes
+<i>34</i>&nbsp; * its dependencies for changes and updates its value automatically.
+<i>35</i>&nbsp; * &lt;p&gt;
+<i>36</i>&nbsp; * While a dependency of a binding can be anything, it is almost always an
+<i>37</i>&nbsp; * implementation of {@link javafx.beans.value.ObservableValue}. {@code Binding}
+<i>38</i>&nbsp; * implements {@code ObservableValue} allowing to use it in another binding.
+<i>39</i>&nbsp; * With that one can assemble very complex bindings from simple bindings.
+<i>40</i>&nbsp; * &lt;p&gt;
+<i>41</i>&nbsp; * All bindings in the JavaFX runtime are calculated lazily. That means, if
+<i>42</i>&nbsp; * a dependency changes, the result of a binding is not immediately
+<i>43</i>&nbsp; * recalculated, but it is marked as invalid. Next time the value of an invalid
+<i>44</i>&nbsp; * binding is requested, it is recalculated.
+<i>45</i>&nbsp; * &lt;p&gt;
+<i>46</i>&nbsp; * It is recommended to use one of the base classes defined in this package
+<i>47</i>&nbsp; * (e.g. {@link DoubleBinding}) to define a custom binding, because these
+<i>48</i>&nbsp; * classes already provide most of the needed functionality. See
+<i>49</i>&nbsp; * {@link DoubleBinding} for an example.
+<i>50</i>&nbsp; *
+<i>51</i>&nbsp; * @param &lt;T&gt; the type of the wrapped value
+<i>52</i>&nbsp; * @see DoubleBinding
+<i>53</i>&nbsp; *
+<i>54</i>&nbsp; * @since JavaFX 2.0
+<i>55</i>&nbsp; */
+<i>56</i>&nbsp;public interface Binding&lt;T&gt; extends ObservableValue&lt;T&gt; {
+<i>57</i>&nbsp;
+<i>58</i>&nbsp;    /**
+<i>59</i>&nbsp;     * Checks if a binding is valid.
+<i>60</i>&nbsp;     *
+<i>61</i>&nbsp;     * @return {@code true} if the {@code Binding} is valid, {@code false}
+<i>62</i>&nbsp;     *         otherwise
+<i>63</i>&nbsp;     */
+<i>64</i>&nbsp;    boolean isValid();
+<i>65</i>&nbsp;
+<i>66</i>&nbsp;    /**
+<i>67</i>&nbsp;     * Mark a binding as invalid. This forces the recalculation of the value of
+<i>68</i>&nbsp;     * the {@code Binding} next time it is request.
+<i>69</i>&nbsp;     */
+<i>70</i>&nbsp;    void invalidate();
+<i>71</i>&nbsp;
+<i>72</i>&nbsp;    /**
+<i>73</i>&nbsp;     * Returns the dependencies of a binding in an unmodifiable
+<i>74</i>&nbsp;     * {@link javafx.collections.ObservableList}. The implementation is
+<i>75</i>&nbsp;     * optional. The main purpose of this method is to support developers during
+<i>76</i>&nbsp;     * development. It allows to explore and monitor dependencies of a binding
+<i>77</i>&nbsp;     * during runtime.
+<i>78</i>&nbsp;     * &lt;p&gt;
+<i>79</i>&nbsp;     * Because this method should not be used in production code, it is
+<i>80</i>&nbsp;     * recommended to implement this functionality as sparse as possible. For
+<i>81</i>&nbsp;     * example if the dependencies do not change, each call can generate a new
+<i>82</i>&nbsp;     * {@code ObservableList}, avoiding the necessity to store the result.
+<i>83</i>&nbsp;     *
+<i>84</i>&nbsp;     * @return an unmodifiable {@code} ObservableList of the dependencies
+<i>85</i>&nbsp;     */
+<i>86</i>&nbsp;    ObservableList&lt;?&gt; getDependencies();
+<i>87</i>&nbsp;
+<i>88</i>&nbsp;    /**
+<i>89</i>&nbsp;     * Signals to the {@code Binding} that it will not be used anymore and any
+<i>90</i>&nbsp;     * references can be removed. A call of this method usually results in the
+<i>91</i>&nbsp;     * binding stopping to observe its dependencies by unregistering its
+<i>92</i>&nbsp;     * listener(s). The implementation is optional.
+<i>93</i>&nbsp;     * &lt;p&gt;
+<i>94</i>&nbsp;     * All bindings in our implementation use instances of
+<i>95</i>&nbsp;     * {@link javafx.beans.WeakInvalidationListener}, which means usually
+<i>96</i>&nbsp;     * a binding does not need to be disposed. But if you plan to use your
+<i>97</i>&nbsp;     * application in environments that do not support {@code WeakReferences}
+<i>98</i>&nbsp;     * you have to dispose unused {@code Bindings} to avoid memory leaks.
+<i>99</i>&nbsp;     */
+<i>100</i>&nbsp;    void dispose();
+<i>101</i>&nbsp;
+<i>102</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2017-12-04 21:49</div>
+</div>
+</body>
+</html>

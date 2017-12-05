@@ -1,0 +1,677 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: Effect</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.scenario.effect</a> ]
+</div>
+
+<h1>Coverage Summary for Class: Effect (com.sun.scenario.effect)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">Effect</td>
+<td class="coverageStat">
+  <span class="percent">
+    59.1%
+  </span>
+  <span class="absValue">
+    (13/ 22)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    46.7%
+  </span>
+  <span class="absValue">
+    (42/ 90)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">Effect$AccelType</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 4)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 11)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    50%
+  </span>
+  <span class="absValue">
+    (13/ 26)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    41.6%
+  </span>
+  <span class="absValue">
+    (42/ 101)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright (c) 2008, 2014, Oracle and/or its affiliates. All rights reserved.
+<i>3</i>&nbsp; * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+<i>4</i>&nbsp; *
+<i>5</i>&nbsp; *
+<i>6</i>&nbsp; *
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; *
+<i>11</i>&nbsp; *
+<i>12</i>&nbsp; *
+<i>13</i>&nbsp; *
+<i>14</i>&nbsp; *
+<i>15</i>&nbsp; *
+<i>16</i>&nbsp; *
+<i>17</i>&nbsp; *
+<i>18</i>&nbsp; *
+<i>19</i>&nbsp; *
+<i>20</i>&nbsp; *
+<i>21</i>&nbsp; *
+<i>22</i>&nbsp; *
+<i>23</i>&nbsp; *
+<i>24</i>&nbsp; */
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;package com.sun.scenario.effect;
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;import java.util.ArrayList;
+<i>29</i>&nbsp;import java.util.Collections;
+<i>30</i>&nbsp;import java.util.List;
+<i>31</i>&nbsp;import com.sun.scenario.effect.impl.Renderer;
+<i>32</i>&nbsp;import com.sun.scenario.effect.impl.state.AccessHelper;
+<i>33</i>&nbsp;import com.sun.javafx.geom.Point2D;
+<i>34</i>&nbsp;import com.sun.javafx.geom.BaseBounds;
+<i>35</i>&nbsp;import com.sun.javafx.geom.DirtyRegionContainer;
+<i>36</i>&nbsp;import com.sun.javafx.geom.DirtyRegionPool;
+<i>37</i>&nbsp;import com.sun.javafx.geom.RectBounds;
+<i>38</i>&nbsp;import com.sun.javafx.geom.Rectangle;
+<i>39</i>&nbsp;import com.sun.javafx.geom.transform.BaseTransform;
+<i>40</i>&nbsp;
+<i>41</i>&nbsp;/**
+<i>42</i>&nbsp; * The base class for all filter effects.
+<i>43</i>&nbsp; */
+<i>44</i>&nbsp;public abstract class Effect {
+<i>45</i>&nbsp;
+<i>46</i>&nbsp;    /**
+<i>47</i>&nbsp;     * A convenient constant for using a readable value to specify
+<i>48</i>&nbsp;     * a {@code null} value for input {@code Effect}s in method and
+<i>49</i>&nbsp;     * constructor parameter lists.
+<i>50</i>&nbsp;     * Specifying {@code effect.setInput(DefaultInput)} is equivalent
+<i>51</i>&nbsp;     * to specifying {@code effect.setInput(null)}.
+<i>52</i>&nbsp;     */
+<b class="fc"><i>53</i>&nbsp;    public static final Effect DefaultInput = null;</b>
+<i>54</i>&nbsp;
+<i>55</i>&nbsp;    private final List&lt;Effect&gt; inputs;
+<i>56</i>&nbsp;    private final List&lt;Effect&gt; unmodifiableInputs;
+<i>57</i>&nbsp;    private final int maxInputs;
+<i>58</i>&nbsp;
+<i>59</i>&nbsp;    static {
+<b class="fc"><i>60</i>&nbsp;        AccessHelper.setStateAccessor(effect -&gt; effect.getState());</b>
+<b class="fc"><i>61</i>&nbsp;    }</b>
+<i>62</i>&nbsp;
+<i>63</i>&nbsp;    /**
+<i>64</i>&nbsp;     * Constructs an {@code Effect} with no inputs.
+<i>65</i>&nbsp;     */
+<b class="fc"><i>66</i>&nbsp;    protected Effect() {</b>
+<b class="fc"><i>67</i>&nbsp;        this.inputs = Collections.emptyList();</b>
+<b class="fc"><i>68</i>&nbsp;        this.unmodifiableInputs = inputs;</b>
+<b class="fc"><i>69</i>&nbsp;        this.maxInputs = 0;</b>
+<b class="fc"><i>70</i>&nbsp;    }</b>
+<i>71</i>&nbsp;
+<i>72</i>&nbsp;    /**
+<i>73</i>&nbsp;     * Constructs an {@code Effect} with exactly one input.
+<i>74</i>&nbsp;     *
+<i>75</i>&nbsp;     * @param input the input {@code Effect}
+<i>76</i>&nbsp;     */
+<b class="fc"><i>77</i>&nbsp;    protected Effect(Effect input) {</b>
+<b class="fc"><i>78</i>&nbsp;        this.inputs = new ArrayList&lt;Effect&gt;(1);</b>
+<b class="fc"><i>79</i>&nbsp;        this.unmodifiableInputs = Collections.unmodifiableList(inputs);</b>
+<b class="fc"><i>80</i>&nbsp;        this.maxInputs = 1;</b>
+<b class="fc"><i>81</i>&nbsp;        setInput(0, input);</b>
+<b class="fc"><i>82</i>&nbsp;    }</b>
+<i>83</i>&nbsp;
+<i>84</i>&nbsp;    /**
+<i>85</i>&nbsp;     * Constructs an {@code Effect} with exactly two inputs.
+<i>86</i>&nbsp;     *
+<i>87</i>&nbsp;     * @param input1 the first input {@code Effect}
+<i>88</i>&nbsp;     * @param input2 the second input {@code Effect}
+<i>89</i>&nbsp;     */
+<b class="fc"><i>90</i>&nbsp;    protected Effect(Effect input1, Effect input2) {</b>
+<b class="fc"><i>91</i>&nbsp;        this.inputs = new ArrayList&lt;Effect&gt;(2);</b>
+<b class="fc"><i>92</i>&nbsp;        this.unmodifiableInputs = Collections.unmodifiableList(inputs);</b>
+<b class="fc"><i>93</i>&nbsp;        this.maxInputs = 2;</b>
+<b class="fc"><i>94</i>&nbsp;        setInput(0, input1);</b>
+<b class="fc"><i>95</i>&nbsp;        setInput(1, input2);</b>
+<b class="fc"><i>96</i>&nbsp;    }</b>
+<i>97</i>&nbsp;
+<i>98</i>&nbsp;    /**
+<i>99</i>&nbsp;     * Returns state object that is associated with this effect instance.
+<i>100</i>&nbsp;     * Subclasses may override this method to return some sort of state
+<i>101</i>&nbsp;     * object that contains implementation details that are hidden from
+<i>102</i>&nbsp;     * the public API.  Classes outside this package can use the AccessHelper
+<i>103</i>&nbsp;     * class to get access to this package-private method.
+<i>104</i>&nbsp;     */
+<i>105</i>&nbsp;    Object getState() {
+<b class="nc"><i>106</i>&nbsp;        return null;</b>
+<i>107</i>&nbsp;    }
+<i>108</i>&nbsp;
+<i>109</i>&nbsp;    /**
+<i>110</i>&nbsp;     * Returns the number of inputs processed by this {@code Effect}.
+<i>111</i>&nbsp;     *
+<i>112</i>&nbsp;     * @return the number of inputs for this {@code Effect}
+<i>113</i>&nbsp;     */
+<i>114</i>&nbsp;    public int getNumInputs() {
+<b class="fc"><i>115</i>&nbsp;        return inputs.size();</b>
+<i>116</i>&nbsp;    }
+<i>117</i>&nbsp;
+<i>118</i>&nbsp;    /**
+<i>119</i>&nbsp;     * Returns the (immutable) list of input {@code Effect}s, or an empty
+<i>120</i>&nbsp;     * list if no inputs were specified at construction time.
+<i>121</i>&nbsp;     *
+<i>122</i>&nbsp;     * @return the list of input {@code Effect}s
+<i>123</i>&nbsp;     */
+<i>124</i>&nbsp;    public final List&lt;Effect&gt; getInputs() {
+<b class="fc"><i>125</i>&nbsp;        return unmodifiableInputs;</b>
+<i>126</i>&nbsp;    }
+<i>127</i>&nbsp;
+<i>128</i>&nbsp;    /**
+<i>129</i>&nbsp;     * Sets the indexed input for this {@code Effect} to a specific
+<i>130</i>&nbsp;     * {@code Effect} or to the default input if {@code input} is
+<i>131</i>&nbsp;     * {@code null}.
+<i>132</i>&nbsp;     *
+<i>133</i>&nbsp;     * @param index the index of the input {@code Effect}
+<i>134</i>&nbsp;     * @param input the input {@code Effect}
+<i>135</i>&nbsp;     * @throws IllegalArgumentException if {@code index} is less than
+<i>136</i>&nbsp;     * zero or greater than or equal to the number of inputs specified
+<i>137</i>&nbsp;     * at construction time
+<i>138</i>&nbsp;     */
+<i>139</i>&nbsp;    protected void setInput(int index, Effect input) {
+<b class="fc"><i>140</i>&nbsp;        if (index &lt; 0 || index &gt;= maxInputs) {</b>
+<b class="nc"><i>141</i>&nbsp;            throw new IllegalArgumentException(&quot;Index must be within allowable range&quot;);</b>
+<i>142</i>&nbsp;        }
+<i>143</i>&nbsp;
+<b class="fc"><i>144</i>&nbsp;        if (index &lt; inputs.size()) {</b>
+<b class="fc"><i>145</i>&nbsp;            inputs.set(index, input);</b>
+<i>146</i>&nbsp;        } else {
+<b class="fc"><i>147</i>&nbsp;            inputs.add(input);</b>
+<i>148</i>&nbsp;        }
+<b class="fc"><i>149</i>&nbsp;    }</b>
+<i>150</i>&nbsp;
+<i>151</i>&nbsp;    public static BaseBounds combineBounds(BaseBounds... inputBounds) {
+<b class="nc"><i>152</i>&nbsp;        BaseBounds ret = null;</b>
+<b class="nc"><i>153</i>&nbsp;        if (inputBounds.length == 1) {</b>
+<b class="nc"><i>154</i>&nbsp;            ret = inputBounds[0];</b>
+<i>155</i>&nbsp;        } else {
+<b class="nc"><i>156</i>&nbsp;            for (int i = 0; i &lt; inputBounds.length; i++) {</b>
+<b class="nc"><i>157</i>&nbsp;                BaseBounds r = inputBounds[i];</b>
+<b class="nc"><i>158</i>&nbsp;                if (r != null &amp;&amp; !r.isEmpty()) {</b>
+<b class="nc"><i>159</i>&nbsp;                    if (ret == null) {</b>
+<b class="nc"><i>160</i>&nbsp;                        ret = new RectBounds();</b>
+<b class="nc"><i>161</i>&nbsp;                        ret = ret.deriveWithNewBounds(r);</b>
+<i>162</i>&nbsp;                    } else {
+<b class="nc"><i>163</i>&nbsp;                        ret = ret.deriveWithUnion(r);</b>
+<i>164</i>&nbsp;                    }
+<i>165</i>&nbsp;                }
+<i>166</i>&nbsp;            }
+<i>167</i>&nbsp;        }
+<b class="nc"><i>168</i>&nbsp;        if (ret == null) {</b>
+<b class="nc"><i>169</i>&nbsp;            ret = new RectBounds();</b>
+<i>170</i>&nbsp;        }
+<b class="nc"><i>171</i>&nbsp;        return ret;</b>
+<i>172</i>&nbsp;    }
+<i>173</i>&nbsp;
+<i>174</i>&nbsp;    public static Rectangle combineBounds(Rectangle... inputBounds) {
+<b class="nc"><i>175</i>&nbsp;        Rectangle ret = null;</b>
+<b class="nc"><i>176</i>&nbsp;        if (inputBounds.length == 1) {</b>
+<b class="nc"><i>177</i>&nbsp;            ret = inputBounds[0];</b>
+<i>178</i>&nbsp;        } else {
+<b class="nc"><i>179</i>&nbsp;            for (int i = 0; i &lt; inputBounds.length; i++) {</b>
+<b class="nc"><i>180</i>&nbsp;                Rectangle r = inputBounds[i];</b>
+<b class="nc"><i>181</i>&nbsp;                if (r != null &amp;&amp; !r.isEmpty()) {</b>
+<b class="nc"><i>182</i>&nbsp;                    if (ret == null) {</b>
+<b class="nc"><i>183</i>&nbsp;                        ret = new Rectangle(r);</b>
+<i>184</i>&nbsp;                    } else {
+<b class="nc"><i>185</i>&nbsp;                        ret.add(r);</b>
+<i>186</i>&nbsp;                    }
+<i>187</i>&nbsp;                }
+<i>188</i>&nbsp;            }
+<i>189</i>&nbsp;        }
+<b class="nc"><i>190</i>&nbsp;        if (ret == null) {</b>
+<b class="nc"><i>191</i>&nbsp;            ret = new Rectangle();</b>
+<i>192</i>&nbsp;        }
+<b class="nc"><i>193</i>&nbsp;        return ret;</b>
+<i>194</i>&nbsp;    }
+<i>195</i>&nbsp;
+<i>196</i>&nbsp;    public Rectangle getResultBounds(BaseTransform transform,
+<i>197</i>&nbsp;                                     Rectangle outputClip,
+<i>198</i>&nbsp;                                     ImageData... inputDatas)
+<i>199</i>&nbsp;    {
+<b class="nc"><i>200</i>&nbsp;        int numinputs = inputDatas.length;</b>
+<b class="nc"><i>201</i>&nbsp;        Rectangle inputBounds[] = new Rectangle[numinputs];</b>
+<b class="nc"><i>202</i>&nbsp;        for (int i = 0; i &lt; numinputs; i++) {</b>
+<b class="nc"><i>203</i>&nbsp;            inputBounds[i] = inputDatas[i].getTransformedBounds(outputClip);</b>
+<i>204</i>&nbsp;        }
+<b class="nc"><i>205</i>&nbsp;        Rectangle rb = combineBounds(inputBounds);</b>
+<b class="nc"><i>206</i>&nbsp;        return rb;</b>
+<i>207</i>&nbsp;    }
+<i>208</i>&nbsp;
+<i>209</i>&nbsp;    /**
+<i>210</i>&nbsp;     * Applies this filter effect to the series of images represented by
+<i>211</i>&nbsp;     * the input {@code Effect}s and/or the given {@code defaultInput}
+<i>212</i>&nbsp;     * viewed under the given {@code transform}.
+<i>213</i>&nbsp;     * The filter does not need to create pixel data for any pixels that
+<i>214</i>&nbsp;     * fall outside of the destination device-space (pixel) bounds specified
+<i>215</i>&nbsp;     * by the {@code outputClip} {@code Rectangle}.
+<i>216</i>&nbsp;     * &lt;p&gt;
+<i>217</i>&nbsp;     * The filter might be able to use the {@code renderHelper} object to
+<i>218</i>&nbsp;     * render the results directly on its own if the object is not null and
+<i>219</i>&nbsp;     * implements an interface, such as {@link ImageHelper}, that the filter
+<i>220</i>&nbsp;     * recognizes.
+<i>221</i>&nbsp;     * If the effect renders itself then it will return a {@code null} for
+<i>222</i>&nbsp;     * the {@code ImageData} result.
+<i>223</i>&nbsp;     * &lt;p&gt;
+<i>224</i>&nbsp;     * Note that the {@code ImageData} object returned by this method must be
+<i>225</i>&nbsp;     * validated prior to use with
+<i>226</i>&nbsp;     * {@link ImageData#validate(com.sun.scenario.effect.FilterContext) } method.
+<i>227</i>&nbsp;     * &lt;p&gt;
+<i>228</i>&nbsp;     * &lt;pre&gt;
+<i>229</i>&nbsp;       boolean valid;
+<i>230</i>&nbsp;
+<i>231</i>&nbsp;       do {
+<i>232</i>&nbsp;           ImageData res = filter(fctx, transform, clip, renderer, defaultInput);
+<i>233</i>&nbsp;           if (res == null) {
+<i>234</i>&nbsp;               break;
+<i>235</i>&nbsp;           }
+<i>236</i>&nbsp;           if (valid = res.validate(fctx)) {
+<i>237</i>&nbsp;               // Render res.getImage() to the appropriate destination
+<i>238</i>&nbsp;               // or use it as an input to another chain of effects.
+<i>239</i>&nbsp;           }
+<i>240</i>&nbsp;           res.unref();
+<i>241</i>&nbsp;       } while (!valid);
+<i>242</i>&nbsp;       &lt;/pre&gt;
+<i>243</i>&nbsp;     * &lt;p&gt;
+<i>244</i>&nbsp;     * @param fctx the {@code FilterContext} that determines the
+<i>245</i>&nbsp;     * environment (e.g. the graphics device or code path) on which
+<i>246</i>&nbsp;     * the filter operation will be performed
+<i>247</i>&nbsp;     * @param transform an optional transform under which the filter and
+<i>248</i>&nbsp;     * its inputs will be viewed
+<i>249</i>&nbsp;     * @param outputClip the device space (pixel) bounds of the output
+<i>250</i>&nbsp;     * image or window or clip into which the result of the Effect will
+<i>251</i>&nbsp;     * be rendered, or null if the output dimensions are not known.
+<i>252</i>&nbsp;     * @param renderHelper an object which might be used to render
+<i>253</i>&nbsp;     * the results of the effect directly.
+<i>254</i>&nbsp;     * @param defaultInput the default input {@code Effect} to be used in
+<i>255</i>&nbsp;     * all cases where a filter has a null input.
+<i>256</i>&nbsp;     * @return the {@code ImageData} holding the result of this filter
+<i>257</i>&nbsp;     * operation or {@code null} if the filter had no output or used the
+<i>258</i>&nbsp;     * {@code renderHelper} to render its results directly.
+<i>259</i>&nbsp;     */
+<i>260</i>&nbsp;    public abstract ImageData filter(FilterContext fctx,
+<i>261</i>&nbsp;                                     BaseTransform transform,
+<i>262</i>&nbsp;                                     Rectangle outputClip,
+<i>263</i>&nbsp;                                     Object renderHelper,
+<i>264</i>&nbsp;                                     Effect defaultInput);
+<i>265</i>&nbsp;
+<i>266</i>&nbsp;    public static BaseBounds transformBounds(BaseTransform tx, BaseBounds r) {
+<b class="nc"><i>267</i>&nbsp;        if (tx == null || tx.isIdentity()) {</b>
+<b class="nc"><i>268</i>&nbsp;            return r;</b>
+<i>269</i>&nbsp;        }
+<b class="nc"><i>270</i>&nbsp;        BaseBounds ret = new RectBounds();</b>
+<b class="nc"><i>271</i>&nbsp;        ret = tx.transform(r, ret);</b>
+<b class="nc"><i>272</i>&nbsp;        return ret;</b>
+<i>273</i>&nbsp;    }
+<i>274</i>&nbsp;
+<i>275</i>&nbsp;    protected ImageData ensureTransform(FilterContext fctx,
+<i>276</i>&nbsp;                                        ImageData original,
+<i>277</i>&nbsp;                                        BaseTransform transform,
+<i>278</i>&nbsp;                                        Rectangle clip)
+<i>279</i>&nbsp;    {
+<b class="nc"><i>280</i>&nbsp;        if (transform == null || transform.isIdentity()) {</b>
+<b class="nc"><i>281</i>&nbsp;            return original;</b>
+<i>282</i>&nbsp;        }
+<b class="nc"><i>283</i>&nbsp;        if (!original.validate(fctx)) {</b>
+<b class="nc"><i>284</i>&nbsp;            original.unref();</b>
+<b class="nc"><i>285</i>&nbsp;            return new ImageData(fctx, null, new Rectangle());</b>
+<i>286</i>&nbsp;        }
+<b class="nc"><i>287</i>&nbsp;        return original.transform(transform);</b>
+<i>288</i>&nbsp;//
+<i>289</i>&nbsp;//        Rectangle origBounds = original.getBounds();
+<i>290</i>&nbsp;//        if (transform.isTranslateOrIdentity()) {
+<i>291</i>&nbsp;//            double tx = transform.getMxt();
+<i>292</i>&nbsp;//            double ty = transform.getMyt();
+<i>293</i>&nbsp;//            int itx = (int) tx;
+<i>294</i>&nbsp;//            int ity = (int) ty;
+<i>295</i>&nbsp;//            if (itx == tx &amp;&amp; ity == ty) {
+<i>296</i>&nbsp;//                Rectangle r = new Rectangle(origBounds);
+<i>297</i>&nbsp;//                r.translate(itx, ity);
+<i>298</i>&nbsp;//                ImageData ret = new ImageData(original, r);
+<i>299</i>&nbsp;//                original.unref();
+<i>300</i>&nbsp;//                return ret;
+<i>301</i>&nbsp;//            }
+<i>302</i>&nbsp;//        }
+<i>303</i>&nbsp;//        RectBounds transformedBounds = transformBounds(transform, origBounds.toRectBounds());
+<i>304</i>&nbsp;//        Rectangle xformBounds = new Rectangle(transformedBounds);
+<i>305</i>&nbsp;//        if (clip != null) {
+<i>306</i>&nbsp;//            xformBounds.intersectWith(clip);
+<i>307</i>&nbsp;//        }
+<i>308</i>&nbsp;//        return Renderer.getRenderer(fctx).
+<i>309</i>&nbsp;//            transform(fctx, original, transform, origBounds, xformBounds);
+<i>310</i>&nbsp;    }
+<i>311</i>&nbsp;
+<i>312</i>&nbsp;    /**
+<i>313</i>&nbsp;     * Returns the dirty region container containing dirty regions affected
+<i>314</i>&nbsp;     * by this filter operation.
+<i>315</i>&nbsp;     *
+<i>316</i>&nbsp;     * @param defaultInput the default input {@code Effect} to be used in
+<i>317</i>&nbsp;     *                     all cases where a filter has a null input
+<i>318</i>&nbsp;     * @param drc the container of dirty regions in scene coordinates.
+<i>319</i>&nbsp;     * @param regionPool the pool of dirty regions
+<i>320</i>&nbsp;     * @return the dirty region container
+<i>321</i>&nbsp;     */
+<i>322</i>&nbsp;    public DirtyRegionContainer getDirtyRegions(Effect defaultInput, DirtyRegionPool regionPool) {
+<b class="fc"><i>323</i>&nbsp;        DirtyRegionContainer merge = null;</b>
+<b class="fc"><i>324</i>&nbsp;        for (int i = 0; i &lt; inputs.size(); i++) {</b>
+<b class="fc"><i>325</i>&nbsp;            DirtyRegionContainer drc = getDefaultedInput(i, defaultInput).getDirtyRegions(defaultInput, regionPool);</b>
+<b class="fc"><i>326</i>&nbsp;            if (merge == null) {</b>
+<b class="fc"><i>327</i>&nbsp;                merge = drc;</b>
+<i>328</i>&nbsp;            } else {
+<b class="fc"><i>329</i>&nbsp;                merge.merge(drc);</b>
+<b class="fc"><i>330</i>&nbsp;                regionPool.checkIn(drc);</b>
+<i>331</i>&nbsp;            }
+<i>332</i>&nbsp;        }
+<i>333</i>&nbsp;
+<b class="fc"><i>334</i>&nbsp;        if (merge == null) {</b>
+<b class="nc"><i>335</i>&nbsp;            merge = regionPool.checkOut();</b>
+<i>336</i>&nbsp;        }
+<i>337</i>&nbsp;
+<b class="fc"><i>338</i>&nbsp;        return merge;</b>
+<i>339</i>&nbsp;    }
+<i>340</i>&nbsp;
+<i>341</i>&nbsp;    Effect getDefaultedInput(int inputIndex, Effect defaultInput) {
+<b class="fc"><i>342</i>&nbsp;        return getDefaultedInput(inputs.get(inputIndex), defaultInput);</b>
+<i>343</i>&nbsp;    }
+<i>344</i>&nbsp;
+<i>345</i>&nbsp;    static Effect getDefaultedInput(Effect listedInput, Effect defaultInput) {
+<b class="fc"><i>346</i>&nbsp;        return (listedInput == null) ? defaultInput : listedInput;</b>
+<i>347</i>&nbsp;    }
+<i>348</i>&nbsp;
+<i>349</i>&nbsp;    /**
+<i>350</i>&nbsp;     * Returns the bounding box that will be affected by this filter
+<i>351</i>&nbsp;     * operation when viewed under the specified {@code transform},
+<i>352</i>&nbsp;     * given its list of input {@code Effect}s and the specified
+<i>353</i>&nbsp;     * {@code defaultInput} effect.
+<i>354</i>&nbsp;     * Note that the returned bounds can be smaller or larger than one
+<i>355</i>&nbsp;     * or more of the inputs.
+<i>356</i>&nbsp;     *
+<i>357</i>&nbsp;     * @param transform the transform the effect will be viewed under
+<i>358</i>&nbsp;     * @param defaultInput the default input {@code Effect} to be used in
+<i>359</i>&nbsp;     *                     all cases where a filter has a null input
+<i>360</i>&nbsp;     * @return the bounding box of this filter
+<i>361</i>&nbsp;     */
+<i>362</i>&nbsp;    public abstract BaseBounds getBounds(BaseTransform transform,
+<i>363</i>&nbsp;                                       Effect defaultInput);
+<i>364</i>&nbsp;
+<i>365</i>&nbsp;    /**
+<i>366</i>&nbsp;     * Transform the specified point {@code p} from the coordinate space
+<i>367</i>&nbsp;     * of the primary content input to the coordinate space of the effect
+<i>368</i>&nbsp;     * output.
+<i>369</i>&nbsp;     * In essence, this method asks the question &quot;Which output coordinate
+<i>370</i>&nbsp;     * is most affected by the data at the specified coordinate in the
+<i>371</i>&nbsp;     * primary source input?&quot;
+<i>372</i>&nbsp;     * &lt;p&gt;
+<i>373</i>&nbsp;     * The definition of which input represents the primary content input
+<i>374</i>&nbsp;     * and how the coordinate space of that input compares to the coordinate
+<i>375</i>&nbsp;     * space of the result varies from effect to effect.
+<i>376</i>&nbsp;     * Note that some effects may have a reasonable definition of how to
+<i>377</i>&nbsp;     * map source coordinates to destination coordinates, but not the
+<i>378</i>&nbsp;     * reverse.
+<i>379</i>&nbsp;     * In particular, effects which map source coordinates discontiguously
+<i>380</i>&nbsp;     * into the result may have several output coordinates that are affected
+<i>381</i>&nbsp;     * by a given input coordinate and may choose to return one of many
+<i>382</i>&nbsp;     * equally valid answers, or an undefined result such as {@code NaN},
+<i>383</i>&nbsp;     * or some other anomalous value.
+<i>384</i>&nbsp;     * Most effects perform simple transformations of the color of each
+<i>385</i>&nbsp;     * pixel and so represent an identity transform and return the point
+<i>386</i>&nbsp;     * unchanged.
+<i>387</i>&nbsp;     *
+<i>388</i>&nbsp;     * @param p the point in the coordinate space of the primary content
+<i>389</i>&nbsp;     *          input to be transformed
+<i>390</i>&nbsp;     * @param defaultInput the default input {@code Effect} to be used in
+<i>391</i>&nbsp;     *                     all cases where a filter has a null input
+<i>392</i>&nbsp;     * @return the transformed point in the coordinate space of the result
+<i>393</i>&nbsp;     */
+<i>394</i>&nbsp;    public Point2D transform(Point2D p, Effect defaultInput) {
+<b class="nc"><i>395</i>&nbsp;        return p;</b>
+<i>396</i>&nbsp;    }
+<i>397</i>&nbsp;
+<i>398</i>&nbsp;    /**
+<i>399</i>&nbsp;     * Transform the specified point {@code p} from the coordinate space
+<i>400</i>&nbsp;     * of the output of the effect into the coordinate space of the
+<i>401</i>&nbsp;     * primary content input.
+<i>402</i>&nbsp;     * In essence, this method asks the question &quot;Which source coordinate
+<i>403</i>&nbsp;     * contributes most to the definition of the output at the specified
+<i>404</i>&nbsp;     * coordinate?&quot;
+<i>405</i>&nbsp;     * &lt;p&gt;
+<i>406</i>&nbsp;     * The definition of which input represents the primary content input
+<i>407</i>&nbsp;     * and how the coordinate space of that input compares to the coordinate
+<i>408</i>&nbsp;     * space of the result varies from effect to effect.
+<i>409</i>&nbsp;     * Note that some effects may have a reasonable definition of how to
+<i>410</i>&nbsp;     * map destination coordinates back to source coordinates, but not the
+<i>411</i>&nbsp;     * reverse.
+<i>412</i>&nbsp;     * In particular, effects which produce entirely synthetic results not
+<i>413</i>&nbsp;     * based on any content input may not be able to give a meaningful
+<i>414</i>&nbsp;     * result to this query and may return undefined coordinates such as
+<i>415</i>&nbsp;     * {@code 0}, {@code Infinity}, or {@code NaN}.
+<i>416</i>&nbsp;     * Most effects perform simple transformations of the color of each
+<i>417</i>&nbsp;     * pixel and so represent an identity transform and return the point
+<i>418</i>&nbsp;     * unchanged.
+<i>419</i>&nbsp;     *
+<i>420</i>&nbsp;     * @param p the point in the coordinate space of the result output
+<i>421</i>&nbsp;     *          to be transformed
+<i>422</i>&nbsp;     * @param defaultInput the default input {@code Effect} to be used in
+<i>423</i>&nbsp;     *                     all cases where a filter has a null input
+<i>424</i>&nbsp;     * @return the untransformed point in the coordinate space of the
+<i>425</i>&nbsp;     *         primary content input
+<i>426</i>&nbsp;     */
+<i>427</i>&nbsp;    public Point2D untransform(Point2D p, Effect defaultInput) {
+<b class="nc"><i>428</i>&nbsp;        return p;</b>
+<i>429</i>&nbsp;    }
+<i>430</i>&nbsp;
+<i>431</i>&nbsp;    /**
+<i>432</i>&nbsp;     * Returns a new image that is most compatible with the
+<i>433</i>&nbsp;     * given {@code FilterContext}.  This method will select the image
+<i>434</i>&nbsp;     * type that is most appropriate for use with the current rendering
+<i>435</i>&nbsp;     * pipeline, graphics hardware, and screen pixel layout.
+<i>436</i>&nbsp;     * The image will be cleared prior to being returned.
+<i>437</i>&nbsp;     *
+<i>438</i>&nbsp;     * This method may return {@code null} if the image can&#39;t be created so
+<i>439</i>&nbsp;     * callers have to check for return value.
+<i>440</i>&nbsp;     *
+<i>441</i>&nbsp;     * @param fctx the {@code FilterContext} for the target screen device
+<i>442</i>&nbsp;     * @param w the width of the image
+<i>443</i>&nbsp;     * @param h the height of the image
+<i>444</i>&nbsp;     * @return a new image with the given dimensions, or null if one
+<i>445</i>&nbsp;     * can&#39;t be created
+<i>446</i>&nbsp;     * @throws IllegalArgumentException if {@code gc} is null, or if
+<i>447</i>&nbsp;     * either {@code w} or {@code h} is non-positive
+<i>448</i>&nbsp;     */
+<i>449</i>&nbsp;    public static Filterable createCompatibleImage(FilterContext fctx, int w, int h) {
+<b class="nc"><i>450</i>&nbsp;        return Renderer.getRenderer(fctx).createCompatibleImage(w, h);</b>
+<i>451</i>&nbsp;    }
+<i>452</i>&nbsp;
+<i>453</i>&nbsp;    /**
+<i>454</i>&nbsp;     * Returns an image that is most compatible with the
+<i>455</i>&nbsp;     * given {@code FilterContext}.  This method will select the image
+<i>456</i>&nbsp;     * type that is most appropriate for use with the current rendering
+<i>457</i>&nbsp;     * pipeline, graphics hardware, and screen pixel layout.
+<i>458</i>&nbsp;     * The image will be cleared prior to being returned.
+<i>459</i>&nbsp;     * &lt;p&gt;
+<i>460</i>&nbsp;     * Note that the framework attempts to pool images for recycling purposes
+<i>461</i>&nbsp;     * whenever possible.  Therefore, when finished using an image returned
+<i>462</i>&nbsp;     * by this method, it is highly recommended that you
+<i>463</i>&nbsp;     * {@link #releaseCompatibleImage release} the image back to the
+<i>464</i>&nbsp;     * shared pool for others to use.
+<i>465</i>&nbsp;     *
+<i>466</i>&nbsp;     * This method may return {@code null} if the image can&#39;t be created so
+<i>467</i>&nbsp;     * callers have to check for return value.
+<i>468</i>&nbsp;     *
+<i>469</i>&nbsp;     * @param fctx the {@code FilterContext} for the target screen device
+<i>470</i>&nbsp;     * @param w the width of the image
+<i>471</i>&nbsp;     * @param h the height of the image
+<i>472</i>&nbsp;     * @return an image with the given dimensions or null if one can&#39;t
+<i>473</i>&nbsp;     * be created
+<i>474</i>&nbsp;     * @throws IllegalArgumentException if {@code gc} is null, or if
+<i>475</i>&nbsp;     * either {@code w} or {@code h} is non-positive
+<i>476</i>&nbsp;     * @see #releaseCompatibleImage
+<i>477</i>&nbsp;     */
+<i>478</i>&nbsp;    public static Filterable getCompatibleImage(FilterContext fctx, int w, int h) {
+<b class="fc"><i>479</i>&nbsp;        return Renderer.getRenderer(fctx).getCompatibleImage(w, h);</b>
+<i>480</i>&nbsp;    }
+<i>481</i>&nbsp;
+<i>482</i>&nbsp;    /**
+<i>483</i>&nbsp;     * Releases an image created by the
+<i>484</i>&nbsp;     * {@link #getCompatibleImage getCompatibleImage()} method
+<i>485</i>&nbsp;     * back into the shared pool.
+<i>486</i>&nbsp;     *
+<i>487</i>&nbsp;     * @param fctx the {@code FilterContext} for the target screen device
+<i>488</i>&nbsp;     * @param image the image to be released
+<i>489</i>&nbsp;     * @see #getCompatibleImage
+<i>490</i>&nbsp;     */
+<i>491</i>&nbsp;    public static void releaseCompatibleImage(FilterContext fctx, Filterable image) {
+<b class="fc"><i>492</i>&nbsp;        Renderer.getRenderer(fctx).releaseCompatibleImage(image);</b>
+<b class="fc"><i>493</i>&nbsp;    }</b>
+<i>494</i>&nbsp;
+<i>495</i>&nbsp;    /**
+<i>496</i>&nbsp;     * Whether an opacity for any pixel is different (lower)
+<i>497</i>&nbsp;     * than the corresponding pixel in the default input.
+<i>498</i>&nbsp;     * It is always safe to return true from this method,
+<i>499</i>&nbsp;     * though the consequences may be that the caller chooses to not utilize a planned optimization.
+<i>500</i>&nbsp;     * @return true if this effect may reduce opacity of some pixels of one of it&#39;s input
+<i>501</i>&nbsp;     * (and thus the default input) or it&#39;s relevant input(s) might have reduced opaque pixels
+<i>502</i>&nbsp;     * of the default input already.
+<i>503</i>&nbsp;     */
+<i>504</i>&nbsp;    public abstract boolean reducesOpaquePixels();
+<i>505</i>&nbsp;
+<i>506</i>&nbsp;    /**
+<i>507</i>&nbsp;     * A set of values that represent the possible levels of acceleration
+<i>508</i>&nbsp;     * for an {@code Effect} implementation.
+<i>509</i>&nbsp;     *
+<i>510</i>&nbsp;     * @see Effect#getAccelType
+<i>511</i>&nbsp;     */
+<b class="nc"><i>512</i>&nbsp;    public enum AccelType {</b>
+<i>513</i>&nbsp;        /**
+<i>514</i>&nbsp;         * Indicates that this {@code Effect} is implemented on top of
+<i>515</i>&nbsp;         * intrinsic operations built in to the Java 2D APIs.
+<i>516</i>&nbsp;         */
+<b class="nc"><i>517</i>&nbsp;        INTRINSIC(&quot;Intrinsic&quot;),</b>
+<i>518</i>&nbsp;        /**
+<i>519</i>&nbsp;         * Indicates that this {@code Effect} is implemented in software
+<i>520</i>&nbsp;         * (i.e., running on the CPU), without any special acceleration.
+<i>521</i>&nbsp;         */
+<b class="nc"><i>522</i>&nbsp;        NONE(&quot;CPU/Java&quot;),</b>
+<i>523</i>&nbsp;        /**
+<i>524</i>&nbsp;         * Indicates that this {@code Effect} is implemented in software
+<i>525</i>&nbsp;         * (i.e., running on the CPU), accelerated using native
+<i>526</i>&nbsp;         * SIMD instructions (e.g. SSE).
+<i>527</i>&nbsp;         */
+<b class="nc"><i>528</i>&nbsp;        SIMD(&quot;CPU/SIMD&quot;),</b>
+<i>529</i>&nbsp;        /**
+<i>530</i>&nbsp;         * Indicates that this {@code Effect} is implemented in software
+<i>531</i>&nbsp;         * (i.e., running on the CPU), accelerated using native
+<i>532</i>&nbsp;         * fixed-point arithmetic.
+<i>533</i>&nbsp;         */
+<b class="nc"><i>534</i>&nbsp;        FIXED(&quot;CPU/Fixed&quot;),</b>
+<i>535</i>&nbsp;        /**
+<i>536</i>&nbsp;         * Indicates that this {@code Effect} is being accelerated in
+<i>537</i>&nbsp;         * graphics hardware via OpenGL.
+<i>538</i>&nbsp;         */
+<b class="nc"><i>539</i>&nbsp;        OPENGL(&quot;OpenGL&quot;),</b>
+<i>540</i>&nbsp;        /**
+<i>541</i>&nbsp;         * Indicates that this {@code Effect} is being accelerated in
+<i>542</i>&nbsp;         * graphics hardware via Direct3D.
+<i>543</i>&nbsp;         */
+<b class="nc"><i>544</i>&nbsp;        DIRECT3D(&quot;Direct3D&quot;);</b>
+<i>545</i>&nbsp;
+<i>546</i>&nbsp;        private String text;
+<i>547</i>&nbsp;
+<b class="nc"><i>548</i>&nbsp;        private AccelType(String text) {</b>
+<b class="nc"><i>549</i>&nbsp;            this.text = text;</b>
+<b class="nc"><i>550</i>&nbsp;        }</b>
+<i>551</i>&nbsp;
+<i>552</i>&nbsp;        @Override
+<i>553</i>&nbsp;        public String toString() {
+<b class="nc"><i>554</i>&nbsp;            return text;</b>
+<i>555</i>&nbsp;        }
+<i>556</i>&nbsp;    }
+<i>557</i>&nbsp;
+<i>558</i>&nbsp;    /**
+<i>559</i>&nbsp;     * Returns one of the {@link AccelType AccelType} values, indicating
+<i>560</i>&nbsp;     * whether this {@code Effect} is accelerated in hardware for the
+<i>561</i>&nbsp;     * given {@code FilterContext}.
+<i>562</i>&nbsp;     *
+<i>563</i>&nbsp;     * @param config the {@code FilterContext} that will be used
+<i>564</i>&nbsp;     * for performing the filter operation
+<i>565</i>&nbsp;     * @return one of the {@code AccelType} values
+<i>566</i>&nbsp;     */
+<i>567</i>&nbsp;    public abstract AccelType getAccelType(FilterContext fctx);
+<i>568</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2017-12-04 21:49</div>
+</div>
+</body>
+</html>

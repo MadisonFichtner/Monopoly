@@ -1,0 +1,594 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: ScriptMapper</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.javafx.text</a> ]
+</div>
+
+<h1>Coverage Summary for Class: ScriptMapper (com.sun.javafx.text)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">ScriptMapper</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    75%
+  </span>
+  <span class="absValue">
+    (3/ 4)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    33.3%
+  </span>
+  <span class="absValue">
+    (17/ 51)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright (c) 2012, 2013, Oracle and/or its affiliates. All rights reserved.
+<i>3</i>&nbsp; * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+<i>4</i>&nbsp; *
+<i>5</i>&nbsp; *
+<i>6</i>&nbsp; *
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; *
+<i>11</i>&nbsp; *
+<i>12</i>&nbsp; *
+<i>13</i>&nbsp; *
+<i>14</i>&nbsp; *
+<i>15</i>&nbsp; *
+<i>16</i>&nbsp; *
+<i>17</i>&nbsp; *
+<i>18</i>&nbsp; *
+<i>19</i>&nbsp; *
+<i>20</i>&nbsp; *
+<i>21</i>&nbsp; *
+<i>22</i>&nbsp; *
+<i>23</i>&nbsp; *
+<i>24</i>&nbsp; */
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;package com.sun.javafx.text;
+<i>27</i>&nbsp;
+<b class="nc"><i>28</i>&nbsp;public class ScriptMapper {</b>
+<i>29</i>&nbsp;
+<i>30</i>&nbsp;    public static final int INVALID    =   -1;  /* Unknown */
+<i>31</i>&nbsp;    public static final int COMMON       =  0;  /* Zyyy */
+<i>32</i>&nbsp;    public static final int INHERITED    =  1;  /* Qaai */
+<i>33</i>&nbsp;    public static final int LATN         =  25;
+<i>34</i>&nbsp;    private static final int UNKNOWN = 103;
+<i>35</i>&nbsp;
+<i>36</i>&nbsp;    private static int cache;
+<i>37</i>&nbsp;
+<i>38</i>&nbsp;    // Must be synchronized because of &#39;cache&#39; variable
+<i>39</i>&nbsp;    public static synchronized int getScript(int codePoint) {
+<i>40</i>&nbsp;        // optimize for runs of characters in the same script
+<i>41</i>&nbsp;        // ie if this code is called for each char, its somewhat likely
+<i>42</i>&nbsp;        // that there will be runs from a single range.
+<b class="fc"><i>43</i>&nbsp;        if (codePoint &gt;= data[cache] &amp;&amp; codePoint &lt; data[cache+2]) {</b>
+<b class="fc"><i>44</i>&nbsp;            return data[cache+1];</b>
+<i>45</i>&nbsp;        }
+<i>46</i>&nbsp;
+<b class="fc"><i>47</i>&nbsp;        if (codePoint &lt; CHAR_START || codePoint &gt;= CHAR_LIMIT) {</b>
+<b class="nc"><i>48</i>&nbsp;            return UNKNOWN; // being generous for &lt; 0.</b>
+<i>49</i>&nbsp;        }
+<i>50</i>&nbsp;
+<b class="fc"><i>51</i>&nbsp;        int probe = dataPower;</b>
+<b class="fc"><i>52</i>&nbsp;        int index = 0;</b>
+<b class="fc"><i>53</i>&nbsp;        if (codePoint &gt;= data[dataExtra]) {</b>
+<b class="nc"><i>54</i>&nbsp;            index = dataExtra;</b>
+<i>55</i>&nbsp;        }
+<i>56</i>&nbsp;
+<b class="fc"><i>57</i>&nbsp;        while (probe &gt; 2) {</b>
+<b class="fc"><i>58</i>&nbsp;            probe &gt;&gt;= 1;</b>
+<b class="fc"><i>59</i>&nbsp;            if (codePoint &gt;= data[index + probe]) {</b>
+<b class="fc"><i>60</i>&nbsp;                index += probe;</b>
+<i>61</i>&nbsp;            }
+<i>62</i>&nbsp;        }
+<i>63</i>&nbsp;
+<b class="fc"><i>64</i>&nbsp;        cache = index;</b>
+<b class="fc"><i>65</i>&nbsp;        return data[index+1];</b>
+<i>66</i>&nbsp;    }
+<i>67</i>&nbsp;
+<i>68</i>&nbsp;    /*
+<i>69</i>&nbsp;     * Referenced by platform code which wants to test for the
+<i>70</i>&nbsp;     * minimum char code for which layout may be required (non-optional).
+<i>71</i>&nbsp;     * The value here indicates the lowest char code for which failing
+<i>72</i>&nbsp;     * to invoke layout would prevent acceptable rendering.
+<i>73</i>&nbsp;     */
+<i>74</i>&nbsp;    private static final int MIN_LAYOUT_CHARCODE = 0x0300;
+<i>75</i>&nbsp;
+<i>76</i>&nbsp;    /*
+<i>77</i>&nbsp;     * Referenced by platform code which wants to test for the
+<i>78</i>&nbsp;     * maximum char code for which layout may be required (non-optional).
+<i>79</i>&nbsp;     * Note this does not account for supplementary characters
+<i>80</i>&nbsp;     * in the case where the caller interprets &#39;layout&#39; to mean where
+<i>81</i>&nbsp;     * one &#39;char&#39; (ie the java type char) does not map to one glyph
+<i>82</i>&nbsp;     */
+<i>83</i>&nbsp;    private static final int MAX_LAYOUT_CHARCODE = 0x206F;
+<i>84</i>&nbsp;
+<i>85</i>&nbsp;    /* If the character code falls into any of a number of unicode ranges
+<i>86</i>&nbsp;     * where we know that simple left-&gt;right layout mapping chars to glyphs
+<i>87</i>&nbsp;     * 1:1 and accumulating advances is going to produce incorrect results,
+<i>88</i>&nbsp;     * we want to know this so the caller can use a more intelligent layout
+<i>89</i>&nbsp;     * approach. A caller who cares about optimum performance may want to
+<i>90</i>&nbsp;     * check the first case and skip the method call if its in that range.
+<i>91</i>&nbsp;     * Although there&#39;s a lot of tests in here, knowing you can skip
+<i>92</i>&nbsp;     * CTL saves a great deal more. The rest of the checks are ordered
+<i>93</i>&nbsp;     * so that rather than checking explicitly if (&gt;= start &amp; &lt;= end)
+<i>94</i>&nbsp;     * which would mean all ranges would need to be checked so be sure
+<i>95</i>&nbsp;     * CTL is not needed, the method returns as soon as it recognises
+<i>96</i>&nbsp;     * the code point is outside of a CTL ranges.
+<i>97</i>&nbsp;     * NOTE: Since this method accepts an &#39;int&#39; it is asssumed to properly
+<i>98</i>&nbsp;     * represent a CHARACTER. ie it assumes the caller has already
+<i>99</i>&nbsp;     * converted surrogate pairs into supplementary characters, and so
+<i>100</i>&nbsp;     * can handle this case and doesn&#39;t need to be told such a case is
+<i>101</i>&nbsp;     * &#39;complex&#39;.
+<i>102</i>&nbsp;     */
+<i>103</i>&nbsp;    public static boolean isComplexCharCode(int code) {
+<i>104</i>&nbsp;
+<b class="fc"><i>105</i>&nbsp;        if (code &lt; MIN_LAYOUT_CHARCODE || code &gt; MAX_LAYOUT_CHARCODE) {</b>
+<b class="fc"><i>106</i>&nbsp;            return false;</b>
+<i>107</i>&nbsp;        }
+<b class="nc"><i>108</i>&nbsp;        else if (code &lt;= 0x036f) {</b>
+<i>109</i>&nbsp;            // Trigger layout for combining diacriticals 0x0300-&gt;0x036f
+<b class="nc"><i>110</i>&nbsp;            return true;</b>
+<i>111</i>&nbsp;        }
+<b class="nc"><i>112</i>&nbsp;        else if (code &lt; 0x0590) {</b>
+<i>113</i>&nbsp;            // No automatic layout for Greek, Cyrillic, Armenian.
+<b class="nc"><i>114</i>&nbsp;             return false;</b>
+<i>115</i>&nbsp;        }
+<b class="nc"><i>116</i>&nbsp;        else if (code &lt;= 0x06ff) {</b>
+<i>117</i>&nbsp;            // Hebrew 0590 - 05ff
+<i>118</i>&nbsp;            // Arabic 0600 - 06ff
+<b class="nc"><i>119</i>&nbsp;            return true;</b>
+<i>120</i>&nbsp;        }
+<b class="nc"><i>121</i>&nbsp;        else if (code &lt; 0x0900) {</b>
+<b class="nc"><i>122</i>&nbsp;            return false; // Syriac and Thaana</b>
+<i>123</i>&nbsp;        }
+<b class="nc"><i>124</i>&nbsp;        else if (code &lt;= 0x0e7f) {</b>
+<i>125</i>&nbsp;            // if Indic, assume shaping for conjuncts, reordering:
+<i>126</i>&nbsp;            // 0900 - 097F Devanagari
+<i>127</i>&nbsp;            // 0980 - 09FF Bengali
+<i>128</i>&nbsp;            // 0A00 - 0A7F Gurmukhi
+<i>129</i>&nbsp;            // 0A80 - 0AFF Gujarati
+<i>130</i>&nbsp;            // 0B00 - 0B7F Oriya
+<i>131</i>&nbsp;            // 0B80 - 0BFF Tamil
+<i>132</i>&nbsp;            // 0C00 - 0C7F Telugu
+<i>133</i>&nbsp;            // 0C80 - 0CFF Kannada
+<i>134</i>&nbsp;            // 0D00 - 0D7F Malayalam
+<i>135</i>&nbsp;            // 0D80 - 0DFF Sinhala
+<i>136</i>&nbsp;            // 0E00 - 0E7F if Thai, assume shaping for vowel, tone marks
+<b class="nc"><i>137</i>&nbsp;            return true;</b>
+<i>138</i>&nbsp;        }
+<b class="nc"><i>139</i>&nbsp;        else if (code &lt;  0x0f00) {</b>
+<b class="nc"><i>140</i>&nbsp;            return false;</b>
+<i>141</i>&nbsp;        }
+<b class="nc"><i>142</i>&nbsp;        else if (code &lt;= 0x0fff) { // U+0F00 - U+0FFF Tibetan</b>
+<b class="nc"><i>143</i>&nbsp;            return true;</b>
+<i>144</i>&nbsp;        }
+<b class="nc"><i>145</i>&nbsp;        else if (code &lt; 0x1100) {</b>
+<b class="nc"><i>146</i>&nbsp;            return false;</b>
+<i>147</i>&nbsp;        }
+<b class="nc"><i>148</i>&nbsp;        else if (code &lt; 0x11ff) { // U+1100 - U+11FF Old Hangul</b>
+<b class="nc"><i>149</i>&nbsp;            return true;</b>
+<i>150</i>&nbsp;        }
+<b class="nc"><i>151</i>&nbsp;        else if (code &lt; 0x1780) {</b>
+<b class="nc"><i>152</i>&nbsp;            return false;</b>
+<i>153</i>&nbsp;        }
+<b class="nc"><i>154</i>&nbsp;        else if (code &lt;= 0x17ff) { // 1780 - 17FF Khmer</b>
+<b class="nc"><i>155</i>&nbsp;            return true;</b>
+<i>156</i>&nbsp;        }
+<b class="nc"><i>157</i>&nbsp;        else if (code &lt; 0x200c) {</b>
+<b class="nc"><i>158</i>&nbsp;            return false;</b>
+<i>159</i>&nbsp;        }
+<b class="nc"><i>160</i>&nbsp;        else if (code &lt;= 0x200d) { //  zwj or zwnj</b>
+<b class="nc"><i>161</i>&nbsp;            return true;</b>
+<i>162</i>&nbsp;        }
+<b class="nc"><i>163</i>&nbsp;        else if (code &gt;= 0x202a &amp;&amp; code &lt;= 0x202e) { // directional control</b>
+<b class="nc"><i>164</i>&nbsp;            return true;</b>
+<i>165</i>&nbsp;        }
+<b class="nc"><i>166</i>&nbsp;        else if (code &gt;= 0x206a &amp;&amp; code &lt;= 0x206f) { // directional control</b>
+<b class="nc"><i>167</i>&nbsp;            return true;</b>
+<i>168</i>&nbsp;        }
+<b class="nc"><i>169</i>&nbsp;        return false;</b>
+<i>170</i>&nbsp;    }
+<i>171</i>&nbsp;
+<i>172</i>&nbsp;    /*
+<i>173</i>&nbsp;     * We need a mapping from unicode code point to ISO script.
+<i>174</i>&nbsp;     * However the script code constants for ICU do not correspond.
+<i>175</i>&nbsp;     * This data was generated by starting with the code point to script
+<i>176</i>&nbsp;     * mappings in JDK7 Character.UnicodeScript, which is up to date
+<i>177</i>&nbsp;     * with Unicode 6.1. Then a hand created mapping from those codes
+<i>178</i>&nbsp;     * ICU 4.8 known code points. The data was written out by a utility
+<i>179</i>&nbsp;     * javafx-font/tools/UnicodeScript.java
+<i>180</i>&nbsp;     * The format is then as follows.  Where n is an even value:
+<i>181</i>&nbsp;     * data[n] represents the code point at the start of a range
+<i>182</i>&nbsp;     * data[n+1] represents the script code for that range
+<i>183</i>&nbsp;     * data[n+2] represents the first code point in the next range.
+<i>184</i>&nbsp;     */
+<b class="fc"><i>185</i>&nbsp;    private static int[] data = {</b>
+<i>186</i>&nbsp;        0x00, 0,        //  Common
+<i>187</i>&nbsp;        0x041, 25,      //  LATN
+<i>188</i>&nbsp;        0x05b, 0,       //  Common
+<i>189</i>&nbsp;        0x061, 25,      //  LATN
+<i>190</i>&nbsp;        0x07b, 0,       //  Common
+<i>191</i>&nbsp;        0x0aa, 25,      //  LATN
+<i>192</i>&nbsp;        0x0ab, 0,       //  Common
+<i>193</i>&nbsp;        0x0ba, 25,      //  LATN
+<i>194</i>&nbsp;        0x0bb, 0,       //  Common
+<i>195</i>&nbsp;        0x0c0, 25,      //  LATN
+<i>196</i>&nbsp;        0x0d7, 0,       //  Common
+<i>197</i>&nbsp;        0x0d8, 25,      //  LATN
+<i>198</i>&nbsp;        0x0f7, 0,       //  Common
+<i>199</i>&nbsp;        0x0f8, 25,      //  LATN
+<i>200</i>&nbsp;        0x02b9, 0,      //  Common
+<i>201</i>&nbsp;        0x02e0, 25,     //  LATN
+<i>202</i>&nbsp;        0x02e5, 0,      //  Common
+<i>203</i>&nbsp;        0x02ea, 5,      //  BOPO
+<i>204</i>&nbsp;        0x02ec, 0,      //  Common
+<i>205</i>&nbsp;        0x0300, 1,      //  Inherited
+<i>206</i>&nbsp;        0x0370, 14,     //  GREK
+<i>207</i>&nbsp;        0x0374, 0,      //  Common
+<i>208</i>&nbsp;        0x0375, 14,     //  GREK
+<i>209</i>&nbsp;        0x037e, 0,      //  Common
+<i>210</i>&nbsp;        0x0384, 14,     //  GREK
+<i>211</i>&nbsp;        0x0385, 0,      //  Common
+<i>212</i>&nbsp;        0x0386, 14,     //  GREK
+<i>213</i>&nbsp;        0x0387, 0,      //  Common
+<i>214</i>&nbsp;        0x0388, 14,     //  GREK
+<i>215</i>&nbsp;        0x03e2, 7,      //  COPT
+<i>216</i>&nbsp;        0x03f0, 14,     //  GREK
+<i>217</i>&nbsp;        0x0400, 8,      //  CYRL
+<i>218</i>&nbsp;        0x0485, 1,      //  Inherited
+<i>219</i>&nbsp;        0x0487, 8,      //  CYRL
+<i>220</i>&nbsp;        0x0531, 3,      //  ARMN
+<i>221</i>&nbsp;        0x0589, 0,      //  Common
+<i>222</i>&nbsp;        0x058a, 3,      //  ARMN
+<i>223</i>&nbsp;        0x0591, 19,     //  HEBR
+<i>224</i>&nbsp;        0x0600, 2,      //  ARAB
+<i>225</i>&nbsp;        0x060c, 0,      //  Common
+<i>226</i>&nbsp;        0x060d, 2,      //  ARAB
+<i>227</i>&nbsp;        0x061b, 0,      //  Common
+<i>228</i>&nbsp;        0x061e, 2,      //  ARAB
+<i>229</i>&nbsp;        0x061f, 0,      //  Common
+<i>230</i>&nbsp;        0x0620, 2,      //  ARAB
+<i>231</i>&nbsp;        0x0640, 0,      //  Common
+<i>232</i>&nbsp;        0x0641, 2,      //  ARAB
+<i>233</i>&nbsp;        0x064b, 1,      //  Inherited
+<i>234</i>&nbsp;        0x0656, 2,      //  ARAB
+<i>235</i>&nbsp;        0x065f, 1,      //  Inherited
+<i>236</i>&nbsp;        0x0660, 0,      //  Common
+<i>237</i>&nbsp;        0x066a, 2,      //  ARAB
+<i>238</i>&nbsp;        0x0670, 1,      //  Inherited
+<i>239</i>&nbsp;        0x0671, 2,      //  ARAB
+<i>240</i>&nbsp;        0x06dd, 0,      //  Common
+<i>241</i>&nbsp;        0x06de, 2,      //  ARAB
+<i>242</i>&nbsp;        0x0700, 34,     //  SYRC
+<i>243</i>&nbsp;        0x0750, 2,      //  ARAB
+<i>244</i>&nbsp;        0x0780, 37,     //  THAA
+<i>245</i>&nbsp;        0x07c0, 87,     //  NKOO
+<i>246</i>&nbsp;        0x0800, 126,    //  SAMR
+<i>247</i>&nbsp;        0x0840, 84,     //  MAND
+<i>248</i>&nbsp;        0x08a0, 2,      //  ARAB
+<i>249</i>&nbsp;        0x0900, 10,     //  DEVA
+<i>250</i>&nbsp;        0x0951, 1,      //  Inherited
+<i>251</i>&nbsp;        0x0953, 10,     //  DEVA
+<i>252</i>&nbsp;        0x0964, 0,      //  Common
+<i>253</i>&nbsp;        0x0966, 10,     //  DEVA
+<i>254</i>&nbsp;        0x0981, 4,      //  BENG
+<i>255</i>&nbsp;        0x0a01, 16,     //  GURU
+<i>256</i>&nbsp;        0x0a81, 15,     //  GUJR
+<i>257</i>&nbsp;        0x0b01, 31,     //  ORYA
+<i>258</i>&nbsp;        0x0b82, 35,     //  TAML
+<i>259</i>&nbsp;        0x0c01, 36,     //  TELU
+<i>260</i>&nbsp;        0x0c82, 22,     //  KNDA
+<i>261</i>&nbsp;        0x0d02, 26,     //  MLYM
+<i>262</i>&nbsp;        0x0d82, 33,     //  SINH
+<i>263</i>&nbsp;        0x0e01, 38,     //  THAI
+<i>264</i>&nbsp;        0x0e3f, 0,      //  Common
+<i>265</i>&nbsp;        0x0e40, 38,     //  THAI
+<i>266</i>&nbsp;        0x0e81, 24,     //  LAOO
+<i>267</i>&nbsp;        0x0f00, 39,     //  TIBT
+<i>268</i>&nbsp;        0x0fd5, 0,      //  Common
+<i>269</i>&nbsp;        0x0fd9, 39,     //  TIBT
+<i>270</i>&nbsp;        0x01000, 28,    //  MYMR
+<i>271</i>&nbsp;        0x010a0, 12,    //  GEOR
+<i>272</i>&nbsp;        0x010fb, 0,     //  Common
+<i>273</i>&nbsp;        0x010fc, 12,    //  GEOR
+<i>274</i>&nbsp;        0x01100, 18,    //  HANG
+<i>275</i>&nbsp;        0x01200, 11,    //  ETHI
+<i>276</i>&nbsp;        0x013a0, 6,     //  CHER
+<i>277</i>&nbsp;        0x01400, 40,    //  CANS
+<i>278</i>&nbsp;        0x01680, 29,    //  OGAM
+<i>279</i>&nbsp;        0x016a0, 32,    //  RUNR
+<i>280</i>&nbsp;        0x016eb, 0,     //  Common
+<i>281</i>&nbsp;        0x016ee, 32,    //  RUNR
+<i>282</i>&nbsp;        0x01700, 42,    //  TGLG
+<i>283</i>&nbsp;        0x01720, 43,    //  HANO
+<i>284</i>&nbsp;        0x01735, 0,     //  Common
+<i>285</i>&nbsp;        0x01740, 44,    //  BUHD
+<i>286</i>&nbsp;        0x01760, 45,    //  TAGB
+<i>287</i>&nbsp;        0x01780, 23,    //  KHMR
+<i>288</i>&nbsp;        0x01800, 27,    //  MONG
+<i>289</i>&nbsp;        0x01802, 0,     //  Common
+<i>290</i>&nbsp;        0x01804, 27,    //  MONG
+<i>291</i>&nbsp;        0x01805, 0,     //  Common
+<i>292</i>&nbsp;        0x01806, 27,    //  MONG
+<i>293</i>&nbsp;        0x018b0, 40,    //  CANS
+<i>294</i>&nbsp;        0x01900, 48,    //  LIMB
+<i>295</i>&nbsp;        0x01950, 52,    //  TALE
+<i>296</i>&nbsp;        0x01980, 59,    //  TALU
+<i>297</i>&nbsp;        0x019e0, 23,    //  KHMR
+<i>298</i>&nbsp;        0x01a00, 55,    //  BUGI
+<i>299</i>&nbsp;        0x01a20, 103,   //  LANA
+<i>300</i>&nbsp;        0x01b00, 62,    //  BALI
+<i>301</i>&nbsp;        0x01b80, 113,   //  SUND
+<i>302</i>&nbsp;        0x01bc0, 63,    //  BATK
+<i>303</i>&nbsp;        0x01c00, 82,    //  LEPC
+<i>304</i>&nbsp;        0x01c50, 109,   //  OLCK
+<i>305</i>&nbsp;        0x01cc0, 113,   //  SUND
+<i>306</i>&nbsp;        0x01cd0, 1,     //  Inherited
+<i>307</i>&nbsp;        0x01cd3, 0,     //  Common
+<i>308</i>&nbsp;        0x01cd4, 1,     //  Inherited
+<i>309</i>&nbsp;        0x01ce1, 0,     //  Common
+<i>310</i>&nbsp;        0x01ce2, 1,     //  Inherited
+<i>311</i>&nbsp;        0x01ce9, 0,     //  Common
+<i>312</i>&nbsp;        0x01ced, 1,     //  Inherited
+<i>313</i>&nbsp;        0x01cee, 0,     //  Common
+<i>314</i>&nbsp;        0x01cf4, 1,     //  Inherited
+<i>315</i>&nbsp;        0x01cf5, 0,     //  Common
+<i>316</i>&nbsp;        0x01d00, 25,    //  LATN
+<i>317</i>&nbsp;        0x01d26, 14,    //  GREK
+<i>318</i>&nbsp;        0x01d2b, 8,     //  CYRL
+<i>319</i>&nbsp;        0x01d2c, 25,    //  LATN
+<i>320</i>&nbsp;        0x01d5d, 14,    //  GREK
+<i>321</i>&nbsp;        0x01d62, 25,    //  LATN
+<i>322</i>&nbsp;        0x01d66, 14,    //  GREK
+<i>323</i>&nbsp;        0x01d6b, 25,    //  LATN
+<i>324</i>&nbsp;        0x01d78, 8,     //  CYRL
+<i>325</i>&nbsp;        0x01d79, 25,    //  LATN
+<i>326</i>&nbsp;        0x01dbf, 14,    //  GREK
+<i>327</i>&nbsp;        0x01dc0, 1,     //  Inherited
+<i>328</i>&nbsp;        0x01e00, 25,    //  LATN
+<i>329</i>&nbsp;        0x01f00, 14,    //  GREK
+<i>330</i>&nbsp;        0x02000, 0,     //  Common
+<i>331</i>&nbsp;        0x0200c, 1,     //  Inherited
+<i>332</i>&nbsp;        0x0200e, 0,     //  Common
+<i>333</i>&nbsp;        0x02071, 25,    //  LATN
+<i>334</i>&nbsp;        0x02074, 0,     //  Common
+<i>335</i>&nbsp;        0x0207f, 25,    //  LATN
+<i>336</i>&nbsp;        0x02080, 0,     //  Common
+<i>337</i>&nbsp;        0x02090, 25,    //  LATN
+<i>338</i>&nbsp;        0x020a0, 0,     //  Common
+<i>339</i>&nbsp;        0x020d0, 1,     //  Inherited
+<i>340</i>&nbsp;        0x02100, 0,     //  Common
+<i>341</i>&nbsp;        0x02126, 14,    //  GREK
+<i>342</i>&nbsp;        0x02127, 0,     //  Common
+<i>343</i>&nbsp;        0x0212a, 25,    //  LATN
+<i>344</i>&nbsp;        0x0212c, 0,     //  Common
+<i>345</i>&nbsp;        0x02132, 25,    //  LATN
+<i>346</i>&nbsp;        0x02133, 0,     //  Common
+<i>347</i>&nbsp;        0x0214e, 25,    //  LATN
+<i>348</i>&nbsp;        0x0214f, 0,     //  Common
+<i>349</i>&nbsp;        0x02160, 25,    //  LATN
+<i>350</i>&nbsp;        0x02189, 0,     //  Common
+<i>351</i>&nbsp;        0x02800, 46,    //  BRAI
+<i>352</i>&nbsp;        0x02900, 0,     //  Common
+<i>353</i>&nbsp;        0x02c00, 56,    //  GLAG
+<i>354</i>&nbsp;        0x02c60, 25,    //  LATN
+<i>355</i>&nbsp;        0x02c80, 7,     //  COPT
+<i>356</i>&nbsp;        0x02d00, 12,    //  GEOR
+<i>357</i>&nbsp;        0x02d30, 60,    //  TFNG
+<i>358</i>&nbsp;        0x02d80, 11,    //  ETHI
+<i>359</i>&nbsp;        0x02de0, 8,     //  CYRL
+<i>360</i>&nbsp;        0x02e00, 0,     //  Common
+<i>361</i>&nbsp;        0x02e80, 17,    //  HANI
+<i>362</i>&nbsp;        0x02ff0, 0,     //  Common
+<i>363</i>&nbsp;        0x03005, 17,    //  HANI
+<i>364</i>&nbsp;        0x03006, 0,     //  Common
+<i>365</i>&nbsp;        0x03007, 17,    //  HANI
+<i>366</i>&nbsp;        0x03008, 0,     //  Common
+<i>367</i>&nbsp;        0x03021, 17,    //  HANI
+<i>368</i>&nbsp;        0x0302a, 1,     //  Inherited
+<i>369</i>&nbsp;        0x0302e, 18,    //  HANG
+<i>370</i>&nbsp;        0x03030, 0,     //  Common
+<i>371</i>&nbsp;        0x03038, 17,    //  HANI
+<i>372</i>&nbsp;        0x0303c, 0,     //  Common
+<i>373</i>&nbsp;        0x03041, 20,    //  HIRA
+<i>374</i>&nbsp;        0x03099, 1,     //  Inherited
+<i>375</i>&nbsp;        0x0309b, 0,     //  Common
+<i>376</i>&nbsp;        0x0309d, 20,    //  HIRA
+<i>377</i>&nbsp;        0x030a0, 0,     //  Common
+<i>378</i>&nbsp;        0x030a1, 22,    //  KANA
+<i>379</i>&nbsp;        0x030fb, 0,     //  Common
+<i>380</i>&nbsp;        0x030fd, 22,    //  KANA
+<i>381</i>&nbsp;        0x03105, 5,     //  BOPO
+<i>382</i>&nbsp;        0x03131, 18,    //  HANG
+<i>383</i>&nbsp;        0x03190, 0,     //  Common
+<i>384</i>&nbsp;        0x031a0, 5,     //  BOPO
+<i>385</i>&nbsp;        0x031c0, 0,     //  Common
+<i>386</i>&nbsp;        0x031f0, 22,    //  KANA
+<i>387</i>&nbsp;        0x03200, 18,    //  HANG
+<i>388</i>&nbsp;        0x03220, 0,     //  Common
+<i>389</i>&nbsp;        0x03260, 18,    //  HANG
+<i>390</i>&nbsp;        0x0327f, 0,     //  Common
+<i>391</i>&nbsp;        0x032d0, 22,    //  KANA
+<i>392</i>&nbsp;        0x03358, 0,     //  Common
+<i>393</i>&nbsp;        0x03400, 17,    //  HANI
+<i>394</i>&nbsp;        0x04dc0, 0,     //  Common
+<i>395</i>&nbsp;        0x04e00, 17,    //  HANI
+<i>396</i>&nbsp;        0x0a000, 41,    //  YIII
+<i>397</i>&nbsp;        0x0a4d0, 131,   //  LISU
+<i>398</i>&nbsp;        0x0a500, 99,    //  VAII
+<i>399</i>&nbsp;        0x0a640, 8,     //  CYRL
+<i>400</i>&nbsp;        0x0a6a0, 130,   //  BAMU
+<i>401</i>&nbsp;        0x0a700, 0,     //  Common
+<i>402</i>&nbsp;        0x0a722, 25,    //  LATN
+<i>403</i>&nbsp;        0x0a788, 0,     //  Common
+<i>404</i>&nbsp;        0x0a78b, 25,    //  LATN
+<i>405</i>&nbsp;        0x0a800, 58,    //  SYLO
+<i>406</i>&nbsp;        0x0a830, 0,     //  Common
+<i>407</i>&nbsp;        0x0a840, 90,    //  PHAG
+<i>408</i>&nbsp;        0x0a880, 111,   //  SAUR
+<i>409</i>&nbsp;        0x0a8e0, 10,    //  DEVA
+<i>410</i>&nbsp;        0x0a900, 79,    //  KALI
+<i>411</i>&nbsp;        0x0a930, 110,   //  RJNG
+<i>412</i>&nbsp;        0x0a960, 18,    //  HANG
+<i>413</i>&nbsp;        0x0a980, 78,    //  JAVA
+<i>414</i>&nbsp;        0x0aa00, 66,    //  CHAM
+<i>415</i>&nbsp;        0x0aa60, 28,    //  MYMR
+<i>416</i>&nbsp;        0x0aa80, 127,   //  TAVT
+<i>417</i>&nbsp;        0x0aae0, 103,   //  MTEI
+<i>418</i>&nbsp;        0x0ab01, 11,    //  ETHI
+<i>419</i>&nbsp;        0x0abc0, 103,   //  MTEI
+<i>420</i>&nbsp;        0x0ac00, 18,    //  HANG
+<i>421</i>&nbsp;        0x0d7fc, 103,   //  Unknown
+<i>422</i>&nbsp;        0x0f900, 17,    //  HANI
+<i>423</i>&nbsp;        0x0fb00, 25,    //  LATN
+<i>424</i>&nbsp;        0x0fb13, 3,     //  ARMN
+<i>425</i>&nbsp;        0x0fb1d, 19,    //  HEBR
+<i>426</i>&nbsp;        0x0fb50, 2,     //  ARAB
+<i>427</i>&nbsp;        0x0fd3e, 0,     //  Common
+<i>428</i>&nbsp;        0x0fd50, 2,     //  ARAB
+<i>429</i>&nbsp;        0x0fdfd, 0,     //  Common
+<i>430</i>&nbsp;        0x0fe00, 1,     //  Inherited
+<i>431</i>&nbsp;        0x0fe10, 0,     //  Common
+<i>432</i>&nbsp;        0x0fe20, 1,     //  Inherited
+<i>433</i>&nbsp;        0x0fe30, 0,     //  Common
+<i>434</i>&nbsp;        0x0fe70, 2,     //  ARAB
+<i>435</i>&nbsp;        0x0feff, 0,     //  Common
+<i>436</i>&nbsp;        0x0ff21, 25,    //  LATN
+<i>437</i>&nbsp;        0x0ff3b, 0,     //  Common
+<i>438</i>&nbsp;        0x0ff41, 25,    //  LATN
+<i>439</i>&nbsp;        0x0ff5b, 0,     //  Common
+<i>440</i>&nbsp;        0x0ff66, 22,    //  KANA
+<i>441</i>&nbsp;        0x0ff70, 0,     //  Common
+<i>442</i>&nbsp;        0x0ff71, 22,    //  KANA
+<i>443</i>&nbsp;        0x0ff9e, 0,     //  Common
+<i>444</i>&nbsp;        0x0ffa0, 18,    //  HANG
+<i>445</i>&nbsp;        0x0ffe0, 0,     //  Common
+<i>446</i>&nbsp;        0x010000, 49,   //  LINB
+<i>447</i>&nbsp;        0x010100, 0,    //  Common
+<i>448</i>&nbsp;        0x010140, 14,   //  GREK
+<i>449</i>&nbsp;        0x010190, 0,    //  Common
+<i>450</i>&nbsp;        0x0101fd, 1,    //  Inherited
+<i>451</i>&nbsp;        0x010280, 107,  //  LYCI
+<i>452</i>&nbsp;        0x0102a0, 104,  //  CARI
+<i>453</i>&nbsp;        0x010300, 30,   //  ITAL
+<i>454</i>&nbsp;        0x010330, 13,   //  GOTH
+<i>455</i>&nbsp;        0x010380, 53,   //  UGAR
+<i>456</i>&nbsp;        0x0103a0, 61,   //  XPEO
+<i>457</i>&nbsp;        0x010400, 9,    //  DSRT
+<i>458</i>&nbsp;        0x010450, 51,   //  SHAW
+<i>459</i>&nbsp;        0x010480, 50,   //  OSMA
+<i>460</i>&nbsp;        0x010800, 47,   //  CPRT
+<i>461</i>&nbsp;        0x010840, 116,  //  ARMI
+<i>462</i>&nbsp;        0x010900, 91,   //  PHNX
+<i>463</i>&nbsp;        0x010920, 76,   //  LYDI
+<i>464</i>&nbsp;        0x010980, 86,   //  MERO
+<i>465</i>&nbsp;        0x0109a0, 141,  //  MERC
+<i>466</i>&nbsp;        0x010a00, 57,   //  KHAR
+<i>467</i>&nbsp;        0x010a60, 133,  //  SARB
+<i>468</i>&nbsp;        0x010b00, 117,  //  AVST
+<i>469</i>&nbsp;        0x010b40, 125,  //  PRTI
+<i>470</i>&nbsp;        0x010b60, 122,  //  PHLI
+<i>471</i>&nbsp;        0x010c00, 103,  //  ORKH
+<i>472</i>&nbsp;        0x010e60, 2,    //  ARAB
+<i>473</i>&nbsp;        0x011000, 65,   //  BRAH
+<i>474</i>&nbsp;        0x011080, 120,  //  KTHI
+<i>475</i>&nbsp;        0x0110d0, 152,  //  SORA
+<i>476</i>&nbsp;        0x011100, 118,  //  CAKM
+<i>477</i>&nbsp;        0x011180, 151,  //  SHRD
+<i>478</i>&nbsp;        0x011680, 153,  //  TAKR
+<i>479</i>&nbsp;        0x012000, 101,  //  XSUX
+<i>480</i>&nbsp;        0x013000, 71,   //  EGYP
+<i>481</i>&nbsp;        0x016800, 130,  //  BAMU
+<i>482</i>&nbsp;        0x016f00, 103,  //  PLRD
+<i>483</i>&nbsp;        0x01b000, 22,   //  KANA
+<i>484</i>&nbsp;        0x01b001, 20,   //  HIRA
+<i>485</i>&nbsp;        0x01d000, 0,    //  Common
+<i>486</i>&nbsp;        0x01d167, 1,    //  Inherited
+<i>487</i>&nbsp;        0x01d16a, 0,    //  Common
+<i>488</i>&nbsp;        0x01d17b, 1,    //  Inherited
+<i>489</i>&nbsp;        0x01d183, 0,    //  Common
+<i>490</i>&nbsp;        0x01d185, 1,    //  Inherited
+<i>491</i>&nbsp;        0x01d18c, 0,    //  Common
+<i>492</i>&nbsp;        0x01d1aa, 1,    //  Inherited
+<i>493</i>&nbsp;        0x01d1ae, 0,    //  Common
+<i>494</i>&nbsp;        0x01d200, 14,   //  GREK
+<i>495</i>&nbsp;        0x01d300, 0,    //  Common
+<i>496</i>&nbsp;        0x01ee00, 2,    //  ARAB
+<i>497</i>&nbsp;        0x01f000, 0,    //  Common
+<i>498</i>&nbsp;        0x01f200, 20,   //  HIRA
+<i>499</i>&nbsp;        0x01f201, 0,    //  Common
+<i>500</i>&nbsp;        0x020000, 17,   //  HANI
+<i>501</i>&nbsp;        0x0e0001, 0,    //  Common
+<i>502</i>&nbsp;        0x0e0100, 1,    //  Inherited
+<i>503</i>&nbsp;        0x0e01f0, 103,  //  Unknown
+<i>504</i>&nbsp;    };
+<i>505</i>&nbsp;
+<i>506</i>&nbsp;    private static final int dataPower = 1 &lt;&lt; 9;
+<b class="fc"><i>507</i>&nbsp;    private static final int dataExtra = data.length - dataPower;</b>
+<i>508</i>&nbsp;    private static final int CHAR_START = 0;
+<b class="fc"><i>509</i>&nbsp;    private static final int CHAR_LIMIT = data[data.length - 2];</b>
+<i>510</i>&nbsp;
+<i>511</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2017-12-04 21:49</div>
+</div>
+</body>
+</html>

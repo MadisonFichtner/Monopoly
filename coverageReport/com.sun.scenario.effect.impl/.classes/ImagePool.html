@@ -1,0 +1,383 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: ImagePool</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.scenario.effect.impl</a> ]
+</div>
+
+<h1>Coverage Summary for Class: ImagePool (com.sun.scenario.effect.impl)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">ImagePool</td>
+<td class="coverageStat">
+  <span class="percent">
+    55.6%
+  </span>
+  <span class="absValue">
+    (5/ 9)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    61.9%
+  </span>
+  <span class="absValue">
+    (78/ 126)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">ImagePool$1</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 3)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    45.5%
+  </span>
+  <span class="absValue">
+    (5/ 11)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    60.5%
+  </span>
+  <span class="absValue">
+    (78/ 129)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright (c) 2008, 2014, Oracle and/or its affiliates. All rights reserved.
+<i>3</i>&nbsp; * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+<i>4</i>&nbsp; *
+<i>5</i>&nbsp; *
+<i>6</i>&nbsp; *
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; *
+<i>11</i>&nbsp; *
+<i>12</i>&nbsp; *
+<i>13</i>&nbsp; *
+<i>14</i>&nbsp; *
+<i>15</i>&nbsp; *
+<i>16</i>&nbsp; *
+<i>17</i>&nbsp; *
+<i>18</i>&nbsp; *
+<i>19</i>&nbsp; *
+<i>20</i>&nbsp; *
+<i>21</i>&nbsp; *
+<i>22</i>&nbsp; *
+<i>23</i>&nbsp; *
+<i>24</i>&nbsp; */
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;package com.sun.scenario.effect.impl;
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;import java.lang.ref.SoftReference;
+<i>29</i>&nbsp;import java.security.AccessController;
+<i>30</i>&nbsp;import java.security.PrivilegedAction;
+<i>31</i>&nbsp;import java.util.ArrayList;
+<i>32</i>&nbsp;import java.util.Iterator;
+<i>33</i>&nbsp;import java.util.List;
+<i>34</i>&nbsp;import com.sun.scenario.effect.Filterable;
+<i>35</i>&nbsp;
+<i>36</i>&nbsp;/**
+<i>37</i>&nbsp; * A simple object pool used to recycle temporary images used by the
+<i>38</i>&nbsp; * various {@code EffectPeer} implementations.  Image allocation can be
+<i>39</i>&nbsp; * a fairly expensive operation (in terms of footprint and performance),
+<i>40</i>&nbsp; * especially for the GPU backends, so image reuse is critical.
+<i>41</i>&nbsp; */
+<i>42</i>&nbsp;public class ImagePool {
+<i>43</i>&nbsp;
+<i>44</i>&nbsp;    public static long numEffects;
+<i>45</i>&nbsp;    static long numCreated;
+<i>46</i>&nbsp;    static long pixelsCreated;
+<i>47</i>&nbsp;    static long numAccessed;
+<i>48</i>&nbsp;    static long pixelsAccessed;
+<i>49</i>&nbsp;
+<i>50</i>&nbsp;    static {
+<b class="fc"><i>51</i>&nbsp;        AccessController.doPrivileged((PrivilegedAction) () -&gt; {</b>
+<b class="fc"><i>52</i>&nbsp;            if (System.getProperty(&quot;decora.showstats&quot;) != null) {</b>
+<b class="nc"><i>53</i>&nbsp;                Runtime.getRuntime().addShutdownHook(new Thread() {</b>
+<i>54</i>&nbsp;                    @Override public void run() {
+<b class="nc"><i>55</i>&nbsp;                        printStats();</b>
+<b class="nc"><i>56</i>&nbsp;                    }</b>
+<i>57</i>&nbsp;                });
+<i>58</i>&nbsp;            }
+<b class="fc"><i>59</i>&nbsp;            return null;</b>
+<i>60</i>&nbsp;        });
+<b class="fc"><i>61</i>&nbsp;    }</b>
+<i>62</i>&nbsp;
+<i>63</i>&nbsp;    static void printStats() {
+<b class="nc"><i>64</i>&nbsp;        System.out.println(&quot;effects executed:  &quot; + numEffects);</b>
+<b class="nc"><i>65</i>&nbsp;        System.out.println(&quot;images created:    &quot; + numCreated);</b>
+<b class="nc"><i>66</i>&nbsp;        System.out.println(&quot;pixels created:    &quot; + pixelsCreated);</b>
+<b class="nc"><i>67</i>&nbsp;        System.out.println(&quot;images accessed:   &quot; + numAccessed);</b>
+<b class="nc"><i>68</i>&nbsp;        System.out.println(&quot;pixels accessed:   &quot; + pixelsAccessed);</b>
+<b class="nc"><i>69</i>&nbsp;        if (numEffects != 0) {</b>
+<b class="nc"><i>70</i>&nbsp;            double avgImgs = ((double) numAccessed) / numEffects;</b>
+<b class="nc"><i>71</i>&nbsp;            double avgPxls = ((double) pixelsAccessed) / numEffects;</b>
+<b class="nc"><i>72</i>&nbsp;            System.out.println(&quot;images per effect: &quot; + avgImgs);</b>
+<b class="nc"><i>73</i>&nbsp;            System.out.println(&quot;pixels per effect: &quot; + avgPxls);</b>
+<i>74</i>&nbsp;        }
+<b class="nc"><i>75</i>&nbsp;    }</b>
+<i>76</i>&nbsp;
+<i>77</i>&nbsp;    static final int QUANT = 32;
+<i>78</i>&nbsp;
+<b class="fc"><i>79</i>&nbsp;    private final List&lt;SoftReference&lt;PoolFilterable&gt;&gt; unlocked =</b>
+<i>80</i>&nbsp;        new ArrayList&lt;SoftReference&lt;PoolFilterable&gt;&gt;();
+<b class="fc"><i>81</i>&nbsp;    private final List&lt;SoftReference&lt;PoolFilterable&gt;&gt; locked =</b>
+<i>82</i>&nbsp;        new ArrayList&lt;SoftReference&lt;PoolFilterable&gt;&gt;();
+<i>83</i>&nbsp;
+<i>84</i>&nbsp;    // On Canmore with the PowerVR SGX chip, there is a driver issue
+<i>85</i>&nbsp;    // that causes incorrect rendering if one tries to reuse an FBO
+<i>86</i>&nbsp;    // more than once in a particular frame (due to their tile-based
+<i>87</i>&nbsp;    // deferred rendering engine).  The ugly workaround here is to
+<i>88</i>&nbsp;    // avoid using the same Filterable (FBO) more than once between
+<i>89</i>&nbsp;    // swapBuffers() operations.  When the workaround is enabled,
+<i>90</i>&nbsp;    // the checkIn() method will move the Filterable into &quot;purgatory&quot;
+<i>91</i>&nbsp;    // instead of returning it to the pool of available images.  Just
+<i>92</i>&nbsp;    // after the swapBuffers() operation, the Prism toolkit will call
+<i>93</i>&nbsp;    // the releasePurgatory() method to allow images to return to the
+<i>94</i>&nbsp;    // pool for the next rendering cycle.  This of course greatly
+<i>95</i>&nbsp;    // increases the amount of VRAM used by an app, and may cause
+<i>96</i>&nbsp;    // slowdowns for certain frames due to increased allocation
+<i>97</i>&nbsp;    // (where there would normally be reuse).
+<b class="fc"><i>98</i>&nbsp;    private final boolean usePurgatory = Boolean.getBoolean(&quot;decora.purgatory&quot;);</b>
+<b class="fc"><i>99</i>&nbsp;    private final List&lt;Filterable&gt; hardPurgatory = new ArrayList&lt;Filterable&gt;();</b>
+<b class="fc"><i>100</i>&nbsp;    private final List&lt;SoftReference&lt;PoolFilterable&gt;&gt; softPurgatory =</b>
+<i>101</i>&nbsp;        new ArrayList&lt;SoftReference&lt;PoolFilterable&gt;&gt;();
+<i>102</i>&nbsp;
+<i>103</i>&nbsp;    /**
+<i>104</i>&nbsp;     * Package-private constructor.
+<i>105</i>&nbsp;     */
+<b class="fc"><i>106</i>&nbsp;    ImagePool() {</b>
+<b class="fc"><i>107</i>&nbsp;    }</b>
+<i>108</i>&nbsp;
+<i>109</i>&nbsp;    public synchronized PoolFilterable checkOut(Renderer renderer, int w, int h) {
+<b class="fc"><i>110</i>&nbsp;        if (w &lt;= 0 || h &lt;= 0) {</b>
+<i>111</i>&nbsp;            // if image is empty in any way, return a small non-empty image.
+<b class="nc"><i>112</i>&nbsp;            w = h = 1;</b>
+<i>113</i>&nbsp;        }
+<i>114</i>&nbsp;        // Allocate images rounded up to the nearest quantum size threshold.
+<b class="fc"><i>115</i>&nbsp;        w = ((w + QUANT - 1) / QUANT) * QUANT;</b>
+<b class="fc"><i>116</i>&nbsp;        h = ((h + QUANT - 1) / QUANT) * QUANT;</b>
+<i>117</i>&nbsp;
+<i>118</i>&nbsp;        // Adjust allocation sizes for platform requirements (pow2 etc.)
+<b class="fc"><i>119</i>&nbsp;        w = renderer.getCompatibleWidth(w);</b>
+<b class="fc"><i>120</i>&nbsp;        h = renderer.getCompatibleHeight(h);</b>
+<i>121</i>&nbsp;
+<b class="fc"><i>122</i>&nbsp;        numAccessed++;</b>
+<b class="fc"><i>123</i>&nbsp;        pixelsAccessed += ((long) w) * h;</b>
+<i>124</i>&nbsp;        // first look for an already cached image of sufficient size,
+<i>125</i>&nbsp;        // choosing the one that is closest in size to the requested dimensions
+<b class="fc"><i>126</i>&nbsp;        SoftReference&lt;PoolFilterable&gt; chosenEntry = null;</b>
+<b class="fc"><i>127</i>&nbsp;        PoolFilterable chosenImage = null;</b>
+<b class="fc"><i>128</i>&nbsp;        int mindiff = Integer.MAX_VALUE;</b>
+<b class="fc"><i>129</i>&nbsp;        Iterator&lt;SoftReference&lt;PoolFilterable&gt;&gt; entries = unlocked.iterator();</b>
+<b class="fc"><i>130</i>&nbsp;        while (entries.hasNext()) {</b>
+<b class="fc"><i>131</i>&nbsp;            SoftReference&lt;PoolFilterable&gt; entry = entries.next();</b>
+<b class="fc"><i>132</i>&nbsp;            PoolFilterable eimg = entry.get();</b>
+<b class="fc"><i>133</i>&nbsp;            if (eimg == null) {</b>
+<b class="nc"><i>134</i>&nbsp;                entries.remove();</b>
+<b class="nc"><i>135</i>&nbsp;                continue;</b>
+<i>136</i>&nbsp;            }
+<b class="fc"><i>137</i>&nbsp;            int ew = eimg.getMaxContentWidth();</b>
+<b class="fc"><i>138</i>&nbsp;            int eh = eimg.getMaxContentHeight();</b>
+<b class="fc"><i>139</i>&nbsp;            if (ew &gt;= w &amp;&amp; eh &gt;= h &amp;&amp; ew * eh / 2 &lt;= w * h) {</b>
+<b class="fc"><i>140</i>&nbsp;                int diff = (ew-w) * (eh-h);</b>
+<b class="fc"><i>141</i>&nbsp;                if (chosenEntry == null || diff &lt; mindiff) {</b>
+<b class="fc"><i>142</i>&nbsp;                    eimg.lock();</b>
+<b class="fc"><i>143</i>&nbsp;                    if (eimg.isLost()) {</b>
+<b class="nc"><i>144</i>&nbsp;                        entries.remove();</b>
+<b class="nc"><i>145</i>&nbsp;                        continue;</b>
+<i>146</i>&nbsp;                    }
+<b class="fc"><i>147</i>&nbsp;                    if (chosenImage != null) {</b>
+<b class="fc"><i>148</i>&nbsp;                        chosenImage.unlock();</b>
+<i>149</i>&nbsp;                    }
+<b class="fc"><i>150</i>&nbsp;                    chosenEntry = entry;</b>
+<i>151</i>&nbsp;                    // The following calls to setContentWidth / setContentHeight
+<i>152</i>&nbsp;                    // should be uncommented only after the rest of the imagepool
+<i>153</i>&nbsp;                    // is fixed to handle a change in content size, and when both the
+<i>154</i>&nbsp;                    // SW pipeline and J2D pipeline are able to handle the change.
+<i>155</i>&nbsp;//                    eimg.setContentWidth(w);
+<i>156</i>&nbsp;//                    eimg.setContentHeight(h);
+<b class="fc"><i>157</i>&nbsp;                    chosenImage = eimg;</b>
+<b class="fc"><i>158</i>&nbsp;                    mindiff = diff;</b>
+<i>159</i>&nbsp;                }
+<i>160</i>&nbsp;            }
+<b class="fc"><i>161</i>&nbsp;        }</b>
+<i>162</i>&nbsp;
+<b class="fc"><i>163</i>&nbsp;        if (chosenEntry != null) {</b>
+<b class="fc"><i>164</i>&nbsp;            unlocked.remove(chosenEntry);</b>
+<b class="fc"><i>165</i>&nbsp;            locked.add(chosenEntry);</b>
+<b class="fc"><i>166</i>&nbsp;            renderer.clearImage(chosenImage);</b>
+<b class="fc"><i>167</i>&nbsp;            return chosenImage;</b>
+<i>168</i>&nbsp;        }
+<i>169</i>&nbsp;
+<i>170</i>&nbsp;        // get rid of expired entries from locked list
+<b class="fc"><i>171</i>&nbsp;        entries = locked.iterator();</b>
+<b class="fc"><i>172</i>&nbsp;        while (entries.hasNext()) {</b>
+<b class="fc"><i>173</i>&nbsp;            SoftReference&lt;PoolFilterable&gt; entry = entries.next();</b>
+<b class="fc"><i>174</i>&nbsp;            Filterable eimg = entry.get();</b>
+<b class="fc"><i>175</i>&nbsp;            if (eimg == null) {</b>
+<b class="nc"><i>176</i>&nbsp;                entries.remove();</b>
+<i>177</i>&nbsp;            }
+<b class="fc"><i>178</i>&nbsp;        }</b>
+<i>179</i>&nbsp;
+<i>180</i>&nbsp;        // if all else fails, just create a new one...
+<b class="fc"><i>181</i>&nbsp;        PoolFilterable img = null;</b>
+<i>182</i>&nbsp;        try {
+<b class="fc"><i>183</i>&nbsp;            img = renderer.createCompatibleImage(w, h);</b>
+<b class="fc"><i>184</i>&nbsp;        } catch (OutOfMemoryError e) {}</b>
+<i>185</i>&nbsp;
+<b class="fc"><i>186</i>&nbsp;        if (img == null) {</b>
+<i>187</i>&nbsp;            // we may be out of vram or heap
+<b class="nc"><i>188</i>&nbsp;            pruneCache();</b>
+<i>189</i>&nbsp;            try {
+<b class="nc"><i>190</i>&nbsp;                img = renderer.createCompatibleImage(w, h);</b>
+<b class="nc"><i>191</i>&nbsp;            } catch (OutOfMemoryError e) {}</b>
+<i>192</i>&nbsp;        }
+<b class="fc"><i>193</i>&nbsp;        if (img != null) {</b>
+<b class="fc"><i>194</i>&nbsp;            img.setImagePool(this);</b>
+<b class="fc"><i>195</i>&nbsp;            locked.add(new SoftReference&lt;PoolFilterable&gt;(img));</b>
+<b class="fc"><i>196</i>&nbsp;            numCreated++;</b>
+<b class="fc"><i>197</i>&nbsp;            pixelsCreated += ((long) w) * h;</b>
+<i>198</i>&nbsp;        }
+<b class="fc"><i>199</i>&nbsp;        return img;</b>
+<i>200</i>&nbsp;    }
+<i>201</i>&nbsp;
+<i>202</i>&nbsp;    public synchronized void checkIn(PoolFilterable img) {
+<b class="fc"><i>203</i>&nbsp;        SoftReference&lt;PoolFilterable&gt; chosenEntry = null;</b>
+<b class="fc"><i>204</i>&nbsp;        Filterable chosenImage = null;</b>
+<b class="fc"><i>205</i>&nbsp;        Iterator&lt;SoftReference&lt;PoolFilterable&gt;&gt; entries = locked.iterator();</b>
+<b class="fc"><i>206</i>&nbsp;        while (entries.hasNext()) {</b>
+<b class="fc"><i>207</i>&nbsp;            SoftReference&lt;PoolFilterable&gt; entry = entries.next();</b>
+<b class="fc"><i>208</i>&nbsp;            Filterable eimg = entry.get();</b>
+<b class="fc"><i>209</i>&nbsp;            if (eimg == null) {</b>
+<b class="nc"><i>210</i>&nbsp;                entries.remove();</b>
+<b class="fc"><i>211</i>&nbsp;            } else if (eimg == img) {</b>
+<b class="fc"><i>212</i>&nbsp;                chosenEntry = entry;</b>
+<b class="fc"><i>213</i>&nbsp;                chosenImage = eimg;</b>
+<b class="fc"><i>214</i>&nbsp;                img.unlock();</b>
+<b class="fc"><i>215</i>&nbsp;                break;</b>
+<i>216</i>&nbsp;            }
+<b class="fc"><i>217</i>&nbsp;        }</b>
+<i>218</i>&nbsp;
+<b class="fc"><i>219</i>&nbsp;        if (chosenEntry != null) {</b>
+<b class="fc"><i>220</i>&nbsp;            locked.remove(chosenEntry);</b>
+<b class="fc"><i>221</i>&nbsp;            if (usePurgatory) {</b>
+<i>222</i>&nbsp;                // hold the entry in purgatory instead of releasing it back
+<i>223</i>&nbsp;                // to the unlocked pool immediately; it will be released
+<i>224</i>&nbsp;                // after the next call to releasePurgatory()...
+<i>225</i>&nbsp;//                System.err.println(&quot;==&gt; Adding image to purgatory: &quot; +
+<i>226</i>&nbsp;//                    chosenImage.getPhysicalWidth() + &quot;x&quot; +
+<i>227</i>&nbsp;//                    chosenImage.getPhysicalHeight());
+<b class="nc"><i>228</i>&nbsp;                hardPurgatory.add(chosenImage);</b>
+<b class="nc"><i>229</i>&nbsp;                softPurgatory.add(chosenEntry);</b>
+<i>230</i>&nbsp;            } else {
+<b class="fc"><i>231</i>&nbsp;                unlocked.add(chosenEntry);</b>
+<i>232</i>&nbsp;            }
+<i>233</i>&nbsp;        }
+<b class="fc"><i>234</i>&nbsp;    }</b>
+<i>235</i>&nbsp;
+<i>236</i>&nbsp;    public synchronized void releasePurgatory() {
+<b class="nc"><i>237</i>&nbsp;        if (usePurgatory &amp;&amp; !softPurgatory.isEmpty()) {</b>
+<i>238</i>&nbsp;//            System.err.println(&quot;==&gt; Releasing &quot; + softPurgatory.size() + &quot; entries from purgatory!&quot;);
+<i>239</i>&nbsp;            // release images kept in purgatory back into the unlocked pool
+<b class="nc"><i>240</i>&nbsp;            unlocked.addAll(softPurgatory);</b>
+<b class="nc"><i>241</i>&nbsp;            softPurgatory.clear();</b>
+<b class="nc"><i>242</i>&nbsp;            hardPurgatory.clear();</b>
+<i>243</i>&nbsp;        }
+<b class="nc"><i>244</i>&nbsp;    }</b>
+<i>245</i>&nbsp;
+<i>246</i>&nbsp;    private void pruneCache() {
+<i>247</i>&nbsp;        // flush all unlocked images
+<b class="nc"><i>248</i>&nbsp;        for (SoftReference&lt;PoolFilterable&gt; r : unlocked) {</b>
+<b class="nc"><i>249</i>&nbsp;            Filterable image = r.get();</b>
+<b class="nc"><i>250</i>&nbsp;            if (image != null) {</b>
+<b class="nc"><i>251</i>&nbsp;                image.flush();</b>
+<i>252</i>&nbsp;            }
+<b class="nc"><i>253</i>&nbsp;        }</b>
+<b class="nc"><i>254</i>&nbsp;        unlocked.clear();</b>
+<i>255</i>&nbsp;        // this is to help to free up space held by those images that we no
+<i>256</i>&nbsp;        // longer have references to
+<b class="nc"><i>257</i>&nbsp;        System.gc();</b>
+<b class="nc"><i>258</i>&nbsp;        System.runFinalization();</b>
+<b class="nc"><i>259</i>&nbsp;        System.gc();</b>
+<b class="nc"><i>260</i>&nbsp;        System.runFinalization();</b>
+<b class="nc"><i>261</i>&nbsp;    }</b>
+<i>262</i>&nbsp;
+<i>263</i>&nbsp;    public synchronized void dispose() {
+<b class="nc"><i>264</i>&nbsp;        for (SoftReference&lt;PoolFilterable&gt; r : unlocked) {</b>
+<b class="nc"><i>265</i>&nbsp;            Filterable image = r.get();</b>
+<b class="nc"><i>266</i>&nbsp;            if (image != null) {</b>
+<b class="nc"><i>267</i>&nbsp;                image.flush();</b>
+<i>268</i>&nbsp;            }
+<b class="nc"><i>269</i>&nbsp;        }</b>
+<b class="nc"><i>270</i>&nbsp;        unlocked.clear();</b>
+<i>271</i>&nbsp;        // not flushing the locked ones, just clearing references to them
+<b class="nc"><i>272</i>&nbsp;        locked.clear();</b>
+<b class="nc"><i>273</i>&nbsp;    }</b>
+<i>274</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2017-12-04 21:49</div>
+</div>
+</body>
+</html>

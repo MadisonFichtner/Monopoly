@@ -1,0 +1,485 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: Preloader</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">javafx.application</a> ]
+</div>
+
+<h1>Coverage Summary for Class: Preloader (javafx.application)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+</tr>
+  <tr>
+    <td class="name">Preloader$PreloaderNotification</td>
+  </tr>
+<tr>
+  <td class="name"><strong>total</strong></td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright (c) 2011, 2014, Oracle and/or its affiliates. All rights reserved.
+<i>3</i>&nbsp; * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+<i>4</i>&nbsp; *
+<i>5</i>&nbsp; *
+<i>6</i>&nbsp; *
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; *
+<i>11</i>&nbsp; *
+<i>12</i>&nbsp; *
+<i>13</i>&nbsp; *
+<i>14</i>&nbsp; *
+<i>15</i>&nbsp; *
+<i>16</i>&nbsp; *
+<i>17</i>&nbsp; *
+<i>18</i>&nbsp; *
+<i>19</i>&nbsp; *
+<i>20</i>&nbsp; *
+<i>21</i>&nbsp; *
+<i>22</i>&nbsp; *
+<i>23</i>&nbsp; *
+<i>24</i>&nbsp; */
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;package javafx.application;
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;import java.security.AccessController;
+<i>29</i>&nbsp;import java.security.PrivilegedAction;
+<i>30</i>&nbsp;
+<i>31</i>&nbsp;/**
+<i>32</i>&nbsp; * Class that is extended to define an optional preloader for a
+<i>33</i>&nbsp; * JavaFX Application.
+<i>34</i>&nbsp; * An application may contain a preloader that is used
+<i>35</i>&nbsp; * to improve the application loading experience, especially for applications
+<i>36</i>&nbsp; * that are embedded in a browser or launched in webstart execution mode.
+<i>37</i>&nbsp; *
+<i>38</i>&nbsp; * &lt;p&gt;
+<i>39</i>&nbsp; * A preloader is a small application that is started
+<i>40</i>&nbsp; * before the main application to customize the startup experience.
+<i>41</i>&nbsp; * The preloader:
+<i>42</i>&nbsp; * &lt;/p&gt;
+<i>43</i>&nbsp; * &lt;ul&gt;
+<i>44</i>&nbsp; * &lt;li&gt;gets notification of progress of loading application resources&lt;/li&gt;
+<i>45</i>&nbsp; * &lt;li&gt;gets notification of errors&lt;/li&gt;
+<i>46</i>&nbsp; * &lt;li&gt;gets notification of application initialization and startup&lt;/li&gt;
+<i>47</i>&nbsp; * &lt;li&gt;decides when application should become visible&lt;/li&gt;
+<i>48</i>&nbsp; * &lt;/ul&gt;
+<i>49</i>&nbsp; *
+<i>50</i>&nbsp; * &lt;p&gt;
+<i>51</i>&nbsp; * The default preloader is shown on top of the application Stage, which is not
+<i>52</i>&nbsp; * visible until the preloader is visible. The preloader need to hide itself
+<i>53</i>&nbsp; * to make the application visible. Good practice is to do this no earlier than
+<i>54</i>&nbsp; * right before application.start() is called, as otherwise application itself
+<i>55</i>&nbsp; * is not visible.
+<i>56</i>&nbsp; * &lt;/p&gt;
+<i>57</i>&nbsp; *
+<i>58</i>&nbsp; * &lt;p&gt;
+<i>59</i>&nbsp; * The preloader may also cooperate with the application to achieve advanced
+<i>60</i>&nbsp; * visual effects or share data (e.g. to implement login screen).
+<i>61</i>&nbsp; * The preloader gets a reference to the application and may pull data it
+<i>62</i>&nbsp; * needs for cooperation from the application if the application implements
+<i>63</i>&nbsp; * an interface that the preloader knows about and relies upon. Generally it
+<i>64</i>&nbsp; * is not recommended to design preloaders in such a way that an application
+<i>65</i>&nbsp; * would call them directly, as this will result in bad user experience if
+<i>66</i>&nbsp; * the application is signed and the preloader is not.
+<i>67</i>&nbsp; * &lt;/p&gt;
+<i>68</i>&nbsp; *
+<i>69</i>&nbsp; * &lt;p&gt;
+<i>70</i>&nbsp; * If the application does not specify a preloader, then the default preloader
+<i>71</i>&nbsp; * is used. Default preloader appearance can be customized
+<i>72</i>&nbsp; * (set of parameters is TBD).
+<i>73</i>&nbsp; * &lt;/p&gt;
+<i>74</i>&nbsp; *
+<i>75</i>&nbsp; * &lt;p&gt;
+<i>76</i>&nbsp; * Custom preloader implementations should follow these rules:
+<i>77</i>&nbsp; * &lt;/p&gt;
+<i>78</i>&nbsp; * &lt;ol&gt;
+<i>79</i>&nbsp; *  &lt;li&gt;there should be class extending Preloader&lt;/li&gt;
+<i>80</i>&nbsp; *  &lt;li&gt;classes needed for preloader need to be packaged in the separate jar.
+<i>81</i>&nbsp; *      We recommend this jar to be unsigned.&lt;/li&gt;
+<i>82</i>&nbsp; *  &lt;li&gt;JNLP deployment descriptor should have preloader-class attribute
+<i>83</i>&nbsp; *      with full name of the class as value in the javafx-desc element
+<i>84</i>&nbsp; *      and jars needed for progress need to have download=&quot;progress&quot; type&lt;/li&gt;
+<i>85</i>&nbsp; * &lt;/ol&gt;
+<i>86</i>&nbsp; *
+<i>87</i>&nbsp; * &lt;p&gt;
+<i>88</i>&nbsp; * Applications may also send custom notification to the preloader using the
+<i>89</i>&nbsp; * {@link #notifyPreloader notifyPreloader} method. This way a preloader may
+<i>90</i>&nbsp; * also show application initialization progress.
+<i>91</i>&nbsp; * &lt;/p&gt;
+<i>92</i>&nbsp; *
+<i>93</i>&nbsp; * &lt;p&gt;
+<i>94</i>&nbsp; * Note that preloaders are subject to the same rules as other JavaFX
+<i>95</i>&nbsp; * applications including FX threading rules. In particular, the class
+<i>96</i>&nbsp; * constructor and init() method will be called on a non-FX thread and start()
+<i>97</i>&nbsp; * will be executed on the FX application thread.
+<i>98</i>&nbsp; * This also means that the application constructor/init() will run concurrently
+<i>99</i>&nbsp; * with preloader start().
+<i>100</i>&nbsp; * &lt;/p&gt;
+<i>101</i>&nbsp; *
+<i>102</i>&nbsp; * &lt;p&gt;
+<i>103</i>&nbsp; * Callbacks on preloader notification will be delivered on the FX
+<i>104</i>&nbsp; * application thread.
+<i>105</i>&nbsp; * &lt;/p&gt;
+<i>106</i>&nbsp; *
+<i>107</i>&nbsp; * &lt;p&gt;
+<i>108</i>&nbsp; * Shutdown (including when stop() is called) is TBD.
+<i>109</i>&nbsp; * &lt;/p&gt;
+<i>110</i>&nbsp; * @since JavaFX 2.0
+<i>111</i>&nbsp; */
+<i>112</i>&nbsp;public abstract class Preloader extends Application {
+<i>113</i>&nbsp;
+<i>114</i>&nbsp;    // Too bad this isn&#39;t already available in a Java core class
+<i>115</i>&nbsp;    private static final String lineSeparator;
+<i>116</i>&nbsp;
+<i>117</i>&nbsp;    static {
+<i>118</i>&nbsp;        String prop = AccessController.doPrivileged((PrivilegedAction&lt;String&gt;) () -&gt; System.getProperty(&quot;line.separator&quot;));
+<i>119</i>&nbsp;        lineSeparator = prop != null ? prop : &quot;\n&quot;;
+<i>120</i>&nbsp;    }
+<i>121</i>&nbsp;
+<i>122</i>&nbsp;    /**
+<i>123</i>&nbsp;     * Indicates download progress.
+<i>124</i>&nbsp;     * This method is called by the FX runtime to indicate progress while
+<i>125</i>&nbsp;     * application resources are being loaded. It will not be called to deliver
+<i>126</i>&nbsp;     * a ProgressNotification sent to {@link #notifyPreloader notifyPreloader}.
+<i>127</i>&nbsp;     *
+<i>128</i>&nbsp;     * &lt;p&gt;
+<i>129</i>&nbsp;     * The implementation of this method provided by the Preloader class
+<i>130</i>&nbsp;     * does nothing.
+<i>131</i>&nbsp;     * &lt;/p&gt;
+<i>132</i>&nbsp;     *
+<i>133</i>&nbsp;     * @param info the progress notification
+<i>134</i>&nbsp;     */
+<i>135</i>&nbsp;    public void handleProgressNotification(ProgressNotification info) {
+<i>136</i>&nbsp;    }
+<i>137</i>&nbsp;
+<i>138</i>&nbsp;    /**
+<i>139</i>&nbsp;     * Indicates a change in application state.
+<i>140</i>&nbsp;     * This method is called by the FX runtime as part of the
+<i>141</i>&nbsp;     * application life-cycle.
+<i>142</i>&nbsp;     *
+<i>143</i>&nbsp;     * &lt;p&gt;
+<i>144</i>&nbsp;     * The implementation of this method provided by the Preloader class
+<i>145</i>&nbsp;     * does nothing.
+<i>146</i>&nbsp;     * &lt;/p&gt;
+<i>147</i>&nbsp;     *
+<i>148</i>&nbsp;     * @param info the state change notification
+<i>149</i>&nbsp;     */
+<i>150</i>&nbsp;    public void handleStateChangeNotification(StateChangeNotification info) {
+<i>151</i>&nbsp;    }
+<i>152</i>&nbsp;
+<i>153</i>&nbsp;    /**
+<i>154</i>&nbsp;     * Indicates an application-generated notification.
+<i>155</i>&nbsp;     * This method is called by the FX runtime to deliver a notification sent
+<i>156</i>&nbsp;     * via {@link #notifyPreloader notifyPreloader}.
+<i>157</i>&nbsp;     *
+<i>158</i>&nbsp;     * &lt;p&gt;
+<i>159</i>&nbsp;     * Applications should not call this method directly, but should use
+<i>160</i>&nbsp;     * {@link #notifyPreloader notifyPreloader} instead to avoid mixed code dialog issues.
+<i>161</i>&nbsp;     * &lt;/p&gt;
+<i>162</i>&nbsp;     *
+<i>163</i>&nbsp;     * &lt;p&gt;
+<i>164</i>&nbsp;     * The implementation of this method provided by the Preloader class
+<i>165</i>&nbsp;     * does nothing.
+<i>166</i>&nbsp;     * &lt;/p&gt;
+<i>167</i>&nbsp;     *
+<i>168</i>&nbsp;     * @param info the application-generated notification
+<i>169</i>&nbsp;     */
+<i>170</i>&nbsp;    public void handleApplicationNotification(PreloaderNotification info) {
+<i>171</i>&nbsp;    }
+<i>172</i>&nbsp;
+<i>173</i>&nbsp;    /**
+<i>174</i>&nbsp;     * Called when an error occurs.
+<i>175</i>&nbsp;     *
+<i>176</i>&nbsp;     * &lt;p&gt;
+<i>177</i>&nbsp;     * The implementation of this method provided by the Preloader class
+<i>178</i>&nbsp;     * returns false, indicating that the default error handler should
+<i>179</i>&nbsp;     * show the message to the user.
+<i>180</i>&nbsp;     * &lt;/p&gt;
+<i>181</i>&nbsp;     *
+<i>182</i>&nbsp;     * @param info the error notification describing the cause of this error
+<i>183</i>&nbsp;     *
+<i>184</i>&nbsp;     * @return true if error was shown to the user by preloader and no
+<i>185</i>&nbsp;     * additional visualization is needed; otherwise, false.
+<i>186</i>&nbsp;     */
+<i>187</i>&nbsp;    public boolean handleErrorNotification(ErrorNotification info) {
+<i>188</i>&nbsp;        return false;
+<i>189</i>&nbsp;    }
+<i>190</i>&nbsp;
+<i>191</i>&nbsp;//    /**
+<i>192</i>&nbsp;//     * Called when security or other system modal dialog is shown or hidden
+<i>193</i>&nbsp;//     * (such as proxy auth dialog).
+<i>194</i>&nbsp;//     *
+<i>195</i>&nbsp;//     * &lt;p&gt;
+<i>196</i>&nbsp;//     * The implementation of this method provided by the Preloader class
+<i>197</i>&nbsp;//     * does nothing.
+<i>198</i>&nbsp;//     * &lt;/p&gt;
+<i>199</i>&nbsp;//     *
+<i>200</i>&nbsp;//     * @param info the UI notification
+<i>201</i>&nbsp;//     */
+<i>202</i>&nbsp;//    public void handleUINotification(UINotification info) {
+<i>203</i>&nbsp;//        // TODO RT-19601: not used for now pending completion of JRE work
+<i>204</i>&nbsp;////        System.err.println(&quot;Preloader: handleUINotification = &quot; + info);
+<i>205</i>&nbsp;//    }
+<i>206</i>&nbsp;
+<i>207</i>&nbsp;    // ------------------------------------------------------------------------
+<i>208</i>&nbsp;
+<i>209</i>&nbsp;    /**
+<i>210</i>&nbsp;     * Marker interface for all Preloader notification.
+<i>211</i>&nbsp;     * @since JavaFX 2.0
+<i>212</i>&nbsp;     */
+<i>213</i>&nbsp;    public static interface PreloaderNotification {
+<i>214</i>&nbsp;    }
+<i>215</i>&nbsp;
+<i>216</i>&nbsp;    /**
+<i>217</i>&nbsp;     * Preloader notification that reports an error.
+<i>218</i>&nbsp;     * This is delivered to preloader in case of problem with applet startup.
+<i>219</i>&nbsp;     * @since JavaFX 2.0
+<i>220</i>&nbsp;     */
+<i>221</i>&nbsp;    public static class ErrorNotification implements PreloaderNotification {
+<i>222</i>&nbsp;        private String location;
+<i>223</i>&nbsp;        private String details = &quot;&quot;;
+<i>224</i>&nbsp;        private Throwable cause;
+<i>225</i>&nbsp;
+<i>226</i>&nbsp;        /**
+<i>227</i>&nbsp;         * Constructs an error notification.
+<i>228</i>&nbsp;         *
+<i>229</i>&nbsp;         * @param location the URL associated with an error (if any); may be null
+<i>230</i>&nbsp;         * @param details a string describing the error; must be non-null
+<i>231</i>&nbsp;         * @param cause the cause of the error; may be null
+<i>232</i>&nbsp;         */
+<i>233</i>&nbsp;        public ErrorNotification(String location, String details, Throwable cause) {
+<i>234</i>&nbsp;            if (details == null) throw new NullPointerException();
+<i>235</i>&nbsp;
+<i>236</i>&nbsp;            this.location = location;
+<i>237</i>&nbsp;            this.details = details;
+<i>238</i>&nbsp;            this.cause = cause;
+<i>239</i>&nbsp;        }
+<i>240</i>&nbsp;
+<i>241</i>&nbsp;        /**
+<i>242</i>&nbsp;         * Retrieves the URL associated with this error, if any.
+<i>243</i>&nbsp;         * For example, if there is a download or singing check error, this
+<i>244</i>&nbsp;         * will be the URL of the jar file that has the problem.
+<i>245</i>&nbsp;         * It may be null.
+<i>246</i>&nbsp;         *
+<i>247</i>&nbsp;         * @return the location, or null
+<i>248</i>&nbsp;         */
+<i>249</i>&nbsp;        public String getLocation() {
+<i>250</i>&nbsp;            return location;
+<i>251</i>&nbsp;        }
+<i>252</i>&nbsp;
+<i>253</i>&nbsp;        /**
+<i>254</i>&nbsp;         * Retrieves the description of the error.
+<i>255</i>&nbsp;         * It may be the empty string, but is always non-null.
+<i>256</i>&nbsp;         *
+<i>257</i>&nbsp;         * @return the description of the error
+<i>258</i>&nbsp;         */
+<i>259</i>&nbsp;        public String getDetails() {
+<i>260</i>&nbsp;            return details;
+<i>261</i>&nbsp;        }
+<i>262</i>&nbsp;
+<i>263</i>&nbsp;        /**
+<i>264</i>&nbsp;         * Retrieves the Exception or Error associated with this error
+<i>265</i>&nbsp;         * notification, if any. It may be null.
+<i>266</i>&nbsp;         *
+<i>267</i>&nbsp;         * @return the cause of the error, or null
+<i>268</i>&nbsp;         */
+<i>269</i>&nbsp;        public Throwable getCause() {
+<i>270</i>&nbsp;            return cause;
+<i>271</i>&nbsp;        }
+<i>272</i>&nbsp;
+<i>273</i>&nbsp;        /**
+<i>274</i>&nbsp;         * Returns a string representation of this {@code ErrorNotification} object.
+<i>275</i>&nbsp;         * @return a string representation of this {@code ErrorNotification} object.
+<i>276</i>&nbsp;         */
+<i>277</i>&nbsp;        @Override public String toString() {
+<i>278</i>&nbsp;            StringBuilder str = new StringBuilder(&quot;Preloader.ErrorNotification: &quot;);
+<i>279</i>&nbsp;            str.append(details);
+<i>280</i>&nbsp;            if (cause != null) {
+<i>281</i>&nbsp;                str.append(lineSeparator).append(&quot;Caused by: &quot;).append(cause.toString());
+<i>282</i>&nbsp;            }
+<i>283</i>&nbsp;            if (location != null) {
+<i>284</i>&nbsp;                str.append(lineSeparator).append(&quot;Location: &quot;).append(location);
+<i>285</i>&nbsp;            }
+<i>286</i>&nbsp;            return str.toString();
+<i>287</i>&nbsp;        }
+<i>288</i>&nbsp;    }
+<i>289</i>&nbsp;
+<i>290</i>&nbsp;    /**
+<i>291</i>&nbsp;     * Preloader notification that reports progress. This is typically used to
+<i>292</i>&nbsp;     * report progress while downloading and initializing the application.
+<i>293</i>&nbsp;     * @since JavaFX 2.0
+<i>294</i>&nbsp;     */
+<i>295</i>&nbsp;    public static class ProgressNotification implements PreloaderNotification {
+<i>296</i>&nbsp;        private final double progress;
+<i>297</i>&nbsp;        private final String details;
+<i>298</i>&nbsp;
+<i>299</i>&nbsp;        /**
+<i>300</i>&nbsp;         * Constructs a progress notification.
+<i>301</i>&nbsp;         *
+<i>302</i>&nbsp;         * @param progress a value indicating the progress.
+<i>303</i>&nbsp;         * A negative value for progress indicates that the progress is
+<i>304</i>&nbsp;         * indeterminate. A value between 0 and 1 indicates the amount
+<i>305</i>&nbsp;         * of progress. Any value greater than 1 is interpreted as 1.
+<i>306</i>&nbsp;         */
+<i>307</i>&nbsp;        public ProgressNotification(double progress) {
+<i>308</i>&nbsp;            this(progress, &quot;&quot;);
+<i>309</i>&nbsp;        }
+<i>310</i>&nbsp;
+<i>311</i>&nbsp;        // NOTE: We could consider exposing details in the future, but currently
+<i>312</i>&nbsp;        // have no plan to do so. This method is private for now.
+<i>313</i>&nbsp;        /**
+<i>314</i>&nbsp;         * Constructs a progress notification.
+<i>315</i>&nbsp;         *
+<i>316</i>&nbsp;         * @param progress a value indicating the progress.
+<i>317</i>&nbsp;         * A negative value for progress indicates that the progress is
+<i>318</i>&nbsp;         * indeterminate. A value between 0 and 1 indicates the amount
+<i>319</i>&nbsp;         * of progress. Any value greater than 1 is interpreted as 1.
+<i>320</i>&nbsp;         *
+<i>321</i>&nbsp;         * @param details the details of this notification
+<i>322</i>&nbsp;         */
+<i>323</i>&nbsp;        private ProgressNotification(double progress, String details) {
+<i>324</i>&nbsp;            this.progress = progress;
+<i>325</i>&nbsp;            this.details = details;
+<i>326</i>&nbsp;        }
+<i>327</i>&nbsp;
+<i>328</i>&nbsp;        /**
+<i>329</i>&nbsp;         * Retrieves the progress for this notification. Progress is in the
+<i>330</i>&nbsp;         * range of 0 to 1, or is negative for indeterminate progress.
+<i>331</i>&nbsp;         *
+<i>332</i>&nbsp;         * @return the progress
+<i>333</i>&nbsp;         */
+<i>334</i>&nbsp;        public double getProgress() {
+<i>335</i>&nbsp;            return progress;
+<i>336</i>&nbsp;        }
+<i>337</i>&nbsp;
+<i>338</i>&nbsp;        /**
+<i>339</i>&nbsp;         * Retrieves the details of the progress notification
+<i>340</i>&nbsp;         *
+<i>341</i>&nbsp;         * @return the details of this notification
+<i>342</i>&nbsp;         */
+<i>343</i>&nbsp;        private String getDetails() {
+<i>344</i>&nbsp;            return details;
+<i>345</i>&nbsp;        }
+<i>346</i>&nbsp;    }
+<i>347</i>&nbsp;
+<i>348</i>&nbsp;    /**
+<i>349</i>&nbsp;     * A notification that signals a change in the application state.
+<i>350</i>&nbsp;     * A state change notification is sent to a preloader immediately prior
+<i>351</i>&nbsp;     * to loading
+<i>352</i>&nbsp;     * the application class (and constructing an instance), calling the
+<i>353</i>&nbsp;     * application init method, or calling the application start method.
+<i>354</i>&nbsp;     * @since JavaFX 2.0
+<i>355</i>&nbsp;     */
+<i>356</i>&nbsp;    public static class StateChangeNotification implements PreloaderNotification {
+<i>357</i>&nbsp;
+<i>358</i>&nbsp;        /**
+<i>359</i>&nbsp;         * Enum that defines the type of change associated with this notification
+<i>360</i>&nbsp;         * @since JavaFX 2.0
+<i>361</i>&nbsp;         */
+<i>362</i>&nbsp;        public enum Type {
+<i>363</i>&nbsp;            /**
+<i>364</i>&nbsp;             * Indicates that the application class is about to be loaded and
+<i>365</i>&nbsp;             * constructed.
+<i>366</i>&nbsp;             */
+<i>367</i>&nbsp;            BEFORE_LOAD,
+<i>368</i>&nbsp;
+<i>369</i>&nbsp;            /**
+<i>370</i>&nbsp;             * Indicates that the application&#39;s init method is about to be called.
+<i>371</i>&nbsp;             */
+<i>372</i>&nbsp;            BEFORE_INIT,
+<i>373</i>&nbsp;
+<i>374</i>&nbsp;            /**
+<i>375</i>&nbsp;             * Indicates that the application&#39;s start method is about to be called.
+<i>376</i>&nbsp;             */
+<i>377</i>&nbsp;            BEFORE_START
+<i>378</i>&nbsp;        }
+<i>379</i>&nbsp;
+<i>380</i>&nbsp;        private final Type notificationType;
+<i>381</i>&nbsp;        private final Application application;
+<i>382</i>&nbsp;
+<i>383</i>&nbsp;        /**
+<i>384</i>&nbsp;         * Constructs a StateChangeNotification of the specified type.
+<i>385</i>&nbsp;         *
+<i>386</i>&nbsp;         * @param notificationType the type of this notification.
+<i>387</i>&nbsp;         */
+<i>388</i>&nbsp;        public StateChangeNotification(Type notificationType){
+<i>389</i>&nbsp;            this.notificationType = notificationType;
+<i>390</i>&nbsp;            this.application = null;
+<i>391</i>&nbsp;        }
+<i>392</i>&nbsp;
+<i>393</i>&nbsp;        /**
+<i>394</i>&nbsp;         * Constructs an StateChangeNotification of the specified type for the
+<i>395</i>&nbsp;         * specified application.
+<i>396</i>&nbsp;         *
+<i>397</i>&nbsp;         * @param notificationType the type of this notification.
+<i>398</i>&nbsp;         * @param application the application instance associated with this
+<i>399</i>&nbsp;         * notification.
+<i>400</i>&nbsp;         */
+<i>401</i>&nbsp;        public StateChangeNotification(Type notificationType, Application application) {
+<i>402</i>&nbsp;            this.notificationType = notificationType;
+<i>403</i>&nbsp;            this.application = application;
+<i>404</i>&nbsp;        }
+<i>405</i>&nbsp;
+<i>406</i>&nbsp;        /**
+<i>407</i>&nbsp;         * Returns the type of notification.
+<i>408</i>&nbsp;         *
+<i>409</i>&nbsp;         * @return one of: BEFORE_LOAD, BEFORE_INIT, BEFORE_START
+<i>410</i>&nbsp;         */
+<i>411</i>&nbsp;        public Type getType() {
+<i>412</i>&nbsp;            return notificationType;
+<i>413</i>&nbsp;        }
+<i>414</i>&nbsp;
+<i>415</i>&nbsp;        /**
+<i>416</i>&nbsp;         * Returns the Application instance associated with this notification.
+<i>417</i>&nbsp;         * This is null for a BEFORE_LOAD notification and non-null for other
+<i>418</i>&nbsp;         * notification types.
+<i>419</i>&nbsp;         *
+<i>420</i>&nbsp;         * @return the Application instance or null.
+<i>421</i>&nbsp;         */
+<i>422</i>&nbsp;        public Application getApplication() {
+<i>423</i>&nbsp;            return application;
+<i>424</i>&nbsp;        }
+<i>425</i>&nbsp;    }
+<i>426</i>&nbsp;
+<i>427</i>&nbsp;//    /**
+<i>428</i>&nbsp;//     * Used to signal about global modal dialogs to be shown that block
+<i>429</i>&nbsp;//     * application launch. In particular proxy and security dialogs
+<i>430</i>&nbsp;//     */
+<i>431</i>&nbsp;//    public static class UINotification implements PreloaderNotification {
+<i>432</i>&nbsp;//       //TODO RT-19601: implementation pending JRE work
+<i>433</i>&nbsp;//    }
+<i>434</i>&nbsp;
+<i>435</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2017-12-04 21:49</div>
+</div>
+</body>
+</html>

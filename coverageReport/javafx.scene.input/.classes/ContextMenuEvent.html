@@ -1,0 +1,421 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: ContextMenuEvent</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">javafx.scene.input</a> ]
+</div>
+
+<h1>Coverage Summary for Class: ContextMenuEvent (javafx.scene.input)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">ContextMenuEvent</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    5.9%
+  </span>
+  <span class="absValue">
+    (1/ 17)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    4.1%
+  </span>
+  <span class="absValue">
+    (2/ 49)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright (c) 2011, 2013, Oracle and/or its affiliates. All rights reserved.
+<i>3</i>&nbsp; * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+<i>4</i>&nbsp; *
+<i>5</i>&nbsp; *
+<i>6</i>&nbsp; *
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; *
+<i>11</i>&nbsp; *
+<i>12</i>&nbsp; *
+<i>13</i>&nbsp; *
+<i>14</i>&nbsp; *
+<i>15</i>&nbsp; *
+<i>16</i>&nbsp; *
+<i>17</i>&nbsp; *
+<i>18</i>&nbsp; *
+<i>19</i>&nbsp; *
+<i>20</i>&nbsp; *
+<i>21</i>&nbsp; *
+<i>22</i>&nbsp; *
+<i>23</i>&nbsp; *
+<i>24</i>&nbsp; */
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;package javafx.scene.input;
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;import com.sun.javafx.scene.input.InputEventUtils;
+<i>29</i>&nbsp;import java.io.IOException;
+<i>30</i>&nbsp;import javafx.beans.NamedArg;
+<i>31</i>&nbsp;import javafx.event.EventTarget;
+<i>32</i>&nbsp;import javafx.event.EventType;
+<i>33</i>&nbsp;import javafx.geometry.Point3D;
+<i>34</i>&nbsp;import javafx.scene.Node;
+<i>35</i>&nbsp;
+<i>36</i>&nbsp;// PENDING_DOC_REVIEW
+<i>37</i>&nbsp;/**
+<i>38</i>&nbsp; * When the user requests a context menu, this event occurs.  Context
+<i>39</i>&nbsp; * menus can be triggered by the mouse or the keyboard.  The exact
+<i>40</i>&nbsp; * sequence of mouse or keyboard events that is used to request a
+<i>41</i>&nbsp; * menu is platform specific.  For example, on Windows, Shift+F10
+<i>42</i>&nbsp; * requests a context menu.
+<i>43</i>&nbsp; * &lt;p&gt;
+<i>44</i>&nbsp; * The event coordinates contain default position for the context menu.
+<i>45</i>&nbsp; * For mouse-triggered events it is the position of the
+<i>46</i>&nbsp; * mouse cursor, for keyboard-triggered events it is a point
+<i>47</i>&nbsp; * inside of bounds of current focus owner (which is the event&#39;s target).
+<i>48</i>&nbsp; * @since JavaFX 2.1
+<i>49</i>&nbsp; */
+<i>50</i>&nbsp;public class ContextMenuEvent extends InputEvent {
+<i>51</i>&nbsp;
+<i>52</i>&nbsp;    private static final long serialVersionUID = 20121107L;
+<i>53</i>&nbsp;
+<i>54</i>&nbsp;    /**
+<i>55</i>&nbsp;     * This event occurs when a context menu is requested.
+<i>56</i>&nbsp;     */
+<b class="fc"><i>57</i>&nbsp;    public static final EventType&lt;ContextMenuEvent&gt; CONTEXT_MENU_REQUESTED =</b>
+<i>58</i>&nbsp;            new EventType&lt;ContextMenuEvent&gt;(InputEvent.ANY, &quot;CONTEXTMENUREQUESTED&quot;);
+<i>59</i>&nbsp;
+<i>60</i>&nbsp;    /**
+<i>61</i>&nbsp;     * Common supertype for all context menu event types.
+<i>62</i>&nbsp;     * @since JavaFX 8.0
+<i>63</i>&nbsp;     */
+<b class="fc"><i>64</i>&nbsp;    public static final EventType&lt;ContextMenuEvent&gt; ANY = CONTEXT_MENU_REQUESTED;</b>
+<i>65</i>&nbsp;
+<i>66</i>&nbsp;    /**
+<i>67</i>&nbsp;     * Constructs new ContextMenu event.
+<i>68</i>&nbsp;     * @param source the source of the event. Can be null.
+<i>69</i>&nbsp;     * @param target the target of the event. Can be null.
+<i>70</i>&nbsp;     * @param eventType The type of the event.
+<i>71</i>&nbsp;     * @param x The x with respect to the scene
+<i>72</i>&nbsp;     * @param y The y with respect to the scene
+<i>73</i>&nbsp;     * @param screenX The x coordinate relative to screen.
+<i>74</i>&nbsp;     * @param screenY The y coordinate relative to screen.
+<i>75</i>&nbsp;     * @param keyboardTrigger true if this event was triggered by keyboard.
+<i>76</i>&nbsp;     * @param pickResult pick result. Can be null, in this case a 2D pick result
+<i>77</i>&nbsp;     *                   without any further values is constructed
+<i>78</i>&nbsp;     *                   based on the scene coordinates and the target
+<i>79</i>&nbsp;     * @since JavaFX 8.0
+<i>80</i>&nbsp;     */
+<i>81</i>&nbsp;    public ContextMenuEvent(@NamedArg(&quot;source&quot;) Object source, @NamedArg(&quot;target&quot;) EventTarget target, @NamedArg(&quot;eventType&quot;) EventType&lt;ContextMenuEvent&gt; eventType, @NamedArg(&quot;x&quot;) double x, @NamedArg(&quot;y&quot;) double y,
+<i>82</i>&nbsp;            @NamedArg(&quot;screenX&quot;) double screenX, @NamedArg(&quot;screenY&quot;) double screenY, @NamedArg(&quot;keyboardTrigger&quot;) boolean keyboardTrigger,
+<i>83</i>&nbsp;            @NamedArg(&quot;pickResult&quot;) PickResult pickResult) {
+<b class="nc"><i>84</i>&nbsp;        super(source, target, eventType);</b>
+<b class="nc"><i>85</i>&nbsp;        this.screenX = screenX;</b>
+<b class="nc"><i>86</i>&nbsp;        this.screenY = screenY;</b>
+<b class="nc"><i>87</i>&nbsp;        this.sceneX = x;</b>
+<b class="nc"><i>88</i>&nbsp;        this.sceneY = y;</b>
+<b class="nc"><i>89</i>&nbsp;        this.x = x;</b>
+<b class="nc"><i>90</i>&nbsp;        this.y = y;</b>
+<b class="nc"><i>91</i>&nbsp;        this.pickResult = pickResult != null ? pickResult : new PickResult(target, x, y);</b>
+<b class="nc"><i>92</i>&nbsp;        final Point3D p = InputEventUtils.recomputeCoordinates(this.pickResult, null);</b>
+<b class="nc"><i>93</i>&nbsp;        this.x = p.getX();</b>
+<b class="nc"><i>94</i>&nbsp;        this.y = p.getY();</b>
+<b class="nc"><i>95</i>&nbsp;        this.z = p.getZ();</b>
+<b class="nc"><i>96</i>&nbsp;        this.keyboardTrigger = keyboardTrigger;</b>
+<b class="nc"><i>97</i>&nbsp;     }</b>
+<i>98</i>&nbsp;
+<i>99</i>&nbsp;    /**
+<i>100</i>&nbsp;     * Constructs new ContextMenu event with empty source and target.
+<i>101</i>&nbsp;     * @param eventType The type of the event.
+<i>102</i>&nbsp;     * @param x The x with respect to the scene.
+<i>103</i>&nbsp;     * @param y The y with respect to the scene.
+<i>104</i>&nbsp;     * @param screenX The x coordinate relative to screen.
+<i>105</i>&nbsp;     * @param screenY The y coordinate relative to screen.
+<i>106</i>&nbsp;     * @param keyboardTrigger true if this event was triggered by keyboard.
+<i>107</i>&nbsp;     * @param pickResult pick result. Can be null, in this case a 2D pick result
+<i>108</i>&nbsp;     *                   without any further values is constructed
+<i>109</i>&nbsp;     *                   based on the scene coordinates
+<i>110</i>&nbsp;     * @since JavaFX 8.0
+<i>111</i>&nbsp;     */
+<i>112</i>&nbsp;    public ContextMenuEvent(@NamedArg(&quot;eventType&quot;) EventType&lt;ContextMenuEvent&gt; eventType, @NamedArg(&quot;x&quot;) double x, @NamedArg(&quot;y&quot;) double y,
+<i>113</i>&nbsp;            @NamedArg(&quot;screenX&quot;) double screenX, @NamedArg(&quot;screenY&quot;) double screenY, @NamedArg(&quot;keyboardTrigger&quot;) boolean keyboardTrigger,
+<i>114</i>&nbsp;            @NamedArg(&quot;pickResult&quot;) PickResult pickResult) {
+<b class="nc"><i>115</i>&nbsp;        this(null, null, eventType, x, y, screenX, screenY, keyboardTrigger,</b>
+<i>116</i>&nbsp;                pickResult);
+<b class="nc"><i>117</i>&nbsp;    }</b>
+<i>118</i>&nbsp;
+<i>119</i>&nbsp;    /**
+<i>120</i>&nbsp;     * Fills the given event by this event&#39;s coordinates recomputed to the given
+<i>121</i>&nbsp;     * source object
+<i>122</i>&nbsp;     * @param newEvent Event whose coordinates are to be filled
+<i>123</i>&nbsp;     * @param newSource Source object to compute coordinates for
+<i>124</i>&nbsp;     */
+<i>125</i>&nbsp;    private void recomputeCoordinatesToSource(ContextMenuEvent newEvent, Object newSource) {
+<i>126</i>&nbsp;
+<b class="nc"><i>127</i>&nbsp;        final Point3D newCoordinates = InputEventUtils.recomputeCoordinates(</b>
+<i>128</i>&nbsp;                pickResult, newSource);
+<i>129</i>&nbsp;
+<b class="nc"><i>130</i>&nbsp;        newEvent.x = newCoordinates.getX();</b>
+<b class="nc"><i>131</i>&nbsp;        newEvent.y = newCoordinates.getY();</b>
+<b class="nc"><i>132</i>&nbsp;        newEvent.z = newCoordinates.getZ();</b>
+<b class="nc"><i>133</i>&nbsp;    }</b>
+<i>134</i>&nbsp;
+<i>135</i>&nbsp;    @Override
+<i>136</i>&nbsp;    public ContextMenuEvent copyFor(Object newSource, EventTarget newTarget) {
+<b class="nc"><i>137</i>&nbsp;        ContextMenuEvent e = (ContextMenuEvent) super.copyFor(newSource, newTarget);</b>
+<b class="nc"><i>138</i>&nbsp;        recomputeCoordinatesToSource(e, newSource);</b>
+<b class="nc"><i>139</i>&nbsp;        return e;</b>
+<i>140</i>&nbsp;    }
+<i>141</i>&nbsp;
+<i>142</i>&nbsp;    @Override
+<i>143</i>&nbsp;    public EventType&lt;ContextMenuEvent&gt; getEventType() {
+<b class="nc"><i>144</i>&nbsp;        return (EventType&lt;ContextMenuEvent&gt;) super.getEventType();</b>
+<i>145</i>&nbsp;    }
+<i>146</i>&nbsp;
+<i>147</i>&nbsp;    /**
+<i>148</i>&nbsp;     * The boolean that indicates the event was triggered by a keyboard gesture.
+<i>149</i>&nbsp;     */
+<i>150</i>&nbsp;    private final boolean keyboardTrigger;
+<i>151</i>&nbsp;
+<i>152</i>&nbsp;    /**
+<i>153</i>&nbsp;     * Determines whether this event originated from the keyboard.
+<i>154</i>&nbsp;     *
+<i>155</i>&nbsp;     * @return true if the event was caused by the keyboard
+<i>156</i>&nbsp;     */
+<i>157</i>&nbsp;    public boolean isKeyboardTrigger() {
+<b class="nc"><i>158</i>&nbsp;        return keyboardTrigger;</b>
+<i>159</i>&nbsp;    }
+<i>160</i>&nbsp;
+<i>161</i>&nbsp;    /**
+<i>162</i>&nbsp;     * Horizontal x position of the event relative to the
+<i>163</i>&nbsp;     * origin of the ContextMenuEvent&#39;s node.
+<i>164</i>&nbsp;     */
+<i>165</i>&nbsp;    private transient double x;
+<i>166</i>&nbsp;
+<i>167</i>&nbsp;    /**
+<i>168</i>&nbsp;     * Horizontal position of the event relative to the
+<i>169</i>&nbsp;     * origin of the ContextMenuEvent&#39;s source.
+<i>170</i>&nbsp;     * For more information about this event&#39;s coordinate semantics please see
+<i>171</i>&nbsp;     * the general description of {@link ContextMenuEvent}.
+<i>172</i>&nbsp;     *
+<i>173</i>&nbsp;     * @return horizontal position of the event relative to the
+<i>174</i>&nbsp;     * origin of the ContextMenuEvent&#39;s source.
+<i>175</i>&nbsp;     */
+<i>176</i>&nbsp;    public final double getX() {
+<b class="nc"><i>177</i>&nbsp;        return x;</b>
+<i>178</i>&nbsp;    }
+<i>179</i>&nbsp;
+<i>180</i>&nbsp;    /**
+<i>181</i>&nbsp;     * Vertical y position of the event relative to the
+<i>182</i>&nbsp;     * origin of the ContextMenuEvent&#39;s node.
+<i>183</i>&nbsp;     */
+<i>184</i>&nbsp;    private transient double y;
+<i>185</i>&nbsp;
+<i>186</i>&nbsp;    /**
+<i>187</i>&nbsp;     * Vertical position of the event relative to the
+<i>188</i>&nbsp;     * origin of the ContextMenuEvent&#39;s source.
+<i>189</i>&nbsp;     * For more information about this event&#39;s coordinate semantics please see
+<i>190</i>&nbsp;     * the general description of {@link ContextMenuEvent}.
+<i>191</i>&nbsp;     *
+<i>192</i>&nbsp;     * @return vertical position of the event relative to the
+<i>193</i>&nbsp;     * origin of the ContextMenuEvent&#39;s source.
+<i>194</i>&nbsp;     */
+<i>195</i>&nbsp;    public final double getY() {
+<b class="nc"><i>196</i>&nbsp;        return y;</b>
+<i>197</i>&nbsp;    }
+<i>198</i>&nbsp;
+<i>199</i>&nbsp;    /**
+<i>200</i>&nbsp;     * Depth z position of the event relative to the
+<i>201</i>&nbsp;     * origin of the MouseEvent&#39;s node.
+<i>202</i>&nbsp;     */
+<i>203</i>&nbsp;    private transient double z;
+<i>204</i>&nbsp;
+<i>205</i>&nbsp;    /**
+<i>206</i>&nbsp;     * Depth position of the event relative to the
+<i>207</i>&nbsp;     * origin of the MouseEvent&#39;s source.
+<i>208</i>&nbsp;     *
+<i>209</i>&nbsp;     * @return depth position of the event relative to the
+<i>210</i>&nbsp;     * origin of the MouseEvent&#39;s source.
+<i>211</i>&nbsp;     * @since JavaFX 8.0
+<i>212</i>&nbsp;     */
+<i>213</i>&nbsp;    public final double getZ() {
+<b class="nc"><i>214</i>&nbsp;        return z;</b>
+<i>215</i>&nbsp;    }
+<i>216</i>&nbsp;
+<i>217</i>&nbsp;    /**
+<i>218</i>&nbsp;     * Absolute horizontal x position of the event.
+<i>219</i>&nbsp;     */
+<i>220</i>&nbsp;    private final double screenX;
+<i>221</i>&nbsp;
+<i>222</i>&nbsp;    /**
+<i>223</i>&nbsp;     * Returns absolute horizontal position of the event.
+<i>224</i>&nbsp;     * For more information about this event&#39;s coordinate semantics please see
+<i>225</i>&nbsp;     * the general description of {@link ContextMenuEvent}.
+<i>226</i>&nbsp;     * @return absolute horizontal position of the event
+<i>227</i>&nbsp;     */
+<i>228</i>&nbsp;    public final double getScreenX() {
+<b class="nc"><i>229</i>&nbsp;        return screenX;</b>
+<i>230</i>&nbsp;    }
+<i>231</i>&nbsp;
+<i>232</i>&nbsp;    /**
+<i>233</i>&nbsp;     * Absolute vertical y position of the event.
+<i>234</i>&nbsp;     */
+<i>235</i>&nbsp;    private final double screenY;
+<i>236</i>&nbsp;
+<i>237</i>&nbsp;    /**
+<i>238</i>&nbsp;     * Returns absolute vertical position of the event.
+<i>239</i>&nbsp;     * For more information about this event&#39;s coordinate semantics please see
+<i>240</i>&nbsp;     * the general description of {@link ContextMenuEvent}.
+<i>241</i>&nbsp;     * @return absolute vertical position of the event
+<i>242</i>&nbsp;     */
+<i>243</i>&nbsp;    public final double getScreenY() {
+<b class="nc"><i>244</i>&nbsp;        return screenY;</b>
+<i>245</i>&nbsp;    }
+<i>246</i>&nbsp;
+<i>247</i>&nbsp;    /**
+<i>248</i>&nbsp;     * Horizontal x position of the event relative to the
+<i>249</i>&nbsp;     * origin of the {@code Scene} that contains the ContextMenuEvent&#39;s node.
+<i>250</i>&nbsp;     * If the node is not in a {@code Scene}, then the value is relative to
+<i>251</i>&nbsp;     * the boundsInParent of the root-most parent of the ContextMenuEvent&#39;s node.
+<i>252</i>&nbsp;     */
+<i>253</i>&nbsp;    private final double sceneX;
+<i>254</i>&nbsp;
+<i>255</i>&nbsp;    /**
+<i>256</i>&nbsp;     * Returns horizontal position of the event relative to the
+<i>257</i>&nbsp;     * origin of the {@code Scene} that contains the ContextMenuEvent&#39;s source.
+<i>258</i>&nbsp;     * If the node is not in a {@code Scene}, then the value is relative to
+<i>259</i>&nbsp;     * the boundsInParent of the root-most parent of the ContextMenuEvent&#39;s node.
+<i>260</i>&nbsp;     * For more information about this event&#39;s coordinate semantics please see
+<i>261</i>&nbsp;     * the general description of {@link ContextMenuEvent}.
+<i>262</i>&nbsp;     * Note that in 3D scene, this represents the flat coordinates after
+<i>263</i>&nbsp;     * applying the projection transformations.
+<i>264</i>&nbsp;     *
+<i>265</i>&nbsp;     * @return horizontal position of the event relative to the
+<i>266</i>&nbsp;     * origin of the {@code Scene} that contains the ContextMenuEvent&#39;s source
+<i>267</i>&nbsp;     */
+<i>268</i>&nbsp;    public final double getSceneX() {
+<b class="nc"><i>269</i>&nbsp;        return sceneX;</b>
+<i>270</i>&nbsp;    }
+<i>271</i>&nbsp;
+<i>272</i>&nbsp;    /**
+<i>273</i>&nbsp;     * Vertical y position of the event relative to the
+<i>274</i>&nbsp;     * origin of the {@code Scene} that contains the ContextMenuEvent&#39;s node.
+<i>275</i>&nbsp;     * If the node is not in a {@code Scene}, then the value is relative to
+<i>276</i>&nbsp;     * the boundsInParent of the root-most parent of the ContextMenuEvent&#39;s node.
+<i>277</i>&nbsp;     */
+<i>278</i>&nbsp;    private final double sceneY;
+<i>279</i>&nbsp;
+<i>280</i>&nbsp;    /**
+<i>281</i>&nbsp;     * Returns vertical position of the event relative to the
+<i>282</i>&nbsp;     * origin of the {@code Scene} that contains the ContextMenuEvent&#39;s source.
+<i>283</i>&nbsp;     * If the node is not in a {@code Scene}, then the value is relative to
+<i>284</i>&nbsp;     * the boundsInParent of the root-most parent of the ContextMenuEvent&#39;s node.
+<i>285</i>&nbsp;     * For more information about this event&#39;s coordinate semantics please see
+<i>286</i>&nbsp;     * the general description of {@link ContextMenuEvent}.
+<i>287</i>&nbsp;     * Note that in 3D scene, this represents the flat coordinates after
+<i>288</i>&nbsp;     * applying the projection transformations.
+<i>289</i>&nbsp;     *
+<i>290</i>&nbsp;     * @return vertical position of the event relative to the
+<i>291</i>&nbsp;     * origin of the {@code Scene} that contains the ContextMenuEvent&#39;s source
+<i>292</i>&nbsp;     */
+<i>293</i>&nbsp;    public final double getSceneY() {
+<b class="nc"><i>294</i>&nbsp;        return sceneY;</b>
+<i>295</i>&nbsp;    }
+<i>296</i>&nbsp;
+<i>297</i>&nbsp;    /**
+<i>298</i>&nbsp;     * Information about the pick if the picked {@code Node} is a
+<i>299</i>&nbsp;     * {@code Shape3D} node and its pickOnBounds is false.
+<i>300</i>&nbsp;     */
+<i>301</i>&nbsp;    private PickResult pickResult;
+<i>302</i>&nbsp;
+<i>303</i>&nbsp;    /**
+<i>304</i>&nbsp;     * Returns information about the pick.
+<i>305</i>&nbsp;     *
+<i>306</i>&nbsp;     * @return new PickResult object that contains information about the pick
+<i>307</i>&nbsp;     * @since JavaFX 8.0
+<i>308</i>&nbsp;     */
+<i>309</i>&nbsp;    public final PickResult getPickResult() {
+<b class="nc"><i>310</i>&nbsp;        return pickResult;</b>
+<i>311</i>&nbsp;    }
+<i>312</i>&nbsp;
+<i>313</i>&nbsp;    /**
+<i>314</i>&nbsp;     * Returns a string representation of this {@code ContextMenuEvent} object.
+<i>315</i>&nbsp;     * @return a string representation of this {@code ContextMenuEvent} object.
+<i>316</i>&nbsp;     */
+<i>317</i>&nbsp;    @Override public String toString() {
+<b class="nc"><i>318</i>&nbsp;        final StringBuilder sb = new StringBuilder(&quot;ContextMenuEvent [&quot;);</b>
+<i>319</i>&nbsp;
+<b class="nc"><i>320</i>&nbsp;        sb.append(&quot;source = &quot;).append(getSource());</b>
+<b class="nc"><i>321</i>&nbsp;        sb.append(&quot;, target = &quot;).append(getTarget());</b>
+<b class="nc"><i>322</i>&nbsp;        sb.append(&quot;, eventType = &quot;).append(getEventType());</b>
+<b class="nc"><i>323</i>&nbsp;        sb.append(&quot;, consumed = &quot;).append(isConsumed());</b>
+<i>324</i>&nbsp;
+<b class="nc"><i>325</i>&nbsp;        sb.append(&quot;, x = &quot;).append(getX()).append(&quot;, y = &quot;).append(getY())</b>
+<b class="nc"><i>326</i>&nbsp;                .append(&quot;, z = &quot;).append(getZ());</b>
+<b class="nc"><i>327</i>&nbsp;        sb.append(&quot;, pickResult = &quot;).append(getPickResult());</b>
+<i>328</i>&nbsp;
+<b class="nc"><i>329</i>&nbsp;        return sb.append(&quot;]&quot;).toString();</b>
+<i>330</i>&nbsp;    }
+<i>331</i>&nbsp;
+<i>332</i>&nbsp;    private void readObject(java.io.ObjectInputStream in)
+<i>333</i>&nbsp;            throws IOException, ClassNotFoundException {
+<b class="nc"><i>334</i>&nbsp;        in.defaultReadObject();</b>
+<b class="nc"><i>335</i>&nbsp;        x = sceneX;</b>
+<b class="nc"><i>336</i>&nbsp;        y = sceneY;</b>
+<b class="nc"><i>337</i>&nbsp;    }</b>
+<i>338</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2017-12-04 21:49</div>
+</div>
+</body>
+</html>

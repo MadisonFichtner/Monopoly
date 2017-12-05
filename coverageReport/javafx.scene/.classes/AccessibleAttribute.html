@@ -1,0 +1,882 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: AccessibleAttribute</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">javafx.scene</a> ]
+</div>
+
+<h1>Coverage Summary for Class: AccessibleAttribute (javafx.scene)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">AccessibleAttribute</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    75%
+  </span>
+  <span class="absValue">
+    (3/ 4)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    98.5%
+  </span>
+  <span class="absValue">
+    (64/ 65)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright (c) 2014, 2017, Oracle and/or its affiliates. All rights reserved.
+<i>3</i>&nbsp; * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+<i>4</i>&nbsp; *
+<i>5</i>&nbsp; *
+<i>6</i>&nbsp; *
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; *
+<i>11</i>&nbsp; *
+<i>12</i>&nbsp; *
+<i>13</i>&nbsp; *
+<i>14</i>&nbsp; *
+<i>15</i>&nbsp; *
+<i>16</i>&nbsp; *
+<i>17</i>&nbsp; *
+<i>18</i>&nbsp; *
+<i>19</i>&nbsp; *
+<i>20</i>&nbsp; *
+<i>21</i>&nbsp; *
+<i>22</i>&nbsp; *
+<i>23</i>&nbsp; *
+<i>24</i>&nbsp; */
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;package javafx.scene;
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;import java.time.LocalDate;
+<i>29</i>&nbsp;
+<i>30</i>&nbsp;import javafx.collections.ObservableList;
+<i>31</i>&nbsp;import javafx.geometry.Bounds;
+<i>32</i>&nbsp;import javafx.geometry.Orientation;
+<i>33</i>&nbsp;import javafx.scene.input.KeyCombination;
+<i>34</i>&nbsp;import javafx.scene.text.Font;
+<i>35</i>&nbsp;
+<i>36</i>&nbsp;/**
+<i>37</i>&nbsp; * This enum describes the attributes that an assistive technology
+<i>38</i>&nbsp; * such as a screen reader can request from the scene graph.
+<i>39</i>&nbsp; *
+<i>40</i>&nbsp; * The {@link AccessibleRole} dictates the set of attributes that
+<i>41</i>&nbsp; * the screen reader will request for a particular control.  For
+<i>42</i>&nbsp; * example, a slider is expected to return a double that represents
+<i>43</i>&nbsp; * the current value.
+<i>44</i>&nbsp; * &lt;p&gt;
+<i>45</i>&nbsp; * Attributes may have any number of parameters, depending on the particular attribute.&lt;/p&gt;
+<i>46</i>&nbsp; * &lt;p&gt;
+<i>47</i>&nbsp; * When the value of an attribute is changed by a node, it must notify the assistive technology
+<i>48</i>&nbsp; * using {@link Node#notifyAccessibleAttributeChanged(AccessibleAttribute)}.  This will allow
+<i>49</i>&nbsp; * the screen reader to inform the user that a value has changed.  The most common form of
+<i>50</i>&nbsp; * notification is focus change.
+<i>51</i>&nbsp; * &lt;/p&gt;
+<i>52</i>&nbsp; *
+<i>53</i>&nbsp; * @see Node#queryAccessibleAttribute(AccessibleAttribute, Object...)
+<i>54</i>&nbsp; * @see Node#notifyAccessibleAttributeChanged(AccessibleAttribute)
+<i>55</i>&nbsp; * @see AccessibleRole
+<i>56</i>&nbsp; * @see AccessibleAttribute#ROLE
+<i>57</i>&nbsp; *
+<i>58</i>&nbsp; * @since JavaFX 8u40
+<i>59</i>&nbsp; */
+<b class="fc"><i>60</i>&nbsp;public enum AccessibleAttribute {</b>
+<i>61</i>&nbsp;
+<i>62</i>&nbsp;    /**
+<i>63</i>&nbsp;     * Returns the accelerator for the node.
+<i>64</i>&nbsp;     * &lt;ul&gt;
+<i>65</i>&nbsp;     * &lt;li&gt;Used by: Menu, MenuItem, RadioMenuItem, and others &lt;/li&gt;
+<i>66</i>&nbsp;     * &lt;li&gt;Needs notify: no &lt;/li&gt;
+<i>67</i>&nbsp;     * &lt;li&gt;Return Type: {@link KeyCombination} &lt;/li&gt;
+<i>68</i>&nbsp;     * &lt;li&gt;Parameters: &lt;/li&gt;
+<i>69</i>&nbsp;     * &lt;/ul&gt;
+<i>70</i>&nbsp;     */
+<b class="fc"><i>71</i>&nbsp;    ACCELERATOR(KeyCombination.class),</b>
+<i>72</i>&nbsp;
+<i>73</i>&nbsp;    /**
+<i>74</i>&nbsp;     * Returns the bounds for the node.
+<i>75</i>&nbsp;     * &lt;ul&gt;
+<i>76</i>&nbsp;     * &lt;li&gt;Used by: Node &lt;/li&gt;
+<i>77</i>&nbsp;     * &lt;li&gt;Needs notify: no &lt;/li&gt;
+<i>78</i>&nbsp;     * &lt;li&gt;Return Type: {@link Bounds} &lt;/li&gt;
+<i>79</i>&nbsp;     * &lt;li&gt;Parameters: &lt;/li&gt;
+<i>80</i>&nbsp;     * &lt;/ul&gt;
+<i>81</i>&nbsp;     */
+<b class="fc"><i>82</i>&nbsp;    BOUNDS(Bounds.class),</b>
+<i>83</i>&nbsp;
+<i>84</i>&nbsp;    /**
+<i>85</i>&nbsp;     * Returns the array of bounding rectangles for the given character range.
+<i>86</i>&nbsp;     * &lt;ul&gt;
+<i>87</i>&nbsp;     * &lt;li&gt;Used by: TextField and TextArea &lt;/li&gt;
+<i>88</i>&nbsp;     * &lt;li&gt;Needs notify: no &lt;/li&gt;
+<i>89</i>&nbsp;     * &lt;li&gt;Return Type: {@link Bounds}[] &lt;/li&gt;
+<i>90</i>&nbsp;     * &lt;li&gt;Parameters:
+<i>91</i>&nbsp;     *   &lt;ul&gt;
+<i>92</i>&nbsp;     *    &lt;li&gt;{@link Integer} the start offset &lt;/li&gt;
+<i>93</i>&nbsp;     *    &lt;li&gt;{@link Integer} the end offset &lt;/li&gt;
+<i>94</i>&nbsp;     *   &lt;/ul&gt;
+<i>95</i>&nbsp;     * &lt;/li&gt;
+<i>96</i>&nbsp;     * &lt;/ul&gt;
+<i>97</i>&nbsp;     */
+<b class="fc"><i>98</i>&nbsp;    BOUNDS_FOR_RANGE(Bounds[].class),</b>
+<i>99</i>&nbsp;
+<i>100</i>&nbsp;    /**
+<i>101</i>&nbsp;     * Returns the caret offset for the node.
+<i>102</i>&nbsp;     * &lt;ul&gt;
+<i>103</i>&nbsp;     * &lt;li&gt;Used by: TextField and TextArea &lt;/li&gt;
+<i>104</i>&nbsp;     * &lt;li&gt;Needs notify: no &lt;/li&gt;
+<i>105</i>&nbsp;     * &lt;li&gt;Return Type: {@link Integer} &lt;/li&gt;
+<i>106</i>&nbsp;     * &lt;li&gt;Parameters: &lt;/li&gt;
+<i>107</i>&nbsp;     * &lt;/ul&gt;
+<i>108</i>&nbsp;     */
+<b class="fc"><i>109</i>&nbsp;    CARET_OFFSET(Integer.class),</b>
+<i>110</i>&nbsp;
+<i>111</i>&nbsp;    /**
+<i>112</i>&nbsp;     * Returns the children for the node.
+<i>113</i>&nbsp;     * &lt;ul&gt;
+<i>114</i>&nbsp;     * &lt;li&gt;Used by: Parent &lt;/li&gt;
+<i>115</i>&nbsp;     * &lt;li&gt;Needs notify: no &lt;/li&gt;
+<i>116</i>&nbsp;     * &lt;li&gt;Return Type: {@link javafx.collections.ObservableList}&amp;lt;{@link Node}&amp;gt; &lt;/li&gt;
+<i>117</i>&nbsp;     * &lt;li&gt;Parameters: &lt;/li&gt;
+<i>118</i>&nbsp;     * &lt;/ul&gt;
+<i>119</i>&nbsp;     */
+<b class="fc"><i>120</i>&nbsp;    CHILDREN(ObservableList.class),</b>
+<i>121</i>&nbsp;
+<i>122</i>&nbsp;    /**
+<i>123</i>&nbsp;     * Returns the column at the given index.
+<i>124</i>&nbsp;     * &lt;ul&gt;
+<i>125</i>&nbsp;     * &lt;li&gt;Used by: TableView and TreeTableView &lt;/li&gt;
+<i>126</i>&nbsp;     * &lt;li&gt;Needs notify: no &lt;/li&gt;
+<i>127</i>&nbsp;     * &lt;li&gt;Return Type: {@link Node} &lt;/li&gt;
+<i>128</i>&nbsp;     * &lt;li&gt;Parameters:
+<i>129</i>&nbsp;     *   &lt;ul&gt;
+<i>130</i>&nbsp;     *    &lt;li&gt;{@link Integer} the index &lt;/li&gt;
+<i>131</i>&nbsp;     *   &lt;/ul&gt;
+<i>132</i>&nbsp;     * &lt;/li&gt;
+<i>133</i>&nbsp;     * &lt;/ul&gt;
+<i>134</i>&nbsp;     */
+<b class="fc"><i>135</i>&nbsp;    COLUMN_AT_INDEX(Node.class),</b>
+<i>136</i>&nbsp;
+<i>137</i>&nbsp;    /**
+<i>138</i>&nbsp;     * Returns the cell at the given row and column indices.
+<i>139</i>&nbsp;     * &lt;ul&gt;
+<i>140</i>&nbsp;     * &lt;li&gt;Used by: TableView and TreeTableView &lt;/li&gt;
+<i>141</i>&nbsp;     * &lt;li&gt;Needs notify: no &lt;/li&gt;
+<i>142</i>&nbsp;     * &lt;li&gt;Return Type: {@link Node} &lt;/li&gt;
+<i>143</i>&nbsp;     * &lt;li&gt;Parameters:
+<i>144</i>&nbsp;     *   &lt;ul&gt;
+<i>145</i>&nbsp;     *    &lt;li&gt;{@link Integer} the row index &lt;/li&gt;
+<i>146</i>&nbsp;     *    &lt;li&gt;{@link Integer} the column index &lt;/li&gt;
+<i>147</i>&nbsp;     *   &lt;/ul&gt;
+<i>148</i>&nbsp;     * &lt;/li&gt;
+<i>149</i>&nbsp;     * &lt;/ul&gt;
+<i>150</i>&nbsp;     */
+<b class="fc"><i>151</i>&nbsp;    CELL_AT_ROW_COLUMN(Node.class),</b>
+<i>152</i>&nbsp;
+<i>153</i>&nbsp;    /**
+<i>154</i>&nbsp;     * Returns the column count for the node.
+<i>155</i>&nbsp;     * &lt;ul&gt;
+<i>156</i>&nbsp;     * &lt;li&gt;Used by: TableView and TreeTableView &lt;/li&gt;
+<i>157</i>&nbsp;     * &lt;li&gt;Needs notify: no &lt;/li&gt;
+<i>158</i>&nbsp;     * &lt;li&gt;Return Type: {@link Integer} &lt;/li&gt;
+<i>159</i>&nbsp;     * &lt;li&gt;Parameters: &lt;/li&gt;
+<i>160</i>&nbsp;     * &lt;/ul&gt;
+<i>161</i>&nbsp;     */
+<b class="fc"><i>162</i>&nbsp;    COLUMN_COUNT(Integer.class),</b>
+<i>163</i>&nbsp;
+<i>164</i>&nbsp;    /**
+<i>165</i>&nbsp;     * Returns the column index for the node.
+<i>166</i>&nbsp;     * &lt;ul&gt;
+<i>167</i>&nbsp;     * &lt;li&gt;Used by: TableCell and TreeTableCell &lt;/li&gt;
+<i>168</i>&nbsp;     * &lt;li&gt;Needs notify: no &lt;/li&gt;
+<i>169</i>&nbsp;     * &lt;li&gt;Return Type: {@link Integer} &lt;/li&gt;
+<i>170</i>&nbsp;     * &lt;li&gt;Parameters: &lt;/li&gt;
+<i>171</i>&nbsp;     * &lt;/ul&gt;
+<i>172</i>&nbsp;     */
+<b class="fc"><i>173</i>&nbsp;    COLUMN_INDEX(Integer.class),</b>
+<i>174</i>&nbsp;
+<i>175</i>&nbsp;    /**
+<i>176</i>&nbsp;     * Returns the contents of the node.
+<i>177</i>&nbsp;     * &lt;ul&gt;
+<i>178</i>&nbsp;     * &lt;li&gt;Used by: ScrollPane &lt;/li&gt;
+<i>179</i>&nbsp;     * &lt;li&gt;Needs notify: no &lt;/li&gt;
+<i>180</i>&nbsp;     * &lt;li&gt;Return Type: {@link Node} &lt;/li&gt;
+<i>181</i>&nbsp;     * &lt;li&gt;Parameters: &lt;/li&gt;
+<i>182</i>&nbsp;     * &lt;/ul&gt;
+<i>183</i>&nbsp;     */
+<b class="fc"><i>184</i>&nbsp;    CONTENTS(Node.class),</b>
+<i>185</i>&nbsp;
+<i>186</i>&nbsp;    /**
+<i>187</i>&nbsp;     * Returns true if the node is disabled, otherwise false.
+<i>188</i>&nbsp;     * &lt;ul&gt;
+<i>189</i>&nbsp;     * &lt;li&gt;Used by: Node &lt;/li&gt;
+<i>190</i>&nbsp;     * &lt;li&gt;Needs notify: no &lt;/li&gt;
+<i>191</i>&nbsp;     * &lt;li&gt;Return Type: {@link Boolean} &lt;/li&gt;
+<i>192</i>&nbsp;     * &lt;li&gt;Parameters: &lt;/li&gt;
+<i>193</i>&nbsp;     * &lt;/ul&gt;
+<i>194</i>&nbsp;     */
+<b class="fc"><i>195</i>&nbsp;    DISABLED(Boolean.class),</b>
+<i>196</i>&nbsp;
+<i>197</i>&nbsp;    /**
+<i>198</i>&nbsp;     * Returns the depth of a row in the disclosure hierarchy.
+<i>199</i>&nbsp;     * &lt;ul&gt;
+<i>200</i>&nbsp;     * &lt;li&gt;Used by: TreeItem and TreeTableRow &lt;/li&gt;
+<i>201</i>&nbsp;     * &lt;li&gt;Needs notify: no &lt;/li&gt;
+<i>202</i>&nbsp;     * &lt;li&gt;Return Type: {@link Integer} &lt;/li&gt;
+<i>203</i>&nbsp;     * &lt;li&gt;Parameters: &lt;/li&gt;
+<i>204</i>&nbsp;     * &lt;/ul&gt;
+<i>205</i>&nbsp;     */
+<b class="fc"><i>206</i>&nbsp;    DISCLOSURE_LEVEL(Integer.class),</b>
+<i>207</i>&nbsp;
+<i>208</i>&nbsp;    /**
+<i>209</i>&nbsp;     * Returns the local date for the node.
+<i>210</i>&nbsp;     * &lt;ul&gt;
+<i>211</i>&nbsp;     * &lt;li&gt;Used by: DatePicker &lt;/li&gt;
+<i>212</i>&nbsp;     * &lt;li&gt;Needs notify: no &lt;/li&gt;
+<i>213</i>&nbsp;     * &lt;li&gt;Return Type: {@link LocalDate} &lt;/li&gt;
+<i>214</i>&nbsp;     * &lt;li&gt;Parameters: &lt;/li&gt;
+<i>215</i>&nbsp;     * &lt;/ul&gt;
+<i>216</i>&nbsp;     */
+<b class="fc"><i>217</i>&nbsp;    DATE(LocalDate.class),</b>
+<i>218</i>&nbsp;
+<i>219</i>&nbsp;    /**
+<i>220</i>&nbsp;     * Returns true if the node is editable, otherwise false.
+<i>221</i>&nbsp;     * &lt;ul&gt;
+<i>222</i>&nbsp;     * &lt;li&gt;Used by: TextField, ComboBox, and others &lt;/li&gt;
+<i>223</i>&nbsp;     * &lt;li&gt;Needs notify: no &lt;/li&gt;
+<i>224</i>&nbsp;     * &lt;li&gt;Return Type: {@link Boolean} &lt;/li&gt;
+<i>225</i>&nbsp;     * &lt;li&gt;Parameters: &lt;/li&gt;
+<i>226</i>&nbsp;     * &lt;/ul&gt;
+<i>227</i>&nbsp;     */
+<b class="fc"><i>228</i>&nbsp;    EDITABLE(Boolean.class),</b>
+<i>229</i>&nbsp;
+<i>230</i>&nbsp;    /**
+<i>231</i>&nbsp;     * Returns true if the node is expanded, otherwise false.
+<i>232</i>&nbsp;     * &lt;ul&gt;
+<i>233</i>&nbsp;     * &lt;li&gt;Used by: TreeItem, TitledPane, and others &lt;/li&gt;
+<i>234</i>&nbsp;     * &lt;li&gt;Needs notify: yes &lt;/li&gt;
+<i>235</i>&nbsp;     * &lt;li&gt;Return Type: {@link Boolean} &lt;/li&gt;
+<i>236</i>&nbsp;     * &lt;li&gt;Parameters: &lt;/li&gt;
+<i>237</i>&nbsp;     * &lt;/ul&gt;
+<i>238</i>&nbsp;     */
+<b class="fc"><i>239</i>&nbsp;    EXPANDED(Boolean.class),</b>
+<i>240</i>&nbsp;
+<i>241</i>&nbsp;    /**
+<i>242</i>&nbsp;     * Returns the focus item.
+<i>243</i>&nbsp;     * &lt;p&gt;
+<i>244</i>&nbsp;     * Used for controls such as TabPane, TableView, ListView
+<i>245</i>&nbsp;     * where the assistive technology focus is different from the
+<i>246</i>&nbsp;     * normal focus node.  For example, a table control will have focus,
+<i>247</i>&nbsp;     * while a cell inside the table might have the screen reader focus.
+<i>248</i>&nbsp;     * &lt;/p&gt;
+<i>249</i>&nbsp;     * &lt;ul&gt;
+<i>250</i>&nbsp;     * &lt;li&gt;Used by: ListView, TabPane, and others &lt;/li&gt;
+<i>251</i>&nbsp;     * &lt;li&gt;Needs notify: yes &lt;/li&gt;
+<i>252</i>&nbsp;     * &lt;li&gt;Return Type: {@link Node} &lt;/li&gt;
+<i>253</i>&nbsp;     * &lt;li&gt;Parameters: &lt;/li&gt;
+<i>254</i>&nbsp;     * &lt;/ul&gt;
+<i>255</i>&nbsp;     */
+<b class="fc"><i>256</i>&nbsp;    FOCUS_ITEM(Node.class),</b>
+<i>257</i>&nbsp;
+<i>258</i>&nbsp;    /**
+<i>259</i>&nbsp;     * Returns the focus node.
+<i>260</i>&nbsp;     * Type: Node
+<i>261</i>&nbsp;     * &lt;p&gt;
+<i>262</i>&nbsp;     * When this attribute is requested from the Scene, the default implementation
+<i>263</i>&nbsp;     * returns {@link Scene#focusOwnerProperty()}.
+<i>264</i>&nbsp;     * &lt;/p&gt;
+<i>265</i>&nbsp;     * &lt;ul&gt;
+<i>266</i>&nbsp;     * &lt;li&gt;Used by: Scene &lt;/li&gt;
+<i>267</i>&nbsp;     * &lt;li&gt;Needs notify: yes &lt;/li&gt;
+<i>268</i>&nbsp;     * &lt;li&gt;Return Type: {@link Node} &lt;/li&gt;
+<i>269</i>&nbsp;     * &lt;li&gt;Parameters: &lt;/li&gt;
+<i>270</i>&nbsp;     * &lt;/ul&gt;
+<i>271</i>&nbsp;     */
+<b class="fc"><i>272</i>&nbsp;    FOCUS_NODE(Node.class),</b>
+<i>273</i>&nbsp;
+<i>274</i>&nbsp;    /**
+<i>275</i>&nbsp;     * Returns true if the node is focused, otherwise false.
+<i>276</i>&nbsp;     * &lt;ul&gt;
+<i>277</i>&nbsp;     * &lt;li&gt;Used by: Node &lt;/li&gt;
+<i>278</i>&nbsp;     * &lt;li&gt;Needs notify: no &lt;/li&gt;
+<i>279</i>&nbsp;     * &lt;li&gt;Return Type: {@link Boolean} &lt;/li&gt;
+<i>280</i>&nbsp;     * &lt;li&gt;Parameters: &lt;/li&gt;
+<i>281</i>&nbsp;     * &lt;/ul&gt;
+<i>282</i>&nbsp;     */
+<b class="fc"><i>283</i>&nbsp;    FOCUSED(Boolean.class),</b>
+<i>284</i>&nbsp;
+<i>285</i>&nbsp;    /**
+<i>286</i>&nbsp;     * Returns the font for the node.
+<i>287</i>&nbsp;     * &lt;ul&gt;
+<i>288</i>&nbsp;     * &lt;li&gt;Used by: TextField and TextArea &lt;/li&gt;
+<i>289</i>&nbsp;     * &lt;li&gt;Needs notify: no &lt;/li&gt;
+<i>290</i>&nbsp;     * &lt;li&gt;Return Type: {@link Font} &lt;/li&gt;
+<i>291</i>&nbsp;     * &lt;li&gt;Parameters: &lt;/li&gt;
+<i>292</i>&nbsp;     * &lt;/ul&gt;
+<i>293</i>&nbsp;     */
+<b class="fc"><i>294</i>&nbsp;    FONT(Font.class),</b>
+<i>295</i>&nbsp;
+<i>296</i>&nbsp;    /**
+<i>297</i>&nbsp;     * Returns the header for the node.
+<i>298</i>&nbsp;     * &lt;ul&gt;
+<i>299</i>&nbsp;     * &lt;li&gt;Used by: TableView and TreeTableView &lt;/li&gt;
+<i>300</i>&nbsp;     * &lt;li&gt;Needs notify: no &lt;/li&gt;
+<i>301</i>&nbsp;     * &lt;li&gt;Return Type: {@link Node} &lt;/li&gt;
+<i>302</i>&nbsp;     * &lt;li&gt;Parameters: &lt;/li&gt;
+<i>303</i>&nbsp;     * &lt;/ul&gt;
+<i>304</i>&nbsp;     */
+<b class="fc"><i>305</i>&nbsp;    HEADER(Node.class),</b>
+<i>306</i>&nbsp;
+<i>307</i>&nbsp;    /**
+<i>308</i>&nbsp;     * Returns the help text for the node.
+<i>309</i>&nbsp;     * &lt;ul&gt;
+<i>310</i>&nbsp;     * &lt;li&gt;Used by: Node &lt;/li&gt;
+<i>311</i>&nbsp;     * &lt;li&gt;Needs notify: no &lt;/li&gt;
+<i>312</i>&nbsp;     * &lt;li&gt;Return Type: {@link String} &lt;/li&gt;
+<i>313</i>&nbsp;     * &lt;li&gt;Parameters: &lt;/li&gt;
+<i>314</i>&nbsp;     * &lt;/ul&gt;
+<i>315</i>&nbsp;     */
+<b class="fc"><i>316</i>&nbsp;    HELP(String.class),</b>
+<i>317</i>&nbsp;
+<i>318</i>&nbsp;    /**
+<i>319</i>&nbsp;     * Returns the horizontal scroll bar for the node.
+<i>320</i>&nbsp;     * &lt;ul&gt;
+<i>321</i>&nbsp;     * &lt;li&gt;Used by: ListView, ScrollPane, and others &lt;/li&gt;
+<i>322</i>&nbsp;     * &lt;li&gt;Needs notify: no &lt;/li&gt;
+<i>323</i>&nbsp;     * &lt;li&gt;Return Type: {@link Node} &lt;/li&gt;
+<i>324</i>&nbsp;     * &lt;li&gt;Parameters: &lt;/li&gt;
+<i>325</i>&nbsp;     * &lt;/ul&gt;
+<i>326</i>&nbsp;     */
+<b class="fc"><i>327</i>&nbsp;    HORIZONTAL_SCROLLBAR(Node.class),</b>
+<i>328</i>&nbsp;
+<i>329</i>&nbsp;    /**
+<i>330</i>&nbsp;     * Returns true of the node is indeterminaite, otherwise false.
+<i>331</i>&nbsp;     * &lt;ul&gt;
+<i>332</i>&nbsp;     * &lt;li&gt;Used by: CheckBox and ProgressIndicator &lt;/li&gt;
+<i>333</i>&nbsp;     * &lt;li&gt;Needs notify: yes &lt;/li&gt;
+<i>334</i>&nbsp;     * &lt;li&gt;Return Type: {@link Boolean} &lt;/li&gt;
+<i>335</i>&nbsp;     * &lt;li&gt;Parameters: &lt;/li&gt;
+<i>336</i>&nbsp;     * &lt;/ul&gt;
+<i>337</i>&nbsp;     */
+<b class="fc"><i>338</i>&nbsp;    INDETERMINATE(Boolean.class),</b>
+<i>339</i>&nbsp;
+<i>340</i>&nbsp;    /**
+<i>341</i>&nbsp;     * Returns the item at the given index.
+<i>342</i>&nbsp;     * &lt;ul&gt;
+<i>343</i>&nbsp;     * &lt;li&gt;Used by: TabPane, ListView, and others &lt;/li&gt;
+<i>344</i>&nbsp;     * &lt;li&gt;Needs notify: no &lt;/li&gt;
+<i>345</i>&nbsp;     * &lt;li&gt;Return Type: {@link Node} &lt;/li&gt;
+<i>346</i>&nbsp;     * &lt;li&gt;Parameters:
+<i>347</i>&nbsp;     *   &lt;ul&gt;
+<i>348</i>&nbsp;     *   &lt;li&gt; {@link Integer} the index &lt;/li&gt;
+<i>349</i>&nbsp;     *   &lt;/ul&gt;
+<i>350</i>&nbsp;     * &lt;/li&gt;
+<i>351</i>&nbsp;     * &lt;/ul&gt;
+<i>352</i>&nbsp;     */
+<b class="fc"><i>353</i>&nbsp;    ITEM_AT_INDEX(Node.class),</b>
+<i>354</i>&nbsp;
+<i>355</i>&nbsp;    /**
+<i>356</i>&nbsp;     * Returns the item count for the node.
+<i>357</i>&nbsp;     * &lt;ul&gt;
+<i>358</i>&nbsp;     * &lt;li&gt;Used by: TabPane, ListView, and others &lt;/li&gt;
+<i>359</i>&nbsp;     * &lt;li&gt;Needs notify: no &lt;/li&gt;
+<i>360</i>&nbsp;     * &lt;li&gt;Return Type: {@link Integer} &lt;/li&gt;
+<i>361</i>&nbsp;     * &lt;li&gt;Parameters: &lt;/li&gt;
+<i>362</i>&nbsp;     * &lt;/ul&gt;
+<i>363</i>&nbsp;     */
+<b class="fc"><i>364</i>&nbsp;    ITEM_COUNT(Integer.class),</b>
+<i>365</i>&nbsp;
+<i>366</i>&nbsp;    /**
+<i>367</i>&nbsp;     * Returns the index for the node.
+<i>368</i>&nbsp;     * &lt;ul&gt;
+<i>369</i>&nbsp;     * &lt;li&gt;Used by: ListItem, TableRow, and others &lt;/li&gt;
+<i>370</i>&nbsp;     * &lt;li&gt;Needs notify: no &lt;/li&gt;
+<i>371</i>&nbsp;     * &lt;li&gt;Return Type: {@link Integer} &lt;/li&gt;
+<i>372</i>&nbsp;     * &lt;li&gt;Parameters: &lt;/li&gt;
+<i>373</i>&nbsp;     * &lt;/ul&gt;
+<i>374</i>&nbsp;     */
+<b class="fc"><i>375</i>&nbsp;    INDEX(Integer.class),</b>
+<i>376</i>&nbsp;
+<i>377</i>&nbsp;    /**
+<i>378</i>&nbsp;     * Returns the node that is the label for this node.
+<i>379</i>&nbsp;     * &lt;p&gt;When {@link javafx.scene.control.Label#labelFor} is set,
+<i>380</i>&nbsp;     * the default implementation of {@code LABELED_BY} uses this
+<i>381</i>&nbsp;     * relationship to return the appropriate node to the screen
+<i>382</i>&nbsp;     * reader.&lt;/p&gt;
+<i>383</i>&nbsp;     * &lt;ul&gt;
+<i>384</i>&nbsp;     * &lt;li&gt;Used by: Node &lt;/li&gt;
+<i>385</i>&nbsp;     * &lt;li&gt;Needs notify: no &lt;/li&gt;
+<i>386</i>&nbsp;     * &lt;li&gt;Return Type: {@link Node} &lt;/li&gt;
+<i>387</i>&nbsp;     * &lt;li&gt;Parameters: &lt;/li&gt;
+<i>388</i>&nbsp;     * &lt;/ul&gt;
+<i>389</i>&nbsp;     */
+<b class="fc"><i>390</i>&nbsp;    LABELED_BY(Node.class),</b>
+<i>391</i>&nbsp;
+<i>392</i>&nbsp;    /**
+<i>393</i>&nbsp;     * Returns true if the node is a leaf element, otherwise false.
+<i>394</i>&nbsp;     * &lt;ul&gt;
+<i>395</i>&nbsp;     * &lt;li&gt;Used by: TreeItem and TreeTableRow &lt;/li&gt;
+<i>396</i>&nbsp;     * &lt;li&gt;Needs notify: no &lt;/li&gt;
+<i>397</i>&nbsp;     * &lt;li&gt;Return Type: {@link Boolean} &lt;/li&gt;
+<i>398</i>&nbsp;     * &lt;li&gt;Parameters: &lt;/li&gt;
+<i>399</i>&nbsp;     * &lt;/ul&gt;
+<i>400</i>&nbsp;     */
+<b class="fc"><i>401</i>&nbsp;    LEAF(Boolean.class),</b>
+<i>402</i>&nbsp;
+<i>403</i>&nbsp;    /**
+<i>404</i>&nbsp;     * Returns the line end offset of the given line index.
+<i>405</i>&nbsp;     * &lt;ul&gt;
+<i>406</i>&nbsp;     * &lt;li&gt;Used by: TextArea &lt;/li&gt;
+<i>407</i>&nbsp;     * &lt;li&gt;Needs notify: no &lt;/li&gt;
+<i>408</i>&nbsp;     * &lt;li&gt;Return Type: {@link Integer} &lt;/li&gt;
+<i>409</i>&nbsp;     * &lt;li&gt;Parameters:
+<i>410</i>&nbsp;     *   &lt;ul&gt;
+<i>411</i>&nbsp;     *   &lt;li&gt; {@link Integer} the line index &lt;/li&gt;
+<i>412</i>&nbsp;     *   &lt;/ul&gt;
+<i>413</i>&nbsp;     * &lt;/li&gt;
+<i>414</i>&nbsp;     * &lt;/ul&gt;
+<i>415</i>&nbsp;     */
+<b class="fc"><i>416</i>&nbsp;    LINE_END(Integer.class),</b>
+<i>417</i>&nbsp;
+<i>418</i>&nbsp;    /**
+<i>419</i>&nbsp;     * Returns the line index of the given character offset.
+<i>420</i>&nbsp;     * &lt;ul&gt;
+<i>421</i>&nbsp;     * &lt;li&gt;Used by: TextArea &lt;/li&gt;
+<i>422</i>&nbsp;     * &lt;li&gt;Needs notify: no &lt;/li&gt;
+<i>423</i>&nbsp;     * &lt;li&gt;Return Type: {@link Integer} &lt;/li&gt;
+<i>424</i>&nbsp;     * &lt;li&gt;Parameters:
+<i>425</i>&nbsp;     *   &lt;ul&gt;
+<i>426</i>&nbsp;     *   &lt;li&gt; {@link Integer} the character offset &lt;/li&gt;
+<i>427</i>&nbsp;     *   &lt;/ul&gt;
+<i>428</i>&nbsp;     * &lt;/li&gt;
+<i>429</i>&nbsp;     * &lt;/ul&gt;
+<i>430</i>&nbsp;     */
+<b class="fc"><i>431</i>&nbsp;    LINE_FOR_OFFSET(Integer.class),</b>
+<i>432</i>&nbsp;
+<i>433</i>&nbsp;    /**
+<i>434</i>&nbsp;     * Returns the line start offset of the given line index.
+<i>435</i>&nbsp;     * &lt;ul&gt;
+<i>436</i>&nbsp;     * &lt;li&gt;Used by: TextArea &lt;/li&gt;
+<i>437</i>&nbsp;     * &lt;li&gt;Needs notify: no &lt;/li&gt;
+<i>438</i>&nbsp;     * &lt;li&gt;Return Type: {@link Integer} &lt;/li&gt;
+<i>439</i>&nbsp;     * &lt;li&gt;Parameters:
+<i>440</i>&nbsp;     *   &lt;ul&gt;
+<i>441</i>&nbsp;     *   &lt;li&gt; {@link Integer} the line index &lt;/li&gt;
+<i>442</i>&nbsp;     *   &lt;/ul&gt;
+<i>443</i>&nbsp;     * &lt;/li&gt;
+<i>444</i>&nbsp;     * &lt;/ul&gt;
+<i>445</i>&nbsp;     */
+<b class="fc"><i>446</i>&nbsp;    LINE_START(Integer.class),</b>
+<i>447</i>&nbsp;
+<i>448</i>&nbsp;    /**
+<i>449</i>&nbsp;     * Returns the minimum value for the node.
+<i>450</i>&nbsp;     * &lt;ul&gt;
+<i>451</i>&nbsp;     * &lt;li&gt;Used by: Slider, ScrollBar, and others &lt;/li&gt;
+<i>452</i>&nbsp;     * &lt;li&gt;Needs notify: no &lt;/li&gt;
+<i>453</i>&nbsp;     * &lt;li&gt;Return Type: {@link Double} &lt;/li&gt;
+<i>454</i>&nbsp;     * &lt;li&gt;Parameters: &lt;/li&gt;
+<i>455</i>&nbsp;     * &lt;/ul&gt;
+<i>456</i>&nbsp;     */
+<b class="fc"><i>457</i>&nbsp;    MIN_VALUE(Double.class),</b>
+<i>458</i>&nbsp;
+<i>459</i>&nbsp;    /**
+<i>460</i>&nbsp;     * Returns the maximum value for the node.
+<i>461</i>&nbsp;     * &lt;ul&gt;
+<i>462</i>&nbsp;     * &lt;li&gt;Used by: Slider, ScrollBar, and others &lt;/li&gt;
+<i>463</i>&nbsp;     * &lt;li&gt;Needs notify: no &lt;/li&gt;
+<i>464</i>&nbsp;     * &lt;li&gt;Return Type: {@link Double} &lt;/li&gt;
+<i>465</i>&nbsp;     * &lt;li&gt;Parameters: &lt;/li&gt;
+<i>466</i>&nbsp;     * &lt;/ul&gt;
+<i>467</i>&nbsp;     */
+<b class="fc"><i>468</i>&nbsp;    MAX_VALUE(Double.class),</b>
+<i>469</i>&nbsp;
+<i>470</i>&nbsp;    /**
+<i>471</i>&nbsp;     * Returns the mnemonic for the node.
+<i>472</i>&nbsp;     * &lt;ul&gt;
+<i>473</i>&nbsp;     * &lt;li&gt;Used by: Menu, MenuItem, CheckMenuItem, and others &lt;/li&gt;
+<i>474</i>&nbsp;     * &lt;li&gt;Needs notify: no &lt;/li&gt;
+<i>475</i>&nbsp;     * &lt;li&gt;Return Type: {@link String} &lt;/li&gt;
+<i>476</i>&nbsp;     * &lt;li&gt;Parameters: &lt;/li&gt;
+<i>477</i>&nbsp;     * &lt;/ul&gt;
+<i>478</i>&nbsp;     */
+<b class="fc"><i>479</i>&nbsp;    MNEMONIC(String.class),</b>
+<i>480</i>&nbsp;
+<i>481</i>&nbsp;    /**
+<i>482</i>&nbsp;     * Returns true if the node allows for multiple selection, otherwise false.
+<i>483</i>&nbsp;     * &lt;ul&gt;
+<i>484</i>&nbsp;     * &lt;li&gt;Used by: ListView, TableView, and others &lt;/li&gt;
+<i>485</i>&nbsp;     * &lt;li&gt;Needs notify: no &lt;/li&gt;
+<i>486</i>&nbsp;     * &lt;li&gt;Return Type: {@link Boolean} &lt;/li&gt;
+<i>487</i>&nbsp;     * &lt;li&gt;Parameters: &lt;/li&gt;
+<i>488</i>&nbsp;     * &lt;/ul&gt;
+<i>489</i>&nbsp;     */
+<b class="fc"><i>490</i>&nbsp;    MULTIPLE_SELECTION(Boolean.class),</b>
+<i>491</i>&nbsp;
+<i>492</i>&nbsp;    /**
+<i>493</i>&nbsp;     * Returns the node at the given location.
+<i>494</i>&nbsp;     * &lt;ul&gt;
+<i>495</i>&nbsp;     * &lt;li&gt;Used by: Scene &lt;/li&gt;
+<i>496</i>&nbsp;     * &lt;li&gt;Needs notify: no &lt;/li&gt;
+<i>497</i>&nbsp;     * &lt;li&gt;Return Type: {@link Node} &lt;/li&gt;
+<i>498</i>&nbsp;     * &lt;li&gt;Parameters:
+<i>499</i>&nbsp;     *   &lt;ul&gt;
+<i>500</i>&nbsp;     *   &lt;li&gt; {@link javafx.geometry.Point2D} the point location &lt;/li&gt;
+<i>501</i>&nbsp;     *   &lt;/ul&gt;
+<i>502</i>&nbsp;     * &lt;/li&gt;
+<i>503</i>&nbsp;     * &lt;/ul&gt;
+<i>504</i>&nbsp;     */
+<b class="fc"><i>505</i>&nbsp;    NODE_AT_POINT(Node.class),</b>
+<i>506</i>&nbsp;
+<i>507</i>&nbsp;    /**
+<i>508</i>&nbsp;     * Returns the character offset at the given location.
+<i>509</i>&nbsp;     * &lt;ul&gt;
+<i>510</i>&nbsp;     * &lt;li&gt;Used by: TextField and TextArea &lt;/li&gt;
+<i>511</i>&nbsp;     * &lt;li&gt;Needs notify: no &lt;/li&gt;
+<i>512</i>&nbsp;     * &lt;li&gt;Return Type: {@link Integer} &lt;/li&gt;
+<i>513</i>&nbsp;     * &lt;li&gt;Parameters:
+<i>514</i>&nbsp;     *   &lt;ul&gt;
+<i>515</i>&nbsp;     *   &lt;li&gt; {@link javafx.geometry.Point2D} the point location &lt;/li&gt;
+<i>516</i>&nbsp;     *   &lt;/ul&gt;
+<i>517</i>&nbsp;     * &lt;/li&gt;
+<i>518</i>&nbsp;     * &lt;/ul&gt;
+<i>519</i>&nbsp;     */
+<b class="fc"><i>520</i>&nbsp;    OFFSET_AT_POINT(Integer.class),</b>
+<i>521</i>&nbsp;
+<i>522</i>&nbsp;    /**
+<i>523</i>&nbsp;     * Returns the orientation of the node.
+<i>524</i>&nbsp;     * &lt;ul&gt;
+<i>525</i>&nbsp;     * &lt;li&gt;Used by: ScrolBar and Slider &lt;/li&gt;
+<i>526</i>&nbsp;     * &lt;li&gt;Needs notify: no &lt;/li&gt;
+<i>527</i>&nbsp;     * &lt;li&gt;Return Type: {@link javafx.geometry.Orientation} &lt;/li&gt;
+<i>528</i>&nbsp;     * &lt;li&gt;Parameters: &lt;/li&gt;
+<i>529</i>&nbsp;     * &lt;/ul&gt;
+<i>530</i>&nbsp;     */
+<b class="fc"><i>531</i>&nbsp;    ORIENTATION(Orientation.class),</b>
+<i>532</i>&nbsp;
+<i>533</i>&nbsp;    /**
+<i>534</i>&nbsp;     * Return the overflow button for the node.
+<i>535</i>&nbsp;     * &lt;ul&gt;
+<i>536</i>&nbsp;     * &lt;li&gt;Used by: Toolbar &lt;/li&gt;
+<i>537</i>&nbsp;     * &lt;li&gt;Needs notify: no &lt;/li&gt;
+<i>538</i>&nbsp;     * &lt;li&gt;Return Type: {@link Node} &lt;/li&gt;
+<i>539</i>&nbsp;     * &lt;li&gt;Parameters: &lt;/li&gt;
+<i>540</i>&nbsp;     * &lt;/ul&gt;
+<i>541</i>&nbsp;     */
+<b class="fc"><i>542</i>&nbsp;    OVERFLOW_BUTTON(Node.class),</b>
+<i>543</i>&nbsp;
+<i>544</i>&nbsp;    /**
+<i>545</i>&nbsp;     * Returns the parent for the node.
+<i>546</i>&nbsp;     * &lt;ul&gt;
+<i>547</i>&nbsp;     * &lt;li&gt;Used by: Node &lt;/li&gt;
+<i>548</i>&nbsp;     * &lt;li&gt;Needs notify: yes &lt;/li&gt;
+<i>549</i>&nbsp;     * &lt;li&gt;Return Type: {@link Parent} &lt;/li&gt;
+<i>550</i>&nbsp;     * &lt;li&gt;Parameters: &lt;/li&gt;
+<i>551</i>&nbsp;     * &lt;/ul&gt;
+<i>552</i>&nbsp;     */
+<b class="fc"><i>553</i>&nbsp;    PARENT(Parent.class),</b>
+<i>554</i>&nbsp;
+<i>555</i>&nbsp;    /**
+<i>556</i>&nbsp;     * Returns the parent menu for the node.
+<i>557</i>&nbsp;     * &lt;ul&gt;
+<i>558</i>&nbsp;     * &lt;li&gt;Used by: ContextMenu &lt;/li&gt;
+<i>559</i>&nbsp;     * &lt;li&gt;Needs notify: no &lt;/li&gt;
+<i>560</i>&nbsp;     * &lt;li&gt;Return Type: {@link Node} &lt;/li&gt;
+<i>561</i>&nbsp;     * &lt;li&gt;Parameters: &lt;/li&gt;
+<i>562</i>&nbsp;     * &lt;/ul&gt;
+<i>563</i>&nbsp;     */
+<b class="fc"><i>564</i>&nbsp;    PARENT_MENU(Node.class),</b>
+<i>565</i>&nbsp;
+<i>566</i>&nbsp;    /**
+<i>567</i>&nbsp;     * Returns the role for the node.
+<i>568</i>&nbsp;     * &lt;ul&gt;
+<i>569</i>&nbsp;     * &lt;li&gt;Used by: Node &lt;/li&gt;
+<i>570</i>&nbsp;     * &lt;li&gt;Needs notify: no &lt;/li&gt;
+<i>571</i>&nbsp;     * &lt;li&gt;Return Type: {@link AccessibleRole} &lt;/li&gt;
+<i>572</i>&nbsp;     * &lt;li&gt;Parameters: &lt;/li&gt;
+<i>573</i>&nbsp;     * &lt;/ul&gt;
+<i>574</i>&nbsp;     */
+<b class="fc"><i>575</i>&nbsp;    ROLE(AccessibleRole.class),</b>
+<i>576</i>&nbsp;
+<i>577</i>&nbsp;    /**
+<i>578</i>&nbsp;     * Returns the role description for the node.
+<i>579</i>&nbsp;     * &lt;ul&gt;
+<i>580</i>&nbsp;     * &lt;li&gt;Used by: Node &lt;/li&gt;
+<i>581</i>&nbsp;     * &lt;li&gt;Needs notify: no &lt;/li&gt;
+<i>582</i>&nbsp;     * &lt;li&gt;Return Type: {@link String} &lt;/li&gt;
+<i>583</i>&nbsp;     * &lt;li&gt;Parameters: &lt;/li&gt;
+<i>584</i>&nbsp;     * &lt;/ul&gt;
+<i>585</i>&nbsp;     */
+<b class="fc"><i>586</i>&nbsp;    ROLE_DESCRIPTION(String.class),</b>
+<i>587</i>&nbsp;
+<i>588</i>&nbsp;    /**
+<i>589</i>&nbsp;     * Returns the row at the given index.
+<i>590</i>&nbsp;     * &lt;ul&gt;
+<i>591</i>&nbsp;     * &lt;li&gt;Used by: TableView, TreeView, and TreeTableView &lt;/li&gt;
+<i>592</i>&nbsp;     * &lt;li&gt;Needs notify: no &lt;/li&gt;
+<i>593</i>&nbsp;     * &lt;li&gt;Return Type: {@link Node} &lt;/li&gt;
+<i>594</i>&nbsp;     * &lt;li&gt;Parameters:
+<i>595</i>&nbsp;     *   &lt;ul&gt;
+<i>596</i>&nbsp;     *   &lt;li&gt; {@link Integer} the row index &lt;/li&gt;
+<i>597</i>&nbsp;     *   &lt;/ul&gt;
+<i>598</i>&nbsp;     * &lt;/li&gt;
+<i>599</i>&nbsp;     * &lt;/ul&gt;
+<i>600</i>&nbsp;     */
+<b class="fc"><i>601</i>&nbsp;    ROW_AT_INDEX(Node.class),</b>
+<i>602</i>&nbsp;
+<i>603</i>&nbsp;    /**
+<i>604</i>&nbsp;     * Returns the row count for the node.
+<i>605</i>&nbsp;     * &lt;ul&gt;
+<i>606</i>&nbsp;     * &lt;li&gt;Used by: TableView, TreeView, and TreeTableView &lt;/li&gt;
+<i>607</i>&nbsp;     * &lt;li&gt;Needs notify: no &lt;/li&gt;
+<i>608</i>&nbsp;     * &lt;li&gt;Return Type: {@link Integer} &lt;/li&gt;
+<i>609</i>&nbsp;     * &lt;li&gt;Parameters: &lt;/li&gt;
+<i>610</i>&nbsp;     * &lt;/ul&gt;
+<i>611</i>&nbsp;     */
+<b class="fc"><i>612</i>&nbsp;    ROW_COUNT(Integer.class),</b>
+<i>613</i>&nbsp;
+<i>614</i>&nbsp;    /**
+<i>615</i>&nbsp;     * Returns the row index of the node.
+<i>616</i>&nbsp;     * &lt;ul&gt;
+<i>617</i>&nbsp;     * &lt;li&gt;Used by: TableCell, TreeItem, and TreeTableCell &lt;/li&gt;
+<i>618</i>&nbsp;     * &lt;li&gt;Needs notify: no &lt;/li&gt;
+<i>619</i>&nbsp;     * &lt;li&gt;Return Type: {@link Integer} &lt;/li&gt;
+<i>620</i>&nbsp;     * &lt;li&gt;Parameters: &lt;/li&gt;
+<i>621</i>&nbsp;     * &lt;/ul&gt;
+<i>622</i>&nbsp;     */
+<b class="fc"><i>623</i>&nbsp;    ROW_INDEX(Integer.class),</b>
+<i>624</i>&nbsp;
+<i>625</i>&nbsp;    /**
+<i>626</i>&nbsp;     * Returns the scene for the node.
+<i>627</i>&nbsp;     * &lt;ul&gt;
+<i>628</i>&nbsp;     * &lt;li&gt;Used by: Node &lt;/li&gt;
+<i>629</i>&nbsp;     * &lt;li&gt;Needs notify: no &lt;/li&gt;
+<i>630</i>&nbsp;     * &lt;li&gt;Return Type: {@link Scene} &lt;/li&gt;
+<i>631</i>&nbsp;     * &lt;li&gt;Parameters: &lt;/li&gt;
+<i>632</i>&nbsp;     * &lt;/ul&gt;
+<i>633</i>&nbsp;     */
+<b class="fc"><i>634</i>&nbsp;    SCENE(Scene.class),</b>
+<i>635</i>&nbsp;
+<i>636</i>&nbsp;    /**
+<i>637</i>&nbsp;     * Returns true if the node is selected, otherwise false.
+<i>638</i>&nbsp;     * &lt;ul&gt;
+<i>639</i>&nbsp;     * &lt;li&gt;Used by: CheckBox, TreeItem, and others &lt;/li&gt;
+<i>640</i>&nbsp;     * &lt;li&gt;Needs notify: no &lt;/li&gt;
+<i>641</i>&nbsp;     * &lt;li&gt;Return Type: {@link Boolean} &lt;/li&gt;
+<i>642</i>&nbsp;     * &lt;li&gt;Parameters: &lt;/li&gt;
+<i>643</i>&nbsp;     * &lt;/ul&gt;
+<i>644</i>&nbsp;     */
+<b class="fc"><i>645</i>&nbsp;    SELECTED(Boolean.class),</b>
+<i>646</i>&nbsp;
+<i>647</i>&nbsp;    /**
+<i>648</i>&nbsp;     * Returns the list of selected items for the node.
+<i>649</i>&nbsp;     * &lt;ul&gt;
+<i>650</i>&nbsp;     * &lt;li&gt;Used by: ListView, TableView, and others &lt;/li&gt;
+<i>651</i>&nbsp;     * &lt;li&gt;Needs notify: no &lt;/li&gt;
+<i>652</i>&nbsp;     * &lt;li&gt;Return Type: {@link javafx.collections.ObservableList}&amp;lt;{@link Node}&amp;gt; &lt;/li&gt;
+<i>653</i>&nbsp;     * &lt;li&gt;Parameters: &lt;/li&gt;
+<i>654</i>&nbsp;     * &lt;/ul&gt;
+<i>655</i>&nbsp;     */
+<b class="fc"><i>656</i>&nbsp;    SELECTED_ITEMS(ObservableList.class),</b>
+<i>657</i>&nbsp;
+<i>658</i>&nbsp;    /**
+<i>659</i>&nbsp;     * Returns the text selection end offset for the node.
+<i>660</i>&nbsp;     * &lt;ul&gt;
+<i>661</i>&nbsp;     * &lt;li&gt;Used by: TextField and TextArea &lt;/li&gt;
+<i>662</i>&nbsp;     * &lt;li&gt;Needs notify: yes &lt;/li&gt;
+<i>663</i>&nbsp;     * &lt;li&gt;Return Type: {@link Integer} &lt;/li&gt;
+<i>664</i>&nbsp;     * &lt;li&gt;Parameters: &lt;/li&gt;
+<i>665</i>&nbsp;     * &lt;/ul&gt;
+<i>666</i>&nbsp;     */
+<b class="fc"><i>667</i>&nbsp;    SELECTION_END(Integer.class),</b>
+<i>668</i>&nbsp;
+<i>669</i>&nbsp;    /**
+<i>670</i>&nbsp;     * Returns the text selection start offset for the node.
+<i>671</i>&nbsp;     * &lt;ul&gt;
+<i>672</i>&nbsp;     * &lt;li&gt;Used by: TextField and TextArea &lt;/li&gt;
+<i>673</i>&nbsp;     * &lt;li&gt;Needs notify: yes &lt;/li&gt;
+<i>674</i>&nbsp;     * &lt;li&gt;Return Type: {@link Integer} &lt;/li&gt;
+<i>675</i>&nbsp;     * &lt;li&gt;Parameters: &lt;/li&gt;
+<i>676</i>&nbsp;     * &lt;/ul&gt;
+<i>677</i>&nbsp;     */
+<b class="fc"><i>678</i>&nbsp;    SELECTION_START(Integer.class),</b>
+<i>679</i>&nbsp;
+<i>680</i>&nbsp;    /**
+<i>681</i>&nbsp;     * Returns the sub menu for the node.
+<i>682</i>&nbsp;     * &lt;ul&gt;
+<i>683</i>&nbsp;     * &lt;li&gt;Used by: Menu &lt;/li&gt;
+<i>684</i>&nbsp;     * &lt;li&gt;Needs notify: no &lt;/li&gt;
+<i>685</i>&nbsp;     * &lt;li&gt;Return Type: {@link Node} &lt;/li&gt;
+<i>686</i>&nbsp;     * &lt;li&gt;Parameters: &lt;/li&gt;
+<i>687</i>&nbsp;     * &lt;/ul&gt;
+<i>688</i>&nbsp;     */
+<b class="fc"><i>689</i>&nbsp;    SUBMENU(Node.class),</b>
+<i>690</i>&nbsp;
+<i>691</i>&nbsp;    /**
+<i>692</i>&nbsp;     * Returns the text for the node.
+<i>693</i>&nbsp;     * E.g.
+<i>694</i>&nbsp;     * &lt;ul&gt;
+<i>695</i>&nbsp;     * &lt;li&gt;ComboBox returns a string representation of the current selected item.
+<i>696</i>&nbsp;     * &lt;li&gt;TextField returns the contents of the text field.
+<i>697</i>&nbsp;     * &lt;/ul&gt;
+<i>698</i>&nbsp;     *
+<i>699</i>&nbsp;     * &lt;ul&gt;
+<i>700</i>&nbsp;     * &lt;li&gt;Used by: Node &lt;/li&gt;
+<i>701</i>&nbsp;     * &lt;li&gt;Needs notify: yes &lt;/li&gt;
+<i>702</i>&nbsp;     * &lt;li&gt;Return Type: {@link String} &lt;/li&gt;
+<i>703</i>&nbsp;     * &lt;li&gt;Parameters: &lt;/li&gt;
+<i>704</i>&nbsp;     * &lt;/ul&gt;
+<i>705</i>&nbsp;     */
+<b class="fc"><i>706</i>&nbsp;    TEXT(String.class),</b>
+<i>707</i>&nbsp;
+<i>708</i>&nbsp;    /**
+<i>709</i>&nbsp;     * Returns a tree item at the given index, relative to its TREE_ITEM_PARENT.
+<i>710</i>&nbsp;     * &lt;ul&gt;
+<i>711</i>&nbsp;     * &lt;li&gt;Used by: TreeItem and TreeTableRow &lt;/li&gt;
+<i>712</i>&nbsp;     * &lt;li&gt;Needs notify: no &lt;/li&gt;
+<i>713</i>&nbsp;     * &lt;li&gt;Return Type: {@link Node} &lt;/li&gt;
+<i>714</i>&nbsp;     * &lt;li&gt;Parameters:
+<i>715</i>&nbsp;     *   &lt;ul&gt;
+<i>716</i>&nbsp;     *   &lt;li&gt; {@link Integer} the index &lt;/li&gt;
+<i>717</i>&nbsp;     *   &lt;/ul&gt;
+<i>718</i>&nbsp;     * &lt;/li&gt;
+<i>719</i>&nbsp;     * &lt;/ul&gt;
+<i>720</i>&nbsp;     */
+<b class="fc"><i>721</i>&nbsp;    TREE_ITEM_AT_INDEX(Node.class),</b>
+<i>722</i>&nbsp;
+<i>723</i>&nbsp;    /**
+<i>724</i>&nbsp;     * Returns the tree item count for the node, relative to its TREE_ITEM_PARENT.
+<i>725</i>&nbsp;     * &lt;ul&gt;
+<i>726</i>&nbsp;     * &lt;li&gt;Used by: TreeItem and TreeTableRow &lt;/li&gt;
+<i>727</i>&nbsp;     * &lt;li&gt;Needs notify: no &lt;/li&gt;
+<i>728</i>&nbsp;     * &lt;li&gt;Return Type: {@link Integer} &lt;/li&gt;
+<i>729</i>&nbsp;     * &lt;li&gt;Parameters: &lt;/li&gt;
+<i>730</i>&nbsp;     * &lt;/ul&gt;
+<i>731</i>&nbsp;     */
+<b class="fc"><i>732</i>&nbsp;    TREE_ITEM_COUNT(Integer.class),</b>
+<i>733</i>&nbsp;
+<i>734</i>&nbsp;    /**
+<i>735</i>&nbsp;     * Returns the parent item for the item, or null if the item is the root.
+<i>736</i>&nbsp;     * &lt;ul&gt;
+<i>737</i>&nbsp;     * &lt;li&gt;Used by: TreeItem and TreeTableRow &lt;/li&gt;
+<i>738</i>&nbsp;     * &lt;li&gt;Needs notify: no &lt;/li&gt;
+<i>739</i>&nbsp;     * &lt;li&gt;Return Type: {@link Node} &lt;/li&gt;
+<i>740</i>&nbsp;     * &lt;li&gt;Parameters: &lt;/li&gt;
+<i>741</i>&nbsp;     * &lt;/ul&gt;
+<i>742</i>&nbsp;     */
+<b class="fc"><i>743</i>&nbsp;    TREE_ITEM_PARENT(Node.class),</b>
+<i>744</i>&nbsp;
+<i>745</i>&nbsp;    /**
+<i>746</i>&nbsp;     * Returns the value for the node.
+<i>747</i>&nbsp;     * &lt;ul&gt;
+<i>748</i>&nbsp;     * &lt;li&gt;Used by: Slider, ScrollBar, Thumb, and others &lt;/li&gt;
+<i>749</i>&nbsp;     * &lt;li&gt;Needs notify: yes &lt;/li&gt;
+<i>750</i>&nbsp;     * &lt;li&gt;Return Type: {@link Double} &lt;/li&gt;
+<i>751</i>&nbsp;     * &lt;li&gt;Parameters: &lt;/li&gt;
+<i>752</i>&nbsp;     * &lt;/ul&gt;
+<i>753</i>&nbsp;     */
+<b class="fc"><i>754</i>&nbsp;    VALUE(Double.class),</b>
+<i>755</i>&nbsp;
+<i>756</i>&nbsp;    /**
+<i>757</i>&nbsp;     * Returns the vertical scroll bar for the node.
+<i>758</i>&nbsp;     * &lt;ul&gt;
+<i>759</i>&nbsp;     * &lt;li&gt;Used by: ListView, ScrollPane, and others &lt;/li&gt;
+<i>760</i>&nbsp;     * &lt;li&gt;Needs notify: no &lt;/li&gt;
+<i>761</i>&nbsp;     * &lt;li&gt;Return Type: {@link Node} &lt;/li&gt;
+<i>762</i>&nbsp;     * &lt;li&gt;Parameters: &lt;/li&gt;
+<i>763</i>&nbsp;     * &lt;/ul&gt;
+<i>764</i>&nbsp;     */
+<b class="fc"><i>765</i>&nbsp;    VERTICAL_SCROLLBAR(Node.class),</b>
+<i>766</i>&nbsp;
+<i>767</i>&nbsp;    /**
+<i>768</i>&nbsp;     * Returns true if node is visible, otherwise false.
+<i>769</i>&nbsp;     * &lt;ul&gt;
+<i>770</i>&nbsp;     * &lt;li&gt;Used by: Node and ContextMenu &lt;/li&gt;
+<i>771</i>&nbsp;     * &lt;li&gt;Needs notify: yes &lt;/li&gt;
+<i>772</i>&nbsp;     * &lt;li&gt;Return Type: {@link Boolean} &lt;/li&gt;
+<i>773</i>&nbsp;     * &lt;li&gt;Parameters: &lt;/li&gt;
+<i>774</i>&nbsp;     * &lt;/ul&gt;
+<i>775</i>&nbsp;     */
+<b class="fc"><i>776</i>&nbsp;    VISIBLE(Boolean.class),</b>
+<i>777</i>&nbsp;
+<i>778</i>&nbsp;    /**
+<i>779</i>&nbsp;     * Returns true if the node has been visited, otherwise false.
+<i>780</i>&nbsp;     * &lt;ul&gt;
+<i>781</i>&nbsp;     * &lt;li&gt;Used by: Hyperlink &lt;/li&gt;
+<i>782</i>&nbsp;     * &lt;li&gt;Needs notify: no &lt;/li&gt;
+<i>783</i>&nbsp;     * &lt;li&gt;Return Type: {@link Boolean} &lt;/li&gt;
+<i>784</i>&nbsp;     * &lt;li&gt;Parameters: &lt;/li&gt;
+<i>785</i>&nbsp;     * &lt;/ul&gt;
+<i>786</i>&nbsp;     */
+<b class="fc"><i>787</i>&nbsp;    VISITED(Boolean.class),</b>
+<i>788</i>&nbsp;    ;
+<i>789</i>&nbsp;
+<i>790</i>&nbsp;    private Class&lt;?&gt; returnClass;
+<i>791</i>&nbsp;
+<b class="fc"><i>792</i>&nbsp;    AccessibleAttribute(Class&lt;?&gt; returnClass) {</b>
+<b class="fc"><i>793</i>&nbsp;        this.returnClass = returnClass;</b>
+<b class="fc"><i>794</i>&nbsp;    }</b>
+<i>795</i>&nbsp;
+<i>796</i>&nbsp;    public Class&lt;?&gt; getReturnType() {
+<b class="nc"><i>797</i>&nbsp;        return returnClass;</b>
+<i>798</i>&nbsp;    }
+<i>799</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2017-12-04 21:49</div>
+</div>
+</body>
+</html>

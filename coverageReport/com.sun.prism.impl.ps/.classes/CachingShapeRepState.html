@@ -1,0 +1,778 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: CachingShapeRepState</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.prism.impl.ps</a> ]
+</div>
+
+<h1>Coverage Summary for Class: CachingShapeRepState (com.sun.prism.impl.ps)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">CachingShapeRepState</td>
+<td class="coverageStat">
+  <span class="percent">
+    90%
+  </span>
+  <span class="absValue">
+    (9/ 10)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    77.4%
+  </span>
+  <span class="absValue">
+    (89/ 115)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">CachingShapeRepState$CacheEntry</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+  </tr>
+  <tr>
+    <td class="name">CachingShapeRepState$CSRDisposerRecord</td>
+<td class="coverageStat">
+  <span class="percent">
+    66.7%
+  </span>
+  <span class="absValue">
+    (2/ 3)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    50%
+  </span>
+  <span class="absValue">
+    (4/ 8)
+  </span>
+</td>
+  </tr>
+  <tr>
+    <td class="name">CachingShapeRepState$MaskCache</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (10/ 10)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    84.3%
+  </span>
+  <span class="absValue">
+    (97/ 115)
+  </span>
+</td>
+  </tr>
+  <tr>
+    <td class="name">CachingShapeRepState$MaskTexData</td>
+<td class="coverageStat">
+  <span class="percent">
+    50%
+  </span>
+  <span class="absValue">
+    (2/ 4)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    39.1%
+  </span>
+  <span class="absValue">
+    (9/ 23)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    85.7%
+  </span>
+  <span class="absValue">
+    (24/ 28)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    76.3%
+  </span>
+  <span class="absValue">
+    (200/ 262)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright (c) 2009, 2017, Oracle and/or its affiliates. All rights reserved.
+<i>3</i>&nbsp; * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+<i>4</i>&nbsp; *
+<i>5</i>&nbsp; *
+<i>6</i>&nbsp; *
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; *
+<i>11</i>&nbsp; *
+<i>12</i>&nbsp; *
+<i>13</i>&nbsp; *
+<i>14</i>&nbsp; *
+<i>15</i>&nbsp; *
+<i>16</i>&nbsp; *
+<i>17</i>&nbsp; *
+<i>18</i>&nbsp; *
+<i>19</i>&nbsp; *
+<i>20</i>&nbsp; *
+<i>21</i>&nbsp; *
+<i>22</i>&nbsp; *
+<i>23</i>&nbsp; *
+<i>24</i>&nbsp; */
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;package com.sun.prism.impl.ps;
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;import com.sun.javafx.geom.BaseBounds;
+<i>29</i>&nbsp;import com.sun.javafx.geom.RectBounds;
+<i>30</i>&nbsp;import com.sun.javafx.geom.Shape;
+<i>31</i>&nbsp;import com.sun.javafx.geom.transform.BaseTransform;
+<i>32</i>&nbsp;import com.sun.prism.BasicStroke;
+<i>33</i>&nbsp;import com.sun.prism.Graphics;
+<i>34</i>&nbsp;import com.sun.prism.Texture;
+<i>35</i>&nbsp;import com.sun.prism.Texture.WrapMode;
+<i>36</i>&nbsp;import com.sun.prism.paint.Paint;
+<i>37</i>&nbsp;import com.sun.prism.shape.ShapeRep;
+<i>38</i>&nbsp;import com.sun.prism.impl.Disposer;
+<i>39</i>&nbsp;import com.sun.prism.impl.PrismSettings;
+<i>40</i>&nbsp;import com.sun.prism.impl.VertexBuffer;
+<i>41</i>&nbsp;import com.sun.prism.impl.ps.BaseShaderContext.MaskType;
+<i>42</i>&nbsp;import com.sun.prism.impl.shape.ShapeUtil;
+<i>43</i>&nbsp;import com.sun.prism.impl.shape.MaskData;
+<i>44</i>&nbsp;import com.sun.prism.ps.Shader;
+<i>45</i>&nbsp;import java.util.Arrays;
+<i>46</i>&nbsp;import java.util.Comparator;
+<i>47</i>&nbsp;
+<i>48</i>&nbsp;/**
+<i>49</i>&nbsp; * An implementation of ShapeRep that attempts to cache and reuse the
+<i>50</i>&nbsp; * mask texture that is used to render the filled/stroked geometry.
+<i>51</i>&nbsp; * There is an artificial cap on the size of shapes that are considered
+<i>52</i>&nbsp; * for caching, so that we do not fill up VRAM with lots of large shape
+<i>53</i>&nbsp; * masks.  The shape is considered for caching only when it is rendered
+<i>54</i>&nbsp; * a certain number of times with unchanging transform (ignoring the
+<i>55</i>&nbsp; * translation components) and geometry.  This means that this class is
+<i>56</i>&nbsp; * good for caching static shapes that are either completely stationary
+<i>57</i>&nbsp; * or being translated.  This class will also attempt to reuse a mask
+<i>58</i>&nbsp; * that corresponds to a completely different shape instance as long as
+<i>59</i>&nbsp; * the two shapes are equal and the transforms only differ by their
+<i>60</i>&nbsp; * translation components.  This means that if you have 1000 Path nodes
+<i>61</i>&nbsp; * all with exactly the same geometry but with different translation factors,
+<i>62</i>&nbsp; * then we will only rasterize and cache a single mask texture and reuse
+<i>63</i>&nbsp; * it among all the Path nodes.
+<i>64</i>&nbsp; *
+<i>65</i>&nbsp; * (Of course, the fact that we reuse the same mask texture for different
+<i>66</i>&nbsp; * sub-pixel translation factors means we&#39;re knowingly being a bit sloppy,
+<i>67</i>&nbsp; * so when caching is enabled you may see some dancing at the shape edges
+<i>68</i>&nbsp; * for slowly animating translations, but otherwise will hopefully not be
+<i>69</i>&nbsp; * too noticeable.)
+<i>70</i>&nbsp; *
+<i>71</i>&nbsp; * The current implementation limits the size of the cache (512 pixels in
+<i>72</i>&nbsp; * each dimension, and 4 MB in total) so that it doesn&#39;t grow without bound.
+<i>73</i>&nbsp; * Space is granted on a first come first served basis.
+<i>74</i>&nbsp; */
+<i>75</i>&nbsp;public class CachingShapeRep implements ShapeRep {
+<i>76</i>&nbsp;
+<i>77</i>&nbsp;    private CachingShapeRepState fillState;
+<i>78</i>&nbsp;    private CachingShapeRepState drawState;
+<i>79</i>&nbsp;
+<i>80</i>&nbsp;    public CachingShapeRep() {
+<i>81</i>&nbsp;    }
+<i>82</i>&nbsp;
+<i>83</i>&nbsp;    CachingShapeRepState createState() {
+<i>84</i>&nbsp;        return new CachingShapeRepState();
+<i>85</i>&nbsp;    }
+<i>86</i>&nbsp;
+<i>87</i>&nbsp;    public boolean is3DCapable() {
+<i>88</i>&nbsp;        return false;
+<i>89</i>&nbsp;    }
+<i>90</i>&nbsp;
+<i>91</i>&nbsp;    public void invalidate(InvalidationType type) {
+<i>92</i>&nbsp;        // NOTE: for now we invalidate for any location or geometry change;
+<i>93</i>&nbsp;        // should consider allowing certain location changes...
+<i>94</i>&nbsp;        if (fillState != null) {
+<i>95</i>&nbsp;            fillState.invalidate();
+<i>96</i>&nbsp;        }
+<i>97</i>&nbsp;        if (drawState != null) {
+<i>98</i>&nbsp;            drawState.invalidate();
+<i>99</i>&nbsp;        }
+<i>100</i>&nbsp;    }
+<i>101</i>&nbsp;
+<i>102</i>&nbsp;    public void fill(Graphics g, Shape shape, BaseBounds bounds) {
+<i>103</i>&nbsp;        if (fillState == null) {
+<i>104</i>&nbsp;            fillState = createState();
+<i>105</i>&nbsp;        }
+<i>106</i>&nbsp;        fillState.render(g, shape, (RectBounds) bounds, null);
+<i>107</i>&nbsp;    }
+<i>108</i>&nbsp;
+<i>109</i>&nbsp;    public void draw(Graphics g, Shape shape, BaseBounds bounds) {
+<i>110</i>&nbsp;        if (drawState == null) {
+<i>111</i>&nbsp;            drawState = createState();
+<i>112</i>&nbsp;        }
+<i>113</i>&nbsp;        drawState.render(g, shape,(RectBounds) bounds, g.getStroke());
+<i>114</i>&nbsp;    }
+<i>115</i>&nbsp;
+<i>116</i>&nbsp;    public void dispose() {
+<i>117</i>&nbsp;        if (fillState != null) {
+<i>118</i>&nbsp;            fillState.dispose();
+<i>119</i>&nbsp;            fillState = null;
+<i>120</i>&nbsp;        }
+<i>121</i>&nbsp;        if (drawState != null) {
+<i>122</i>&nbsp;            drawState.dispose();
+<i>123</i>&nbsp;            drawState = null;
+<i>124</i>&nbsp;        }
+<i>125</i>&nbsp;    }
+<i>126</i>&nbsp;}
+<i>127</i>&nbsp;
+<b class="fc"><i>128</i>&nbsp;class CachingShapeRepState {</b>
+<i>129</i>&nbsp;
+<b class="fc"><i>130</i>&nbsp;    private static class MaskTexData {</b>
+<i>131</i>&nbsp;        private CacheEntry cacheEntry;
+<i>132</i>&nbsp;        private Texture maskTex;
+<i>133</i>&nbsp;        private float maskX;
+<i>134</i>&nbsp;        private float maskY;
+<i>135</i>&nbsp;        private int maskW;
+<i>136</i>&nbsp;        private int maskH;
+<i>137</i>&nbsp;
+<i>138</i>&nbsp;        void adjustOrigin(BaseTransform xform) {
+<b class="nc"><i>139</i>&nbsp;            float dx = (float)(xform.getMxt()-cacheEntry.xform.getMxt());</b>
+<b class="nc"><i>140</i>&nbsp;            float dy = (float)(xform.getMyt()-cacheEntry.xform.getMyt());</b>
+<b class="nc"><i>141</i>&nbsp;            this.maskX = cacheEntry.texData.maskX + dx;</b>
+<b class="nc"><i>142</i>&nbsp;            this.maskY = cacheEntry.texData.maskY + dy;</b>
+<b class="nc"><i>143</i>&nbsp;        }</b>
+<i>144</i>&nbsp;
+<i>145</i>&nbsp;        MaskTexData copy() {
+<b class="fc"><i>146</i>&nbsp;            MaskTexData data = new MaskTexData();</b>
+<b class="fc"><i>147</i>&nbsp;            data.cacheEntry = this.cacheEntry;</b>
+<b class="fc"><i>148</i>&nbsp;            data.maskTex = this.maskTex;</b>
+<b class="fc"><i>149</i>&nbsp;            data.maskX = this.maskX;</b>
+<b class="fc"><i>150</i>&nbsp;            data.maskY = this.maskY;</b>
+<b class="fc"><i>151</i>&nbsp;            data.maskW = this.maskW;</b>
+<b class="fc"><i>152</i>&nbsp;            data.maskH = this.maskH;</b>
+<b class="fc"><i>153</i>&nbsp;            return data;</b>
+<i>154</i>&nbsp;        }
+<i>155</i>&nbsp;
+<i>156</i>&nbsp;        void copyInto(MaskTexData other) {
+<b class="nc"><i>157</i>&nbsp;            if (other == null) {</b>
+<b class="nc"><i>158</i>&nbsp;                throw new InternalError(&quot;MaskTexData must be non-null&quot;);</b>
+<i>159</i>&nbsp;            }
+<b class="nc"><i>160</i>&nbsp;            other.cacheEntry = this.cacheEntry;</b>
+<b class="nc"><i>161</i>&nbsp;            other.maskTex = this.maskTex;</b>
+<b class="nc"><i>162</i>&nbsp;            other.maskX = this.maskX;</b>
+<b class="nc"><i>163</i>&nbsp;            other.maskY = this.maskY;</b>
+<b class="nc"><i>164</i>&nbsp;            other.maskW = this.maskW;</b>
+<b class="nc"><i>165</i>&nbsp;            other.maskH = this.maskH;</b>
+<b class="nc"><i>166</i>&nbsp;        }</b>
+<i>167</i>&nbsp;    }
+<i>168</i>&nbsp;
+<b class="fc"><i>169</i>&nbsp;    private static class CacheEntry {</b>
+<i>170</i>&nbsp;        Shape shape;
+<i>171</i>&nbsp;        BasicStroke stroke;
+<i>172</i>&nbsp;        BaseTransform xform;
+<i>173</i>&nbsp;        RectBounds xformBounds;
+<i>174</i>&nbsp;        MaskTexData texData;
+<i>175</i>&nbsp;        boolean antialiasedShape;
+<i>176</i>&nbsp;        int refCount;
+<i>177</i>&nbsp;    }
+<i>178</i>&nbsp;
+<b class="fc"><i>179</i>&nbsp;    private static class MaskCache {</b>
+<i>180</i>&nbsp;        private static final int MAX_MASK_DIM = 512;
+<i>181</i>&nbsp;        private static final int MAX_SIZE_IN_PIXELS = 4194304; // 4 MB
+<b class="fc"><i>182</i>&nbsp;        private static Comparator&lt;CacheEntry&gt; comparator = (o1, o2) -&gt; {</b>
+<b class="fc"><i>183</i>&nbsp;            int widthCompare = Float.compare(o1.xformBounds.getWidth(), o2.xformBounds.getWidth());</b>
+<b class="fc"><i>184</i>&nbsp;            if (widthCompare != 0) {</b>
+<b class="nc"><i>185</i>&nbsp;                return widthCompare;</b>
+<i>186</i>&nbsp;            }
+<b class="fc"><i>187</i>&nbsp;            return Float.compare(o1.xformBounds.getHeight(), o2.xformBounds.getHeight());</b>
+<i>188</i>&nbsp;        };
+<i>189</i>&nbsp;
+<b class="fc"><i>190</i>&nbsp;        private CacheEntry[] entries = new CacheEntry[8];</b>
+<b class="fc"><i>191</i>&nbsp;        private int entriesSize = 0;</b>
+<i>192</i>&nbsp;        private int totalPixels;
+<i>193</i>&nbsp;
+<b class="fc"><i>194</i>&nbsp;        private CacheEntry tmpKey = new CacheEntry();</b>
+<i>195</i>&nbsp;        {
+<b class="fc"><i>196</i>&nbsp;            tmpKey.xformBounds = new RectBounds();</b>
+<b class="fc"><i>197</i>&nbsp;        }</b>
+<i>198</i>&nbsp;
+<i>199</i>&nbsp;        private void ensureSize(int size) {
+<b class="fc"><i>200</i>&nbsp;            if (entries.length &lt; size) {</b>
+<b class="nc"><i>201</i>&nbsp;                CacheEntry[] newEntries = new CacheEntry[size * 3 / 2];</b>
+<b class="nc"><i>202</i>&nbsp;                System.arraycopy(entries, 0, newEntries, 0, entries.length);</b>
+<b class="nc"><i>203</i>&nbsp;                entries = newEntries;</b>
+<i>204</i>&nbsp;            }
+<b class="fc"><i>205</i>&nbsp;        }</b>
+<i>206</i>&nbsp;
+<i>207</i>&nbsp;        private void addEntry(CacheEntry entry) {
+<b class="fc"><i>208</i>&nbsp;            ensureSize(entriesSize + 1);</b>
+<b class="fc"><i>209</i>&nbsp;            int pos = Arrays.binarySearch(entries, 0, entriesSize, entry, comparator);</b>
+<b class="fc"><i>210</i>&nbsp;            if (pos &lt; 0) {</b>
+<b class="fc"><i>211</i>&nbsp;                pos = ~pos;</b>
+<i>212</i>&nbsp;            }
+<b class="fc"><i>213</i>&nbsp;            System.arraycopy(entries, pos, entries, pos + 1, entriesSize - pos);</b>
+<b class="fc"><i>214</i>&nbsp;            entries[pos] = entry;</b>
+<b class="fc"><i>215</i>&nbsp;            ++entriesSize;</b>
+<b class="fc"><i>216</i>&nbsp;        }</b>
+<i>217</i>&nbsp;
+<i>218</i>&nbsp;        private void removeEntry(CacheEntry entry) {
+<b class="fc"><i>219</i>&nbsp;            int pos = Arrays.binarySearch(entries, 0, entriesSize, entry, comparator);</b>
+<b class="fc"><i>220</i>&nbsp;            if (pos &lt; 0) {</b>
+<b class="nc"><i>221</i>&nbsp;                throw new IllegalStateException(&quot;Trying to remove a cached item that&#39;s not in the cache&quot;);</b>
+<i>222</i>&nbsp;            }
+<b class="fc"><i>223</i>&nbsp;            if (entries[pos] != entry) {</b>
+<b class="fc"><i>224</i>&nbsp;                tmpKey.xformBounds.deriveWithNewBounds(0, 0, 0, entry.xformBounds.getWidth(), Math.nextAfter(entry.xformBounds.getHeight(), Float.NEGATIVE_INFINITY), 0);</b>
+<b class="fc"><i>225</i>&nbsp;                pos = Arrays.binarySearch(entries, 0, entriesSize, tmpKey, comparator);</b>
+<b class="fc"><i>226</i>&nbsp;                if (pos &lt; 0) {</b>
+<b class="fc"><i>227</i>&nbsp;                    pos = ~pos;</b>
+<i>228</i>&nbsp;                }
+<b class="fc"><i>229</i>&nbsp;                tmpKey.xformBounds.deriveWithNewBounds(0, 0, 0, entry.xformBounds.getWidth(), Math.nextAfter(entry.xformBounds.getHeight(), Float.POSITIVE_INFINITY), 0);</b>
+<b class="fc"><i>230</i>&nbsp;                int toPos = Arrays.binarySearch(entries, 0, entriesSize, tmpKey, comparator);</b>
+<b class="fc"><i>231</i>&nbsp;                if (toPos &lt; 0) {</b>
+<b class="fc"><i>232</i>&nbsp;                    toPos = ~toPos;</b>
+<i>233</i>&nbsp;                }
+<b class="fc"><i>234</i>&nbsp;                while (entries[pos] != entry &amp;&amp; pos &lt; toPos) { ++pos; };</b>
+<b class="fc"><i>235</i>&nbsp;                if (pos &gt;= toPos) {</b>
+<b class="nc"><i>236</i>&nbsp;                    throw new IllegalStateException(&quot;Trying to remove a cached item that&#39;s not in the cache&quot;);</b>
+<i>237</i>&nbsp;                }
+<i>238</i>&nbsp;            }
+<b class="fc"><i>239</i>&nbsp;            System.arraycopy(entries, pos + 1, entries, pos, entriesSize - pos - 1);</b>
+<b class="fc"><i>240</i>&nbsp;            --entriesSize;</b>
+<b class="fc"><i>241</i>&nbsp;        }</b>
+<i>242</i>&nbsp;
+<i>243</i>&nbsp;        boolean hasRoom(RectBounds xformBounds) {
+<b class="fc"><i>244</i>&nbsp;            int w = (int)(xformBounds.getWidth() + 0.5f);</b>
+<b class="fc"><i>245</i>&nbsp;            int h = (int)(xformBounds.getHeight() + 0.5f);</b>
+<b class="fc"><i>246</i>&nbsp;            int size = w*h;</b>
+<b class="fc"><i>247</i>&nbsp;            return</b>
+<i>248</i>&nbsp;                w &lt;= MAX_MASK_DIM &amp;&amp;
+<i>249</i>&nbsp;                h &lt;= MAX_MASK_DIM &amp;&amp;
+<i>250</i>&nbsp;                totalPixels + size &lt;= MAX_SIZE_IN_PIXELS;
+<i>251</i>&nbsp;        }
+<i>252</i>&nbsp;
+<i>253</i>&nbsp;        boolean entryMatches(CacheEntry entry, Shape shape, BasicStroke stroke, BaseTransform xform, boolean antialiasedShape) {
+<b class="fc"><i>254</i>&nbsp;            return (entry.antialiasedShape == antialiasedShape) &amp;&amp; equalsIgnoreTranslation(xform, entry.xform) &amp;&amp; entry.shape.equals(shape) &amp;&amp;</b>
+<b class="fc"><i>255</i>&nbsp;                   (stroke == null ? entry.stroke == null : stroke.equals(entry.stroke));</b>
+<i>256</i>&nbsp;
+<i>257</i>&nbsp;        }
+<i>258</i>&nbsp;
+<i>259</i>&nbsp;        void get(BaseShaderContext context,
+<i>260</i>&nbsp;                 MaskTexData texData,
+<i>261</i>&nbsp;                 Shape shape, BasicStroke stroke, BaseTransform xform,
+<i>262</i>&nbsp;                 RectBounds xformBounds,
+<i>263</i>&nbsp;                 boolean xformBoundsIsACopy, boolean antialiasedShape)
+<i>264</i>&nbsp;        {
+<b class="fc"><i>265</i>&nbsp;            if (texData == null) {</b>
+<b class="nc"><i>266</i>&nbsp;                throw new InternalError(&quot;MaskTexData must be non-null&quot;);</b>
+<i>267</i>&nbsp;            }
+<b class="fc"><i>268</i>&nbsp;            if (texData.cacheEntry != null) {</b>
+<b class="nc"><i>269</i>&nbsp;                throw new InternalError(&quot;CacheEntry should already be null&quot;);</b>
+<i>270</i>&nbsp;            }
+<i>271</i>&nbsp;
+<b class="fc"><i>272</i>&nbsp;            tmpKey.xformBounds.deriveWithNewBounds(0, 0, 0, xformBounds.getWidth(), Math.nextAfter(xformBounds.getHeight(), Float.NEGATIVE_INFINITY), 0);</b>
+<b class="fc"><i>273</i>&nbsp;            int i = Arrays.binarySearch(entries, 0, entriesSize, tmpKey, comparator);</b>
+<b class="fc"><i>274</i>&nbsp;            if (i &lt; 0) {</b>
+<b class="fc"><i>275</i>&nbsp;                i = ~i;</b>
+<i>276</i>&nbsp;            }
+<i>277</i>&nbsp;
+<b class="fc"><i>278</i>&nbsp;            tmpKey.xformBounds.deriveWithNewBounds(0, 0, 0, xformBounds.getWidth(), Math.nextAfter(xformBounds.getHeight(), Float.POSITIVE_INFINITY), 0);</b>
+<b class="fc"><i>279</i>&nbsp;            int toPos = Arrays.binarySearch(entries, 0, entriesSize, tmpKey, comparator);</b>
+<b class="fc"><i>280</i>&nbsp;            if (toPos &lt; 0) {</b>
+<b class="fc"><i>281</i>&nbsp;                toPos = ~toPos;</b>
+<i>282</i>&nbsp;            }
+<b class="fc"><i>283</i>&nbsp;            for (;i &lt; toPos; i++) {</b>
+<b class="fc"><i>284</i>&nbsp;                CacheEntry entry = entries[i];</b>
+<i>285</i>&nbsp;
+<b class="fc"><i>286</i>&nbsp;                if (entryMatches(entry, shape, stroke, xform, antialiasedShape))</b>
+<i>287</i>&nbsp;                {
+<b class="nc"><i>288</i>&nbsp;                    entry.texData.maskTex.lock();</b>
+<b class="nc"><i>289</i>&nbsp;                    if (entry.texData.maskTex.isSurfaceLost()) {</b>
+<i>290</i>&nbsp;                        // Eventually refcount will go to zero and entry will be freed
+<b class="nc"><i>291</i>&nbsp;                        entry.texData.maskTex.unlock();</b>
+<b class="nc"><i>292</i>&nbsp;                        continue;</b>
+<i>293</i>&nbsp;                    }
+<i>294</i>&nbsp;                    // increment ref count for the chosen entry and
+<i>295</i>&nbsp;                    // link the given texData to it
+<b class="nc"><i>296</i>&nbsp;                    entry.refCount++;</b>
+<b class="nc"><i>297</i>&nbsp;                    entry.texData.copyInto(texData);</b>
+<b class="nc"><i>298</i>&nbsp;                    texData.cacheEntry = entry;</b>
+<i>299</i>&nbsp;                    // adjust the maskX/maskY by the delta between the
+<i>300</i>&nbsp;                    // cached transform and the current transform
+<b class="nc"><i>301</i>&nbsp;                    texData.adjustOrigin(xform);</b>
+<b class="nc"><i>302</i>&nbsp;                    return;</b>
+<i>303</i>&nbsp;                }
+<i>304</i>&nbsp;            }
+<i>305</i>&nbsp;
+<i>306</i>&nbsp;            // did not find an existing mask; create a new one here
+<b class="fc"><i>307</i>&nbsp;            MaskData maskData =</b>
+<b class="fc"><i>308</i>&nbsp;                ShapeUtil.rasterizeShape(shape, stroke, xformBounds, xform, true, antialiasedShape);</b>
+<b class="fc"><i>309</i>&nbsp;            int mw = maskData.getWidth();</b>
+<b class="fc"><i>310</i>&nbsp;            int mh = maskData.getHeight();</b>
+<b class="fc"><i>311</i>&nbsp;            texData.maskX = maskData.getOriginX();</b>
+<b class="fc"><i>312</i>&nbsp;            texData.maskY = maskData.getOriginY();</b>
+<b class="fc"><i>313</i>&nbsp;            texData.maskW = mw;</b>
+<b class="fc"><i>314</i>&nbsp;            texData.maskH = mh;</b>
+<b class="fc"><i>315</i>&nbsp;            texData.maskTex =</b>
+<b class="fc"><i>316</i>&nbsp;                context.getResourceFactory().createMaskTexture(mw, mh, WrapMode.CLAMP_TO_ZERO);</b>
+<b class="fc"><i>317</i>&nbsp;            maskData.uploadToTexture(texData.maskTex, 0, 0, false);</b>
+<b class="fc"><i>318</i>&nbsp;            texData.maskTex.contentsUseful();</b>
+<i>319</i>&nbsp;
+<i>320</i>&nbsp;            // add the new mask texture to the cache; note that we copy the
+<i>321</i>&nbsp;            // shape and transform so that dependents are not affected
+<i>322</i>&nbsp;            // if the original geometry is mutated (since NGPath will reuse
+<i>323</i>&nbsp;            // and mutate a single Path2D instance, for example)
+<b class="fc"><i>324</i>&nbsp;            CacheEntry entry = new CacheEntry();</b>
+<b class="fc"><i>325</i>&nbsp;            entry.shape = shape.copy();</b>
+<b class="fc"><i>326</i>&nbsp;            if (stroke != null) entry.stroke = stroke.copy();</b>
+<b class="fc"><i>327</i>&nbsp;            entry.xform = xform.copy();</b>
+<b class="fc"><i>328</i>&nbsp;            entry.xformBounds = xformBoundsIsACopy ? xformBounds : (RectBounds)xformBounds.copy();</b>
+<b class="fc"><i>329</i>&nbsp;            entry.texData = texData.copy();</b>
+<b class="fc"><i>330</i>&nbsp;            entry.antialiasedShape = antialiasedShape;</b>
+<b class="fc"><i>331</i>&nbsp;            entry.refCount = 1;</b>
+<b class="fc"><i>332</i>&nbsp;            texData.cacheEntry = entry;</b>
+<b class="fc"><i>333</i>&nbsp;            addEntry(entry);</b>
+<b class="fc"><i>334</i>&nbsp;            totalPixels += mw*mh;</b>
+<b class="fc"><i>335</i>&nbsp;        }</b>
+<i>336</i>&nbsp;
+<i>337</i>&nbsp;        void unref(MaskTexData texData) {
+<b class="fc"><i>338</i>&nbsp;            if (texData == null) {</b>
+<b class="nc"><i>339</i>&nbsp;                throw new InternalError(&quot;MaskTexData must be non-null&quot;);</b>
+<i>340</i>&nbsp;            }
+<b class="fc"><i>341</i>&nbsp;            CacheEntry entry = texData.cacheEntry;</b>
+<b class="fc"><i>342</i>&nbsp;            if (entry == null) {</b>
+<b class="fc"><i>343</i>&nbsp;                return;</b>
+<i>344</i>&nbsp;            }
+<b class="fc"><i>345</i>&nbsp;            texData.cacheEntry = null;</b>
+<b class="fc"><i>346</i>&nbsp;            texData.maskTex = null;</b>
+<b class="fc"><i>347</i>&nbsp;            entry.refCount--;</b>
+<b class="fc"><i>348</i>&nbsp;            if (entry.refCount &lt;= 0) {</b>
+<b class="fc"><i>349</i>&nbsp;                removeEntry(entry);</b>
+<b class="fc"><i>350</i>&nbsp;                entry.shape = null;</b>
+<b class="fc"><i>351</i>&nbsp;                entry.stroke = null;</b>
+<b class="fc"><i>352</i>&nbsp;                entry.xform = null;</b>
+<b class="fc"><i>353</i>&nbsp;                entry.xformBounds = null;</b>
+<b class="fc"><i>354</i>&nbsp;                entry.texData.maskTex.dispose();</b>
+<b class="fc"><i>355</i>&nbsp;                entry.antialiasedShape = false;</b>
+<b class="fc"><i>356</i>&nbsp;                entry.texData = null;</b>
+<b class="fc"><i>357</i>&nbsp;                totalPixels -= (texData.maskW * texData.maskH);</b>
+<i>358</i>&nbsp;            }
+<b class="fc"><i>359</i>&nbsp;        }</b>
+<i>360</i>&nbsp;    }
+<i>361</i>&nbsp;
+<i>362</i>&nbsp;    /**
+<i>363</i>&nbsp;     * Returns true if the two transforms are equal or if they differ only
+<i>364</i>&nbsp;     * in their translation components; otherwise returns false.
+<i>365</i>&nbsp;     */
+<i>366</i>&nbsp;    private static boolean equalsIgnoreTranslation(BaseTransform a,
+<i>367</i>&nbsp;                                                   BaseTransform b)
+<i>368</i>&nbsp;    {
+<b class="fc"><i>369</i>&nbsp;        if (a == b) {</b>
+<b class="nc"><i>370</i>&nbsp;            return true;</b>
+<i>371</i>&nbsp;        }
+<i>372</i>&nbsp;
+<b class="fc"><i>373</i>&nbsp;        return</b>
+<b class="fc"><i>374</i>&nbsp;            a.getMxx() == b.getMxx() &amp;&amp;</b>
+<b class="fc"><i>375</i>&nbsp;            a.getMxy() == b.getMxy() &amp;&amp;</b>
+<b class="fc"><i>376</i>&nbsp;            a.getMyx() == b.getMyx() &amp;&amp;</b>
+<b class="fc"><i>377</i>&nbsp;            a.getMyy() == b.getMyy();</b>
+<i>378</i>&nbsp;    }
+<i>379</i>&nbsp;
+<b class="fc"><i>380</i>&nbsp;    private static final BaseTransform IDENT = BaseTransform.IDENTITY_TRANSFORM;</b>
+<i>381</i>&nbsp;    // NOTE: need separate MaskCache per context?
+<b class="fc"><i>382</i>&nbsp;    private static final MaskCache maskCache = new MaskCache();</b>
+<i>383</i>&nbsp;    // Number of back to back similar renderings before we cache the mask
+<i>384</i>&nbsp;    private static final int CACHE_THRESHOLD = 2;
+<i>385</i>&nbsp;
+<i>386</i>&nbsp;    private int renderCount;
+<i>387</i>&nbsp;    private Boolean tryCache;
+<i>388</i>&nbsp;    private BaseTransform lastXform;
+<i>389</i>&nbsp;    private final MaskTexData texData;
+<i>390</i>&nbsp;    private float[] bbox;
+<i>391</i>&nbsp;
+<b class="fc"><i>392</i>&nbsp;    private final Object disposerReferent = new Object();</b>
+<i>393</i>&nbsp;    private final Disposer.Record disposerRecord;
+<i>394</i>&nbsp;
+<b class="fc"><i>395</i>&nbsp;    CachingShapeRepState() {</b>
+<b class="fc"><i>396</i>&nbsp;        this.texData = new MaskTexData();</b>
+<b class="fc"><i>397</i>&nbsp;        this.disposerRecord = new CSRDisposerRecord(texData);</b>
+<b class="fc"><i>398</i>&nbsp;        Disposer.addRecord(disposerReferent, disposerRecord);</b>
+<b class="fc"><i>399</i>&nbsp;    }</b>
+<i>400</i>&nbsp;
+<i>401</i>&nbsp;    // Note: Subclasses may override this method to use a more direct op.
+<i>402</i>&nbsp;    void fillNoCache(Graphics g, Shape shape) {
+<b class="fc"><i>403</i>&nbsp;        g.fill(shape);</b>
+<b class="fc"><i>404</i>&nbsp;    }</b>
+<i>405</i>&nbsp;
+<i>406</i>&nbsp;    // Note: Subclasses may override this method to use a more direct op.
+<i>407</i>&nbsp;    void drawNoCache(Graphics g, Shape shape) {
+<b class="fc"><i>408</i>&nbsp;        g.draw(shape);</b>
+<b class="fc"><i>409</i>&nbsp;    }</b>
+<i>410</i>&nbsp;
+<i>411</i>&nbsp;    void invalidate() {
+<i>412</i>&nbsp;        // Note: this method will be called from the FX thread, so just mark
+<i>413</i>&nbsp;        // the state as invalid and then the next render() call will take
+<i>414</i>&nbsp;        // care of unref&#39;ing the cache entry (on the render thread).
+<b class="fc"><i>415</i>&nbsp;        renderCount = 0;</b>
+<b class="fc"><i>416</i>&nbsp;        tryCache = null;</b>
+<b class="fc"><i>417</i>&nbsp;        lastXform = null;</b>
+<b class="fc"><i>418</i>&nbsp;        bbox = null;</b>
+<b class="fc"><i>419</i>&nbsp;    }</b>
+<i>420</i>&nbsp;
+<i>421</i>&nbsp;    private void invalidateMaskTexData() {
+<i>422</i>&nbsp;        // Note: this method should only be called from the render thread
+<i>423</i>&nbsp;        // (since calling unref() may cause textures to be disposed).
+<b class="fc"><i>424</i>&nbsp;        tryCache = null;</b>
+<b class="fc"><i>425</i>&nbsp;        lastXform = null;</b>
+<b class="fc"><i>426</i>&nbsp;        maskCache.unref(texData);</b>
+<b class="fc"><i>427</i>&nbsp;    }</b>
+<i>428</i>&nbsp;
+<i>429</i>&nbsp;    void render(Graphics g, Shape shape, RectBounds shapeBounds, BasicStroke stroke) {
+<i>430</i>&nbsp;        // The following is safe; this method does not mutate xform
+<b class="fc"><i>431</i>&nbsp;        BaseTransform xform = g.getTransformNoClone();</b>
+<i>432</i>&nbsp;
+<i>433</i>&nbsp;        boolean doResetMask;
+<i>434</i>&nbsp;        boolean doUpdateMask;
+<i>435</i>&nbsp;
+<b class="fc"><i>436</i>&nbsp;        if (lastXform == null) {</b>
+<b class="fc"><i>437</i>&nbsp;            doResetMask = doUpdateMask = true;</b>
+<b class="fc"><i>438</i>&nbsp;        } else if (equalsIgnoreTranslation(xform, lastXform)) {</b>
+<b class="fc"><i>439</i>&nbsp;            doResetMask = false;</b>
+<b class="fc"><i>440</i>&nbsp;            doUpdateMask = (xform.getMxt() != lastXform.getMxt() ||</b>
+<b class="fc"><i>441</i>&nbsp;                            xform.getMyt() != lastXform.getMyt());</b>
+<i>442</i>&nbsp;        } else {
+<b class="nc"><i>443</i>&nbsp;            doResetMask = doUpdateMask = true;</b>
+<i>444</i>&nbsp;        }
+<i>445</i>&nbsp;
+<i>446</i>&nbsp;        // we need to invalidate our cached MaskTexData if:
+<i>447</i>&nbsp;        //   - lastXform is null, indicating that we were marked invalid
+<i>448</i>&nbsp;        //     (due to a geometry or location change), or
+<i>449</i>&nbsp;        //   - the current transform is significantly different than the last
+<b class="fc"><i>450</i>&nbsp;        if (doResetMask) {</b>
+<b class="fc"><i>451</i>&nbsp;            invalidateMaskTexData();</b>
+<i>452</i>&nbsp;
+<b class="fc"><i>453</i>&nbsp;            renderCount = 0;</b>
+<i>454</i>&nbsp;        }
+<b class="fc"><i>455</i>&nbsp;        if (doResetMask || doUpdateMask) {</b>
+<b class="fc"><i>456</i>&nbsp;            if (lastXform == null) {</b>
+<b class="fc"><i>457</i>&nbsp;                lastXform = xform.copy();</b>
+<i>458</i>&nbsp;            } else {
+<b class="nc"><i>459</i>&nbsp;                lastXform.setTransform(xform);</b>
+<i>460</i>&nbsp;            }
+<i>461</i>&nbsp;        }
+<i>462</i>&nbsp;
+<b class="fc"><i>463</i>&nbsp;        if (texData.cacheEntry != null) {</b>
+<b class="nc"><i>464</i>&nbsp;            texData.maskTex.lock();</b>
+<b class="nc"><i>465</i>&nbsp;            if (texData.maskTex.isSurfaceLost()) {</b>
+<b class="nc"><i>466</i>&nbsp;                texData.maskTex.unlock();</b>
+<b class="nc"><i>467</i>&nbsp;                invalidateMaskTexData();</b>
+<i>468</i>&nbsp;            }
+<i>469</i>&nbsp;        }
+<i>470</i>&nbsp;
+<b class="fc"><i>471</i>&nbsp;        RectBounds xformBounds = null;</b>
+<b class="fc"><i>472</i>&nbsp;        boolean boundsCopy = false;</b>
+<i>473</i>&nbsp;
+<b class="fc"><i>474</i>&nbsp;        if (tryCache == null) {</b>
+<i>475</i>&nbsp;            // determine whether the shape size is within the limits
+<b class="fc"><i>476</i>&nbsp;            if (xform.isIdentity()) {</b>
+<b class="nc"><i>477</i>&nbsp;                xformBounds = shapeBounds;</b>
+<i>478</i>&nbsp;            } else {
+<b class="fc"><i>479</i>&nbsp;                xformBounds = new RectBounds();</b>
+<b class="fc"><i>480</i>&nbsp;                boundsCopy = true;</b>
+<i>481</i>&nbsp;                //this is a safe cast as this ShapeRep is not 3d capable.
+<i>482</i>&nbsp;                // all 3d transformed shapes are thus rendered by different ShapeRep
+<b class="fc"><i>483</i>&nbsp;                xformBounds = (RectBounds) xform.transform(shapeBounds, xformBounds);</b>
+<i>484</i>&nbsp;            }
+<b class="fc"><i>485</i>&nbsp;            tryCache = !xformBounds.isEmpty() &amp;&amp; maskCache.hasRoom(xformBounds);</b>
+<i>486</i>&nbsp;        }
+<i>487</i>&nbsp;
+<b class="fc"><i>488</i>&nbsp;        renderCount++;</b>
+<b class="fc"><i>489</i>&nbsp;        if (tryCache == Boolean.FALSE ||</b>
+<i>490</i>&nbsp;            renderCount &lt; CACHE_THRESHOLD ||
+<i>491</i>&nbsp;            (!(g instanceof BaseShaderGraphics)) ||
+<b class="fc"><i>492</i>&nbsp;            ((BaseShaderGraphics)g).isComplexPaint())</b>
+<i>493</i>&nbsp;        {
+<i>494</i>&nbsp;            // render the slow way if:
+<i>495</i>&nbsp;            //   - the shape size exceeds the threshold, or
+<i>496</i>&nbsp;            //   - we haven&#39;t rendered enough times to get an idea of
+<i>497</i>&nbsp;            //     whether it is worth caching the mask, or
+<i>498</i>&nbsp;            //   - there is a complex paint set (note that we could
+<i>499</i>&nbsp;            //     potentially use the cached mask in this case, but the
+<i>500</i>&nbsp;            //     complex paint case is not common enough to warrant
+<i>501</i>&nbsp;            //     further optimization at this time)
+<b class="fc"><i>502</i>&nbsp;            if (stroke == null) {</b>
+<b class="fc"><i>503</i>&nbsp;                fillNoCache(g, shape);</b>
+<i>504</i>&nbsp;            } else {
+<b class="fc"><i>505</i>&nbsp;                drawNoCache(g, shape);</b>
+<i>506</i>&nbsp;            }
+<b class="fc"><i>507</i>&nbsp;            return;</b>
+<i>508</i>&nbsp;        }
+<i>509</i>&nbsp;
+<b class="fc"><i>510</i>&nbsp;        BaseShaderGraphics bsg = (BaseShaderGraphics)g;</b>
+<b class="fc"><i>511</i>&nbsp;        BaseShaderContext context = bsg.getContext();</b>
+<b class="fc"><i>512</i>&nbsp;        if (doUpdateMask || texData.cacheEntry == null) {</b>
+<i>513</i>&nbsp;            // need to create a new mask texture, or reuse an existing one
+<b class="fc"><i>514</i>&nbsp;            if (xformBounds == null) {</b>
+<b class="fc"><i>515</i>&nbsp;                if (xform.isIdentity()) {</b>
+<b class="nc"><i>516</i>&nbsp;                    xformBounds = shapeBounds;</b>
+<i>517</i>&nbsp;                } else {
+<b class="fc"><i>518</i>&nbsp;                    xformBounds = new RectBounds();</b>
+<b class="fc"><i>519</i>&nbsp;                    boundsCopy = true;</b>
+<b class="fc"><i>520</i>&nbsp;                    xformBounds = (RectBounds) xform.transform(shapeBounds, xformBounds);</b>
+<i>521</i>&nbsp;                }
+<i>522</i>&nbsp;            }
+<i>523</i>&nbsp;
+<b class="fc"><i>524</i>&nbsp;            if (texData.cacheEntry != null) {</b>
+<i>525</i>&nbsp;                // in this case, we already have a valid mask texture, but
+<i>526</i>&nbsp;                // the transform (translation) has changed since we last used
+<i>527</i>&nbsp;                // it, so we just need to update the maskX/maskY variables
+<b class="nc"><i>528</i>&nbsp;                texData.adjustOrigin(xform);</b>
+<i>529</i>&nbsp;            } else {
+<i>530</i>&nbsp;                // the following will locate an existing cached mask that
+<i>531</i>&nbsp;                // matches the given parameters, or failing that, will create
+<i>532</i>&nbsp;                // a new mask and put it in the cache
+<b class="fc"><i>533</i>&nbsp;                maskCache.get(context, texData, shape, stroke, xform, xformBounds, boundsCopy, g.isAntialiasedShape());</b>
+<i>534</i>&nbsp;            }
+<i>535</i>&nbsp;        }
+<i>536</i>&nbsp;
+<b class="fc"><i>537</i>&nbsp;        Paint paint = bsg.getPaint();</b>
+<b class="fc"><i>538</i>&nbsp;        float bx = 0f, by = 0f, bw = 0f, bh = 0f;</b>
+<b class="fc"><i>539</i>&nbsp;        if (paint.isProportional()) {</b>
+<b class="nc"><i>540</i>&nbsp;            if (bbox == null) {</b>
+<b class="nc"><i>541</i>&nbsp;                bbox = new float[] {</b>
+<i>542</i>&nbsp;                    Float.POSITIVE_INFINITY, Float.POSITIVE_INFINITY,
+<i>543</i>&nbsp;                    Float.NEGATIVE_INFINITY, Float.NEGATIVE_INFINITY,
+<i>544</i>&nbsp;                };
+<b class="nc"><i>545</i>&nbsp;                Shape.accumulate(bbox, shape, BaseTransform.IDENTITY_TRANSFORM);</b>
+<i>546</i>&nbsp;            }
+<b class="nc"><i>547</i>&nbsp;            bx = bbox[0];</b>
+<b class="nc"><i>548</i>&nbsp;            by = bbox[1];</b>
+<b class="nc"><i>549</i>&nbsp;            bw = bbox[2] - bx;</b>
+<b class="nc"><i>550</i>&nbsp;            bh = bbox[3] - by;</b>
+<i>551</i>&nbsp;        }
+<i>552</i>&nbsp;
+<b class="fc"><i>553</i>&nbsp;        int mw = texData.maskW;</b>
+<b class="fc"><i>554</i>&nbsp;        int mh = texData.maskH;</b>
+<b class="fc"><i>555</i>&nbsp;        Texture maskTex = texData.maskTex;</b>
+<b class="fc"><i>556</i>&nbsp;        float tw = maskTex.getPhysicalWidth();</b>
+<b class="fc"><i>557</i>&nbsp;        float th = maskTex.getPhysicalHeight();</b>
+<b class="fc"><i>558</i>&nbsp;        float dx1 = texData.maskX;</b>
+<b class="fc"><i>559</i>&nbsp;        float dy1 = texData.maskY;</b>
+<b class="fc"><i>560</i>&nbsp;        float dx2 = dx1 + mw;</b>
+<b class="fc"><i>561</i>&nbsp;        float dy2 = dy1 + mh;</b>
+<b class="fc"><i>562</i>&nbsp;        float tx1 = maskTex.getContentX() / tw;</b>
+<b class="fc"><i>563</i>&nbsp;        float ty1 = maskTex.getContentY() / th;</b>
+<b class="fc"><i>564</i>&nbsp;        float tx2 = tx1 + mw / tw;</b>
+<b class="fc"><i>565</i>&nbsp;        float ty2 = ty1 + mh / th;</b>
+<i>566</i>&nbsp;
+<b class="fc"><i>567</i>&nbsp;        if (PrismSettings.primTextureSize != 0) {</b>
+<i>568</i>&nbsp;            // the mask has been generated in device space, so we use
+<i>569</i>&nbsp;            // identity transform here
+<b class="nc"><i>570</i>&nbsp;            Shader shader =</b>
+<b class="nc"><i>571</i>&nbsp;                context.validatePaintOp(bsg, IDENT,</b>
+<b class="nc"><i>572</i>&nbsp;                                        MaskType.ALPHA_TEXTURE, texData.maskTex,</b>
+<i>573</i>&nbsp;                                        bx, by, bw, bh);
+<i>574</i>&nbsp;
+<b class="nc"><i>575</i>&nbsp;            VertexBuffer vb = context.getVertexBuffer();</b>
+<b class="nc"><i>576</i>&nbsp;            vb.addQuad(dx1, dy1, dx2, dy2, tx1, ty1, tx2, ty2,</b>
+<b class="nc"><i>577</i>&nbsp;                       bsg.getPaintTextureTx(xform, shader, bx, by, bw, bh));</b>
+<b class="nc"><i>578</i>&nbsp;        } else {</b>
+<i>579</i>&nbsp;            // the mask has been generated in device space, so we use
+<i>580</i>&nbsp;            // identity transform here
+<b class="fc"><i>581</i>&nbsp;            context.validatePaintOp(bsg, IDENT, texData.maskTex, bx, by, bw, bh);</b>
+<i>582</i>&nbsp;
+<b class="fc"><i>583</i>&nbsp;            VertexBuffer vb = context.getVertexBuffer();</b>
+<b class="fc"><i>584</i>&nbsp;            vb.addQuad(dx1, dy1, dx2, dy2, tx1, ty1, tx2, ty2);</b>
+<i>585</i>&nbsp;        }
+<b class="fc"><i>586</i>&nbsp;        maskTex.unlock();</b>
+<b class="fc"><i>587</i>&nbsp;    }</b>
+<i>588</i>&nbsp;
+<i>589</i>&nbsp;    void dispose() {
+<i>590</i>&nbsp;        // Note: this method will be called from the FX thread; just
+<i>591</i>&nbsp;        // invalidate and let the DisposerRecord take care of cutting
+<i>592</i>&nbsp;        // the ties with the mask cache and disposing textures if necessary
+<i>593</i>&nbsp;        // (on the render thread).
+<b class="nc"><i>594</i>&nbsp;        invalidate();</b>
+<b class="nc"><i>595</i>&nbsp;    }</b>
+<i>596</i>&nbsp;
+<b class="fc"><i>597</i>&nbsp;    private static class CSRDisposerRecord implements Disposer.Record {</b>
+<i>598</i>&nbsp;        private MaskTexData texData;
+<i>599</i>&nbsp;
+<b class="fc"><i>600</i>&nbsp;        private CSRDisposerRecord(MaskTexData texData) {</b>
+<b class="fc"><i>601</i>&nbsp;            this.texData = texData;</b>
+<b class="fc"><i>602</i>&nbsp;        }</b>
+<i>603</i>&nbsp;
+<i>604</i>&nbsp;        public void dispose() {
+<i>605</i>&nbsp;            // Note: this method should only be called from the rendering thread
+<b class="nc"><i>606</i>&nbsp;            if (texData != null) {</b>
+<b class="nc"><i>607</i>&nbsp;                maskCache.unref(texData);</b>
+<b class="nc"><i>608</i>&nbsp;                texData = null;</b>
+<i>609</i>&nbsp;            }
+<b class="nc"><i>610</i>&nbsp;        }</b>
+<i>611</i>&nbsp;    }
+<i>612</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2017-12-04 21:49</div>
+</div>
+</body>
+</html>

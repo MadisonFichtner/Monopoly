@@ -1,0 +1,1514 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: GlassViewEventHandler</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.javafx.tk.quantum</a> ]
+</div>
+
+<h1>Coverage Summary for Class: GlassViewEventHandler (com.sun.javafx.tk.quantum)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">GlassViewEventHandler</td>
+<td class="coverageStat">
+  <span class="percent">
+    23.8%
+  </span>
+  <span class="absValue">
+    (15/ 63)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    14.5%
+  </span>
+  <span class="absValue">
+    (74/ 512)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">GlassViewEventHandler$KeyEventNotification</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (2/ 2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    74.4%
+  </span>
+  <span class="absValue">
+    (29/ 39)
+  </span>
+</td>
+  </tr>
+  <tr>
+    <td class="name">GlassViewEventHandler$MouseEventNotification</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (2/ 2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    78%
+  </span>
+  <span class="absValue">
+    (46/ 59)
+  </span>
+</td>
+  </tr>
+  <tr>
+    <td class="name">GlassViewEventHandler$ViewEventNotification</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (3/ 3)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    78.9%
+  </span>
+  <span class="absValue">
+    (30/ 38)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    31.4%
+  </span>
+  <span class="absValue">
+    (22/ 70)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    27.6%
+  </span>
+  <span class="absValue">
+    (179/ 648)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright (c) 2010, 2016, Oracle and/or its affiliates. All rights reserved.
+<i>3</i>&nbsp; * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+<i>4</i>&nbsp; *
+<i>5</i>&nbsp; *
+<i>6</i>&nbsp; *
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; *
+<i>11</i>&nbsp; *
+<i>12</i>&nbsp; *
+<i>13</i>&nbsp; *
+<i>14</i>&nbsp; *
+<i>15</i>&nbsp; *
+<i>16</i>&nbsp; *
+<i>17</i>&nbsp; *
+<i>18</i>&nbsp; *
+<i>19</i>&nbsp; *
+<i>20</i>&nbsp; *
+<i>21</i>&nbsp; *
+<i>22</i>&nbsp; *
+<i>23</i>&nbsp; *
+<i>24</i>&nbsp; */
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;package com.sun.javafx.tk.quantum;
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;import com.sun.glass.events.GestureEvent;
+<i>29</i>&nbsp;import com.sun.glass.events.KeyEvent;
+<i>30</i>&nbsp;import com.sun.glass.events.MouseEvent;
+<i>31</i>&nbsp;import com.sun.glass.events.ViewEvent;
+<i>32</i>&nbsp;import com.sun.glass.events.TouchEvent;
+<i>33</i>&nbsp;import com.sun.glass.events.SwipeGesture;
+<i>34</i>&nbsp;import com.sun.glass.ui.Accessible;
+<i>35</i>&nbsp;import com.sun.glass.ui.Clipboard;
+<i>36</i>&nbsp;import com.sun.glass.ui.ClipboardAssistance;
+<i>37</i>&nbsp;import com.sun.glass.ui.Screen;
+<i>38</i>&nbsp;import com.sun.glass.ui.View;
+<i>39</i>&nbsp;import com.sun.glass.ui.Window;
+<i>40</i>&nbsp;import com.sun.javafx.PlatformUtil;
+<i>41</i>&nbsp;import com.sun.javafx.collections.TrackableObservableList;
+<i>42</i>&nbsp;import com.sun.javafx.logging.PulseLogger;
+<i>43</i>&nbsp;import static com.sun.javafx.logging.PulseLogger.PULSE_LOGGING_ENABLED;
+<i>44</i>&nbsp;import com.sun.javafx.scene.input.KeyCodeMap;
+<i>45</i>&nbsp;
+<i>46</i>&nbsp;import javafx.collections.ListChangeListener;
+<i>47</i>&nbsp;import javafx.collections.ObservableList;
+<i>48</i>&nbsp;
+<i>49</i>&nbsp;import javafx.event.EventType;
+<i>50</i>&nbsp;import javafx.geometry.Point2D;
+<i>51</i>&nbsp;import javafx.scene.input.InputMethodEvent;
+<i>52</i>&nbsp;import javafx.scene.input.InputMethodHighlight;
+<i>53</i>&nbsp;import javafx.scene.input.InputMethodTextRun;
+<i>54</i>&nbsp;import javafx.scene.input.KeyCode;
+<i>55</i>&nbsp;import javafx.scene.input.MouseButton;
+<i>56</i>&nbsp;import javafx.scene.input.RotateEvent;
+<i>57</i>&nbsp;import javafx.scene.input.ScrollEvent;
+<i>58</i>&nbsp;import javafx.scene.input.SwipeEvent;
+<i>59</i>&nbsp;import javafx.scene.input.TouchPoint;
+<i>60</i>&nbsp;import javafx.scene.input.TransferMode;
+<i>61</i>&nbsp;import javafx.scene.input.ZoomEvent;
+<i>62</i>&nbsp;
+<i>63</i>&nbsp;import java.security.AccessController;
+<i>64</i>&nbsp;import java.security.PrivilegedAction;
+<i>65</i>&nbsp;
+<b class="fc"><i>66</i>&nbsp;class GlassViewEventHandler extends View.EventHandler {</b>
+<i>67</i>&nbsp;
+<i>68</i>&nbsp;    static boolean zoomGestureEnabled;
+<i>69</i>&nbsp;    static boolean rotateGestureEnabled;
+<i>70</i>&nbsp;    static boolean scrollGestureEnabled;
+<i>71</i>&nbsp;    static {
+<b class="fc"><i>72</i>&nbsp;        AccessController.doPrivileged((PrivilegedAction&lt;Void&gt;) () -&gt; {</b>
+<b class="fc"><i>73</i>&nbsp;            zoomGestureEnabled = Boolean.valueOf(System.getProperty(&quot;com.sun.javafx.gestures.zoom&quot;, &quot;false&quot;));</b>
+<b class="fc"><i>74</i>&nbsp;            rotateGestureEnabled = Boolean.valueOf(System.getProperty(&quot;com.sun.javafx.gestures.rotate&quot;, &quot;false&quot;));</b>
+<b class="fc"><i>75</i>&nbsp;            scrollGestureEnabled = Boolean.valueOf(System.getProperty(&quot;com.sun.javafx.gestures.scroll&quot;, &quot;false&quot;));</b>
+<b class="fc"><i>76</i>&nbsp;            return null;</b>
+<i>77</i>&nbsp;        });
+<b class="fc"><i>78</i>&nbsp;    }</b>
+<i>79</i>&nbsp;
+<i>80</i>&nbsp;    private ViewScene scene;
+<i>81</i>&nbsp;    private final GlassSceneDnDEventHandler dndHandler;
+<i>82</i>&nbsp;    private final GestureRecognizers gestures;
+<i>83</i>&nbsp;
+<b class="fc"><i>84</i>&nbsp;    public GlassViewEventHandler(final ViewScene scene) {</b>
+<b class="fc"><i>85</i>&nbsp;        this.scene = scene;</b>
+<i>86</i>&nbsp;
+<b class="fc"><i>87</i>&nbsp;        dndHandler = new GlassSceneDnDEventHandler(scene);</b>
+<i>88</i>&nbsp;
+<b class="fc"><i>89</i>&nbsp;        gestures = new GestureRecognizers();</b>
+<b class="fc"><i>90</i>&nbsp;        if (PlatformUtil.isWindows() || PlatformUtil.isIOS() || PlatformUtil.isEmbedded()) {</b>
+<b class="fc"><i>91</i>&nbsp;            gestures.add(new SwipeGestureRecognizer(scene));</b>
+<i>92</i>&nbsp;        }
+<b class="fc"><i>93</i>&nbsp;        if (zoomGestureEnabled) {</b>
+<b class="nc"><i>94</i>&nbsp;            gestures.add(new ZoomGestureRecognizer(scene));</b>
+<i>95</i>&nbsp;        }
+<b class="fc"><i>96</i>&nbsp;        if (rotateGestureEnabled) {</b>
+<b class="nc"><i>97</i>&nbsp;            gestures.add(new RotateGestureRecognizer(scene));</b>
+<i>98</i>&nbsp;        }
+<b class="fc"><i>99</i>&nbsp;        if (scrollGestureEnabled) {</b>
+<b class="nc"><i>100</i>&nbsp;            gestures.add(new ScrollGestureRecognizer(scene));</b>
+<i>101</i>&nbsp;        }
+<b class="fc"><i>102</i>&nbsp;    }</b>
+<i>103</i>&nbsp;
+<i>104</i>&nbsp;    // Default fullscreen allows limited keyboard input.
+<i>105</i>&nbsp;    // It will only receive events from the following keys:
+<i>106</i>&nbsp;    // DOWN, UP, LEFT, RIGHT, SPACE, TAB, PAGE_UP, PAGE_DOWN,
+<i>107</i>&nbsp;    // HOME, END, ENTER.
+<i>108</i>&nbsp;    private static boolean allowableFullScreenKeys(int key) {
+<b class="nc"><i>109</i>&nbsp;        switch (key) {</b>
+<i>110</i>&nbsp;            case KeyEvent.VK_DOWN:
+<i>111</i>&nbsp;            case KeyEvent.VK_UP:
+<i>112</i>&nbsp;            case KeyEvent.VK_LEFT:
+<i>113</i>&nbsp;            case KeyEvent.VK_RIGHT:
+<i>114</i>&nbsp;            case KeyEvent.VK_SPACE:
+<i>115</i>&nbsp;            case KeyEvent.VK_TAB:
+<i>116</i>&nbsp;            case KeyEvent.VK_PAGE_DOWN:
+<i>117</i>&nbsp;            case KeyEvent.VK_PAGE_UP:
+<i>118</i>&nbsp;            case KeyEvent.VK_HOME:
+<i>119</i>&nbsp;            case KeyEvent.VK_END:
+<i>120</i>&nbsp;            case KeyEvent.VK_ENTER:
+<b class="nc"><i>121</i>&nbsp;                return true;</b>
+<i>122</i>&nbsp;        }
+<b class="nc"><i>123</i>&nbsp;        return false;</b>
+<i>124</i>&nbsp;    }
+<i>125</i>&nbsp;
+<i>126</i>&nbsp;    private boolean checkFullScreenKeyEvent(int type, int key, char chars[], int modifiers) {
+<b class="nc"><i>127</i>&nbsp;        return scene.getWindowStage().isTrustedFullScreen() || allowableFullScreenKeys(key);</b>
+<i>128</i>&nbsp;    }
+<i>129</i>&nbsp;
+<b class="fc"><i>130</i>&nbsp;    private final PaintCollector collector = PaintCollector.getInstance();</b>
+<i>131</i>&nbsp;
+<i>132</i>&nbsp;    private static EventType&lt;javafx.scene.input.KeyEvent&gt; keyEventType(int glassType) {
+<b class="fc"><i>133</i>&nbsp;        switch (glassType) {</b>
+<i>134</i>&nbsp;            case com.sun.glass.events.KeyEvent.PRESS:
+<b class="fc"><i>135</i>&nbsp;                return javafx.scene.input.KeyEvent.KEY_PRESSED;</b>
+<i>136</i>&nbsp;            case com.sun.glass.events.KeyEvent.RELEASE:
+<b class="fc"><i>137</i>&nbsp;                return javafx.scene.input.KeyEvent.KEY_RELEASED;</b>
+<i>138</i>&nbsp;            case com.sun.glass.events.KeyEvent.TYPED:
+<b class="fc"><i>139</i>&nbsp;                return javafx.scene.input.KeyEvent.KEY_TYPED;</b>
+<i>140</i>&nbsp;            default:
+<b class="nc"><i>141</i>&nbsp;                if (QuantumToolkit.verbose) {</b>
+<b class="nc"><i>142</i>&nbsp;                    System.err.println(&quot;Unknown Glass key event type: &quot; + glassType);</b>
+<i>143</i>&nbsp;                }
+<b class="nc"><i>144</i>&nbsp;                return null;</b>
+<i>145</i>&nbsp;        }
+<i>146</i>&nbsp;    }
+<i>147</i>&nbsp;
+<b class="fc"><i>148</i>&nbsp;    private final KeyEventNotification keyNotification = new KeyEventNotification();</b>
+<b class="fc"><i>149</i>&nbsp;    private class KeyEventNotification implements PrivilegedAction&lt;Void&gt; {</b>
+<i>150</i>&nbsp;        View view;
+<i>151</i>&nbsp;        long time;
+<i>152</i>&nbsp;        int type;
+<i>153</i>&nbsp;        int key;
+<i>154</i>&nbsp;        char[] chars;
+<i>155</i>&nbsp;        int modifiers;
+<i>156</i>&nbsp;
+<i>157</i>&nbsp;        private KeyCode lastKeyCode;
+<i>158</i>&nbsp;
+<i>159</i>&nbsp;        @Override
+<i>160</i>&nbsp;        public Void run() {
+<b class="fc"><i>161</i>&nbsp;            if (PULSE_LOGGING_ENABLED) {</b>
+<b class="nc"><i>162</i>&nbsp;                PulseLogger.newInput(keyEventType(type).toString());</b>
+<i>163</i>&nbsp;            }
+<b class="fc"><i>164</i>&nbsp;            WindowStage stage = scene.getWindowStage();</b>
+<i>165</i>&nbsp;            try {
+<b class="fc"><i>166</i>&nbsp;                boolean shiftDown = (modifiers &amp; KeyEvent.MODIFIER_SHIFT) != 0;</b>
+<b class="fc"><i>167</i>&nbsp;                boolean controlDown = (modifiers &amp; KeyEvent.MODIFIER_CONTROL) != 0;</b>
+<b class="fc"><i>168</i>&nbsp;                boolean altDown = (modifiers &amp; KeyEvent.MODIFIER_ALT) != 0;</b>
+<b class="fc"><i>169</i>&nbsp;                boolean metaDown = (modifiers &amp; KeyEvent.MODIFIER_WINDOWS) != 0;</b>
+<i>170</i>&nbsp;
+<b class="fc"><i>171</i>&nbsp;                String str = new String(chars);</b>
+<b class="fc"><i>172</i>&nbsp;                String text = str; // TODO: this must be a text like &quot;HOME&quot;, &quot;F1&quot;, or &quot;A&quot;</b>
+<i>173</i>&nbsp;
+<b class="fc"><i>174</i>&nbsp;                javafx.scene.input.KeyEvent keyEvent = new javafx.scene.input.KeyEvent(</b>
+<b class="fc"><i>175</i>&nbsp;                        keyEventType(type),</b>
+<i>176</i>&nbsp;                        str, text,
+<b class="fc"><i>177</i>&nbsp;                        KeyCodeMap.valueOf(key) ,</b>
+<i>178</i>&nbsp;                        shiftDown, controlDown, altDown, metaDown);
+<i>179</i>&nbsp;
+<b class="fc"><i>180</i>&nbsp;                KeyCode keyCode = KeyCodeMap.valueOf(key);</b>
+<b class="fc"><i>181</i>&nbsp;                switch (type) {</b>
+<i>182</i>&nbsp;                    case com.sun.glass.events.KeyEvent.PRESS:
+<i>183</i>&nbsp;                    case com.sun.glass.events.KeyEvent.RELEASE:
+<b class="fc"><i>184</i>&nbsp;                        lastKeyCode = keyCode;</b>
+<b class="fc"><i>185</i>&nbsp;                        break;</b>
+<i>186</i>&nbsp;
+<i>187</i>&nbsp;                    case com.sun.glass.events.KeyEvent.TYPED:
+<b class="fc"><i>188</i>&nbsp;                        keyCode = lastKeyCode;</b>
+<i>189</i>&nbsp;                        break;
+<i>190</i>&nbsp;                }
+<i>191</i>&nbsp;
+<b class="fc"><i>192</i>&nbsp;                if (stage != null) {</b>
+<b class="fc"><i>193</i>&nbsp;                    if (keyCode == KeyCode.ESCAPE) {</b>
+<b class="nc"><i>194</i>&nbsp;                        stage.setInAllowedEventHandler(false);</b>
+<i>195</i>&nbsp;                    } else {
+<b class="fc"><i>196</i>&nbsp;                        stage.setInAllowedEventHandler(true);</b>
+<i>197</i>&nbsp;                    }
+<i>198</i>&nbsp;                }
+<i>199</i>&nbsp;
+<b class="fc"><i>200</i>&nbsp;                switch (type) {</b>
+<i>201</i>&nbsp;                    case com.sun.glass.events.KeyEvent.PRESS:
+<b class="fc"><i>202</i>&nbsp;                        if (view.isInFullscreen() &amp;&amp; stage != null) {</b>
+<b class="nc"><i>203</i>&nbsp;                            if (stage.getSavedFullScreenExitKey() != null</b>
+<b class="nc"><i>204</i>&nbsp;                                &amp;&amp; stage.getSavedFullScreenExitKey().match(keyEvent)) {</b>
+<b class="nc"><i>205</i>&nbsp;                                stage.exitFullScreen();</b>
+<i>206</i>&nbsp;                            }
+<i>207</i>&nbsp;                        }
+<i>208</i>&nbsp;                        /* NOBREAK */
+<i>209</i>&nbsp;                    case com.sun.glass.events.KeyEvent.RELEASE:
+<i>210</i>&nbsp;                    case com.sun.glass.events.KeyEvent.TYPED:
+<b class="fc"><i>211</i>&nbsp;                        if (view.isInFullscreen()) {</b>
+<b class="nc"><i>212</i>&nbsp;                            if (!checkFullScreenKeyEvent(type, key, chars, modifiers)) {</b>
+<b class="nc"><i>213</i>&nbsp;                                break;</b>
+<i>214</i>&nbsp;                            }
+<i>215</i>&nbsp;                        }
+<b class="fc"><i>216</i>&nbsp;                        if (scene.sceneListener != null) {</b>
+<b class="fc"><i>217</i>&nbsp;                            scene.sceneListener.keyEvent(keyEvent);</b>
+<i>218</i>&nbsp;                        }
+<i>219</i>&nbsp;                        break;
+<i>220</i>&nbsp;                    default:
+<b class="nc"><i>221</i>&nbsp;                        if (QuantumToolkit.verbose) {</b>
+<b class="nc"><i>222</i>&nbsp;                            System.out.println(&quot;handleKeyEvent: unhandled type: &quot; + type);</b>
+<i>223</i>&nbsp;                        }
+<i>224</i>&nbsp;                }
+<i>225</i>&nbsp;            } finally {
+<b class="fc"><i>226</i>&nbsp;                if (stage != null) {</b>
+<b class="fc"><i>227</i>&nbsp;                    stage.setInAllowedEventHandler(false);</b>
+<i>228</i>&nbsp;                }
+<b class="fc"><i>229</i>&nbsp;                if (PULSE_LOGGING_ENABLED) {</b>
+<b class="nc"><i>230</i>&nbsp;                    PulseLogger.newInput(null);</b>
+<i>231</i>&nbsp;                }
+<i>232</i>&nbsp;            }
+<b class="fc"><i>233</i>&nbsp;            return null;</b>
+<i>234</i>&nbsp;        }
+<i>235</i>&nbsp;    }
+<i>236</i>&nbsp;
+<i>237</i>&nbsp;    @Override public void handleKeyEvent(View view, long time, int type, int key,
+<i>238</i>&nbsp;                                         char[] chars, int modifiers)
+<i>239</i>&nbsp;    {
+<b class="fc"><i>240</i>&nbsp;        keyNotification.view = view;</b>
+<b class="fc"><i>241</i>&nbsp;        keyNotification.time = time;</b>
+<b class="fc"><i>242</i>&nbsp;        keyNotification.type = type;</b>
+<b class="fc"><i>243</i>&nbsp;        keyNotification.key = key;</b>
+<b class="fc"><i>244</i>&nbsp;        keyNotification.chars = chars;</b>
+<b class="fc"><i>245</i>&nbsp;        keyNotification.modifiers = modifiers;</b>
+<i>246</i>&nbsp;
+<b class="fc"><i>247</i>&nbsp;        QuantumToolkit.runWithoutRenderLock(() -&gt; {</b>
+<b class="fc"><i>248</i>&nbsp;            return AccessController.doPrivileged(keyNotification, scene.getAccessControlContext());</b>
+<i>249</i>&nbsp;        });
+<b class="fc"><i>250</i>&nbsp;    }</b>
+<i>251</i>&nbsp;
+<i>252</i>&nbsp;    private static EventType&lt;javafx.scene.input.MouseEvent&gt; mouseEventType(int glassType) {
+<b class="fc"><i>253</i>&nbsp;        switch (glassType) {</b>
+<i>254</i>&nbsp;            case com.sun.glass.events.MouseEvent.DOWN:
+<b class="fc"><i>255</i>&nbsp;                return javafx.scene.input.MouseEvent.MOUSE_PRESSED;</b>
+<i>256</i>&nbsp;            case com.sun.glass.events.MouseEvent.UP:
+<b class="fc"><i>257</i>&nbsp;                return javafx.scene.input.MouseEvent.MOUSE_RELEASED;</b>
+<i>258</i>&nbsp;            case com.sun.glass.events.MouseEvent.ENTER:
+<b class="fc"><i>259</i>&nbsp;                return javafx.scene.input.MouseEvent.MOUSE_ENTERED;</b>
+<i>260</i>&nbsp;            case com.sun.glass.events.MouseEvent.EXIT:
+<b class="fc"><i>261</i>&nbsp;                return javafx.scene.input.MouseEvent.MOUSE_EXITED;</b>
+<i>262</i>&nbsp;            case com.sun.glass.events.MouseEvent.MOVE:
+<b class="fc"><i>263</i>&nbsp;                return javafx.scene.input.MouseEvent.MOUSE_MOVED;</b>
+<i>264</i>&nbsp;            case com.sun.glass.events.MouseEvent.DRAG:
+<b class="fc"><i>265</i>&nbsp;                return javafx.scene.input.MouseEvent.MOUSE_DRAGGED;</b>
+<i>266</i>&nbsp;            case com.sun.glass.events.MouseEvent.WHEEL:
+<b class="nc"><i>267</i>&nbsp;                throw new IllegalArgumentException(&quot;WHEEL event cannot &quot;</b>
+<i>268</i>&nbsp;                        + &quot;be translated to MouseEvent, must be translated to &quot;
+<i>269</i>&nbsp;                        + &quot;ScrollEvent&quot;);
+<i>270</i>&nbsp;            default:
+<b class="nc"><i>271</i>&nbsp;                if (QuantumToolkit.verbose) {</b>
+<b class="nc"><i>272</i>&nbsp;                    System.err.println(&quot;Unknown Glass mouse event type: &quot; + glassType);</b>
+<i>273</i>&nbsp;                }
+<b class="nc"><i>274</i>&nbsp;                return null;</b>
+<i>275</i>&nbsp;        }
+<i>276</i>&nbsp;    }
+<i>277</i>&nbsp;
+<i>278</i>&nbsp;    private static MouseButton mouseEventButton(int glassButton) {
+<b class="fc"><i>279</i>&nbsp;        switch (glassButton) {</b>
+<i>280</i>&nbsp;            case com.sun.glass.events.MouseEvent.BUTTON_LEFT:
+<b class="fc"><i>281</i>&nbsp;                return MouseButton.PRIMARY;</b>
+<i>282</i>&nbsp;            case com.sun.glass.events.MouseEvent.BUTTON_RIGHT:
+<b class="nc"><i>283</i>&nbsp;                return MouseButton.SECONDARY;</b>
+<i>284</i>&nbsp;            case com.sun.glass.events.MouseEvent.BUTTON_OTHER:
+<b class="nc"><i>285</i>&nbsp;                return MouseButton.MIDDLE;</b>
+<i>286</i>&nbsp;            default:
+<b class="fc"><i>287</i>&nbsp;                return MouseButton.NONE;</b>
+<i>288</i>&nbsp;        }
+<i>289</i>&nbsp;    }
+<i>290</i>&nbsp;
+<i>291</i>&nbsp;    // Used to determine whether a DRAG operation has been initiated on this window
+<b class="fc"><i>292</i>&nbsp;    private int mouseButtonPressedMask = 0;</b>
+<i>293</i>&nbsp;
+<b class="fc"><i>294</i>&nbsp;    private final MouseEventNotification mouseNotification = new MouseEventNotification();</b>
+<b class="fc"><i>295</i>&nbsp;    private class MouseEventNotification implements PrivilegedAction&lt;Void&gt; {</b>
+<i>296</i>&nbsp;        View view;
+<i>297</i>&nbsp;        long time;
+<i>298</i>&nbsp;        int type;
+<i>299</i>&nbsp;        int button;
+<i>300</i>&nbsp;        int x, y, xAbs, yAbs;
+<i>301</i>&nbsp;        int modifiers;
+<i>302</i>&nbsp;        boolean isPopupTrigger;
+<i>303</i>&nbsp;        boolean isSynthesized;
+<i>304</i>&nbsp;
+<i>305</i>&nbsp;        @Override
+<i>306</i>&nbsp;        public Void run() {
+<b class="fc"><i>307</i>&nbsp;            if (PULSE_LOGGING_ENABLED) {</b>
+<b class="nc"><i>308</i>&nbsp;                PulseLogger.newInput(mouseEventType(type).toString());</b>
+<i>309</i>&nbsp;            }
+<i>310</i>&nbsp;
+<i>311</i>&nbsp;            int buttonMask;
+<b class="fc"><i>312</i>&nbsp;            switch (button) {</b>
+<i>313</i>&nbsp;                case MouseEvent.BUTTON_LEFT:
+<b class="fc"><i>314</i>&nbsp;                    buttonMask = KeyEvent.MODIFIER_BUTTON_PRIMARY;</b>
+<b class="fc"><i>315</i>&nbsp;                    break;</b>
+<i>316</i>&nbsp;                case MouseEvent.BUTTON_OTHER:
+<b class="nc"><i>317</i>&nbsp;                    buttonMask = KeyEvent.MODIFIER_BUTTON_MIDDLE;</b>
+<b class="nc"><i>318</i>&nbsp;                    break;</b>
+<i>319</i>&nbsp;                case MouseEvent.BUTTON_RIGHT:
+<b class="nc"><i>320</i>&nbsp;                    buttonMask = KeyEvent.MODIFIER_BUTTON_SECONDARY;</b>
+<b class="nc"><i>321</i>&nbsp;                    break;</b>
+<i>322</i>&nbsp;                default:
+<b class="fc"><i>323</i>&nbsp;                    buttonMask = 0;</b>
+<i>324</i>&nbsp;                    break;
+<i>325</i>&nbsp;            }
+<i>326</i>&nbsp;
+<b class="fc"><i>327</i>&nbsp;            switch (type) {</b>
+<i>328</i>&nbsp;                case MouseEvent.MOVE:
+<b class="fc"><i>329</i>&nbsp;                    if (button != MouseEvent.BUTTON_NONE) {</b>
+<i>330</i>&nbsp;                        //RT-11305: the drag hasn&#39;t been started on this window -- ignore the event
+<b class="nc"><i>331</i>&nbsp;                        return null;</b>
+<i>332</i>&nbsp;                    }
+<i>333</i>&nbsp;                    break;
+<i>334</i>&nbsp;                case MouseEvent.UP:
+<b class="fc"><i>335</i>&nbsp;                    if ((mouseButtonPressedMask &amp; buttonMask) == 0) {</b>
+<i>336</i>&nbsp;                        //RT-11305: the mouse button hasn&#39;t been pressed on this window -- ignore the event
+<b class="nc"><i>337</i>&nbsp;                        return null;</b>
+<i>338</i>&nbsp;                    }
+<b class="fc"><i>339</i>&nbsp;                    mouseButtonPressedMask &amp;= ~buttonMask;</b>
+<b class="fc"><i>340</i>&nbsp;                    break;</b>
+<i>341</i>&nbsp;                case MouseEvent.DOWN:
+<b class="fc"><i>342</i>&nbsp;                    mouseButtonPressedMask |= buttonMask;</b>
+<b class="fc"><i>343</i>&nbsp;                    break;</b>
+<i>344</i>&nbsp;                case MouseEvent.ENTER:
+<i>345</i>&nbsp;                case MouseEvent.EXIT:
+<b class="fc"><i>346</i>&nbsp;                    break;</b>
+<i>347</i>&nbsp;                case MouseEvent.CLICK:
+<i>348</i>&nbsp;                    // Don&#39;t send click events to FX, as they are generated in Scene
+<b class="nc"><i>349</i>&nbsp;                    return null;</b>
+<i>350</i>&nbsp;                default:
+<b class="fc"><i>351</i>&nbsp;                    if (QuantumToolkit.verbose) {</b>
+<b class="nc"><i>352</i>&nbsp;                        System.out.println(&quot;handleMouseEvent: unhandled type: &quot; + type);</b>
+<i>353</i>&nbsp;                    }
+<i>354</i>&nbsp;            }
+<i>355</i>&nbsp;
+<b class="fc"><i>356</i>&nbsp;            WindowStage stage = scene.getWindowStage();</b>
+<i>357</i>&nbsp;            try {
+<b class="fc"><i>358</i>&nbsp;                if (stage != null) {</b>
+<b class="fc"><i>359</i>&nbsp;                    switch (type) {</b>
+<i>360</i>&nbsp;                        case MouseEvent.UP:
+<i>361</i>&nbsp;                        case MouseEvent.DOWN:
+<b class="fc"><i>362</i>&nbsp;                            stage.setInAllowedEventHandler(true);</b>
+<b class="fc"><i>363</i>&nbsp;                            break;</b>
+<i>364</i>&nbsp;                        default:
+<b class="fc"><i>365</i>&nbsp;                            stage.setInAllowedEventHandler(false);</b>
+<i>366</i>&nbsp;                            break;
+<i>367</i>&nbsp;                    }
+<i>368</i>&nbsp;                }
+<i>369</i>&nbsp;
+<b class="fc"><i>370</i>&nbsp;                if (scene.sceneListener != null) {</b>
+<b class="fc"><i>371</i>&nbsp;                    boolean shiftDown = (modifiers &amp; KeyEvent.MODIFIER_SHIFT) != 0;</b>
+<b class="fc"><i>372</i>&nbsp;                    boolean controlDown = (modifiers &amp; KeyEvent.MODIFIER_CONTROL) != 0;</b>
+<b class="fc"><i>373</i>&nbsp;                    boolean altDown = (modifiers &amp; KeyEvent.MODIFIER_ALT) != 0;</b>
+<b class="fc"><i>374</i>&nbsp;                    boolean metaDown = (modifiers &amp; KeyEvent.MODIFIER_WINDOWS) != 0;</b>
+<b class="fc"><i>375</i>&nbsp;                    boolean primaryButtonDown = (modifiers &amp; KeyEvent.MODIFIER_BUTTON_PRIMARY) != 0;</b>
+<b class="fc"><i>376</i>&nbsp;                    boolean middleButtonDown = (modifiers &amp; KeyEvent.MODIFIER_BUTTON_MIDDLE) != 0;</b>
+<b class="fc"><i>377</i>&nbsp;                    boolean secondaryButtonDown = (modifiers &amp; KeyEvent.MODIFIER_BUTTON_SECONDARY) != 0;</b>
+<b class="fc"><i>378</i>&nbsp;                    final Window w = view.getWindow();</b>
+<i>379</i>&nbsp;                    double pScaleX, pScaleY, spx, spy, sx, sy;
+<b class="fc"><i>380</i>&nbsp;                    if (w != null) {</b>
+<b class="fc"><i>381</i>&nbsp;                        pScaleX = w.getPlatformScaleX();</b>
+<b class="fc"><i>382</i>&nbsp;                        pScaleY = w.getPlatformScaleY();</b>
+<b class="fc"><i>383</i>&nbsp;                        Screen scr = w.getScreen();</b>
+<b class="fc"><i>384</i>&nbsp;                        if (scr != null) {</b>
+<b class="fc"><i>385</i>&nbsp;                            spx = scr.getPlatformX();</b>
+<b class="fc"><i>386</i>&nbsp;                            spy = scr.getPlatformY();</b>
+<b class="fc"><i>387</i>&nbsp;                            sx = scr.getX();</b>
+<b class="fc"><i>388</i>&nbsp;                            sy = scr.getY();</b>
+<i>389</i>&nbsp;                        } else {
+<b class="nc"><i>390</i>&nbsp;                            spx = spy = sx = sy = 0.0;</b>
+<i>391</i>&nbsp;                        }
+<b class="fc"><i>392</i>&nbsp;                    } else {</b>
+<b class="nc"><i>393</i>&nbsp;                        pScaleX = pScaleY = 1.0;</b>
+<b class="nc"><i>394</i>&nbsp;                        spx = spy = sx = sy = 0.0;</b>
+<i>395</i>&nbsp;                    }
+<i>396</i>&nbsp;
+<b class="fc"><i>397</i>&nbsp;                    scene.sceneListener.mouseEvent(mouseEventType(type),</b>
+<i>398</i>&nbsp;                            x / pScaleX, y / pScaleY,
+<i>399</i>&nbsp;                            sx + (xAbs - spx) / pScaleX, sy + (yAbs - spy) / pScaleY,
+<b class="fc"><i>400</i>&nbsp;                            mouseEventButton(button), isPopupTrigger, isSynthesized,</b>
+<i>401</i>&nbsp;                            shiftDown, controlDown, altDown, metaDown,
+<i>402</i>&nbsp;                            primaryButtonDown, middleButtonDown, secondaryButtonDown);
+<i>403</i>&nbsp;                }
+<i>404</i>&nbsp;            } finally {
+<b class="fc"><i>405</i>&nbsp;                if (stage != null) {</b>
+<b class="fc"><i>406</i>&nbsp;                    stage.setInAllowedEventHandler(false);</b>
+<i>407</i>&nbsp;                }
+<b class="fc"><i>408</i>&nbsp;                if (PULSE_LOGGING_ENABLED) {</b>
+<b class="nc"><i>409</i>&nbsp;                    PulseLogger.newInput(null);</b>
+<i>410</i>&nbsp;                }
+<i>411</i>&nbsp;            }
+<b class="fc"><i>412</i>&nbsp;            return null;</b>
+<i>413</i>&nbsp;        }
+<i>414</i>&nbsp;    }
+<i>415</i>&nbsp;
+<i>416</i>&nbsp;    @Override
+<i>417</i>&nbsp;    public void handleMouseEvent(View view, long time, int type, int button,
+<i>418</i>&nbsp;                                 int x, int y, int xAbs, int yAbs,
+<i>419</i>&nbsp;                                 int modifiers, boolean isPopupTrigger, boolean isSynthesized)
+<i>420</i>&nbsp;    {
+<b class="fc"><i>421</i>&nbsp;        mouseNotification.view = view;</b>
+<b class="fc"><i>422</i>&nbsp;        mouseNotification.time = time;</b>
+<b class="fc"><i>423</i>&nbsp;        mouseNotification.type = type;</b>
+<b class="fc"><i>424</i>&nbsp;        mouseNotification.button = button;</b>
+<b class="fc"><i>425</i>&nbsp;        mouseNotification.x = x;</b>
+<b class="fc"><i>426</i>&nbsp;        mouseNotification.y = y;</b>
+<b class="fc"><i>427</i>&nbsp;        mouseNotification.xAbs = xAbs;</b>
+<b class="fc"><i>428</i>&nbsp;        mouseNotification.yAbs = yAbs;</b>
+<b class="fc"><i>429</i>&nbsp;        mouseNotification.modifiers = modifiers;</b>
+<b class="fc"><i>430</i>&nbsp;        mouseNotification.isPopupTrigger = isPopupTrigger;</b>
+<b class="fc"><i>431</i>&nbsp;        mouseNotification.isSynthesized = isSynthesized;</b>
+<i>432</i>&nbsp;
+<b class="fc"><i>433</i>&nbsp;        QuantumToolkit.runWithoutRenderLock(() -&gt; {</b>
+<b class="fc"><i>434</i>&nbsp;            return AccessController.doPrivileged(mouseNotification, scene.getAccessControlContext());</b>
+<i>435</i>&nbsp;        });
+<b class="fc"><i>436</i>&nbsp;    }</b>
+<i>437</i>&nbsp;
+<i>438</i>&nbsp;    @Override public void handleMenuEvent(final View view,
+<i>439</i>&nbsp;                                          final int x, final int y, final int xAbs, final int yAbs,
+<i>440</i>&nbsp;                                          final boolean isKeyboardTrigger)
+<i>441</i>&nbsp;    {
+<b class="nc"><i>442</i>&nbsp;        if (PULSE_LOGGING_ENABLED) {</b>
+<b class="nc"><i>443</i>&nbsp;            PulseLogger.newInput(&quot;MENU_EVENT&quot;);</b>
+<i>444</i>&nbsp;        }
+<b class="nc"><i>445</i>&nbsp;        WindowStage stage = scene.getWindowStage();</b>
+<i>446</i>&nbsp;        try {
+<b class="nc"><i>447</i>&nbsp;            if (stage != null) {</b>
+<b class="nc"><i>448</i>&nbsp;                stage.setInAllowedEventHandler(true);</b>
+<i>449</i>&nbsp;            }
+<b class="nc"><i>450</i>&nbsp;            QuantumToolkit.runWithoutRenderLock(() -&gt; {</b>
+<b class="nc"><i>451</i>&nbsp;                return AccessController.doPrivileged((PrivilegedAction&lt;Void&gt;) () -&gt; {</b>
+<b class="nc"><i>452</i>&nbsp;                    if (scene.sceneListener != null) {</b>
+<i>453</i>&nbsp;                        double pScaleX, pScaleY, spx, spy, sx, sy;
+<b class="nc"><i>454</i>&nbsp;                        final Window w = view.getWindow();</b>
+<b class="nc"><i>455</i>&nbsp;                        if (w != null) {</b>
+<b class="nc"><i>456</i>&nbsp;                            pScaleX = w.getPlatformScaleX();</b>
+<b class="nc"><i>457</i>&nbsp;                            pScaleY = w.getPlatformScaleY();</b>
+<b class="nc"><i>458</i>&nbsp;                            Screen scr = w.getScreen();</b>
+<b class="nc"><i>459</i>&nbsp;                            if (scr != null) {</b>
+<b class="nc"><i>460</i>&nbsp;                                spx = scr.getPlatformX();</b>
+<b class="nc"><i>461</i>&nbsp;                                spy = scr.getPlatformY();</b>
+<b class="nc"><i>462</i>&nbsp;                                sx = scr.getX();</b>
+<b class="nc"><i>463</i>&nbsp;                                sy = scr.getY();</b>
+<i>464</i>&nbsp;                            } else {
+<b class="nc"><i>465</i>&nbsp;                                spx = spy = sx = sy = 0.0;</b>
+<i>466</i>&nbsp;                            }
+<b class="nc"><i>467</i>&nbsp;                        } else {</b>
+<b class="nc"><i>468</i>&nbsp;                            pScaleX = pScaleY = 1.0;</b>
+<b class="nc"><i>469</i>&nbsp;                            spx = spy = sx = sy = 0.0;</b>
+<i>470</i>&nbsp;                        }
+<b class="nc"><i>471</i>&nbsp;                        scene.sceneListener.menuEvent(x / pScaleX, y / pScaleY,</b>
+<i>472</i>&nbsp;                                                      sx + (xAbs - spx) / pScaleX,
+<i>473</i>&nbsp;                                                      sy + (yAbs - spy) / pScaleY,
+<i>474</i>&nbsp;                                                      isKeyboardTrigger);
+<i>475</i>&nbsp;                    }
+<b class="nc"><i>476</i>&nbsp;                    return null;</b>
+<b class="nc"><i>477</i>&nbsp;                }, scene.getAccessControlContext());</b>
+<i>478</i>&nbsp;            });
+<i>479</i>&nbsp;        } finally {
+<b class="nc"><i>480</i>&nbsp;            if (stage != null) {</b>
+<b class="nc"><i>481</i>&nbsp;                stage.setInAllowedEventHandler(false);</b>
+<i>482</i>&nbsp;            }
+<b class="nc"><i>483</i>&nbsp;            if (PULSE_LOGGING_ENABLED) {</b>
+<b class="nc"><i>484</i>&nbsp;                PulseLogger.newInput(null);</b>
+<i>485</i>&nbsp;            }
+<i>486</i>&nbsp;        }
+<b class="nc"><i>487</i>&nbsp;    }</b>
+<i>488</i>&nbsp;
+<i>489</i>&nbsp;    @Override public void handleScrollEvent(final View view, final long time,
+<i>490</i>&nbsp;                                            final int x, final int y, final int xAbs, final int yAbs,
+<i>491</i>&nbsp;                                            final double deltaX, final double deltaY, final int modifiers,
+<i>492</i>&nbsp;                                            final int lines, final int chars,
+<i>493</i>&nbsp;                                            final int defaultLines, final int defaultChars,
+<i>494</i>&nbsp;                                            final double xMultiplier, final double yMultiplier)
+<i>495</i>&nbsp;    {
+<b class="nc"><i>496</i>&nbsp;        if (PULSE_LOGGING_ENABLED) {</b>
+<b class="nc"><i>497</i>&nbsp;            PulseLogger.newInput(&quot;SCROLL_EVENT&quot;);</b>
+<i>498</i>&nbsp;        }
+<b class="nc"><i>499</i>&nbsp;        WindowStage stage = scene.getWindowStage();</b>
+<i>500</i>&nbsp;        try {
+<b class="nc"><i>501</i>&nbsp;            if (stage != null) {</b>
+<b class="nc"><i>502</i>&nbsp;                stage.setInAllowedEventHandler(false);</b>
+<i>503</i>&nbsp;            }
+<b class="nc"><i>504</i>&nbsp;            QuantumToolkit.runWithoutRenderLock(() -&gt; {</b>
+<b class="nc"><i>505</i>&nbsp;                return AccessController.doPrivileged((PrivilegedAction&lt;Void&gt;) () -&gt; {</b>
+<b class="nc"><i>506</i>&nbsp;                    if (scene.sceneListener != null) {</b>
+<b class="nc"><i>507</i>&nbsp;                        final Window w = view.getWindow();</b>
+<i>508</i>&nbsp;                        double pScaleX, pScaleY, spx, spy, sx, sy;
+<b class="nc"><i>509</i>&nbsp;                        if (w != null) {</b>
+<b class="nc"><i>510</i>&nbsp;                            pScaleX = w.getPlatformScaleX();</b>
+<b class="nc"><i>511</i>&nbsp;                            pScaleY = w.getPlatformScaleY();</b>
+<b class="nc"><i>512</i>&nbsp;                            Screen scr = w.getScreen();</b>
+<b class="nc"><i>513</i>&nbsp;                            if (scr != null) {</b>
+<b class="nc"><i>514</i>&nbsp;                                spx = scr.getPlatformX();</b>
+<b class="nc"><i>515</i>&nbsp;                                spy = scr.getPlatformY();</b>
+<b class="nc"><i>516</i>&nbsp;                                sx = scr.getX();</b>
+<b class="nc"><i>517</i>&nbsp;                                sy = scr.getY();</b>
+<i>518</i>&nbsp;                            } else {
+<b class="nc"><i>519</i>&nbsp;                                spx = spy = sx = sy = 0.0;</b>
+<i>520</i>&nbsp;                            }
+<b class="nc"><i>521</i>&nbsp;                        } else {</b>
+<b class="nc"><i>522</i>&nbsp;                            pScaleX = pScaleY = 1.0;</b>
+<b class="nc"><i>523</i>&nbsp;                            spx = spy = sx = sy = 0.0;</b>
+<i>524</i>&nbsp;                        }
+<b class="nc"><i>525</i>&nbsp;                        scene.sceneListener.scrollEvent(ScrollEvent.SCROLL,</b>
+<i>526</i>&nbsp;                            deltaX / pScaleX, deltaY / pScaleY, 0, 0,
+<i>527</i>&nbsp;                            xMultiplier, yMultiplier,
+<i>528</i>&nbsp;                            0, // touchCount
+<i>529</i>&nbsp;                            chars, lines, defaultChars, defaultLines,
+<i>530</i>&nbsp;                            x / pScaleX, y / pScaleY,
+<i>531</i>&nbsp;                            sx + (xAbs - spx) / pScaleX,
+<i>532</i>&nbsp;                            sy + (yAbs - spy) / pScaleY,
+<i>533</i>&nbsp;                            (modifiers &amp; KeyEvent.MODIFIER_SHIFT) != 0,
+<i>534</i>&nbsp;                            (modifiers &amp; KeyEvent.MODIFIER_CONTROL) != 0,
+<i>535</i>&nbsp;                            (modifiers &amp; KeyEvent.MODIFIER_ALT) != 0,
+<i>536</i>&nbsp;                            (modifiers &amp; KeyEvent.MODIFIER_WINDOWS) != 0,
+<i>537</i>&nbsp;                            false, // this is always indirect
+<i>538</i>&nbsp;                            false); // this has no inertia
+<i>539</i>&nbsp;                    }
+<b class="nc"><i>540</i>&nbsp;                    return null;</b>
+<b class="nc"><i>541</i>&nbsp;                }, scene.getAccessControlContext());</b>
+<i>542</i>&nbsp;            });
+<i>543</i>&nbsp;        } finally {
+<b class="nc"><i>544</i>&nbsp;            if (stage != null) {</b>
+<b class="nc"><i>545</i>&nbsp;                stage.setInAllowedEventHandler(false);</b>
+<i>546</i>&nbsp;            }
+<b class="nc"><i>547</i>&nbsp;            if (PULSE_LOGGING_ENABLED) {</b>
+<b class="nc"><i>548</i>&nbsp;                PulseLogger.newInput(null);</b>
+<i>549</i>&nbsp;            }
+<i>550</i>&nbsp;        }
+<b class="nc"><i>551</i>&nbsp;    }</b>
+<i>552</i>&nbsp;
+<i>553</i>&nbsp;    private static byte inputMethodEventAttrValue(int pos, int[] attrBoundary, byte[] attrValue) {
+<b class="nc"><i>554</i>&nbsp;        if (attrBoundary != null) {</b>
+<b class="nc"><i>555</i>&nbsp;            for (int current = 0; current &lt; attrBoundary.length-1; current++) {</b>
+<b class="nc"><i>556</i>&nbsp;                if (pos &gt;= attrBoundary[current] &amp;&amp;</b>
+<i>557</i>&nbsp;                    pos &lt; attrBoundary[current+1]) {
+<b class="nc"><i>558</i>&nbsp;                    return attrValue[current];</b>
+<i>559</i>&nbsp;                }
+<i>560</i>&nbsp;            }
+<i>561</i>&nbsp;        }
+<b class="nc"><i>562</i>&nbsp;        return View.IME_ATTR_INPUT_ERROR;</b>
+<i>563</i>&nbsp;    }
+<i>564</i>&nbsp;
+<i>565</i>&nbsp;    private static ObservableList&lt;InputMethodTextRun&gt; inputMethodEventComposed(
+<i>566</i>&nbsp;            String text, int commitCount, int[] clauseBoundary, int[] attrBoundary, byte[] attrValue)
+<i>567</i>&nbsp;    {
+<b class="nc"><i>568</i>&nbsp;        ObservableList&lt;InputMethodTextRun&gt; composed = new TrackableObservableList&lt;InputMethodTextRun&gt;() {</b>
+<i>569</i>&nbsp;            @Override
+<i>570</i>&nbsp;            protected void onChanged(ListChangeListener.Change&lt;InputMethodTextRun&gt; c) {
+<i>571</i>&nbsp;            }
+<i>572</i>&nbsp;        };
+<i>573</i>&nbsp;
+<b class="nc"><i>574</i>&nbsp;        if (commitCount &lt; text.length()) {</b>
+<b class="nc"><i>575</i>&nbsp;            if (clauseBoundary == null) {</b>
+<i>576</i>&nbsp;                // Create one single segment as UNSELECTED_RAW
+<b class="nc"><i>577</i>&nbsp;                composed.add(new InputMethodTextRun(</b>
+<b class="nc"><i>578</i>&nbsp;                        text.substring(commitCount),</b>
+<i>579</i>&nbsp;                        InputMethodHighlight.UNSELECTED_RAW));
+<i>580</i>&nbsp;            } else {
+<b class="nc"><i>581</i>&nbsp;                for (int current = 0; current &lt; clauseBoundary.length-1; current++) {</b>
+<b class="nc"><i>582</i>&nbsp;                    if (clauseBoundary[current] &lt; commitCount) {</b>
+<b class="nc"><i>583</i>&nbsp;                        continue;</b>
+<i>584</i>&nbsp;                    }
+<i>585</i>&nbsp;
+<i>586</i>&nbsp;                    InputMethodHighlight highlight;
+<b class="nc"><i>587</i>&nbsp;                    switch (inputMethodEventAttrValue(clauseBoundary[current], attrBoundary, attrValue)) {</b>
+<i>588</i>&nbsp;                        case View.IME_ATTR_TARGET_CONVERTED:
+<b class="nc"><i>589</i>&nbsp;                            highlight = InputMethodHighlight.SELECTED_CONVERTED;</b>
+<b class="nc"><i>590</i>&nbsp;                            break;</b>
+<i>591</i>&nbsp;                        case View.IME_ATTR_CONVERTED:
+<b class="nc"><i>592</i>&nbsp;                            highlight = InputMethodHighlight.UNSELECTED_CONVERTED;</b>
+<b class="nc"><i>593</i>&nbsp;                            break;</b>
+<i>594</i>&nbsp;                        case View.IME_ATTR_TARGET_NOTCONVERTED:
+<b class="nc"><i>595</i>&nbsp;                            highlight = InputMethodHighlight.SELECTED_RAW;</b>
+<b class="nc"><i>596</i>&nbsp;                            break;</b>
+<i>597</i>&nbsp;                        case View.IME_ATTR_INPUT:
+<i>598</i>&nbsp;                        case View.IME_ATTR_INPUT_ERROR:
+<i>599</i>&nbsp;                        default:
+<b class="nc"><i>600</i>&nbsp;                            highlight = InputMethodHighlight.UNSELECTED_RAW;</b>
+<i>601</i>&nbsp;                            break;
+<i>602</i>&nbsp;                    }
+<b class="nc"><i>603</i>&nbsp;                    composed.add(new InputMethodTextRun(</b>
+<b class="nc"><i>604</i>&nbsp;                            text.substring(clauseBoundary[current],</b>
+<i>605</i>&nbsp;                                           clauseBoundary[current+1]),
+<i>606</i>&nbsp;                            highlight));
+<i>607</i>&nbsp;                }
+<i>608</i>&nbsp;            }
+<i>609</i>&nbsp;        }
+<b class="nc"><i>610</i>&nbsp;        return composed;</b>
+<i>611</i>&nbsp;    }
+<i>612</i>&nbsp;
+<i>613</i>&nbsp;    @Override public void handleInputMethodEvent(final long time, final String text,
+<i>614</i>&nbsp;                                                 final int[] clauseBoundary,
+<i>615</i>&nbsp;                                                 final int[] attrBoundary, final byte[] attrValue,
+<i>616</i>&nbsp;                                                 final int commitCount, final int cursorPos)
+<i>617</i>&nbsp;    {
+<b class="nc"><i>618</i>&nbsp;        if (PULSE_LOGGING_ENABLED) {</b>
+<b class="nc"><i>619</i>&nbsp;            PulseLogger.newInput(&quot;INPUT_METHOD_EVENT&quot;);</b>
+<i>620</i>&nbsp;        }
+<b class="nc"><i>621</i>&nbsp;        WindowStage stage = scene.getWindowStage();</b>
+<i>622</i>&nbsp;        try {
+<b class="nc"><i>623</i>&nbsp;            if (stage != null) {</b>
+<b class="nc"><i>624</i>&nbsp;                stage.setInAllowedEventHandler(true);</b>
+<i>625</i>&nbsp;            }
+<b class="nc"><i>626</i>&nbsp;            QuantumToolkit.runWithoutRenderLock(() -&gt; {</b>
+<b class="nc"><i>627</i>&nbsp;                return AccessController.doPrivileged((PrivilegedAction&lt;Void&gt;) () -&gt; {</b>
+<b class="nc"><i>628</i>&nbsp;                    if (scene.sceneListener != null) {</b>
+<b class="nc"><i>629</i>&nbsp;                        String t = text != null ? text : &quot;&quot;;</b>
+<b class="nc"><i>630</i>&nbsp;                        EventType&lt;InputMethodEvent&gt; eventType =</b>
+<i>631</i>&nbsp;                                InputMethodEvent.INPUT_METHOD_TEXT_CHANGED;
+<b class="nc"><i>632</i>&nbsp;                        ObservableList&lt;InputMethodTextRun&gt; composed = inputMethodEventComposed(</b>
+<i>633</i>&nbsp;                                t, commitCount, clauseBoundary, attrBoundary, attrValue);
+<b class="nc"><i>634</i>&nbsp;                        String committed = t.substring(0, commitCount);</b>
+<b class="nc"><i>635</i>&nbsp;                        scene.sceneListener.inputMethodEvent(eventType, composed, committed, cursorPos);</b>
+<i>636</i>&nbsp;                    }
+<b class="nc"><i>637</i>&nbsp;                    return null;</b>
+<b class="nc"><i>638</i>&nbsp;                }, scene.getAccessControlContext());</b>
+<i>639</i>&nbsp;            });
+<i>640</i>&nbsp;        } finally {
+<b class="nc"><i>641</i>&nbsp;            if (stage != null) {</b>
+<b class="nc"><i>642</i>&nbsp;                stage.setInAllowedEventHandler(false);</b>
+<i>643</i>&nbsp;            }
+<b class="nc"><i>644</i>&nbsp;            if (PULSE_LOGGING_ENABLED) {</b>
+<b class="nc"><i>645</i>&nbsp;                PulseLogger.newInput(null);</b>
+<i>646</i>&nbsp;            }
+<i>647</i>&nbsp;        }
+<b class="nc"><i>648</i>&nbsp;    }</b>
+<i>649</i>&nbsp;
+<i>650</i>&nbsp;    @Override
+<i>651</i>&nbsp;    public double[] getInputMethodCandidatePos(int offset) {
+<b class="nc"><i>652</i>&nbsp;        Point2D p2d = scene.inputMethodRequests.getTextLocation(offset);</b>
+<b class="nc"><i>653</i>&nbsp;        double[] ret = new double[2];</b>
+<b class="nc"><i>654</i>&nbsp;        ret[0] = p2d.getX();</b>
+<b class="nc"><i>655</i>&nbsp;        ret[1] = p2d.getY();</b>
+<b class="nc"><i>656</i>&nbsp;        return ret;</b>
+<i>657</i>&nbsp;    }
+<i>658</i>&nbsp;
+<i>659</i>&nbsp;    private static TransferMode actionToTransferMode(int dropActions) {
+<b class="nc"><i>660</i>&nbsp;        if (dropActions == Clipboard.ACTION_NONE) {</b>
+<b class="nc"><i>661</i>&nbsp;            return null;</b>
+<b class="nc"><i>662</i>&nbsp;        } else if (dropActions == Clipboard.ACTION_COPY</b>
+<i>663</i>&nbsp;                //IE drop action for URL copy;  XXX: should be fixed in Glass
+<i>664</i>&nbsp;                || dropActions == (Clipboard.ACTION_COPY | Clipboard.ACTION_REFERENCE) )
+<i>665</i>&nbsp;        {
+<b class="nc"><i>666</i>&nbsp;            return TransferMode.COPY;</b>
+<b class="nc"><i>667</i>&nbsp;        } else if (dropActions == Clipboard.ACTION_MOVE</b>
+<i>668</i>&nbsp;                //IE drop action for URL move;  XXX: should be fixed in Glass
+<i>669</i>&nbsp;                || dropActions == (Clipboard.ACTION_MOVE | Clipboard.ACTION_REFERENCE) )
+<i>670</i>&nbsp;        {
+<b class="nc"><i>671</i>&nbsp;            return TransferMode.MOVE;</b>
+<b class="nc"><i>672</i>&nbsp;        } else if (dropActions == Clipboard.ACTION_REFERENCE) {</b>
+<b class="nc"><i>673</i>&nbsp;            return TransferMode.LINK;</b>
+<b class="nc"><i>674</i>&nbsp;        } else if (dropActions == Clipboard.ACTION_COPY_OR_MOVE) {</b>
+<b class="nc"><i>675</i>&nbsp;            if (QuantumToolkit.verbose) {</b>
+<b class="nc"><i>676</i>&nbsp;                System.err.println(&quot;Ambiguous drop action: &quot; + Integer.toHexString(dropActions));</b>
+<i>677</i>&nbsp;            }
+<i>678</i>&nbsp;        } else {
+<b class="nc"><i>679</i>&nbsp;            if (QuantumToolkit.verbose) {</b>
+<b class="nc"><i>680</i>&nbsp;                System.err.println(&quot;Unknown drop action: &quot; + Integer.toHexString(dropActions));</b>
+<i>681</i>&nbsp;            }
+<i>682</i>&nbsp;        }
+<b class="nc"><i>683</i>&nbsp;        return null;</b>
+<i>684</i>&nbsp;    }
+<i>685</i>&nbsp;
+<i>686</i>&nbsp;    private static int transferModeToAction(TransferMode tm) {
+<b class="nc"><i>687</i>&nbsp;        if (tm == null) {</b>
+<b class="nc"><i>688</i>&nbsp;            return Clipboard.ACTION_NONE;</b>
+<i>689</i>&nbsp;        }
+<i>690</i>&nbsp;
+<b class="nc"><i>691</i>&nbsp;        switch (tm) {</b>
+<i>692</i>&nbsp;            case COPY:
+<b class="nc"><i>693</i>&nbsp;                return Clipboard.ACTION_COPY;</b>
+<i>694</i>&nbsp;            case MOVE:
+<b class="nc"><i>695</i>&nbsp;                return Clipboard.ACTION_MOVE;</b>
+<i>696</i>&nbsp;            case LINK:
+<b class="nc"><i>697</i>&nbsp;                return Clipboard.ACTION_REFERENCE;</b>
+<i>698</i>&nbsp;            default:
+<b class="nc"><i>699</i>&nbsp;                return Clipboard.ACTION_NONE;</b>
+<i>700</i>&nbsp;        }
+<i>701</i>&nbsp;    }
+<i>702</i>&nbsp;
+<i>703</i>&nbsp;    @Override public int handleDragEnter(View view,
+<i>704</i>&nbsp;                                         final int x, final int y, final int xAbs, final int yAbs,
+<i>705</i>&nbsp;                                         final int recommendedDropAction,
+<i>706</i>&nbsp;                                         final ClipboardAssistance dropTargetAssistant)
+<i>707</i>&nbsp;    {
+<b class="nc"><i>708</i>&nbsp;        if (PULSE_LOGGING_ENABLED) {</b>
+<b class="nc"><i>709</i>&nbsp;            PulseLogger.newInput(&quot;DRAG_ENTER&quot;);</b>
+<i>710</i>&nbsp;        }
+<i>711</i>&nbsp;        TransferMode action;
+<i>712</i>&nbsp;        try {
+<b class="nc"><i>713</i>&nbsp;            action = QuantumToolkit.runWithoutRenderLock(() -&gt; {</b>
+<b class="nc"><i>714</i>&nbsp;                return dndHandler.handleDragEnter(x, y, xAbs, yAbs,</b>
+<b class="nc"><i>715</i>&nbsp;                        actionToTransferMode(recommendedDropAction),</b>
+<i>716</i>&nbsp;                        dropTargetAssistant);
+<i>717</i>&nbsp;            });
+<i>718</i>&nbsp;        } finally {
+<b class="nc"><i>719</i>&nbsp;            if (PULSE_LOGGING_ENABLED) {</b>
+<b class="nc"><i>720</i>&nbsp;                PulseLogger.newInput(null);</b>
+<i>721</i>&nbsp;            }
+<i>722</i>&nbsp;        }
+<b class="nc"><i>723</i>&nbsp;        return transferModeToAction(action);</b>
+<i>724</i>&nbsp;    }
+<i>725</i>&nbsp;
+<i>726</i>&nbsp;    @Override public void handleDragLeave(View view, final ClipboardAssistance dropTargetAssistant) {
+<b class="nc"><i>727</i>&nbsp;        if (PULSE_LOGGING_ENABLED) {</b>
+<b class="nc"><i>728</i>&nbsp;            PulseLogger.newInput(&quot;DRAG_LEAVE&quot;);</b>
+<i>729</i>&nbsp;        }
+<i>730</i>&nbsp;        try {
+<b class="nc"><i>731</i>&nbsp;            QuantumToolkit.runWithoutRenderLock(() -&gt; {</b>
+<b class="nc"><i>732</i>&nbsp;                dndHandler.handleDragLeave(dropTargetAssistant);</b>
+<b class="nc"><i>733</i>&nbsp;                return null;</b>
+<i>734</i>&nbsp;            });
+<i>735</i>&nbsp;        } finally {
+<b class="nc"><i>736</i>&nbsp;            if (PULSE_LOGGING_ENABLED) {</b>
+<b class="nc"><i>737</i>&nbsp;                PulseLogger.newInput(null);</b>
+<i>738</i>&nbsp;            }
+<i>739</i>&nbsp;        }
+<b class="nc"><i>740</i>&nbsp;    }</b>
+<i>741</i>&nbsp;
+<i>742</i>&nbsp;    @Override public int handleDragDrop(View view,
+<i>743</i>&nbsp;                                        final int x, final int y, final int xAbs, final int yAbs,
+<i>744</i>&nbsp;                                        final int recommendedDropAction,
+<i>745</i>&nbsp;                                        final ClipboardAssistance dropTargetAssistant)
+<i>746</i>&nbsp;    {
+<b class="nc"><i>747</i>&nbsp;        if (PULSE_LOGGING_ENABLED) {</b>
+<b class="nc"><i>748</i>&nbsp;            PulseLogger.newInput(&quot;DRAG_DROP&quot;);</b>
+<i>749</i>&nbsp;        }
+<i>750</i>&nbsp;        TransferMode action;
+<i>751</i>&nbsp;        try {
+<b class="nc"><i>752</i>&nbsp;            action = QuantumToolkit.runWithoutRenderLock(() -&gt; {</b>
+<b class="nc"><i>753</i>&nbsp;                return dndHandler.handleDragDrop(x, y, xAbs, yAbs,</b>
+<b class="nc"><i>754</i>&nbsp;                    actionToTransferMode(recommendedDropAction),</b>
+<i>755</i>&nbsp;                    dropTargetAssistant);
+<i>756</i>&nbsp;            });
+<i>757</i>&nbsp;        } finally {
+<b class="nc"><i>758</i>&nbsp;            if (PULSE_LOGGING_ENABLED) {</b>
+<b class="nc"><i>759</i>&nbsp;                PulseLogger.newInput(null);</b>
+<i>760</i>&nbsp;            }
+<i>761</i>&nbsp;        }
+<b class="nc"><i>762</i>&nbsp;        return transferModeToAction(action);</b>
+<i>763</i>&nbsp;    }
+<i>764</i>&nbsp;
+<i>765</i>&nbsp;    @Override public int handleDragOver(View view,
+<i>766</i>&nbsp;                                        final int x, final int y, final int xAbs, final int yAbs,
+<i>767</i>&nbsp;                                        final int recommendedDropAction,
+<i>768</i>&nbsp;                                        final ClipboardAssistance dropTargetAssistant)
+<i>769</i>&nbsp;    {
+<b class="nc"><i>770</i>&nbsp;        if (PULSE_LOGGING_ENABLED) {</b>
+<b class="nc"><i>771</i>&nbsp;            PulseLogger.newInput(&quot;DRAG_OVER&quot;);</b>
+<i>772</i>&nbsp;        }
+<i>773</i>&nbsp;        TransferMode action;
+<i>774</i>&nbsp;        try {
+<b class="nc"><i>775</i>&nbsp;            action = QuantumToolkit.runWithoutRenderLock(() -&gt; {</b>
+<b class="nc"><i>776</i>&nbsp;                return dndHandler.handleDragOver(x, y, xAbs, yAbs,</b>
+<b class="nc"><i>777</i>&nbsp;                    actionToTransferMode(recommendedDropAction),</b>
+<i>778</i>&nbsp;                    dropTargetAssistant);
+<i>779</i>&nbsp;            });
+<i>780</i>&nbsp;        } finally {
+<b class="nc"><i>781</i>&nbsp;            if (PULSE_LOGGING_ENABLED) {</b>
+<b class="nc"><i>782</i>&nbsp;                PulseLogger.newInput(null);</b>
+<i>783</i>&nbsp;            }
+<i>784</i>&nbsp;        }
+<b class="nc"><i>785</i>&nbsp;        return transferModeToAction(action);</b>
+<i>786</i>&nbsp;    }
+<i>787</i>&nbsp;
+<i>788</i>&nbsp;    private ClipboardAssistance dropSourceAssistant;
+<i>789</i>&nbsp;
+<i>790</i>&nbsp;    @Override public void handleDragStart(View view, final int button,
+<i>791</i>&nbsp;                                          final int x, final int y, final int xAbs, final int yAbs,
+<i>792</i>&nbsp;                                          final ClipboardAssistance assistant)
+<i>793</i>&nbsp;    {
+<b class="fc"><i>794</i>&nbsp;        if (PULSE_LOGGING_ENABLED) {</b>
+<b class="nc"><i>795</i>&nbsp;            PulseLogger.newInput(&quot;DRAG_START&quot;);</b>
+<i>796</i>&nbsp;        }
+<b class="fc"><i>797</i>&nbsp;        dropSourceAssistant = assistant;</b>
+<i>798</i>&nbsp;        try {
+<b class="fc"><i>799</i>&nbsp;            QuantumToolkit.runWithoutRenderLock(() -&gt; {</b>
+<b class="fc"><i>800</i>&nbsp;                dndHandler.handleDragStart(button, x, y, xAbs, yAbs, assistant);</b>
+<b class="fc"><i>801</i>&nbsp;                return null;</b>
+<i>802</i>&nbsp;            });
+<i>803</i>&nbsp;        } finally {
+<b class="fc"><i>804</i>&nbsp;            if (PULSE_LOGGING_ENABLED) {</b>
+<b class="nc"><i>805</i>&nbsp;                PulseLogger.newInput(null);</b>
+<i>806</i>&nbsp;            }
+<i>807</i>&nbsp;        }
+<b class="fc"><i>808</i>&nbsp;    }</b>
+<i>809</i>&nbsp;
+<i>810</i>&nbsp;    @Override public void handleDragEnd(View view, final int performedAction) {
+<b class="nc"><i>811</i>&nbsp;        if (PULSE_LOGGING_ENABLED) {</b>
+<b class="nc"><i>812</i>&nbsp;            PulseLogger.newInput(&quot;DRAG_END&quot;);</b>
+<i>813</i>&nbsp;        }
+<i>814</i>&nbsp;        try {
+<b class="nc"><i>815</i>&nbsp;            QuantumToolkit.runWithoutRenderLock(() -&gt; {</b>
+<b class="nc"><i>816</i>&nbsp;                dndHandler.handleDragEnd(actionToTransferMode(performedAction), dropSourceAssistant);</b>
+<b class="nc"><i>817</i>&nbsp;                return null;</b>
+<i>818</i>&nbsp;            });
+<i>819</i>&nbsp;        } finally {
+<b class="nc"><i>820</i>&nbsp;            if (PULSE_LOGGING_ENABLED) {</b>
+<b class="nc"><i>821</i>&nbsp;                PulseLogger.newInput(null);</b>
+<i>822</i>&nbsp;            }
+<i>823</i>&nbsp;        }
+<b class="nc"><i>824</i>&nbsp;    }</b>
+<i>825</i>&nbsp;
+<i>826</i>&nbsp;    // TODO - dropTargetListener.dropActionChanged
+<i>827</i>&nbsp;    // TODO - dragSourceListener.dropActionChanged
+<i>828</i>&nbsp;
+<b class="fc"><i>829</i>&nbsp;    private final ViewEventNotification viewNotification = new ViewEventNotification();</b>
+<b class="fc"><i>830</i>&nbsp;    private class ViewEventNotification implements PrivilegedAction&lt;Void&gt; {</b>
+<i>831</i>&nbsp;        View view;
+<i>832</i>&nbsp;        long time;
+<i>833</i>&nbsp;        int type;
+<i>834</i>&nbsp;
+<i>835</i>&nbsp;        @Override
+<i>836</i>&nbsp;        public Void run() {
+<b class="fc"><i>837</i>&nbsp;            if (scene.sceneListener == null) {</b>
+<b class="nc"><i>838</i>&nbsp;                return null;</b>
+<i>839</i>&nbsp;            }
+<b class="fc"><i>840</i>&nbsp;            switch (type) {</b>
+<i>841</i>&nbsp;                case ViewEvent.REPAINT: {
+<b class="fc"><i>842</i>&nbsp;                    Window w = view.getWindow();</b>
+<b class="fc"><i>843</i>&nbsp;                    if (w != null &amp;&amp; w.getMinimumWidth() == view.getWidth() &amp;&amp; !w.isVisible()) {</b>
+<i>844</i>&nbsp;                        // RT-21057 - ignore initial minimum size setting if not visible
+<b class="nc"><i>845</i>&nbsp;                        break;</b>
+<i>846</i>&nbsp;                    }
+<b class="fc"><i>847</i>&nbsp;                    if (QuantumToolkit.drawInPaint &amp;&amp; w != null &amp;&amp; w.isVisible()) {</b>
+<b class="nc"><i>848</i>&nbsp;                        WindowStage stage = scene.getWindowStage();</b>
+<b class="nc"><i>849</i>&nbsp;                        if (stage != null &amp;&amp; !stage.isApplet()) {</b>
+<b class="nc"><i>850</i>&nbsp;                            collector.liveRepaintRenderJob(scene);</b>
+<i>851</i>&nbsp;                        }
+<i>852</i>&nbsp;                    }
+<b class="fc"><i>853</i>&nbsp;                    scene.entireSceneNeedsRepaint();</b>
+<b class="fc"><i>854</i>&nbsp;                    break;</b>
+<i>855</i>&nbsp;                }
+<i>856</i>&nbsp;                case ViewEvent.RESIZE: {
+<b class="fc"><i>857</i>&nbsp;                    final Window w = view.getWindow();</b>
+<b class="fc"><i>858</i>&nbsp;                    float pScaleX = (w == null) ? 1.0f : w.getPlatformScaleX();</b>
+<b class="fc"><i>859</i>&nbsp;                    float pScaleY = (w == null) ? 1.0f : w.getPlatformScaleY();</b>
+<b class="fc"><i>860</i>&nbsp;                    scene.sceneListener.changedSize(view.getWidth()  / pScaleX,</b>
+<b class="fc"><i>861</i>&nbsp;                                                    view.getHeight() / pScaleY);</b>
+<b class="fc"><i>862</i>&nbsp;                    scene.entireSceneNeedsRepaint();</b>
+<b class="fc"><i>863</i>&nbsp;                    QuantumToolkit.runWithRenderLock(() -&gt; {</b>
+<b class="fc"><i>864</i>&nbsp;                        scene.updateSceneState();</b>
+<b class="fc"><i>865</i>&nbsp;                        return null;</b>
+<i>866</i>&nbsp;                    });
+<b class="fc"><i>867</i>&nbsp;                    if (QuantumToolkit.liveResize &amp;&amp; w != null &amp;&amp; w.isVisible()) {</b>
+<b class="fc"><i>868</i>&nbsp;                        WindowStage stage = scene.getWindowStage();</b>
+<b class="fc"><i>869</i>&nbsp;                        if (stage != null &amp;&amp; !stage.isApplet()) {</b>
+<b class="fc"><i>870</i>&nbsp;                            collector.liveRepaintRenderJob(scene);</b>
+<i>871</i>&nbsp;                        }
+<b class="fc"><i>872</i>&nbsp;                    }</b>
+<i>873</i>&nbsp;                    break;
+<i>874</i>&nbsp;                }
+<i>875</i>&nbsp;                case ViewEvent.MOVE: {
+<i>876</i>&nbsp;                    // MOVE events can be &quot;synthesized&quot; and the window will
+<i>877</i>&nbsp;                    // be null if this is synthesized during a &quot;REMOVE&quot; event
+<b class="fc"><i>878</i>&nbsp;                    final Window w = view.getWindow();</b>
+<b class="fc"><i>879</i>&nbsp;                    float pScaleX = (w == null) ? 1.0f : w.getPlatformScaleX();</b>
+<b class="fc"><i>880</i>&nbsp;                    float pScaleY = (w == null) ? 1.0f : w.getPlatformScaleY();</b>
+<b class="fc"><i>881</i>&nbsp;                    scene.sceneListener.changedLocation(view.getX() / pScaleX,</b>
+<b class="fc"><i>882</i>&nbsp;                                                        view.getY() / pScaleY);</b>
+<b class="fc"><i>883</i>&nbsp;                    break;</b>
+<i>884</i>&nbsp;                }
+<i>885</i>&nbsp;                case ViewEvent.FULLSCREEN_ENTER:
+<i>886</i>&nbsp;                case ViewEvent.FULLSCREEN_EXIT:
+<b class="nc"><i>887</i>&nbsp;                    if (scene.getWindowStage() != null) {</b>
+<b class="nc"><i>888</i>&nbsp;                        scene.getWindowStage().fullscreenChanged(type == ViewEvent.FULLSCREEN_ENTER);</b>
+<i>889</i>&nbsp;                    }
+<i>890</i>&nbsp;                    break;
+<i>891</i>&nbsp;                case ViewEvent.ADD:
+<i>892</i>&nbsp;                case ViewEvent.REMOVE:
+<i>893</i>&nbsp;                    // unhandled
+<b class="fc"><i>894</i>&nbsp;                    break;</b>
+<i>895</i>&nbsp;                default:
+<b class="nc"><i>896</i>&nbsp;                    throw new RuntimeException(&quot;handleViewEvent: unhandled type: &quot; + type);</b>
+<i>897</i>&nbsp;            }
+<b class="fc"><i>898</i>&nbsp;            return null;</b>
+<i>899</i>&nbsp;        }
+<i>900</i>&nbsp;    }
+<i>901</i>&nbsp;
+<i>902</i>&nbsp;    @Override public void handleViewEvent(View view, long time, final int type) {
+<b class="fc"><i>903</i>&nbsp;        if (PULSE_LOGGING_ENABLED) {</b>
+<b class="nc"><i>904</i>&nbsp;            PulseLogger.newInput(&quot;VIEW_EVENT: &quot;+ViewEvent.getTypeString(type));</b>
+<i>905</i>&nbsp;        }
+<b class="fc"><i>906</i>&nbsp;        viewNotification.view = view;</b>
+<b class="fc"><i>907</i>&nbsp;        viewNotification.time = time;</b>
+<b class="fc"><i>908</i>&nbsp;        viewNotification.type = type;</b>
+<i>909</i>&nbsp;        try {
+<b class="fc"><i>910</i>&nbsp;            QuantumToolkit.runWithoutRenderLock(() -&gt; {</b>
+<b class="fc"><i>911</i>&nbsp;                return AccessController.doPrivileged(viewNotification, scene.getAccessControlContext());</b>
+<i>912</i>&nbsp;            });
+<i>913</i>&nbsp;        }
+<i>914</i>&nbsp;        finally {
+<b class="fc"><i>915</i>&nbsp;            if (PULSE_LOGGING_ENABLED) {</b>
+<b class="nc"><i>916</i>&nbsp;                PulseLogger.newInput(null);</b>
+<i>917</i>&nbsp;            }
+<i>918</i>&nbsp;        }
+<b class="fc"><i>919</i>&nbsp;    }</b>
+<i>920</i>&nbsp;
+<i>921</i>&nbsp;    @Override public void handleScrollGestureEvent(
+<i>922</i>&nbsp;            View view, final long time, final int type,
+<i>923</i>&nbsp;            final int modifiers, final boolean isDirect, final boolean isInertia, final int touchCount,
+<i>924</i>&nbsp;            final int x, final int y, final int xAbs, final int yAbs, final double dx, final double dy,
+<i>925</i>&nbsp;            final double totaldx, final double totaldy, final double multiplierX, final double multiplierY)
+<i>926</i>&nbsp;    {
+<b class="nc"><i>927</i>&nbsp;        if (PULSE_LOGGING_ENABLED) {</b>
+<b class="nc"><i>928</i>&nbsp;            PulseLogger.newInput(&quot;SCROLL_GESTURE_EVENT&quot;);</b>
+<i>929</i>&nbsp;        }
+<b class="nc"><i>930</i>&nbsp;        WindowStage stage = scene.getWindowStage();</b>
+<i>931</i>&nbsp;        try {
+<b class="nc"><i>932</i>&nbsp;            if (stage != null) {</b>
+<b class="nc"><i>933</i>&nbsp;                stage.setInAllowedEventHandler(false);</b>
+<i>934</i>&nbsp;            }
+<b class="nc"><i>935</i>&nbsp;            QuantumToolkit.runWithoutRenderLock(() -&gt; {</b>
+<b class="nc"><i>936</i>&nbsp;                return AccessController.doPrivileged((PrivilegedAction&lt;Void&gt;) () -&gt; {</b>
+<b class="nc"><i>937</i>&nbsp;                    if (scene.sceneListener != null) {</b>
+<i>938</i>&nbsp;                        EventType&lt;ScrollEvent&gt; eventType;
+<b class="nc"><i>939</i>&nbsp;                        switch(type) {</b>
+<i>940</i>&nbsp;                            case GestureEvent.GESTURE_STARTED:
+<b class="nc"><i>941</i>&nbsp;                                eventType = ScrollEvent.SCROLL_STARTED;</b>
+<b class="nc"><i>942</i>&nbsp;                                break;</b>
+<i>943</i>&nbsp;                            case GestureEvent.GESTURE_PERFORMED:
+<b class="nc"><i>944</i>&nbsp;                                eventType = ScrollEvent.SCROLL;</b>
+<b class="nc"><i>945</i>&nbsp;                                break;</b>
+<i>946</i>&nbsp;                            case GestureEvent.GESTURE_FINISHED:
+<b class="nc"><i>947</i>&nbsp;                                eventType = ScrollEvent.SCROLL_FINISHED;</b>
+<b class="nc"><i>948</i>&nbsp;                                break;</b>
+<i>949</i>&nbsp;                            default:
+<b class="nc"><i>950</i>&nbsp;                                throw new RuntimeException(&quot;Unknown scroll event type: &quot; + type);</b>
+<i>951</i>&nbsp;                        }
+<b class="nc"><i>952</i>&nbsp;                        final Window w = view.getWindow();</b>
+<i>953</i>&nbsp;                        double pScaleX, pScaleY, spx, spy, sx, sy;
+<b class="nc"><i>954</i>&nbsp;                        if (w != null) {</b>
+<b class="nc"><i>955</i>&nbsp;                            pScaleX = w.getPlatformScaleX();</b>
+<b class="nc"><i>956</i>&nbsp;                            pScaleY = w.getPlatformScaleY();</b>
+<b class="nc"><i>957</i>&nbsp;                            Screen scr = w.getScreen();</b>
+<b class="nc"><i>958</i>&nbsp;                            if (scr != null) {</b>
+<b class="nc"><i>959</i>&nbsp;                                spx = scr.getPlatformX();</b>
+<b class="nc"><i>960</i>&nbsp;                                spy = scr.getPlatformY();</b>
+<b class="nc"><i>961</i>&nbsp;                                sx = scr.getX();</b>
+<b class="nc"><i>962</i>&nbsp;                                sy = scr.getY();</b>
+<i>963</i>&nbsp;                            } else {
+<b class="nc"><i>964</i>&nbsp;                                spx = spy = sx = sy = 0.0;</b>
+<i>965</i>&nbsp;                            }
+<b class="nc"><i>966</i>&nbsp;                        } else {</b>
+<b class="nc"><i>967</i>&nbsp;                            pScaleX = pScaleY = 1.0;</b>
+<b class="nc"><i>968</i>&nbsp;                            spx = spy = sx = sy = 0.0;</b>
+<i>969</i>&nbsp;                        }
+<b class="nc"><i>970</i>&nbsp;                        scene.sceneListener.scrollEvent(eventType,</b>
+<i>971</i>&nbsp;                                dx / pScaleX, dy / pScaleY, totaldx / pScaleX, totaldy / pScaleY,
+<i>972</i>&nbsp;                                multiplierX, multiplierY,
+<i>973</i>&nbsp;                                touchCount,
+<i>974</i>&nbsp;                                0, 0, 0, 0,
+<b class="nc"><i>975</i>&nbsp;                                x == View.GESTURE_NO_VALUE ? Double.NaN : x / pScaleX,</b>
+<b class="nc"><i>976</i>&nbsp;                                y == View.GESTURE_NO_VALUE ? Double.NaN : y / pScaleY,</b>
+<b class="nc"><i>977</i>&nbsp;                                xAbs == View.GESTURE_NO_VALUE ? Double.NaN : sx + (xAbs - spx) / pScaleX,</b>
+<b class="nc"><i>978</i>&nbsp;                                yAbs == View.GESTURE_NO_VALUE ? Double.NaN : sy + (yAbs - spy) / pScaleY,</b>
+<i>979</i>&nbsp;                                (modifiers &amp; KeyEvent.MODIFIER_SHIFT) != 0,
+<i>980</i>&nbsp;                                (modifiers &amp; KeyEvent.MODIFIER_CONTROL) != 0,
+<i>981</i>&nbsp;                                (modifiers &amp; KeyEvent.MODIFIER_ALT) != 0,
+<i>982</i>&nbsp;                                (modifiers &amp; KeyEvent.MODIFIER_WINDOWS) != 0,
+<i>983</i>&nbsp;                                isDirect, isInertia);
+<i>984</i>&nbsp;                    }
+<b class="nc"><i>985</i>&nbsp;                    return null;</b>
+<b class="nc"><i>986</i>&nbsp;                }, scene.getAccessControlContext());</b>
+<i>987</i>&nbsp;            });
+<i>988</i>&nbsp;        } finally {
+<b class="nc"><i>989</i>&nbsp;            if (stage != null) {</b>
+<b class="nc"><i>990</i>&nbsp;                stage.setInAllowedEventHandler(false);</b>
+<i>991</i>&nbsp;            }
+<b class="nc"><i>992</i>&nbsp;            if (PULSE_LOGGING_ENABLED) {</b>
+<b class="nc"><i>993</i>&nbsp;                PulseLogger.newInput(null);</b>
+<i>994</i>&nbsp;            }
+<i>995</i>&nbsp;        }
+<b class="nc"><i>996</i>&nbsp;    }</b>
+<i>997</i>&nbsp;
+<i>998</i>&nbsp;    @Override public void handleZoomGestureEvent(
+<i>999</i>&nbsp;            View view, final long time, final int type,
+<i>1000</i>&nbsp;            final int modifiers, final boolean isDirect, final boolean isInertia,
+<i>1001</i>&nbsp;            final int originx, final int originy,
+<i>1002</i>&nbsp;            final int originxAbs, final int originyAbs,
+<i>1003</i>&nbsp;            final double scale, double expansion,
+<i>1004</i>&nbsp;            final double totalscale, double totalexpansion)
+<i>1005</i>&nbsp;    {
+<b class="nc"><i>1006</i>&nbsp;        if (PULSE_LOGGING_ENABLED) {</b>
+<b class="nc"><i>1007</i>&nbsp;            PulseLogger.newInput(&quot;ZOOM_GESTURE_EVENT&quot;);</b>
+<i>1008</i>&nbsp;        }
+<b class="nc"><i>1009</i>&nbsp;        WindowStage stage = scene.getWindowStage();</b>
+<i>1010</i>&nbsp;        try {
+<b class="nc"><i>1011</i>&nbsp;            if (stage != null) {</b>
+<b class="nc"><i>1012</i>&nbsp;                stage.setInAllowedEventHandler(false);</b>
+<i>1013</i>&nbsp;            }
+<b class="nc"><i>1014</i>&nbsp;            QuantumToolkit.runWithoutRenderLock(() -&gt; {</b>
+<b class="nc"><i>1015</i>&nbsp;                return AccessController.doPrivileged((PrivilegedAction&lt;Void&gt;) () -&gt; {</b>
+<b class="nc"><i>1016</i>&nbsp;                    if (scene.sceneListener != null) {</b>
+<i>1017</i>&nbsp;                        EventType&lt;ZoomEvent&gt; eventType;
+<b class="nc"><i>1018</i>&nbsp;                        switch (type) {</b>
+<i>1019</i>&nbsp;                            case GestureEvent.GESTURE_STARTED:
+<b class="nc"><i>1020</i>&nbsp;                                eventType = ZoomEvent.ZOOM_STARTED;</b>
+<b class="nc"><i>1021</i>&nbsp;                                break;</b>
+<i>1022</i>&nbsp;                            case GestureEvent.GESTURE_PERFORMED:
+<b class="nc"><i>1023</i>&nbsp;                                eventType = ZoomEvent.ZOOM;</b>
+<b class="nc"><i>1024</i>&nbsp;                                break;</b>
+<i>1025</i>&nbsp;                            case GestureEvent.GESTURE_FINISHED:
+<b class="nc"><i>1026</i>&nbsp;                                eventType = ZoomEvent.ZOOM_FINISHED;</b>
+<b class="nc"><i>1027</i>&nbsp;                                break;</b>
+<i>1028</i>&nbsp;                            default:
+<b class="nc"><i>1029</i>&nbsp;                                throw new RuntimeException(&quot;Unknown scroll event type: &quot; + type);</b>
+<i>1030</i>&nbsp;                        }
+<b class="nc"><i>1031</i>&nbsp;                        final Window w = view.getWindow();</b>
+<i>1032</i>&nbsp;                        double pScaleX, pScaleY, spx, spy, sx, sy;
+<b class="nc"><i>1033</i>&nbsp;                        if (w != null) {</b>
+<b class="nc"><i>1034</i>&nbsp;                            pScaleX = w.getPlatformScaleX();</b>
+<b class="nc"><i>1035</i>&nbsp;                            pScaleY = w.getPlatformScaleY();</b>
+<b class="nc"><i>1036</i>&nbsp;                            Screen scr = w.getScreen();</b>
+<b class="nc"><i>1037</i>&nbsp;                            if (scr != null) {</b>
+<b class="nc"><i>1038</i>&nbsp;                                spx = scr.getPlatformX();</b>
+<b class="nc"><i>1039</i>&nbsp;                                spy = scr.getPlatformY();</b>
+<b class="nc"><i>1040</i>&nbsp;                                sx = scr.getX();</b>
+<b class="nc"><i>1041</i>&nbsp;                                sy = scr.getY();</b>
+<i>1042</i>&nbsp;                            } else {
+<b class="nc"><i>1043</i>&nbsp;                                spx = spy = sx = sy = 0.0;</b>
+<i>1044</i>&nbsp;                            }
+<b class="nc"><i>1045</i>&nbsp;                        } else {</b>
+<b class="nc"><i>1046</i>&nbsp;                            pScaleX = pScaleY = 1.0;</b>
+<b class="nc"><i>1047</i>&nbsp;                            spx = spy = sx = sy = 0.0;</b>
+<i>1048</i>&nbsp;                        }
+<i>1049</i>&nbsp;                        // REMIND: Scale the [total]scale params too?
+<b class="nc"><i>1050</i>&nbsp;                        scene.sceneListener.zoomEvent(eventType, scale, totalscale,</b>
+<b class="nc"><i>1051</i>&nbsp;                                originx == View.GESTURE_NO_VALUE ? Double.NaN : originx / pScaleX,</b>
+<b class="nc"><i>1052</i>&nbsp;                                originy == View.GESTURE_NO_VALUE ? Double.NaN : originy / pScaleY,</b>
+<b class="nc"><i>1053</i>&nbsp;                                originxAbs == View.GESTURE_NO_VALUE ? Double.NaN : sx + (originxAbs - spx) / pScaleX,</b>
+<b class="nc"><i>1054</i>&nbsp;                                originyAbs == View.GESTURE_NO_VALUE ? Double.NaN : sy + (originyAbs - spy) / pScaleY,</b>
+<i>1055</i>&nbsp;                                (modifiers &amp; KeyEvent.MODIFIER_SHIFT) != 0,
+<i>1056</i>&nbsp;                                (modifiers &amp; KeyEvent.MODIFIER_CONTROL) != 0,
+<i>1057</i>&nbsp;                                (modifiers &amp; KeyEvent.MODIFIER_ALT) != 0,
+<i>1058</i>&nbsp;                                (modifiers &amp; KeyEvent.MODIFIER_WINDOWS) != 0,
+<i>1059</i>&nbsp;                                isDirect, isInertia);
+<i>1060</i>&nbsp;                    }
+<b class="nc"><i>1061</i>&nbsp;                    return null;</b>
+<b class="nc"><i>1062</i>&nbsp;                }, scene.getAccessControlContext());</b>
+<i>1063</i>&nbsp;            });
+<i>1064</i>&nbsp;        } finally {
+<b class="nc"><i>1065</i>&nbsp;            if (stage != null) {</b>
+<b class="nc"><i>1066</i>&nbsp;                stage.setInAllowedEventHandler(false);</b>
+<i>1067</i>&nbsp;            }
+<b class="nc"><i>1068</i>&nbsp;            if (PULSE_LOGGING_ENABLED) {</b>
+<b class="nc"><i>1069</i>&nbsp;                PulseLogger.newInput(null);</b>
+<i>1070</i>&nbsp;            }
+<i>1071</i>&nbsp;        }
+<b class="nc"><i>1072</i>&nbsp;    }</b>
+<i>1073</i>&nbsp;
+<i>1074</i>&nbsp;    @Override public void handleRotateGestureEvent(
+<i>1075</i>&nbsp;            View view, final long time, final int type,
+<i>1076</i>&nbsp;            final int modifiers, final boolean isDirect, final boolean isInertia,
+<i>1077</i>&nbsp;            final int originx, final int originy,
+<i>1078</i>&nbsp;            final int originxAbs, final int originyAbs,
+<i>1079</i>&nbsp;            final double dangle, final double totalangle)
+<i>1080</i>&nbsp;    {
+<b class="nc"><i>1081</i>&nbsp;        if (PULSE_LOGGING_ENABLED) {</b>
+<b class="nc"><i>1082</i>&nbsp;            PulseLogger.newInput(&quot;ROTATE_GESTURE_EVENT&quot;);</b>
+<i>1083</i>&nbsp;        }
+<b class="nc"><i>1084</i>&nbsp;        WindowStage stage = scene.getWindowStage();</b>
+<i>1085</i>&nbsp;        try {
+<b class="nc"><i>1086</i>&nbsp;            if (stage != null) {</b>
+<b class="nc"><i>1087</i>&nbsp;                stage.setInAllowedEventHandler(false);</b>
+<i>1088</i>&nbsp;            }
+<b class="nc"><i>1089</i>&nbsp;            QuantumToolkit.runWithoutRenderLock(() -&gt; {</b>
+<b class="nc"><i>1090</i>&nbsp;                return AccessController.doPrivileged((PrivilegedAction&lt;Void&gt;) () -&gt; {</b>
+<b class="nc"><i>1091</i>&nbsp;                    if (scene.sceneListener != null) {</b>
+<i>1092</i>&nbsp;                        EventType&lt;RotateEvent&gt; eventType;
+<b class="nc"><i>1093</i>&nbsp;                        switch (type) {</b>
+<i>1094</i>&nbsp;                            case GestureEvent.GESTURE_STARTED:
+<b class="nc"><i>1095</i>&nbsp;                                eventType = RotateEvent.ROTATION_STARTED;</b>
+<b class="nc"><i>1096</i>&nbsp;                                break;</b>
+<i>1097</i>&nbsp;                            case GestureEvent.GESTURE_PERFORMED:
+<b class="nc"><i>1098</i>&nbsp;                                eventType = RotateEvent.ROTATE;</b>
+<b class="nc"><i>1099</i>&nbsp;                                break;</b>
+<i>1100</i>&nbsp;                            case GestureEvent.GESTURE_FINISHED:
+<b class="nc"><i>1101</i>&nbsp;                                eventType = RotateEvent.ROTATION_FINISHED;</b>
+<b class="nc"><i>1102</i>&nbsp;                                break;</b>
+<i>1103</i>&nbsp;                            default:
+<b class="nc"><i>1104</i>&nbsp;                                throw new RuntimeException(&quot;Unknown scroll event type: &quot; + type);</b>
+<i>1105</i>&nbsp;                        }
+<b class="nc"><i>1106</i>&nbsp;                        final Window w = view.getWindow();</b>
+<i>1107</i>&nbsp;                        double pScaleX, pScaleY, spx, spy, sx, sy;
+<b class="nc"><i>1108</i>&nbsp;                        if (w != null) {</b>
+<b class="nc"><i>1109</i>&nbsp;                            pScaleX = w.getPlatformScaleX();</b>
+<b class="nc"><i>1110</i>&nbsp;                            pScaleY = w.getPlatformScaleY();</b>
+<b class="nc"><i>1111</i>&nbsp;                            Screen scr = w.getScreen();</b>
+<b class="nc"><i>1112</i>&nbsp;                            if (scr != null) {</b>
+<b class="nc"><i>1113</i>&nbsp;                                spx = scr.getPlatformX();</b>
+<b class="nc"><i>1114</i>&nbsp;                                spy = scr.getPlatformY();</b>
+<b class="nc"><i>1115</i>&nbsp;                                sx = scr.getX();</b>
+<b class="nc"><i>1116</i>&nbsp;                                sy = scr.getY();</b>
+<i>1117</i>&nbsp;                            } else {
+<b class="nc"><i>1118</i>&nbsp;                                spx = spy = sx = sy = 0.0;</b>
+<i>1119</i>&nbsp;                            }
+<b class="nc"><i>1120</i>&nbsp;                        } else {</b>
+<b class="nc"><i>1121</i>&nbsp;                            pScaleX = pScaleY = 1.0;</b>
+<b class="nc"><i>1122</i>&nbsp;                            spx = spy = sx = sy = 0.0;</b>
+<i>1123</i>&nbsp;                        }
+<b class="nc"><i>1124</i>&nbsp;                        scene.sceneListener.rotateEvent(eventType, dangle, totalangle,</b>
+<b class="nc"><i>1125</i>&nbsp;                                originx == View.GESTURE_NO_VALUE ? Double.NaN : originx / pScaleX,</b>
+<b class="nc"><i>1126</i>&nbsp;                                originy == View.GESTURE_NO_VALUE ? Double.NaN : originy / pScaleY,</b>
+<b class="nc"><i>1127</i>&nbsp;                                originxAbs == View.GESTURE_NO_VALUE ? Double.NaN : sx + (originxAbs - spx) / pScaleX,</b>
+<b class="nc"><i>1128</i>&nbsp;                                originyAbs == View.GESTURE_NO_VALUE ? Double.NaN : sy + (originyAbs - spy) / pScaleY,</b>
+<i>1129</i>&nbsp;                                (modifiers &amp; KeyEvent.MODIFIER_SHIFT) != 0,
+<i>1130</i>&nbsp;                                (modifiers &amp; KeyEvent.MODIFIER_CONTROL) != 0,
+<i>1131</i>&nbsp;                                (modifiers &amp; KeyEvent.MODIFIER_ALT) != 0,
+<i>1132</i>&nbsp;                                (modifiers &amp; KeyEvent.MODIFIER_WINDOWS) != 0,
+<i>1133</i>&nbsp;                                isDirect, isInertia);
+<i>1134</i>&nbsp;                    }
+<b class="nc"><i>1135</i>&nbsp;                    return null;</b>
+<b class="nc"><i>1136</i>&nbsp;                }, scene.getAccessControlContext());</b>
+<i>1137</i>&nbsp;            });
+<i>1138</i>&nbsp;        } finally {
+<b class="nc"><i>1139</i>&nbsp;            if (stage != null) {</b>
+<b class="nc"><i>1140</i>&nbsp;                stage.setInAllowedEventHandler(false);</b>
+<i>1141</i>&nbsp;            }
+<b class="nc"><i>1142</i>&nbsp;            if (PULSE_LOGGING_ENABLED) {</b>
+<b class="nc"><i>1143</i>&nbsp;                PulseLogger.newInput(null);</b>
+<i>1144</i>&nbsp;            }
+<i>1145</i>&nbsp;        }
+<b class="nc"><i>1146</i>&nbsp;    }</b>
+<i>1147</i>&nbsp;
+<i>1148</i>&nbsp;    @Override public void handleSwipeGestureEvent(
+<i>1149</i>&nbsp;            View view, final long time, int type,
+<i>1150</i>&nbsp;            final int modifiers, final boolean isDirect,
+<i>1151</i>&nbsp;            boolean isInertia, final int touchCount,
+<i>1152</i>&nbsp;            final int dir, final int x, final int y, final int xAbs, final int yAbs)
+<i>1153</i>&nbsp;    {
+<b class="nc"><i>1154</i>&nbsp;        if (PULSE_LOGGING_ENABLED) {</b>
+<b class="nc"><i>1155</i>&nbsp;            PulseLogger.newInput(&quot;SWIPE_EVENT&quot;);</b>
+<i>1156</i>&nbsp;        }
+<b class="nc"><i>1157</i>&nbsp;        WindowStage stage = scene.getWindowStage();</b>
+<i>1158</i>&nbsp;        try {
+<b class="nc"><i>1159</i>&nbsp;            if (stage != null) {</b>
+<b class="nc"><i>1160</i>&nbsp;                stage.setInAllowedEventHandler(false);</b>
+<i>1161</i>&nbsp;            }
+<b class="nc"><i>1162</i>&nbsp;            QuantumToolkit.runWithoutRenderLock(() -&gt; {</b>
+<b class="nc"><i>1163</i>&nbsp;                return AccessController.doPrivileged((PrivilegedAction&lt;Void&gt;) () -&gt; {</b>
+<b class="nc"><i>1164</i>&nbsp;                    if (scene.sceneListener != null) {</b>
+<i>1165</i>&nbsp;                        EventType&lt;SwipeEvent&gt; eventType;
+<b class="nc"><i>1166</i>&nbsp;                        switch (dir) {</b>
+<i>1167</i>&nbsp;                            case SwipeGesture.DIR_UP:
+<b class="nc"><i>1168</i>&nbsp;                                eventType = SwipeEvent.SWIPE_UP;</b>
+<b class="nc"><i>1169</i>&nbsp;                                break;</b>
+<i>1170</i>&nbsp;                            case SwipeGesture.DIR_DOWN:
+<b class="nc"><i>1171</i>&nbsp;                                eventType = SwipeEvent.SWIPE_DOWN;</b>
+<b class="nc"><i>1172</i>&nbsp;                                break;</b>
+<i>1173</i>&nbsp;                            case SwipeGesture.DIR_LEFT:
+<b class="nc"><i>1174</i>&nbsp;                                eventType = SwipeEvent.SWIPE_LEFT;</b>
+<b class="nc"><i>1175</i>&nbsp;                                break;</b>
+<i>1176</i>&nbsp;                            case SwipeGesture.DIR_RIGHT:
+<b class="nc"><i>1177</i>&nbsp;                                eventType = SwipeEvent.SWIPE_RIGHT;</b>
+<b class="nc"><i>1178</i>&nbsp;                                break;</b>
+<i>1179</i>&nbsp;                            default:
+<b class="nc"><i>1180</i>&nbsp;                                throw new RuntimeException(&quot;Unknown swipe event direction: &quot; + dir);</b>
+<i>1181</i>&nbsp;                        }
+<b class="nc"><i>1182</i>&nbsp;                        final Window w = view.getWindow();</b>
+<i>1183</i>&nbsp;                        double pScaleX, pScaleY, spx, spy, sx, sy;
+<b class="nc"><i>1184</i>&nbsp;                        if (w != null) {</b>
+<b class="nc"><i>1185</i>&nbsp;                            pScaleX = w.getPlatformScaleX();</b>
+<b class="nc"><i>1186</i>&nbsp;                            pScaleY = w.getPlatformScaleY();</b>
+<b class="nc"><i>1187</i>&nbsp;                            Screen scr = w.getScreen();</b>
+<b class="nc"><i>1188</i>&nbsp;                            if (scr != null) {</b>
+<b class="nc"><i>1189</i>&nbsp;                                spx = scr.getPlatformX();</b>
+<b class="nc"><i>1190</i>&nbsp;                                spy = scr.getPlatformY();</b>
+<b class="nc"><i>1191</i>&nbsp;                                sx = scr.getX();</b>
+<b class="nc"><i>1192</i>&nbsp;                                sy = scr.getY();</b>
+<i>1193</i>&nbsp;                            } else {
+<b class="nc"><i>1194</i>&nbsp;                                spx = spy = sx = sy = 0.0;</b>
+<i>1195</i>&nbsp;                            }
+<b class="nc"><i>1196</i>&nbsp;                        } else {</b>
+<b class="nc"><i>1197</i>&nbsp;                            pScaleX = pScaleY = 1.0;</b>
+<b class="nc"><i>1198</i>&nbsp;                            spx = spy = sx = sy = 0.0;</b>
+<i>1199</i>&nbsp;                        }
+<b class="nc"><i>1200</i>&nbsp;                        scene.sceneListener.swipeEvent(eventType, touchCount,</b>
+<b class="nc"><i>1201</i>&nbsp;                                x == View.GESTURE_NO_VALUE ? Double.NaN : x / pScaleX,</b>
+<b class="nc"><i>1202</i>&nbsp;                                y == View.GESTURE_NO_VALUE ? Double.NaN : y / pScaleY,</b>
+<b class="nc"><i>1203</i>&nbsp;                                xAbs == View.GESTURE_NO_VALUE ? Double.NaN : sx + (xAbs - spx) / pScaleX,</b>
+<b class="nc"><i>1204</i>&nbsp;                                yAbs == View.GESTURE_NO_VALUE ? Double.NaN : sy + (yAbs - spy) / pScaleY,</b>
+<i>1205</i>&nbsp;                                (modifiers &amp; KeyEvent.MODIFIER_SHIFT) != 0,
+<i>1206</i>&nbsp;                                (modifiers &amp; KeyEvent.MODIFIER_CONTROL) != 0,
+<i>1207</i>&nbsp;                                (modifiers &amp; KeyEvent.MODIFIER_ALT) != 0,
+<i>1208</i>&nbsp;                                (modifiers &amp; KeyEvent.MODIFIER_WINDOWS) != 0,
+<i>1209</i>&nbsp;                                isDirect);
+<i>1210</i>&nbsp;                    }
+<b class="nc"><i>1211</i>&nbsp;                    return null;</b>
+<b class="nc"><i>1212</i>&nbsp;                }, scene.getAccessControlContext());</b>
+<i>1213</i>&nbsp;            });
+<i>1214</i>&nbsp;        } finally {
+<b class="nc"><i>1215</i>&nbsp;            if (stage != null) {</b>
+<b class="nc"><i>1216</i>&nbsp;                stage.setInAllowedEventHandler(false);</b>
+<i>1217</i>&nbsp;            }
+<b class="nc"><i>1218</i>&nbsp;            if (PULSE_LOGGING_ENABLED) {</b>
+<b class="nc"><i>1219</i>&nbsp;                PulseLogger.newInput(null);</b>
+<i>1220</i>&nbsp;            }
+<i>1221</i>&nbsp;        }
+<b class="nc"><i>1222</i>&nbsp;    }</b>
+<i>1223</i>&nbsp;
+<i>1224</i>&nbsp;    @Override public void handleBeginTouchEvent(
+<i>1225</i>&nbsp;            View view, final long time, final int modifiers,
+<i>1226</i>&nbsp;            final boolean isDirect, final int touchEventCount)
+<i>1227</i>&nbsp;    {
+<b class="nc"><i>1228</i>&nbsp;        if (PULSE_LOGGING_ENABLED) {</b>
+<b class="nc"><i>1229</i>&nbsp;            PulseLogger.newInput(&quot;BEGIN_TOUCH_EVENT&quot;);</b>
+<i>1230</i>&nbsp;        }
+<b class="nc"><i>1231</i>&nbsp;        WindowStage stage = scene.getWindowStage();</b>
+<i>1232</i>&nbsp;        try {
+<b class="nc"><i>1233</i>&nbsp;            if (stage != null) {</b>
+<b class="nc"><i>1234</i>&nbsp;                stage.setInAllowedEventHandler(true);</b>
+<i>1235</i>&nbsp;            }
+<b class="nc"><i>1236</i>&nbsp;            QuantumToolkit.runWithoutRenderLock(() -&gt; {</b>
+<b class="nc"><i>1237</i>&nbsp;                return AccessController.doPrivileged((PrivilegedAction&lt;Void&gt;) () -&gt; {</b>
+<b class="nc"><i>1238</i>&nbsp;                    if (scene.sceneListener != null) {</b>
+<b class="nc"><i>1239</i>&nbsp;                        scene.sceneListener.touchEventBegin(time, touchEventCount,</b>
+<i>1240</i>&nbsp;                                isDirect,
+<i>1241</i>&nbsp;                                (modifiers &amp; KeyEvent.MODIFIER_SHIFT) != 0,
+<i>1242</i>&nbsp;                                (modifiers &amp; KeyEvent.MODIFIER_CONTROL) != 0,
+<i>1243</i>&nbsp;                                (modifiers &amp; KeyEvent.MODIFIER_ALT) != 0,
+<i>1244</i>&nbsp;                                (modifiers &amp; KeyEvent.MODIFIER_WINDOWS) != 0);
+<i>1245</i>&nbsp;                    }
+<b class="nc"><i>1246</i>&nbsp;                    return null;</b>
+<b class="nc"><i>1247</i>&nbsp;                }, scene.getAccessControlContext());</b>
+<i>1248</i>&nbsp;            });
+<i>1249</i>&nbsp;        } finally {
+<b class="nc"><i>1250</i>&nbsp;            if (stage != null) {</b>
+<b class="nc"><i>1251</i>&nbsp;                stage.setInAllowedEventHandler(false);</b>
+<i>1252</i>&nbsp;            }
+<b class="nc"><i>1253</i>&nbsp;            if (PULSE_LOGGING_ENABLED) {</b>
+<b class="nc"><i>1254</i>&nbsp;                PulseLogger.newInput(null);</b>
+<i>1255</i>&nbsp;            }
+<i>1256</i>&nbsp;        }
+<i>1257</i>&nbsp;
+<b class="nc"><i>1258</i>&nbsp;        gestures.notifyBeginTouchEvent(time, modifiers, isDirect, touchEventCount);</b>
+<b class="nc"><i>1259</i>&nbsp;    }</b>
+<i>1260</i>&nbsp;
+<i>1261</i>&nbsp;    @Override public void handleNextTouchEvent(
+<i>1262</i>&nbsp;            View view, final long time, final int type, final long touchId,
+<i>1263</i>&nbsp;            final int x, final int y, final int xAbs, final int yAbs)
+<i>1264</i>&nbsp;    {
+<b class="nc"><i>1265</i>&nbsp;        if (PULSE_LOGGING_ENABLED) {</b>
+<b class="nc"><i>1266</i>&nbsp;            PulseLogger.newInput(&quot;NEXT_TOUCH_EVENT&quot;);</b>
+<i>1267</i>&nbsp;        }
+<b class="nc"><i>1268</i>&nbsp;        WindowStage stage = scene.getWindowStage();</b>
+<i>1269</i>&nbsp;        try {
+<b class="nc"><i>1270</i>&nbsp;            if (stage != null) {</b>
+<b class="nc"><i>1271</i>&nbsp;                stage.setInAllowedEventHandler(true);</b>
+<i>1272</i>&nbsp;            }
+<b class="nc"><i>1273</i>&nbsp;            QuantumToolkit.runWithoutRenderLock(() -&gt; {</b>
+<b class="nc"><i>1274</i>&nbsp;                    return AccessController.doPrivileged((PrivilegedAction&lt;Void&gt;) () -&gt; {</b>
+<b class="nc"><i>1275</i>&nbsp;                    if (scene.sceneListener != null) {</b>
+<i>1276</i>&nbsp;                        TouchPoint.State state;
+<b class="nc"><i>1277</i>&nbsp;                        switch (type) {</b>
+<i>1278</i>&nbsp;                            case TouchEvent.TOUCH_PRESSED:
+<b class="nc"><i>1279</i>&nbsp;                                state = TouchPoint.State.PRESSED;</b>
+<b class="nc"><i>1280</i>&nbsp;                                break;</b>
+<i>1281</i>&nbsp;                            case TouchEvent.TOUCH_MOVED:
+<b class="nc"><i>1282</i>&nbsp;                                state = TouchPoint.State.MOVED;</b>
+<b class="nc"><i>1283</i>&nbsp;                                break;</b>
+<i>1284</i>&nbsp;                            case TouchEvent.TOUCH_STILL:
+<b class="nc"><i>1285</i>&nbsp;                                state = TouchPoint.State.STATIONARY;</b>
+<b class="nc"><i>1286</i>&nbsp;                                break;</b>
+<i>1287</i>&nbsp;                            case TouchEvent.TOUCH_RELEASED:
+<b class="nc"><i>1288</i>&nbsp;                                state = TouchPoint.State.RELEASED;</b>
+<b class="nc"><i>1289</i>&nbsp;                                break;</b>
+<i>1290</i>&nbsp;                            default:
+<b class="nc"><i>1291</i>&nbsp;                                throw new RuntimeException(&quot;Unknown touch state: &quot; + type);</b>
+<i>1292</i>&nbsp;                        }
+<b class="nc"><i>1293</i>&nbsp;                        final Window w = view.getWindow();</b>
+<i>1294</i>&nbsp;                        double pScaleX, pScaleY, spx, spy, sx, sy;
+<b class="nc"><i>1295</i>&nbsp;                        if (w != null) {</b>
+<b class="nc"><i>1296</i>&nbsp;                            pScaleX = w.getPlatformScaleX();</b>
+<b class="nc"><i>1297</i>&nbsp;                            pScaleY = w.getPlatformScaleY();</b>
+<b class="nc"><i>1298</i>&nbsp;                            Screen scr = w.getScreen();</b>
+<b class="nc"><i>1299</i>&nbsp;                            if (scr != null) {</b>
+<b class="nc"><i>1300</i>&nbsp;                                spx = scr.getPlatformX();</b>
+<b class="nc"><i>1301</i>&nbsp;                                spy = scr.getPlatformY();</b>
+<b class="nc"><i>1302</i>&nbsp;                                sx = scr.getX();</b>
+<b class="nc"><i>1303</i>&nbsp;                                sy = scr.getY();</b>
+<i>1304</i>&nbsp;                            } else {
+<b class="nc"><i>1305</i>&nbsp;                                spx = spy = sx = sy = 0.0;</b>
+<i>1306</i>&nbsp;                            }
+<b class="nc"><i>1307</i>&nbsp;                        } else {</b>
+<b class="nc"><i>1308</i>&nbsp;                            pScaleX = pScaleY = 1.0;</b>
+<b class="nc"><i>1309</i>&nbsp;                            spx = spy = sx = sy = 0.0;</b>
+<i>1310</i>&nbsp;                        }
+<b class="nc"><i>1311</i>&nbsp;                        scene.sceneListener.touchEventNext(state, touchId,</b>
+<i>1312</i>&nbsp;                                x / pScaleX, y / pScaleY,
+<i>1313</i>&nbsp;                                sx + (xAbs - spx) / pScaleX,
+<i>1314</i>&nbsp;                                sy + (yAbs - spy) / pScaleY);
+<i>1315</i>&nbsp;                    }
+<b class="nc"><i>1316</i>&nbsp;                    return null;</b>
+<b class="nc"><i>1317</i>&nbsp;                }, scene.getAccessControlContext());</b>
+<i>1318</i>&nbsp;            });
+<i>1319</i>&nbsp;        } finally {
+<b class="nc"><i>1320</i>&nbsp;            if (stage != null) {</b>
+<b class="nc"><i>1321</i>&nbsp;                stage.setInAllowedEventHandler(false);</b>
+<i>1322</i>&nbsp;            }
+<b class="nc"><i>1323</i>&nbsp;            if (PULSE_LOGGING_ENABLED) {</b>
+<b class="nc"><i>1324</i>&nbsp;                PulseLogger.newInput(null);</b>
+<i>1325</i>&nbsp;            }
+<i>1326</i>&nbsp;        }
+<i>1327</i>&nbsp;
+<b class="nc"><i>1328</i>&nbsp;        gestures.notifyNextTouchEvent(time, type, touchId, x, y, xAbs, yAbs);</b>
+<b class="nc"><i>1329</i>&nbsp;    }</b>
+<i>1330</i>&nbsp;
+<i>1331</i>&nbsp;    @Override public void handleEndTouchEvent(View view, long time) {
+<b class="nc"><i>1332</i>&nbsp;        if (PULSE_LOGGING_ENABLED) {</b>
+<b class="nc"><i>1333</i>&nbsp;            PulseLogger.newInput(&quot;END_TOUCH_EVENT&quot;);</b>
+<i>1334</i>&nbsp;        }
+<b class="nc"><i>1335</i>&nbsp;        WindowStage stage = scene.getWindowStage();</b>
+<i>1336</i>&nbsp;        try {
+<b class="nc"><i>1337</i>&nbsp;            if (stage != null) {</b>
+<b class="nc"><i>1338</i>&nbsp;                stage.setInAllowedEventHandler(true);</b>
+<i>1339</i>&nbsp;            }
+<b class="nc"><i>1340</i>&nbsp;            QuantumToolkit.runWithoutRenderLock(() -&gt; {</b>
+<b class="nc"><i>1341</i>&nbsp;                return AccessController.doPrivileged((PrivilegedAction&lt;Void&gt;) () -&gt; {</b>
+<b class="nc"><i>1342</i>&nbsp;                    if (scene.sceneListener != null) {</b>
+<b class="nc"><i>1343</i>&nbsp;                        scene.sceneListener.touchEventEnd();</b>
+<i>1344</i>&nbsp;                    }
+<b class="nc"><i>1345</i>&nbsp;                    return null;</b>
+<b class="nc"><i>1346</i>&nbsp;                }, scene.getAccessControlContext());</b>
+<i>1347</i>&nbsp;            });
+<i>1348</i>&nbsp;        } finally {
+<b class="nc"><i>1349</i>&nbsp;            if (stage != null) {</b>
+<b class="nc"><i>1350</i>&nbsp;                stage.setInAllowedEventHandler(false);</b>
+<i>1351</i>&nbsp;            }
+<b class="nc"><i>1352</i>&nbsp;            if (PULSE_LOGGING_ENABLED) {</b>
+<b class="nc"><i>1353</i>&nbsp;                PulseLogger.newInput(null);</b>
+<i>1354</i>&nbsp;            }
+<i>1355</i>&nbsp;        }
+<i>1356</i>&nbsp;
+<b class="nc"><i>1357</i>&nbsp;        gestures.notifyEndTouchEvent(time);</b>
+<b class="nc"><i>1358</i>&nbsp;    }</b>
+<i>1359</i>&nbsp;
+<i>1360</i>&nbsp;    @Override
+<i>1361</i>&nbsp;    public Accessible getSceneAccessible() {
+<b class="nc"><i>1362</i>&nbsp;        if (scene != null &amp;&amp; scene.sceneListener != null) {</b>
+<b class="nc"><i>1363</i>&nbsp;            return scene.sceneListener.getSceneAccessible();</b>
+<i>1364</i>&nbsp;        }
+<b class="nc"><i>1365</i>&nbsp;        return null;</b>
+<i>1366</i>&nbsp;    }
+<i>1367</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2017-12-04 21:49</div>
+</div>
+</body>
+</html>

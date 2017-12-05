@@ -1,0 +1,508 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: DirtyRegionContainer</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.javafx.geom</a> ]
+</div>
+
+<h1>Coverage Summary for Class: DirtyRegionContainer (com.sun.javafx.geom)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">DirtyRegionContainer</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    51.6%
+  </span>
+  <span class="absValue">
+    (16/ 31)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    31.9%
+  </span>
+  <span class="absValue">
+    (59/ 185)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright (c) 2011, 2013, Oracle and/or its affiliates. All rights reserved.
+<i>3</i>&nbsp; * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+<i>4</i>&nbsp; *
+<i>5</i>&nbsp; *
+<i>6</i>&nbsp; *
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; *
+<i>11</i>&nbsp; *
+<i>12</i>&nbsp; *
+<i>13</i>&nbsp; *
+<i>14</i>&nbsp; *
+<i>15</i>&nbsp; *
+<i>16</i>&nbsp; *
+<i>17</i>&nbsp; *
+<i>18</i>&nbsp; *
+<i>19</i>&nbsp; *
+<i>20</i>&nbsp; *
+<i>21</i>&nbsp; *
+<i>22</i>&nbsp; *
+<i>23</i>&nbsp; *
+<i>24</i>&nbsp; */
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;package com.sun.javafx.geom;
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;import java.util.Arrays;
+<i>29</i>&nbsp;
+<i>30</i>&nbsp;/**
+<i>31</i>&nbsp; * Container for array of dirty regions. This container internally holds
+<i>32</i>&nbsp; * pointer to the first empty dirty region in the array and index of last
+<i>33</i>&nbsp; * modified dirty region. It also introduces convenient methods to modify
+<i>34</i>&nbsp; * the array of dirty regions.
+<i>35</i>&nbsp; */
+<b class="fc"><i>36</i>&nbsp;public final class DirtyRegionContainer {</b>
+<i>37</i>&nbsp;
+<i>38</i>&nbsp;    public static final int DTR_OK = 1;
+<i>39</i>&nbsp;    public static final int DTR_CONTAINS_CLIP = 0;
+<i>40</i>&nbsp;
+<i>41</i>&nbsp;    private RectBounds[] dirtyRegions;
+<i>42</i>&nbsp;    private int emptyIndex;
+<i>43</i>&nbsp;
+<b class="fc"><i>44</i>&nbsp;    public DirtyRegionContainer(int count) {</b>
+<b class="fc"><i>45</i>&nbsp;        initDirtyRegions(count);</b>
+<b class="fc"><i>46</i>&nbsp;    }</b>
+<i>47</i>&nbsp;
+<i>48</i>&nbsp;    @Override
+<i>49</i>&nbsp;    public boolean equals(Object obj) {
+<b class="nc"><i>50</i>&nbsp;        if (obj instanceof DirtyRegionContainer) {</b>
+<b class="nc"><i>51</i>&nbsp;            DirtyRegionContainer drc = (DirtyRegionContainer)obj;</b>
+<b class="nc"><i>52</i>&nbsp;            if (size() != drc.size()) return false;</b>
+<b class="nc"><i>53</i>&nbsp;            for(int i = 0; i &lt; emptyIndex; i++) {</b>
+<b class="nc"><i>54</i>&nbsp;                if (!getDirtyRegion(i).equals(drc.getDirtyRegion(i))) return false;</b>
+<i>55</i>&nbsp;            }
+<b class="nc"><i>56</i>&nbsp;            return true;</b>
+<i>57</i>&nbsp;        }
+<b class="nc"><i>58</i>&nbsp;        return false;</b>
+<i>59</i>&nbsp;    }
+<i>60</i>&nbsp;
+<i>61</i>&nbsp;    @Override
+<i>62</i>&nbsp;    public int hashCode() {
+<b class="nc"><i>63</i>&nbsp;        int hash = 5;</b>
+<b class="nc"><i>64</i>&nbsp;        hash = 97 * hash + Arrays.deepHashCode(this.dirtyRegions);</b>
+<b class="nc"><i>65</i>&nbsp;        hash = 97 * hash + this.emptyIndex;</b>
+<b class="nc"><i>66</i>&nbsp;        return hash;</b>
+<i>67</i>&nbsp;    }
+<i>68</i>&nbsp;
+<i>69</i>&nbsp;    public DirtyRegionContainer deriveWithNewRegion(RectBounds region) {
+<b class="nc"><i>70</i>&nbsp;        if (region == null) {</b>
+<b class="nc"><i>71</i>&nbsp;            return this;</b>
+<i>72</i>&nbsp;        }
+<b class="nc"><i>73</i>&nbsp;        dirtyRegions[0].deriveWithNewBounds(region);</b>
+<b class="nc"><i>74</i>&nbsp;        emptyIndex = 1;</b>
+<b class="nc"><i>75</i>&nbsp;        return this;</b>
+<i>76</i>&nbsp;    }
+<i>77</i>&nbsp;
+<i>78</i>&nbsp;    public DirtyRegionContainer deriveWithNewRegions(RectBounds[] regions) {
+<b class="nc"><i>79</i>&nbsp;        if (regions == null ||</b>
+<i>80</i>&nbsp;            regions.length == 0) {
+<i>81</i>&nbsp;
+<b class="nc"><i>82</i>&nbsp;            return this;</b>
+<i>83</i>&nbsp;        }
+<b class="nc"><i>84</i>&nbsp;        if (regions.length &gt; maxSpace()) {</b>
+<b class="nc"><i>85</i>&nbsp;            initDirtyRegions(regions.length);</b>
+<i>86</i>&nbsp;        }
+<i>87</i>&nbsp;
+<b class="nc"><i>88</i>&nbsp;        regioncopy(regions, 0, dirtyRegions, 0, regions.length);</b>
+<b class="nc"><i>89</i>&nbsp;        emptyIndex = regions.length;</b>
+<b class="nc"><i>90</i>&nbsp;        return this;</b>
+<i>91</i>&nbsp;    }
+<i>92</i>&nbsp;
+<i>93</i>&nbsp;    public DirtyRegionContainer deriveWithNewContainer(DirtyRegionContainer other) {
+<b class="fc"><i>94</i>&nbsp;        if (other == null ||</b>
+<b class="fc"><i>95</i>&nbsp;            other.maxSpace() == 0) {</b>
+<i>96</i>&nbsp;
+<b class="nc"><i>97</i>&nbsp;            return this;</b>
+<i>98</i>&nbsp;        }
+<i>99</i>&nbsp;
+<b class="fc"><i>100</i>&nbsp;        if (other.maxSpace() &gt; maxSpace()) {</b>
+<b class="nc"><i>101</i>&nbsp;            initDirtyRegions(other.maxSpace());</b>
+<i>102</i>&nbsp;        }
+<i>103</i>&nbsp;
+<b class="fc"><i>104</i>&nbsp;        regioncopy(other.dirtyRegions, 0, dirtyRegions, 0, other.emptyIndex);</b>
+<b class="fc"><i>105</i>&nbsp;        emptyIndex = other.emptyIndex;</b>
+<b class="fc"><i>106</i>&nbsp;        return this;</b>
+<i>107</i>&nbsp;    }
+<i>108</i>&nbsp;
+<i>109</i>&nbsp;    private void initDirtyRegions(int count) {
+<b class="fc"><i>110</i>&nbsp;        dirtyRegions = new RectBounds[count];</b>
+<b class="fc"><i>111</i>&nbsp;        for (int i = 0; i &lt; count; i++) {</b>
+<b class="fc"><i>112</i>&nbsp;            dirtyRegions[i] = new RectBounds();</b>
+<i>113</i>&nbsp;        }
+<b class="fc"><i>114</i>&nbsp;        emptyIndex = 0;</b>
+<b class="fc"><i>115</i>&nbsp;    }</b>
+<i>116</i>&nbsp;
+<i>117</i>&nbsp;    public DirtyRegionContainer copy() {
+<b class="nc"><i>118</i>&nbsp;        DirtyRegionContainer drc = new DirtyRegionContainer(maxSpace());</b>
+<b class="nc"><i>119</i>&nbsp;        regioncopy(dirtyRegions, 0, drc.dirtyRegions, 0, emptyIndex);</b>
+<b class="nc"><i>120</i>&nbsp;        drc.emptyIndex = emptyIndex;</b>
+<b class="nc"><i>121</i>&nbsp;        return drc;</b>
+<i>122</i>&nbsp;    }
+<i>123</i>&nbsp;
+<i>124</i>&nbsp;    public int maxSpace() {
+<b class="fc"><i>125</i>&nbsp;        return dirtyRegions.length;</b>
+<i>126</i>&nbsp;    }
+<i>127</i>&nbsp;
+<i>128</i>&nbsp;    /**
+<i>129</i>&nbsp;     * Gets the dirty region at given index.
+<i>130</i>&nbsp;     * @param index the index of requested dirty region
+<i>131</i>&nbsp;     * @return dirty region at given index
+<i>132</i>&nbsp;     */
+<i>133</i>&nbsp;    public RectBounds getDirtyRegion(int index) {
+<b class="fc"><i>134</i>&nbsp;        return dirtyRegions[index];</b>
+<i>135</i>&nbsp;    }
+<i>136</i>&nbsp;
+<i>137</i>&nbsp;    public void setDirtyRegion(int index, RectBounds region) {
+<b class="fc"><i>138</i>&nbsp;        dirtyRegions[index] = region;</b>
+<b class="fc"><i>139</i>&nbsp;    }</b>
+<i>140</i>&nbsp;
+<i>141</i>&nbsp;    /**
+<i>142</i>&nbsp;     * Adds new dirty region to the array.
+<i>143</i>&nbsp;     * @param region the dirty region.
+<i>144</i>&nbsp;     */
+<i>145</i>&nbsp;    public void addDirtyRegion(final RectBounds region) {
+<b class="fc"><i>146</i>&nbsp;            if (region.isEmpty())</b>
+<b class="nc"><i>147</i>&nbsp;                return;</b>
+<i>148</i>&nbsp;
+<i>149</i>&nbsp;            RectBounds dr, tmp;
+<b class="fc"><i>150</i>&nbsp;            int tempIndex = 0;</b>
+<b class="fc"><i>151</i>&nbsp;            int regionCount = emptyIndex;</b>
+<i>152</i>&nbsp;
+<b class="fc"><i>153</i>&nbsp;            for(int i = 0; i &lt; regionCount; i++) {</b>
+<i>154</i>&nbsp;                //can&#39;t have overlapping regions
+<b class="fc"><i>155</i>&nbsp;                dr = dirtyRegions[tempIndex];</b>
+<b class="fc"><i>156</i>&nbsp;                if (region.intersects(dr)) {</b>
+<b class="fc"><i>157</i>&nbsp;                    region.unionWith(dr);</b>
+<b class="fc"><i>158</i>&nbsp;                    tmp = dirtyRegions[tempIndex];</b>
+<b class="fc"><i>159</i>&nbsp;                    dirtyRegions[tempIndex] = dirtyRegions[emptyIndex - 1];</b>
+<b class="fc"><i>160</i>&nbsp;                    dirtyRegions[emptyIndex - 1] = tmp;</b>
+<b class="fc"><i>161</i>&nbsp;                    emptyIndex--;</b>
+<i>162</i>&nbsp;                } else {
+<b class="fc"><i>163</i>&nbsp;                    tempIndex++;</b>
+<i>164</i>&nbsp;                }
+<i>165</i>&nbsp;            }//for
+<b class="fc"><i>166</i>&nbsp;            if (hasSpace()) {</b>
+<b class="fc"><i>167</i>&nbsp;                dr = dirtyRegions[emptyIndex];</b>
+<b class="fc"><i>168</i>&nbsp;                dr.deriveWithNewBounds(region);</b>
+<b class="fc"><i>169</i>&nbsp;                emptyIndex++;</b>
+<b class="fc"><i>170</i>&nbsp;                return;</b>
+<i>171</i>&nbsp;            }
+<i>172</i>&nbsp;            //match region into existing dirty regions
+<b class="nc"><i>173</i>&nbsp;            if (dirtyRegions.length == 1)</b>
+<b class="nc"><i>174</i>&nbsp;                dirtyRegions[0].deriveWithUnion(region);</b>
+<i>175</i>&nbsp;            else
+<b class="nc"><i>176</i>&nbsp;                compress(region);</b>
+<b class="nc"><i>177</i>&nbsp;    }</b>
+<i>178</i>&nbsp;
+<i>179</i>&nbsp;    public void merge(DirtyRegionContainer other) {
+<b class="fc"><i>180</i>&nbsp;        int otherSize = other.size();</b>
+<b class="fc"><i>181</i>&nbsp;        for(int i = 0; i &lt; otherSize; i++) {</b>
+<b class="fc"><i>182</i>&nbsp;            addDirtyRegion(other.getDirtyRegion(i));</b>
+<i>183</i>&nbsp;        }
+<b class="fc"><i>184</i>&nbsp;    }</b>
+<i>185</i>&nbsp;
+<i>186</i>&nbsp;    public int size() {
+<b class="fc"><i>187</i>&nbsp;        return emptyIndex;</b>
+<i>188</i>&nbsp;    }
+<i>189</i>&nbsp;
+<i>190</i>&nbsp;    public void reset() {
+<b class="fc"><i>191</i>&nbsp;        emptyIndex = 0;</b>
+<b class="fc"><i>192</i>&nbsp;    }</b>
+<i>193</i>&nbsp;
+<i>194</i>&nbsp;    private RectBounds compress(final RectBounds region) {
+<b class="nc"><i>195</i>&nbsp;        compress_heap();</b>
+<b class="nc"><i>196</i>&nbsp;        addDirtyRegion(region);</b>
+<b class="nc"><i>197</i>&nbsp;        return region;</b>
+<i>198</i>&nbsp;    }
+<i>199</i>&nbsp;
+<i>200</i>&nbsp;    /**
+<i>201</i>&nbsp;     * If there are empty regions in the dirty regions array.
+<i>202</i>&nbsp;     * @return true if there is empty region in the array; false otherwise
+<i>203</i>&nbsp;     */
+<i>204</i>&nbsp;    private boolean hasSpace() {
+<b class="fc"><i>205</i>&nbsp;        return emptyIndex &lt; dirtyRegions.length;</b>
+<i>206</i>&nbsp;    }
+<i>207</i>&nbsp;
+<i>208</i>&nbsp;    private void regioncopy(RectBounds[] src, int from, RectBounds[] dest, int to, int length) {
+<i>209</i>&nbsp;        RectBounds rb;
+<b class="fc"><i>210</i>&nbsp;        for (int i = 0; i &lt; length; i++) {</b>
+<b class="fc"><i>211</i>&nbsp;            rb = src[from++];</b>
+<b class="fc"><i>212</i>&nbsp;            if (rb == null) {</b>
+<b class="nc"><i>213</i>&nbsp;                dest[to++].makeEmpty();</b>
+<i>214</i>&nbsp;            } else {
+<b class="fc"><i>215</i>&nbsp;                dest[to++].deriveWithNewBounds(rb);</b>
+<i>216</i>&nbsp;            }
+<i>217</i>&nbsp;        }
+<b class="fc"><i>218</i>&nbsp;    }</b>
+<i>219</i>&nbsp;
+<i>220</i>&nbsp;    public boolean checkAndClearRegion(int index) {
+<b class="fc"><i>221</i>&nbsp;        boolean removed = false;</b>
+<b class="fc"><i>222</i>&nbsp;        if (dirtyRegions[index].isEmpty()) {</b>
+<b class="nc"><i>223</i>&nbsp;            System.arraycopy(dirtyRegions, index + 1, dirtyRegions, index, emptyIndex - index - 1);</b>
+<b class="nc"><i>224</i>&nbsp;            --emptyIndex;</b>
+<b class="nc"><i>225</i>&nbsp;            removed = true;</b>
+<i>226</i>&nbsp;        }
+<i>227</i>&nbsp;
+<b class="fc"><i>228</i>&nbsp;        return removed;</b>
+<i>229</i>&nbsp;    }
+<i>230</i>&nbsp;
+<i>231</i>&nbsp;    public void grow(int horizontal, int vertical) {
+<b class="fc"><i>232</i>&nbsp;        if (horizontal != 0 || vertical != 0) {</b>
+<b class="fc"><i>233</i>&nbsp;            for (int i = 0; i &lt; emptyIndex; i++) {</b>
+<b class="fc"><i>234</i>&nbsp;                getDirtyRegion(i).grow(horizontal, vertical);</b>
+<i>235</i>&nbsp;            }
+<i>236</i>&nbsp;        }
+<b class="fc"><i>237</i>&nbsp;    }</b>
+<i>238</i>&nbsp;
+<i>239</i>&nbsp;    public void roundOut() {
+<b class="fc"><i>240</i>&nbsp;        for (int i = 0; i &lt; emptyIndex; ++i) {</b>
+<b class="fc"><i>241</i>&nbsp;            dirtyRegions[i].roundOut();</b>
+<i>242</i>&nbsp;        }
+<b class="fc"><i>243</i>&nbsp;    }</b>
+<i>244</i>&nbsp;
+<i>245</i>&nbsp;    @Override
+<i>246</i>&nbsp;    public String toString() {
+<b class="nc"><i>247</i>&nbsp;        StringBuilder sb = new StringBuilder();</b>
+<b class="nc"><i>248</i>&nbsp;        for (int i = 0; i &lt; emptyIndex; i++) {</b>
+<b class="nc"><i>249</i>&nbsp;            sb.append(dirtyRegions[i]);</b>
+<b class="nc"><i>250</i>&nbsp;            sb.append(&#39;\n&#39;);</b>
+<i>251</i>&nbsp;        }
+<b class="nc"><i>252</i>&nbsp;        return sb.toString();</b>
+<i>253</i>&nbsp;    }
+<i>254</i>&nbsp;
+<i>255</i>&nbsp;    /***************************************************************************
+<i>256</i>&nbsp;     * Shared for all compressing algorithms
+<i>257</i>&nbsp;     ***************************************************************************/
+<i>258</i>&nbsp;    private int[][] heap; // heap used for compressing dirty regions
+<i>259</i>&nbsp;    private int heapSize;
+<i>260</i>&nbsp;    private long invalidMask;
+<i>261</i>&nbsp;
+<i>262</i>&nbsp;    private void heapCompress() {
+<b class="nc"><i>263</i>&nbsp;        invalidMask = 0;</b>
+<b class="nc"><i>264</i>&nbsp;        int[] map = new int[dirtyRegions.length];</b>
+<b class="nc"><i>265</i>&nbsp;        for (int i = 0; i &lt; map.length; ++i) {</b>
+<b class="nc"><i>266</i>&nbsp;            map[i] = i;</b>
+<i>267</i>&nbsp;        }
+<i>268</i>&nbsp;
+<i>269</i>&nbsp;        int[] min;
+<b class="nc"><i>270</i>&nbsp;        for (int i = 0; i &lt; dirtyRegions.length / 2; ++i) { //compress to 1/2</b>
+<b class="nc"><i>271</i>&nbsp;            min = takeMinWithMap(map);</b>
+<b class="nc"><i>272</i>&nbsp;            int idx0 = resolveMap(map, min[1]);</b>
+<b class="nc"><i>273</i>&nbsp;            int idx1 = resolveMap(map, min[2]);</b>
+<b class="nc"><i>274</i>&nbsp;            if (idx0 != idx1) {</b>
+<b class="nc"><i>275</i>&nbsp;                dirtyRegions[idx0].deriveWithUnion(dirtyRegions[idx1]);</b>
+<b class="nc"><i>276</i>&nbsp;                map[idx1] = idx0;</b>
+<b class="nc"><i>277</i>&nbsp;                invalidMask |= 1 &lt;&lt; idx0;</b>
+<b class="nc"><i>278</i>&nbsp;                invalidMask |= 1 &lt;&lt; idx1;</b>
+<i>279</i>&nbsp;            }
+<i>280</i>&nbsp;        }
+<i>281</i>&nbsp;
+<i>282</i>&nbsp;        // move the unused regions to the end
+<i>283</i>&nbsp;        RectBounds tmp;
+<b class="nc"><i>284</i>&nbsp;        for (int i = 0; i &lt; emptyIndex; ++i) {</b>
+<b class="nc"><i>285</i>&nbsp;            if (map[i] != i) {</b>
+<b class="nc"><i>286</i>&nbsp;                while(map[emptyIndex - 1] != emptyIndex - 1 ) --emptyIndex;</b>
+<b class="nc"><i>287</i>&nbsp;                if (i &lt; emptyIndex - 1) {</b>
+<b class="nc"><i>288</i>&nbsp;                    tmp = dirtyRegions[emptyIndex - 1];</b>
+<b class="nc"><i>289</i>&nbsp;                    dirtyRegions[emptyIndex - 1] = dirtyRegions[i];</b>
+<b class="nc"><i>290</i>&nbsp;                    dirtyRegions[i] = tmp;</b>
+<b class="nc"><i>291</i>&nbsp;                    map[i] = i; // indicate that this element is OK</b>
+<b class="nc"><i>292</i>&nbsp;                    --emptyIndex;</b>
+<i>293</i>&nbsp;                }
+<i>294</i>&nbsp;            }
+<i>295</i>&nbsp;        }
+<b class="nc"><i>296</i>&nbsp;    }</b>
+<i>297</i>&nbsp;
+<i>298</i>&nbsp;    private void heapify() {
+<b class="nc"><i>299</i>&nbsp;        for (int i = heapSize / 2; i &gt;= 0; --i) {</b>
+<b class="nc"><i>300</i>&nbsp;            siftDown(i);</b>
+<i>301</i>&nbsp;        }
+<b class="nc"><i>302</i>&nbsp;    }</b>
+<i>303</i>&nbsp;
+<i>304</i>&nbsp;    private void siftDown(int i) {
+<b class="nc"><i>305</i>&nbsp;        int end = heapSize &gt;&gt; 1;</b>
+<i>306</i>&nbsp;        int[] temp;
+<b class="nc"><i>307</i>&nbsp;        while (i &lt; end) {</b>
+<b class="nc"><i>308</i>&nbsp;            int child = (i &lt;&lt; 1) + 1;</b>
+<b class="nc"><i>309</i>&nbsp;            int[] left = heap[child];</b>
+<b class="nc"><i>310</i>&nbsp;            if (child + 1 &lt; heapSize &amp;&amp; heap[child + 1][0] &lt; left[0]) {</b>
+<b class="nc"><i>311</i>&nbsp;                child = child + 1;</b>
+<i>312</i>&nbsp;            }
+<b class="nc"><i>313</i>&nbsp;            if (heap[child][0] &gt;= heap[i][0]) {</b>
+<b class="nc"><i>314</i>&nbsp;                break;</b>
+<i>315</i>&nbsp;            }
+<b class="nc"><i>316</i>&nbsp;            temp = heap[child];</b>
+<b class="nc"><i>317</i>&nbsp;            heap[child] = heap[i];</b>
+<b class="nc"><i>318</i>&nbsp;            heap[i] = temp;</b>
+<b class="nc"><i>319</i>&nbsp;            i = child;</b>
+<b class="nc"><i>320</i>&nbsp;        }</b>
+<b class="nc"><i>321</i>&nbsp;    }</b>
+<i>322</i>&nbsp;
+<i>323</i>&nbsp;    private int[] takeMinWithMap(int[] map) {
+<b class="nc"><i>324</i>&nbsp;        int[] temp = heap[0];</b>
+<i>325</i>&nbsp;
+<i>326</i>&nbsp;        // Check if the minimum element wasn&#39;t computed with some already merged region
+<i>327</i>&nbsp;        // If so, we can recompute it and push it down (as the new merged region can be
+<i>328</i>&nbsp;        // only greater than the original region)
+<b class="nc"><i>329</i>&nbsp;        while (((1 &lt;&lt; temp[1] | 1 &lt;&lt; temp[2]) &amp; invalidMask) &gt; 0) {</b>
+<b class="nc"><i>330</i>&nbsp;            temp[0] = unifiedRegionArea(resolveMap(map, temp[1]), resolveMap(map, temp[2]));</b>
+<b class="nc"><i>331</i>&nbsp;            siftDown(0);</b>
+<b class="nc"><i>332</i>&nbsp;            if (heap[0] == temp) {</b>
+<b class="nc"><i>333</i>&nbsp;                break;</b>
+<i>334</i>&nbsp;            }
+<b class="nc"><i>335</i>&nbsp;            temp = heap[0];</b>
+<i>336</i>&nbsp;        }
+<i>337</i>&nbsp;
+<b class="nc"><i>338</i>&nbsp;        heap[heapSize - 1] = temp;</b>
+<b class="nc"><i>339</i>&nbsp;        siftDown(0);</b>
+<b class="nc"><i>340</i>&nbsp;        heapSize--;</b>
+<b class="nc"><i>341</i>&nbsp;        return temp;</b>
+<i>342</i>&nbsp;    }
+<i>343</i>&nbsp;
+<i>344</i>&nbsp;    private int[] takeMin() {
+<b class="nc"><i>345</i>&nbsp;        int[] temp = heap[0];</b>
+<b class="nc"><i>346</i>&nbsp;        heap[0] = heap[heapSize - 1];</b>
+<b class="nc"><i>347</i>&nbsp;        heap[heapSize - 1] = temp;</b>
+<b class="nc"><i>348</i>&nbsp;        siftDown(0);</b>
+<b class="nc"><i>349</i>&nbsp;        heapSize--;</b>
+<b class="nc"><i>350</i>&nbsp;        return temp;</b>
+<i>351</i>&nbsp;    }
+<i>352</i>&nbsp;
+<i>353</i>&nbsp;    private int resolveMap(int[] map, int idx) {
+<b class="nc"><i>354</i>&nbsp;        while(map[idx] != idx) idx = map[idx];</b>
+<b class="nc"><i>355</i>&nbsp;        return idx;</b>
+<i>356</i>&nbsp;    }
+<i>357</i>&nbsp;
+<i>358</i>&nbsp;    private int unifiedRegionArea(int i0, int i1) {
+<b class="nc"><i>359</i>&nbsp;        RectBounds r0 = dirtyRegions[i0];</b>
+<b class="nc"><i>360</i>&nbsp;        RectBounds r1 = dirtyRegions[i1];</b>
+<i>361</i>&nbsp;        float minX, minY, maxX, maxY;
+<b class="nc"><i>362</i>&nbsp;        minX = r0.getMinX() &lt; r1.getMinX() ? r0.getMinX() : r1.getMinX();</b>
+<b class="nc"><i>363</i>&nbsp;        minY = r0.getMinY() &lt; r1.getMinY() ? r0.getMinY() : r1.getMinY();</b>
+<b class="nc"><i>364</i>&nbsp;        maxX = r0.getMaxX() &gt; r1.getMaxX() ? r0.getMaxX() : r1.getMaxX();</b>
+<b class="nc"><i>365</i>&nbsp;        maxY = r0.getMaxY() &gt; r1.getMaxY() ? r0.getMaxY() : r1.getMaxY();</b>
+<i>366</i>&nbsp;
+<b class="nc"><i>367</i>&nbsp;        return (int) ((maxX - minX) * (maxY - minY));</b>
+<i>368</i>&nbsp;    }
+<i>369</i>&nbsp;    /***************************************************************************
+<i>370</i>&nbsp;     * Heap-based compressing algorithm
+<i>371</i>&nbsp;     ***************************************************************************/
+<i>372</i>&nbsp;
+<i>373</i>&nbsp;    private void compress_heap() {
+<b class="nc"><i>374</i>&nbsp;        assert dirtyRegions.length == emptyIndex; // call only when there is no space left</b>
+<b class="nc"><i>375</i>&nbsp;        if (heap == null) {</b>
+<b class="nc"><i>376</i>&nbsp;            int n = dirtyRegions.length;</b>
+<b class="nc"><i>377</i>&nbsp;            heap = new int[n * (n-1) / 2][3];</b>
+<i>378</i>&nbsp;        }
+<b class="nc"><i>379</i>&nbsp;        heapSize = heap.length;</b>
+<b class="nc"><i>380</i>&nbsp;        int k = 0;</b>
+<b class="nc"><i>381</i>&nbsp;        for (int i = 0; i &lt; dirtyRegions.length - 1; ++i) {</b>
+<b class="nc"><i>382</i>&nbsp;            for (int j = i + 1; j &lt; dirtyRegions.length; ++j) {</b>
+<b class="nc"><i>383</i>&nbsp;                heap[k][0] = unifiedRegionArea(i, j);</b>
+<b class="nc"><i>384</i>&nbsp;                heap[k][1] = i;</b>
+<b class="nc"><i>385</i>&nbsp;                heap[k++][2] = j;</b>
+<i>386</i>&nbsp;            }
+<i>387</i>&nbsp;        }
+<b class="nc"><i>388</i>&nbsp;        heapify();</b>
+<b class="nc"><i>389</i>&nbsp;        heapCompress();</b>
+<b class="nc"><i>390</i>&nbsp;    }</b>
+<i>391</i>&nbsp;
+<i>392</i>&nbsp;    /***************************************************************************
+<i>393</i>&nbsp;     * Simple Monte-Carlo variant of compressing algorithm
+<i>394</i>&nbsp;     ***************************************************************************/
+<i>395</i>&nbsp;
+<i>396</i>&nbsp;//    private void compress_mc() {
+<i>397</i>&nbsp;//        assert dirtyRegions.length == emptyIndex; // call only when there is no space left
+<i>398</i>&nbsp;//        heapSize = dirtyRegions.length;
+<i>399</i>&nbsp;//        if (heap == null) {
+<i>400</i>&nbsp;//            heap = new int[heapSize][3];
+<i>401</i>&nbsp;//        }
+<i>402</i>&nbsp;//        for (int i = 0; i &lt; heapSize; ++i) { //number of tries
+<i>403</i>&nbsp;//            int i0 = random(dirtyRegions.length);
+<i>404</i>&nbsp;//            int i1 = random(dirtyRegions.length);
+<i>405</i>&nbsp;//            if (i1 == i0) i1 = (i0 + random(dirtyRegions.length / 2) + 1) % dirtyRegions.length;
+<i>406</i>&nbsp;//            heap[i][0] = unifiedRegionArea(i0, i1);
+<i>407</i>&nbsp;//            heap[i][1] = i0;
+<i>408</i>&nbsp;//            heap[i][2] = i1;
+<i>409</i>&nbsp;//        }
+<i>410</i>&nbsp;//        heapify();
+<i>411</i>&nbsp;//        heapCompress();
+<i>412</i>&nbsp;//    }
+<i>413</i>&nbsp;//
+<i>414</i>&nbsp;//    private static long rnd = System.currentTimeMillis();
+<i>415</i>&nbsp;//    // XOR Random generator by George Marsaglia http://www.jstatsoft.org/v08/i14/
+<i>416</i>&nbsp;//    // The LCG algorithm of Random() has an upleasant trait that the numbers generated in
+<i>417</i>&nbsp;//    // pairs always have some (tight) mathematical relationship
+<i>418</i>&nbsp;//    private int random(int n) {
+<i>419</i>&nbsp;//        rnd ^= (rnd &lt;&lt; 21);
+<i>420</i>&nbsp;//        rnd ^= (rnd &gt;&gt;&gt; 35);
+<i>421</i>&nbsp;//        rnd ^= (rnd &lt;&lt; 4);
+<i>422</i>&nbsp;//        return (int) ((rnd) % n + n) % n;     // the problem with this algorithm is that 0 is never produced.
+<i>423</i>&nbsp;//                                              // Given it&#39;s independed probability for every bit, we can safely do % n here
+<i>424</i>&nbsp;//    }
+<i>425</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2017-12-04 21:49</div>
+</div>
+</body>
+</html>

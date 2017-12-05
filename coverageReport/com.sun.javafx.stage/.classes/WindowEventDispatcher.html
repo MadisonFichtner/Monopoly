@@ -1,0 +1,170 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: WindowEventDispatcher</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.javafx.stage</a> ]
+</div>
+
+<h1>Coverage Summary for Class: WindowEventDispatcher (com.sun.javafx.stage)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">WindowEventDispatcher</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    85.7%
+  </span>
+  <span class="absValue">
+    (6/ 7)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    92.9%
+  </span>
+  <span class="absValue">
+    (13/ 14)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright (c) 2011, 2013, Oracle and/or its affiliates. All rights reserved.
+<i>3</i>&nbsp; * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+<i>4</i>&nbsp; *
+<i>5</i>&nbsp; *
+<i>6</i>&nbsp; *
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; *
+<i>11</i>&nbsp; *
+<i>12</i>&nbsp; *
+<i>13</i>&nbsp; *
+<i>14</i>&nbsp; *
+<i>15</i>&nbsp; *
+<i>16</i>&nbsp; *
+<i>17</i>&nbsp; *
+<i>18</i>&nbsp; *
+<i>19</i>&nbsp; *
+<i>20</i>&nbsp; *
+<i>21</i>&nbsp; *
+<i>22</i>&nbsp; *
+<i>23</i>&nbsp; *
+<i>24</i>&nbsp; */
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;package com.sun.javafx.stage;
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;import com.sun.javafx.event.BasicEventDispatcher;
+<i>29</i>&nbsp;import com.sun.javafx.event.CompositeEventDispatcher;
+<i>30</i>&nbsp;import com.sun.javafx.event.EventHandlerManager;
+<i>31</i>&nbsp;import com.sun.javafx.event.EventRedirector;
+<i>32</i>&nbsp;
+<i>33</i>&nbsp;import javafx.stage.Window;
+<i>34</i>&nbsp;
+<i>35</i>&nbsp;/**
+<i>36</i>&nbsp; * An {@code EventDispatcher} for {@code Window}. It is formed by a chain
+<i>37</i>&nbsp; * in which a received event is first passed through {@code EventRedirector}
+<i>38</i>&nbsp; * and then through {@code EventHandlerManager}.
+<i>39</i>&nbsp; */
+<i>40</i>&nbsp;public class WindowEventDispatcher extends CompositeEventDispatcher {
+<i>41</i>&nbsp;    private final EventRedirector eventRedirector;
+<i>42</i>&nbsp;
+<i>43</i>&nbsp;    private final WindowCloseRequestHandler windowCloseRequestHandler;
+<i>44</i>&nbsp;
+<i>45</i>&nbsp;    private final EventHandlerManager eventHandlerManager;
+<i>46</i>&nbsp;
+<i>47</i>&nbsp;    public WindowEventDispatcher(final Window window) {
+<b class="fc"><i>48</i>&nbsp;        this(new EventRedirector(window),</b>
+<i>49</i>&nbsp;             new WindowCloseRequestHandler(window),
+<i>50</i>&nbsp;             new EventHandlerManager(window));
+<i>51</i>&nbsp;
+<b class="fc"><i>52</i>&nbsp;    }</b>
+<i>53</i>&nbsp;
+<i>54</i>&nbsp;    public WindowEventDispatcher(
+<i>55</i>&nbsp;            final EventRedirector eventRedirector,
+<i>56</i>&nbsp;            final WindowCloseRequestHandler windowCloseRequestHandler,
+<b class="fc"><i>57</i>&nbsp;            final EventHandlerManager eventHandlerManager) {</b>
+<b class="fc"><i>58</i>&nbsp;        this.eventRedirector = eventRedirector;</b>
+<b class="fc"><i>59</i>&nbsp;        this.windowCloseRequestHandler = windowCloseRequestHandler;</b>
+<b class="fc"><i>60</i>&nbsp;        this.eventHandlerManager = eventHandlerManager;</b>
+<i>61</i>&nbsp;
+<b class="fc"><i>62</i>&nbsp;        eventRedirector.insertNextDispatcher(windowCloseRequestHandler);</b>
+<b class="fc"><i>63</i>&nbsp;        windowCloseRequestHandler.insertNextDispatcher(eventHandlerManager);</b>
+<b class="fc"><i>64</i>&nbsp;    }</b>
+<i>65</i>&nbsp;
+<i>66</i>&nbsp;    public final EventRedirector getEventRedirector() {
+<b class="fc"><i>67</i>&nbsp;        return eventRedirector;</b>
+<i>68</i>&nbsp;    }
+<i>69</i>&nbsp;
+<i>70</i>&nbsp;    public final WindowCloseRequestHandler getWindowCloseRequestHandler() {
+<b class="nc"><i>71</i>&nbsp;        return windowCloseRequestHandler;</b>
+<i>72</i>&nbsp;    }
+<i>73</i>&nbsp;
+<i>74</i>&nbsp;    public final EventHandlerManager getEventHandlerManager() {
+<b class="fc"><i>75</i>&nbsp;        return eventHandlerManager;</b>
+<i>76</i>&nbsp;    }
+<i>77</i>&nbsp;
+<i>78</i>&nbsp;    @Override
+<i>79</i>&nbsp;    public BasicEventDispatcher getFirstDispatcher() {
+<b class="fc"><i>80</i>&nbsp;        return eventRedirector;</b>
+<i>81</i>&nbsp;    }
+<i>82</i>&nbsp;
+<i>83</i>&nbsp;    @Override
+<i>84</i>&nbsp;    public BasicEventDispatcher getLastDispatcher() {
+<b class="fc"><i>85</i>&nbsp;        return eventHandlerManager;</b>
+<i>86</i>&nbsp;    }
+<i>87</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2017-12-04 21:49</div>
+</div>
+</body>
+</html>

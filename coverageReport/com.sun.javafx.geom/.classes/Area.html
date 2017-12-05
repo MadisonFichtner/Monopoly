@@ -1,0 +1,762 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: Area</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.javafx.geom</a> ]
+</div>
+
+<h1>Coverage Summary for Class: Area (com.sun.javafx.geom)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">Area</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 27)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 146)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright (c) 1998, 2013, Oracle and/or its affiliates. All rights reserved.
+<i>3</i>&nbsp; * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+<i>4</i>&nbsp; *
+<i>5</i>&nbsp; *
+<i>6</i>&nbsp; *
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; *
+<i>11</i>&nbsp; *
+<i>12</i>&nbsp; *
+<i>13</i>&nbsp; *
+<i>14</i>&nbsp; *
+<i>15</i>&nbsp; *
+<i>16</i>&nbsp; *
+<i>17</i>&nbsp; *
+<i>18</i>&nbsp; *
+<i>19</i>&nbsp; *
+<i>20</i>&nbsp; *
+<i>21</i>&nbsp; *
+<i>22</i>&nbsp; *
+<i>23</i>&nbsp; *
+<i>24</i>&nbsp; */
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;package com.sun.javafx.geom;
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;import java.util.Enumeration;
+<i>29</i>&nbsp;import java.util.NoSuchElementException;
+<i>30</i>&nbsp;import java.util.Vector;
+<i>31</i>&nbsp;import com.sun.javafx.geom.transform.BaseTransform;
+<i>32</i>&nbsp;
+<i>33</i>&nbsp;
+<i>34</i>&nbsp;/**
+<i>35</i>&nbsp; * An &lt;code&gt;Area&lt;/code&gt; object stores and manipulates a
+<i>36</i>&nbsp; * resolution-independent description of an enclosed area of
+<i>37</i>&nbsp; * 2-dimensional space.
+<i>38</i>&nbsp; * &lt;code&gt;Area&lt;/code&gt; objects can be transformed and can perform
+<i>39</i>&nbsp; * various Constructive Area Geometry (CAG) operations when combined
+<i>40</i>&nbsp; * with other &lt;code&gt;Area&lt;/code&gt; objects.
+<i>41</i>&nbsp; * The CAG operations include area
+<i>42</i>&nbsp; * {@link #add addition}, {@link #subtract subtraction},
+<i>43</i>&nbsp; * {@link #intersect intersection}, and {@link #exclusiveOr exclusive or}.
+<i>44</i>&nbsp; * See the linked method documentation for examples of the various
+<i>45</i>&nbsp; * operations.
+<i>46</i>&nbsp; * &lt;p&gt;
+<i>47</i>&nbsp; * The &lt;code&gt;Area&lt;/code&gt; class implements the &lt;code&gt;Shape&lt;/code&gt;
+<i>48</i>&nbsp; * interface and provides full support for all of its hit-testing
+<i>49</i>&nbsp; * and path iteration facilities, but an &lt;code&gt;Area&lt;/code&gt; is more
+<i>50</i>&nbsp; * specific than a generalized path in a number of ways:
+<i>51</i>&nbsp; * &lt;ul&gt;
+<i>52</i>&nbsp; * &lt;li&gt;Only closed paths and sub-paths are stored.
+<i>53</i>&nbsp; *     &lt;code&gt;Area&lt;/code&gt; objects constructed from unclosed paths
+<i>54</i>&nbsp; *     are implicitly closed during construction as if those paths
+<i>55</i>&nbsp; *     had been filled by the &lt;code&gt;Graphics2D.fill&lt;/code&gt; method.
+<i>56</i>&nbsp; * &lt;li&gt;The interiors of the individual stored sub-paths are all
+<i>57</i>&nbsp; *     non-empty and non-overlapping.  Paths are decomposed during
+<i>58</i>&nbsp; *     construction into separate component non-overlapping parts,
+<i>59</i>&nbsp; *     empty pieces of the path are discarded, and then these
+<i>60</i>&nbsp; *     non-empty and non-overlapping properties are maintained
+<i>61</i>&nbsp; *     through all subsequent CAG operations.  Outlines of different
+<i>62</i>&nbsp; *     component sub-paths may touch each other, as long as they
+<i>63</i>&nbsp; *     do not cross so that their enclosed areas overlap.
+<i>64</i>&nbsp; * &lt;li&gt;The geometry of the path describing the outline of the
+<i>65</i>&nbsp; *     &lt;code&gt;Area&lt;/code&gt; resembles the path from which it was
+<i>66</i>&nbsp; *     constructed only in that it describes the same enclosed
+<i>67</i>&nbsp; *     2-dimensional area, but may use entirely different types
+<i>68</i>&nbsp; *     and ordering of the path segments to do so.
+<i>69</i>&nbsp; * &lt;/ul&gt;
+<i>70</i>&nbsp; * Interesting issues which are not always obvious when using
+<i>71</i>&nbsp; * the &lt;code&gt;Area&lt;/code&gt; include:
+<i>72</i>&nbsp; * &lt;ul&gt;
+<i>73</i>&nbsp; * &lt;li&gt;Creating an &lt;code&gt;Area&lt;/code&gt; from an unclosed (open)
+<i>74</i>&nbsp; *     &lt;code&gt;Shape&lt;/code&gt; results in a closed outline in the
+<i>75</i>&nbsp; *     &lt;code&gt;Area&lt;/code&gt; object.
+<i>76</i>&nbsp; * &lt;li&gt;Creating an &lt;code&gt;Area&lt;/code&gt; from a &lt;code&gt;Shape&lt;/code&gt;
+<i>77</i>&nbsp; *     which encloses no area (even when &quot;closed&quot;) produces an
+<i>78</i>&nbsp; *     empty &lt;code&gt;Area&lt;/code&gt;.  A common example of this issue
+<i>79</i>&nbsp; *     is that producing an &lt;code&gt;Area&lt;/code&gt; from a line will
+<i>80</i>&nbsp; *     be empty since the line encloses no area.  An empty
+<i>81</i>&nbsp; *     &lt;code&gt;Area&lt;/code&gt; will iterate no geometry in its
+<i>82</i>&nbsp; *     &lt;code&gt;PathIterator&lt;/code&gt; objects.
+<i>83</i>&nbsp; * &lt;li&gt;A self-intersecting &lt;code&gt;Shape&lt;/code&gt; may be split into
+<i>84</i>&nbsp; *     two (or more) sub-paths each enclosing one of the
+<i>85</i>&nbsp; *     non-intersecting portions of the original path.
+<i>86</i>&nbsp; * &lt;li&gt;An &lt;code&gt;Area&lt;/code&gt; may take more path segments to
+<i>87</i>&nbsp; *     describe the same geometry even when the original
+<i>88</i>&nbsp; *     outline is simple and obvious.  The analysis that the
+<i>89</i>&nbsp; *     &lt;code&gt;Area&lt;/code&gt; class must perform on the path may
+<i>90</i>&nbsp; *     not reflect the same concepts of &quot;simple and obvious&quot;
+<i>91</i>&nbsp; *     as a human being perceives.
+<i>92</i>&nbsp; * &lt;/ul&gt;
+<i>93</i>&nbsp; */
+<i>94</i>&nbsp;public class Area extends Shape {
+<i>95</i>&nbsp;
+<b class="nc"><i>96</i>&nbsp;    private static final Vector EmptyCurves = new Vector();</b>
+<i>97</i>&nbsp;
+<i>98</i>&nbsp;    private Vector curves;
+<i>99</i>&nbsp;
+<i>100</i>&nbsp;    /**
+<i>101</i>&nbsp;     * Default constructor which creates an empty area.
+<i>102</i>&nbsp;     */
+<b class="nc"><i>103</i>&nbsp;    public Area() {</b>
+<b class="nc"><i>104</i>&nbsp;        curves = EmptyCurves;</b>
+<b class="nc"><i>105</i>&nbsp;    }</b>
+<i>106</i>&nbsp;
+<i>107</i>&nbsp;    /**
+<i>108</i>&nbsp;     * The &lt;code&gt;Area&lt;/code&gt; class creates an area geometry from the
+<i>109</i>&nbsp;     * specified {@link Shape} object.  The geometry is explicitly
+<i>110</i>&nbsp;     * closed, if the &lt;code&gt;Shape&lt;/code&gt; is not already closed.  The
+<i>111</i>&nbsp;     * fill rule (even-odd or winding) specified by the geometry of the
+<i>112</i>&nbsp;     * &lt;code&gt;Shape&lt;/code&gt; is used to determine the resulting enclosed area.
+<i>113</i>&nbsp;     * @param s  the &lt;code&gt;Shape&lt;/code&gt; from which the area is constructed
+<i>114</i>&nbsp;     * @throws NullPointerException if &lt;code&gt;s&lt;/code&gt; is null
+<i>115</i>&nbsp;     */
+<b class="nc"><i>116</i>&nbsp;    public Area(Shape s) {</b>
+<b class="nc"><i>117</i>&nbsp;        if (s instanceof Area) {</b>
+<b class="nc"><i>118</i>&nbsp;            curves = ((Area) s).curves;</b>
+<i>119</i>&nbsp;        } else {
+<b class="nc"><i>120</i>&nbsp;            curves = pathToCurves(s.getPathIterator(null));</b>
+<i>121</i>&nbsp;        }
+<b class="nc"><i>122</i>&nbsp;    }</b>
+<i>123</i>&nbsp;
+<b class="nc"><i>124</i>&nbsp;    public Area(PathIterator iter) {</b>
+<b class="nc"><i>125</i>&nbsp;        curves = pathToCurves(iter);</b>
+<b class="nc"><i>126</i>&nbsp;    }</b>
+<i>127</i>&nbsp;
+<i>128</i>&nbsp;    private static Vector pathToCurves(PathIterator pi) {
+<b class="nc"><i>129</i>&nbsp;        Vector curves = new Vector();</b>
+<b class="nc"><i>130</i>&nbsp;        int windingRule = pi.getWindingRule();</b>
+<i>131</i>&nbsp;        // coords array is big enough for holding:
+<i>132</i>&nbsp;        //     coordinates returned from currentSegment (6)
+<i>133</i>&nbsp;        //     OR
+<i>134</i>&nbsp;        //         two subdivided quadratic curves (2+4+4=10)
+<i>135</i>&nbsp;        //         AND
+<i>136</i>&nbsp;        //             0-1 horizontal splitting parameters
+<i>137</i>&nbsp;        //             OR
+<i>138</i>&nbsp;        //             2 parametric equation derivative coefficients
+<i>139</i>&nbsp;        //     OR
+<i>140</i>&nbsp;        //         three subdivided cubic curves (2+6+6+6=20)
+<i>141</i>&nbsp;        //         AND
+<i>142</i>&nbsp;        //             0-2 horizontal splitting parameters
+<i>143</i>&nbsp;        //             OR
+<i>144</i>&nbsp;        //             3 parametric equation derivative coefficients
+<b class="nc"><i>145</i>&nbsp;        float coords[] = new float[6];</b>
+<b class="nc"><i>146</i>&nbsp;        double tmp[] = new double[23];</b>
+<b class="nc"><i>147</i>&nbsp;        double movx = 0, movy = 0;</b>
+<b class="nc"><i>148</i>&nbsp;        double curx = 0, cury = 0;</b>
+<i>149</i>&nbsp;        double newx, newy;
+<b class="nc"><i>150</i>&nbsp;        while (!pi.isDone()) {</b>
+<b class="nc"><i>151</i>&nbsp;            switch (pi.currentSegment(coords)) {</b>
+<i>152</i>&nbsp;            case PathIterator.SEG_MOVETO:
+<b class="nc"><i>153</i>&nbsp;                Curve.insertLine(curves, curx, cury, movx, movy);</b>
+<b class="nc"><i>154</i>&nbsp;                curx = movx = coords[0];</b>
+<b class="nc"><i>155</i>&nbsp;                cury = movy = coords[1];</b>
+<b class="nc"><i>156</i>&nbsp;                Curve.insertMove(curves, movx, movy);</b>
+<b class="nc"><i>157</i>&nbsp;                break;</b>
+<i>158</i>&nbsp;            case PathIterator.SEG_LINETO:
+<b class="nc"><i>159</i>&nbsp;                newx = coords[0];</b>
+<b class="nc"><i>160</i>&nbsp;                newy = coords[1];</b>
+<b class="nc"><i>161</i>&nbsp;                Curve.insertLine(curves, curx, cury, newx, newy);</b>
+<b class="nc"><i>162</i>&nbsp;                curx = newx;</b>
+<b class="nc"><i>163</i>&nbsp;                cury = newy;</b>
+<b class="nc"><i>164</i>&nbsp;                break;</b>
+<i>165</i>&nbsp;            case PathIterator.SEG_QUADTO:
+<b class="nc"><i>166</i>&nbsp;                newx = coords[2];</b>
+<b class="nc"><i>167</i>&nbsp;                newy = coords[3];</b>
+<b class="nc"><i>168</i>&nbsp;                Curve.insertQuad(curves, tmp,</b>
+<i>169</i>&nbsp;                                 curx, cury,
+<i>170</i>&nbsp;                                 coords[0], coords[1],
+<i>171</i>&nbsp;                                 coords[2], coords[3]);
+<b class="nc"><i>172</i>&nbsp;                curx = newx;</b>
+<b class="nc"><i>173</i>&nbsp;                cury = newy;</b>
+<b class="nc"><i>174</i>&nbsp;                break;</b>
+<i>175</i>&nbsp;            case PathIterator.SEG_CUBICTO:
+<b class="nc"><i>176</i>&nbsp;                newx = coords[4];</b>
+<b class="nc"><i>177</i>&nbsp;                newy = coords[5];</b>
+<b class="nc"><i>178</i>&nbsp;                Curve.insertCubic(curves, tmp,</b>
+<i>179</i>&nbsp;                                  curx, cury,
+<i>180</i>&nbsp;                                  coords[0], coords[1],
+<i>181</i>&nbsp;                                  coords[2], coords[3],
+<i>182</i>&nbsp;                                  coords[4], coords[5]);
+<b class="nc"><i>183</i>&nbsp;                curx = newx;</b>
+<b class="nc"><i>184</i>&nbsp;                cury = newy;</b>
+<b class="nc"><i>185</i>&nbsp;                break;</b>
+<i>186</i>&nbsp;            case PathIterator.SEG_CLOSE:
+<b class="nc"><i>187</i>&nbsp;                Curve.insertLine(curves, curx, cury, movx, movy);</b>
+<b class="nc"><i>188</i>&nbsp;                curx = movx;</b>
+<b class="nc"><i>189</i>&nbsp;                cury = movy;</b>
+<i>190</i>&nbsp;                break;
+<i>191</i>&nbsp;            }
+<b class="nc"><i>192</i>&nbsp;            pi.next();</b>
+<i>193</i>&nbsp;        }
+<b class="nc"><i>194</i>&nbsp;        Curve.insertLine(curves, curx, cury, movx, movy);</b>
+<i>195</i>&nbsp;        AreaOp operator;
+<b class="nc"><i>196</i>&nbsp;        if (windingRule == PathIterator.WIND_EVEN_ODD) {</b>
+<b class="nc"><i>197</i>&nbsp;            operator = new AreaOp.EOWindOp();</b>
+<i>198</i>&nbsp;        } else {
+<b class="nc"><i>199</i>&nbsp;            operator = new AreaOp.NZWindOp();</b>
+<i>200</i>&nbsp;        }
+<b class="nc"><i>201</i>&nbsp;        return operator.calculate(curves, EmptyCurves);</b>
+<i>202</i>&nbsp;    }
+<i>203</i>&nbsp;
+<i>204</i>&nbsp;    /**
+<i>205</i>&nbsp;     * Adds the shape of the specified &lt;code&gt;Area&lt;/code&gt; to the
+<i>206</i>&nbsp;     * shape of this &lt;code&gt;Area&lt;/code&gt;.
+<i>207</i>&nbsp;     * The resulting shape of this &lt;code&gt;Area&lt;/code&gt; will include
+<i>208</i>&nbsp;     * the union of both shapes, or all areas that were contained
+<i>209</i>&nbsp;     * in either this or the specified &lt;code&gt;Area&lt;/code&gt;.
+<i>210</i>&nbsp;     * &lt;pre&gt;
+<i>211</i>&nbsp;     *     // Example:
+<i>212</i>&nbsp;     *     Area a1 = new Area([triangle 0,0 =&amp;gt; 8,0 =&amp;gt; 0,8]);
+<i>213</i>&nbsp;     *     Area a2 = new Area([triangle 0,0 =&amp;gt; 8,0 =&amp;gt; 8,8]);
+<i>214</i>&nbsp;     *     a1.add(a2);
+<i>215</i>&nbsp;     *
+<i>216</i>&nbsp;     *        a1(before)     +         a2         =     a1(after)
+<i>217</i>&nbsp;     *
+<i>218</i>&nbsp;     *     ################     ################     ################
+<i>219</i>&nbsp;     *     ##############         ##############     ################
+<i>220</i>&nbsp;     *     ############             ############     ################
+<i>221</i>&nbsp;     *     ##########                 ##########     ################
+<i>222</i>&nbsp;     *     ########                     ########     ################
+<i>223</i>&nbsp;     *     ######                         ######     ######    ######
+<i>224</i>&nbsp;     *     ####                             ####     ####        ####
+<i>225</i>&nbsp;     *     ##                                 ##     ##            ##
+<i>226</i>&nbsp;     * &lt;/pre&gt;
+<i>227</i>&nbsp;     * @param   rhs  the &lt;code&gt;Area&lt;/code&gt; to be added to the
+<i>228</i>&nbsp;     *          current shape
+<i>229</i>&nbsp;     * @throws NullPointerException if &lt;code&gt;rhs&lt;/code&gt; is null
+<i>230</i>&nbsp;     */
+<i>231</i>&nbsp;    public void add(Area rhs) {
+<b class="nc"><i>232</i>&nbsp;        curves = new AreaOp.AddOp().calculate(this.curves, rhs.curves);</b>
+<b class="nc"><i>233</i>&nbsp;        invalidateBounds();</b>
+<b class="nc"><i>234</i>&nbsp;    }</b>
+<i>235</i>&nbsp;
+<i>236</i>&nbsp;    /**
+<i>237</i>&nbsp;     * Subtracts the shape of the specified &lt;code&gt;Area&lt;/code&gt; from the
+<i>238</i>&nbsp;     * shape of this &lt;code&gt;Area&lt;/code&gt;.
+<i>239</i>&nbsp;     * The resulting shape of this &lt;code&gt;Area&lt;/code&gt; will include
+<i>240</i>&nbsp;     * areas that were contained only in this &lt;code&gt;Area&lt;/code&gt;
+<i>241</i>&nbsp;     * and not in the specified &lt;code&gt;Area&lt;/code&gt;.
+<i>242</i>&nbsp;     * &lt;pre&gt;
+<i>243</i>&nbsp;     *     // Example:
+<i>244</i>&nbsp;     *     Area a1 = new Area([triangle 0,0 =&amp;gt; 8,0 =&amp;gt; 0,8]);
+<i>245</i>&nbsp;     *     Area a2 = new Area([triangle 0,0 =&amp;gt; 8,0 =&amp;gt; 8,8]);
+<i>246</i>&nbsp;     *     a1.subtract(a2);
+<i>247</i>&nbsp;     *
+<i>248</i>&nbsp;     *        a1(before)     -         a2         =     a1(after)
+<i>249</i>&nbsp;     *
+<i>250</i>&nbsp;     *     ################     ################
+<i>251</i>&nbsp;     *     ##############         ##############     ##
+<i>252</i>&nbsp;     *     ############             ############     ####
+<i>253</i>&nbsp;     *     ##########                 ##########     ######
+<i>254</i>&nbsp;     *     ########                     ########     ########
+<i>255</i>&nbsp;     *     ######                         ######     ######
+<i>256</i>&nbsp;     *     ####                             ####     ####
+<i>257</i>&nbsp;     *     ##                                 ##     ##
+<i>258</i>&nbsp;     * &lt;/pre&gt;
+<i>259</i>&nbsp;     * @param   rhs  the &lt;code&gt;Area&lt;/code&gt; to be subtracted from the
+<i>260</i>&nbsp;     *          current shape
+<i>261</i>&nbsp;     * @throws NullPointerException if &lt;code&gt;rhs&lt;/code&gt; is null
+<i>262</i>&nbsp;     */
+<i>263</i>&nbsp;    public void subtract(Area rhs) {
+<b class="nc"><i>264</i>&nbsp;        curves = new AreaOp.SubOp().calculate(this.curves, rhs.curves);</b>
+<b class="nc"><i>265</i>&nbsp;        invalidateBounds();</b>
+<b class="nc"><i>266</i>&nbsp;    }</b>
+<i>267</i>&nbsp;
+<i>268</i>&nbsp;    /**
+<i>269</i>&nbsp;     * Sets the shape of this &lt;code&gt;Area&lt;/code&gt; to the intersection of
+<i>270</i>&nbsp;     * its current shape and the shape of the specified &lt;code&gt;Area&lt;/code&gt;.
+<i>271</i>&nbsp;     * The resulting shape of this &lt;code&gt;Area&lt;/code&gt; will include
+<i>272</i>&nbsp;     * only areas that were contained in both this &lt;code&gt;Area&lt;/code&gt;
+<i>273</i>&nbsp;     * and also in the specified &lt;code&gt;Area&lt;/code&gt;.
+<i>274</i>&nbsp;     * &lt;pre&gt;
+<i>275</i>&nbsp;     *     // Example:
+<i>276</i>&nbsp;     *     Area a1 = new Area([triangle 0,0 =&amp;gt; 8,0 =&amp;gt; 0,8]);
+<i>277</i>&nbsp;     *     Area a2 = new Area([triangle 0,0 =&amp;gt; 8,0 =&amp;gt; 8,8]);
+<i>278</i>&nbsp;     *     a1.intersect(a2);
+<i>279</i>&nbsp;     *
+<i>280</i>&nbsp;     *      a1(before)   intersect     a2         =     a1(after)
+<i>281</i>&nbsp;     *
+<i>282</i>&nbsp;     *     ################     ################     ################
+<i>283</i>&nbsp;     *     ##############         ##############       ############
+<i>284</i>&nbsp;     *     ############             ############         ########
+<i>285</i>&nbsp;     *     ##########                 ##########           ####
+<i>286</i>&nbsp;     *     ########                     ########
+<i>287</i>&nbsp;     *     ######                         ######
+<i>288</i>&nbsp;     *     ####                             ####
+<i>289</i>&nbsp;     *     ##                                 ##
+<i>290</i>&nbsp;     * &lt;/pre&gt;
+<i>291</i>&nbsp;     * @param   rhs  the &lt;code&gt;Area&lt;/code&gt; to be intersected with this
+<i>292</i>&nbsp;     *          &lt;code&gt;Area&lt;/code&gt;
+<i>293</i>&nbsp;     * @throws NullPointerException if &lt;code&gt;rhs&lt;/code&gt; is null
+<i>294</i>&nbsp;     */
+<i>295</i>&nbsp;    public void intersect(Area rhs) {
+<b class="nc"><i>296</i>&nbsp;        curves = new AreaOp.IntOp().calculate(this.curves, rhs.curves);</b>
+<b class="nc"><i>297</i>&nbsp;        invalidateBounds();</b>
+<b class="nc"><i>298</i>&nbsp;    }</b>
+<i>299</i>&nbsp;
+<i>300</i>&nbsp;    /**
+<i>301</i>&nbsp;     * Sets the shape of this &lt;code&gt;Area&lt;/code&gt; to be the combined area
+<i>302</i>&nbsp;     * of its current shape and the shape of the specified &lt;code&gt;Area&lt;/code&gt;,
+<i>303</i>&nbsp;     * minus their intersection.
+<i>304</i>&nbsp;     * The resulting shape of this &lt;code&gt;Area&lt;/code&gt; will include
+<i>305</i>&nbsp;     * only areas that were contained in either this &lt;code&gt;Area&lt;/code&gt;
+<i>306</i>&nbsp;     * or in the specified &lt;code&gt;Area&lt;/code&gt;, but not in both.
+<i>307</i>&nbsp;     * &lt;pre&gt;
+<i>308</i>&nbsp;     *     // Example:
+<i>309</i>&nbsp;     *     Area a1 = new Area([triangle 0,0 =&amp;gt; 8,0 =&amp;gt; 0,8]);
+<i>310</i>&nbsp;     *     Area a2 = new Area([triangle 0,0 =&amp;gt; 8,0 =&amp;gt; 8,8]);
+<i>311</i>&nbsp;     *     a1.exclusiveOr(a2);
+<i>312</i>&nbsp;     *
+<i>313</i>&nbsp;     *        a1(before)    xor        a2         =     a1(after)
+<i>314</i>&nbsp;     *
+<i>315</i>&nbsp;     *     ################     ################
+<i>316</i>&nbsp;     *     ##############         ##############     ##            ##
+<i>317</i>&nbsp;     *     ############             ############     ####        ####
+<i>318</i>&nbsp;     *     ##########                 ##########     ######    ######
+<i>319</i>&nbsp;     *     ########                     ########     ################
+<i>320</i>&nbsp;     *     ######                         ######     ######    ######
+<i>321</i>&nbsp;     *     ####                             ####     ####        ####
+<i>322</i>&nbsp;     *     ##                                 ##     ##            ##
+<i>323</i>&nbsp;     * &lt;/pre&gt;
+<i>324</i>&nbsp;     * @param   rhs  the &lt;code&gt;Area&lt;/code&gt; to be exclusive ORed with this
+<i>325</i>&nbsp;     *          &lt;code&gt;Area&lt;/code&gt;.
+<i>326</i>&nbsp;     * @throws NullPointerException if &lt;code&gt;rhs&lt;/code&gt; is null
+<i>327</i>&nbsp;     */
+<i>328</i>&nbsp;    public void exclusiveOr(Area rhs) {
+<b class="nc"><i>329</i>&nbsp;        curves = new AreaOp.XorOp().calculate(this.curves, rhs.curves);</b>
+<b class="nc"><i>330</i>&nbsp;        invalidateBounds();</b>
+<b class="nc"><i>331</i>&nbsp;    }</b>
+<i>332</i>&nbsp;
+<i>333</i>&nbsp;    /**
+<i>334</i>&nbsp;     * Removes all of the geometry from this &lt;code&gt;Area&lt;/code&gt; and
+<i>335</i>&nbsp;     * restores it to an empty area.
+<i>336</i>&nbsp;     */
+<i>337</i>&nbsp;    public void reset() {
+<b class="nc"><i>338</i>&nbsp;        curves = new Vector();</b>
+<b class="nc"><i>339</i>&nbsp;        invalidateBounds();</b>
+<b class="nc"><i>340</i>&nbsp;    }</b>
+<i>341</i>&nbsp;
+<i>342</i>&nbsp;    /**
+<i>343</i>&nbsp;     * Tests whether this &lt;code&gt;Area&lt;/code&gt; object encloses any area.
+<i>344</i>&nbsp;     * @return    &lt;code&gt;true&lt;/code&gt; if this &lt;code&gt;Area&lt;/code&gt; object
+<i>345</i>&nbsp;     * represents an empty area; &lt;code&gt;false&lt;/code&gt; otherwise.
+<i>346</i>&nbsp;     */
+<i>347</i>&nbsp;    public boolean isEmpty() {
+<b class="nc"><i>348</i>&nbsp;        return (curves.size() == 0);</b>
+<i>349</i>&nbsp;    }
+<i>350</i>&nbsp;
+<i>351</i>&nbsp;    /**
+<i>352</i>&nbsp;     * Tests whether this &lt;code&gt;Area&lt;/code&gt; consists entirely of
+<i>353</i>&nbsp;     * straight edged polygonal geometry.
+<i>354</i>&nbsp;     * @return    &lt;code&gt;true&lt;/code&gt; if the geometry of this
+<i>355</i>&nbsp;     * &lt;code&gt;Area&lt;/code&gt; consists entirely of line segments;
+<i>356</i>&nbsp;     * &lt;code&gt;false&lt;/code&gt; otherwise.
+<i>357</i>&nbsp;     */
+<i>358</i>&nbsp;    public boolean isPolygonal() {
+<b class="nc"><i>359</i>&nbsp;        Enumeration enum_ = curves.elements();</b>
+<b class="nc"><i>360</i>&nbsp;        while (enum_.hasMoreElements()) {</b>
+<b class="nc"><i>361</i>&nbsp;            if (((Curve) enum_.nextElement()).getOrder() &gt; 1) {</b>
+<b class="nc"><i>362</i>&nbsp;                return false;</b>
+<i>363</i>&nbsp;            }
+<i>364</i>&nbsp;        }
+<b class="nc"><i>365</i>&nbsp;        return true;</b>
+<i>366</i>&nbsp;    }
+<i>367</i>&nbsp;
+<i>368</i>&nbsp;    /**
+<i>369</i>&nbsp;     * Tests whether this &lt;code&gt;Area&lt;/code&gt; is rectangular in shape.
+<i>370</i>&nbsp;     * @return    &lt;code&gt;true&lt;/code&gt; if the geometry of this
+<i>371</i>&nbsp;     * &lt;code&gt;Area&lt;/code&gt; is rectangular in shape; &lt;code&gt;false&lt;/code&gt;
+<i>372</i>&nbsp;     * otherwise.
+<i>373</i>&nbsp;     */
+<i>374</i>&nbsp;    public boolean isRectangular() {
+<b class="nc"><i>375</i>&nbsp;        int size = curves.size();</b>
+<b class="nc"><i>376</i>&nbsp;        if (size == 0) {</b>
+<b class="nc"><i>377</i>&nbsp;            return true;</b>
+<i>378</i>&nbsp;        }
+<b class="nc"><i>379</i>&nbsp;        if (size &gt; 3) {</b>
+<b class="nc"><i>380</i>&nbsp;            return false;</b>
+<i>381</i>&nbsp;        }
+<b class="nc"><i>382</i>&nbsp;        Curve c1 = (Curve) curves.get(1);</b>
+<b class="nc"><i>383</i>&nbsp;        Curve c2 = (Curve) curves.get(2);</b>
+<b class="nc"><i>384</i>&nbsp;        if (c1.getOrder() != 1 || c2.getOrder() != 1) {</b>
+<b class="nc"><i>385</i>&nbsp;            return false;</b>
+<i>386</i>&nbsp;        }
+<b class="nc"><i>387</i>&nbsp;        if (c1.getXTop() != c1.getXBot() || c2.getXTop() != c2.getXBot()) {</b>
+<b class="nc"><i>388</i>&nbsp;            return false;</b>
+<i>389</i>&nbsp;        }
+<b class="nc"><i>390</i>&nbsp;        if (c1.getYTop() != c2.getYTop() || c1.getYBot() != c2.getYBot()) {</b>
+<i>391</i>&nbsp;            // One might be able to prove that this is impossible...
+<b class="nc"><i>392</i>&nbsp;            return false;</b>
+<i>393</i>&nbsp;        }
+<b class="nc"><i>394</i>&nbsp;        return true;</b>
+<i>395</i>&nbsp;    }
+<i>396</i>&nbsp;
+<i>397</i>&nbsp;    /**
+<i>398</i>&nbsp;     * Tests whether this &lt;code&gt;Area&lt;/code&gt; is comprised of a single
+<i>399</i>&nbsp;     * closed subpath.  This method returns &lt;code&gt;true&lt;/code&gt; if the
+<i>400</i>&nbsp;     * path contains 0 or 1 subpaths, or &lt;code&gt;false&lt;/code&gt; if the path
+<i>401</i>&nbsp;     * contains more than 1 subpath.  The subpaths are counted by the
+<i>402</i>&nbsp;     * number of {@link PathIterator#SEG_MOVETO SEG_MOVETO}  segments
+<i>403</i>&nbsp;     * that appear in the path.
+<i>404</i>&nbsp;     * @return    &lt;code&gt;true&lt;/code&gt; if the &lt;code&gt;Area&lt;/code&gt; is comprised
+<i>405</i>&nbsp;     * of a single basic geometry; &lt;code&gt;false&lt;/code&gt; otherwise.
+<i>406</i>&nbsp;     */
+<i>407</i>&nbsp;    public boolean isSingular() {
+<b class="nc"><i>408</i>&nbsp;        if (curves.size() &lt; 3) {</b>
+<b class="nc"><i>409</i>&nbsp;            return true;</b>
+<i>410</i>&nbsp;        }
+<b class="nc"><i>411</i>&nbsp;        Enumeration enum_ = curves.elements();</b>
+<b class="nc"><i>412</i>&nbsp;        enum_.nextElement(); // First Order0 &quot;moveto&quot;</b>
+<b class="nc"><i>413</i>&nbsp;        while (enum_.hasMoreElements()) {</b>
+<b class="nc"><i>414</i>&nbsp;            if (((Curve) enum_.nextElement()).getOrder() == 0) {</b>
+<b class="nc"><i>415</i>&nbsp;                return false;</b>
+<i>416</i>&nbsp;            }
+<i>417</i>&nbsp;        }
+<b class="nc"><i>418</i>&nbsp;        return true;</b>
+<i>419</i>&nbsp;    }
+<i>420</i>&nbsp;
+<i>421</i>&nbsp;    private RectBounds cachedBounds;
+<i>422</i>&nbsp;    private void invalidateBounds() {
+<b class="nc"><i>423</i>&nbsp;        cachedBounds = null;</b>
+<b class="nc"><i>424</i>&nbsp;    }</b>
+<i>425</i>&nbsp;    private RectBounds getCachedBounds() {
+<b class="nc"><i>426</i>&nbsp;        if (cachedBounds != null) {</b>
+<b class="nc"><i>427</i>&nbsp;            return cachedBounds;</b>
+<i>428</i>&nbsp;        }
+<b class="nc"><i>429</i>&nbsp;        RectBounds r = new RectBounds();</b>
+<b class="nc"><i>430</i>&nbsp;        if (curves.size() &gt; 0) {</b>
+<b class="nc"><i>431</i>&nbsp;            Curve c = (Curve) curves.get(0);</b>
+<i>432</i>&nbsp;            // First point is always an order 0 curve (moveto)
+<b class="nc"><i>433</i>&nbsp;            r.setBounds((float) c.getX0(), (float) c.getY0(), 0, 0);</b>
+<b class="nc"><i>434</i>&nbsp;            for (int i = 1; i &lt; curves.size(); i++) {</b>
+<b class="nc"><i>435</i>&nbsp;                ((Curve) curves.get(i)).enlarge(r);</b>
+<i>436</i>&nbsp;            }
+<i>437</i>&nbsp;        }
+<b class="nc"><i>438</i>&nbsp;        return (cachedBounds = r);</b>
+<i>439</i>&nbsp;    }
+<i>440</i>&nbsp;
+<i>441</i>&nbsp;    /**
+<i>442</i>&nbsp;     * Returns a high precision bounding {@link RectBounds} that
+<i>443</i>&nbsp;     * completely encloses this &lt;code&gt;Area&lt;/code&gt;.
+<i>444</i>&nbsp;     * &lt;p&gt;
+<i>445</i>&nbsp;     * The Area class will attempt to return the tightest bounding
+<i>446</i>&nbsp;     * box possible for the Shape.  The bounding box will not be
+<i>447</i>&nbsp;     * padded to include the control points of curves in the outline
+<i>448</i>&nbsp;     * of the Shape, but should tightly fit the actual geometry of
+<i>449</i>&nbsp;     * the outline itself.
+<i>450</i>&nbsp;     * @return    the bounding &lt;code&gt;RectBounds&lt;/code&gt; for the
+<i>451</i>&nbsp;     * &lt;code&gt;Area&lt;/code&gt;.
+<i>452</i>&nbsp;     */
+<i>453</i>&nbsp;    public RectBounds getBounds() {
+<b class="nc"><i>454</i>&nbsp;        return new RectBounds(getCachedBounds());</b>
+<i>455</i>&nbsp;    }
+<i>456</i>&nbsp;
+<i>457</i>&nbsp;    /**
+<i>458</i>&nbsp;     * Tests whether the geometries of the two &lt;code&gt;Area&lt;/code&gt; objects
+<i>459</i>&nbsp;     * cover the same area.
+<i>460</i>&nbsp;     * This method will return false if the argument is null.
+<i>461</i>&nbsp;     * @param   other  the &lt;code&gt;Area&lt;/code&gt; to be compared to this
+<i>462</i>&nbsp;     *          &lt;code&gt;Area&lt;/code&gt;
+<i>463</i>&nbsp;     * @return  &lt;code&gt;true&lt;/code&gt; if the two geometries are equivalent;
+<i>464</i>&nbsp;     *          &lt;code&gt;false&lt;/code&gt; otherwise.
+<i>465</i>&nbsp;     */
+<i>466</i>&nbsp;    public boolean isEquivalent(Area other) {
+<i>467</i>&nbsp;        // REMIND: A *much* simpler operation should be possible...
+<i>468</i>&nbsp;        // Should be able to do a curve-wise comparison since all Areas
+<i>469</i>&nbsp;        // should evaluate their curves in the same top-down order.
+<b class="nc"><i>470</i>&nbsp;        if (other == this) {</b>
+<b class="nc"><i>471</i>&nbsp;            return true;</b>
+<i>472</i>&nbsp;        }
+<b class="nc"><i>473</i>&nbsp;        if (other == null) {</b>
+<b class="nc"><i>474</i>&nbsp;            return false;</b>
+<i>475</i>&nbsp;        }
+<b class="nc"><i>476</i>&nbsp;        Vector c = new AreaOp.XorOp().calculate(this.curves, other.curves);</b>
+<b class="nc"><i>477</i>&nbsp;        return c.isEmpty();</b>
+<i>478</i>&nbsp;    }
+<i>479</i>&nbsp;
+<i>480</i>&nbsp;    /**
+<i>481</i>&nbsp;     * Transforms the geometry of this &lt;code&gt;Area&lt;/code&gt; using the specified
+<i>482</i>&nbsp;     * {@link BaseTransform}.  The geometry is transformed in place, which
+<i>483</i>&nbsp;     * permanently changes the enclosed area defined by this object.
+<i>484</i>&nbsp;     * @param tx the transformation used to transform the area
+<i>485</i>&nbsp;     * @throws NullPointerException if &lt;code&gt;t&lt;/code&gt; is null
+<i>486</i>&nbsp;     */
+<i>487</i>&nbsp;    public void transform(BaseTransform tx) {
+<b class="nc"><i>488</i>&nbsp;        if (tx == null) {</b>
+<b class="nc"><i>489</i>&nbsp;            throw new NullPointerException(&quot;transform must not be null&quot;);</b>
+<i>490</i>&nbsp;        }
+<i>491</i>&nbsp;        // REMIND: A simpler operation can be performed for some types
+<i>492</i>&nbsp;        // of transform.
+<b class="nc"><i>493</i>&nbsp;        curves = pathToCurves(getPathIterator(tx));</b>
+<b class="nc"><i>494</i>&nbsp;        invalidateBounds();</b>
+<b class="nc"><i>495</i>&nbsp;    }</b>
+<i>496</i>&nbsp;
+<i>497</i>&nbsp;    /**
+<i>498</i>&nbsp;     * Creates a new &lt;code&gt;Area&lt;/code&gt; object that contains the same
+<i>499</i>&nbsp;     * geometry as this &lt;code&gt;Area&lt;/code&gt; transformed by the specified
+<i>500</i>&nbsp;     * &lt;code&gt;BaseTransform&lt;/code&gt;.  This &lt;code&gt;Area&lt;/code&gt; object
+<i>501</i>&nbsp;     * is unchanged.
+<i>502</i>&nbsp;     * @param tx the specified &lt;code&gt;BaseTransform&lt;/code&gt; used to transform
+<i>503</i>&nbsp;     *           the new &lt;code&gt;Area&lt;/code&gt;
+<i>504</i>&nbsp;     * @throws NullPointerException if &lt;code&gt;t&lt;/code&gt; is null
+<i>505</i>&nbsp;     * @return   a new &lt;code&gt;Area&lt;/code&gt; object representing the transformed
+<i>506</i>&nbsp;     *           geometry.
+<i>507</i>&nbsp;     */
+<i>508</i>&nbsp;    public Area createTransformedArea(BaseTransform tx) {
+<b class="nc"><i>509</i>&nbsp;        Area a = new Area(this);</b>
+<b class="nc"><i>510</i>&nbsp;        a.transform(tx);</b>
+<b class="nc"><i>511</i>&nbsp;        return a;</b>
+<i>512</i>&nbsp;    }
+<i>513</i>&nbsp;
+<i>514</i>&nbsp;    /**
+<i>515</i>&nbsp;     * {@inheritDoc}
+<i>516</i>&nbsp;     */
+<i>517</i>&nbsp;    public boolean contains(float x, float y) {
+<b class="nc"><i>518</i>&nbsp;        if (!getCachedBounds().contains(x, y)) {</b>
+<b class="nc"><i>519</i>&nbsp;            return false;</b>
+<i>520</i>&nbsp;        }
+<b class="nc"><i>521</i>&nbsp;        Enumeration enum_ = curves.elements();</b>
+<b class="nc"><i>522</i>&nbsp;        int crossings = 0;</b>
+<b class="nc"><i>523</i>&nbsp;        while (enum_.hasMoreElements()) {</b>
+<b class="nc"><i>524</i>&nbsp;            Curve c = (Curve) enum_.nextElement();</b>
+<b class="nc"><i>525</i>&nbsp;            crossings += c.crossingsFor(x, y);</b>
+<b class="nc"><i>526</i>&nbsp;        }</b>
+<b class="nc"><i>527</i>&nbsp;        return ((crossings &amp; 1) == 1);</b>
+<i>528</i>&nbsp;    }
+<i>529</i>&nbsp;
+<i>530</i>&nbsp;    /**
+<i>531</i>&nbsp;     * {@inheritDoc}
+<i>532</i>&nbsp;     */
+<i>533</i>&nbsp;    @Override
+<i>534</i>&nbsp;    public boolean contains(Point2D p) {
+<b class="nc"><i>535</i>&nbsp;        return contains(p.x, p.y);</b>
+<i>536</i>&nbsp;    }
+<i>537</i>&nbsp;
+<i>538</i>&nbsp;    /**
+<i>539</i>&nbsp;     * {@inheritDoc}
+<i>540</i>&nbsp;     */
+<i>541</i>&nbsp;    public boolean contains(float x, float y, float w, float h) {
+<b class="nc"><i>542</i>&nbsp;        if (w &lt; 0 || h &lt; 0) {</b>
+<b class="nc"><i>543</i>&nbsp;            return false;</b>
+<i>544</i>&nbsp;        }
+<b class="nc"><i>545</i>&nbsp;        if (!getCachedBounds().contains(x, y) || !getCachedBounds().contains(x+w, y+h)) {</b>
+<b class="nc"><i>546</i>&nbsp;            return false;</b>
+<i>547</i>&nbsp;        }
+<b class="nc"><i>548</i>&nbsp;        Crossings c = Crossings.findCrossings(curves, x, y, x+w, y+h);</b>
+<b class="nc"><i>549</i>&nbsp;        return (c != null &amp;&amp; c.covers(y, y+h));</b>
+<i>550</i>&nbsp;    }
+<i>551</i>&nbsp;
+<i>552</i>&nbsp;    /**
+<i>553</i>&nbsp;     * {@inheritDoc}
+<i>554</i>&nbsp;     */
+<i>555</i>&nbsp;    public boolean intersects(float x, float y, float w, float h) {
+<b class="nc"><i>556</i>&nbsp;        if (w &lt; 0 || h &lt; 0) {</b>
+<b class="nc"><i>557</i>&nbsp;            return false;</b>
+<i>558</i>&nbsp;        }
+<b class="nc"><i>559</i>&nbsp;        if (!getCachedBounds().intersects(x, y, w, h)) {</b>
+<b class="nc"><i>560</i>&nbsp;            return false;</b>
+<i>561</i>&nbsp;        }
+<b class="nc"><i>562</i>&nbsp;        Crossings c = Crossings.findCrossings(curves, x, y, x+w, y+h);</b>
+<b class="nc"><i>563</i>&nbsp;        return (c == null || !c.isEmpty());</b>
+<i>564</i>&nbsp;    }
+<i>565</i>&nbsp;
+<i>566</i>&nbsp;    /**
+<i>567</i>&nbsp;     * Creates a {@link PathIterator} for the outline of this
+<i>568</i>&nbsp;     * &lt;code&gt;Area&lt;/code&gt; object.  This &lt;code&gt;Area&lt;/code&gt; object is unchanged.
+<i>569</i>&nbsp;     * @param tx an optional &lt;code&gt;BaseTransform&lt;/code&gt; to be applied to
+<i>570</i>&nbsp;     * the coordinates as they are returned in the iteration, or
+<i>571</i>&nbsp;     * &lt;code&gt;null&lt;/code&gt; if untransformed coordinates are desired
+<i>572</i>&nbsp;     * @return    the &lt;code&gt;PathIterator&lt;/code&gt; object that returns the
+<i>573</i>&nbsp;     *          geometry of the outline of this &lt;code&gt;Area&lt;/code&gt;, one
+<i>574</i>&nbsp;     *          segment at a time.
+<i>575</i>&nbsp;     */
+<i>576</i>&nbsp;    public PathIterator getPathIterator(BaseTransform tx) {
+<b class="nc"><i>577</i>&nbsp;        return new AreaIterator(curves, tx);</b>
+<i>578</i>&nbsp;    }
+<i>579</i>&nbsp;
+<i>580</i>&nbsp;    /**
+<i>581</i>&nbsp;     * Creates a &lt;code&gt;PathIterator&lt;/code&gt; for the flattened outline of
+<i>582</i>&nbsp;     * this &lt;code&gt;Area&lt;/code&gt; object.  Only uncurved path segments
+<i>583</i>&nbsp;     * represented by the SEG_MOVETO, SEG_LINETO, and SEG_CLOSE point
+<i>584</i>&nbsp;     * types are returned by the iterator.  This &lt;code&gt;Area&lt;/code&gt;
+<i>585</i>&nbsp;     * object is unchanged.
+<i>586</i>&nbsp;     * @param tx an optional &lt;code&gt;BaseTransform&lt;/code&gt; to be
+<i>587</i>&nbsp;     * applied to the coordinates as they are returned in the
+<i>588</i>&nbsp;     * iteration, or &lt;code&gt;null&lt;/code&gt; if untransformed coordinates
+<i>589</i>&nbsp;     * are desired
+<i>590</i>&nbsp;     * @param flatness the maximum amount that the control points
+<i>591</i>&nbsp;     * for a given curve can vary from colinear before a subdivided
+<i>592</i>&nbsp;     * curve is replaced by a straight line connecting the end points
+<i>593</i>&nbsp;     * @return    the &lt;code&gt;PathIterator&lt;/code&gt; object that returns the
+<i>594</i>&nbsp;     * geometry of the outline of this &lt;code&gt;Area&lt;/code&gt;, one segment
+<i>595</i>&nbsp;     * at a time.
+<i>596</i>&nbsp;     */
+<i>597</i>&nbsp;    public PathIterator getPathIterator(BaseTransform tx, float flatness) {
+<b class="nc"><i>598</i>&nbsp;        return new FlatteningPathIterator(getPathIterator(tx), flatness);</b>
+<i>599</i>&nbsp;    }
+<i>600</i>&nbsp;
+<i>601</i>&nbsp;    @Override
+<i>602</i>&nbsp;    public Area copy() {
+<b class="nc"><i>603</i>&nbsp;        return new Area(this);</b>
+<i>604</i>&nbsp;    }
+<i>605</i>&nbsp;}
+<i>606</i>&nbsp;
+<i>607</i>&nbsp;class AreaIterator implements PathIterator {
+<i>608</i>&nbsp;    private BaseTransform transform;
+<i>609</i>&nbsp;    private Vector curves;
+<i>610</i>&nbsp;    private int index;
+<i>611</i>&nbsp;    private Curve prevcurve;
+<i>612</i>&nbsp;    private Curve thiscurve;
+<i>613</i>&nbsp;
+<i>614</i>&nbsp;    public AreaIterator(Vector curves, BaseTransform tx) {
+<i>615</i>&nbsp;        this.curves = curves;
+<i>616</i>&nbsp;        this.transform = tx;
+<i>617</i>&nbsp;        if (curves.size() &gt;= 1) {
+<i>618</i>&nbsp;            thiscurve = (Curve) curves.get(0);
+<i>619</i>&nbsp;        }
+<i>620</i>&nbsp;    }
+<i>621</i>&nbsp;
+<i>622</i>&nbsp;    public int getWindingRule() {
+<i>623</i>&nbsp;        // REMIND: Which is better, EVEN_ODD or NON_ZERO?
+<i>624</i>&nbsp;        //         The paths calculated could be classified either way.
+<i>625</i>&nbsp;        //return WIND_EVEN_ODD;
+<i>626</i>&nbsp;        return WIND_NON_ZERO;
+<i>627</i>&nbsp;    }
+<i>628</i>&nbsp;
+<i>629</i>&nbsp;    public boolean isDone() {
+<i>630</i>&nbsp;        return (prevcurve == null &amp;&amp; thiscurve == null);
+<i>631</i>&nbsp;    }
+<i>632</i>&nbsp;
+<i>633</i>&nbsp;    public void next() {
+<i>634</i>&nbsp;        if (prevcurve != null) {
+<i>635</i>&nbsp;            prevcurve = null;
+<i>636</i>&nbsp;        } else {
+<i>637</i>&nbsp;            prevcurve = thiscurve;
+<i>638</i>&nbsp;            index++;
+<i>639</i>&nbsp;            if (index &lt; curves.size()) {
+<i>640</i>&nbsp;                thiscurve = (Curve) curves.get(index);
+<i>641</i>&nbsp;                if (thiscurve.getOrder() != 0 &amp;&amp;
+<i>642</i>&nbsp;                    prevcurve.getX1() == thiscurve.getX0() &amp;&amp;
+<i>643</i>&nbsp;                    prevcurve.getY1() == thiscurve.getY0())
+<i>644</i>&nbsp;                {
+<i>645</i>&nbsp;                    prevcurve = null;
+<i>646</i>&nbsp;                }
+<i>647</i>&nbsp;            } else {
+<i>648</i>&nbsp;                thiscurve = null;
+<i>649</i>&nbsp;            }
+<i>650</i>&nbsp;        }
+<i>651</i>&nbsp;    }
+<i>652</i>&nbsp;
+<i>653</i>&nbsp;    public int currentSegment(float coords[]) {
+<i>654</i>&nbsp;        int segtype;
+<i>655</i>&nbsp;        int numpoints;
+<i>656</i>&nbsp;        if (prevcurve != null) {
+<i>657</i>&nbsp;            // Need to finish off junction between curves
+<i>658</i>&nbsp;            if (thiscurve == null || thiscurve.getOrder() == 0) {
+<i>659</i>&nbsp;                return SEG_CLOSE;
+<i>660</i>&nbsp;            }
+<i>661</i>&nbsp;            coords[0] = (float) thiscurve.getX0();
+<i>662</i>&nbsp;            coords[1] = (float) thiscurve.getY0();
+<i>663</i>&nbsp;            segtype = SEG_LINETO;
+<i>664</i>&nbsp;            numpoints = 1;
+<i>665</i>&nbsp;        } else if (thiscurve == null) {
+<i>666</i>&nbsp;            throw new NoSuchElementException(&quot;area iterator out of bounds&quot;);
+<i>667</i>&nbsp;        } else {
+<i>668</i>&nbsp;            segtype = thiscurve.getSegment(coords);
+<i>669</i>&nbsp;            numpoints = thiscurve.getOrder();
+<i>670</i>&nbsp;            if (numpoints == 0) {
+<i>671</i>&nbsp;                numpoints = 1;
+<i>672</i>&nbsp;            }
+<i>673</i>&nbsp;        }
+<i>674</i>&nbsp;        if (transform != null) {
+<i>675</i>&nbsp;            transform.transform(coords, 0, coords, 0, numpoints);
+<i>676</i>&nbsp;        }
+<i>677</i>&nbsp;        return segtype;
+<i>678</i>&nbsp;    }
+<i>679</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2017-12-04 21:49</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,369 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: Group</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">javafx.scene</a> ]
+</div>
+
+<h1>Coverage Summary for Class: Group (javafx.scene)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">Group</td>
+<td class="coverageStat">
+  <span class="percent">
+    40%
+  </span>
+  <span class="absValue">
+    (6/ 15)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    33.3%
+  </span>
+  <span class="absValue">
+    (11/ 33)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">Group$1</td>
+<td class="coverageStat">
+  <span class="percent">
+    50%
+  </span>
+  <span class="absValue">
+    (1/ 2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    50%
+  </span>
+  <span class="absValue">
+    (1/ 2)
+  </span>
+</td>
+  </tr>
+  <tr>
+    <td class="name">Group$2</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 4)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 5)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    33.3%
+  </span>
+  <span class="absValue">
+    (7/ 21)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    30%
+  </span>
+  <span class="absValue">
+    (12/ 40)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright (c) 2010, 2017, Oracle and/or its affiliates. All rights reserved.
+<i>3</i>&nbsp; * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+<i>4</i>&nbsp; *
+<i>5</i>&nbsp; *
+<i>6</i>&nbsp; *
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; *
+<i>11</i>&nbsp; *
+<i>12</i>&nbsp; *
+<i>13</i>&nbsp; *
+<i>14</i>&nbsp; *
+<i>15</i>&nbsp; *
+<i>16</i>&nbsp; *
+<i>17</i>&nbsp; *
+<i>18</i>&nbsp; *
+<i>19</i>&nbsp; *
+<i>20</i>&nbsp; *
+<i>21</i>&nbsp; *
+<i>22</i>&nbsp; *
+<i>23</i>&nbsp; *
+<i>24</i>&nbsp; */
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;package javafx.scene;
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;import com.sun.javafx.scene.GroupHelper;
+<i>29</i>&nbsp;import javafx.beans.DefaultProperty;
+<i>30</i>&nbsp;import javafx.beans.property.BooleanProperty;
+<i>31</i>&nbsp;import javafx.beans.property.BooleanPropertyBase;
+<i>32</i>&nbsp;import javafx.collections.ObservableList;
+<i>33</i>&nbsp;import javafx.geometry.Bounds;
+<i>34</i>&nbsp;import java.util.Collection;
+<i>35</i>&nbsp;
+<i>36</i>&nbsp;
+<i>37</i>&nbsp;
+<i>38</i>&nbsp;/**
+<i>39</i>&nbsp; * A {@code Group} node contains an ObservableList of children that
+<i>40</i>&nbsp; * are rendered in order whenever this node is rendered.
+<i>41</i>&nbsp; * &lt;p&gt;
+<i>42</i>&nbsp; * A {@code Group} will take on the collective bounds of its children and is
+<i>43</i>&nbsp; * not directly resizable.
+<i>44</i>&nbsp; * &lt;p&gt;
+<i>45</i>&nbsp; * Any transform, effect, or state applied to a {@code Group} will be applied
+<i>46</i>&nbsp; * to all children of that group.  Such transforms and effects will NOT be included
+<i>47</i>&nbsp; * in this Group&#39;s layout bounds, however if transforms and effects are set
+<i>48</i>&nbsp; * directly on children of this Group, those will be included in this Group&#39;s layout bounds.
+<i>49</i>&nbsp; * &lt;p&gt;
+<i>50</i>&nbsp; * By default, a {@code Group} will &quot;auto-size&quot; its managed resizable
+<i>51</i>&nbsp; * children to their preferred sizes during the layout pass to ensure that Regions
+<i>52</i>&nbsp; * and Controls are sized properly as their state changes.  If an application
+<i>53</i>&nbsp; * needs to disable this auto-sizing behavior, then it should set {@link #autoSizeChildren}
+<i>54</i>&nbsp; * to {@code false} and understand that if the preferred size of the children
+<i>55</i>&nbsp; * change, they will not automatically resize (so buyer beware!).
+<i>56</i>&nbsp; *
+<i>57</i>&nbsp; * &lt;p&gt;Group Example:&lt;/p&gt;
+<i>58</i>&nbsp; *
+<i>59</i>&nbsp;&lt;PRE&gt;
+<i>60</i>&nbsp;import javafx.scene.*;
+<i>61</i>&nbsp;import javafx.scene.paint.*;
+<i>62</i>&nbsp;import javafx.scene.shape.*;
+<i>63</i>&nbsp;import java.lang.Math;
+<i>64</i>&nbsp;
+<i>65</i>&nbsp;Group g = new Group();
+<i>66</i>&nbsp;for (int i = 0; i &amp;lt; 5; i++) {
+<i>67</i>&nbsp;    Rectangle r = new Rectangle();
+<i>68</i>&nbsp;    r.setY(i * 20);
+<i>69</i>&nbsp;    r.setWidth(100);
+<i>70</i>&nbsp;    r.setHeight(10);
+<i>71</i>&nbsp;    r.setFill(Color.RED);
+<i>72</i>&nbsp;    g.getChildren().add(r);
+<i>73</i>&nbsp;}
+<i>74</i>&nbsp;&lt;/PRE&gt;
+<i>75</i>&nbsp; * @since JavaFX 2.0
+<i>76</i>&nbsp; */
+<i>77</i>&nbsp;@DefaultProperty(&quot;children&quot;)
+<b class="nc"><i>78</i>&nbsp;public  class Group extends Parent {</b>
+<i>79</i>&nbsp;    static {
+<i>80</i>&nbsp;         // This is used by classes in different packages to get access to
+<i>81</i>&nbsp;         // private and package private methods.
+<b class="fc"><i>82</i>&nbsp;        GroupHelper.setGroupAccessor(new GroupHelper.GroupAccessor() {</b>
+<i>83</i>&nbsp;            @Override
+<i>84</i>&nbsp;            public Bounds doComputeLayoutBounds(Node node) {
+<b class="nc"><i>85</i>&nbsp;                return ((Group) node).doComputeLayoutBounds();</b>
+<i>86</i>&nbsp;            }
+<i>87</i>&nbsp;        });
+<b class="fc"><i>88</i>&nbsp;    }</b>
+<i>89</i>&nbsp;
+<i>90</i>&nbsp;    {
+<i>91</i>&nbsp;        // To initialize the class helper at the begining each constructor of this class
+<b class="fc"><i>92</i>&nbsp;        GroupHelper.initHelper(this);</b>
+<i>93</i>&nbsp;    }
+<i>94</i>&nbsp;
+<i>95</i>&nbsp;    /**
+<i>96</i>&nbsp;     * Constructs a group.
+<i>97</i>&nbsp;     */
+<b class="nc"><i>98</i>&nbsp;    public Group() { }</b>
+<i>99</i>&nbsp;
+<i>100</i>&nbsp;    /**
+<i>101</i>&nbsp;     * Constructs a group consisting of children.
+<i>102</i>&nbsp;     *
+<i>103</i>&nbsp;     * @param children children.
+<i>104</i>&nbsp;     */
+<b class="fc"><i>105</i>&nbsp;    public Group(Node... children) {</b>
+<b class="fc"><i>106</i>&nbsp;        getChildren().addAll(children);</b>
+<b class="fc"><i>107</i>&nbsp;    }</b>
+<i>108</i>&nbsp;
+<i>109</i>&nbsp;    /**
+<i>110</i>&nbsp;     * Constructs a group consisting of the given children.
+<i>111</i>&nbsp;     *
+<i>112</i>&nbsp;     * @param children children of the group
+<i>113</i>&nbsp;     * @throws NullPointerException if the specified collection is null
+<i>114</i>&nbsp;     * @since JavaFX 8.0
+<i>115</i>&nbsp;     */
+<b class="nc"><i>116</i>&nbsp;    public Group(Collection&lt;Node&gt; children) {</b>
+<b class="nc"><i>117</i>&nbsp;        getChildren().addAll(children);</b>
+<b class="nc"><i>118</i>&nbsp;    }</b>
+<i>119</i>&nbsp;
+<i>120</i>&nbsp;    /**
+<i>121</i>&nbsp;     * Controls whether or not this {@code Group} will automatically resize any
+<i>122</i>&nbsp;     * managed resizable children to their preferred sizes
+<i>123</i>&nbsp;     * during the layout pass. If set to {@code false}, then the application is
+<i>124</i>&nbsp;     * responsible for setting the size of this Group&#39;s resizable children, otherwise
+<i>125</i>&nbsp;     * such nodes may end up with a zero width/height and will not be visible.
+<i>126</i>&nbsp;     * This variable has no effect on content nodes which are not resizable (Shape, Text, etc).
+<i>127</i>&nbsp;     *
+<i>128</i>&nbsp;     * @defaultValue true
+<i>129</i>&nbsp;     */
+<i>130</i>&nbsp;    private BooleanProperty autoSizeChildren;
+<i>131</i>&nbsp;
+<i>132</i>&nbsp;
+<i>133</i>&nbsp;    public final void setAutoSizeChildren(boolean value){
+<b class="nc"><i>134</i>&nbsp;        autoSizeChildrenProperty().set(value);</b>
+<b class="nc"><i>135</i>&nbsp;    }</b>
+<i>136</i>&nbsp;
+<i>137</i>&nbsp;    public final boolean isAutoSizeChildren() {
+<b class="fc"><i>138</i>&nbsp;        return autoSizeChildren == null ? true : autoSizeChildren.get();</b>
+<i>139</i>&nbsp;    }
+<i>140</i>&nbsp;
+<i>141</i>&nbsp;    public final BooleanProperty autoSizeChildrenProperty() {
+<b class="nc"><i>142</i>&nbsp;        if (autoSizeChildren == null) {</b>
+<b class="nc"><i>143</i>&nbsp;            autoSizeChildren = new BooleanPropertyBase(true) {</b>
+<i>144</i>&nbsp;
+<i>145</i>&nbsp;                @Override
+<i>146</i>&nbsp;                protected void invalidated() {
+<b class="nc"><i>147</i>&nbsp;                    requestLayout();</b>
+<b class="nc"><i>148</i>&nbsp;                }</b>
+<i>149</i>&nbsp;
+<i>150</i>&nbsp;                @Override
+<i>151</i>&nbsp;                public Object getBean() {
+<b class="nc"><i>152</i>&nbsp;                    return Group.this;</b>
+<i>153</i>&nbsp;                }
+<i>154</i>&nbsp;
+<i>155</i>&nbsp;                @Override
+<i>156</i>&nbsp;                public String getName() {
+<b class="nc"><i>157</i>&nbsp;                    return &quot;autoSizeChildren&quot;;</b>
+<i>158</i>&nbsp;                }
+<i>159</i>&nbsp;            };
+<i>160</i>&nbsp;        }
+<b class="nc"><i>161</i>&nbsp;        return autoSizeChildren;</b>
+<i>162</i>&nbsp;    }
+<i>163</i>&nbsp;
+<i>164</i>&nbsp;    /**
+<i>165</i>&nbsp;     * Gets the list of children of this {@code Group}.
+<i>166</i>&nbsp;     * @return the list of children of this {@code Group}.
+<i>167</i>&nbsp;     */
+<i>168</i>&nbsp;    @Override public ObservableList&lt;Node&gt; getChildren() {
+<b class="fc"><i>169</i>&nbsp;        return super.getChildren();</b>
+<i>170</i>&nbsp;    }
+<i>171</i>&nbsp;
+<i>172</i>&nbsp;    /*
+<i>173</i>&nbsp;     * Note: This method MUST only be called via its accessor method.
+<i>174</i>&nbsp;     */
+<i>175</i>&nbsp;    private Bounds doComputeLayoutBounds() {
+<b class="nc"><i>176</i>&nbsp;        layout(); // Needs to done prematurely, as we otherwise don&#39;t know the bounds of the children</b>
+<b class="nc"><i>177</i>&nbsp;        return null; // helper only requires this node to call layout().</b>
+<i>178</i>&nbsp;    }
+<i>179</i>&nbsp;
+<i>180</i>&nbsp;    /**
+<i>181</i>&nbsp;     * Group defines the preferred width as simply being the width of its layout bounds, which
+<i>182</i>&nbsp;     * in turn is simply the sum of the positions and widths of all of its children. That is,
+<i>183</i>&nbsp;     * the preferred width is the one that it is at, because a Group cannot be resized.
+<i>184</i>&nbsp;     *
+<i>185</i>&nbsp;     * Note: as the layout bounds in autosize Group depend on the Group to be already laid-out,
+<i>186</i>&nbsp;     * this call will do the layout of the Group if necessary.
+<i>187</i>&nbsp;     *
+<i>188</i>&nbsp;     * @param height This parameter is ignored by Group
+<i>189</i>&nbsp;     * @return The layout bounds width
+<i>190</i>&nbsp;     */
+<i>191</i>&nbsp;    @Override
+<i>192</i>&nbsp;    public double prefWidth(double height) {
+<b class="nc"><i>193</i>&nbsp;        if (isAutoSizeChildren()) {</b>
+<b class="nc"><i>194</i>&nbsp;            layout();</b>
+<i>195</i>&nbsp;        }
+<b class="nc"><i>196</i>&nbsp;        final double result = getLayoutBounds().getWidth();</b>
+<b class="nc"><i>197</i>&nbsp;        return Double.isNaN(result) || result &lt; 0 ? 0 : result;</b>
+<i>198</i>&nbsp;    }
+<i>199</i>&nbsp;
+<i>200</i>&nbsp;    /**
+<i>201</i>&nbsp;     * Group defines the preferred height as simply being the height of its layout bounds, which
+<i>202</i>&nbsp;     * in turn is simply the sum of the positions and heights of all of its children. That is,
+<i>203</i>&nbsp;     * the preferred height is the one that it is at, because a Group cannot be resized.
+<i>204</i>&nbsp;     *
+<i>205</i>&nbsp;     * Note: as the layout bounds in autosize Group depend on the Group to be already laid-out,
+<i>206</i>&nbsp;     * this call will do the layout of the Group if necessary.
+<i>207</i>&nbsp;     *
+<i>208</i>&nbsp;     * @param width This parameter is ignored by Group
+<i>209</i>&nbsp;     * @return The layout bounds height
+<i>210</i>&nbsp;     */
+<i>211</i>&nbsp;    @Override
+<i>212</i>&nbsp;    public double prefHeight(double width) {
+<b class="nc"><i>213</i>&nbsp;        if (isAutoSizeChildren()) {</b>
+<b class="nc"><i>214</i>&nbsp;            layout();</b>
+<i>215</i>&nbsp;        }
+<b class="nc"><i>216</i>&nbsp;        final double result = getLayoutBounds().getHeight();</b>
+<b class="nc"><i>217</i>&nbsp;        return Double.isNaN(result) || result &lt; 0 ? 0 : result;</b>
+<i>218</i>&nbsp;    }
+<i>219</i>&nbsp;
+<i>220</i>&nbsp;
+<i>221</i>&nbsp;    @Override
+<i>222</i>&nbsp;    public double minHeight(double width) {
+<b class="nc"><i>223</i>&nbsp;        return prefHeight(width);</b>
+<i>224</i>&nbsp;    }
+<i>225</i>&nbsp;
+<i>226</i>&nbsp;    @Override
+<i>227</i>&nbsp;    public double minWidth(double height) {
+<b class="nc"><i>228</i>&nbsp;        return prefWidth(height);</b>
+<i>229</i>&nbsp;    }
+<i>230</i>&nbsp;
+<i>231</i>&nbsp;    /**
+<i>232</i>&nbsp;     * Group implements layoutChildren such that each child is resized to its preferred
+<i>233</i>&nbsp;     * size, if the child is resizable. Non-resizable children are simply left alone.
+<i>234</i>&nbsp;     * If {@link #autoSizeChildren} is false, then Group does nothing in this method.
+<i>235</i>&nbsp;     */
+<i>236</i>&nbsp;    @Override protected void layoutChildren() {
+<b class="fc"><i>237</i>&nbsp;        if (isAutoSizeChildren()) {</b>
+<b class="fc"><i>238</i>&nbsp;            super.layoutChildren();</b>
+<i>239</i>&nbsp;        }
+<b class="fc"><i>240</i>&nbsp;    }</b>
+<i>241</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2017-12-04 21:49</div>
+</div>
+</body>
+</html>

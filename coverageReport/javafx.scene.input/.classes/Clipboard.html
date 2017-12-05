@@ -1,0 +1,529 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: Clipboard</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">javafx.scene.input</a> ]
+</div>
+
+<h1>Coverage Summary for Class: Clipboard (javafx.scene.input)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">Clipboard</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 24)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 56)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright (c) 2000, 2017, Oracle and/or its affiliates. All rights reserved.
+<i>3</i>&nbsp; * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+<i>4</i>&nbsp; *
+<i>5</i>&nbsp; *
+<i>6</i>&nbsp; *
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; *
+<i>11</i>&nbsp; *
+<i>12</i>&nbsp; *
+<i>13</i>&nbsp; *
+<i>14</i>&nbsp; *
+<i>15</i>&nbsp; *
+<i>16</i>&nbsp; *
+<i>17</i>&nbsp; *
+<i>18</i>&nbsp; *
+<i>19</i>&nbsp; *
+<i>20</i>&nbsp; *
+<i>21</i>&nbsp; *
+<i>22</i>&nbsp; *
+<i>23</i>&nbsp; *
+<i>24</i>&nbsp; */
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;package javafx.scene.input;
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;import com.sun.javafx.scene.input.ClipboardHelper;
+<i>29</i>&nbsp;import java.io.File;
+<i>30</i>&nbsp;import java.security.AccessControlContext;
+<i>31</i>&nbsp;import java.security.AccessController;
+<i>32</i>&nbsp;import java.util.List;
+<i>33</i>&nbsp;import java.util.Map;
+<i>34</i>&nbsp;import java.util.Set;
+<i>35</i>&nbsp;
+<i>36</i>&nbsp;import javafx.scene.image.Image;
+<i>37</i>&nbsp;import javafx.util.Pair;
+<i>38</i>&nbsp;
+<i>39</i>&nbsp;import com.sun.javafx.tk.PermissionHelper;
+<i>40</i>&nbsp;import com.sun.javafx.tk.TKClipboard;
+<i>41</i>&nbsp;import com.sun.javafx.tk.Toolkit;
+<i>42</i>&nbsp;
+<i>43</i>&nbsp;/**
+<i>44</i>&nbsp; * Represents an operating system clipboard, on which data may be placed during, for
+<i>45</i>&nbsp; * example, cut, copy, and paste operations.
+<i>46</i>&nbsp; * &lt;p&gt;
+<i>47</i>&nbsp; * To access the general system clipboard, use the following code:
+<i>48</i>&nbsp; * &lt;pre&gt;{@code
+<i>49</i>&nbsp; *     Clipboard clipboard = Clipboard.getSystemClipboard();
+<i>50</i>&nbsp; * }&lt;/pre&gt;
+<i>51</i>&nbsp; * &lt;p&gt;
+<i>52</i>&nbsp; * There is only ever one instance of the system clipboard in the application, so it is
+<i>53</i>&nbsp; * perfectly acceptable to stash a reference to it somewhere handy if you so choose.
+<i>54</i>&nbsp; * &lt;p&gt;
+<i>55</i>&nbsp; * The Clipboard operates on the concept of having a single conceptual item on the
+<i>56</i>&nbsp; * clipboard at any one time -- though it may be placed on the clipboard in different
+<i>57</i>&nbsp; * formats. For example, the user might select text in an HTML editor and press the
+<i>58</i>&nbsp; * ctrl+c or cmd+c to copy it. In this case, the same text might be available on the
+<i>59</i>&nbsp; * clipboard both as HTML and as plain text. There are two copies of the data on the
+<i>60</i>&nbsp; * clipboard, but they both represent the same data.
+<i>61</i>&nbsp; * &lt;p&gt;
+<i>62</i>&nbsp; * Content is specified on the Clipboard by using the {@link #setContent}
+<i>63</i>&nbsp; * method. First, construct a ClipboardContent object, then invoke setContent. Every time
+<i>64</i>&nbsp; * setContent is called, any previous data on the clipboard is cleared and replaced with
+<i>65</i>&nbsp; * this new content.
+<i>66</i>&nbsp; * &lt;pre&gt;&lt;code&gt;
+<i>67</i>&nbsp; *     final Clipboard clipboard = Clipboard.getSystemClipboard();
+<i>68</i>&nbsp; *     final ClipboardContent content = new ClipboardContent();
+<i>69</i>&nbsp; *     content.putString(&quot;Some text&quot;);
+<i>70</i>&nbsp; *     {@literal content.putHtml(&quot;&lt;b&gt;Some&lt;/b&gt; text&quot;)};
+<i>71</i>&nbsp; *     clipboard.setContent(content);
+<i>72</i>&nbsp; * &lt;/code&gt;&lt;/pre&gt;
+<i>73</i>&nbsp; * &lt;p&gt;
+<i>74</i>&nbsp; * The {@link ClipboardContent} class is simply a map with convenience methods for dealing
+<i>75</i>&nbsp; * with common data types added to a clipboard.
+<i>76</i>&nbsp; * &lt;p&gt;
+<i>77</i>&nbsp; * Because multiple representations of the same data may exist on the clipboard, and because
+<i>78</i>&nbsp; * different applications have different capabilities for handling different content types,
+<i>79</i>&nbsp; * it is important to place as many data representations on the clipboard as is practical to
+<i>80</i>&nbsp; * facilitate external applications. Note that sometimes the operating system might be
+<i>81</i>&nbsp; * helpful in some cases and add multiple types for you. For example, the Mac might set the
+<i>82</i>&nbsp; * plain text string for you when you specify the RTF type. How and under what circumstances
+<i>83</i>&nbsp; * this occurs is outside the realm of this specification, consult your OS documentation.
+<i>84</i>&nbsp; * &lt;p&gt;
+<i>85</i>&nbsp; * When reading data off the clipboard, it is important to look for the richest
+<i>86</i>&nbsp; * supported type first. For example, if I have a text document which supports embedding of
+<i>87</i>&nbsp; * images and media formats, when pasting content from the clipboard I should first check to
+<i>88</i>&nbsp; * see if the content can be represented as media or as an image. If not, then I might check
+<i>89</i>&nbsp; * for RTF or HTML or whatever rich text format is supported by my document type. If not,
+<i>90</i>&nbsp; * then I might just take a String.
+<i>91</i>&nbsp; * &lt;p&gt;
+<i>92</i>&nbsp; * Or for example, if I have a plain text document, then I would simple get a String
+<i>93</i>&nbsp; * representation and use that, if available. I can check to see if the clipboard &quot;hasHtml&quot;
+<i>94</i>&nbsp; * or &quot;hasString&quot;.
+<i>95</i>&nbsp; * &lt;pre&gt;{@code
+<i>96</i>&nbsp; *     if (clipboard.hasString()) { ... }
+<i>97</i>&nbsp; * }&lt;/pre&gt;
+<i>98</i>&nbsp; * &lt;p&gt;
+<i>99</i>&nbsp; * In addition to the common or built in types, you may put any arbitrary data onto the
+<i>100</i>&nbsp; * clipboard (assuming it is serializable).
+<i>101</i>&nbsp; * &lt;p&gt;
+<i>102</i>&nbsp; * Content types are defined by the DataFormat objects.
+<i>103</i>&nbsp; * The DataFormat class defines an immutable object, and there are a number of static final
+<i>104</i>&nbsp; * fields for common DataFormat types. Of course application specific DataFormat types can also be
+<i>105</i>&nbsp; * declared and used. The following two methods are equivalent (and the second call
+<i>106</i>&nbsp; * will override the first!)
+<i>107</i>&nbsp; * &lt;pre&gt;{@code
+<i>108</i>&nbsp; *     ClipboardContent content = new ClipboardContent();
+<i>109</i>&nbsp; *     content.putString(&quot;some text&quot;);
+<i>110</i>&nbsp; *     content.put(DataFormat.PLAIN_TEXT, &quot;other text&quot;);
+<i>111</i>&nbsp; * }&lt;/pre&gt;
+<i>112</i>&nbsp; * &lt;p&gt;
+<i>113</i>&nbsp; * On embedded platforms that do not have their own windowing system, the
+<i>114</i>&nbsp; * Clipboard returned from Clipboard.getSystemClipboard() might not be
+<i>115</i>&nbsp; * accessible from outside the JavaFX application.
+<i>116</i>&nbsp; *&lt;/p&gt;
+<i>117</i>&nbsp; * &lt;p&gt;
+<i>118</i>&nbsp; * If a security manager is present, the application must have the
+<i>119</i>&nbsp; * {@link javafx.util.FXPermission} &quot;accessClipboard&quot; in order for the
+<i>120</i>&nbsp; * Clipboard returned from Clipboard.getSystemClipboard() to be
+<i>121</i>&nbsp; * accessible from outside the JavaFX application. For compatibility with
+<i>122</i>&nbsp; * previous versions of the JDK the equivalent {@code AWTPermission}
+<i>123</i>&nbsp; * &quot;accessClipboard&quot; will also allow the FX clipboard to be accessible from
+<i>124</i>&nbsp; * outside the JavaFX application.
+<i>125</i>&nbsp; * &lt;/p&gt;
+<i>126</i>&nbsp; * &lt;p&gt;
+<i>127</i>&nbsp; * If the application lacks permission or if the platform doesn&#39;t support
+<i>128</i>&nbsp; * a shared clipboard, the clipboard
+<i>129</i>&nbsp; * returned by Clipboard.getSystemClipboard() can be used for exchange of data
+<i>130</i>&nbsp; * between different parts of one JavaFX application but cannot be used to
+<i>131</i>&nbsp; * exchange data between multiple applications.
+<i>132</i>&nbsp; * &lt;/p&gt;
+<i>133</i>&nbsp; *
+<i>134</i>&nbsp; * @since JavaFX 2.0
+<i>135</i>&nbsp; */
+<i>136</i>&nbsp;public class Clipboard {
+<i>137</i>&nbsp;
+<i>138</i>&nbsp;    static {
+<i>139</i>&nbsp;        // This is used by classes in different packages to get access to
+<i>140</i>&nbsp;        // private and package private methods.
+<b class="nc"><i>141</i>&nbsp;        ClipboardHelper.setClipboardAccessor(new ClipboardHelper.ClipboardAccessor() {</b>
+<i>142</i>&nbsp;
+<i>143</i>&nbsp;            @Override
+<i>144</i>&nbsp;            public boolean contentPut(Clipboard clipboard) {
+<i>145</i>&nbsp;                return clipboard.contentPut();
+<i>146</i>&nbsp;            }
+<i>147</i>&nbsp;        });
+<b class="nc"><i>148</i>&nbsp;    }</b>
+<i>149</i>&nbsp;
+<i>150</i>&nbsp;    /**
+<i>151</i>&nbsp;     * Whether user has put something on this clipboard. Needed for DnD.
+<i>152</i>&nbsp;     */
+<b class="nc"><i>153</i>&nbsp;    private boolean contentPut = false;</b>
+<i>154</i>&nbsp;
+<i>155</i>&nbsp;    // future:
+<i>156</i>&nbsp;    /*
+<i>157</i>&nbsp;     * JavaFX supports the concept of multiple independently named clipboards. There is a
+<i>158</i>&nbsp;     * predefined clipboard which represents the main system clipboard, but it is possible
+<i>159</i>&nbsp;     * to create custom clipboards if you so desire. Some platforms, such as Mac OS X,
+<i>160</i>&nbsp;     * define a number of different named clipboards. You can access these from JavaFX by
+<i>161</i>&nbsp;     * simply creating a Clipboard with the correct name. Typically there is no need to do
+<i>162</i>&nbsp;     * so in your applications since the UI Controls will use the correct System clipboards,
+<i>163</i>&nbsp;     * if applicable.
+<i>164</i>&nbsp;     * &lt;p&gt;
+<i>165</i>&nbsp;     *
+<i>166</i>&nbsp;     * Sometimes you may want to put a reference to a data representation on the clipboard
+<i>167</i>&nbsp;     *
+<i>168</i>&nbsp;     * rather than the data itself. For example, the user may have selected a large block of
+<i>169</i>&nbsp;     * text, and wants to copy this to the clipboard. Instead of having to actually produce
+<i>170</i>&nbsp;     * multiple copies of this text, a reference can be placed on the clipboard instead. When
+<i>171</i>&nbsp;     * the developer subsequently attempts to read the value off the clipboard, this reference
+<i>172</i>&nbsp;     * is resolved. Or suppose that I want to put a Node on the clipboard, such that the
+<i>173</i>&nbsp;     * representation of that Node on the clipboard is as an image.
+<i>174</i>&nbsp;     * &lt;pre&gt;{@code
+<i>175</i>&nbsp;     *     final Node node = ...;
+<i>176</i>&nbsp;     *     ClipboardReference ref = new ClipboardReference() {
+<i>177</i>&nbsp;     *         @Override public InputStream get() {
+<i>178</i>&nbsp;     *             // convert the node to an image
+<i>179</i>&nbsp;     *             // return an input stream to the image
+<i>180</i>&nbsp;     *             ...
+<i>181</i>&nbsp;     *         }
+<i>182</i>&nbsp;     *     };
+<i>183</i>&nbsp;     *     clipboard.putReference(DataFormat.IMAGE_TIFF, ref);
+<i>184</i>&nbsp;     * }&lt;/code&gt;
+<i>185</i>&nbsp;     * &lt;p&gt;
+<i>186</i>&nbsp;     * At the appropriate time, a client reading off the clipboard will ask for the data and
+<i>187</i>&nbsp;     * the system will invoke the provided callback to stream the image data over to the client.
+<i>188</i>&nbsp;     */
+<i>189</i>&nbsp;
+<b class="nc"><i>190</i>&nbsp;    private final AccessControlContext acc = AccessController.getContext();</b>
+<i>191</i>&nbsp;
+<i>192</i>&nbsp;    /**
+<i>193</i>&nbsp;     * Gets the current system clipboard, through which data can be stored and
+<i>194</i>&nbsp;     * retrieved. There is ever only one system clipboard for a JavaFX application.
+<i>195</i>&nbsp;     * @return The single system clipboard, used for cut / copy / paste operations
+<i>196</i>&nbsp;     */
+<i>197</i>&nbsp;    public static Clipboard getSystemClipboard() {
+<i>198</i>&nbsp;        try {
+<b class="nc"><i>199</i>&nbsp;            PermissionHelper.checkClipboardPermission();</b>
+<b class="nc"><i>200</i>&nbsp;            return getSystemClipboardImpl();</b>
+<b class="nc"><i>201</i>&nbsp;        } catch (final SecurityException e) {</b>
+<b class="nc"><i>202</i>&nbsp;            return getLocalClipboardImpl();</b>
+<i>203</i>&nbsp;        }
+<i>204</i>&nbsp;    }
+<i>205</i>&nbsp;
+<i>206</i>&nbsp;    TKClipboard peer;
+<i>207</i>&nbsp;
+<i>208</i>&nbsp;    // Only allow Dragboard to extend from this
+<b class="nc"><i>209</i>&nbsp;    Clipboard(TKClipboard peer) {</b>
+<b class="nc"><i>210</i>&nbsp;        Toolkit.getToolkit().checkFxUserThread();</b>
+<b class="nc"><i>211</i>&nbsp;        if (peer == null) {</b>
+<b class="nc"><i>212</i>&nbsp;            throw new NullPointerException();</b>
+<i>213</i>&nbsp;        }
+<b class="nc"><i>214</i>&nbsp;        peer.setSecurityContext(acc);</b>
+<b class="nc"><i>215</i>&nbsp;        this.peer = peer;</b>
+<b class="nc"><i>216</i>&nbsp;    }</b>
+<i>217</i>&nbsp;
+<i>218</i>&nbsp;    /**
+<i>219</i>&nbsp;     * Clears the clipboard of any and all content. Any subsequent call to
+<i>220</i>&nbsp;     * {@link #getContentTypes} before putting more content on the clipboard
+<i>221</i>&nbsp;     * will result in an empty set being returned.
+<i>222</i>&nbsp;     */
+<i>223</i>&nbsp;    public final void clear() {
+<b class="nc"><i>224</i>&nbsp;        setContent(null);</b>
+<b class="nc"><i>225</i>&nbsp;    }</b>
+<i>226</i>&nbsp;
+<i>227</i>&nbsp;    /**
+<i>228</i>&nbsp;     * Gets the set of DataFormat types on this Clipboard instance which have
+<i>229</i>&nbsp;     * associated data registered on the clipboard. This set will always
+<i>230</i>&nbsp;     * be non-null and immutable. If the Clipboard is subsequently modifed,
+<i>231</i>&nbsp;     * this returned set is not updated.
+<i>232</i>&nbsp;     *
+<i>233</i>&nbsp;     * @return A non-null immutable set of content types.
+<i>234</i>&nbsp;     */
+<i>235</i>&nbsp;    public final Set&lt;DataFormat&gt; getContentTypes() {
+<b class="nc"><i>236</i>&nbsp;        return peer.getContentTypes();</b>
+<i>237</i>&nbsp;    }
+<i>238</i>&nbsp;
+<i>239</i>&nbsp;    /**
+<i>240</i>&nbsp;     * Puts content onto the clipboard. This call will always result in
+<i>241</i>&nbsp;     * clearing all previous content from the clipboard, and replacing
+<i>242</i>&nbsp;     * it with whatever content is specified in the supplied
+<i>243</i>&nbsp;     * ClipboardContent map.
+<i>244</i>&nbsp;     *
+<i>245</i>&nbsp;     * @param content The content to put on the clipboard. If null, the
+<i>246</i>&nbsp;     *        clipboard is simply cleared and no new content added.
+<i>247</i>&nbsp;     * @return True if successful, false if the content fails to be added.
+<i>248</i>&nbsp;     * @throws NullPointerException if null data reference is passed for any
+<i>249</i>&nbsp;     *                              format
+<i>250</i>&nbsp;     */
+<i>251</i>&nbsp;//    public abstract boolean setContent(DataFormat uti, Object content);
+<i>252</i>&nbsp;    public final boolean setContent(Map&lt;DataFormat, Object&gt; content) {
+<b class="nc"><i>253</i>&nbsp;        Toolkit.getToolkit().checkFxUserThread();</b>
+<b class="nc"><i>254</i>&nbsp;        if (content == null) {</b>
+<b class="nc"><i>255</i>&nbsp;            contentPut = false;</b>
+<b class="nc"><i>256</i>&nbsp;            peer.putContent(new Pair[0]);</b>
+<b class="nc"><i>257</i>&nbsp;            return true;</b>
+<i>258</i>&nbsp;        } else {
+<b class="nc"><i>259</i>&nbsp;            Pair&lt;DataFormat, Object&gt;[] data = new Pair[content.size()];</b>
+<b class="nc"><i>260</i>&nbsp;            int index = 0;</b>
+<b class="nc"><i>261</i>&nbsp;            for (Map.Entry&lt;DataFormat, Object&gt; entry : content.entrySet()) {</b>
+<b class="nc"><i>262</i>&nbsp;                data[index++] = new Pair&lt;DataFormat, Object&gt;(entry.getKey(), entry.getValue());</b>
+<b class="nc"><i>263</i>&nbsp;            }</b>
+<b class="nc"><i>264</i>&nbsp;            contentPut = peer.putContent(data);</b>
+<b class="nc"><i>265</i>&nbsp;            return contentPut;</b>
+<i>266</i>&nbsp;        }
+<i>267</i>&nbsp;    }
+<i>268</i>&nbsp;
+<i>269</i>&nbsp;    /**
+<i>270</i>&nbsp;     * Returns the content stored in this clipboard of the given type, or null
+<i>271</i>&nbsp;     * if there is no content with this type.
+<i>272</i>&nbsp;     * @param dataFormat the format type
+<i>273</i>&nbsp;     * @return The content associated with this type, or null if there is none
+<i>274</i>&nbsp;     */
+<i>275</i>&nbsp;    public final Object getContent(DataFormat dataFormat) {
+<b class="nc"><i>276</i>&nbsp;        Toolkit.getToolkit().checkFxUserThread();</b>
+<b class="nc"><i>277</i>&nbsp;        return getContentImpl(dataFormat);</b>
+<i>278</i>&nbsp;    }
+<i>279</i>&nbsp;
+<i>280</i>&nbsp;    /**
+<i>281</i>&nbsp;     * Getting content overridable by internal subclasses.
+<i>282</i>&nbsp;     */
+<i>283</i>&nbsp;    Object getContentImpl(DataFormat dataFormat) {
+<b class="nc"><i>284</i>&nbsp;        return peer.getContent(dataFormat);</b>
+<i>285</i>&nbsp;    }
+<i>286</i>&nbsp;
+<i>287</i>&nbsp;    /**
+<i>288</i>&nbsp;     * Tests whether there is any content on this clipboard of the given DataFormat type.
+<i>289</i>&nbsp;     * @param dataFormat the format type
+<i>290</i>&nbsp;     * @return true if there is content on this clipboard for this type
+<i>291</i>&nbsp;     */
+<i>292</i>&nbsp;    public final boolean hasContent(DataFormat dataFormat) {
+<b class="nc"><i>293</i>&nbsp;        Toolkit.getToolkit().checkFxUserThread();</b>
+<b class="nc"><i>294</i>&nbsp;        return peer.hasContent(dataFormat);</b>
+<i>295</i>&nbsp;    }
+<i>296</i>&nbsp;
+<i>297</i>&nbsp;    /**
+<i>298</i>&nbsp;     * Gets whether a plain text String (DataFormat.PLAIN_TEXT) has been registered
+<i>299</i>&nbsp;     * on this Clipboard.
+<i>300</i>&nbsp;     * @return true if &lt;code&gt;hasContent(DataFormat.PLAIN_TEXT)&lt;/code&gt; returns true, false otherwise
+<i>301</i>&nbsp;     */
+<i>302</i>&nbsp;    public final boolean hasString() {
+<b class="nc"><i>303</i>&nbsp;        return hasContent(DataFormat.PLAIN_TEXT);</b>
+<i>304</i>&nbsp;    }
+<i>305</i>&nbsp;
+<i>306</i>&nbsp;    /**
+<i>307</i>&nbsp;     * Gets the plain text String from the clipboard which had previously
+<i>308</i>&nbsp;     * been registered. This is equivalent to invoking
+<i>309</i>&nbsp;     * &lt;code&gt;getContent(DataFormat.PLAIN_TEXT)&lt;/code&gt;. If no such entry exists,
+<i>310</i>&nbsp;     * null is returned.
+<i>311</i>&nbsp;     * @return The String on the clipboard associated with DataFormat.PLAIN_TEXT,
+<i>312</i>&nbsp;     * or null if there is not one.
+<i>313</i>&nbsp;     */
+<i>314</i>&nbsp;    public final String getString() {
+<b class="nc"><i>315</i>&nbsp;        return (String) getContent(DataFormat.PLAIN_TEXT);</b>
+<i>316</i>&nbsp;    }
+<i>317</i>&nbsp;
+<i>318</i>&nbsp;    /**
+<i>319</i>&nbsp;     * Gets whether a url String (DataFormat.URL) has been registered
+<i>320</i>&nbsp;     * on this Clipboard.
+<i>321</i>&nbsp;     * @return true if hasContent(DataFormat.URL) returns true, false otherwise
+<i>322</i>&nbsp;     */
+<i>323</i>&nbsp;    public final boolean hasUrl() {
+<b class="nc"><i>324</i>&nbsp;        return hasContent(DataFormat.URL);</b>
+<i>325</i>&nbsp;    }
+<i>326</i>&nbsp;
+<i>327</i>&nbsp;    /**
+<i>328</i>&nbsp;     * Gets the URL String from the clipboard which had previously
+<i>329</i>&nbsp;     * been registered. This is equivalent to invoking
+<i>330</i>&nbsp;     * &lt;code&gt;getContent(DataFormat.URL)&lt;/code&gt;. If no such entry exists,
+<i>331</i>&nbsp;     * null is returned.
+<i>332</i>&nbsp;     * @return The String on the clipboard associated with DataFormat.URL,
+<i>333</i>&nbsp;     * or null if there is not one.
+<i>334</i>&nbsp;     */
+<i>335</i>&nbsp;    public final String getUrl() {
+<b class="nc"><i>336</i>&nbsp;        return (String) getContent(DataFormat.URL);</b>
+<i>337</i>&nbsp;    }
+<i>338</i>&nbsp;
+<i>339</i>&nbsp;    /**
+<i>340</i>&nbsp;     * Gets whether an HTML text String (DataFormat.HTML) has been registered
+<i>341</i>&nbsp;     * on this Clipboard.
+<i>342</i>&nbsp;     * @return true if &lt;code&gt;hasContent(DataFormat.HTML)&lt;/code&gt; returns true, false otherwise
+<i>343</i>&nbsp;     */
+<i>344</i>&nbsp;    public final boolean hasHtml() {
+<b class="nc"><i>345</i>&nbsp;        return hasContent(DataFormat.HTML);</b>
+<i>346</i>&nbsp;    }
+<i>347</i>&nbsp;
+<i>348</i>&nbsp;    /**
+<i>349</i>&nbsp;     * Gets the HTML text String from the clipboard which had previously
+<i>350</i>&nbsp;     * been registered. This is equivalent to invoking
+<i>351</i>&nbsp;     * &lt;code&gt;getContent(DataFormat.HTML)&lt;/code&gt;. If no such entry exists,
+<i>352</i>&nbsp;     * null is returned.
+<i>353</i>&nbsp;     * @return The String on the clipboard associated with DataFormat.HTML,
+<i>354</i>&nbsp;     * or null if there is not one.
+<i>355</i>&nbsp;     */
+<i>356</i>&nbsp;    public final String getHtml() {
+<b class="nc"><i>357</i>&nbsp;        return (String) getContent(DataFormat.HTML);</b>
+<i>358</i>&nbsp;    }
+<i>359</i>&nbsp;
+<i>360</i>&nbsp;    /**
+<i>361</i>&nbsp;     * Gets whether an RTF String (DataFormat.RTF) has been registered
+<i>362</i>&nbsp;     * on this Clipboard.
+<i>363</i>&nbsp;     * @return true if hasContent(DataFormat.RTF) returns true, false otherwise
+<i>364</i>&nbsp;     */
+<i>365</i>&nbsp;    public final boolean hasRtf() {
+<b class="nc"><i>366</i>&nbsp;        return hasContent(DataFormat.RTF);</b>
+<i>367</i>&nbsp;    }
+<i>368</i>&nbsp;
+<i>369</i>&nbsp;    /**
+<i>370</i>&nbsp;     * Gets the RTF text String from the clipboard which had previously
+<i>371</i>&nbsp;     * been registered. This is equivalent to invoking
+<i>372</i>&nbsp;     * &lt;code&gt;getContent(DataFormat.RTF)&lt;/code&gt;. If no such entry exists,
+<i>373</i>&nbsp;     * null is returned.
+<i>374</i>&nbsp;     * @return The String on the clipboard associated with DataFormat.RTF,
+<i>375</i>&nbsp;     * or null if there is not one.
+<i>376</i>&nbsp;     */
+<i>377</i>&nbsp;    public final String getRtf() {
+<b class="nc"><i>378</i>&nbsp;        return (String) getContent(DataFormat.RTF);</b>
+<i>379</i>&nbsp;    }
+<i>380</i>&nbsp;
+<i>381</i>&nbsp;    /**
+<i>382</i>&nbsp;     * Gets whether an Image (DataFormat.IMAGE) has been registered
+<i>383</i>&nbsp;     * on this Clipboard.
+<i>384</i>&nbsp;     * @return true if hasContent(DataFormat.IMAGE) returns true, false otherwise
+<i>385</i>&nbsp;     */
+<i>386</i>&nbsp;    public final boolean hasImage() {
+<b class="nc"><i>387</i>&nbsp;        return hasContent(DataFormat.IMAGE);</b>
+<i>388</i>&nbsp;    };
+<i>389</i>&nbsp;
+<i>390</i>&nbsp;    /**
+<i>391</i>&nbsp;     * Gets the Image from the clipboard which had previously
+<i>392</i>&nbsp;     * been registered. This is equivalent to invoking
+<i>393</i>&nbsp;     * &lt;code&gt;getContent(DataFormat.IMAGE)&lt;/code&gt;. If no such entry exists,
+<i>394</i>&nbsp;     * null is returned.
+<i>395</i>&nbsp;     * @return The Image on the clipboard associated with DataFormat.IMAGE,
+<i>396</i>&nbsp;     * or null if there is not one.
+<i>397</i>&nbsp;     */
+<i>398</i>&nbsp;    public final Image getImage() {
+<b class="nc"><i>399</i>&nbsp;        return (Image) getContent(DataFormat.IMAGE);</b>
+<i>400</i>&nbsp;    }
+<i>401</i>&nbsp;
+<i>402</i>&nbsp;    /**
+<i>403</i>&nbsp;     * Gets whether an List of Files (DataFormat.FILES) has been registered
+<i>404</i>&nbsp;     * on this Clipboard.
+<i>405</i>&nbsp;     * @return true if hasContent(DataFormat.FILES) returns true, false otherwise
+<i>406</i>&nbsp;     */
+<i>407</i>&nbsp;    public final boolean hasFiles() {
+<b class="nc"><i>408</i>&nbsp;        return hasContent(DataFormat.FILES);</b>
+<i>409</i>&nbsp;    }
+<i>410</i>&nbsp;
+<i>411</i>&nbsp;    /**
+<i>412</i>&nbsp;     * Gets the List of Files from the clipboard which had previously
+<i>413</i>&nbsp;     * been registered. This is equivalent to invoking
+<i>414</i>&nbsp;     * &lt;code&gt;getContent(DataFormat.FILES)&lt;/code&gt;. If no such entry exists,
+<i>415</i>&nbsp;     * null is returned.
+<i>416</i>&nbsp;     * @return The List of Files on the clipboard associated with DataFormat.FILES,
+<i>417</i>&nbsp;     * or null if there is not one.
+<i>418</i>&nbsp;     */
+<i>419</i>&nbsp;    public final List&lt;File&gt; getFiles() {
+<b class="nc"><i>420</i>&nbsp;        return (List&lt;File&gt;) getContent(DataFormat.FILES);</b>
+<i>421</i>&nbsp;    }
+<i>422</i>&nbsp;
+<i>423</i>&nbsp;    boolean contentPut() {
+<b class="nc"><i>424</i>&nbsp;        return contentPut;</b>
+<i>425</i>&nbsp;    }
+<i>426</i>&nbsp;
+<i>427</i>&nbsp;    private static Clipboard systemClipboard;
+<i>428</i>&nbsp;
+<i>429</i>&nbsp;    private static synchronized Clipboard getSystemClipboardImpl() {
+<b class="nc"><i>430</i>&nbsp;        if (systemClipboard == null) {</b>
+<b class="nc"><i>431</i>&nbsp;            systemClipboard =</b>
+<b class="nc"><i>432</i>&nbsp;                    new Clipboard(Toolkit.getToolkit().getSystemClipboard());</b>
+<i>433</i>&nbsp;        }
+<b class="nc"><i>434</i>&nbsp;        return systemClipboard;</b>
+<i>435</i>&nbsp;    }
+<i>436</i>&nbsp;
+<i>437</i>&nbsp;    private static Clipboard localClipboard;
+<i>438</i>&nbsp;
+<i>439</i>&nbsp;    private static synchronized Clipboard getLocalClipboardImpl() {
+<b class="nc"><i>440</i>&nbsp;        if (localClipboard == null) {</b>
+<b class="nc"><i>441</i>&nbsp;            localClipboard =</b>
+<b class="nc"><i>442</i>&nbsp;                    new Clipboard(Toolkit.getToolkit().createLocalClipboard());</b>
+<i>443</i>&nbsp;        }
+<b class="nc"><i>444</i>&nbsp;        return localClipboard;</b>
+<i>445</i>&nbsp;    }
+<i>446</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2017-12-04 21:49</div>
+</div>
+</body>
+</html>

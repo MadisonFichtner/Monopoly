@@ -1,0 +1,300 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: RendererFactory</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.scenario.effect.impl</a> ]
+</div>
+
+<h1>Coverage Summary for Class: RendererFactory (com.sun.scenario.effect.impl)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">RendererFactory</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    30.8%
+  </span>
+  <span class="absValue">
+    (4/ 13)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    30%
+  </span>
+  <span class="absValue">
+    (27/ 90)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright (c) 2009, 2014, Oracle and/or its affiliates. All rights reserved.
+<i>3</i>&nbsp; * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+<i>4</i>&nbsp; *
+<i>5</i>&nbsp; *
+<i>6</i>&nbsp; *
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; *
+<i>11</i>&nbsp; *
+<i>12</i>&nbsp; *
+<i>13</i>&nbsp; *
+<i>14</i>&nbsp; *
+<i>15</i>&nbsp; *
+<i>16</i>&nbsp; *
+<i>17</i>&nbsp; *
+<i>18</i>&nbsp; *
+<i>19</i>&nbsp; *
+<i>20</i>&nbsp; *
+<i>21</i>&nbsp; *
+<i>22</i>&nbsp; *
+<i>23</i>&nbsp; *
+<i>24</i>&nbsp; */
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;package com.sun.scenario.effect.impl;
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;import java.lang.reflect.Method;
+<i>29</i>&nbsp;import java.security.AccessController;
+<i>30</i>&nbsp;import java.security.PrivilegedAction;
+<i>31</i>&nbsp;import com.sun.javafx.PlatformUtil;
+<i>32</i>&nbsp;import com.sun.scenario.effect.FilterContext;
+<i>33</i>&nbsp;
+<i>34</i>&nbsp;/**
+<i>35</i>&nbsp; * A factory that produces a {@code Renderer} instance appropriate for
+<i>36</i>&nbsp; * the desktop and tv stacks (either Swing or Prism based).  This class
+<i>37</i>&nbsp; * dynamically locates a {@code Renderer} using the java.lang.reflect package,
+<i>38</i>&nbsp; * which is not available on CLDC.  The CLDC-based mobile stack may
+<i>39</i>&nbsp; * substitute their own version of this class that does not rely on reflection.
+<i>40</i>&nbsp; */
+<b class="nc"><i>41</i>&nbsp;class RendererFactory {</b>
+<i>42</i>&nbsp;
+<b class="fc"><i>43</i>&nbsp;    private static String rootPkg = Renderer.rootPkg;</b>
+<b class="fc"><i>44</i>&nbsp;    private static boolean tryRSL = true;</b>
+<b class="fc"><i>45</i>&nbsp;    private static boolean trySIMD = false;</b>
+<i>46</i>&nbsp;    // by default we only enable jogl hw acceleration on MacOS
+<b class="fc"><i>47</i>&nbsp;    private static boolean tryJOGL = PlatformUtil.isMac();</b>
+<b class="fc"><i>48</i>&nbsp;    private static boolean tryPrism = true;</b>
+<i>49</i>&nbsp;
+<i>50</i>&nbsp;    static {
+<i>51</i>&nbsp;        try {
+<b class="fc"><i>52</i>&nbsp;            if (&quot;false&quot;.equals(System.getProperty(&quot;decora.rsl&quot;))) {</b>
+<b class="nc"><i>53</i>&nbsp;                tryRSL = false;</b>
+<i>54</i>&nbsp;            }
+<b class="fc"><i>55</i>&nbsp;            if (&quot;false&quot;.equals(System.getProperty(&quot;decora.simd&quot;))) {</b>
+<b class="nc"><i>56</i>&nbsp;                trySIMD = false;</b>
+<i>57</i>&nbsp;            }
+<b class="fc"><i>58</i>&nbsp;            String tryJOGLProp = System.getProperty(&quot;decora.jogl&quot;);</b>
+<b class="fc"><i>59</i>&nbsp;            if (tryJOGLProp != null) {</b>
+<b class="nc"><i>60</i>&nbsp;                tryJOGL = Boolean.parseBoolean(tryJOGLProp);</b>
+<i>61</i>&nbsp;            }
+<b class="fc"><i>62</i>&nbsp;            if (&quot;false&quot;.equals(System.getProperty(&quot;decora.prism&quot;))) {</b>
+<b class="nc"><i>63</i>&nbsp;                tryPrism = false;</b>
+<i>64</i>&nbsp;            }
+<b class="nc"><i>65</i>&nbsp;        } catch (SecurityException ignore) {</b>
+<b class="fc"><i>66</i>&nbsp;        }</b>
+<b class="fc"><i>67</i>&nbsp;    }</b>
+<i>68</i>&nbsp;
+<i>69</i>&nbsp;    private static boolean isRSLFriendly(Class klass) {
+<i>70</i>&nbsp;        // can&#39;t use reflection here to check for sun.* class when running
+<i>71</i>&nbsp;        // in sandbox; however, we are allowed to walk up the tree and
+<i>72</i>&nbsp;        // check names of interfaces loaded by the system
+<b class="nc"><i>73</i>&nbsp;        if (klass.getName().equals(&quot;sun.java2d.pipe.hw.AccelGraphicsConfig&quot;)) {</b>
+<b class="nc"><i>74</i>&nbsp;            return true;</b>
+<i>75</i>&nbsp;        }
+<b class="nc"><i>76</i>&nbsp;        boolean rsl = false;</b>
+<b class="nc"><i>77</i>&nbsp;        for (Class iface : klass.getInterfaces()) {</b>
+<b class="nc"><i>78</i>&nbsp;            if (isRSLFriendly(iface)) {</b>
+<b class="nc"><i>79</i>&nbsp;                rsl = true;</b>
+<b class="nc"><i>80</i>&nbsp;                break;</b>
+<i>81</i>&nbsp;            }
+<i>82</i>&nbsp;        }
+<b class="nc"><i>83</i>&nbsp;        return rsl;</b>
+<i>84</i>&nbsp;    }
+<i>85</i>&nbsp;
+<i>86</i>&nbsp;    private static boolean isRSLAvailable(FilterContext fctx) {
+<b class="nc"><i>87</i>&nbsp;        return isRSLFriendly(fctx.getReferent().getClass());</b>
+<i>88</i>&nbsp;    }
+<i>89</i>&nbsp;
+<i>90</i>&nbsp;    private static Renderer createRSLRenderer(FilterContext fctx) {
+<i>91</i>&nbsp;        try {
+<b class="nc"><i>92</i>&nbsp;            Class klass = Class.forName(rootPkg + &quot;.impl.j2d.rsl.RSLRenderer&quot;);</b>
+<b class="nc"><i>93</i>&nbsp;            Method m = klass.getMethod(&quot;createRenderer&quot;,</b>
+<i>94</i>&nbsp;                                       new Class[] { FilterContext.class });
+<b class="nc"><i>95</i>&nbsp;            return (Renderer)m.invoke(null, new Object[] { fctx });</b>
+<b class="nc"><i>96</i>&nbsp;        } catch (Throwable e) {}</b>
+<i>97</i>&nbsp;
+<b class="nc"><i>98</i>&nbsp;        return null;</b>
+<i>99</i>&nbsp;    }
+<i>100</i>&nbsp;
+<i>101</i>&nbsp;    private static Renderer createJOGLRenderer(FilterContext fctx) {
+<b class="nc"><i>102</i>&nbsp;        if (tryJOGL) {</b>
+<i>103</i>&nbsp;            try {
+<b class="nc"><i>104</i>&nbsp;                Class klass = Class.forName(rootPkg + &quot;.impl.j2d.jogl.JOGLRenderer&quot;);</b>
+<b class="nc"><i>105</i>&nbsp;                Method m = klass.getMethod(&quot;createRenderer&quot;,</b>
+<i>106</i>&nbsp;                                           new Class[] { FilterContext.class });
+<b class="nc"><i>107</i>&nbsp;                return (Renderer)m.invoke(null, new Object[] { fctx });</b>
+<b class="nc"><i>108</i>&nbsp;            } catch (Throwable e) {}</b>
+<i>109</i>&nbsp;            // don&#39;t disable jogl if failed, it may be available for other config
+<i>110</i>&nbsp;        }
+<b class="nc"><i>111</i>&nbsp;        return null;</b>
+<i>112</i>&nbsp;    }
+<i>113</i>&nbsp;
+<i>114</i>&nbsp;    private static Renderer createPrismRenderer(FilterContext fctx) {
+<b class="fc"><i>115</i>&nbsp;        if (tryPrism) {</b>
+<i>116</i>&nbsp;            try {
+<b class="fc"><i>117</i>&nbsp;                Class klass = Class.forName(rootPkg + &quot;.impl.prism.PrRenderer&quot;);</b>
+<b class="fc"><i>118</i>&nbsp;                Method m = klass.getMethod(&quot;createRenderer&quot;,</b>
+<i>119</i>&nbsp;                                           new Class[] { FilterContext.class });
+<b class="fc"><i>120</i>&nbsp;                return (Renderer)m.invoke(null, new Object[] { fctx });</b>
+<b class="nc"><i>121</i>&nbsp;            } catch (Throwable e) {</b>
+<b class="nc"><i>122</i>&nbsp;                e.printStackTrace();</b>
+<i>123</i>&nbsp;            }
+<i>124</i>&nbsp;            // don&#39;t disable prism if failed, it may be available for other config
+<i>125</i>&nbsp;        }
+<b class="nc"><i>126</i>&nbsp;        return null;</b>
+<i>127</i>&nbsp;    }
+<i>128</i>&nbsp;
+<i>129</i>&nbsp;    private static Renderer getSSERenderer() {
+<b class="nc"><i>130</i>&nbsp;        if (trySIMD) {</b>
+<i>131</i>&nbsp;            try {
+<b class="nc"><i>132</i>&nbsp;                Class klass = Class.forName(rootPkg + &quot;.impl.j2d.J2DSWRenderer&quot;);</b>
+<b class="nc"><i>133</i>&nbsp;                Method m = klass.getMethod(&quot;getSSEInstance&quot;, (Class[])null);</b>
+<b class="nc"><i>134</i>&nbsp;                Renderer sseRenderer = (Renderer)m.invoke(null, (Object[])null);</b>
+<b class="nc"><i>135</i>&nbsp;                if (sseRenderer != null) {</b>
+<b class="nc"><i>136</i>&nbsp;                    return sseRenderer;</b>
+<i>137</i>&nbsp;                }
+<b class="nc"><i>138</i>&nbsp;            } catch (Throwable e) {e.printStackTrace();}</b>
+<i>139</i>&nbsp;            // don&#39;t bother trying to find SSE renderer again
+<b class="nc"><i>140</i>&nbsp;            trySIMD = false;</b>
+<i>141</i>&nbsp;        }
+<b class="nc"><i>142</i>&nbsp;        return null;</b>
+<i>143</i>&nbsp;    }
+<i>144</i>&nbsp;
+<i>145</i>&nbsp;    private static Renderer getJavaRenderer() {
+<i>146</i>&nbsp;        try {
+<b class="nc"><i>147</i>&nbsp;            Class klass = Class.forName(rootPkg + &quot;.impl.prism.sw.PSWRenderer&quot;);</b>
+<b class="nc"><i>148</i>&nbsp;            Class screenClass = Class.forName(&quot;com.sun.glass.ui.Screen&quot;);</b>
+<b class="nc"><i>149</i>&nbsp;            Method m = klass.getMethod(&quot;createJSWInstance&quot;,</b>
+<i>150</i>&nbsp;                                       new Class[] { screenClass });
+<b class="nc"><i>151</i>&nbsp;            Renderer jswRenderer =</b>
+<b class="nc"><i>152</i>&nbsp;                (Renderer)m.invoke(null, new Object[] { null } );</b>
+<b class="nc"><i>153</i>&nbsp;            if (jswRenderer != null) {</b>
+<b class="nc"><i>154</i>&nbsp;                return jswRenderer;</b>
+<i>155</i>&nbsp;            }
+<b class="nc"><i>156</i>&nbsp;        } catch (Throwable e) {e.printStackTrace();}</b>
+<b class="nc"><i>157</i>&nbsp;        return null;</b>
+<i>158</i>&nbsp;    }
+<i>159</i>&nbsp;
+<i>160</i>&nbsp;    private static Renderer getJavaRenderer(FilterContext fctx) {
+<i>161</i>&nbsp;        try {
+<b class="nc"><i>162</i>&nbsp;            Class klass = Class.forName(rootPkg + &quot;.impl.prism.sw.PSWRenderer&quot;);</b>
+<b class="nc"><i>163</i>&nbsp;            Method m = klass.getMethod(&quot;createJSWInstance&quot;,</b>
+<i>164</i>&nbsp;                                       new Class[] { FilterContext.class });
+<b class="nc"><i>165</i>&nbsp;            Renderer jswRenderer =</b>
+<b class="nc"><i>166</i>&nbsp;               (Renderer)m.invoke(null, new Object[] { fctx } );</b>
+<b class="nc"><i>167</i>&nbsp;            if (jswRenderer != null) {</b>
+<b class="nc"><i>168</i>&nbsp;                return jswRenderer;</b>
+<i>169</i>&nbsp;            }
+<b class="nc"><i>170</i>&nbsp;        } catch (Throwable e) {}</b>
+<b class="nc"><i>171</i>&nbsp;        return null;</b>
+<i>172</i>&nbsp;    }
+<i>173</i>&nbsp;
+<i>174</i>&nbsp;    static Renderer getSoftwareRenderer() {
+<b class="nc"><i>175</i>&nbsp;        Renderer r = getSSERenderer();</b>
+<b class="nc"><i>176</i>&nbsp;        if (r == null) {</b>
+<b class="nc"><i>177</i>&nbsp;            r = getJavaRenderer();</b>
+<i>178</i>&nbsp;        }
+<b class="nc"><i>179</i>&nbsp;        return r;</b>
+<i>180</i>&nbsp;    }
+<i>181</i>&nbsp;
+<i>182</i>&nbsp;    static Renderer createRenderer(final FilterContext fctx) {
+<b class="fc"><i>183</i>&nbsp;        return AccessController.doPrivileged((PrivilegedAction&lt;Renderer&gt;) () -&gt; {</b>
+<b class="fc"><i>184</i>&nbsp;            Renderer r = null;</b>
+<i>185</i>&nbsp;            // Class.getSimpleName is not available on CDC
+<b class="fc"><i>186</i>&nbsp;            String klassName = fctx.getClass().getName();</b>
+<b class="fc"><i>187</i>&nbsp;            String simpleName = klassName.substring(klassName.lastIndexOf(&quot;.&quot;) + 1);</b>
+<i>188</i>&nbsp;
+<b class="fc"><i>189</i>&nbsp;            if (simpleName.equals(&quot;PrFilterContext&quot;) &amp;&amp; tryPrism) {</b>
+<b class="fc"><i>190</i>&nbsp;                r = createPrismRenderer(fctx);</b>
+<i>191</i>&nbsp;            }
+<i>192</i>&nbsp;            // check to see whether one of the hardware accelerated
+<i>193</i>&nbsp;            // Java 2D pipelines is in use and exposes the necessary
+<i>194</i>&nbsp;            // &quot;resource sharing layer&quot; APIs (only in Sun&#39;s JDK 6u10 and above)
+<b class="fc"><i>195</i>&nbsp;            if (r == null &amp;&amp; tryRSL &amp;&amp; isRSLAvailable(fctx)) {</b>
+<i>196</i>&nbsp;                // try locating an RSLRenderer (need to use reflection in case
+<i>197</i>&nbsp;                // certain RSL backend classes are not available;
+<i>198</i>&nbsp;                // this step will trigger lazy downloading of impl jars
+<i>199</i>&nbsp;                // via JNLP, if not already available)
+<b class="nc"><i>200</i>&nbsp;                r = createRSLRenderer(fctx);</b>
+<i>201</i>&nbsp;            }
+<b class="fc"><i>202</i>&nbsp;            if (r == null &amp;&amp; tryJOGL) {</b>
+<i>203</i>&nbsp;                // next try the JOGL renderer
+<b class="nc"><i>204</i>&nbsp;                r = createJOGLRenderer(fctx);</b>
+<i>205</i>&nbsp;            }
+<b class="fc"><i>206</i>&nbsp;            if (r == null &amp;&amp; trySIMD) {</b>
+<i>207</i>&nbsp;                // next try the SSE renderer
+<b class="nc"><i>208</i>&nbsp;                r = getSSERenderer();</b>
+<i>209</i>&nbsp;            }
+<b class="fc"><i>210</i>&nbsp;            if (r == null) {</b>
+<i>211</i>&nbsp;                // otherwise, fall back on the Java/CPU renderer
+<b class="nc"><i>212</i>&nbsp;                r = getJavaRenderer(fctx);</b>
+<i>213</i>&nbsp;            }
+<b class="fc"><i>214</i>&nbsp;            return r;</b>
+<i>215</i>&nbsp;        });
+<i>216</i>&nbsp;    }
+<i>217</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2017-12-04 21:49</div>
+</div>
+</body>
+</html>

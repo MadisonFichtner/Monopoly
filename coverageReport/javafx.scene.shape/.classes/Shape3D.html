@@ -1,0 +1,352 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: Shape3D</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">javafx.scene.shape</a> ]
+</div>
+
+<h1>Coverage Summary for Class: Shape3D (javafx.scene.shape)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">Shape3D</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 16)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 41)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright (c) 2013, 2017, Oracle and/or its affiliates. All rights reserved.
+<i>3</i>&nbsp; * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+<i>4</i>&nbsp; *
+<i>5</i>&nbsp; *
+<i>6</i>&nbsp; *
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; *
+<i>11</i>&nbsp; *
+<i>12</i>&nbsp; *
+<i>13</i>&nbsp; *
+<i>14</i>&nbsp; *
+<i>15</i>&nbsp; *
+<i>16</i>&nbsp; *
+<i>17</i>&nbsp; *
+<i>18</i>&nbsp; *
+<i>19</i>&nbsp; *
+<i>20</i>&nbsp; *
+<i>21</i>&nbsp; *
+<i>22</i>&nbsp; *
+<i>23</i>&nbsp; *
+<i>24</i>&nbsp; */
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;package javafx.scene.shape;
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;import com.sun.javafx.geom.BaseBounds;
+<i>29</i>&nbsp;import com.sun.javafx.geom.BoxBounds;
+<i>30</i>&nbsp;import com.sun.javafx.geom.transform.BaseTransform;
+<i>31</i>&nbsp;import com.sun.javafx.jmx.MXNodeAlgorithm;
+<i>32</i>&nbsp;import com.sun.javafx.jmx.MXNodeAlgorithmContext;
+<i>33</i>&nbsp;import com.sun.javafx.scene.DirtyBits;
+<i>34</i>&nbsp;import com.sun.javafx.scene.NodeHelper;
+<i>35</i>&nbsp;import com.sun.javafx.scene.paint.MaterialHelper;
+<i>36</i>&nbsp;import com.sun.javafx.scene.shape.Shape3DHelper;
+<i>37</i>&nbsp;import com.sun.javafx.sg.prism.NGShape3D;
+<i>38</i>&nbsp;import javafx.application.ConditionalFeature;
+<i>39</i>&nbsp;import javafx.application.Platform;
+<i>40</i>&nbsp;import javafx.beans.property.ObjectProperty;
+<i>41</i>&nbsp;import javafx.beans.property.SimpleObjectProperty;
+<i>42</i>&nbsp;import javafx.beans.value.ChangeListener;
+<i>43</i>&nbsp;import javafx.beans.value.ObservableValue;
+<i>44</i>&nbsp;import javafx.beans.value.WeakChangeListener;
+<i>45</i>&nbsp;import javafx.scene.Node;
+<i>46</i>&nbsp;import javafx.scene.paint.Material;
+<i>47</i>&nbsp;import javafx.scene.paint.PhongMaterial;
+<i>48</i>&nbsp;import sun.util.logging.PlatformLogger;
+<i>49</i>&nbsp;
+<i>50</i>&nbsp;
+<i>51</i>&nbsp;/**
+<i>52</i>&nbsp; * The {@code Shape3D} base class provides definitions of common properties for
+<i>53</i>&nbsp; * objects that represent some form of 3D geometric shape.  These properties
+<i>54</i>&nbsp; * include:
+<i>55</i>&nbsp; * &lt;ul&gt;
+<i>56</i>&nbsp; * &lt;li&gt;The {@link Material} to be applied to the fillable interior of the
+<i>57</i>&nbsp; * shape or the outline of the shape (see {@link #setMaterial}).
+<i>58</i>&nbsp; * &lt;li&gt;The draw model properties that defines how to render its geometry (see {@link #setDrawMode}).
+<i>59</i>&nbsp; * &lt;li&gt;The face culling properties that defines which face to cull (see {@link #setCullFace}).
+<i>60</i>&nbsp; * &lt;/ul&gt;
+<i>61</i>&nbsp; *
+<i>62</i>&nbsp; * Note that this is a conditional feature. See
+<i>63</i>&nbsp; * {@link javafx.application.ConditionalFeature#SCENE3D ConditionalFeature.SCENE3D}
+<i>64</i>&nbsp; * for more information.
+<i>65</i>&nbsp; *
+<i>66</i>&nbsp; * &lt;p&gt;
+<i>67</i>&nbsp; * An application should not extend the Shape3D class directly. Doing so may lead to
+<i>68</i>&nbsp; * an UnsupportedOperationException being thrown.
+<i>69</i>&nbsp; * &lt;/p&gt;
+<i>70</i>&nbsp; *
+<i>71</i>&nbsp; * @since JavaFX 8.0
+<i>72</i>&nbsp; */
+<b class="nc"><i>73</i>&nbsp;public abstract class Shape3D extends Node {</b>
+<i>74</i>&nbsp;    static {
+<i>75</i>&nbsp;        // This is used by classes in different packages to get access to
+<i>76</i>&nbsp;        // private and package private methods.
+<b class="nc"><i>77</i>&nbsp;        Shape3DHelper.setShape3DAccessor(new Shape3DHelper.Shape3DAccessor() {</b>
+<i>78</i>&nbsp;            @Override
+<i>79</i>&nbsp;            public void doUpdatePeer(Node node) {
+<i>80</i>&nbsp;                ((Shape3D) node).doUpdatePeer();
+<i>81</i>&nbsp;            }
+<i>82</i>&nbsp;
+<i>83</i>&nbsp;            @Override
+<i>84</i>&nbsp;            public BaseBounds doComputeGeomBounds(Node node,
+<i>85</i>&nbsp;                    BaseBounds bounds, BaseTransform tx) {
+<i>86</i>&nbsp;                return ((Shape3D) node).doComputeGeomBounds(bounds, tx);
+<i>87</i>&nbsp;            }
+<i>88</i>&nbsp;
+<i>89</i>&nbsp;            @Override
+<i>90</i>&nbsp;            public boolean doComputeContains(Node node, double localX, double localY) {
+<i>91</i>&nbsp;                return ((Shape3D) node).doComputeContains(localX, localY);
+<i>92</i>&nbsp;            }
+<i>93</i>&nbsp;
+<i>94</i>&nbsp;            @Override
+<i>95</i>&nbsp;            public Object doProcessMXNode(Node node, MXNodeAlgorithm alg, MXNodeAlgorithmContext ctx) {
+<i>96</i>&nbsp;                return ((Shape3D) node).doProcessMXNode(alg, ctx);
+<i>97</i>&nbsp;            }
+<i>98</i>&nbsp;        });
+<i>99</i>&nbsp;    }
+<i>100</i>&nbsp;
+<i>101</i>&nbsp;    // NOTE: Need a way to specify shape tessellation resolution, may use metric relate to window resolution
+<i>102</i>&nbsp;    // Will not support dynamic refinement in FX8
+<i>103</i>&nbsp;
+<i>104</i>&nbsp;    // TODO: 3D - May provide user convenient utility to compose images in a single image for shapes such as Box or Cylinder
+<i>105</i>&nbsp;
+<b class="nc"><i>106</i>&nbsp;    private static final PhongMaterial DEFAULT_MATERIAL = new PhongMaterial();</b>
+<i>107</i>&nbsp;
+<b class="nc"><i>108</i>&nbsp;    protected Shape3D() {</b>
+<b class="nc"><i>109</i>&nbsp;        if (!Platform.isSupported(ConditionalFeature.SCENE3D)) {</b>
+<b class="nc"><i>110</i>&nbsp;            String logname = Shape3D.class.getName();</b>
+<b class="nc"><i>111</i>&nbsp;            PlatformLogger.getLogger(logname).warning(&quot;System can&#39;t support &quot;</b>
+<i>112</i>&nbsp;                                                      + &quot;ConditionalFeature.SCENE3D&quot;);
+<i>113</i>&nbsp;        }
+<b class="nc"><i>114</i>&nbsp;    }</b>
+<i>115</i>&nbsp;
+<b class="nc"><i>116</i>&nbsp;    PredefinedMeshManager manager = PredefinedMeshManager.getInstance();</b>
+<b class="nc"><i>117</i>&nbsp;    int key = 0;</b>
+<i>118</i>&nbsp;
+<i>119</i>&nbsp;    /**
+<i>120</i>&nbsp;     * Defines the material this {@code Shape3D}.
+<i>121</i>&nbsp;     * The default material is null. If {@code Material} is null, a PhongMaterial
+<i>122</i>&nbsp;     * with a diffuse color of Color.LIGHTGRAY is used for rendering.
+<i>123</i>&nbsp;     *
+<i>124</i>&nbsp;     * @defaultValue null
+<i>125</i>&nbsp;     */
+<i>126</i>&nbsp;    private ObjectProperty&lt;Material&gt; material;
+<i>127</i>&nbsp;
+<i>128</i>&nbsp;    public final void setMaterial(Material value) {
+<b class="nc"><i>129</i>&nbsp;        materialProperty().set(value);</b>
+<b class="nc"><i>130</i>&nbsp;    }</b>
+<i>131</i>&nbsp;
+<i>132</i>&nbsp;    public final Material getMaterial() {
+<b class="nc"><i>133</i>&nbsp;        return material == null ? null : material.get();</b>
+<i>134</i>&nbsp;    }
+<i>135</i>&nbsp;
+<i>136</i>&nbsp;    public final ObjectProperty&lt;Material&gt; materialProperty() {
+<b class="nc"><i>137</i>&nbsp;        if (material == null) {</b>
+<b class="nc"><i>138</i>&nbsp;            material = new SimpleObjectProperty&lt;Material&gt;(Shape3D.this,</b>
+<i>139</i>&nbsp;                    &quot;material&quot;) {
+<i>140</i>&nbsp;
+<i>141</i>&nbsp;                private Material old = null;
+<i>142</i>&nbsp;                private final ChangeListener&lt;Boolean&gt; materialChangeListener =
+<i>143</i>&nbsp;                        (observable, oldValue, newValue) -&gt; {
+<i>144</i>&nbsp;                            if (newValue) {
+<i>145</i>&nbsp;                                NodeHelper.markDirty(Shape3D.this, DirtyBits.MATERIAL);
+<i>146</i>&nbsp;                            }
+<i>147</i>&nbsp;                        };
+<i>148</i>&nbsp;                private final WeakChangeListener&lt;Boolean&gt; weakMaterialChangeListener =
+<i>149</i>&nbsp;                        new WeakChangeListener(materialChangeListener);
+<i>150</i>&nbsp;
+<i>151</i>&nbsp;                @Override protected void invalidated() {
+<i>152</i>&nbsp;                    if (old != null) {
+<i>153</i>&nbsp;                        MaterialHelper.dirtyProperty(old).removeListener(weakMaterialChangeListener);
+<i>154</i>&nbsp;                    }
+<i>155</i>&nbsp;                    Material newMaterial = get();
+<i>156</i>&nbsp;                    if (newMaterial != null) {
+<i>157</i>&nbsp;                        MaterialHelper.dirtyProperty(newMaterial).addListener(weakMaterialChangeListener);
+<i>158</i>&nbsp;                    }
+<i>159</i>&nbsp;                    NodeHelper.markDirty(Shape3D.this, DirtyBits.MATERIAL);
+<i>160</i>&nbsp;                    NodeHelper.geomChanged(Shape3D.this);
+<i>161</i>&nbsp;                    old = newMaterial;
+<i>162</i>&nbsp;                }
+<i>163</i>&nbsp;            };
+<i>164</i>&nbsp;        }
+<b class="nc"><i>165</i>&nbsp;        return material;</b>
+<i>166</i>&nbsp;    }
+<i>167</i>&nbsp;
+<i>168</i>&nbsp;    /**
+<i>169</i>&nbsp;     * Defines the draw mode used to render this {@code Shape3D}.
+<i>170</i>&nbsp;     * {@link DrawMode#LINE} is not available on embedded platforms.
+<i>171</i>&nbsp;     * If {@code drawMode} is set to {@link DrawMode#LINE} on an embedded
+<i>172</i>&nbsp;     * platform the default value of {@link DrawMode#FILL} will be used instead.
+<i>173</i>&nbsp;     *
+<i>174</i>&nbsp;     * @defaultValue {@link DrawMode#FILL}
+<i>175</i>&nbsp;     */
+<i>176</i>&nbsp;    private ObjectProperty&lt;DrawMode&gt; drawMode;
+<i>177</i>&nbsp;
+<i>178</i>&nbsp;    public final void setDrawMode(DrawMode value) {
+<b class="nc"><i>179</i>&nbsp;        drawModeProperty().set(value);</b>
+<b class="nc"><i>180</i>&nbsp;    }</b>
+<i>181</i>&nbsp;
+<i>182</i>&nbsp;    public final DrawMode getDrawMode() {
+<b class="nc"><i>183</i>&nbsp;        return drawMode == null ? DrawMode.FILL : drawMode.get();</b>
+<i>184</i>&nbsp;    }
+<i>185</i>&nbsp;
+<i>186</i>&nbsp;    public final ObjectProperty&lt;DrawMode&gt; drawModeProperty() {
+<b class="nc"><i>187</i>&nbsp;        if (drawMode == null) {</b>
+<b class="nc"><i>188</i>&nbsp;            drawMode = new SimpleObjectProperty&lt;DrawMode&gt;(Shape3D.this,</b>
+<i>189</i>&nbsp;                    &quot;drawMode&quot;, DrawMode.FILL) {
+<i>190</i>&nbsp;
+<i>191</i>&nbsp;                @Override
+<i>192</i>&nbsp;                protected void invalidated() {
+<i>193</i>&nbsp;                    NodeHelper.markDirty(Shape3D.this, DirtyBits.NODE_DRAWMODE);
+<i>194</i>&nbsp;                }
+<i>195</i>&nbsp;            };
+<i>196</i>&nbsp;        }
+<b class="nc"><i>197</i>&nbsp;        return drawMode;</b>
+<i>198</i>&nbsp;    }
+<i>199</i>&nbsp;
+<i>200</i>&nbsp;    /**
+<i>201</i>&nbsp;     * Defines the cullFace this {@code Shape3D}.
+<i>202</i>&nbsp;     *
+<i>203</i>&nbsp;     * @defaultValue CullFace.BACK
+<i>204</i>&nbsp;     */
+<i>205</i>&nbsp;    private ObjectProperty&lt;CullFace&gt; cullFace;
+<i>206</i>&nbsp;
+<i>207</i>&nbsp;    public final void setCullFace(CullFace value) {
+<b class="nc"><i>208</i>&nbsp;        cullFaceProperty().set(value);</b>
+<b class="nc"><i>209</i>&nbsp;    }</b>
+<i>210</i>&nbsp;
+<i>211</i>&nbsp;    public final CullFace getCullFace() {
+<b class="nc"><i>212</i>&nbsp;        return cullFace == null ? CullFace.BACK : cullFace.get();</b>
+<i>213</i>&nbsp;    }
+<i>214</i>&nbsp;
+<i>215</i>&nbsp;    public final ObjectProperty&lt;CullFace&gt; cullFaceProperty() {
+<b class="nc"><i>216</i>&nbsp;        if (cullFace == null) {</b>
+<b class="nc"><i>217</i>&nbsp;            cullFace = new SimpleObjectProperty&lt;CullFace&gt;(Shape3D.this,</b>
+<i>218</i>&nbsp;                    &quot;cullFace&quot;, CullFace.BACK) {
+<i>219</i>&nbsp;
+<i>220</i>&nbsp;                @Override
+<i>221</i>&nbsp;                protected void invalidated() {
+<i>222</i>&nbsp;                    NodeHelper.markDirty(Shape3D.this, DirtyBits.NODE_CULLFACE);
+<i>223</i>&nbsp;                }
+<i>224</i>&nbsp;            };
+<i>225</i>&nbsp;        }
+<b class="nc"><i>226</i>&nbsp;        return cullFace;</b>
+<i>227</i>&nbsp;    }
+<i>228</i>&nbsp;
+<i>229</i>&nbsp;    /*
+<i>230</i>&nbsp;     * Note: This method MUST only be called via its accessor method.
+<i>231</i>&nbsp;     */
+<i>232</i>&nbsp;    private BaseBounds doComputeGeomBounds(BaseBounds bounds, BaseTransform tx) {
+<i>233</i>&nbsp;        // TODO: 3D - Evaluate this logic
+<b class="nc"><i>234</i>&nbsp;        return new BoxBounds(0, 0, 0, 0, 0, 0);</b>
+<i>235</i>&nbsp;    }
+<i>236</i>&nbsp;
+<i>237</i>&nbsp;    /*
+<i>238</i>&nbsp;     * Note: This method MUST only be called via its accessor method.
+<i>239</i>&nbsp;     */
+<i>240</i>&nbsp;    private boolean doComputeContains(double localX, double localY) {
+<b class="nc"><i>241</i>&nbsp;        return false;</b>
+<i>242</i>&nbsp;    }
+<i>243</i>&nbsp;
+<i>244</i>&nbsp;    /*
+<i>245</i>&nbsp;     * Note: This method MUST only be called via its accessor method.
+<i>246</i>&nbsp;     */
+<i>247</i>&nbsp;    private void doUpdatePeer() {
+<b class="nc"><i>248</i>&nbsp;        final NGShape3D peer = NodeHelper.getPeer(this);</b>
+<b class="nc"><i>249</i>&nbsp;        if (NodeHelper.isDirty(this, DirtyBits.MATERIAL)) {</b>
+<b class="nc"><i>250</i>&nbsp;            Material mat = getMaterial() == null ? DEFAULT_MATERIAL : getMaterial();</b>
+<b class="nc"><i>251</i>&nbsp;            MaterialHelper.updatePG(mat); // new material should be updated</b>
+<b class="nc"><i>252</i>&nbsp;            peer.setMaterial(MaterialHelper.getNGMaterial(mat));</b>
+<i>253</i>&nbsp;        }
+<b class="nc"><i>254</i>&nbsp;        if (NodeHelper.isDirty(this, DirtyBits.NODE_DRAWMODE)) {</b>
+<b class="nc"><i>255</i>&nbsp;            peer.setDrawMode(getDrawMode() == null ? DrawMode.FILL : getDrawMode());</b>
+<i>256</i>&nbsp;        }
+<b class="nc"><i>257</i>&nbsp;        if (NodeHelper.isDirty(this, DirtyBits.NODE_CULLFACE)) {</b>
+<b class="nc"><i>258</i>&nbsp;            peer.setCullFace(getCullFace() == null ? CullFace.BACK : getCullFace());</b>
+<i>259</i>&nbsp;        }
+<b class="nc"><i>260</i>&nbsp;    }</b>
+<i>261</i>&nbsp;
+<i>262</i>&nbsp;    /*
+<i>263</i>&nbsp;     * Note: This method MUST only be called via its accessor method.
+<i>264</i>&nbsp;     */
+<i>265</i>&nbsp;    private Object doProcessMXNode(MXNodeAlgorithm alg, MXNodeAlgorithmContext ctx) {
+<b class="nc"><i>266</i>&nbsp;        throw new UnsupportedOperationException(&quot;Not supported yet.&quot;);</b>
+<i>267</i>&nbsp;    }
+<i>268</i>&nbsp;
+<i>269</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2017-12-04 21:49</div>
+</div>
+</body>
+</html>

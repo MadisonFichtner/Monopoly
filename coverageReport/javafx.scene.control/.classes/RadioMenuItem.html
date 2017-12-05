@@ -1,0 +1,367 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: RadioMenuItem</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">javafx.scene.control</a> ]
+</div>
+
+<h1>Coverage Summary for Class: RadioMenuItem (javafx.scene.control)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">RadioMenuItem</td>
+<td class="coverageStat">
+  <span class="percent">
+    88.9%
+  </span>
+  <span class="absValue">
+    (8/ 9)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    89.5%
+  </span>
+  <span class="absValue">
+    (17/ 19)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">RadioMenuItem$1</td>
+<td class="coverageStat">
+  <span class="percent">
+    50%
+  </span>
+  <span class="absValue">
+    (2/ 4)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    66.7%
+  </span>
+  <span class="absValue">
+    (6/ 9)
+  </span>
+</td>
+  </tr>
+  <tr>
+    <td class="name">RadioMenuItem$2</td>
+<td class="coverageStat">
+  <span class="percent">
+    50%
+  </span>
+  <span class="absValue">
+    (2/ 4)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    83.3%
+  </span>
+  <span class="absValue">
+    (10/ 12)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    70.6%
+  </span>
+  <span class="absValue">
+    (12/ 17)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    82.5%
+  </span>
+  <span class="absValue">
+    (33/ 40)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright (c) 2010, 2017, Oracle and/or its affiliates. All rights reserved.
+<i>3</i>&nbsp; * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+<i>4</i>&nbsp; *
+<i>5</i>&nbsp; *
+<i>6</i>&nbsp; *
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; *
+<i>11</i>&nbsp; *
+<i>12</i>&nbsp; *
+<i>13</i>&nbsp; *
+<i>14</i>&nbsp; *
+<i>15</i>&nbsp; *
+<i>16</i>&nbsp; *
+<i>17</i>&nbsp; *
+<i>18</i>&nbsp; *
+<i>19</i>&nbsp; *
+<i>20</i>&nbsp; *
+<i>21</i>&nbsp; *
+<i>22</i>&nbsp; *
+<i>23</i>&nbsp; *
+<i>24</i>&nbsp; */
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;package javafx.scene.control;
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;import javafx.beans.property.BooleanProperty;
+<i>29</i>&nbsp;import javafx.beans.property.BooleanPropertyBase;
+<i>30</i>&nbsp;import javafx.beans.property.ObjectProperty;
+<i>31</i>&nbsp;import javafx.beans.property.ObjectPropertyBase;
+<i>32</i>&nbsp;import javafx.scene.Node;
+<i>33</i>&nbsp;
+<i>34</i>&nbsp;/**
+<i>35</i>&nbsp; * &lt;p&gt;
+<i>36</i>&nbsp; * A RadioMenuItem is a {@link MenuItem} that can be toggled (it uses
+<i>37</i>&nbsp; * the {@link javafx.scene.control.Toggle Toggle} mixin). This means that
+<i>38</i>&nbsp; * RadioMenuItem has an API very similar in nature to other controls that use
+<i>39</i>&nbsp; * {@link javafx.scene.control.Toggle Toggle}, such as
+<i>40</i>&nbsp; * {@link javafx.scene.control.RadioButton} and
+<i>41</i>&nbsp; * {@link javafx.scene.control.ToggleButton}. RadioMenuItem is
+<i>42</i>&nbsp; * specifically designed for use within a {@code Menu}, so refer to that class
+<i>43</i>&nbsp; * API documentation for more information on how to add a RadioMenuItem into it.
+<i>44</i>&nbsp; * &lt;p&gt;
+<i>45</i>&nbsp; * To create a simple, ungrouped RadioMenuItem, do the following:
+<i>46</i>&nbsp;&lt;pre&gt;&lt;code&gt;
+<i>47</i>&nbsp;RadioMenuItem radioItem = new RadioMenuItem(&quot;radio text&quot;);
+<i>48</i>&nbsp;radioItem.setSelected(false);
+<i>49</i>&nbsp;radioItem.setOnAction(new EventHandler&amp;lt;ActionEvent&amp;gt;() {
+<i>50</i>&nbsp;    &amp;#064;Override public void handle(ActionEvent e) {
+<i>51</i>&nbsp;        System.out.println(&quot;radio toggled&quot;);
+<i>52</i>&nbsp;    }
+<i>53</i>&nbsp;});
+<i>54</i>&nbsp;&lt;/code&gt;&lt;/pre&gt;
+<i>55</i>&nbsp; * &lt;p&gt;
+<i>56</i>&nbsp; * The problem with the example above is that this offers no benefit over using
+<i>57</i>&nbsp; * a normal MenuItem. As already mentioned, the purpose of a
+<i>58</i>&nbsp; * RadioMenuItem is to offer
+<i>59</i>&nbsp; * multiple choices to the user, and only allow for one of these choices to be
+<i>60</i>&nbsp; * selected at any one time (i.e. the selection should be &lt;i&gt;mutually exclusive&lt;/i&gt;).
+<i>61</i>&nbsp; * To achieve this, you can place zero or more RadioMenuItem&#39;s into groups. When
+<i>62</i>&nbsp; * in groups, only one RadioMenuItem at a time within that group can be selected.
+<i>63</i>&nbsp; * To put two RadioMenuItem instances into the same group, simply assign them
+<i>64</i>&nbsp; * both the same value for {@code toggleGroup}. For example:
+<i>65</i>&nbsp;&lt;pre&gt;&lt;code&gt;
+<i>66</i>&nbsp;ToggleGroup toggleGroup = new ToggleGroup();
+<i>67</i>&nbsp;
+<i>68</i>&nbsp;RadioMenuItem radioItem1 = new RadioMenuItem(&quot;Option 1&quot;);
+<i>69</i>&nbsp;radioItem.setOnAction(new EventHandler&amp;lt;ActionEvent&amp;gt;() {
+<i>70</i>&nbsp;    &amp;#064;Override public void handle(ActionEvent e) {
+<i>71</i>&nbsp;        System.out.println(&quot;radio toggled&quot;);
+<i>72</i>&nbsp;    }
+<i>73</i>&nbsp;});
+<i>74</i>&nbsp;radioItem1.setToggleGroup(toggleGroup);
+<i>75</i>&nbsp;RadioMenuItem radioItem2 = new RadioMenuItem(&quot;Option 2&quot;);
+<i>76</i>&nbsp;radioItem.setOnAction(new EventHandler&amp;lt;ActionEvent&amp;gt;() {
+<i>77</i>&nbsp;    &amp;#064;Override public void handle(ActionEvent e) {
+<i>78</i>&nbsp;        System.out.println(&quot;radio toggled&quot;);
+<i>79</i>&nbsp;    }
+<i>80</i>&nbsp;});
+<i>81</i>&nbsp;radioItem2.setToggleGroup(toggleGroup);
+<i>82</i>&nbsp;
+<i>83</i>&nbsp;&lt;/code&gt;&lt;/pre&gt;
+<i>84</i>&nbsp; *
+<i>85</i>&nbsp; * In this example, with both RadioMenuItem&#39;s assigned to the same
+<i>86</i>&nbsp; * {@link javafx.scene.control.ToggleGroup ToggleGroup}, only one item may be
+<i>87</i>&nbsp; * selected at any one time, and should
+<i>88</i>&nbsp; * the selection change, the ToggleGroup will take care of deselecting the
+<i>89</i>&nbsp; * previous item.
+<i>90</i>&nbsp; *
+<i>91</i>&nbsp; * @see MenuItem
+<i>92</i>&nbsp; * @see Menu
+<i>93</i>&nbsp; * @since JavaFX 2.0
+<i>94</i>&nbsp; */
+<i>95</i>&nbsp;public class RadioMenuItem extends MenuItem implements Toggle {
+<i>96</i>&nbsp;
+<i>97</i>&nbsp;    /***************************************************************************
+<i>98</i>&nbsp;     *                                                                         *
+<i>99</i>&nbsp;     * Constructors                                                            *
+<i>100</i>&nbsp;     *                                                                         *
+<i>101</i>&nbsp;     **************************************************************************/
+<i>102</i>&nbsp;
+<i>103</i>&nbsp;    /**
+<i>104</i>&nbsp;     * Constructs a RadioMenuItem with no display text.
+<i>105</i>&nbsp;     */
+<i>106</i>&nbsp;    public RadioMenuItem() {
+<b class="nc"><i>107</i>&nbsp;        this(null,null);</b>
+<b class="nc"><i>108</i>&nbsp;    }</b>
+<i>109</i>&nbsp;
+<i>110</i>&nbsp;    /**
+<i>111</i>&nbsp;     * Constructs a RadioMenuItem and sets the display text with the specified text.
+<i>112</i>&nbsp;     * @param text the display text
+<i>113</i>&nbsp;     */
+<i>114</i>&nbsp;    public RadioMenuItem(String text) {
+<b class="fc"><i>115</i>&nbsp;        this(text,null);</b>
+<b class="fc"><i>116</i>&nbsp;    }</b>
+<i>117</i>&nbsp;
+<i>118</i>&nbsp;    /**
+<i>119</i>&nbsp;     * Constructs a RadioMenuItem and sets the display text with the specified text
+<i>120</i>&nbsp;     * and sets the graphic {@link Node} to the given node.
+<i>121</i>&nbsp;     * @param text the display text
+<i>122</i>&nbsp;     * @param graphic the graphic node
+<i>123</i>&nbsp;     */
+<i>124</i>&nbsp;    public RadioMenuItem(String text, Node graphic) {
+<b class="fc"><i>125</i>&nbsp;        super(text,graphic);</b>
+<b class="fc"><i>126</i>&nbsp;        getStyleClass().add(DEFAULT_STYLE_CLASS);</b>
+<b class="fc"><i>127</i>&nbsp;    }</b>
+<i>128</i>&nbsp;
+<i>129</i>&nbsp;
+<i>130</i>&nbsp;
+<i>131</i>&nbsp;    /***************************************************************************
+<i>132</i>&nbsp;     *                                                                         *
+<i>133</i>&nbsp;     * Properties                                                              *
+<i>134</i>&nbsp;     *                                                                         *
+<i>135</i>&nbsp;     **************************************************************************/
+<i>136</i>&nbsp;
+<i>137</i>&nbsp;    // --- Toggle Group
+<i>138</i>&nbsp;    /**
+<i>139</i>&nbsp;     * Represents the {@link ToggleGroup} that this RadioMenuItem belongs to.
+<i>140</i>&nbsp;     */
+<i>141</i>&nbsp;    private ObjectProperty&lt;ToggleGroup&gt; toggleGroup;
+<i>142</i>&nbsp;    @Override public final void setToggleGroup(ToggleGroup value) {
+<b class="fc"><i>143</i>&nbsp;        toggleGroupProperty().set(value);</b>
+<b class="fc"><i>144</i>&nbsp;    }</b>
+<i>145</i>&nbsp;
+<i>146</i>&nbsp;    @Override public final ToggleGroup getToggleGroup() {
+<b class="fc"><i>147</i>&nbsp;        return toggleGroup == null ? null : toggleGroup.get();</b>
+<i>148</i>&nbsp;    }
+<i>149</i>&nbsp;
+<i>150</i>&nbsp;    @Override public final ObjectProperty&lt;ToggleGroup&gt; toggleGroupProperty() {
+<b class="fc"><i>151</i>&nbsp;        if (toggleGroup == null) {</b>
+<b class="fc"><i>152</i>&nbsp;            toggleGroup = new ObjectPropertyBase&lt;ToggleGroup&gt;() {</b>
+<i>153</i>&nbsp;                private ToggleGroup old;
+<i>154</i>&nbsp;                @Override protected void invalidated() {
+<b class="fc"><i>155</i>&nbsp;                    if (old != null) {</b>
+<b class="nc"><i>156</i>&nbsp;                        old.getToggles().remove(RadioMenuItem.this);</b>
+<i>157</i>&nbsp;                    }
+<b class="fc"><i>158</i>&nbsp;                    old = get();</b>
+<b class="fc"><i>159</i>&nbsp;                    if (get() != null &amp;&amp; !get().getToggles().contains(RadioMenuItem.this)) {</b>
+<b class="fc"><i>160</i>&nbsp;                        get().getToggles().add(RadioMenuItem.this);</b>
+<i>161</i>&nbsp;                    }
+<b class="fc"><i>162</i>&nbsp;                }</b>
+<i>163</i>&nbsp;
+<i>164</i>&nbsp;                @Override
+<i>165</i>&nbsp;                public Object getBean() {
+<b class="nc"><i>166</i>&nbsp;                    return RadioMenuItem.this;</b>
+<i>167</i>&nbsp;                }
+<i>168</i>&nbsp;
+<i>169</i>&nbsp;                @Override
+<i>170</i>&nbsp;                public String getName() {
+<b class="nc"><i>171</i>&nbsp;                    return &quot;toggleGroup&quot;;</b>
+<i>172</i>&nbsp;                }
+<i>173</i>&nbsp;            };
+<i>174</i>&nbsp;        }
+<b class="fc"><i>175</i>&nbsp;        return toggleGroup;</b>
+<i>176</i>&nbsp;    }
+<i>177</i>&nbsp;
+<i>178</i>&nbsp;
+<i>179</i>&nbsp;    // --- Selected
+<i>180</i>&nbsp;    private BooleanProperty selected;
+<i>181</i>&nbsp;    @Override public final void setSelected(boolean value) {
+<b class="fc"><i>182</i>&nbsp;        selectedProperty().set(value);</b>
+<b class="fc"><i>183</i>&nbsp;    }</b>
+<i>184</i>&nbsp;
+<i>185</i>&nbsp;    @Override public final boolean isSelected() {
+<b class="fc"><i>186</i>&nbsp;        return selected == null ? false : selected.get();</b>
+<i>187</i>&nbsp;    }
+<i>188</i>&nbsp;
+<i>189</i>&nbsp;    @Override public final BooleanProperty selectedProperty() {
+<b class="fc"><i>190</i>&nbsp;        if (selected == null) {</b>
+<b class="fc"><i>191</i>&nbsp;            selected = new BooleanPropertyBase() {</b>
+<i>192</i>&nbsp;                @Override protected void invalidated() {
+<b class="fc"><i>193</i>&nbsp;                    if (getToggleGroup() != null) {</b>
+<b class="fc"><i>194</i>&nbsp;                        if (get()) {</b>
+<b class="fc"><i>195</i>&nbsp;                            getToggleGroup().selectToggle(RadioMenuItem.this);</b>
+<b class="fc"><i>196</i>&nbsp;                        } else if (getToggleGroup().getSelectedToggle() == RadioMenuItem.this) {</b>
+<b class="fc"><i>197</i>&nbsp;                            getToggleGroup().selectToggle(null);</b>
+<i>198</i>&nbsp;                        }
+<i>199</i>&nbsp;                    }
+<i>200</i>&nbsp;
+<b class="fc"><i>201</i>&nbsp;                    if (isSelected()) {</b>
+<b class="fc"><i>202</i>&nbsp;                        getStyleClass().add(STYLE_CLASS_SELECTED);</b>
+<i>203</i>&nbsp;                    } else {
+<b class="fc"><i>204</i>&nbsp;                        getStyleClass().remove(STYLE_CLASS_SELECTED);</b>
+<i>205</i>&nbsp;                    }
+<b class="fc"><i>206</i>&nbsp;                }</b>
+<i>207</i>&nbsp;
+<i>208</i>&nbsp;                @Override
+<i>209</i>&nbsp;                public Object getBean() {
+<b class="nc"><i>210</i>&nbsp;                    return RadioMenuItem.this;</b>
+<i>211</i>&nbsp;                }
+<i>212</i>&nbsp;
+<i>213</i>&nbsp;                @Override
+<i>214</i>&nbsp;                public String getName() {
+<b class="nc"><i>215</i>&nbsp;                    return &quot;selected&quot;;</b>
+<i>216</i>&nbsp;                }
+<i>217</i>&nbsp;            };
+<i>218</i>&nbsp;        }
+<b class="fc"><i>219</i>&nbsp;        return selected;</b>
+<i>220</i>&nbsp;    }
+<i>221</i>&nbsp;
+<i>222</i>&nbsp;
+<i>223</i>&nbsp;
+<i>224</i>&nbsp;    /***************************************************************************
+<i>225</i>&nbsp;     *                                                                         *
+<i>226</i>&nbsp;     * Inherited Public API                                                    *
+<i>227</i>&nbsp;     *                                                                         *
+<i>228</i>&nbsp;     **************************************************************************/
+<i>229</i>&nbsp;
+<i>230</i>&nbsp;
+<i>231</i>&nbsp;    /***************************************************************************
+<i>232</i>&nbsp;     *                                                                         *
+<i>233</i>&nbsp;     * Stylesheet Handling                                                     *
+<i>234</i>&nbsp;     *                                                                         *
+<i>235</i>&nbsp;     **************************************************************************/
+<i>236</i>&nbsp;
+<i>237</i>&nbsp;    private static final String DEFAULT_STYLE_CLASS = &quot;radio-menu-item&quot;;
+<i>238</i>&nbsp;    private static final String STYLE_CLASS_SELECTED = &quot;selected&quot;;
+<i>239</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2017-12-04 21:49</div>
+</div>
+</body>
+</html>

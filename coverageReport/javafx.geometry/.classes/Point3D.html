@@ -1,0 +1,515 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: Point3D</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">javafx.geometry</a> ]
+</div>
+
+<h1>Coverage Summary for Class: Point3D (javafx.geometry)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">Point3D</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    19.2%
+  </span>
+  <span class="absValue">
+    (5/ 26)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    11.5%
+  </span>
+  <span class="absValue">
+    (10/ 87)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright (c) 2008, 2013, Oracle and/or its affiliates. All rights reserved.
+<i>3</i>&nbsp; * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+<i>4</i>&nbsp; *
+<i>5</i>&nbsp; *
+<i>6</i>&nbsp; *
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; *
+<i>11</i>&nbsp; *
+<i>12</i>&nbsp; *
+<i>13</i>&nbsp; *
+<i>14</i>&nbsp; *
+<i>15</i>&nbsp; *
+<i>16</i>&nbsp; *
+<i>17</i>&nbsp; *
+<i>18</i>&nbsp; *
+<i>19</i>&nbsp; *
+<i>20</i>&nbsp; *
+<i>21</i>&nbsp; *
+<i>22</i>&nbsp; *
+<i>23</i>&nbsp; *
+<i>24</i>&nbsp; */
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;package javafx.geometry;
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;import javafx.beans.NamedArg;
+<i>29</i>&nbsp;
+<i>30</i>&nbsp;
+<i>31</i>&nbsp;// PENDING_DOC_REVIEW of this whole class
+<i>32</i>&nbsp;/**
+<i>33</i>&nbsp; * A 3D geometric point that usually represents the x, y, z coordinates.
+<i>34</i>&nbsp; * It can also represent a relative magnitude vector&#39;s x, y, z magnitudes.
+<i>35</i>&nbsp; *
+<i>36</i>&nbsp; * @since JavaFX 2.0
+<i>37</i>&nbsp; */
+<i>38</i>&nbsp;public class Point3D {
+<i>39</i>&nbsp;
+<i>40</i>&nbsp;    /**
+<i>41</i>&nbsp;     * Point or vector with all three coordinates set to 0.
+<i>42</i>&nbsp;     */
+<b class="fc"><i>43</i>&nbsp;    public static final Point3D ZERO = new Point3D(0.0, 0.0, 0.0);</b>
+<i>44</i>&nbsp;
+<i>45</i>&nbsp;    /**
+<i>46</i>&nbsp;     * The x coordinate.
+<i>47</i>&nbsp;     *
+<i>48</i>&nbsp;     * @defaultValue 0.0
+<i>49</i>&nbsp;     */
+<i>50</i>&nbsp;    private double x;
+<i>51</i>&nbsp;
+<i>52</i>&nbsp;    /**
+<i>53</i>&nbsp;     * The x coordinate.
+<i>54</i>&nbsp;     * @return the x coordinate
+<i>55</i>&nbsp;     */
+<i>56</i>&nbsp;    public final double getX() {
+<b class="fc"><i>57</i>&nbsp;        return x;</b>
+<i>58</i>&nbsp;    }
+<i>59</i>&nbsp;
+<i>60</i>&nbsp;    /**
+<i>61</i>&nbsp;     * The y coordinate.
+<i>62</i>&nbsp;     *
+<i>63</i>&nbsp;     * @defaultValue 0.0
+<i>64</i>&nbsp;     */
+<i>65</i>&nbsp;    private double y;
+<i>66</i>&nbsp;
+<i>67</i>&nbsp;    /**
+<i>68</i>&nbsp;     * The y coordinate.
+<i>69</i>&nbsp;     * @return the y coordinate
+<i>70</i>&nbsp;     */
+<i>71</i>&nbsp;    public final double getY() {
+<b class="fc"><i>72</i>&nbsp;        return y;</b>
+<i>73</i>&nbsp;    }
+<i>74</i>&nbsp;
+<i>75</i>&nbsp;    /**
+<i>76</i>&nbsp;     * The z coordinate.
+<i>77</i>&nbsp;     *
+<i>78</i>&nbsp;     * @defaultValue 0.0
+<i>79</i>&nbsp;     */
+<i>80</i>&nbsp;    private double z;
+<i>81</i>&nbsp;
+<i>82</i>&nbsp;    /**
+<i>83</i>&nbsp;     * The z coordinate.
+<i>84</i>&nbsp;     * @return the z coordinate
+<i>85</i>&nbsp;     */
+<i>86</i>&nbsp;    public final double getZ() {
+<b class="fc"><i>87</i>&nbsp;        return z;</b>
+<i>88</i>&nbsp;    }
+<i>89</i>&nbsp;
+<i>90</i>&nbsp;    /**
+<i>91</i>&nbsp;     * Cache the hash code to make computing hashes faster.
+<i>92</i>&nbsp;     */
+<b class="fc"><i>93</i>&nbsp;    private int hash = 0;</b>
+<i>94</i>&nbsp;
+<i>95</i>&nbsp;    /**
+<i>96</i>&nbsp;     * Creates a new instance of {@code Point3D}.
+<i>97</i>&nbsp;     * @param x The X coordinate of the {@code Point3D}
+<i>98</i>&nbsp;     * @param y The Y coordinate of the {@code Point3D}
+<i>99</i>&nbsp;     * @param z The Z coordinate of the {@code Point3D}
+<i>100</i>&nbsp;     */
+<b class="fc"><i>101</i>&nbsp;    public Point3D(@NamedArg(&quot;x&quot;) double x, @NamedArg(&quot;y&quot;) double y, @NamedArg(&quot;z&quot;) double z) {</b>
+<b class="fc"><i>102</i>&nbsp;        this.x = x;</b>
+<b class="fc"><i>103</i>&nbsp;        this.y = y;</b>
+<b class="fc"><i>104</i>&nbsp;        this.z = z;</b>
+<b class="fc"><i>105</i>&nbsp;    }</b>
+<i>106</i>&nbsp;
+<i>107</i>&nbsp;    /**
+<i>108</i>&nbsp;     * Computes the distance between this point and point {@code (x1, y1, z1)}.
+<i>109</i>&nbsp;     *
+<i>110</i>&nbsp;     * @param x1 the x coordinate of other point
+<i>111</i>&nbsp;     * @param y1 the y coordinate of other point
+<i>112</i>&nbsp;     * @param z1 the z coordinate of other point
+<i>113</i>&nbsp;     * @return the distance between this point and point {@code (x1, y1, z1)}.
+<i>114</i>&nbsp;     */
+<i>115</i>&nbsp;    public double distance(double x1, double y1, double z1) {
+<b class="nc"><i>116</i>&nbsp;        double a = getX() - x1;</b>
+<b class="nc"><i>117</i>&nbsp;        double b = getY() - y1;</b>
+<b class="nc"><i>118</i>&nbsp;        double c = getZ() - z1;</b>
+<b class="nc"><i>119</i>&nbsp;        return Math.sqrt(a * a + b * b + c * c);</b>
+<i>120</i>&nbsp;    }
+<i>121</i>&nbsp;
+<i>122</i>&nbsp;    /**
+<i>123</i>&nbsp;     * Computes the distance between this point and the specified {@code point}.
+<i>124</i>&nbsp;     *
+<i>125</i>&nbsp;     * @param point the other point
+<i>126</i>&nbsp;     * @return the distance between this point and the specified {@code point}.
+<i>127</i>&nbsp;     * @throws NullPointerException if the specified {@code point} is null
+<i>128</i>&nbsp;     */
+<i>129</i>&nbsp;    public double distance(Point3D  point) {
+<b class="nc"><i>130</i>&nbsp;        return distance(point.getX(), point.getY(), point.getZ());</b>
+<i>131</i>&nbsp;    }
+<i>132</i>&nbsp;
+<i>133</i>&nbsp;    /**
+<i>134</i>&nbsp;     * Returns a point with the specified coordinates added to the coordinates
+<i>135</i>&nbsp;     * of this point.
+<i>136</i>&nbsp;     * @param x the X coordinate addition
+<i>137</i>&nbsp;     * @param y the Y coordinate addition
+<i>138</i>&nbsp;     * @param z the Z coordinate addition
+<i>139</i>&nbsp;     * @return the point with added coordinates
+<i>140</i>&nbsp;     * @since JavaFX 8.0
+<i>141</i>&nbsp;     */
+<i>142</i>&nbsp;    public Point3D add(double x, double y, double z) {
+<b class="nc"><i>143</i>&nbsp;        return new Point3D(</b>
+<b class="nc"><i>144</i>&nbsp;                getX() + x,</b>
+<b class="nc"><i>145</i>&nbsp;                getY() + y,</b>
+<b class="nc"><i>146</i>&nbsp;                getZ() + z);</b>
+<i>147</i>&nbsp;    }
+<i>148</i>&nbsp;
+<i>149</i>&nbsp;    /**
+<i>150</i>&nbsp;     * Returns a point with the coordinates of the specified point added to the
+<i>151</i>&nbsp;     * coordinates of this point.
+<i>152</i>&nbsp;     * @param point the point whose coordinates are to be added
+<i>153</i>&nbsp;     * @return the point with added coordinates
+<i>154</i>&nbsp;     * @throws NullPointerException if the specified {@code point} is null
+<i>155</i>&nbsp;     * @since JavaFX 8.0
+<i>156</i>&nbsp;     */
+<i>157</i>&nbsp;    public Point3D add(Point3D point) {
+<b class="nc"><i>158</i>&nbsp;        return add(point.getX(), point.getY(), point.getZ());</b>
+<i>159</i>&nbsp;    }
+<i>160</i>&nbsp;
+<i>161</i>&nbsp;    /**
+<i>162</i>&nbsp;     * Returns a point with the specified coordinates subtracted from
+<i>163</i>&nbsp;     * the coordinates of this point.
+<i>164</i>&nbsp;     * @param x the X coordinate subtraction
+<i>165</i>&nbsp;     * @param y the Y coordinate subtraction
+<i>166</i>&nbsp;     * @param z the Z coordinate subtraction
+<i>167</i>&nbsp;     * @return the point with subtracted coordinates
+<i>168</i>&nbsp;     * @since JavaFX 8.0
+<i>169</i>&nbsp;     */
+<i>170</i>&nbsp;    public Point3D subtract(double x, double y, double z) {
+<b class="nc"><i>171</i>&nbsp;        return new Point3D(</b>
+<b class="nc"><i>172</i>&nbsp;                getX() - x,</b>
+<b class="nc"><i>173</i>&nbsp;                getY() - y,</b>
+<b class="nc"><i>174</i>&nbsp;                getZ() - z);</b>
+<i>175</i>&nbsp;    }
+<i>176</i>&nbsp;
+<i>177</i>&nbsp;    /**
+<i>178</i>&nbsp;     * Returns a point with the coordinates of the specified point subtracted
+<i>179</i>&nbsp;     * from the coordinates of this point.
+<i>180</i>&nbsp;     * @param point the point whose coordinates are to be subtracted
+<i>181</i>&nbsp;     * @return the point with subtracted coordinates
+<i>182</i>&nbsp;     * @throws NullPointerException if the specified {@code point} is null
+<i>183</i>&nbsp;     * @since JavaFX 8.0
+<i>184</i>&nbsp;     */
+<i>185</i>&nbsp;    public Point3D subtract(Point3D point) {
+<b class="nc"><i>186</i>&nbsp;        return subtract(point.getX(), point.getY(), point.getZ());</b>
+<i>187</i>&nbsp;    }
+<i>188</i>&nbsp;
+<i>189</i>&nbsp;    /**
+<i>190</i>&nbsp;     * Returns a point with the coordinates of this point multiplied
+<i>191</i>&nbsp;     * by the specified factor
+<i>192</i>&nbsp;     * @param factor the factor multiplying the coordinates
+<i>193</i>&nbsp;     * @return the point with multiplied coordinates
+<i>194</i>&nbsp;     * @since JavaFX 8.0
+<i>195</i>&nbsp;     */
+<i>196</i>&nbsp;    public Point3D multiply(double factor) {
+<b class="nc"><i>197</i>&nbsp;        return new Point3D(getX() * factor, getY() * factor, getZ() * factor);</b>
+<i>198</i>&nbsp;    }
+<i>199</i>&nbsp;
+<i>200</i>&nbsp;    /**
+<i>201</i>&nbsp;     * Normalizes the relative magnitude vector represented by this instance.
+<i>202</i>&nbsp;     * Returns a vector with the same direction and magnitude equal to 1.
+<i>203</i>&nbsp;     * If this is a zero vector, a zero vector is returned.
+<i>204</i>&nbsp;     * @return the normalized vector represented by a {@code Point3D} instance
+<i>205</i>&nbsp;     * @since JavaFX 8.0
+<i>206</i>&nbsp;     */
+<i>207</i>&nbsp;    public Point3D normalize() {
+<b class="nc"><i>208</i>&nbsp;        final double mag = magnitude();</b>
+<i>209</i>&nbsp;
+<b class="nc"><i>210</i>&nbsp;        if (mag == 0.0) {</b>
+<b class="nc"><i>211</i>&nbsp;            return new Point3D(0.0, 0.0, 0.0);</b>
+<i>212</i>&nbsp;        }
+<i>213</i>&nbsp;
+<b class="nc"><i>214</i>&nbsp;        return new Point3D(</b>
+<b class="nc"><i>215</i>&nbsp;                getX() / mag,</b>
+<b class="nc"><i>216</i>&nbsp;                getY() / mag,</b>
+<b class="nc"><i>217</i>&nbsp;                getZ() / mag);</b>
+<i>218</i>&nbsp;    }
+<i>219</i>&nbsp;
+<i>220</i>&nbsp;    /**
+<i>221</i>&nbsp;     * Returns a point which lies in the middle between this point and the
+<i>222</i>&nbsp;     * specified coordinates.
+<i>223</i>&nbsp;     * @param x the X coordinate of the second endpoint
+<i>224</i>&nbsp;     * @param y the Y coordinate of the second endpoint
+<i>225</i>&nbsp;     * @param z the Z coordinate of the second endpoint
+<i>226</i>&nbsp;     * @return the point in the middle
+<i>227</i>&nbsp;     * @since JavaFX 8.0
+<i>228</i>&nbsp;     */
+<i>229</i>&nbsp;    public Point3D midpoint(double x, double y, double z) {
+<b class="nc"><i>230</i>&nbsp;        return new Point3D(</b>
+<b class="nc"><i>231</i>&nbsp;                x + (getX() - x) / 2.0,</b>
+<b class="nc"><i>232</i>&nbsp;                y + (getY() - y) / 2.0,</b>
+<b class="nc"><i>233</i>&nbsp;                z + (getZ() - z) / 2.0);</b>
+<i>234</i>&nbsp;    }
+<i>235</i>&nbsp;
+<i>236</i>&nbsp;    /**
+<i>237</i>&nbsp;     * Returns a point which lies in the middle between this point and the
+<i>238</i>&nbsp;     * specified point.
+<i>239</i>&nbsp;     * @param point the other endpoint
+<i>240</i>&nbsp;     * @return the point in the middle
+<i>241</i>&nbsp;     * @throws NullPointerException if the specified {@code point} is null
+<i>242</i>&nbsp;     * @since JavaFX 8.0
+<i>243</i>&nbsp;     */
+<i>244</i>&nbsp;    public Point3D midpoint(Point3D point) {
+<b class="nc"><i>245</i>&nbsp;        return midpoint(point.getX(), point.getY(), point.getZ());</b>
+<i>246</i>&nbsp;    }
+<i>247</i>&nbsp;
+<i>248</i>&nbsp;    /**
+<i>249</i>&nbsp;     * Computes the angle (in degrees) between the vector represented
+<i>250</i>&nbsp;     * by this point and the specified vector.
+<i>251</i>&nbsp;     * @param x the X magnitude of the other vector
+<i>252</i>&nbsp;     * @param y the Y magnitude of the other vector
+<i>253</i>&nbsp;     * @param z the Z magnitude of the other vector
+<i>254</i>&nbsp;     * @return the angle between the two vectors measured in degrees
+<i>255</i>&nbsp;     * @since JavaFX 8.0
+<i>256</i>&nbsp;     */
+<i>257</i>&nbsp;    public double angle(double x, double y, double z) {
+<b class="nc"><i>258</i>&nbsp;        final double ax = getX();</b>
+<b class="nc"><i>259</i>&nbsp;        final double ay = getY();</b>
+<b class="nc"><i>260</i>&nbsp;        final double az = getZ();</b>
+<i>261</i>&nbsp;
+<b class="nc"><i>262</i>&nbsp;        final double delta = (ax * x + ay * y + az * z) / Math.sqrt(</b>
+<i>263</i>&nbsp;                (ax * ax + ay * ay + az * az) * (x * x + y * y + z * z));
+<i>264</i>&nbsp;
+<b class="nc"><i>265</i>&nbsp;        if (delta &gt; 1.0) {</b>
+<b class="nc"><i>266</i>&nbsp;            return 0.0;</b>
+<i>267</i>&nbsp;        }
+<b class="nc"><i>268</i>&nbsp;        if (delta &lt; -1.0) {</b>
+<b class="nc"><i>269</i>&nbsp;            return 180.0;</b>
+<i>270</i>&nbsp;        }
+<i>271</i>&nbsp;
+<b class="nc"><i>272</i>&nbsp;        return Math.toDegrees(Math.acos(delta));</b>
+<i>273</i>&nbsp;    }
+<i>274</i>&nbsp;
+<i>275</i>&nbsp;    /**
+<i>276</i>&nbsp;     * Computes the angle (in degrees) between the vector represented
+<i>277</i>&nbsp;     * by this point and the vector represented by the specified point.
+<i>278</i>&nbsp;     * @param point the other vector
+<i>279</i>&nbsp;     * @return the angle between the two vectors measured in degrees,
+<i>280</i>&nbsp;     *         {@code NaN} if any of the two vectors is a zero vector
+<i>281</i>&nbsp;     * @throws NullPointerException if the specified {@code point} is null
+<i>282</i>&nbsp;     * @since JavaFX 8.0
+<i>283</i>&nbsp;     */
+<i>284</i>&nbsp;    public double angle(Point3D point) {
+<b class="nc"><i>285</i>&nbsp;        return angle(point.getX(), point.getY(), point.getZ());</b>
+<i>286</i>&nbsp;    }
+<i>287</i>&nbsp;
+<i>288</i>&nbsp;    /**
+<i>289</i>&nbsp;     * Computes the angle (in degrees) between the three points with this point
+<i>290</i>&nbsp;     * as a vertex.
+<i>291</i>&nbsp;     * @param p1 one point
+<i>292</i>&nbsp;     * @param p2 other point
+<i>293</i>&nbsp;     * @return angle between the vectors (this, p1) and (this, p2) measured
+<i>294</i>&nbsp;     *         in degrees, {@code NaN} if the three points are not different
+<i>295</i>&nbsp;     *         from one another
+<i>296</i>&nbsp;     * @throws NullPointerException if the {@code p1} or {@code p2} is null
+<i>297</i>&nbsp;     * @since JavaFX 8.0
+<i>298</i>&nbsp;     */
+<i>299</i>&nbsp;    public double angle(Point3D p1, Point3D p2) {
+<b class="nc"><i>300</i>&nbsp;        final double x = getX();</b>
+<b class="nc"><i>301</i>&nbsp;        final double y = getY();</b>
+<b class="nc"><i>302</i>&nbsp;        final double z = getZ();</b>
+<i>303</i>&nbsp;
+<b class="nc"><i>304</i>&nbsp;        final double ax = p1.getX() - x;</b>
+<b class="nc"><i>305</i>&nbsp;        final double ay = p1.getY() - y;</b>
+<b class="nc"><i>306</i>&nbsp;        final double az = p1.getZ() - z;</b>
+<b class="nc"><i>307</i>&nbsp;        final double bx = p2.getX() - x;</b>
+<b class="nc"><i>308</i>&nbsp;        final double by = p2.getY() - y;</b>
+<b class="nc"><i>309</i>&nbsp;        final double bz = p2.getZ() - z;</b>
+<i>310</i>&nbsp;
+<b class="nc"><i>311</i>&nbsp;        final double delta = (ax * bx + ay * by + az * bz) / Math.sqrt(</b>
+<i>312</i>&nbsp;                (ax * ax + ay * ay + az * az) * (bx * bx + by * by + bz * bz));
+<i>313</i>&nbsp;
+<b class="nc"><i>314</i>&nbsp;        if (delta &gt; 1.0) {</b>
+<b class="nc"><i>315</i>&nbsp;            return 0.0;</b>
+<i>316</i>&nbsp;        }
+<b class="nc"><i>317</i>&nbsp;        if (delta &lt; -1.0) {</b>
+<b class="nc"><i>318</i>&nbsp;            return 180.0;</b>
+<i>319</i>&nbsp;        }
+<i>320</i>&nbsp;
+<b class="nc"><i>321</i>&nbsp;        return Math.toDegrees(Math.acos(delta));</b>
+<i>322</i>&nbsp;    }
+<i>323</i>&nbsp;
+<i>324</i>&nbsp;    /**
+<i>325</i>&nbsp;     * Computes magnitude (length) of the relative magnitude vector represented
+<i>326</i>&nbsp;     * by this instance.
+<i>327</i>&nbsp;     * @return magnitude of the vector
+<i>328</i>&nbsp;     * @since JavaFX 8.0
+<i>329</i>&nbsp;     */
+<i>330</i>&nbsp;    public double magnitude() {
+<b class="nc"><i>331</i>&nbsp;        final double x = getX();</b>
+<b class="nc"><i>332</i>&nbsp;        final double y = getY();</b>
+<b class="nc"><i>333</i>&nbsp;        final double z = getZ();</b>
+<i>334</i>&nbsp;
+<b class="nc"><i>335</i>&nbsp;        return Math.sqrt(x * x + y * y + z * z);</b>
+<i>336</i>&nbsp;    }
+<i>337</i>&nbsp;
+<i>338</i>&nbsp;    /**
+<i>339</i>&nbsp;     * Computes dot (scalar) product of the vector represented by this instance
+<i>340</i>&nbsp;     * and the specified vector.
+<i>341</i>&nbsp;     * @param x the X magnitude of the other vector
+<i>342</i>&nbsp;     * @param y the Y magnitude of the other vector
+<i>343</i>&nbsp;     * @param z the Z magnitude of the other vector
+<i>344</i>&nbsp;     * @return the dot product of the two vectors
+<i>345</i>&nbsp;     * @since JavaFX 8.0
+<i>346</i>&nbsp;     */
+<i>347</i>&nbsp;    public double dotProduct(double x, double y, double z) {
+<b class="nc"><i>348</i>&nbsp;        return getX() * x + getY() * y + getZ() * z;</b>
+<i>349</i>&nbsp;    }
+<i>350</i>&nbsp;
+<i>351</i>&nbsp;    /**
+<i>352</i>&nbsp;     * Computes dot (scalar) product of the vector represented by this instance
+<i>353</i>&nbsp;     * and the specified vector.
+<i>354</i>&nbsp;     * @param vector the other vector
+<i>355</i>&nbsp;     * @return the dot product of the two vectors
+<i>356</i>&nbsp;     * @throws NullPointerException if the specified {@code vector} is null
+<i>357</i>&nbsp;     * @since JavaFX 8.0
+<i>358</i>&nbsp;     */
+<i>359</i>&nbsp;    public double dotProduct(Point3D vector) {
+<b class="nc"><i>360</i>&nbsp;        return dotProduct(vector.getX(), vector.getY(), vector.getZ());</b>
+<i>361</i>&nbsp;    }
+<i>362</i>&nbsp;
+<i>363</i>&nbsp;    /**
+<i>364</i>&nbsp;     * Computes cross product of the vector represented by this instance
+<i>365</i>&nbsp;     * and the specified vector.
+<i>366</i>&nbsp;     * @param x the X magnitude of the other vector
+<i>367</i>&nbsp;     * @param y the Y magnitude of the other vector
+<i>368</i>&nbsp;     * @param z the Z magnitude of the other vector
+<i>369</i>&nbsp;     * @return the cross product of the two vectors
+<i>370</i>&nbsp;     * @since JavaFX 8.0
+<i>371</i>&nbsp;     */
+<i>372</i>&nbsp;    public Point3D crossProduct(double x, double y, double z) {
+<b class="nc"><i>373</i>&nbsp;        final double ax = getX();</b>
+<b class="nc"><i>374</i>&nbsp;        final double ay = getY();</b>
+<b class="nc"><i>375</i>&nbsp;        final double az = getZ();</b>
+<i>376</i>&nbsp;
+<b class="nc"><i>377</i>&nbsp;        return new Point3D(</b>
+<i>378</i>&nbsp;                ay * z - az * y,
+<i>379</i>&nbsp;                az * x - ax * z,
+<i>380</i>&nbsp;                ax * y - ay * x);
+<i>381</i>&nbsp;    }
+<i>382</i>&nbsp;
+<i>383</i>&nbsp;    /**
+<i>384</i>&nbsp;     * Computes cross product of the vector represented by this instance
+<i>385</i>&nbsp;     * and the specified vector.
+<i>386</i>&nbsp;     * @param vector the other vector
+<i>387</i>&nbsp;     * @return the cross product of the two vectors
+<i>388</i>&nbsp;     * @throws NullPointerException if the specified {@code vector} is null
+<i>389</i>&nbsp;     * @since JavaFX 8.0
+<i>390</i>&nbsp;     */
+<i>391</i>&nbsp;    public Point3D crossProduct(Point3D vector) {
+<b class="nc"><i>392</i>&nbsp;        return crossProduct(vector.getX(), vector.getY(), vector.getZ());</b>
+<i>393</i>&nbsp;    }
+<i>394</i>&nbsp;
+<i>395</i>&nbsp;    /**
+<i>396</i>&nbsp;     * Returns a hash code value for the point.
+<i>397</i>&nbsp;     * @return a hash code value for the point.
+<i>398</i>&nbsp;     */
+<i>399</i>&nbsp;    @Override public boolean equals(Object obj) {
+<b class="nc"><i>400</i>&nbsp;        if (obj == this) return true;</b>
+<b class="nc"><i>401</i>&nbsp;        if (obj instanceof Point3D) {</b>
+<b class="nc"><i>402</i>&nbsp;            Point3D other = (Point3D) obj;</b>
+<b class="nc"><i>403</i>&nbsp;            return getX() == other.getX() &amp;&amp; getY() == other.getY() &amp;&amp; getZ() == other.getZ();</b>
+<b class="nc"><i>404</i>&nbsp;        } else return false;</b>
+<i>405</i>&nbsp;    }
+<i>406</i>&nbsp;
+<i>407</i>&nbsp;    /**
+<i>408</i>&nbsp;     * Returns a hash code for this {@code Point3D} object.
+<i>409</i>&nbsp;     * @return a hash code for this {@code Point3D} object.
+<i>410</i>&nbsp;     */
+<i>411</i>&nbsp;    @Override public int hashCode() {
+<b class="nc"><i>412</i>&nbsp;        if (hash == 0) {</b>
+<b class="nc"><i>413</i>&nbsp;            long bits = 7L;</b>
+<b class="nc"><i>414</i>&nbsp;            bits = 31L * bits + Double.doubleToLongBits(getX());</b>
+<b class="nc"><i>415</i>&nbsp;            bits = 31L * bits + Double.doubleToLongBits(getY());</b>
+<b class="nc"><i>416</i>&nbsp;            bits = 31L * bits + Double.doubleToLongBits(getZ());</b>
+<b class="nc"><i>417</i>&nbsp;            hash = (int) (bits ^ (bits &gt;&gt; 32));</b>
+<i>418</i>&nbsp;        }
+<b class="nc"><i>419</i>&nbsp;        return hash;</b>
+<i>420</i>&nbsp;    }
+<i>421</i>&nbsp;
+<i>422</i>&nbsp;    /**
+<i>423</i>&nbsp;     * Returns a string representation of this {@code Point3D}.
+<i>424</i>&nbsp;     * This method is intended to be used only for informational purposes.
+<i>425</i>&nbsp;     * The content and format of the returned string might vary between
+<i>426</i>&nbsp;     * implementations.
+<i>427</i>&nbsp;     * The returned string might be empty but cannot be {@code null}.
+<i>428</i>&nbsp;     */
+<i>429</i>&nbsp;    @Override public String toString() {
+<b class="nc"><i>430</i>&nbsp;        return &quot;Point3D [x = &quot; + getX() + &quot;, y = &quot; + getY() + &quot;, z = &quot; + getZ() + &quot;]&quot;;</b>
+<i>431</i>&nbsp;    }
+<i>432</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2017-12-04 21:49</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,235 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: ParallelCamera</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">javafx.scene</a> ]
+</div>
+
+<h1>Coverage Summary for Class: ParallelCamera (javafx.scene)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">ParallelCamera</td>
+<td class="coverageStat">
+  <span class="percent">
+    88.9%
+  </span>
+  <span class="absValue">
+    (8/ 9)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    83.9%
+  </span>
+  <span class="absValue">
+    (26/ 31)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">ParallelCamera$1</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (2/ 2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (2/ 2)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    90.9%
+  </span>
+  <span class="absValue">
+    (10/ 11)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    84.8%
+  </span>
+  <span class="absValue">
+    (28/ 33)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright (c) 2010, 2016, Oracle and/or its affiliates. All rights reserved.
+<i>3</i>&nbsp; * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+<i>4</i>&nbsp; *
+<i>5</i>&nbsp; *
+<i>6</i>&nbsp; *
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; *
+<i>11</i>&nbsp; *
+<i>12</i>&nbsp; *
+<i>13</i>&nbsp; *
+<i>14</i>&nbsp; *
+<i>15</i>&nbsp; *
+<i>16</i>&nbsp; *
+<i>17</i>&nbsp; *
+<i>18</i>&nbsp; *
+<i>19</i>&nbsp; *
+<i>20</i>&nbsp; *
+<i>21</i>&nbsp; *
+<i>22</i>&nbsp; *
+<i>23</i>&nbsp; *
+<i>24</i>&nbsp; */
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;package javafx.scene;
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;import com.sun.javafx.geom.PickRay;
+<i>29</i>&nbsp;import com.sun.javafx.geom.Vec3d;
+<i>30</i>&nbsp;import com.sun.javafx.geom.transform.Affine3D;
+<i>31</i>&nbsp;import com.sun.javafx.geom.transform.GeneralTransform3D;
+<i>32</i>&nbsp;import com.sun.javafx.scene.ParallelCameraHelper;
+<i>33</i>&nbsp;import com.sun.javafx.sg.prism.NGNode;
+<i>34</i>&nbsp;import com.sun.javafx.sg.prism.NGParallelCamera;
+<i>35</i>&nbsp;
+<i>36</i>&nbsp;/**
+<i>37</i>&nbsp; * Specifies a parallel camera for rendering a scene without perspective correction.
+<i>38</i>&nbsp; *
+<i>39</i>&nbsp; * &lt;p&gt;If a scene contains only 2D transforms, then the following details are not
+<i>40</i>&nbsp; * relevant.
+<i>41</i>&nbsp; * This camera defines a viewing volume for a parallel (orthographic) projection;
+<i>42</i>&nbsp; * a rectangular box. This camera is always located at center of the window and
+<i>43</i>&nbsp; * looks along the positive z-axis. The coordinate system defined by this camera
+<i>44</i>&nbsp; * has its origin in the upper left corner of the panel with the Y-axis pointing
+<i>45</i>&nbsp; * down and the Z axis pointing away from the viewer (into the screen). The
+<i>46</i>&nbsp; * units are in pixel coordinates.
+<i>47</i>&nbsp; *
+<i>48</i>&nbsp; * @since JavaFX 2.0
+<i>49</i>&nbsp; */
+<b class="fc"><i>50</i>&nbsp;public class ParallelCamera extends Camera {</b>
+<i>51</i>&nbsp;    static {
+<b class="fc"><i>52</i>&nbsp;        ParallelCameraHelper.setParallelCameraAccessor(new ParallelCameraHelper.ParallelCameraAccessor() {</b>
+<i>53</i>&nbsp;            @Override
+<i>54</i>&nbsp;            public NGNode doCreatePeer(Node node) {
+<b class="fc"><i>55</i>&nbsp;                return ((ParallelCamera) node).doCreatePeer();</b>
+<i>56</i>&nbsp;            }
+<i>57</i>&nbsp;        });
+<b class="fc"><i>58</i>&nbsp;    }</b>
+<i>59</i>&nbsp;
+<i>60</i>&nbsp;    {
+<i>61</i>&nbsp;        // To initialize the class helper at the begining each constructor of this class
+<b class="fc"><i>62</i>&nbsp;        ParallelCameraHelper.initHelper(this);</b>
+<i>63</i>&nbsp;    }
+<i>64</i>&nbsp;
+<i>65</i>&nbsp;    /**
+<i>66</i>&nbsp;     * Creates an empty instance of ParallelCamera.
+<i>67</i>&nbsp;     */
+<b class="fc"><i>68</i>&nbsp;    public ParallelCamera() {</b>
+<b class="fc"><i>69</i>&nbsp;    }</b>
+<i>70</i>&nbsp;
+<i>71</i>&nbsp;    @Override
+<i>72</i>&nbsp;    Camera copy() {
+<b class="nc"><i>73</i>&nbsp;        ParallelCamera c = new ParallelCamera();</b>
+<b class="nc"><i>74</i>&nbsp;        c.setNearClip(getNearClip());</b>
+<b class="nc"><i>75</i>&nbsp;        c.setFarClip(getFarClip());</b>
+<b class="nc"><i>76</i>&nbsp;        return c;</b>
+<i>77</i>&nbsp;    }
+<i>78</i>&nbsp;
+<i>79</i>&nbsp;    /*
+<i>80</i>&nbsp;     * Note: This method MUST only be called via its accessor method.
+<i>81</i>&nbsp;     */
+<i>82</i>&nbsp;    private NGNode doCreatePeer() {
+<b class="fc"><i>83</i>&nbsp;        final NGParallelCamera peer = new NGParallelCamera();</b>
+<b class="fc"><i>84</i>&nbsp;        peer.setNearClip((float) getNearClip());</b>
+<b class="fc"><i>85</i>&nbsp;        peer.setFarClip((float) getFarClip());</b>
+<b class="fc"><i>86</i>&nbsp;        return peer;</b>
+<i>87</i>&nbsp;    }
+<i>88</i>&nbsp;
+<i>89</i>&nbsp;    @Override
+<i>90</i>&nbsp;    final PickRay computePickRay(double x, double y, PickRay pickRay) {
+<b class="fc"><i>91</i>&nbsp;        return PickRay.computeParallelPickRay(x, y, getViewHeight(),</b>
+<b class="fc"><i>92</i>&nbsp;                getCameraTransform(),</b>
+<b class="fc"><i>93</i>&nbsp;                getNearClip(), getFarClip(), pickRay);</b>
+<i>94</i>&nbsp;    }
+<i>95</i>&nbsp;
+<i>96</i>&nbsp;    @Override
+<i>97</i>&nbsp;    void computeProjectionTransform(GeneralTransform3D proj) {
+<b class="fc"><i>98</i>&nbsp;        final double viewWidth = getViewWidth();</b>
+<b class="fc"><i>99</i>&nbsp;        final double viewHeight = getViewHeight();</b>
+<i>100</i>&nbsp;        final double halfDepth =
+<b class="fc"><i>101</i>&nbsp;                (viewWidth &gt; viewHeight) ? viewWidth / 2.0 : viewHeight / 2.0;</b>
+<i>102</i>&nbsp;
+<b class="fc"><i>103</i>&nbsp;        proj.ortho(0.0, viewWidth, viewHeight, 0.0, -halfDepth, halfDepth);</b>
+<b class="fc"><i>104</i>&nbsp;    }</b>
+<i>105</i>&nbsp;
+<i>106</i>&nbsp;    @Override
+<i>107</i>&nbsp;    void computeViewTransform(Affine3D view) {
+<b class="fc"><i>108</i>&nbsp;        view.setToIdentity();</b>
+<b class="fc"><i>109</i>&nbsp;    }</b>
+<i>110</i>&nbsp;
+<i>111</i>&nbsp;    @Override
+<i>112</i>&nbsp;    Vec3d computePosition(Vec3d position) {
+<b class="fc"><i>113</i>&nbsp;        if (position == null) {</b>
+<b class="nc"><i>114</i>&nbsp;            position = new Vec3d();</b>
+<i>115</i>&nbsp;        }
+<i>116</i>&nbsp;
+<i>117</i>&nbsp;        // This is the same math as in PerspectiveCamera, fixed for the default
+<i>118</i>&nbsp;        // 30 degrees vertical field of view.
+<b class="fc"><i>119</i>&nbsp;        final double halfViewWidth = getViewWidth() / 2.0;</b>
+<b class="fc"><i>120</i>&nbsp;        final double halfViewHeight = getViewHeight() / 2.0;</b>
+<b class="fc"><i>121</i>&nbsp;        final double distanceZ = halfViewHeight / Math.tan(Math.toRadians(15.0));</b>
+<b class="fc"><i>122</i>&nbsp;        position.set(halfViewWidth, halfViewHeight, -distanceZ);</b>
+<i>123</i>&nbsp;
+<b class="fc"><i>124</i>&nbsp;        return position;</b>
+<i>125</i>&nbsp;    }
+<i>126</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2017-12-04 21:49</div>
+</div>
+</body>
+</html>

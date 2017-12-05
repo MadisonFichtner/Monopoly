@@ -1,0 +1,1030 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: TriangleMesh</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">javafx.scene.shape</a> ]
+</div>
+
+<h1>Coverage Summary for Class: TriangleMesh (javafx.scene.shape)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">TriangleMesh</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 35)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 287)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright (c) 2013, 2017, Oracle and/or its affiliates. All rights reserved.
+<i>3</i>&nbsp; * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+<i>4</i>&nbsp; *
+<i>5</i>&nbsp; *
+<i>6</i>&nbsp; *
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; *
+<i>11</i>&nbsp; *
+<i>12</i>&nbsp; *
+<i>13</i>&nbsp; *
+<i>14</i>&nbsp; *
+<i>15</i>&nbsp; *
+<i>16</i>&nbsp; *
+<i>17</i>&nbsp; *
+<i>18</i>&nbsp; *
+<i>19</i>&nbsp; *
+<i>20</i>&nbsp; *
+<i>21</i>&nbsp; *
+<i>22</i>&nbsp; *
+<i>23</i>&nbsp; *
+<i>24</i>&nbsp; */
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;package javafx.scene.shape;
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;import com.sun.javafx.scene.shape.ObservableFaceArrayImpl;
+<i>29</i>&nbsp;import com.sun.javafx.collections.FloatArraySyncer;
+<i>30</i>&nbsp;import com.sun.javafx.collections.IntegerArraySyncer;
+<i>31</i>&nbsp;import com.sun.javafx.geom.BaseBounds;
+<i>32</i>&nbsp;import com.sun.javafx.geom.BoxBounds;
+<i>33</i>&nbsp;import com.sun.javafx.geom.PickRay;
+<i>34</i>&nbsp;import com.sun.javafx.geom.Vec3d;
+<i>35</i>&nbsp;import com.sun.javafx.scene.input.PickResultChooser;
+<i>36</i>&nbsp;import com.sun.javafx.scene.shape.TriangleMeshHelper;
+<i>37</i>&nbsp;import com.sun.javafx.sg.prism.NGTriangleMesh;
+<i>38</i>&nbsp;import javafx.beans.property.ObjectProperty;
+<i>39</i>&nbsp;import javafx.beans.property.SimpleObjectProperty;
+<i>40</i>&nbsp;import javafx.collections.ArrayChangeListener;
+<i>41</i>&nbsp;import javafx.collections.FXCollections;
+<i>42</i>&nbsp;import javafx.collections.ObservableArray;
+<i>43</i>&nbsp;import javafx.collections.ObservableFloatArray;
+<i>44</i>&nbsp;import javafx.collections.ObservableIntegerArray;
+<i>45</i>&nbsp;import javafx.geometry.Point2D;
+<i>46</i>&nbsp;import javafx.geometry.Point3D;
+<i>47</i>&nbsp;import javafx.scene.Node;
+<i>48</i>&nbsp;import javafx.scene.input.PickResult;
+<i>49</i>&nbsp;import javafx.scene.transform.Affine;
+<i>50</i>&nbsp;import javafx.scene.transform.NonInvertibleTransformException;
+<i>51</i>&nbsp;import javafx.scene.transform.Rotate;
+<i>52</i>&nbsp;import sun.util.logging.PlatformLogger;
+<i>53</i>&nbsp;
+<i>54</i>&nbsp;/**
+<i>55</i>&nbsp; * Defines a 3D triangle mesh that consists of its associated {@code VertexFormat}
+<i>56</i>&nbsp; * and a set of separate arrays of vertex components such as points, normals,
+<i>57</i>&nbsp; * texture coordinates, and an array of faces that define the individual triangles
+<i>58</i>&nbsp; * of the mesh.
+<i>59</i>&nbsp; *&lt;p&gt;
+<i>60</i>&nbsp; * Note that the term point, as used in the method names and method
+<i>61</i>&nbsp; * descriptions, actually refers to a 3D point (x, y, z) in space
+<i>62</i>&nbsp; * representing the position of a single vertex. The term points (plural) is
+<i>63</i>&nbsp; * used to indicate sets of 3D points for multiple vertices.
+<i>64</i>&nbsp; * Similarly, the term normal is used to indicate a 3D vector (nx, ny, nz) in space
+<i>65</i>&nbsp; * representing the direction of a single vertex. The term normals (plural) is
+<i>66</i>&nbsp; * used to indicate sets of 3D vectors for multiple vertices.
+<i>67</i>&nbsp; * The term texCoord is used to indicate a single pair of 2D texture
+<i>68</i>&nbsp; * coordinates (u, v) for a single vertex, while the term texCoords (plural) is used
+<i>69</i>&nbsp; * to indicate sets of texture coordinates for multiple vertices.
+<i>70</i>&nbsp; * Lastly, the term face is used to indicate 3 set of interleaving points,
+<i>71</i>&nbsp; * normals (optional, depending on the associated VertexFormat)
+<i>72</i>&nbsp; * and texture coordinates that together represent the geometric topology of a
+<i>73</i>&nbsp; * single triangle, while the term faces (plural) is used to indicate sets of
+<i>74</i>&nbsp; * triangles (each represent by a face).
+<i>75</i>&nbsp; * &lt;p&gt;
+<i>76</i>&nbsp; * For example, the faces with {@code VertexFormat.POINT_TEXCOORD} that represent
+<i>77</i>&nbsp; * a single textured rectangle, using 2 triangles, have the following data order: [
+<i>78</i>&nbsp; * &lt;p&gt;
+<i>79</i>&nbsp; * p0, t0, p1, t1, p3, t3,  // First triangle of a textured rectangle
+<i>80</i>&nbsp; * &lt;p&gt;
+<i>81</i>&nbsp; * p1, t1, p2, t2, p3, t3   // Second triangle of a textured rectangle
+<i>82</i>&nbsp; * &lt;p&gt;
+<i>83</i>&nbsp; * ]
+<i>84</i>&nbsp; * &lt;p&gt;
+<i>85</i>&nbsp; * whereas the faces with {@code VertexFormat.POINT_NORMAL_TEXCOORD} that represent
+<i>86</i>&nbsp; * a single textured rectangle, using 2 triangles, have the following data order: [
+<i>87</i>&nbsp; * &lt;p&gt;
+<i>88</i>&nbsp; * p0, n0, t0, p1, n1, t1, p3, n3, t3,  // First triangle of a textured rectangle
+<i>89</i>&nbsp; * &lt;p&gt;
+<i>90</i>&nbsp; * p1, n1, t1, p2, n2, t2, p3, n3, t3   // Second triangle of a textured rectangle
+<i>91</i>&nbsp; * &lt;p&gt;
+<i>92</i>&nbsp; * ]
+<i>93</i>&nbsp; * &lt;p&gt;
+<i>94</i>&nbsp; * where p0, p1, p2 and p3 are indices into the points array, n0, n1, n2 and n3
+<i>95</i>&nbsp; * are indices into the normals array, and t0, t1, t2 and t3 are indices into
+<i>96</i>&nbsp; * the texCoords array.
+<i>97</i>&nbsp; *
+<i>98</i>&nbsp; * &lt;p&gt;
+<i>99</i>&nbsp; * A triangle has a front and back face. The winding order of a triangle&#39;s vertices
+<i>100</i>&nbsp; * determines which side is the front face. JavaFX chooses the counter-clockwise
+<i>101</i>&nbsp; * (or right-hand rule) winding order as the front face. By default, only the
+<i>102</i>&nbsp; * front face of a triangle is rendered. See {@code CullFace} for more
+<i>103</i>&nbsp; * information.
+<i>104</i>&nbsp; *
+<i>105</i>&nbsp; * &lt;p&gt;
+<i>106</i>&nbsp; * The length of {@code points}, {@code normals}, and {@code texCoords} must be
+<i>107</i>&nbsp; * divisible by 3, 3, and 2 respectively. The length of {@code faces} must be
+<i>108</i>&nbsp; * divisible by 6 if it is of {@code VertexFormat.POINT_TEXCOORD} else it must
+<i>109</i>&nbsp; * be divisible by 9 if it is of {@code VertexFormat.POINT_NORMAL_TEXCOORD}.
+<i>110</i>&nbsp; * The values in the faces array must be within the range of the number of vertices
+<i>111</i>&nbsp; * in the points array (0 to points.length / 3 - 1) for the point indices, within
+<i>112</i>&nbsp; * the range of the number of vertices in the normals array
+<i>113</i>&nbsp; * (0 to normals.length / 3 - 1) for the normal indices, and within the range of
+<i>114</i>&nbsp; * the number of the vertices in the texCoords array (0 to texCoords.length / 2 - 1)
+<i>115</i>&nbsp; * for the texture coordinate indices.
+<i>116</i>&nbsp; *
+<i>117</i>&nbsp; * &lt;p&gt; A warning will be recorded to the logger and the mesh will not be rendered
+<i>118</i>&nbsp; * (and will have an empty bounds) if any of the array lengths are invalid
+<i>119</i>&nbsp; * or if any of the values in the faces array are out of range.
+<i>120</i>&nbsp; *
+<i>121</i>&nbsp; * @since JavaFX 8.0
+<i>122</i>&nbsp; */
+<b class="nc"><i>123</i>&nbsp;public class TriangleMesh extends Mesh {</b>
+<i>124</i>&nbsp;    static {
+<b class="nc"><i>125</i>&nbsp;        TriangleMeshHelper.setTriangleMeshAccessor(new TriangleMeshHelper.TriangleMeshAccessor() {</b>
+<i>126</i>&nbsp;            @Override
+<i>127</i>&nbsp;            public boolean doComputeIntersects(Mesh mesh, PickRay pickRay,
+<i>128</i>&nbsp;                    PickResultChooser pickResult, Node candidate, CullFace cullFace,
+<i>129</i>&nbsp;                    boolean reportFace) {
+<i>130</i>&nbsp;                return ((TriangleMesh) mesh).doComputeIntersects(pickRay,
+<i>131</i>&nbsp;                        pickResult, candidate, cullFace, reportFace);
+<i>132</i>&nbsp;            }
+<i>133</i>&nbsp;        });
+<b class="nc"><i>134</i>&nbsp;    }</b>
+<i>135</i>&nbsp;
+<b class="nc"><i>136</i>&nbsp;    private final ObservableFloatArray points = FXCollections.observableFloatArray();</b>
+<b class="nc"><i>137</i>&nbsp;    private final ObservableFloatArray normals = FXCollections.observableFloatArray();</b>
+<b class="nc"><i>138</i>&nbsp;    private final ObservableFloatArray texCoords = FXCollections.observableFloatArray();</b>
+<b class="nc"><i>139</i>&nbsp;    private final ObservableFaceArray faces = new ObservableFaceArrayImpl();</b>
+<b class="nc"><i>140</i>&nbsp;    private final ObservableIntegerArray faceSmoothingGroups = FXCollections.observableIntegerArray();</b>
+<i>141</i>&nbsp;
+<b class="nc"><i>142</i>&nbsp;    private final Listener pointsSyncer = new Listener(points);</b>
+<b class="nc"><i>143</i>&nbsp;    private final Listener normalsSyncer = new Listener(normals);</b>
+<b class="nc"><i>144</i>&nbsp;    private final Listener texCoordsSyncer = new Listener(texCoords);</b>
+<b class="nc"><i>145</i>&nbsp;    private final Listener facesSyncer = new Listener(faces);</b>
+<b class="nc"><i>146</i>&nbsp;    private final Listener faceSmoothingGroupsSyncer = new Listener(faceSmoothingGroups);</b>
+<i>147</i>&nbsp;    private final boolean isPredefinedShape;
+<b class="nc"><i>148</i>&nbsp;    private boolean isValidDirty = true;</b>
+<i>149</i>&nbsp;    private boolean isPointsValid, isNormalsValid, isTexCoordsValid, isFacesValid, isFaceSmoothingGroupValid;
+<b class="nc"><i>150</i>&nbsp;    private int refCount = 1;</b>
+<i>151</i>&nbsp;
+<i>152</i>&nbsp;    private BaseBounds cachedBounds;
+<i>153</i>&nbsp;
+<i>154</i>&nbsp;    /**
+<i>155</i>&nbsp;     * Creates a new instance of {@code TriangleMesh} class with the default
+<i>156</i>&nbsp;     * {@code VertexFormat.POINT_TEXCOORD} format type.
+<i>157</i>&nbsp;     */
+<i>158</i>&nbsp;    public TriangleMesh() {
+<b class="nc"><i>159</i>&nbsp;        this(false);</b>
+<b class="nc"><i>160</i>&nbsp;        TriangleMeshHelper.initHelper(this);</b>
+<b class="nc"><i>161</i>&nbsp;    }</b>
+<i>162</i>&nbsp;
+<i>163</i>&nbsp;    /**
+<i>164</i>&nbsp;     * Creates a new instance of {@code TriangleMesh} class with the specified
+<i>165</i>&nbsp;     * {@code VertexFormat}.
+<i>166</i>&nbsp;     *
+<i>167</i>&nbsp;     * @param vertexFormat specifies the vertex format type.
+<i>168</i>&nbsp;     *
+<i>169</i>&nbsp;     * @since JavaFX 8u40
+<i>170</i>&nbsp;     */
+<i>171</i>&nbsp;    public TriangleMesh(VertexFormat vertexFormat) {
+<b class="nc"><i>172</i>&nbsp;        this(false);</b>
+<b class="nc"><i>173</i>&nbsp;        this.setVertexFormat(vertexFormat);</b>
+<b class="nc"><i>174</i>&nbsp;        TriangleMeshHelper.initHelper(this);</b>
+<b class="nc"><i>175</i>&nbsp;    }</b>
+<i>176</i>&nbsp;
+<b class="nc"><i>177</i>&nbsp;    TriangleMesh(boolean isPredefinedShape) {</b>
+<b class="nc"><i>178</i>&nbsp;        this.isPredefinedShape = isPredefinedShape;</b>
+<b class="nc"><i>179</i>&nbsp;        if (isPredefinedShape) {</b>
+<b class="nc"><i>180</i>&nbsp;            isPointsValid = true;</b>
+<b class="nc"><i>181</i>&nbsp;            isNormalsValid = true;</b>
+<b class="nc"><i>182</i>&nbsp;            isTexCoordsValid = true;</b>
+<b class="nc"><i>183</i>&nbsp;            isFacesValid = true;</b>
+<b class="nc"><i>184</i>&nbsp;            isFaceSmoothingGroupValid = true;</b>
+<i>185</i>&nbsp;        } else {
+<b class="nc"><i>186</i>&nbsp;            isPointsValid = false;</b>
+<b class="nc"><i>187</i>&nbsp;            isNormalsValid = false;</b>
+<b class="nc"><i>188</i>&nbsp;            isTexCoordsValid = false;</b>
+<b class="nc"><i>189</i>&nbsp;            isFacesValid = false;</b>
+<b class="nc"><i>190</i>&nbsp;            isFaceSmoothingGroupValid = false;</b>
+<i>191</i>&nbsp;        }
+<b class="nc"><i>192</i>&nbsp;        TriangleMeshHelper.initHelper(this);</b>
+<b class="nc"><i>193</i>&nbsp;    }</b>
+<i>194</i>&nbsp;
+<i>195</i>&nbsp;    /**
+<i>196</i>&nbsp;     * Specifies the vertex format of this {@code TriangleMesh}, one of
+<i>197</i>&nbsp;     * {@code VertexFormat.POINT_TEXCOORD} or {@code VertexFormat.POINT_NORMAL_TEXCOORD}.
+<i>198</i>&nbsp;     *
+<i>199</i>&nbsp;     * @defaultValue VertexFormat.POINT_TEXCOORD
+<i>200</i>&nbsp;     *
+<i>201</i>&nbsp;     * @since JavaFX 8u40
+<i>202</i>&nbsp;     */
+<i>203</i>&nbsp;    private ObjectProperty&lt;VertexFormat&gt; vertexFormat;
+<i>204</i>&nbsp;
+<i>205</i>&nbsp;    public final void setVertexFormat(VertexFormat value) {
+<b class="nc"><i>206</i>&nbsp;        vertexFormatProperty().set(value);</b>
+<b class="nc"><i>207</i>&nbsp;    }</b>
+<i>208</i>&nbsp;
+<i>209</i>&nbsp;    public final VertexFormat getVertexFormat() {
+<b class="nc"><i>210</i>&nbsp;        return vertexFormat == null ? VertexFormat.POINT_TEXCOORD : vertexFormat.get();</b>
+<i>211</i>&nbsp;    }
+<i>212</i>&nbsp;
+<i>213</i>&nbsp;    public final ObjectProperty&lt;VertexFormat&gt; vertexFormatProperty() {
+<b class="nc"><i>214</i>&nbsp;        if (vertexFormat == null) {</b>
+<b class="nc"><i>215</i>&nbsp;            vertexFormat = new SimpleObjectProperty&lt;VertexFormat&gt;(TriangleMesh.this, &quot;vertexFormat&quot;) {</b>
+<i>216</i>&nbsp;
+<i>217</i>&nbsp;                @Override
+<i>218</i>&nbsp;                protected void invalidated() {
+<i>219</i>&nbsp;                    setDirty(true);
+<i>220</i>&nbsp;                    // Need to mark faces and faceSmoothingGroups dirty too.
+<i>221</i>&nbsp;                    facesSyncer.setDirty(true);
+<i>222</i>&nbsp;                    faceSmoothingGroupsSyncer.setDirty(true);
+<i>223</i>&nbsp;                }
+<i>224</i>&nbsp;            };
+<i>225</i>&nbsp;        }
+<b class="nc"><i>226</i>&nbsp;        return vertexFormat;</b>
+<i>227</i>&nbsp;    }
+<i>228</i>&nbsp;
+<i>229</i>&nbsp;    /**
+<i>230</i>&nbsp;     * Returns the number of elements that represents a point.
+<i>231</i>&nbsp;     *
+<i>232</i>&nbsp;     * @return number of elements
+<i>233</i>&nbsp;     */
+<i>234</i>&nbsp;    public final int getPointElementSize() {
+<b class="nc"><i>235</i>&nbsp;        return getVertexFormat().getPointElementSize();</b>
+<i>236</i>&nbsp;    }
+<i>237</i>&nbsp;
+<i>238</i>&nbsp;    /**
+<i>239</i>&nbsp;     * Returns the number of elements that represents a normal.
+<i>240</i>&nbsp;     *
+<i>241</i>&nbsp;     * @return number of elements
+<i>242</i>&nbsp;     *
+<i>243</i>&nbsp;     * @since JavaFX 8u40
+<i>244</i>&nbsp;     */
+<i>245</i>&nbsp;    public final int getNormalElementSize() {
+<b class="nc"><i>246</i>&nbsp;        return getVertexFormat().getNormalElementSize();</b>
+<i>247</i>&nbsp;    }
+<i>248</i>&nbsp;
+<i>249</i>&nbsp;    /**
+<i>250</i>&nbsp;     * Returns the number of elements that represents a texture coordinates.
+<i>251</i>&nbsp;     *
+<i>252</i>&nbsp;     * @return number of elements
+<i>253</i>&nbsp;     */
+<i>254</i>&nbsp;    public final int getTexCoordElementSize() {
+<b class="nc"><i>255</i>&nbsp;        return getVertexFormat().getTexCoordElementSize();</b>
+<i>256</i>&nbsp;    }
+<i>257</i>&nbsp;
+<i>258</i>&nbsp;    /**
+<i>259</i>&nbsp;     * Returns the number of elements that represents a face.
+<i>260</i>&nbsp;     *
+<i>261</i>&nbsp;     * @return number of elements
+<i>262</i>&nbsp;     */
+<i>263</i>&nbsp;    public final int getFaceElementSize() {
+<b class="nc"><i>264</i>&nbsp;        return getVertexFormat().getVertexIndexSize() * 3;</b>
+<i>265</i>&nbsp;    }
+<i>266</i>&nbsp;
+<i>267</i>&nbsp;    /**
+<i>268</i>&nbsp;     * Gets the {@code points} array of this {@code TriangleMesh}.
+<i>269</i>&nbsp;     *
+<i>270</i>&nbsp;     * @return {@code points} array where each point is
+<i>271</i>&nbsp;     * represented by 3 float values x, y and z, in that order.
+<i>272</i>&nbsp;     */
+<i>273</i>&nbsp;    public final ObservableFloatArray getPoints() {
+<b class="nc"><i>274</i>&nbsp;        return points;</b>
+<i>275</i>&nbsp;    }
+<i>276</i>&nbsp;
+<i>277</i>&nbsp;    /**
+<i>278</i>&nbsp;     * Gets the {@code normals} array of this {@code TriangleMesh}.
+<i>279</i>&nbsp;     *
+<i>280</i>&nbsp;     * @return {@code normals} array where each normal is
+<i>281</i>&nbsp;     * represented by 3 float values nx, ny and nz, in that order.
+<i>282</i>&nbsp;     *
+<i>283</i>&nbsp;     * @since JavaFX 8u40
+<i>284</i>&nbsp;     */
+<i>285</i>&nbsp;    public final ObservableFloatArray getNormals() {
+<b class="nc"><i>286</i>&nbsp;        return normals;</b>
+<i>287</i>&nbsp;    }
+<i>288</i>&nbsp;
+<i>289</i>&nbsp;    /**
+<i>290</i>&nbsp;     * Gets the  {@code texCoords} array of this {@code TriangleMesh}.
+<i>291</i>&nbsp;     * The coordinates are proportional, so texture&#39;s top-left corner
+<i>292</i>&nbsp;     * is at [0, 0] and bottom-right corner is at [1, 1].
+<i>293</i>&nbsp;     *
+<i>294</i>&nbsp;     * @return {@code texCoord} array where each texture coordinate is represented
+<i>295</i>&nbsp;     * by 2 float values: u and v, in that order.
+<i>296</i>&nbsp;     */
+<i>297</i>&nbsp;    public final ObservableFloatArray getTexCoords() {
+<b class="nc"><i>298</i>&nbsp;        return texCoords;</b>
+<i>299</i>&nbsp;    }
+<i>300</i>&nbsp;
+<i>301</i>&nbsp;    /**
+<i>302</i>&nbsp;     * Gets the {@code faces} array, indices into the {@code points},
+<i>303</i>&nbsp;     * {@code normals} (optional, if it is a {@code VertexFormat.POINT_NORMAL_TEXCOORD}
+<i>304</i>&nbsp;     * mesh) and {@code texCoords} arrays, of this  {@code TriangleMesh}. All
+<i>305</i>&nbsp;     * indices are in terms of elements in to the points, normals or texCoords
+<i>306</i>&nbsp;     * arrays not individual floats.
+<i>307</i>&nbsp;     *
+<i>308</i>&nbsp;     * @return {@code faces} array where each face is of
+<i>309</i>&nbsp;     * 3 * {@code VertexFormat.getVertexIndexSize()} integers.
+<i>310</i>&nbsp;     */
+<i>311</i>&nbsp;    public final ObservableFaceArray getFaces() {
+<b class="nc"><i>312</i>&nbsp;        return faces;</b>
+<i>313</i>&nbsp;    }
+<i>314</i>&nbsp;
+<i>315</i>&nbsp;    /**
+<i>316</i>&nbsp;     * Gets the {@code faceSmoothingGroups} array of this {@code TriangleMesh}.
+<i>317</i>&nbsp;     * Smoothing affects how a mesh is rendered but it does not effect its
+<i>318</i>&nbsp;     * geometry. The face smoothing group value is used to control the smoothing
+<i>319</i>&nbsp;     * between adjacent faces.
+<i>320</i>&nbsp;     *
+<i>321</i>&nbsp;     * &lt;p&gt;
+<i>322</i>&nbsp;     * {@literal The face smoothing group value is represented by an array of bits and up to
+<i>323</i>&nbsp;     * 32 unique groups is possible; (1 &lt;&lt; 0) to (1 &lt;&lt; 31). The face smoothing
+<i>324</i>&nbsp;     * group value can range from 0 (no smoothing group) to all 32 groups. A face
+<i>325</i>&nbsp;     * can belong to zero or more smoothing groups. A face is a member of group
+<i>326</i>&nbsp;     * N if bit N is set, for example, groups |= (1 &lt;&lt; N). A value of 0 implies
+<i>327</i>&nbsp;     * no smoothing group or hard edges.}
+<i>328</i>&nbsp;     * Smoothing is applied when adjacent pair of faces shared a smoothing group.
+<i>329</i>&nbsp;     * Otherwise the faces are rendered with a hard edge between them.
+<i>330</i>&nbsp;     *
+<i>331</i>&nbsp;     * &lt;p&gt; An empty faceSmoothingGroups implies all faces in this mesh have a
+<i>332</i>&nbsp;     * smoothing group value of 1.
+<i>333</i>&nbsp;     *
+<i>334</i>&nbsp;     * &lt;p&gt; If faceSmoothingGroups is not empty, its size must
+<i>335</i>&nbsp;     * be equal to number of faces.
+<i>336</i>&nbsp;     *
+<i>337</i>&nbsp;     * &lt;p&gt; This faceSmoothingGroups has no effect on its {@code TriangleMesh} if
+<i>338</i>&nbsp;     * it is of {@code VertexFormat.POINT_NORMAL_TEXCOORD} format.
+<i>339</i>&nbsp;     * @return the {@code faceSmoothingGroups} array of this {@code TriangleMesh}
+<i>340</i>&nbsp;     */
+<i>341</i>&nbsp;    public final ObservableIntegerArray getFaceSmoothingGroups() {
+<b class="nc"><i>342</i>&nbsp;        return faceSmoothingGroups;</b>
+<i>343</i>&nbsp;    }
+<i>344</i>&nbsp;
+<i>345</i>&nbsp;    @Override void setDirty(boolean value) {
+<b class="nc"><i>346</i>&nbsp;        super.setDirty(value);</b>
+<b class="nc"><i>347</i>&nbsp;        if (!value) { // false</b>
+<b class="nc"><i>348</i>&nbsp;            pointsSyncer.setDirty(false);</b>
+<b class="nc"><i>349</i>&nbsp;            normalsSyncer.setDirty(false);</b>
+<b class="nc"><i>350</i>&nbsp;            texCoordsSyncer.setDirty(false);</b>
+<b class="nc"><i>351</i>&nbsp;            facesSyncer.setDirty(false);</b>
+<b class="nc"><i>352</i>&nbsp;            faceSmoothingGroupsSyncer.setDirty(false);</b>
+<i>353</i>&nbsp;        }
+<b class="nc"><i>354</i>&nbsp;    }</b>
+<i>355</i>&nbsp;
+<i>356</i>&nbsp;    int getRefCount() {
+<b class="nc"><i>357</i>&nbsp;        return refCount;</b>
+<i>358</i>&nbsp;    }
+<i>359</i>&nbsp;
+<i>360</i>&nbsp;    synchronized void incRef() {
+<b class="nc"><i>361</i>&nbsp;        this.refCount += 1;</b>
+<b class="nc"><i>362</i>&nbsp;    }</b>
+<i>363</i>&nbsp;
+<i>364</i>&nbsp;    synchronized void decRef() {
+<b class="nc"><i>365</i>&nbsp;        this.refCount -= 1;</b>
+<b class="nc"><i>366</i>&nbsp;    }</b>
+<i>367</i>&nbsp;
+<i>368</i>&nbsp;    private NGTriangleMesh peer;
+<i>369</i>&nbsp;
+<i>370</i>&nbsp;    /* The peer node created by the graphics Toolkit/Pipeline implementation */
+<i>371</i>&nbsp;    NGTriangleMesh getPGTriangleMesh() {
+<b class="nc"><i>372</i>&nbsp;        if (peer == null) {</b>
+<b class="nc"><i>373</i>&nbsp;            peer = new NGTriangleMesh();</b>
+<i>374</i>&nbsp;        }
+<b class="nc"><i>375</i>&nbsp;        return peer;</b>
+<i>376</i>&nbsp;    }
+<i>377</i>&nbsp;
+<i>378</i>&nbsp;    @Override
+<i>379</i>&nbsp;    NGTriangleMesh getPGMesh() {
+<b class="nc"><i>380</i>&nbsp;        return getPGTriangleMesh();</b>
+<i>381</i>&nbsp;    }
+<i>382</i>&nbsp;
+<i>383</i>&nbsp;    private boolean validatePoints() {
+<b class="nc"><i>384</i>&nbsp;        if (points.size() == 0) { // Valid but meaningless for picking or rendering.</b>
+<b class="nc"><i>385</i>&nbsp;            return false;</b>
+<i>386</i>&nbsp;        }
+<i>387</i>&nbsp;
+<b class="nc"><i>388</i>&nbsp;        if ((points.size() % getVertexFormat().getPointElementSize()) != 0) {</b>
+<b class="nc"><i>389</i>&nbsp;            String logname = TriangleMesh.class.getName();</b>
+<b class="nc"><i>390</i>&nbsp;            PlatformLogger.getLogger(logname).warning(&quot;points.size() has &quot;</b>
+<i>391</i>&nbsp;                    + &quot;to be divisible by getPointElementSize(). It is to&quot;
+<i>392</i>&nbsp;                    + &quot; store multiple x, y, and z coordinates of this mesh&quot;);
+<b class="nc"><i>393</i>&nbsp;            return false;</b>
+<i>394</i>&nbsp;        }
+<b class="nc"><i>395</i>&nbsp;        return true;</b>
+<i>396</i>&nbsp;    }
+<i>397</i>&nbsp;
+<i>398</i>&nbsp;    private boolean validateNormals() {
+<i>399</i>&nbsp;        // Only validate normals if vertex format has normal component
+<b class="nc"><i>400</i>&nbsp;        if (getVertexFormat() != VertexFormat.POINT_NORMAL_TEXCOORD) return true;</b>
+<i>401</i>&nbsp;
+<b class="nc"><i>402</i>&nbsp;        if (normals.size() == 0) { // Valid but meaningless for picking or rendering.</b>
+<b class="nc"><i>403</i>&nbsp;            return false;</b>
+<i>404</i>&nbsp;        }
+<i>405</i>&nbsp;
+<b class="nc"><i>406</i>&nbsp;        if ((normals.size() % getVertexFormat().getNormalElementSize()) != 0) {</b>
+<b class="nc"><i>407</i>&nbsp;            String logname = TriangleMesh.class.getName();</b>
+<b class="nc"><i>408</i>&nbsp;            PlatformLogger.getLogger(logname).warning(&quot;normals.size() has &quot;</b>
+<i>409</i>&nbsp;                    + &quot;to be divisible by getNormalElementSize(). It is to&quot;
+<i>410</i>&nbsp;                    + &quot; store multiple nx, ny, and nz coordinates of this mesh&quot;);
+<b class="nc"><i>411</i>&nbsp;            return false;</b>
+<i>412</i>&nbsp;        }
+<b class="nc"><i>413</i>&nbsp;        return true;</b>
+<i>414</i>&nbsp;    }
+<i>415</i>&nbsp;
+<i>416</i>&nbsp;    private boolean validateTexCoords() {
+<b class="nc"><i>417</i>&nbsp;        if (texCoords.size() == 0) { // Valid but meaningless for picking or rendering.</b>
+<b class="nc"><i>418</i>&nbsp;            return false;</b>
+<i>419</i>&nbsp;        }
+<i>420</i>&nbsp;
+<b class="nc"><i>421</i>&nbsp;        if ((texCoords.size() % getVertexFormat().getTexCoordElementSize()) != 0) {</b>
+<b class="nc"><i>422</i>&nbsp;            String logname = TriangleMesh.class.getName();</b>
+<b class="nc"><i>423</i>&nbsp;            PlatformLogger.getLogger(logname).warning(&quot;texCoords.size() &quot;</b>
+<i>424</i>&nbsp;                    + &quot;has to be divisible by getTexCoordElementSize().&quot;
+<i>425</i>&nbsp;                    + &quot; It is to store multiple u and v texture coordinates&quot;
+<i>426</i>&nbsp;                    + &quot; of this mesh&quot;);
+<b class="nc"><i>427</i>&nbsp;            return false;</b>
+<i>428</i>&nbsp;        }
+<b class="nc"><i>429</i>&nbsp;        return true;</b>
+<i>430</i>&nbsp;    }
+<i>431</i>&nbsp;
+<i>432</i>&nbsp;    private boolean validateFaces() {
+<b class="nc"><i>433</i>&nbsp;        if (faces.size() == 0) { // Valid but meaningless for picking or rendering.</b>
+<b class="nc"><i>434</i>&nbsp;            return false;</b>
+<i>435</i>&nbsp;        }
+<i>436</i>&nbsp;
+<b class="nc"><i>437</i>&nbsp;        String logname = TriangleMesh.class.getName();</b>
+<b class="nc"><i>438</i>&nbsp;        if ((faces.size() % getFaceElementSize()) != 0) {</b>
+<b class="nc"><i>439</i>&nbsp;            PlatformLogger.getLogger(logname).warning(&quot;faces.size() has &quot;</b>
+<i>440</i>&nbsp;                    + &quot;to be divisible by getFaceElementSize().&quot;);
+<b class="nc"><i>441</i>&nbsp;            return false;</b>
+<i>442</i>&nbsp;        }
+<i>443</i>&nbsp;
+<b class="nc"><i>444</i>&nbsp;        if (getVertexFormat() == VertexFormat.POINT_TEXCOORD) {</b>
+<b class="nc"><i>445</i>&nbsp;            int nVerts = points.size() / getVertexFormat().getPointElementSize();</b>
+<b class="nc"><i>446</i>&nbsp;            int nTVerts = texCoords.size() / getVertexFormat().getTexCoordElementSize();</b>
+<b class="nc"><i>447</i>&nbsp;            for (int i = 0; i &lt; faces.size(); i++) {</b>
+<b class="nc"><i>448</i>&nbsp;                if (i % 2 == 0 &amp;&amp; (faces.get(i) &gt;= nVerts || faces.get(i) &lt; 0)</b>
+<b class="nc"><i>449</i>&nbsp;                        || (i % 2 != 0 &amp;&amp; (faces.get(i) &gt;= nTVerts || faces.get(i) &lt; 0))) {</b>
+<b class="nc"><i>450</i>&nbsp;                    PlatformLogger.getLogger(logname).warning(&quot;The values in the &quot;</b>
+<i>451</i>&nbsp;                            + &quot;faces array must be within the range of the number &quot;
+<i>452</i>&nbsp;                            + &quot;of vertices in the points array (0 to points.length / 3 - 1) &quot;
+<i>453</i>&nbsp;                            + &quot;for the point indices and within the range of the &quot;
+<i>454</i>&nbsp;                            + &quot;number of the vertices in the texCoords array (0 to &quot;
+<i>455</i>&nbsp;                            + &quot;texCoords.length / 2 - 1) for the texture coordinate indices.&quot;);
+<b class="nc"><i>456</i>&nbsp;                    return false;</b>
+<i>457</i>&nbsp;                }
+<i>458</i>&nbsp;            }
+<b class="nc"><i>459</i>&nbsp;        } else if (getVertexFormat() == VertexFormat.POINT_NORMAL_TEXCOORD) {</b>
+<b class="nc"><i>460</i>&nbsp;            int nVerts = points.size() / getVertexFormat().getPointElementSize();</b>
+<b class="nc"><i>461</i>&nbsp;            int nNVerts =  normals.size() / getVertexFormat().getNormalElementSize();</b>
+<b class="nc"><i>462</i>&nbsp;            int nTVerts = texCoords.size() / getVertexFormat().getTexCoordElementSize();</b>
+<b class="nc"><i>463</i>&nbsp;            for (int i = 0; i &lt; faces.size(); i+=3) {</b>
+<b class="nc"><i>464</i>&nbsp;                if ((faces.get(i) &gt;= nVerts || faces.get(i) &lt; 0)</b>
+<b class="nc"><i>465</i>&nbsp;                        || (faces.get(i + 1) &gt;= nNVerts || faces.get(i + 1) &lt; 0)</b>
+<b class="nc"><i>466</i>&nbsp;                        || (faces.get(i + 2) &gt;= nTVerts || faces.get(i + 2) &lt; 0)) {</b>
+<b class="nc"><i>467</i>&nbsp;                    PlatformLogger.getLogger(logname).warning(&quot;The values in the &quot;</b>
+<i>468</i>&nbsp;                            + &quot;faces array must be within the range of the number &quot;
+<i>469</i>&nbsp;                            + &quot;of vertices in the points array (0 to points.length / 3 - 1) &quot;
+<i>470</i>&nbsp;                            + &quot;for the point indices, and within the range of the &quot;
+<i>471</i>&nbsp;                            + &quot;number of the vertices in the normals array (0 to &quot;
+<i>472</i>&nbsp;                            + &quot;normals.length / 3 - 1) for the normals indices, and &quot;
+<i>473</i>&nbsp;                            + &quot;number of the vertices in the texCoords array (0 to &quot;
+<i>474</i>&nbsp;                            + &quot;texCoords.length / 2 - 1) for the texture coordinate indices.&quot;);
+<b class="nc"><i>475</i>&nbsp;                    return false;</b>
+<i>476</i>&nbsp;                }
+<i>477</i>&nbsp;            }
+<b class="nc"><i>478</i>&nbsp;        } else {</b>
+<b class="nc"><i>479</i>&nbsp;            PlatformLogger.getLogger(logname).warning(&quot;Unsupported VertexFormat: &quot; + getVertexFormat().toString());</b>
+<b class="nc"><i>480</i>&nbsp;            return false;</b>
+<i>481</i>&nbsp;        }
+<b class="nc"><i>482</i>&nbsp;        return true;</b>
+<i>483</i>&nbsp;    }
+<i>484</i>&nbsp;
+<i>485</i>&nbsp;    private boolean validateFaceSmoothingGroups() {
+<b class="nc"><i>486</i>&nbsp;        if (faceSmoothingGroups.size() != 0</b>
+<b class="nc"><i>487</i>&nbsp;                &amp;&amp; faceSmoothingGroups.size() != (faces.size() / getFaceElementSize())) {</b>
+<b class="nc"><i>488</i>&nbsp;            String logname = TriangleMesh.class.getName();</b>
+<b class="nc"><i>489</i>&nbsp;            PlatformLogger.getLogger(logname).warning(&quot;faceSmoothingGroups.size()&quot;</b>
+<i>490</i>&nbsp;                    + &quot; has to equal to number of faces.&quot;);
+<b class="nc"><i>491</i>&nbsp;            return false;</b>
+<i>492</i>&nbsp;        }
+<b class="nc"><i>493</i>&nbsp;        return true;</b>
+<i>494</i>&nbsp;    }
+<i>495</i>&nbsp;
+<i>496</i>&nbsp;    private boolean validate() {
+<b class="nc"><i>497</i>&nbsp;        if (isPredefinedShape) {</b>
+<b class="nc"><i>498</i>&nbsp;            return true;</b>
+<i>499</i>&nbsp;        }
+<i>500</i>&nbsp;
+<b class="nc"><i>501</i>&nbsp;        if (isValidDirty) {</b>
+<b class="nc"><i>502</i>&nbsp;            if (pointsSyncer.dirtyInFull) {</b>
+<b class="nc"><i>503</i>&nbsp;                isPointsValid = validatePoints();</b>
+<i>504</i>&nbsp;            }
+<b class="nc"><i>505</i>&nbsp;            if (normalsSyncer.dirtyInFull) {</b>
+<b class="nc"><i>506</i>&nbsp;                isNormalsValid = validateNormals();</b>
+<i>507</i>&nbsp;            }
+<b class="nc"><i>508</i>&nbsp;            if (texCoordsSyncer.dirtyInFull) {</b>
+<b class="nc"><i>509</i>&nbsp;                isTexCoordsValid = validateTexCoords();</b>
+<i>510</i>&nbsp;            }
+<b class="nc"><i>511</i>&nbsp;            if (facesSyncer.dirty || pointsSyncer.dirtyInFull</b>
+<i>512</i>&nbsp;                    || normalsSyncer.dirtyInFull || texCoordsSyncer.dirtyInFull) {
+<b class="nc"><i>513</i>&nbsp;                isFacesValid = isPointsValid &amp;&amp; isNormalsValid</b>
+<b class="nc"><i>514</i>&nbsp;                        &amp;&amp; isTexCoordsValid &amp;&amp; validateFaces();</b>
+<i>515</i>&nbsp;            }
+<b class="nc"><i>516</i>&nbsp;            if (faceSmoothingGroupsSyncer.dirtyInFull || facesSyncer.dirtyInFull) {</b>
+<b class="nc"><i>517</i>&nbsp;                isFaceSmoothingGroupValid = isFacesValid &amp;&amp; validateFaceSmoothingGroups();</b>
+<i>518</i>&nbsp;            }
+<b class="nc"><i>519</i>&nbsp;            isValidDirty = false;</b>
+<i>520</i>&nbsp;        }
+<b class="nc"><i>521</i>&nbsp;        return isPointsValid &amp;&amp; isNormalsValid &amp;&amp; isTexCoordsValid</b>
+<i>522</i>&nbsp;                &amp;&amp; isFaceSmoothingGroupValid &amp;&amp; isFacesValid;
+<i>523</i>&nbsp;    }
+<i>524</i>&nbsp;
+<i>525</i>&nbsp;    @Override
+<i>526</i>&nbsp;    void updatePG() {
+<b class="nc"><i>527</i>&nbsp;        if (!isDirty()) {</b>
+<b class="nc"><i>528</i>&nbsp;            return;</b>
+<i>529</i>&nbsp;        }
+<i>530</i>&nbsp;
+<b class="nc"><i>531</i>&nbsp;        final NGTriangleMesh pgTriMesh = getPGTriangleMesh();</b>
+<b class="nc"><i>532</i>&nbsp;        if (validate()) {</b>
+<b class="nc"><i>533</i>&nbsp;            pgTriMesh.setUserDefinedNormals(getVertexFormat() == VertexFormat.POINT_NORMAL_TEXCOORD);</b>
+<b class="nc"><i>534</i>&nbsp;            pgTriMesh.syncPoints(pointsSyncer);</b>
+<b class="nc"><i>535</i>&nbsp;            pgTriMesh.syncNormals(normalsSyncer);</b>
+<b class="nc"><i>536</i>&nbsp;            pgTriMesh.syncTexCoords(texCoordsSyncer);</b>
+<b class="nc"><i>537</i>&nbsp;            pgTriMesh.syncFaces(facesSyncer);</b>
+<b class="nc"><i>538</i>&nbsp;            pgTriMesh.syncFaceSmoothingGroups(faceSmoothingGroupsSyncer);</b>
+<i>539</i>&nbsp;        } else {
+<b class="nc"><i>540</i>&nbsp;            pgTriMesh.setUserDefinedNormals(false);</b>
+<b class="nc"><i>541</i>&nbsp;            pgTriMesh.syncPoints(null);</b>
+<b class="nc"><i>542</i>&nbsp;            pgTriMesh.syncNormals(null);</b>
+<b class="nc"><i>543</i>&nbsp;            pgTriMesh.syncTexCoords(null);</b>
+<b class="nc"><i>544</i>&nbsp;            pgTriMesh.syncFaces(null);</b>
+<b class="nc"><i>545</i>&nbsp;            pgTriMesh.syncFaceSmoothingGroups(null);</b>
+<i>546</i>&nbsp;        }
+<b class="nc"><i>547</i>&nbsp;        setDirty(false);</b>
+<b class="nc"><i>548</i>&nbsp;    }</b>
+<i>549</i>&nbsp;
+<i>550</i>&nbsp;    @Override
+<i>551</i>&nbsp;    BaseBounds computeBounds(BaseBounds bounds) {
+<b class="nc"><i>552</i>&nbsp;        if (isDirty() || cachedBounds == null) {</b>
+<b class="nc"><i>553</i>&nbsp;            cachedBounds = new BoxBounds();</b>
+<b class="nc"><i>554</i>&nbsp;            if (validate()) {</b>
+<b class="nc"><i>555</i>&nbsp;                final double len = points.size();</b>
+<b class="nc"><i>556</i>&nbsp;                for (int i = 0; i &lt; len; i += getVertexFormat().getPointElementSize()) {</b>
+<b class="nc"><i>557</i>&nbsp;                    cachedBounds.add(points.get(i), points.get(i + 1), points.get(i + 2));</b>
+<i>558</i>&nbsp;                }
+<i>559</i>&nbsp;            }
+<i>560</i>&nbsp;        }
+<b class="nc"><i>561</i>&nbsp;        return bounds.deriveWithNewBounds(cachedBounds);</b>
+<i>562</i>&nbsp;    }
+<i>563</i>&nbsp;
+<i>564</i>&nbsp;    /**
+<i>565</i>&nbsp;     * Computes the centroid of the given triangle
+<i>566</i>&nbsp;     * @param v0x x coord of first vertex of the triangle
+<i>567</i>&nbsp;     * @param v0y y coord of first vertex of the triangle
+<i>568</i>&nbsp;     * @param v0z z coord of first vertex of the triangle
+<i>569</i>&nbsp;     * @param v1x x coord of second vertex of the triangle
+<i>570</i>&nbsp;     * @param v1y y coord of second vertex of the triangle
+<i>571</i>&nbsp;     * @param v1z z coord of second vertex of the triangle
+<i>572</i>&nbsp;     * @param v2x x coord of third vertex of the triangle
+<i>573</i>&nbsp;     * @param v2y y coord of third vertex of the triangle
+<i>574</i>&nbsp;     * @param v2z z coord of third vertex of the triangle
+<i>575</i>&nbsp;     * @return the triangle centroid
+<i>576</i>&nbsp;     */
+<i>577</i>&nbsp;    private Point3D computeCentroid(
+<i>578</i>&nbsp;            double v0x, double v0y, double v0z,
+<i>579</i>&nbsp;            double v1x, double v1y, double v1z,
+<i>580</i>&nbsp;            double v2x, double v2y, double v2z) {
+<i>581</i>&nbsp;
+<i>582</i>&nbsp;//        Point3D center = v1.midpoint(v2);
+<i>583</i>&nbsp;//        Point3D vec = center.subtract(v0);
+<i>584</i>&nbsp;//        return v0.add(new Point3D(vec.getX() / 3.0, vec.getY() / 3.0, vec.getZ() / 3.0));
+<i>585</i>&nbsp;
+<b class="nc"><i>586</i>&nbsp;        return new Point3D(</b>
+<i>587</i>&nbsp;            v0x + (v2x + (v1x - v2x) / 2.0 - v0x) / 3.0,
+<i>588</i>&nbsp;            v0y + (v2y + (v1y - v2y) / 2.0 - v0y) / 3.0,
+<i>589</i>&nbsp;            v0z + (v2z + (v1z - v2z) / 2.0 - v0z) / 3.0);
+<i>590</i>&nbsp;    }
+<i>591</i>&nbsp;
+<i>592</i>&nbsp;    /**
+<i>593</i>&nbsp;     * Computes the centroid of the given triangle
+<i>594</i>&nbsp;     * @param v0 vertex of the triangle
+<i>595</i>&nbsp;     * @param v1 vertex of the triangle
+<i>596</i>&nbsp;     * @param v2 vertex of the triangle
+<i>597</i>&nbsp;     * @return the triangle centroid
+<i>598</i>&nbsp;     */
+<i>599</i>&nbsp;    private Point2D computeCentroid(Point2D v0, Point2D v1, Point2D v2) {
+<b class="nc"><i>600</i>&nbsp;        Point2D center = v1.midpoint(v2);</b>
+<i>601</i>&nbsp;
+<b class="nc"><i>602</i>&nbsp;        Point2D vec = center.subtract(v0);</b>
+<b class="nc"><i>603</i>&nbsp;        return v0.add(new Point2D(vec.getX() / 3.0, vec.getY() / 3.0));</b>
+<i>604</i>&nbsp;    }
+<i>605</i>&nbsp;
+<i>606</i>&nbsp;    /**
+<i>607</i>&nbsp;     * Computes intersection of a pick ray and a single triangle face.
+<i>608</i>&nbsp;     *
+<i>609</i>&nbsp;     * It takes pickRay, origin and dir. The latter two can be of course obtained
+<i>610</i>&nbsp;     * from the pickRay, but we need them to be converted to Point3D and don&#39;t
+<i>611</i>&nbsp;     * want to do that for all faces. Therefore the conversion is done just once
+<i>612</i>&nbsp;     * and passed to the method for all the faces.
+<i>613</i>&nbsp;     *
+<i>614</i>&nbsp;     * @param pickRay pick ray
+<i>615</i>&nbsp;     * @param origin pick ray&#39;s origin
+<i>616</i>&nbsp;     * @param dir pick ray&#39;s direction
+<i>617</i>&nbsp;     * @param faceIndex index of the face to test
+<i>618</i>&nbsp;     * @param cullFace cull face of the Node (and thus the tested face)
+<i>619</i>&nbsp;     * @param candidate the owner node (for the possible placement to the result)
+<i>620</i>&nbsp;     * @param reportFace whether or not to report he hit face
+<i>621</i>&nbsp;     * @param result the pick result to be updated if a closer intersection is found
+<i>622</i>&nbsp;     * @return true if the pick ray intersects with the face (regardless of whether
+<i>623</i>&nbsp;     *              the result has been updated)
+<i>624</i>&nbsp;     */
+<i>625</i>&nbsp;    private boolean computeIntersectsFace(
+<i>626</i>&nbsp;            PickRay pickRay, Vec3d origin, Vec3d dir, int faceIndex,
+<i>627</i>&nbsp;            CullFace cullFace, Node candidate, boolean reportFace, PickResultChooser result) {//, BoxBounds rayBounds) {
+<i>628</i>&nbsp;
+<i>629</i>&nbsp;        // This computation was naturally done by Point3D and its operations,
+<i>630</i>&nbsp;        // but it needs a lot of points and there is often a lot of triangles
+<i>631</i>&nbsp;        // so it is vital for performance to use only primitive variables
+<i>632</i>&nbsp;        // and do the computing manually.
+<i>633</i>&nbsp;
+<b class="nc"><i>634</i>&nbsp;        int vertexIndexSize = getVertexFormat().getVertexIndexSize();</b>
+<b class="nc"><i>635</i>&nbsp;        int pointElementSize = getVertexFormat().getPointElementSize();</b>
+<b class="nc"><i>636</i>&nbsp;        final int v0Idx = faces.get(faceIndex) * pointElementSize;</b>
+<b class="nc"><i>637</i>&nbsp;        final int v1Idx = faces.get(faceIndex + vertexIndexSize) * pointElementSize;</b>
+<b class="nc"><i>638</i>&nbsp;        final int v2Idx = faces.get(faceIndex + (2 * vertexIndexSize)) * pointElementSize;</b>
+<i>639</i>&nbsp;
+<b class="nc"><i>640</i>&nbsp;        final float v0x = points.get(v0Idx);</b>
+<b class="nc"><i>641</i>&nbsp;        final float v0y = points.get(v0Idx + 1);</b>
+<b class="nc"><i>642</i>&nbsp;        final float v0z = points.get(v0Idx + 2);</b>
+<b class="nc"><i>643</i>&nbsp;        final float v1x = points.get(v1Idx);</b>
+<b class="nc"><i>644</i>&nbsp;        final float v1y = points.get(v1Idx + 1);</b>
+<b class="nc"><i>645</i>&nbsp;        final float v1z = points.get(v1Idx + 2);</b>
+<b class="nc"><i>646</i>&nbsp;        final float v2x = points.get(v2Idx);</b>
+<b class="nc"><i>647</i>&nbsp;        final float v2y = points.get(v2Idx + 1);</b>
+<b class="nc"><i>648</i>&nbsp;        final float v2z = points.get(v2Idx + 2);</b>
+<i>649</i>&nbsp;
+<i>650</i>&nbsp;        // e1 = v1.subtract(v0)
+<b class="nc"><i>651</i>&nbsp;        final float e1x = v1x - v0x;</b>
+<b class="nc"><i>652</i>&nbsp;        final float e1y = v1y - v0y;</b>
+<b class="nc"><i>653</i>&nbsp;        final float e1z = v1z - v0z;</b>
+<i>654</i>&nbsp;        // e2 = v2.subtract(v0)
+<b class="nc"><i>655</i>&nbsp;        final float e2x = v2x - v0x;</b>
+<b class="nc"><i>656</i>&nbsp;        final float e2y = v2y - v0y;</b>
+<b class="nc"><i>657</i>&nbsp;        final float e2z = v2z - v0z;</b>
+<i>658</i>&nbsp;
+<i>659</i>&nbsp;        // h = dir.crossProduct(e2)
+<b class="nc"><i>660</i>&nbsp;        final double hx = dir.y * e2z - dir.z * e2y;</b>
+<b class="nc"><i>661</i>&nbsp;        final double hy = dir.z * e2x - dir.x * e2z;</b>
+<b class="nc"><i>662</i>&nbsp;        final double hz = dir.x * e2y - dir.y * e2x;</b>
+<i>663</i>&nbsp;
+<i>664</i>&nbsp;        // a = e1.dotProduct(h)
+<b class="nc"><i>665</i>&nbsp;        final double a = e1x * hx + e1y * hy + e1z * hz;</b>
+<b class="nc"><i>666</i>&nbsp;        if (a == 0.0) {</b>
+<b class="nc"><i>667</i>&nbsp;            return false;</b>
+<i>668</i>&nbsp;        }
+<b class="nc"><i>669</i>&nbsp;        final double f = 1.0 / a;</b>
+<i>670</i>&nbsp;
+<i>671</i>&nbsp;        // s = origin.subtract(v0)
+<b class="nc"><i>672</i>&nbsp;        final double sx = origin.x - v0x;</b>
+<b class="nc"><i>673</i>&nbsp;        final double sy = origin.y - v0y;</b>
+<b class="nc"><i>674</i>&nbsp;        final double sz = origin.z - v0z;</b>
+<i>675</i>&nbsp;
+<i>676</i>&nbsp;        // u = f * (s.dotProduct(h))
+<b class="nc"><i>677</i>&nbsp;        final double u = f * (sx * hx + sy * hy + sz * hz);</b>
+<i>678</i>&nbsp;
+<b class="nc"><i>679</i>&nbsp;        if (u &lt; 0.0 || u &gt; 1.0) {</b>
+<b class="nc"><i>680</i>&nbsp;            return false;</b>
+<i>681</i>&nbsp;        }
+<i>682</i>&nbsp;
+<i>683</i>&nbsp;        // q = s.crossProduct(e1)
+<b class="nc"><i>684</i>&nbsp;        final double qx = sy * e1z - sz * e1y;</b>
+<b class="nc"><i>685</i>&nbsp;        final double qy = sz * e1x - sx * e1z;</b>
+<b class="nc"><i>686</i>&nbsp;        final double qz = sx * e1y - sy * e1x;</b>
+<i>687</i>&nbsp;
+<i>688</i>&nbsp;        // v = f * dir.dotProduct(q)
+<b class="nc"><i>689</i>&nbsp;        double v = f * (dir.x * qx + dir.y * qy + dir.z * qz);</b>
+<i>690</i>&nbsp;
+<b class="nc"><i>691</i>&nbsp;        if (v &lt; 0.0 || u + v &gt; 1.0) {</b>
+<b class="nc"><i>692</i>&nbsp;            return false;</b>
+<i>693</i>&nbsp;        }
+<i>694</i>&nbsp;
+<i>695</i>&nbsp;        // t = f * e2.dotProduct(q)
+<b class="nc"><i>696</i>&nbsp;        final double t = f * (e2x * qx + e2y * qy + e2z * qz);</b>
+<i>697</i>&nbsp;
+<b class="nc"><i>698</i>&nbsp;        if (t &gt;= pickRay.getNearClip() &amp;&amp; t &lt;= pickRay.getFarClip()) {</b>
+<i>699</i>&nbsp;            // This branch is entered only for hit triangles (not so often),
+<i>700</i>&nbsp;            // so we can get smoothly back to the nice code using Point3Ds.
+<i>701</i>&nbsp;
+<b class="nc"><i>702</i>&nbsp;            if (cullFace != CullFace.NONE) {</b>
+<i>703</i>&nbsp;                // normal = e1.crossProduct(e2)
+<b class="nc"><i>704</i>&nbsp;                final Point3D normal = new Point3D(</b>
+<i>705</i>&nbsp;                    e1y * e2z - e1z * e2y,
+<i>706</i>&nbsp;                    e1z * e2x - e1x * e2z,
+<i>707</i>&nbsp;                    e1x * e2y - e1y * e2x);
+<i>708</i>&nbsp;
+<b class="nc"><i>709</i>&nbsp;                final double nangle = normal.angle(</b>
+<i>710</i>&nbsp;                        new Point3D(-dir.x, -dir.y, -dir.z));
+<b class="nc"><i>711</i>&nbsp;                if ((nangle &gt;= 90 || cullFace != CullFace.BACK) &amp;&amp;</b>
+<i>712</i>&nbsp;                        (nangle &lt;= 90 || cullFace != CullFace.FRONT)) {
+<i>713</i>&nbsp;                    // hit culled face
+<b class="nc"><i>714</i>&nbsp;                    return false;</b>
+<i>715</i>&nbsp;                }
+<i>716</i>&nbsp;            }
+<i>717</i>&nbsp;
+<b class="nc"><i>718</i>&nbsp;            if (Double.isInfinite(t) || Double.isNaN(t)) {</b>
+<i>719</i>&nbsp;                // we&#39;ve got a nonsense pick ray or triangle
+<b class="nc"><i>720</i>&nbsp;                return false;</b>
+<i>721</i>&nbsp;            }
+<i>722</i>&nbsp;
+<b class="nc"><i>723</i>&nbsp;            if (result == null || !result.isCloser(t)) {</b>
+<i>724</i>&nbsp;                // it intersects, but we are not interested in the result
+<i>725</i>&nbsp;                // or we already have a better (closer) result
+<i>726</i>&nbsp;                // so we can omit the point and texture computation
+<b class="nc"><i>727</i>&nbsp;                return true;</b>
+<i>728</i>&nbsp;            }
+<i>729</i>&nbsp;
+<b class="nc"><i>730</i>&nbsp;            Point3D point = PickResultChooser.computePoint(pickRay, t);</b>
+<i>731</i>&nbsp;
+<i>732</i>&nbsp;            // Now compute texture mapping. First rotate the triangle
+<i>733</i>&nbsp;            // so that we can compute in 2D
+<i>734</i>&nbsp;
+<i>735</i>&nbsp;            // centroid = computeCentroid(v0, v1, v2);
+<b class="nc"><i>736</i>&nbsp;            final Point3D centroid = computeCentroid(</b>
+<i>737</i>&nbsp;                    v0x, v0y, v0z,
+<i>738</i>&nbsp;                    v1x, v1y, v1z,
+<i>739</i>&nbsp;                    v2x, v2y, v2z);
+<i>740</i>&nbsp;
+<i>741</i>&nbsp;            // cv0 = v0.subtract(centroid)
+<b class="nc"><i>742</i>&nbsp;            final Point3D cv0 = new Point3D(</b>
+<b class="nc"><i>743</i>&nbsp;                    v0x - centroid.getX(),</b>
+<b class="nc"><i>744</i>&nbsp;                    v0y - centroid.getY(),</b>
+<b class="nc"><i>745</i>&nbsp;                    v0z - centroid.getZ());</b>
+<i>746</i>&nbsp;            // cv1 = v1.subtract(centroid)
+<b class="nc"><i>747</i>&nbsp;            final Point3D cv1 = new Point3D(</b>
+<b class="nc"><i>748</i>&nbsp;                    v1x - centroid.getX(),</b>
+<b class="nc"><i>749</i>&nbsp;                    v1y - centroid.getY(),</b>
+<b class="nc"><i>750</i>&nbsp;                    v1z - centroid.getZ());</b>
+<i>751</i>&nbsp;            // cv2 = v2.subtract(centroid)
+<b class="nc"><i>752</i>&nbsp;            final Point3D cv2 = new Point3D(</b>
+<b class="nc"><i>753</i>&nbsp;                    v2x - centroid.getX(),</b>
+<b class="nc"><i>754</i>&nbsp;                    v2y - centroid.getY(),</b>
+<b class="nc"><i>755</i>&nbsp;                    v2z - centroid.getZ());</b>
+<i>756</i>&nbsp;
+<b class="nc"><i>757</i>&nbsp;            final Point3D ce1 = cv1.subtract(cv0);</b>
+<b class="nc"><i>758</i>&nbsp;            final Point3D ce2 = cv2.subtract(cv0);</b>
+<b class="nc"><i>759</i>&nbsp;            Point3D n = ce1.crossProduct(ce2);</b>
+<b class="nc"><i>760</i>&nbsp;            if (n.getZ() &lt; 0) {</b>
+<b class="nc"><i>761</i>&nbsp;                n = new Point3D(-n.getX(), -n.getY(), -n.getZ());</b>
+<i>762</i>&nbsp;            }
+<b class="nc"><i>763</i>&nbsp;            final Point3D ax = n.crossProduct(Rotate.Z_AXIS);</b>
+<b class="nc"><i>764</i>&nbsp;            final double angle = Math.atan2(ax.magnitude(), n.dotProduct(Rotate.Z_AXIS));</b>
+<i>765</i>&nbsp;
+<b class="nc"><i>766</i>&nbsp;            Rotate r = new Rotate(Math.toDegrees(angle), ax);</b>
+<b class="nc"><i>767</i>&nbsp;            final Point3D crv0 = r.transform(cv0);</b>
+<b class="nc"><i>768</i>&nbsp;            final Point3D crv1 = r.transform(cv1);</b>
+<b class="nc"><i>769</i>&nbsp;            final Point3D crv2 = r.transform(cv2);</b>
+<b class="nc"><i>770</i>&nbsp;            final Point3D rPoint = r.transform(point.subtract(centroid));</b>
+<i>771</i>&nbsp;
+<b class="nc"><i>772</i>&nbsp;            final Point2D flatV0 = new Point2D(crv0.getX(), crv0.getY());</b>
+<b class="nc"><i>773</i>&nbsp;            final Point2D flatV1 = new Point2D(crv1.getX(), crv1.getY());</b>
+<b class="nc"><i>774</i>&nbsp;            final Point2D flatV2 = new Point2D(crv2.getX(), crv2.getY());</b>
+<b class="nc"><i>775</i>&nbsp;            final Point2D flatPoint = new Point2D(rPoint.getX(), rPoint.getY());</b>
+<i>776</i>&nbsp;
+<i>777</i>&nbsp;            // Obtain the texture triangle
+<b class="nc"><i>778</i>&nbsp;            int texCoordElementSize = getVertexFormat().getTexCoordElementSize();</b>
+<b class="nc"><i>779</i>&nbsp;            int texCoordOffset = getVertexFormat().getTexCoordIndexOffset();</b>
+<b class="nc"><i>780</i>&nbsp;            final int t0Idx = faces.get(faceIndex + texCoordOffset) * texCoordElementSize;</b>
+<b class="nc"><i>781</i>&nbsp;            final int t1Idx = faces.get(faceIndex + vertexIndexSize + texCoordOffset) * texCoordElementSize;</b>
+<b class="nc"><i>782</i>&nbsp;            final int t2Idx = faces.get(faceIndex + (vertexIndexSize * 2) + texCoordOffset) * texCoordElementSize;</b>
+<i>783</i>&nbsp;
+<b class="nc"><i>784</i>&nbsp;            final Point2D u0 = new Point2D(texCoords.get(t0Idx), texCoords.get(t0Idx + 1));</b>
+<b class="nc"><i>785</i>&nbsp;            final Point2D u1 = new Point2D(texCoords.get(t1Idx), texCoords.get(t1Idx + 1));</b>
+<b class="nc"><i>786</i>&nbsp;            final Point2D u2 = new Point2D(texCoords.get(t2Idx), texCoords.get(t2Idx + 1));</b>
+<i>787</i>&nbsp;
+<b class="nc"><i>788</i>&nbsp;            final Point2D txCentroid = computeCentroid(u0, u1, u2);</b>
+<i>789</i>&nbsp;
+<b class="nc"><i>790</i>&nbsp;            final Point2D cu0 = u0.subtract(txCentroid);</b>
+<b class="nc"><i>791</i>&nbsp;            final Point2D cu1 = u1.subtract(txCentroid);</b>
+<b class="nc"><i>792</i>&nbsp;            final Point2D cu2 = u2.subtract(txCentroid);</b>
+<i>793</i>&nbsp;
+<i>794</i>&nbsp;            // Find the transform between the two triangles
+<i>795</i>&nbsp;
+<b class="nc"><i>796</i>&nbsp;            final Affine src = new Affine(</b>
+<b class="nc"><i>797</i>&nbsp;                    flatV0.getX(), flatV1.getX(), flatV2.getX(),</b>
+<b class="nc"><i>798</i>&nbsp;                    flatV0.getY(), flatV1.getY(), flatV2.getY());</b>
+<b class="nc"><i>799</i>&nbsp;            final Affine trg = new Affine(</b>
+<b class="nc"><i>800</i>&nbsp;                    cu0.getX(), cu1.getX(), cu2.getX(),</b>
+<b class="nc"><i>801</i>&nbsp;                    cu0.getY(), cu1.getY(), cu2.getY());</b>
+<i>802</i>&nbsp;
+<b class="nc"><i>803</i>&nbsp;            Point2D txCoords = null;</b>
+<i>804</i>&nbsp;
+<i>805</i>&nbsp;            try {
+<b class="nc"><i>806</i>&nbsp;                src.invert();</b>
+<b class="nc"><i>807</i>&nbsp;                trg.append(src);</b>
+<b class="nc"><i>808</i>&nbsp;                txCoords = txCentroid.add(trg.transform(flatPoint));</b>
+<b class="nc"><i>809</i>&nbsp;            } catch (NonInvertibleTransformException e) {</b>
+<i>810</i>&nbsp;                // Can&#39;t compute texture mapping, probably the coordinates
+<i>811</i>&nbsp;                // don&#39;t make sense. Ignore it and return null tex coords.
+<b class="nc"><i>812</i>&nbsp;            }</b>
+<i>813</i>&nbsp;
+<b class="nc"><i>814</i>&nbsp;            result.offer(candidate, t,</b>
+<b class="nc"><i>815</i>&nbsp;                    reportFace ? faceIndex / getFaceElementSize() : PickResult.FACE_UNDEFINED,</b>
+<i>816</i>&nbsp;                    point, txCoords);
+<b class="nc"><i>817</i>&nbsp;            return true;</b>
+<i>818</i>&nbsp;        }
+<i>819</i>&nbsp;
+<b class="nc"><i>820</i>&nbsp;        return false;</b>
+<i>821</i>&nbsp;    }
+<i>822</i>&nbsp;
+<i>823</i>&nbsp;    /*
+<i>824</i>&nbsp;     * Note: This method MUST only be called via its accessor method.
+<i>825</i>&nbsp;     */
+<i>826</i>&nbsp;    private boolean doComputeIntersects(PickRay pickRay, PickResultChooser pickResult,
+<i>827</i>&nbsp;            Node candidate, CullFace cullFace, boolean reportFace) {
+<i>828</i>&nbsp;
+<b class="nc"><i>829</i>&nbsp;        boolean found = false;</b>
+<b class="nc"><i>830</i>&nbsp;        if (validate()) {</b>
+<b class="nc"><i>831</i>&nbsp;            final int size = faces.size();</b>
+<i>832</i>&nbsp;
+<b class="nc"><i>833</i>&nbsp;            final Vec3d o = pickRay.getOriginNoClone();</b>
+<i>834</i>&nbsp;
+<b class="nc"><i>835</i>&nbsp;            final Vec3d d = pickRay.getDirectionNoClone();</b>
+<i>836</i>&nbsp;
+<b class="nc"><i>837</i>&nbsp;            for (int i = 0; i &lt; size; i += getFaceElementSize()) {</b>
+<b class="nc"><i>838</i>&nbsp;                if (computeIntersectsFace(pickRay, o, d, i, cullFace, candidate,</b>
+<i>839</i>&nbsp;                        reportFace, pickResult)) {
+<b class="nc"><i>840</i>&nbsp;                    found = true;</b>
+<i>841</i>&nbsp;                }
+<i>842</i>&nbsp;            }
+<i>843</i>&nbsp;        }
+<b class="nc"><i>844</i>&nbsp;        return found;</b>
+<i>845</i>&nbsp;    }
+<i>846</i>&nbsp;
+<i>847</i>&nbsp;    private class Listener&lt;T extends ObservableArray&lt;T&gt;&gt; implements ArrayChangeListener&lt;T&gt;, FloatArraySyncer, IntegerArraySyncer {
+<i>848</i>&nbsp;
+<i>849</i>&nbsp;        protected final T array;
+<i>850</i>&nbsp;        protected boolean dirty = true;
+<i>851</i>&nbsp;        /**
+<i>852</i>&nbsp;         * Array was replaced
+<i>853</i>&nbsp;         * @return true if array was replaced; false otherwise
+<i>854</i>&nbsp;         */
+<i>855</i>&nbsp;        protected boolean dirtyInFull = true;
+<i>856</i>&nbsp;        protected int dirtyRangeFrom;
+<i>857</i>&nbsp;        protected int dirtyRangeLength;
+<i>858</i>&nbsp;
+<i>859</i>&nbsp;        public Listener(T array) {
+<i>860</i>&nbsp;            this.array = array;
+<i>861</i>&nbsp;            array.addListener(this);
+<i>862</i>&nbsp;        }
+<i>863</i>&nbsp;
+<i>864</i>&nbsp;        /**
+<i>865</i>&nbsp;         * Adds a dirty range
+<i>866</i>&nbsp;         * @param from index of the first modified element
+<i>867</i>&nbsp;         * @param length length of the modified range
+<i>868</i>&nbsp;         */
+<i>869</i>&nbsp;        protected final void addDirtyRange(int from, int length) {
+<i>870</i>&nbsp;            if (length &gt; 0 &amp;&amp; !dirtyInFull) {
+<i>871</i>&nbsp;                markDirty();
+<i>872</i>&nbsp;                if (dirtyRangeLength == 0) {
+<i>873</i>&nbsp;                    dirtyRangeFrom = from;
+<i>874</i>&nbsp;                    dirtyRangeLength = length;
+<i>875</i>&nbsp;                } else {
+<i>876</i>&nbsp;                    int fromIndex = Math.min(dirtyRangeFrom, from);
+<i>877</i>&nbsp;                    int toIndex = Math.max(dirtyRangeFrom + dirtyRangeLength, from + length);
+<i>878</i>&nbsp;                    dirtyRangeFrom = fromIndex;
+<i>879</i>&nbsp;                    dirtyRangeLength = toIndex - fromIndex;
+<i>880</i>&nbsp;                }
+<i>881</i>&nbsp;            }
+<i>882</i>&nbsp;        }
+<i>883</i>&nbsp;
+<i>884</i>&nbsp;        protected void markDirty() {
+<i>885</i>&nbsp;            dirty = true;
+<i>886</i>&nbsp;            TriangleMesh.this.setDirty(true);
+<i>887</i>&nbsp;        }
+<i>888</i>&nbsp;
+<i>889</i>&nbsp;        @Override
+<i>890</i>&nbsp;        public void onChanged(T observableArray, boolean sizeChanged, int from, int to) {
+<i>891</i>&nbsp;            if (sizeChanged) {
+<i>892</i>&nbsp;                setDirty(true);
+<i>893</i>&nbsp;            } else {
+<i>894</i>&nbsp;                addDirtyRange(from, to - from);
+<i>895</i>&nbsp;            }
+<i>896</i>&nbsp;            isValidDirty = true;
+<i>897</i>&nbsp;        }
+<i>898</i>&nbsp;
+<i>899</i>&nbsp;        /**
+<i>900</i>&nbsp;         * @param dirty if true, the whole collection is marked as dirty;
+<i>901</i>&nbsp;         * if false, the whole collection is marked as not-dirty
+<i>902</i>&nbsp;         */
+<i>903</i>&nbsp;        public final void setDirty(boolean dirty) {
+<i>904</i>&nbsp;            this.dirtyInFull = dirty;
+<i>905</i>&nbsp;            if (dirty) {
+<i>906</i>&nbsp;                markDirty();
+<i>907</i>&nbsp;                dirtyRangeFrom = 0;
+<i>908</i>&nbsp;                dirtyRangeLength = array.size();
+<i>909</i>&nbsp;            } else {
+<i>910</i>&nbsp;                this.dirty = false;
+<i>911</i>&nbsp;                dirtyRangeFrom = dirtyRangeLength = 0;
+<i>912</i>&nbsp;            }
+<i>913</i>&nbsp;        }
+<i>914</i>&nbsp;
+<i>915</i>&nbsp;        @Override
+<i>916</i>&nbsp;        public float[] syncTo(float[] array, int[] fromAndLengthIndices) {
+<i>917</i>&nbsp;            assert ((fromAndLengthIndices != null) &amp;&amp; (fromAndLengthIndices.length == 2));
+<i>918</i>&nbsp;            ObservableFloatArray floatArray = (ObservableFloatArray) this.array;
+<i>919</i>&nbsp;            if (dirtyInFull || array == null || array.length != floatArray.size()) {
+<i>920</i>&nbsp;                // Always allocate a new array when size changes
+<i>921</i>&nbsp;                fromAndLengthIndices[0] = 0;
+<i>922</i>&nbsp;                fromAndLengthIndices[1] = floatArray.size();
+<i>923</i>&nbsp;                return floatArray.toArray(null);
+<i>924</i>&nbsp;            }
+<i>925</i>&nbsp;            fromAndLengthIndices[0] = dirtyRangeFrom;
+<i>926</i>&nbsp;            fromAndLengthIndices[1] = dirtyRangeLength;
+<i>927</i>&nbsp;            floatArray.copyTo(dirtyRangeFrom, array, dirtyRangeFrom, dirtyRangeLength);
+<i>928</i>&nbsp;            return array;
+<i>929</i>&nbsp;        }
+<i>930</i>&nbsp;
+<i>931</i>&nbsp;        @Override
+<i>932</i>&nbsp;        public int[] syncTo(int[] array, int[] fromAndLengthIndices) {
+<i>933</i>&nbsp;            assert ((fromAndLengthIndices != null) &amp;&amp; (fromAndLengthIndices.length == 2));
+<i>934</i>&nbsp;            ObservableIntegerArray intArray = (ObservableIntegerArray) this.array;
+<i>935</i>&nbsp;            if (dirtyInFull || array == null || array.length != intArray.size()) {
+<i>936</i>&nbsp;                fromAndLengthIndices[0] = 0;
+<i>937</i>&nbsp;                fromAndLengthIndices[1] = intArray.size();
+<i>938</i>&nbsp;                // Always allocate a new array when size changes
+<i>939</i>&nbsp;                return intArray.toArray(null);
+<i>940</i>&nbsp;            }
+<i>941</i>&nbsp;            fromAndLengthIndices[0] = dirtyRangeFrom;
+<i>942</i>&nbsp;            fromAndLengthIndices[1] = dirtyRangeLength;
+<i>943</i>&nbsp;            intArray.copyTo(dirtyRangeFrom, array, dirtyRangeFrom, dirtyRangeLength);
+<i>944</i>&nbsp;            return array;
+<i>945</i>&nbsp;        }
+<i>946</i>&nbsp;    }
+<i>947</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2017-12-04 21:49</div>
+</div>
+</body>
+</html>

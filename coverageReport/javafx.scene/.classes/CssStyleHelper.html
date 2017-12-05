@@ -1,0 +1,2326 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: CssStyleHelper</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">javafx.scene</a> ]
+</div>
+
+<h1>Coverage Summary for Class: CssStyleHelper (javafx.scene)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">CssStyleHelper</td>
+<td class="coverageStat">
+  <span class="percent">
+    69.4%
+  </span>
+  <span class="absValue">
+    (25/ 36)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    51.8%
+  </span>
+  <span class="absValue">
+    (437/ 844)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">CssStyleHelper$1</td>
+<td class="coverageStat">
+  <span class="percent">
+    33.3%
+  </span>
+  <span class="absValue">
+    (1/ 3)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    33.3%
+  </span>
+  <span class="absValue">
+    (1/ 3)
+  </span>
+</td>
+  </tr>
+  <tr>
+    <td class="name">CssStyleHelper$CacheContainer</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (3/ 3)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    96.8%
+  </span>
+  <span class="absValue">
+    (30/ 31)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    69%
+  </span>
+  <span class="absValue">
+    (29/ 42)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    53.3%
+  </span>
+  <span class="absValue">
+    (468/ 878)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright (c) 2011, 2016, Oracle and/or its affiliates. All rights reserved.
+<i>3</i>&nbsp; * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+<i>4</i>&nbsp; *
+<i>5</i>&nbsp; *
+<i>6</i>&nbsp; *
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; *
+<i>11</i>&nbsp; *
+<i>12</i>&nbsp; *
+<i>13</i>&nbsp; *
+<i>14</i>&nbsp; *
+<i>15</i>&nbsp; *
+<i>16</i>&nbsp; *
+<i>17</i>&nbsp; *
+<i>18</i>&nbsp; *
+<i>19</i>&nbsp; *
+<i>20</i>&nbsp; *
+<i>21</i>&nbsp; *
+<i>22</i>&nbsp; *
+<i>23</i>&nbsp; *
+<i>24</i>&nbsp; */
+<i>25</i>&nbsp;package javafx.scene;
+<i>26</i>&nbsp;
+<i>27</i>&nbsp;import java.util.ArrayList;
+<i>28</i>&nbsp;import java.util.Collections;
+<i>29</i>&nbsp;import java.util.HashMap;
+<i>30</i>&nbsp;import java.util.HashSet;
+<i>31</i>&nbsp;import java.util.List;
+<i>32</i>&nbsp;import java.util.Locale;
+<i>33</i>&nbsp;import java.util.Map;
+<i>34</i>&nbsp;import java.util.Map.Entry;
+<i>35</i>&nbsp;import java.util.Set;
+<i>36</i>&nbsp;
+<i>37</i>&nbsp;import javafx.beans.property.ObjectProperty;
+<i>38</i>&nbsp;import javafx.beans.property.SimpleObjectProperty;
+<i>39</i>&nbsp;import javafx.beans.value.WritableValue;
+<i>40</i>&nbsp;import com.sun.javafx.css.CascadingStyle;
+<i>41</i>&nbsp;import javafx.css.CssMetaData;
+<i>42</i>&nbsp;import javafx.css.CssParser;
+<i>43</i>&nbsp;import javafx.css.FontCssMetaData;
+<i>44</i>&nbsp;import javafx.css.ParsedValue;
+<i>45</i>&nbsp;import javafx.css.PseudoClass;
+<i>46</i>&nbsp;import javafx.css.Rule;
+<i>47</i>&nbsp;import javafx.css.Selector;
+<i>48</i>&nbsp;import javafx.css.Style;
+<i>49</i>&nbsp;import javafx.css.StyleConverter;
+<i>50</i>&nbsp;import javafx.css.StyleOrigin;
+<i>51</i>&nbsp;import javafx.css.Styleable;
+<i>52</i>&nbsp;import javafx.css.StyleableProperty;
+<i>53</i>&nbsp;import javafx.css.Stylesheet;
+<i>54</i>&nbsp;import javafx.scene.text.Font;
+<i>55</i>&nbsp;import javafx.scene.text.FontPosture;
+<i>56</i>&nbsp;import javafx.scene.text.FontWeight;
+<i>57</i>&nbsp;
+<i>58</i>&nbsp;import com.sun.javafx.css.CalculatedValue;
+<i>59</i>&nbsp;import com.sun.javafx.css.ParsedValueImpl;
+<i>60</i>&nbsp;import com.sun.javafx.css.PseudoClassState;
+<i>61</i>&nbsp;import com.sun.javafx.css.StyleCache;
+<i>62</i>&nbsp;import com.sun.javafx.css.StyleCacheEntry;
+<i>63</i>&nbsp;import com.sun.javafx.css.StyleManager;
+<i>64</i>&nbsp;import com.sun.javafx.css.StyleMap;
+<i>65</i>&nbsp;import javafx.css.converter.FontConverter;
+<i>66</i>&nbsp;import com.sun.javafx.util.Logging;
+<i>67</i>&nbsp;import com.sun.javafx.util.Utils;
+<i>68</i>&nbsp;
+<i>69</i>&nbsp;import sun.util.logging.PlatformLogger.Level;
+<i>70</i>&nbsp;import sun.util.logging.PlatformLogger;
+<i>71</i>&nbsp;
+<i>72</i>&nbsp;import static com.sun.javafx.css.CalculatedValue.*;
+<i>73</i>&nbsp;
+<i>74</i>&nbsp;/**
+<i>75</i>&nbsp; * The StyleHelper is a helper class used for applying CSS information to Nodes.
+<i>76</i>&nbsp; */
+<b class="fc"><i>77</i>&nbsp;final class CssStyleHelper {</b>
+<i>78</i>&nbsp;
+<b class="fc"><i>79</i>&nbsp;    private static final PlatformLogger LOGGER = com.sun.javafx.util.Logging.getCSSLogger();</b>
+<i>80</i>&nbsp;
+<b class="fc"><i>81</i>&nbsp;    private CssStyleHelper() {</b>
+<b class="fc"><i>82</i>&nbsp;        this.triggerStates = new PseudoClassState();</b>
+<b class="fc"><i>83</i>&nbsp;    }</b>
+<i>84</i>&nbsp;
+<i>85</i>&nbsp;    /**
+<i>86</i>&nbsp;     * Creates a new StyleHelper.
+<i>87</i>&nbsp;     */
+<i>88</i>&nbsp;    static CssStyleHelper createStyleHelper(final Node node) {
+<i>89</i>&nbsp;
+<i>90</i>&nbsp;        // need to know how far we are to root in order to init arrays.
+<i>91</i>&nbsp;        // TODO: should we hang onto depth to avoid this nonsense later?
+<i>92</i>&nbsp;        // TODO: is there some other way of knowing how far from the root a node is?
+<b class="fc"><i>93</i>&nbsp;        Styleable parent = node;</b>
+<b class="fc"><i>94</i>&nbsp;        int depth = 0;</b>
+<b class="fc"><i>95</i>&nbsp;        while(parent != null) {</b>
+<b class="fc"><i>96</i>&nbsp;            depth++;</b>
+<b class="fc"><i>97</i>&nbsp;            parent = parent.getStyleableParent();</b>
+<i>98</i>&nbsp;        }
+<i>99</i>&nbsp;
+<i>100</i>&nbsp;        // The List&lt;CacheEntry&gt; should only contain entries for those
+<i>101</i>&nbsp;        // pseudo-class states that have styles. The StyleHelper&#39;s
+<i>102</i>&nbsp;        // pseudoclassStateMask is a bitmask of those pseudoclasses that
+<i>103</i>&nbsp;        // appear in the node&#39;s StyleHelper&#39;s smap. This list of
+<i>104</i>&nbsp;        // pseudo-class masks is held by the StyleCacheKey. When a node is
+<i>105</i>&nbsp;        // styled, its pseudoclasses and the pseudoclasses of its parents
+<i>106</i>&nbsp;        // are gotten. By comparing the actual pseudo-class state to the
+<i>107</i>&nbsp;        // pseudo-class states that apply, a CacheEntry can be created or
+<i>108</i>&nbsp;        // fetched using only those pseudoclasses that matter.
+<b class="fc"><i>109</i>&nbsp;        final PseudoClassState[] triggerStates = new PseudoClassState[depth];</b>
+<i>110</i>&nbsp;
+<i>111</i>&nbsp;        final StyleMap styleMap =
+<b class="fc"><i>112</i>&nbsp;                StyleManager.getInstance().findMatchingStyles(node, node.getSubScene(), triggerStates);</b>
+<i>113</i>&nbsp;
+<i>114</i>&nbsp;        //
+<i>115</i>&nbsp;        // reuse the existing styleHelper if possible.
+<i>116</i>&nbsp;        //
+<b class="fc"><i>117</i>&nbsp;        if ( canReuseStyleHelper(node, styleMap) ) {</b>
+<i>118</i>&nbsp;
+<i>119</i>&nbsp;            //
+<i>120</i>&nbsp;            // RT-33080
+<i>121</i>&nbsp;            //
+<i>122</i>&nbsp;            // If we&#39;re reusing a style helper, clear the fontSizeCache in case either this node or some parent
+<i>123</i>&nbsp;            // node has changed font from a user calling setFont.
+<i>124</i>&nbsp;            //
+<i>125</i>&nbsp;            // It may be the case that the node&#39;s font has changed from a call to setFont, which will
+<i>126</i>&nbsp;            // trigger a REAPPLY. If the REAPPLY comes because of a change in font, then the fontSizeCache
+<i>127</i>&nbsp;            // needs to be invalidated (cleared) so that new values will be looked up for all transition states.
+<i>128</i>&nbsp;            //
+<b class="fc"><i>129</i>&nbsp;            if (node.styleHelper.cacheContainer != null &amp;&amp; node.styleHelper.isUserSetFont(node)) {</b>
+<b class="nc"><i>130</i>&nbsp;                node.styleHelper.cacheContainer.fontSizeCache.clear();</b>
+<i>131</i>&nbsp;            }
+<b class="fc"><i>132</i>&nbsp;            node.styleHelper.cacheContainer.forceSlowpath = true;</b>
+<b class="fc"><i>133</i>&nbsp;            node.styleHelper.triggerStates.addAll(triggerStates[0]);</b>
+<b class="fc"><i>134</i>&nbsp;            updateParentTriggerStates(node, depth, triggerStates);</b>
+<b class="fc"><i>135</i>&nbsp;            return node.styleHelper;</b>
+<i>136</i>&nbsp;
+<i>137</i>&nbsp;        }
+<i>138</i>&nbsp;
+<b class="fc"><i>139</i>&nbsp;        if (styleMap == null || styleMap.isEmpty()) {</b>
+<i>140</i>&nbsp;
+<b class="fc"><i>141</i>&nbsp;            boolean mightInherit = false;</b>
+<i>142</i>&nbsp;
+<b class="fc"><i>143</i>&nbsp;            final List&lt;CssMetaData&lt;? extends Styleable, ?&gt;&gt; props = node.getCssMetaData();</b>
+<i>144</i>&nbsp;
+<b class="fc"><i>145</i>&nbsp;            final int pMax = props != null ? props.size() : 0;</b>
+<b class="fc"><i>146</i>&nbsp;            for (int p=0; p&lt;pMax; p++) {</b>
+<i>147</i>&nbsp;
+<b class="fc"><i>148</i>&nbsp;                final CssMetaData&lt;? extends Styleable, ?&gt; prop = props.get(p);</b>
+<b class="fc"><i>149</i>&nbsp;                if (prop.isInherits()) {</b>
+<b class="fc"><i>150</i>&nbsp;                    mightInherit = true;</b>
+<b class="fc"><i>151</i>&nbsp;                    break;</b>
+<i>152</i>&nbsp;                }
+<i>153</i>&nbsp;            }
+<i>154</i>&nbsp;
+<b class="fc"><i>155</i>&nbsp;            if (mightInherit == false) {</b>
+<i>156</i>&nbsp;
+<i>157</i>&nbsp;                // If this node had a style helper, then reset properties to their initial value
+<i>158</i>&nbsp;                // since the node won&#39;t have a style helper after this call
+<b class="fc"><i>159</i>&nbsp;                if (node.styleHelper != null) {</b>
+<b class="nc"><i>160</i>&nbsp;                    node.styleHelper.resetToInitialValues(node);</b>
+<i>161</i>&nbsp;                }
+<i>162</i>&nbsp;
+<i>163</i>&nbsp;                //
+<i>164</i>&nbsp;                // This node didn&#39;t have a StyleHelper before and it doesn&#39;t need one now since there are
+<i>165</i>&nbsp;                // no styles in the StyleMap and no inherited styles.
+<b class="fc"><i>166</i>&nbsp;                return null;</b>
+<i>167</i>&nbsp;            }
+<i>168</i>&nbsp;
+<i>169</i>&nbsp;        }
+<i>170</i>&nbsp;
+<b class="fc"><i>171</i>&nbsp;        final CssStyleHelper helper = new CssStyleHelper();</b>
+<b class="fc"><i>172</i>&nbsp;        helper.triggerStates.addAll(triggerStates[0]);</b>
+<i>173</i>&nbsp;
+<b class="fc"><i>174</i>&nbsp;        updateParentTriggerStates(node, depth, triggerStates);</b>
+<i>175</i>&nbsp;
+<b class="fc"><i>176</i>&nbsp;        helper.cacheContainer = new CacheContainer(node, styleMap, depth);</b>
+<i>177</i>&nbsp;
+<i>178</i>&nbsp;        // If this node had a style helper, then reset properties to their initial value
+<i>179</i>&nbsp;        // since the style map might now be different
+<b class="fc"><i>180</i>&nbsp;        if (node.styleHelper != null) {</b>
+<b class="fc"><i>181</i>&nbsp;            node.styleHelper.resetToInitialValues(node);</b>
+<i>182</i>&nbsp;        }
+<i>183</i>&nbsp;
+<b class="fc"><i>184</i>&nbsp;        return helper;</b>
+<i>185</i>&nbsp;    }
+<i>186</i>&nbsp;
+<i>187</i>&nbsp;    private static void updateParentTriggerStates(Styleable styleable, int depth, PseudoClassState[] triggerStates) {
+<i>188</i>&nbsp;        // make sure parent&#39;s transition states include the pseudo-classes
+<i>189</i>&nbsp;        // found when matching selectors
+<b class="fc"><i>190</i>&nbsp;        Styleable parent = styleable.getStyleableParent();</b>
+<b class="fc"><i>191</i>&nbsp;        for(int n=1; n&lt;depth; n++) {</b>
+<i>192</i>&nbsp;
+<i>193</i>&nbsp;            // TODO: this means that a style like .menu-item:hover won&#39;t work. Need to separate CssStyleHelper tree from scene-graph tree
+<b class="fc"><i>194</i>&nbsp;            if (parent instanceof Node == false) {</b>
+<b class="fc"><i>195</i>&nbsp;                parent=parent.getStyleableParent();</b>
+<b class="fc"><i>196</i>&nbsp;                continue;</b>
+<i>197</i>&nbsp;            }
+<b class="fc"><i>198</i>&nbsp;            Node parentNode = (Node)parent;</b>
+<i>199</i>&nbsp;
+<b class="fc"><i>200</i>&nbsp;            final PseudoClassState triggerState = triggerStates[n];</b>
+<i>201</i>&nbsp;
+<i>202</i>&nbsp;            // if there is nothing in triggerState, then continue since there
+<i>203</i>&nbsp;            // isn&#39;t any pseudo-class state that might trigger a state change
+<b class="fc"><i>204</i>&nbsp;            if (triggerState != null &amp;&amp; triggerState.size() &gt; 0) {</b>
+<i>205</i>&nbsp;
+<i>206</i>&nbsp;                // Create a StyleHelper for the parent, if necessary.
+<b class="fc"><i>207</i>&nbsp;                if (parentNode.styleHelper == null) {</b>
+<b class="nc"><i>208</i>&nbsp;                    parentNode.styleHelper = new CssStyleHelper();</b>
+<i>209</i>&nbsp;                }
+<b class="fc"><i>210</i>&nbsp;                parentNode.styleHelper.triggerStates.addAll(triggerState);</b>
+<i>211</i>&nbsp;
+<i>212</i>&nbsp;            }
+<i>213</i>&nbsp;
+<b class="fc"><i>214</i>&nbsp;            parent=parent.getStyleableParent();</b>
+<i>215</i>&nbsp;        }
+<i>216</i>&nbsp;
+<b class="fc"><i>217</i>&nbsp;    }</b>
+<i>218</i>&nbsp;    //
+<i>219</i>&nbsp;    // return true if the fontStyleableProperty&#39;s origin is USER
+<i>220</i>&nbsp;    //
+<i>221</i>&nbsp;    private boolean isUserSetFont(Styleable node) {
+<i>222</i>&nbsp;
+<b class="fc"><i>223</i>&nbsp;        if (node == null) return false; // should never happen, but just to be safe...</b>
+<i>224</i>&nbsp;
+<b class="fc"><i>225</i>&nbsp;        CssMetaData&lt;Styleable, Font&gt; fontCssMetaData = cacheContainer != null ? cacheContainer.fontProp : null;</b>
+<b class="fc"><i>226</i>&nbsp;        if (fontCssMetaData != null) {</b>
+<b class="fc"><i>227</i>&nbsp;            StyleableProperty&lt;Font&gt; fontStyleableProperty = fontCssMetaData != null ? fontCssMetaData.getStyleableProperty(node) : null;</b>
+<b class="fc"><i>228</i>&nbsp;            if (fontStyleableProperty != null &amp;&amp; fontStyleableProperty.getStyleOrigin() == StyleOrigin.USER) return true;</b>
+<i>229</i>&nbsp;        }
+<i>230</i>&nbsp;
+<b class="fc"><i>231</i>&nbsp;        CssStyleHelper parentStyleHelper = null;</b>
+<b class="fc"><i>232</i>&nbsp;        Styleable styleableParent = node;</b>
+<i>233</i>&nbsp;        do {
+<b class="fc"><i>234</i>&nbsp;            styleableParent = styleableParent.getStyleableParent();</b>
+<b class="fc"><i>235</i>&nbsp;            if (styleableParent instanceof Node) {</b>
+<b class="fc"><i>236</i>&nbsp;                parentStyleHelper = ((Node)styleableParent).styleHelper;</b>
+<i>237</i>&nbsp;            }
+<b class="fc"><i>238</i>&nbsp;        } while (parentStyleHelper == null &amp;&amp; styleableParent != null);</b>
+<i>239</i>&nbsp;
+<b class="fc"><i>240</i>&nbsp;        if (parentStyleHelper != null) {</b>
+<b class="fc"><i>241</i>&nbsp;            return parentStyleHelper.isUserSetFont(styleableParent);</b>
+<i>242</i>&nbsp;        } else {
+<b class="fc"><i>243</i>&nbsp;            return false;</b>
+<i>244</i>&nbsp;        }
+<i>245</i>&nbsp;    }
+<i>246</i>&nbsp;
+<i>247</i>&nbsp;    //
+<i>248</i>&nbsp;    // return the value of the property
+<i>249</i>&nbsp;    //
+<i>250</i>&nbsp;    private static boolean isTrue(WritableValue&lt;Boolean&gt; booleanProperty) {
+<b class="nc"><i>251</i>&nbsp;        return booleanProperty != null &amp;&amp; booleanProperty.getValue();</b>
+<i>252</i>&nbsp;    }
+<i>253</i>&nbsp;
+<i>254</i>&nbsp;    //
+<i>255</i>&nbsp;    // set the value of the property to true
+<i>256</i>&nbsp;    //
+<i>257</i>&nbsp;    private static void setTrue(WritableValue&lt;Boolean&gt; booleanProperty) {
+<b class="nc"><i>258</i>&nbsp;        if (booleanProperty != null) booleanProperty.setValue(true);</b>
+<b class="nc"><i>259</i>&nbsp;    }</b>
+<i>260</i>&nbsp;
+<i>261</i>&nbsp;    //
+<i>262</i>&nbsp;    // return true if the Node&#39;s current styleHelper can be reused.
+<i>263</i>&nbsp;    //
+<i>264</i>&nbsp;    private static boolean canReuseStyleHelper(final Node node, final StyleMap styleMap) {
+<i>265</i>&nbsp;
+<i>266</i>&nbsp;        // Obviously, we cannot reuse the node&#39;s style helper if it doesn&#39;t have one.
+<b class="fc"><i>267</i>&nbsp;        if (node == null || node.styleHelper == null) {</b>
+<b class="fc"><i>268</i>&nbsp;            return false;</b>
+<i>269</i>&nbsp;        }
+<i>270</i>&nbsp;
+<i>271</i>&nbsp;        // If we have a styleHelper but the new styleMap is null, then we don&#39;t need a styleHelper at all
+<b class="fc"><i>272</i>&nbsp;        if (styleMap == null) {</b>
+<b class="nc"><i>273</i>&nbsp;            return false;</b>
+<i>274</i>&nbsp;        }
+<i>275</i>&nbsp;
+<b class="fc"><i>276</i>&nbsp;        StyleMap currentMap = node.styleHelper.getStyleMap(node);</b>
+<i>277</i>&nbsp;
+<i>278</i>&nbsp;        // We cannot reuse the style helper if the styleMap is not the same instance as the current one
+<i>279</i>&nbsp;        // Note: check instance equality!
+<b class="fc"><i>280</i>&nbsp;        if (currentMap != styleMap) {</b>
+<b class="fc"><i>281</i>&nbsp;            return false;</b>
+<i>282</i>&nbsp;        }
+<i>283</i>&nbsp;
+<i>284</i>&nbsp;        // If the style maps are the same instance, we can re-use the current styleHelper if the cacheContainer is null.
+<i>285</i>&nbsp;        // Under this condition, there are no styles for this node _and_ no styles inherit.
+<b class="fc"><i>286</i>&nbsp;        if (node.styleHelper.cacheContainer == null) {</b>
+<b class="nc"><i>287</i>&nbsp;            return true;</b>
+<i>288</i>&nbsp;        }
+<i>289</i>&nbsp;
+<i>290</i>&nbsp;        //
+<i>291</i>&nbsp;        // The current map might be the same, but one of the node&#39;s parent&#39;s maps might have changed which
+<i>292</i>&nbsp;        // might cause some calculated values to change. To see if we can re-use the style-helper, we need to
+<i>293</i>&nbsp;        // check if the StyleMap id&#39;s have changed, which we can do by inspecting the cacheContainer&#39;s styleCacheKey
+<i>294</i>&nbsp;        // since it is made up of the current set of StyleMap ids.
+<i>295</i>&nbsp;        //
+<i>296</i>&nbsp;
+<b class="fc"><i>297</i>&nbsp;        CssStyleHelper parentHelper = null;</b>
+<b class="fc"><i>298</i>&nbsp;        Styleable parent = node.getStyleableParent();</b>
+<i>299</i>&nbsp;
+<i>300</i>&nbsp;        // if the node&#39;s parent is null and the style maps are the same, then we can certainly reuse the style-helper
+<b class="fc"><i>301</i>&nbsp;        if (parent == null) {</b>
+<b class="fc"><i>302</i>&nbsp;            return true;</b>
+<i>303</i>&nbsp;        }
+<i>304</i>&nbsp;
+<b class="fc"><i>305</i>&nbsp;        while (parent != null) {</b>
+<b class="fc"><i>306</i>&nbsp;            if (parent instanceof Node) {</b>
+<b class="fc"><i>307</i>&nbsp;                parentHelper = ((Node) parent).styleHelper;</b>
+<b class="fc"><i>308</i>&nbsp;                if (parentHelper != null) break;</b>
+<i>309</i>&nbsp;            }
+<b class="fc"><i>310</i>&nbsp;            parent = parent.getStyleableParent();</b>
+<i>311</i>&nbsp;        }
+<i>312</i>&nbsp;
+<b class="fc"><i>313</i>&nbsp;        if (parentHelper != null &amp;&amp; parentHelper.cacheContainer != null) {</b>
+<i>314</i>&nbsp;
+<b class="fc"><i>315</i>&nbsp;            int[] parentIds = parentHelper.cacheContainer.styleCacheKey.getStyleMapIds();</b>
+<b class="fc"><i>316</i>&nbsp;            int[] nodeIds = node.styleHelper.cacheContainer.styleCacheKey.getStyleMapIds();</b>
+<i>317</i>&nbsp;
+<b class="fc"><i>318</i>&nbsp;            if (parentIds.length == nodeIds.length - 1) {</b>
+<i>319</i>&nbsp;
+<b class="fc"><i>320</i>&nbsp;                boolean isSame = true;</b>
+<i>321</i>&nbsp;
+<i>322</i>&nbsp;                // check that all of the style map ids are the same.
+<b class="fc"><i>323</i>&nbsp;                for (int i = 0; i &lt; parentIds.length; i++) {</b>
+<b class="fc"><i>324</i>&nbsp;                    if (nodeIds[i + 1] != parentIds[i]) {</b>
+<b class="fc"><i>325</i>&nbsp;                        isSame = false;</b>
+<b class="fc"><i>326</i>&nbsp;                        break;</b>
+<i>327</i>&nbsp;                    }
+<i>328</i>&nbsp;                }
+<i>329</i>&nbsp;
+<b class="fc"><i>330</i>&nbsp;                return isSame;</b>
+<i>331</i>&nbsp;
+<i>332</i>&nbsp;            }
+<i>333</i>&nbsp;        }
+<i>334</i>&nbsp;
+<b class="fc"><i>335</i>&nbsp;        return false;</b>
+<i>336</i>&nbsp;    }
+<i>337</i>&nbsp;
+<i>338</i>&nbsp;    private CacheContainer cacheContainer;
+<i>339</i>&nbsp;
+<b class="fc"><i>340</i>&nbsp;    private final static class CacheContainer {</b>
+<i>341</i>&nbsp;
+<i>342</i>&nbsp;        // Set internal internalState structures
+<i>343</i>&nbsp;        private CacheContainer(
+<i>344</i>&nbsp;                Node node,
+<i>345</i>&nbsp;                final StyleMap styleMap,
+<b class="fc"><i>346</i>&nbsp;                int depth) {</b>
+<i>347</i>&nbsp;
+<b class="fc"><i>348</i>&nbsp;            int ctr = 0;</b>
+<b class="fc"><i>349</i>&nbsp;            int[] smapIds = new int[depth];</b>
+<b class="fc"><i>350</i>&nbsp;            smapIds[ctr++] = this.smapId = styleMap.getId();</b>
+<i>351</i>&nbsp;
+<i>352</i>&nbsp;            //
+<i>353</i>&nbsp;            // Create a set of StyleMap id&#39;s from the parent&#39;s smapIds.
+<i>354</i>&nbsp;            // The resulting smapIds array may have less than depth elements.
+<i>355</i>&nbsp;            // If a parent doesn&#39;t have a styleHelper or the styleHelper&#39;s
+<i>356</i>&nbsp;            // internal state is null, then that parent doesn&#39;t contribute
+<i>357</i>&nbsp;            // to the selection of a style. Any Node that has the same
+<i>358</i>&nbsp;            // set of smapId&#39;s can potentially share previously calculated
+<i>359</i>&nbsp;            // values.
+<i>360</i>&nbsp;            //
+<b class="fc"><i>361</i>&nbsp;            Styleable parent = node.getStyleableParent();</b>
+<b class="fc"><i>362</i>&nbsp;            for(int d=1; d&lt;depth; d++) {</b>
+<i>363</i>&nbsp;
+<i>364</i>&nbsp;                // TODO: won&#39;t work for something like .menu-item:hover. Need to separate CssStyleHelper tree from scene-graph tree
+<b class="fc"><i>365</i>&nbsp;                if ( parent instanceof Node) {</b>
+<b class="fc"><i>366</i>&nbsp;                    Node parentNode = (Node)parent;</b>
+<b class="fc"><i>367</i>&nbsp;                final CssStyleHelper helper = parentNode.styleHelper;</b>
+<b class="fc"><i>368</i>&nbsp;                    if (helper != null &amp;&amp; helper.cacheContainer != null) {</b>
+<b class="fc"><i>369</i>&nbsp;                        smapIds[ctr++] = helper.cacheContainer.smapId;</b>
+<i>370</i>&nbsp;                    }
+<i>371</i>&nbsp;                }
+<b class="fc"><i>372</i>&nbsp;                parent = parent.getStyleableParent();</b>
+<i>373</i>&nbsp;
+<i>374</i>&nbsp;            }
+<i>375</i>&nbsp;
+<b class="fc"><i>376</i>&nbsp;            this.styleCacheKey = new StyleCache.Key(smapIds, ctr);</b>
+<i>377</i>&nbsp;
+<b class="fc"><i>378</i>&nbsp;            CssMetaData&lt;Styleable,Font&gt; styleableFontProperty = null;</b>
+<i>379</i>&nbsp;
+<b class="fc"><i>380</i>&nbsp;            final List&lt;CssMetaData&lt;? extends Styleable, ?&gt;&gt; props = node.getCssMetaData();</b>
+<b class="fc"><i>381</i>&nbsp;            final int pMax = props != null ? props.size() : 0;</b>
+<b class="fc"><i>382</i>&nbsp;            for (int p=0; p&lt;pMax; p++) {</b>
+<b class="fc"><i>383</i>&nbsp;                final CssMetaData&lt;? extends Styleable, ?&gt; prop = props.get(p);</b>
+<i>384</i>&nbsp;
+<b class="fc"><i>385</i>&nbsp;                if (&quot;-fx-font&quot;.equals(prop.getProperty())) {</b>
+<i>386</i>&nbsp;                    // unchecked!
+<b class="fc"><i>387</i>&nbsp;                    styleableFontProperty = (CssMetaData&lt;Styleable, Font&gt;) prop;</b>
+<b class="fc"><i>388</i>&nbsp;                    break;</b>
+<i>389</i>&nbsp;                }
+<i>390</i>&nbsp;            }
+<i>391</i>&nbsp;
+<b class="fc"><i>392</i>&nbsp;            this.fontProp = styleableFontProperty;</b>
+<b class="fc"><i>393</i>&nbsp;            this.fontSizeCache = new HashMap&lt;&gt;();</b>
+<i>394</i>&nbsp;
+<b class="fc"><i>395</i>&nbsp;            this.cssSetProperties = new HashMap&lt;&gt;();</b>
+<i>396</i>&nbsp;
+<b class="fc"><i>397</i>&nbsp;        }</b>
+<i>398</i>&nbsp;
+<i>399</i>&nbsp;        private StyleMap getStyleMap(Styleable styleable) {
+<b class="fc"><i>400</i>&nbsp;            if (styleable != null) {</b>
+<b class="fc"><i>401</i>&nbsp;                SubScene subScene =  (styleable instanceof Node) ? ((Node) styleable).getSubScene() : null;</b>
+<b class="fc"><i>402</i>&nbsp;                return StyleManager.getInstance().getStyleMap(styleable, subScene, smapId);</b>
+<i>403</i>&nbsp;            } else {
+<b class="nc"><i>404</i>&nbsp;                return StyleMap.EMPTY_MAP;</b>
+<i>405</i>&nbsp;            }
+<i>406</i>&nbsp;
+<i>407</i>&nbsp;        }
+<i>408</i>&nbsp;
+<i>409</i>&nbsp;        // This is the key we use to find the shared cache
+<i>410</i>&nbsp;        private final StyleCache.Key styleCacheKey;
+<i>411</i>&nbsp;
+<i>412</i>&nbsp;        // If the node has a fontProperty, we hang onto the CssMetaData for it
+<i>413</i>&nbsp;        // so we can get at it later.
+<i>414</i>&nbsp;        // TBD - why not the fontProperty itself?
+<i>415</i>&nbsp;        private final CssMetaData&lt;Styleable,Font&gt; fontProp;
+<i>416</i>&nbsp;
+<i>417</i>&nbsp;        // The id of StyleMap that contains the styles that apply to this node
+<i>418</i>&nbsp;        private final int smapId;
+<i>419</i>&nbsp;
+<i>420</i>&nbsp;        // All nodes with the same set of styles share the same cache of
+<i>421</i>&nbsp;        // calculated values. But one node might have a different font-size
+<i>422</i>&nbsp;        // than another so the values are stored in cache by font-size.
+<i>423</i>&nbsp;        // This map associates a style cache entry with the font to use when
+<i>424</i>&nbsp;        // getting a value from or putting a value into cache.
+<i>425</i>&nbsp;        private final Map&lt;StyleCacheEntry.Key, CalculatedValue&gt; fontSizeCache;
+<i>426</i>&nbsp;
+<i>427</i>&nbsp;        // Any properties that have been set by this style helper are tracked
+<i>428</i>&nbsp;        // here so the property can be reset without expanding properties that
+<i>429</i>&nbsp;        // were not set by css.
+<i>430</i>&nbsp;        private final Map&lt;CssMetaData, CalculatedValue&gt; cssSetProperties;
+<i>431</i>&nbsp;
+<b class="fc"><i>432</i>&nbsp;        private boolean forceSlowpath = false;</b>
+<i>433</i>&nbsp;    }
+<i>434</i>&nbsp;
+<i>435</i>&nbsp;    private void resetToInitialValues(final Styleable styleable) {
+<i>436</i>&nbsp;
+<b class="fc"><i>437</i>&nbsp;        if (cacheContainer == null ||</b>
+<b class="fc"><i>438</i>&nbsp;                cacheContainer.cssSetProperties == null ||</b>
+<b class="fc"><i>439</i>&nbsp;                cacheContainer.cssSetProperties.isEmpty()) return;</b>
+<i>440</i>&nbsp;
+<i>441</i>&nbsp;        // RT-31714 - make a copy of the entry set and clear the cssSetProperties immediately.
+<b class="fc"><i>442</i>&nbsp;        Set&lt;Entry&lt;CssMetaData, CalculatedValue&gt;&gt; entrySet = new HashSet&lt;&gt;(cacheContainer.cssSetProperties.entrySet());</b>
+<b class="fc"><i>443</i>&nbsp;        cacheContainer.cssSetProperties.clear();</b>
+<i>444</i>&nbsp;
+<b class="fc"><i>445</i>&nbsp;        for (Entry&lt;CssMetaData, CalculatedValue&gt; resetValues : entrySet) {</b>
+<i>446</i>&nbsp;
+<b class="fc"><i>447</i>&nbsp;            final CssMetaData metaData = resetValues.getKey();</b>
+<b class="fc"><i>448</i>&nbsp;            final StyleableProperty styleableProperty = metaData.getStyleableProperty(styleable);</b>
+<i>449</i>&nbsp;
+<b class="fc"><i>450</i>&nbsp;            final StyleOrigin styleOrigin = styleableProperty.getStyleOrigin();</b>
+<b class="fc"><i>451</i>&nbsp;            if (styleOrigin != null &amp;&amp; styleOrigin != StyleOrigin.USER) {</b>
+<b class="fc"><i>452</i>&nbsp;                final CalculatedValue calculatedValue = resetValues.getValue();</b>
+<b class="fc"><i>453</i>&nbsp;                styleableProperty.applyStyle(calculatedValue.getOrigin(), calculatedValue.getValue());</b>
+<i>454</i>&nbsp;            }
+<b class="fc"><i>455</i>&nbsp;        }</b>
+<b class="fc"><i>456</i>&nbsp;    }</b>
+<i>457</i>&nbsp;
+<i>458</i>&nbsp;
+<i>459</i>&nbsp;    private StyleMap getStyleMap(Styleable styleable) {
+<b class="fc"><i>460</i>&nbsp;        if (cacheContainer == null || styleable == null) return null;</b>
+<b class="fc"><i>461</i>&nbsp;        return cacheContainer.getStyleMap(styleable);</b>
+<i>462</i>&nbsp;    }
+<i>463</i>&nbsp;
+<i>464</i>&nbsp;    /**
+<i>465</i>&nbsp;     * A Set of all the pseudo-class states which, if they change, need to
+<i>466</i>&nbsp;     * cause the Node to be set to UPDATE its CSS styles on the next pulse.
+<i>467</i>&nbsp;     * For example, your stylesheet might have:
+<i>468</i>&nbsp;     * &lt;pre&gt;&lt;code&gt;
+<i>469</i>&nbsp;     * .button { ... }
+<i>470</i>&nbsp;     * .button:hover { ... }
+<i>471</i>&nbsp;     * .button *.label { text-fill: black }
+<i>472</i>&nbsp;     * .button:hover *.label { text-fill: blue }
+<i>473</i>&nbsp;     * &lt;/code&gt;&lt;/pre&gt;
+<i>474</i>&nbsp;     * In this case, the first 2 rules apply to the Button itself, but the
+<i>475</i>&nbsp;     * second two rules apply to the label within a Button. When the hover
+<i>476</i>&nbsp;     * changes on the Button, however, we must mark the Button as needing
+<i>477</i>&nbsp;     * an UPDATE. StyleHelper though only contains styles for the first two
+<i>478</i>&nbsp;     * rules for Button. The pseudoclassStateMask would in this case have
+<i>479</i>&nbsp;     * only a single bit set for &quot;hover&quot;. In this way the StyleHelper associated
+<i>480</i>&nbsp;     * with the Button would know whether a change to &quot;hover&quot; requires the
+<i>481</i>&nbsp;     * button and all children to be update. Other pseudo-class state changes
+<i>482</i>&nbsp;     * that are not in this hash set are ignored.
+<i>483</i>&nbsp;     * *
+<i>484</i>&nbsp;     * Called &quot;triggerStates&quot; since they would trigger a CSS update.
+<i>485</i>&nbsp;     */
+<b class="fc"><i>486</i>&nbsp;    private PseudoClassState triggerStates = new PseudoClassState();</b>
+<i>487</i>&nbsp;
+<i>488</i>&nbsp;    boolean pseudoClassStateChanged(PseudoClass pseudoClass) {
+<b class="fc"><i>489</i>&nbsp;        return triggerStates.contains(pseudoClass);</b>
+<i>490</i>&nbsp;    }
+<i>491</i>&nbsp;
+<i>492</i>&nbsp;    /**
+<i>493</i>&nbsp;     * Dynamic pseudo-class state of the node and its parents.
+<i>494</i>&nbsp;     * Only valid during a pulse.
+<i>495</i>&nbsp;     *
+<i>496</i>&nbsp;     * The StyleCacheEntry to choose depends on the Node&#39;s pseudo-class state
+<i>497</i>&nbsp;     * and the pseudo-class state of its parents. Without the parent
+<i>498</i>&nbsp;     * pseudo-class state, the fact that the the node in this pseudo-class state
+<i>499</i>&nbsp;     * matched foo:blah bar { } is lost.
+<i>500</i>&nbsp;     */
+<i>501</i>&nbsp;    // TODO: this should work on Styleable, not Node
+<i>502</i>&nbsp;    private Set&lt;PseudoClass&gt;[] getTransitionStates(final Node node) {
+<i>503</i>&nbsp;
+<i>504</i>&nbsp;        // if cacheContainer is null, then CSS just doesn&#39;t apply to this node
+<b class="fc"><i>505</i>&nbsp;        if (cacheContainer == null) return null;</b>
+<i>506</i>&nbsp;
+<b class="fc"><i>507</i>&nbsp;        int depth = 0;</b>
+<b class="fc"><i>508</i>&nbsp;        Node parent = node;</b>
+<b class="fc"><i>509</i>&nbsp;        while (parent != null) {</b>
+<b class="fc"><i>510</i>&nbsp;            depth += 1;</b>
+<b class="fc"><i>511</i>&nbsp;            parent = parent.getParent();</b>
+<i>512</i>&nbsp;        }
+<i>513</i>&nbsp;
+<i>514</i>&nbsp;        //
+<i>515</i>&nbsp;        // StyleHelper#triggerStates is the set of pseudo-classes that appear
+<i>516</i>&nbsp;        // in the style maps of this StyleHelper. Calculated values are
+<i>517</i>&nbsp;        // cached by pseudo-class state, but only the pseudo-class states
+<i>518</i>&nbsp;        // that mater are used in the search. So we take the transition states
+<i>519</i>&nbsp;        // and intersect them with triggerStates to remove the
+<i>520</i>&nbsp;        // transition states that don&#39;t matter when it comes to matching states
+<i>521</i>&nbsp;        // on a  selector. For example if the style map contains only
+<i>522</i>&nbsp;        // .foo:hover { -fx-fill: red; } then only the hover state matters
+<i>523</i>&nbsp;        // but the transtion state could be [hover, focused]
+<i>524</i>&nbsp;        //
+<b class="fc"><i>525</i>&nbsp;        final Set&lt;PseudoClass&gt;[] retainedStates = new PseudoClassState[depth];</b>
+<i>526</i>&nbsp;
+<i>527</i>&nbsp;        //
+<i>528</i>&nbsp;        // Note Well: The array runs from leaf to root. That is,
+<i>529</i>&nbsp;        // retainedStates[0] is the pseudo-class state for node and
+<i>530</i>&nbsp;        // retainedStates[1..(states.length-1)] are the retainedStates for the
+<i>531</i>&nbsp;        // node&#39;s parents.
+<i>532</i>&nbsp;        //
+<i>533</i>&nbsp;
+<b class="fc"><i>534</i>&nbsp;        int count = 0;</b>
+<b class="fc"><i>535</i>&nbsp;        parent = node;</b>
+<b class="fc"><i>536</i>&nbsp;        while (parent != null) {</b>
+<b class="fc"><i>537</i>&nbsp;            final CssStyleHelper helper = (parent instanceof Node) ? parent.styleHelper : null;</b>
+<b class="fc"><i>538</i>&nbsp;            if (helper != null) {</b>
+<b class="fc"><i>539</i>&nbsp;                final Set&lt;PseudoClass&gt; pseudoClassState = parent.pseudoClassStates;</b>
+<b class="fc"><i>540</i>&nbsp;                retainedStates[count] = new PseudoClassState();</b>
+<b class="fc"><i>541</i>&nbsp;                retainedStates[count].addAll(pseudoClassState);</b>
+<i>542</i>&nbsp;                // retainAll method takes the intersection of pseudoClassState and helper.triggerStates
+<b class="fc"><i>543</i>&nbsp;                retainedStates[count].retainAll(helper.triggerStates);</b>
+<b class="fc"><i>544</i>&nbsp;                count += 1;</b>
+<i>545</i>&nbsp;            }
+<b class="fc"><i>546</i>&nbsp;            parent = parent.getParent();</b>
+<b class="fc"><i>547</i>&nbsp;        }</b>
+<i>548</i>&nbsp;
+<b class="fc"><i>549</i>&nbsp;        final Set&lt;PseudoClass&gt;[] transitionStates = new PseudoClassState[count];</b>
+<b class="fc"><i>550</i>&nbsp;        System.arraycopy(retainedStates, 0, transitionStates, 0, count);</b>
+<i>551</i>&nbsp;
+<b class="fc"><i>552</i>&nbsp;        return transitionStates;</b>
+<i>553</i>&nbsp;
+<i>554</i>&nbsp;    }
+<i>555</i>&nbsp;
+<i>556</i>&nbsp;    /**
+<i>557</i>&nbsp;     * Called by the Node whenever it has transitioned from one set of
+<i>558</i>&nbsp;     * pseudo-class states to another. This function will then lookup the
+<i>559</i>&nbsp;     * new values for each of the styleable variables on the Node, and
+<i>560</i>&nbsp;     * then either set the value directly or start an animation based on
+<i>561</i>&nbsp;     * how things are specified in the CSS file. Currently animation support
+<i>562</i>&nbsp;     * is disabled until the new parser comes online with support for
+<i>563</i>&nbsp;     * animations and that support is detectable via the API.
+<i>564</i>&nbsp;     */
+<i>565</i>&nbsp;    void transitionToState(final Node node) {
+<i>566</i>&nbsp;
+<b class="fc"><i>567</i>&nbsp;        if (cacheContainer == null) {</b>
+<b class="nc"><i>568</i>&nbsp;            return;</b>
+<i>569</i>&nbsp;        }
+<i>570</i>&nbsp;
+<i>571</i>&nbsp;        //
+<i>572</i>&nbsp;        // If styleMap is null, then StyleManager has blown it away and we need to reapply CSS.
+<i>573</i>&nbsp;        //
+<b class="fc"><i>574</i>&nbsp;        final StyleMap styleMap = getStyleMap(node);</b>
+<b class="fc"><i>575</i>&nbsp;        if (styleMap == null) {</b>
+<b class="nc"><i>576</i>&nbsp;            cacheContainer = null;</b>
+<b class="nc"><i>577</i>&nbsp;            node.reapplyCSS();</b>
+<b class="nc"><i>578</i>&nbsp;            return;</b>
+<i>579</i>&nbsp;        }
+<i>580</i>&nbsp;
+<i>581</i>&nbsp;        // if the style-map is empty, then we are only looking for inherited styles.
+<b class="fc"><i>582</i>&nbsp;        final boolean inheritOnly = styleMap.isEmpty();</b>
+<i>583</i>&nbsp;
+<i>584</i>&nbsp;        //
+<i>585</i>&nbsp;        // Styles that need lookup can be cached provided none of the styles
+<i>586</i>&nbsp;        // are from Node.style.
+<i>587</i>&nbsp;        //
+<b class="fc"><i>588</i>&nbsp;        final StyleCache sharedCache = StyleManager.getInstance().getSharedCache(node, node.getSubScene(), cacheContainer.styleCacheKey);</b>
+<i>589</i>&nbsp;
+<b class="fc"><i>590</i>&nbsp;        if (sharedCache == null) {</b>
+<i>591</i>&nbsp;            // Shared cache was blown away by StyleManager.
+<i>592</i>&nbsp;            // Therefore, this CssStyleHelper is no good.
+<b class="nc"><i>593</i>&nbsp;            cacheContainer = null;</b>
+<b class="nc"><i>594</i>&nbsp;            node.reapplyCSS();</b>
+<b class="nc"><i>595</i>&nbsp;            return;</b>
+<i>596</i>&nbsp;
+<i>597</i>&nbsp;        }
+<i>598</i>&nbsp;
+<b class="fc"><i>599</i>&nbsp;        final Set&lt;PseudoClass&gt;[] transitionStates = getTransitionStates(node);</b>
+<i>600</i>&nbsp;
+<b class="fc"><i>601</i>&nbsp;        final StyleCacheEntry.Key fontCacheKey = new StyleCacheEntry.Key(transitionStates, Font.getDefault());</b>
+<b class="fc"><i>602</i>&nbsp;        CalculatedValue cachedFont = cacheContainer.fontSizeCache.get(fontCacheKey);</b>
+<i>603</i>&nbsp;
+<b class="fc"><i>604</i>&nbsp;        if (cachedFont == null) {</b>
+<i>605</i>&nbsp;
+<b class="fc"><i>606</i>&nbsp;            cachedFont = lookupFont(node, &quot;-fx-font&quot;, styleMap, cachedFont);</b>
+<i>607</i>&nbsp;
+<b class="fc"><i>608</i>&nbsp;            if (cachedFont == SKIP) cachedFont = getCachedFont(node.getStyleableParent());</b>
+<b class="fc"><i>609</i>&nbsp;            if (cachedFont == null) cachedFont = new CalculatedValue(Font.getDefault(), null, false);</b>
+<i>610</i>&nbsp;
+<b class="fc"><i>611</i>&nbsp;            cacheContainer.fontSizeCache.put(fontCacheKey,cachedFont);</b>
+<i>612</i>&nbsp;
+<i>613</i>&nbsp;        }
+<i>614</i>&nbsp;
+<b class="fc"><i>615</i>&nbsp;        final Font fontForRelativeSizes = (Font)cachedFont.getValue();</b>
+<i>616</i>&nbsp;
+<b class="fc"><i>617</i>&nbsp;        final StyleCacheEntry.Key cacheEntryKey = new StyleCacheEntry.Key(transitionStates, fontForRelativeSizes);</b>
+<b class="fc"><i>618</i>&nbsp;        StyleCacheEntry cacheEntry = sharedCache.getStyleCacheEntry(cacheEntryKey);</b>
+<i>619</i>&nbsp;
+<i>620</i>&nbsp;        // if the cacheEntry already exists, take the fastpath
+<b class="fc"><i>621</i>&nbsp;        final boolean fastpath = cacheEntry != null;</b>
+<i>622</i>&nbsp;
+<b class="fc"><i>623</i>&nbsp;        if (cacheEntry == null) {</b>
+<b class="fc"><i>624</i>&nbsp;            cacheEntry = new StyleCacheEntry();</b>
+<b class="fc"><i>625</i>&nbsp;            sharedCache.addStyleCacheEntry(cacheEntryKey, cacheEntry);</b>
+<i>626</i>&nbsp;        }
+<i>627</i>&nbsp;
+<b class="fc"><i>628</i>&nbsp;        final List&lt;CssMetaData&lt;? extends Styleable,  ?&gt;&gt; styleables = node.getCssMetaData();</b>
+<i>629</i>&nbsp;
+<i>630</i>&nbsp;        // Used in the for loop below, and a convenient place to stop when debugging.
+<b class="fc"><i>631</i>&nbsp;        final int max = styleables.size();</b>
+<i>632</i>&nbsp;
+<b class="fc"><i>633</i>&nbsp;        final boolean isForceSlowpath = cacheContainer.forceSlowpath;</b>
+<b class="fc"><i>634</i>&nbsp;        cacheContainer.forceSlowpath = false;</b>
+<i>635</i>&nbsp;
+<i>636</i>&nbsp;        // For each property that is settable, we need to do a lookup and
+<i>637</i>&nbsp;        // transition to that value.
+<b class="fc"><i>638</i>&nbsp;        for(int n=0; n&lt;max; n++) {</b>
+<i>639</i>&nbsp;
+<i>640</i>&nbsp;            @SuppressWarnings(&quot;unchecked&quot;) // this is a widening conversion
+<b class="fc"><i>641</i>&nbsp;            final CssMetaData&lt;Styleable,Object&gt; cssMetaData =</b>
+<b class="fc"><i>642</i>&nbsp;                    (CssMetaData&lt;Styleable,Object&gt;)styleables.get(n);</b>
+<i>643</i>&nbsp;
+<i>644</i>&nbsp;            // Don&#39;t bother looking up styles that don&#39;t inherit.
+<b class="fc"><i>645</i>&nbsp;            if (inheritOnly &amp;&amp; cssMetaData.isInherits() == false) {</b>
+<b class="fc"><i>646</i>&nbsp;                continue;</b>
+<i>647</i>&nbsp;            }
+<i>648</i>&nbsp;
+<i>649</i>&nbsp;            // Skip the lookup if we know there isn&#39;t a chance for this property
+<i>650</i>&nbsp;            // to be set (usually due to a &quot;bind&quot;).
+<b class="fc"><i>651</i>&nbsp;            if (!cssMetaData.isSettable(node)) continue;</b>
+<i>652</i>&nbsp;
+<b class="fc"><i>653</i>&nbsp;            final String property = cssMetaData.getProperty();</b>
+<i>654</i>&nbsp;
+<b class="fc"><i>655</i>&nbsp;            CalculatedValue calculatedValue = cacheEntry.get(property);</b>
+<i>656</i>&nbsp;
+<i>657</i>&nbsp;            // If there is no calculatedValue and we&#39;re on the fast path,
+<i>658</i>&nbsp;            // take the slow path if cssFlags is REAPPLY (RT-31691)
+<b class="fc"><i>659</i>&nbsp;            final boolean forceSlowpath =</b>
+<i>660</i>&nbsp;                    fastpath &amp;&amp; calculatedValue == null &amp;&amp; isForceSlowpath;
+<i>661</i>&nbsp;
+<b class="fc"><i>662</i>&nbsp;            final boolean addToCache =</b>
+<i>663</i>&nbsp;                    (!fastpath &amp;&amp; calculatedValue == null) || forceSlowpath;
+<i>664</i>&nbsp;
+<b class="fc"><i>665</i>&nbsp;            if (fastpath &amp;&amp; !forceSlowpath) {</b>
+<i>666</i>&nbsp;
+<i>667</i>&nbsp;                // If the cache contains SKIP, then there was an
+<i>668</i>&nbsp;                // exception thrown from applyStyle
+<b class="fc"><i>669</i>&nbsp;                if (calculatedValue == SKIP) {</b>
+<b class="nc"><i>670</i>&nbsp;                    continue;</b>
+<i>671</i>&nbsp;                }
+<i>672</i>&nbsp;
+<b class="fc"><i>673</i>&nbsp;            } else if (calculatedValue == null) {</b>
+<i>674</i>&nbsp;
+<i>675</i>&nbsp;                // slowpath!
+<b class="fc"><i>676</i>&nbsp;                calculatedValue = lookup(node, cssMetaData, styleMap, transitionStates[0],</b>
+<i>677</i>&nbsp;                        node, cachedFont);
+<i>678</i>&nbsp;
+<i>679</i>&nbsp;                // lookup is not supposed to return null.
+<b class="fc"><i>680</i>&nbsp;                if (calculatedValue == null) {</b>
+<b class="nc"><i>681</i>&nbsp;                    assert false : &quot;lookup returned null for &quot; + property;</b>
+<i>682</i>&nbsp;                    continue;
+<i>683</i>&nbsp;                }
+<i>684</i>&nbsp;
+<i>685</i>&nbsp;            }
+<i>686</i>&nbsp;
+<i>687</i>&nbsp;            // StyleableProperty#applyStyle might throw an exception and it is called
+<i>688</i>&nbsp;            // from two places in this try block.
+<i>689</i>&nbsp;            try {
+<i>690</i>&nbsp;
+<i>691</i>&nbsp;                //
+<i>692</i>&nbsp;                // RT-19089
+<i>693</i>&nbsp;                // If the current value of the property was set by CSS
+<i>694</i>&nbsp;                // and there is no style for the property, then reset this
+<i>695</i>&nbsp;                // property to its initial value. If it was not set by CSS
+<i>696</i>&nbsp;                // then leave the property alone.
+<i>697</i>&nbsp;                //
+<b class="fc"><i>698</i>&nbsp;                if (calculatedValue == null || calculatedValue == SKIP) {</b>
+<i>699</i>&nbsp;
+<i>700</i>&nbsp;                    // cssSetProperties keeps track of the StyleableProperty&#39;s that were set by CSS in the previous state.
+<i>701</i>&nbsp;                    // If this property is not in cssSetProperties map, then the property was not set in the previous state.
+<i>702</i>&nbsp;                    // This accomplishes two things. First, it lets us know if the property was set in the previous state
+<i>703</i>&nbsp;                    // so it can be reset in this state if there is no value for it. Second, it calling
+<i>704</i>&nbsp;                    // CssMetaData#getStyleableProperty which is rather expensive as it may cause expansion of lazy
+<i>705</i>&nbsp;                    // properties.
+<b class="fc"><i>706</i>&nbsp;                    CalculatedValue initialValue = cacheContainer.cssSetProperties.get(cssMetaData);</b>
+<i>707</i>&nbsp;
+<i>708</i>&nbsp;                    // if the current value was set by CSS and there
+<i>709</i>&nbsp;                    // is no calculated value for the property, then
+<i>710</i>&nbsp;                    // there was no style for the property in the current
+<i>711</i>&nbsp;                    // state, so reset the property to its initial value.
+<b class="fc"><i>712</i>&nbsp;                    if (initialValue != null) {</b>
+<i>713</i>&nbsp;
+<b class="fc"><i>714</i>&nbsp;                        StyleableProperty styleableProperty = cssMetaData.getStyleableProperty(node);</b>
+<b class="fc"><i>715</i>&nbsp;                        if (styleableProperty.getStyleOrigin() != StyleOrigin.USER) {</b>
+<b class="fc"><i>716</i>&nbsp;                            styleableProperty.applyStyle(initialValue.getOrigin(), initialValue.getValue());</b>
+<i>717</i>&nbsp;                        }
+<i>718</i>&nbsp;                    }
+<i>719</i>&nbsp;
+<b class="fc"><i>720</i>&nbsp;                    continue;</b>
+<i>721</i>&nbsp;
+<i>722</i>&nbsp;                }
+<i>723</i>&nbsp;
+<b class="fc"><i>724</i>&nbsp;                if (addToCache) {</b>
+<i>725</i>&nbsp;
+<i>726</i>&nbsp;                    // If we&#39;re not on the fastpath, then add the calculated
+<i>727</i>&nbsp;                    // value to cache.
+<b class="fc"><i>728</i>&nbsp;                    cacheEntry.put(property, calculatedValue);</b>
+<i>729</i>&nbsp;                }
+<i>730</i>&nbsp;
+<b class="fc"><i>731</i>&nbsp;                StyleableProperty styleableProperty = cssMetaData.getStyleableProperty(node);</b>
+<i>732</i>&nbsp;
+<i>733</i>&nbsp;                // need to know who set the current value - CSS, the user, or init
+<b class="fc"><i>734</i>&nbsp;                final StyleOrigin originOfCurrentValue = styleableProperty.getStyleOrigin();</b>
+<i>735</i>&nbsp;
+<i>736</i>&nbsp;
+<i>737</i>&nbsp;                // RT-10522:
+<i>738</i>&nbsp;                // If the user set the property and there is a style and
+<i>739</i>&nbsp;                // the style came from the user agent stylesheet, then
+<i>740</i>&nbsp;                // skip the value. A style from a user agent stylesheet should
+<i>741</i>&nbsp;                // not override the user set style.
+<i>742</i>&nbsp;                //
+<b class="fc"><i>743</i>&nbsp;                final StyleOrigin originOfCalculatedValue = calculatedValue.getOrigin();</b>
+<i>744</i>&nbsp;
+<i>745</i>&nbsp;                // A calculated value should never have a null style origin since that would
+<i>746</i>&nbsp;                // imply the style didn&#39;t come from a stylesheet or in-line style.
+<b class="fc"><i>747</i>&nbsp;                if (originOfCalculatedValue == null) {</b>
+<b class="nc"><i>748</i>&nbsp;                    assert false : styleableProperty.toString();</b>
+<b class="nc"><i>749</i>&nbsp;                    continue;</b>
+<i>750</i>&nbsp;                }
+<i>751</i>&nbsp;
+<b class="fc"><i>752</i>&nbsp;                if (originOfCurrentValue == StyleOrigin.USER) {</b>
+<b class="fc"><i>753</i>&nbsp;                    if (originOfCalculatedValue == StyleOrigin.USER_AGENT) {</b>
+<b class="fc"><i>754</i>&nbsp;                        continue;</b>
+<i>755</i>&nbsp;                    }
+<i>756</i>&nbsp;                }
+<i>757</i>&nbsp;
+<b class="fc"><i>758</i>&nbsp;                final Object value = calculatedValue.getValue();</b>
+<b class="fc"><i>759</i>&nbsp;                final Object currentValue = styleableProperty.getValue();</b>
+<i>760</i>&nbsp;
+<i>761</i>&nbsp;                // RT-21185: Only apply the style if something has changed.
+<b class="fc"><i>762</i>&nbsp;                if ((originOfCurrentValue != originOfCalculatedValue)</b>
+<i>763</i>&nbsp;                        || (currentValue != null
+<b class="fc"><i>764</i>&nbsp;                        ? currentValue.equals(value) == false</b>
+<i>765</i>&nbsp;                        : value != null)) {
+<i>766</i>&nbsp;
+<b class="fc"><i>767</i>&nbsp;                    if (LOGGER.isLoggable(Level.FINER)) {</b>
+<b class="nc"><i>768</i>&nbsp;                        LOGGER.finer(property + &quot;, call applyStyle: &quot; + styleableProperty + &quot;, value =&quot; +</b>
+<b class="nc"><i>769</i>&nbsp;                                String.valueOf(value) + &quot;, originOfCalculatedValue=&quot; + originOfCalculatedValue);</b>
+<i>770</i>&nbsp;                    }
+<i>771</i>&nbsp;
+<b class="fc"><i>772</i>&nbsp;                    styleableProperty.applyStyle(originOfCalculatedValue, value);</b>
+<i>773</i>&nbsp;
+<b class="fc"><i>774</i>&nbsp;                    if (cacheContainer.cssSetProperties.containsKey(cssMetaData) == false) {</b>
+<i>775</i>&nbsp;                        // track this property
+<b class="fc"><i>776</i>&nbsp;                        CalculatedValue initialValue = new CalculatedValue(currentValue, originOfCurrentValue, false);</b>
+<b class="fc"><i>777</i>&nbsp;                        cacheContainer.cssSetProperties.put(cssMetaData, initialValue);</b>
+<i>778</i>&nbsp;                    }
+<i>779</i>&nbsp;
+<i>780</i>&nbsp;                }
+<i>781</i>&nbsp;
+<b class="nc"><i>782</i>&nbsp;            } catch (Exception e) {</b>
+<i>783</i>&nbsp;
+<b class="nc"><i>784</i>&nbsp;                StyleableProperty styleableProperty = cssMetaData.getStyleableProperty(node);</b>
+<i>785</i>&nbsp;
+<b class="nc"><i>786</i>&nbsp;                final String msg = String.format(&quot;Failed to set css [%s] on [%s] due to &#39;%s&#39;\n&quot;,</b>
+<b class="nc"><i>787</i>&nbsp;                        cssMetaData.getProperty(), styleableProperty, e.getMessage());</b>
+<i>788</i>&nbsp;
+<b class="nc"><i>789</i>&nbsp;                List&lt;CssParser.ParseError&gt; errors = null;</b>
+<b class="nc"><i>790</i>&nbsp;                if ((errors = StyleManager.getErrors()) != null) {</b>
+<b class="nc"><i>791</i>&nbsp;                    final CssParser.ParseError error = new CssParser.ParseError.PropertySetError(cssMetaData, node, msg);</b>
+<b class="nc"><i>792</i>&nbsp;                    errors.add(error);</b>
+<i>793</i>&nbsp;                }
+<i>794</i>&nbsp;
+<b class="nc"><i>795</i>&nbsp;                PlatformLogger logger = Logging.getCSSLogger();</b>
+<b class="nc"><i>796</i>&nbsp;                if (logger.isLoggable(Level.WARNING)) {</b>
+<b class="nc"><i>797</i>&nbsp;                    logger.warning(msg);</b>
+<i>798</i>&nbsp;                }
+<i>799</i>&nbsp;
+<i>800</i>&nbsp;                // RT-27155: if setting value raises exception, reset value
+<i>801</i>&nbsp;                // the value to initial and thereafter skip setting the property
+<b class="nc"><i>802</i>&nbsp;                cacheEntry.put(property, SKIP);</b>
+<i>803</i>&nbsp;
+<b class="nc"><i>804</i>&nbsp;                CalculatedValue cachedValue = null;</b>
+<b class="nc"><i>805</i>&nbsp;                if (cacheContainer != null &amp;&amp; cacheContainer.cssSetProperties != null) {</b>
+<b class="nc"><i>806</i>&nbsp;                    cachedValue = cacheContainer.cssSetProperties.get(cssMetaData);</b>
+<i>807</i>&nbsp;                }
+<b class="nc"><i>808</i>&nbsp;                Object value = (cachedValue != null) ? cachedValue.getValue() : cssMetaData.getInitialValue(node);</b>
+<b class="nc"><i>809</i>&nbsp;                StyleOrigin origin = (cachedValue != null) ? cachedValue.getOrigin() : null;</b>
+<i>810</i>&nbsp;                try {
+<b class="nc"><i>811</i>&nbsp;                    styleableProperty.applyStyle(origin, value);</b>
+<b class="nc"><i>812</i>&nbsp;                } catch (Exception ebad) {</b>
+<i>813</i>&nbsp;                    // This would be bad.
+<b class="nc"><i>814</i>&nbsp;                    if (logger.isLoggable(Level.SEVERE)) {</b>
+<b class="nc"><i>815</i>&nbsp;                        logger.severe(String.format(&quot;Could not reset [%s] on [%s] due to %s\n&quot; ,</b>
+<b class="nc"><i>816</i>&nbsp;                                cssMetaData.getProperty(), styleableProperty, e.getMessage()));</b>
+<i>817</i>&nbsp;                    }
+<b class="nc"><i>818</i>&nbsp;                }</b>
+<i>819</i>&nbsp;
+<b class="fc"><i>820</i>&nbsp;            }</b>
+<i>821</i>&nbsp;
+<i>822</i>&nbsp;        }
+<b class="fc"><i>823</i>&nbsp;    }</b>
+<i>824</i>&nbsp;
+<i>825</i>&nbsp;    /**
+<i>826</i>&nbsp;     * Gets the CSS CascadingStyle for the property of this node in these pseudo-class
+<i>827</i>&nbsp;     * states. A null style may be returned if there is no style information
+<i>828</i>&nbsp;     * for this combination of input parameters.
+<i>829</i>&nbsp;     *
+<i>830</i>&nbsp;     *
+<i>831</i>&nbsp;     * @param styleable
+<i>832</i>&nbsp;     * @param property
+<i>833</i>&nbsp;     * @param styleMap
+<i>834</i>&nbsp;     * @param states   @return
+<i>835</i>&nbsp;     * */
+<i>836</i>&nbsp;    private CascadingStyle getStyle(final Styleable styleable, final String property, final StyleMap styleMap, final Set&lt;PseudoClass&gt; states){
+<i>837</i>&nbsp;
+<b class="fc"><i>838</i>&nbsp;        if (styleMap == null || styleMap.isEmpty()) return null;</b>
+<i>839</i>&nbsp;
+<b class="fc"><i>840</i>&nbsp;        final Map&lt;String, List&lt;CascadingStyle&gt;&gt; cascadingStyleMap = styleMap.getCascadingStyles();</b>
+<b class="fc"><i>841</i>&nbsp;        if (cascadingStyleMap == null || cascadingStyleMap.isEmpty()) return null;</b>
+<i>842</i>&nbsp;
+<i>843</i>&nbsp;        // Get all of the Styles which may apply to this particular property
+<b class="fc"><i>844</i>&nbsp;        List&lt;CascadingStyle&gt; styles = cascadingStyleMap.get(property);</b>
+<i>845</i>&nbsp;
+<i>846</i>&nbsp;        // If there are no styles for this property then we can just bail
+<b class="fc"><i>847</i>&nbsp;        if ((styles == null) || styles.isEmpty()) return null;</b>
+<i>848</i>&nbsp;
+<i>849</i>&nbsp;        // Go looking for the style. We do this by visiting each CascadingStyle in
+<i>850</i>&nbsp;        // order finding the first that matches the current node &amp; set of
+<i>851</i>&nbsp;        // pseudo-class states. We use an iteration style that avoids creating
+<i>852</i>&nbsp;        // garbage iterators (and wish javac did it for us...)
+<b class="fc"><i>853</i>&nbsp;       CascadingStyle style = null;</b>
+<b class="fc"><i>854</i>&nbsp;        final int max = (styles == null) ? 0 : styles.size();</b>
+<b class="fc"><i>855</i>&nbsp;        for (int i=0; i&lt;max; i++) {</b>
+<b class="fc"><i>856</i>&nbsp;            final CascadingStyle s = styles.get(i);</b>
+<b class="fc"><i>857</i>&nbsp;            final Selector sel = s == null ? null : s.getSelector();</b>
+<b class="fc"><i>858</i>&nbsp;            if (sel == null) continue; // bail if the selector is null.</b>
+<i>859</i>&nbsp;//System.out.println(node.toString() + &quot;\n\tstates=&quot; + PseudoClassSet.getPseudoClasses(states) + &quot;\n\tstateMatches? &quot; + sel.stateMatches(node, states) + &quot;\n\tsel=&quot; + sel.toString());
+<b class="fc"><i>860</i>&nbsp;            if (sel.stateMatches(styleable, states)) {</b>
+<b class="fc"><i>861</i>&nbsp;                style = s;</b>
+<b class="fc"><i>862</i>&nbsp;                break;</b>
+<i>863</i>&nbsp;            }
+<i>864</i>&nbsp;        }
+<i>865</i>&nbsp;
+<b class="fc"><i>866</i>&nbsp;        return style;</b>
+<i>867</i>&nbsp;    }
+<i>868</i>&nbsp;
+<i>869</i>&nbsp;    /**
+<i>870</i>&nbsp;     * The main workhorse of this class, the lookup method walks up the CSS
+<i>871</i>&nbsp;     * style tree looking for the style information for the Node, the
+<i>872</i>&nbsp;     * property associated with the given styleable, in these states for this font.
+<i>873</i>&nbsp;     *
+<i>874</i>&nbsp;     *
+<i>875</i>&nbsp;     *
+<i>876</i>&nbsp;     *
+<i>877</i>&nbsp;     * @param styleable
+<i>878</i>&nbsp;     * @param states
+<i>879</i>&nbsp;     * @param originatingStyleable
+<i>880</i>&nbsp;     * @return
+<i>881</i>&nbsp;     */
+<i>882</i>&nbsp;    private CalculatedValue lookup(final Styleable styleable,
+<i>883</i>&nbsp;                                   final CssMetaData cssMetaData,
+<i>884</i>&nbsp;                                   final StyleMap styleMap,
+<i>885</i>&nbsp;                                   final Set&lt;PseudoClass&gt; states,
+<i>886</i>&nbsp;                                   final Styleable originatingStyleable,
+<i>887</i>&nbsp;                                   final CalculatedValue cachedFont) {
+<i>888</i>&nbsp;
+<b class="fc"><i>889</i>&nbsp;        if (cssMetaData.getConverter() == FontConverter.getInstance()) {</b>
+<b class="fc"><i>890</i>&nbsp;            return lookupFont(styleable, cssMetaData.getProperty(), styleMap, cachedFont);</b>
+<i>891</i>&nbsp;        }
+<i>892</i>&nbsp;
+<b class="fc"><i>893</i>&nbsp;        final String property = cssMetaData.getProperty();</b>
+<i>894</i>&nbsp;
+<i>895</i>&nbsp;        // Get the CascadingStyle which may apply to this particular property
+<b class="fc"><i>896</i>&nbsp;        CascadingStyle style = getStyle(styleable, property, styleMap, states);</b>
+<i>897</i>&nbsp;
+<i>898</i>&nbsp;        // If no style was found and there are no sub styleables, then there
+<i>899</i>&nbsp;        // are no matching styles for this property. We will then either SKIP
+<i>900</i>&nbsp;        // or we will INHERIT. We will inspect the default value for the styleable,
+<i>901</i>&nbsp;        // and if it is INHERIT then we will inherit otherwise we just skip it.
+<b class="fc"><i>902</i>&nbsp;        final List&lt;CssMetaData&lt;? extends Styleable, ?&gt;&gt; subProperties = cssMetaData.getSubProperties();</b>
+<b class="fc"><i>903</i>&nbsp;        final int numSubProperties = (subProperties != null) ? subProperties.size() : 0;</b>
+<b class="fc"><i>904</i>&nbsp;        if (style == null) {</b>
+<i>905</i>&nbsp;
+<b class="fc"><i>906</i>&nbsp;            if (numSubProperties == 0) {</b>
+<i>907</i>&nbsp;
+<b class="fc"><i>908</i>&nbsp;                return handleNoStyleFound(styleable, cssMetaData,</b>
+<i>909</i>&nbsp;                        styleMap, states, originatingStyleable, cachedFont);
+<i>910</i>&nbsp;
+<i>911</i>&nbsp;            } else {
+<i>912</i>&nbsp;
+<i>913</i>&nbsp;                // If style is null then it means we didn&#39;t successfully find the
+<i>914</i>&nbsp;                // property we were looking for. However, there might be sub styleables,
+<i>915</i>&nbsp;                // in which case we should perform a lookup for them. For example,
+<i>916</i>&nbsp;                // there might not be a style for &quot;font&quot;, but there might be one
+<i>917</i>&nbsp;                // for &quot;font-size&quot; or &quot;font-weight&quot;. So if the style is null, then
+<i>918</i>&nbsp;                // we need to check with the sub-styleables.
+<i>919</i>&nbsp;
+<i>920</i>&nbsp;                // Build up a list of all SubProperties which have a constituent part.
+<i>921</i>&nbsp;                // I default the array to be the size of the number of total
+<i>922</i>&nbsp;                // sub styleables to avoid having the array grow.
+<b class="fc"><i>923</i>&nbsp;                Map&lt;CssMetaData,Object&gt; subs = null;</b>
+<b class="fc"><i>924</i>&nbsp;                StyleOrigin origin = null;</b>
+<i>925</i>&nbsp;
+<b class="fc"><i>926</i>&nbsp;                boolean isRelative = false;</b>
+<i>927</i>&nbsp;
+<b class="fc"><i>928</i>&nbsp;                for (int i=0; i&lt;numSubProperties; i++) {</b>
+<b class="fc"><i>929</i>&nbsp;                    CssMetaData subkey = subProperties.get(i);</b>
+<b class="fc"><i>930</i>&nbsp;                    CalculatedValue constituent =</b>
+<b class="fc"><i>931</i>&nbsp;                        lookup(styleable, subkey, styleMap, states,</b>
+<i>932</i>&nbsp;                                originatingStyleable, cachedFont);
+<b class="fc"><i>933</i>&nbsp;                    if (constituent != SKIP) {</b>
+<b class="fc"><i>934</i>&nbsp;                        if (subs == null) {</b>
+<b class="fc"><i>935</i>&nbsp;                            subs = new HashMap&lt;&gt;();</b>
+<i>936</i>&nbsp;                        }
+<b class="fc"><i>937</i>&nbsp;                        subs.put(subkey, constituent.getValue());</b>
+<i>938</i>&nbsp;
+<i>939</i>&nbsp;                        // origin of this style is the most specific
+<b class="fc"><i>940</i>&nbsp;                        if ((origin != null &amp;&amp; constituent.getOrigin() != null)</b>
+<b class="fc"><i>941</i>&nbsp;                                ? origin.compareTo(constituent.getOrigin()) &lt; 0</b>
+<b class="fc"><i>942</i>&nbsp;                                : constituent.getOrigin() != null) {</b>
+<b class="fc"><i>943</i>&nbsp;                            origin = constituent.getOrigin();</b>
+<i>944</i>&nbsp;                        }
+<i>945</i>&nbsp;
+<i>946</i>&nbsp;                        // if the constiuent uses relative sizes, then
+<i>947</i>&nbsp;                        // isRelative is true;
+<b class="fc"><i>948</i>&nbsp;                        isRelative = isRelative || constituent.isRelative();</b>
+<i>949</i>&nbsp;
+<i>950</i>&nbsp;                    }
+<i>951</i>&nbsp;                }
+<i>952</i>&nbsp;
+<i>953</i>&nbsp;                // If there are no subkeys which apply...
+<b class="fc"><i>954</i>&nbsp;                if (subs == null || subs.isEmpty()) {</b>
+<b class="fc"><i>955</i>&nbsp;                    return handleNoStyleFound(styleable, cssMetaData,</b>
+<i>956</i>&nbsp;                            styleMap, states, originatingStyleable, cachedFont);
+<i>957</i>&nbsp;                }
+<i>958</i>&nbsp;
+<i>959</i>&nbsp;                try {
+<b class="fc"><i>960</i>&nbsp;                    final StyleConverter keyType = cssMetaData.getConverter();</b>
+<b class="fc"><i>961</i>&nbsp;                    Object ret = keyType.convert(subs);</b>
+<b class="fc"><i>962</i>&nbsp;                    return new CalculatedValue(ret, origin, isRelative);</b>
+<b class="nc"><i>963</i>&nbsp;                } catch (ClassCastException cce) {</b>
+<b class="nc"><i>964</i>&nbsp;                    final String msg = formatExceptionMessage(styleable, cssMetaData, null, cce);</b>
+<b class="nc"><i>965</i>&nbsp;                    List&lt;CssParser.ParseError&gt; errors = null;</b>
+<b class="nc"><i>966</i>&nbsp;                    if ((errors = StyleManager.getErrors()) != null) {</b>
+<b class="nc"><i>967</i>&nbsp;                        final CssParser.ParseError error = new CssParser.ParseError.PropertySetError(cssMetaData, styleable, msg);</b>
+<b class="nc"><i>968</i>&nbsp;                        errors.add(error);</b>
+<i>969</i>&nbsp;                    }
+<b class="nc"><i>970</i>&nbsp;                    if (LOGGER.isLoggable(Level.WARNING)) {</b>
+<b class="nc"><i>971</i>&nbsp;                        LOGGER.warning(msg);</b>
+<b class="nc"><i>972</i>&nbsp;                        LOGGER.fine(&quot;caught: &quot;, cce);</b>
+<b class="nc"><i>973</i>&nbsp;                        LOGGER.fine(&quot;styleable = &quot; + cssMetaData);</b>
+<b class="nc"><i>974</i>&nbsp;                        LOGGER.fine(&quot;node = &quot; + styleable.toString());</b>
+<i>975</i>&nbsp;                    }
+<b class="nc"><i>976</i>&nbsp;                    return SKIP;</b>
+<i>977</i>&nbsp;                }
+<i>978</i>&nbsp;            }
+<i>979</i>&nbsp;
+<i>980</i>&nbsp;        } else { // style != null
+<i>981</i>&nbsp;
+<i>982</i>&nbsp;            // RT-10522:
+<i>983</i>&nbsp;            // If the user set the property and there is a style and
+<i>984</i>&nbsp;            // the style came from the user agent stylesheet, then
+<i>985</i>&nbsp;            // skip the value. A style from a user agent stylesheet should
+<i>986</i>&nbsp;            // not override the user set style.
+<b class="fc"><i>987</i>&nbsp;            if (style.getOrigin() == StyleOrigin.USER_AGENT) {</b>
+<i>988</i>&nbsp;
+<b class="fc"><i>989</i>&nbsp;                StyleableProperty styleableProperty = cssMetaData.getStyleableProperty(originatingStyleable);</b>
+<i>990</i>&nbsp;                // if styleableProperty is null, then we&#39;re dealing with a sub-property.
+<b class="fc"><i>991</i>&nbsp;                if (styleableProperty != null &amp;&amp; styleableProperty.getStyleOrigin() == StyleOrigin.USER) {</b>
+<b class="nc"><i>992</i>&nbsp;                    return SKIP;</b>
+<i>993</i>&nbsp;                }
+<i>994</i>&nbsp;            }
+<i>995</i>&nbsp;
+<i>996</i>&nbsp;            // If there was a style found, then we want to check whether the
+<i>997</i>&nbsp;            // value was &quot;inherit&quot;. If so, then we will simply inherit.
+<b class="fc"><i>998</i>&nbsp;            final ParsedValue cssValue = style.getParsedValue();</b>
+<b class="fc"><i>999</i>&nbsp;            if (cssValue != null &amp;&amp; &quot;inherit&quot;.equals(cssValue.getValue())) {</b>
+<b class="fc"><i>1000</i>&nbsp;                style = getInheritedStyle(styleable, property);</b>
+<b class="fc"><i>1001</i>&nbsp;                if (style == null) return SKIP;</b>
+<i>1002</i>&nbsp;            }
+<i>1003</i>&nbsp;        }
+<i>1004</i>&nbsp;
+<i>1005</i>&nbsp;//        System.out.println(&quot;lookup &quot; + property +
+<i>1006</i>&nbsp;//                &quot;, selector = \&#39;&quot; + style.selector.toString() + &quot;\&#39;&quot; +
+<i>1007</i>&nbsp;//                &quot;, node = &quot; + node.toString());
+<i>1008</i>&nbsp;
+<b class="fc"><i>1009</i>&nbsp;        return calculateValue(style, styleable, cssMetaData, styleMap, states,</b>
+<i>1010</i>&nbsp;                originatingStyleable, cachedFont);
+<i>1011</i>&nbsp;    }
+<i>1012</i>&nbsp;
+<i>1013</i>&nbsp;    /**
+<i>1014</i>&nbsp;     * Called when there is no style found.
+<i>1015</i>&nbsp;     */
+<i>1016</i>&nbsp;    private CalculatedValue handleNoStyleFound(final Styleable styleable,
+<i>1017</i>&nbsp;                                               final CssMetaData cssMetaData,
+<i>1018</i>&nbsp;                                               final StyleMap styleMap, Set&lt;PseudoClass&gt; pseudoClassStates, Styleable originatingStyleable,
+<i>1019</i>&nbsp;                                               final CalculatedValue cachedFont) {
+<i>1020</i>&nbsp;
+<b class="fc"><i>1021</i>&nbsp;        if (cssMetaData.isInherits()) {</b>
+<i>1022</i>&nbsp;
+<i>1023</i>&nbsp;
+<b class="nc"><i>1024</i>&nbsp;            StyleableProperty styleableProperty = cssMetaData.getStyleableProperty(styleable);</b>
+<b class="nc"><i>1025</i>&nbsp;            StyleOrigin origin = styleableProperty != null ? styleableProperty.getStyleOrigin() : null;</b>
+<i>1026</i>&nbsp;
+<i>1027</i>&nbsp;            // RT-16308: if there is no matching style and the user set
+<i>1028</i>&nbsp;            // the property, do not look for inherited styles.
+<b class="nc"><i>1029</i>&nbsp;            if (origin == StyleOrigin.USER) {</b>
+<i>1030</i>&nbsp;
+<b class="nc"><i>1031</i>&nbsp;                    return SKIP;</b>
+<i>1032</i>&nbsp;
+<i>1033</i>&nbsp;            }
+<i>1034</i>&nbsp;
+<b class="nc"><i>1035</i>&nbsp;            CascadingStyle style = getInheritedStyle(styleable, cssMetaData.getProperty());</b>
+<b class="nc"><i>1036</i>&nbsp;            if (style == null) return SKIP;</b>
+<i>1037</i>&nbsp;
+<b class="nc"><i>1038</i>&nbsp;            CalculatedValue cv =</b>
+<b class="nc"><i>1039</i>&nbsp;                    calculateValue(style, styleable, cssMetaData,</b>
+<i>1040</i>&nbsp;                            styleMap, pseudoClassStates, originatingStyleable,
+<i>1041</i>&nbsp;                                   cachedFont);
+<i>1042</i>&nbsp;
+<b class="nc"><i>1043</i>&nbsp;            return cv;</b>
+<i>1044</i>&nbsp;
+<i>1045</i>&nbsp;        } else {
+<i>1046</i>&nbsp;
+<i>1047</i>&nbsp;            // Not inherited. There is no style
+<b class="fc"><i>1048</i>&nbsp;            return SKIP;</b>
+<i>1049</i>&nbsp;
+<i>1050</i>&nbsp;        }
+<i>1051</i>&nbsp;    }
+<i>1052</i>&nbsp;    /**
+<i>1053</i>&nbsp;     * Called when we must getInheritedStyle a value from a parent node in the scenegraph.
+<i>1054</i>&nbsp;     */
+<i>1055</i>&nbsp;    private CascadingStyle getInheritedStyle(
+<i>1056</i>&nbsp;            final Styleable styleable,
+<i>1057</i>&nbsp;            final String property) {
+<i>1058</i>&nbsp;
+<b class="fc"><i>1059</i>&nbsp;        Styleable parent = styleable != null ? styleable.getStyleableParent() : null;</b>
+<i>1060</i>&nbsp;
+<b class="fc"><i>1061</i>&nbsp;        while (parent != null) {</b>
+<i>1062</i>&nbsp;
+<b class="nc"><i>1063</i>&nbsp;            CssStyleHelper parentStyleHelper = parent instanceof Node ? ((Node)parent).styleHelper : null;</b>
+<b class="nc"><i>1064</i>&nbsp;            if (parentStyleHelper != null) {</b>
+<i>1065</i>&nbsp;
+<b class="nc"><i>1066</i>&nbsp;                StyleMap parentStyleMap = parentStyleHelper.getStyleMap(parent);</b>
+<b class="nc"><i>1067</i>&nbsp;                Set&lt;PseudoClass&gt; transitionStates = ((Node)parent).pseudoClassStates;</b>
+<b class="nc"><i>1068</i>&nbsp;                CascadingStyle cascadingStyle = parentStyleHelper.getStyle(parent, property, parentStyleMap, transitionStates);</b>
+<i>1069</i>&nbsp;
+<b class="nc"><i>1070</i>&nbsp;                if (cascadingStyle != null) {</b>
+<i>1071</i>&nbsp;
+<b class="nc"><i>1072</i>&nbsp;                    final ParsedValue cssValue = cascadingStyle.getParsedValue();</b>
+<i>1073</i>&nbsp;
+<b class="nc"><i>1074</i>&nbsp;                    if (&quot;inherit&quot;.equals(cssValue.getValue())) {</b>
+<b class="nc"><i>1075</i>&nbsp;                        return getInheritedStyle(parent, property);</b>
+<i>1076</i>&nbsp;                    }
+<b class="nc"><i>1077</i>&nbsp;                    return cascadingStyle;</b>
+<i>1078</i>&nbsp;                }
+<i>1079</i>&nbsp;
+<b class="nc"><i>1080</i>&nbsp;                return null;</b>
+<i>1081</i>&nbsp;            }
+<i>1082</i>&nbsp;
+<b class="nc"><i>1083</i>&nbsp;            parent = parent.getStyleableParent();</b>
+<i>1084</i>&nbsp;
+<b class="nc"><i>1085</i>&nbsp;        }</b>
+<i>1086</i>&nbsp;
+<b class="fc"><i>1087</i>&nbsp;        return null;</b>
+<i>1088</i>&nbsp;    }
+<i>1089</i>&nbsp;
+<i>1090</i>&nbsp;
+<i>1091</i>&nbsp;    // helps with self-documenting the code
+<b class="fc"><i>1092</i>&nbsp;    private static final Set&lt;PseudoClass&gt; NULL_PSEUDO_CLASS_STATE = null;</b>
+<i>1093</i>&nbsp;
+<i>1094</i>&nbsp;    /**
+<i>1095</i>&nbsp;     * Find the property among the styles that pertain to the Node
+<i>1096</i>&nbsp;     */
+<i>1097</i>&nbsp;    private CascadingStyle resolveRef(final Styleable styleable, final String property, final StyleMap styleMap, final Set&lt;PseudoClass&gt; states) {
+<i>1098</i>&nbsp;
+<b class="fc"><i>1099</i>&nbsp;        final CascadingStyle style = getStyle(styleable, property, styleMap, states);</b>
+<b class="fc"><i>1100</i>&nbsp;        if (style != null) {</b>
+<b class="fc"><i>1101</i>&nbsp;            return style;</b>
+<i>1102</i>&nbsp;        } else {
+<i>1103</i>&nbsp;            // if style is null, it may be because there isn&#39;t a style for this
+<i>1104</i>&nbsp;            // node in this state, or we may need to look up the parent chain
+<b class="fc"><i>1105</i>&nbsp;            if (states != null &amp;&amp; states.size() &gt; 0) {</b>
+<i>1106</i>&nbsp;                // if states &gt; 0, then we need to check this node again,
+<i>1107</i>&nbsp;                // but without any states.
+<b class="fc"><i>1108</i>&nbsp;                return resolveRef(styleable,property, styleMap, NULL_PSEUDO_CLASS_STATE);</b>
+<i>1109</i>&nbsp;            } else {
+<i>1110</i>&nbsp;                // TODO: This block was copied from inherit. Both should use same code somehow.
+<b class="fc"><i>1111</i>&nbsp;                Styleable styleableParent = styleable.getStyleableParent();</b>
+<b class="fc"><i>1112</i>&nbsp;                CssStyleHelper parentStyleHelper = null;</b>
+<b class="fc"><i>1113</i>&nbsp;                if (styleableParent != null &amp;&amp; styleableParent instanceof Node) {</b>
+<b class="fc"><i>1114</i>&nbsp;                    parentStyleHelper = ((Node)styleableParent).styleHelper;</b>
+<i>1115</i>&nbsp;                }
+<b class="fc"><i>1116</i>&nbsp;                while (styleableParent != null &amp;&amp; parentStyleHelper == null) {</b>
+<b class="fc"><i>1117</i>&nbsp;                    styleableParent = styleableParent.getStyleableParent();</b>
+<b class="fc"><i>1118</i>&nbsp;                    if (styleableParent != null &amp;&amp; styleableParent instanceof Node) {</b>
+<b class="fc"><i>1119</i>&nbsp;                        parentStyleHelper = ((Node)styleableParent).styleHelper;</b>
+<i>1120</i>&nbsp;                    }
+<i>1121</i>&nbsp;                }
+<i>1122</i>&nbsp;
+<b class="fc"><i>1123</i>&nbsp;                if (styleableParent == null || parentStyleHelper == null) {</b>
+<b class="fc"><i>1124</i>&nbsp;                    return null;</b>
+<i>1125</i>&nbsp;                }
+<i>1126</i>&nbsp;
+<b class="fc"><i>1127</i>&nbsp;                StyleMap parentStyleMap = parentStyleHelper.getStyleMap(styleableParent);</b>
+<i>1128</i>&nbsp;                Set&lt;PseudoClass&gt; styleableParentPseudoClassStates =
+<b class="fc"><i>1129</i>&nbsp;                    styleableParent instanceof Node</b>
+<b class="fc"><i>1130</i>&nbsp;                        ? ((Node)styleableParent).pseudoClassStates</b>
+<b class="nc"><i>1131</i>&nbsp;                        : styleable.getPseudoClassStates();</b>
+<i>1132</i>&nbsp;
+<b class="fc"><i>1133</i>&nbsp;                return parentStyleHelper.resolveRef(styleableParent, property,</b>
+<i>1134</i>&nbsp;                        parentStyleMap, styleableParentPseudoClassStates);
+<i>1135</i>&nbsp;            }
+<i>1136</i>&nbsp;        }
+<i>1137</i>&nbsp;    }
+<i>1138</i>&nbsp;
+<i>1139</i>&nbsp;    // to resolve a lookup, we just need to find the parsed value.
+<i>1140</i>&nbsp;    private ParsedValue resolveLookups(
+<i>1141</i>&nbsp;            final Styleable styleable,
+<i>1142</i>&nbsp;            final ParsedValue parsedValue,
+<i>1143</i>&nbsp;            final StyleMap styleMap, Set&lt;PseudoClass&gt; states,
+<i>1144</i>&nbsp;            final ObjectProperty&lt;StyleOrigin&gt; whence,
+<i>1145</i>&nbsp;            Set&lt;ParsedValue&gt; resolves) {
+<i>1146</i>&nbsp;
+<i>1147</i>&nbsp;        //
+<i>1148</i>&nbsp;        // either the value itself is a lookup, or the value contain a lookup
+<i>1149</i>&nbsp;        //
+<b class="fc"><i>1150</i>&nbsp;        if (parsedValue.isLookup()) {</b>
+<i>1151</i>&nbsp;
+<i>1152</i>&nbsp;            // The value we&#39;re looking for should be a Paint, one of the
+<i>1153</i>&nbsp;            // containers for linear, radial or ladder, or a derived color.
+<b class="fc"><i>1154</i>&nbsp;            final Object val = parsedValue.getValue();</b>
+<b class="fc"><i>1155</i>&nbsp;            if (val instanceof String) {</b>
+<i>1156</i>&nbsp;
+<b class="fc"><i>1157</i>&nbsp;                final String sval = ((String) val).toLowerCase(Locale.ROOT);</b>
+<i>1158</i>&nbsp;
+<b class="fc"><i>1159</i>&nbsp;                CascadingStyle resolved =</b>
+<b class="fc"><i>1160</i>&nbsp;                    resolveRef(styleable, sval, styleMap, states);</b>
+<i>1161</i>&nbsp;
+<b class="fc"><i>1162</i>&nbsp;                if (resolved != null) {</b>
+<i>1163</i>&nbsp;
+<b class="fc"><i>1164</i>&nbsp;                    if (resolves.contains(resolved.getParsedValue())) {</b>
+<i>1165</i>&nbsp;
+<b class="nc"><i>1166</i>&nbsp;                        if (LOGGER.isLoggable(Level.WARNING)) {</b>
+<b class="nc"><i>1167</i>&nbsp;                            LOGGER.warning(&quot;Loop detected in &quot; + resolved.getRule().toString() + &quot; while resolving &#39;&quot; + sval + &quot;&#39;&quot;);</b>
+<i>1168</i>&nbsp;                        }
+<b class="nc"><i>1169</i>&nbsp;                        throw new IllegalArgumentException(&quot;Loop detected in &quot; + resolved.getRule().toString() + &quot; while resolving &#39;&quot; + sval + &quot;&#39;&quot;);</b>
+<i>1170</i>&nbsp;
+<i>1171</i>&nbsp;                    } else {
+<b class="fc"><i>1172</i>&nbsp;                        resolves.add(parsedValue);</b>
+<i>1173</i>&nbsp;                    }
+<i>1174</i>&nbsp;
+<i>1175</i>&nbsp;                    // The origin of this parsed value is the greatest of
+<i>1176</i>&nbsp;                    // any of the resolved reference. If a resolved reference
+<i>1177</i>&nbsp;                    // comes from an inline style, for example, then the value
+<i>1178</i>&nbsp;                    // calculated from the resolved lookup should have inline
+<i>1179</i>&nbsp;                    // as its origin. Otherwise, an inline style could be
+<i>1180</i>&nbsp;                    // stored in shared cache.
+<b class="fc"><i>1181</i>&nbsp;                    final StyleOrigin wOrigin = whence.get();</b>
+<b class="fc"><i>1182</i>&nbsp;                    final StyleOrigin rOrigin = resolved.getOrigin();</b>
+<b class="fc"><i>1183</i>&nbsp;                    if (rOrigin != null &amp;&amp; (wOrigin == null ||  wOrigin.compareTo(rOrigin) &lt; 0)) {</b>
+<b class="nc"><i>1184</i>&nbsp;                        whence.set(rOrigin);</b>
+<i>1185</i>&nbsp;                    }
+<i>1186</i>&nbsp;
+<i>1187</i>&nbsp;                    // the resolved value may itself need to be resolved.
+<i>1188</i>&nbsp;                    // For example, if the value &quot;color&quot; resolves to &quot;base&quot;,
+<i>1189</i>&nbsp;                    // then &quot;base&quot; will need to be resolved as well.
+<b class="fc"><i>1190</i>&nbsp;                    ParsedValue pv = resolveLookups(styleable, resolved.getParsedValue(), styleMap, states, whence, resolves);</b>
+<i>1191</i>&nbsp;
+<b class="fc"><i>1192</i>&nbsp;                    if (resolves != null) {</b>
+<b class="fc"><i>1193</i>&nbsp;                        resolves.remove(parsedValue);</b>
+<i>1194</i>&nbsp;                    }
+<i>1195</i>&nbsp;
+<b class="fc"><i>1196</i>&nbsp;                    return pv;</b>
+<i>1197</i>&nbsp;
+<i>1198</i>&nbsp;                }
+<i>1199</i>&nbsp;            }
+<i>1200</i>&nbsp;        }
+<i>1201</i>&nbsp;
+<i>1202</i>&nbsp;        // If the value doesn&#39;t contain any values that need lookup, then bail
+<b class="fc"><i>1203</i>&nbsp;        if (!parsedValue.isContainsLookups()) {</b>
+<b class="fc"><i>1204</i>&nbsp;            return parsedValue;</b>
+<i>1205</i>&nbsp;        }
+<i>1206</i>&nbsp;
+<b class="fc"><i>1207</i>&nbsp;        final Object val = parsedValue.getValue();</b>
+<i>1208</i>&nbsp;
+<b class="fc"><i>1209</i>&nbsp;        if (val instanceof ParsedValue[][]) {</b>
+<i>1210</i>&nbsp;
+<i>1211</i>&nbsp;            // If ParsedValue is a layered sequence of values, resolve the lookups for each.
+<b class="nc"><i>1212</i>&nbsp;            final ParsedValue[][] layers = (ParsedValue[][])val;</b>
+<b class="nc"><i>1213</i>&nbsp;            ParsedValue[][] resolved = new ParsedValue[layers.length][0];</b>
+<b class="nc"><i>1214</i>&nbsp;            for (int l=0; l&lt;layers.length; l++) {</b>
+<b class="nc"><i>1215</i>&nbsp;                resolved[l] = new ParsedValue[layers[l].length];</b>
+<b class="nc"><i>1216</i>&nbsp;                for (int ll=0; ll&lt;layers[l].length; ll++) {</b>
+<b class="nc"><i>1217</i>&nbsp;                    if (layers[l][ll] == null) continue;</b>
+<b class="nc"><i>1218</i>&nbsp;                    resolved[l][ll] =</b>
+<b class="nc"><i>1219</i>&nbsp;                        resolveLookups(styleable, layers[l][ll], styleMap, states, whence, resolves);</b>
+<i>1220</i>&nbsp;                }
+<i>1221</i>&nbsp;            }
+<i>1222</i>&nbsp;
+<b class="nc"><i>1223</i>&nbsp;            resolves.clear();</b>
+<i>1224</i>&nbsp;
+<b class="nc"><i>1225</i>&nbsp;            return new ParsedValueImpl(resolved, parsedValue.getConverter(), false);</b>
+<i>1226</i>&nbsp;
+<b class="fc"><i>1227</i>&nbsp;        } else if (val instanceof ParsedValueImpl[]) {</b>
+<i>1228</i>&nbsp;
+<i>1229</i>&nbsp;            // If ParsedValue is a sequence of values, resolve the lookups for each.
+<b class="fc"><i>1230</i>&nbsp;            final ParsedValue[] layer = (ParsedValue[])val;</b>
+<b class="fc"><i>1231</i>&nbsp;            ParsedValue[] resolved = new ParsedValue[layer.length];</b>
+<b class="fc"><i>1232</i>&nbsp;            for (int l=0; l&lt;layer.length; l++) {</b>
+<b class="fc"><i>1233</i>&nbsp;                if (layer[l] == null) continue;</b>
+<b class="fc"><i>1234</i>&nbsp;                resolved[l] =</b>
+<b class="fc"><i>1235</i>&nbsp;                    resolveLookups(styleable, layer[l], styleMap, states, whence, resolves);</b>
+<i>1236</i>&nbsp;            }
+<i>1237</i>&nbsp;
+<b class="fc"><i>1238</i>&nbsp;            resolves.clear();</b>
+<i>1239</i>&nbsp;
+<b class="fc"><i>1240</i>&nbsp;            return new ParsedValueImpl(resolved, parsedValue.getConverter(), false);</b>
+<i>1241</i>&nbsp;
+<i>1242</i>&nbsp;        }
+<i>1243</i>&nbsp;
+<b class="fc"><i>1244</i>&nbsp;        return parsedValue;</b>
+<i>1245</i>&nbsp;
+<i>1246</i>&nbsp;    }
+<i>1247</i>&nbsp;
+<i>1248</i>&nbsp;    private String getUnresolvedLookup(final ParsedValue resolved) {
+<i>1249</i>&nbsp;
+<b class="nc"><i>1250</i>&nbsp;        Object value = resolved.getValue();</b>
+<i>1251</i>&nbsp;
+<b class="nc"><i>1252</i>&nbsp;        if (resolved.isLookup() &amp;&amp; value instanceof String) {</b>
+<b class="nc"><i>1253</i>&nbsp;            return (String)value;</b>
+<i>1254</i>&nbsp;        }
+<i>1255</i>&nbsp;
+<b class="nc"><i>1256</i>&nbsp;        if (value instanceof ParsedValue[][]) {</b>
+<b class="nc"><i>1257</i>&nbsp;            final ParsedValue[][] layers = (ParsedValue[][])value;</b>
+<b class="nc"><i>1258</i>&nbsp;            for (int l=0; l&lt;layers.length; l++) {</b>
+<b class="nc"><i>1259</i>&nbsp;                for (int ll=0; ll&lt;layers[l].length; ll++) {</b>
+<b class="nc"><i>1260</i>&nbsp;                    if (layers[l][ll] == null) continue;</b>
+<b class="nc"><i>1261</i>&nbsp;                    String unresolvedLookup = getUnresolvedLookup(layers[l][ll]);</b>
+<b class="nc"><i>1262</i>&nbsp;                    if (unresolvedLookup != null) return unresolvedLookup;</b>
+<i>1263</i>&nbsp;                }
+<i>1264</i>&nbsp;            }
+<i>1265</i>&nbsp;
+<b class="nc"><i>1266</i>&nbsp;        } else if (value instanceof ParsedValue[]) {</b>
+<i>1267</i>&nbsp;        // If ParsedValue is a sequence of values, resolve the lookups for each.
+<b class="nc"><i>1268</i>&nbsp;            final ParsedValue[] layer = (ParsedValue[])value;</b>
+<b class="nc"><i>1269</i>&nbsp;            for (int l=0; l&lt;layer.length; l++) {</b>
+<b class="nc"><i>1270</i>&nbsp;                if (layer[l] == null) continue;</b>
+<b class="nc"><i>1271</i>&nbsp;                String unresolvedLookup = getUnresolvedLookup(layer[l]);</b>
+<b class="nc"><i>1272</i>&nbsp;                if (unresolvedLookup != null) return unresolvedLookup;</b>
+<i>1273</i>&nbsp;            }
+<i>1274</i>&nbsp;        }
+<i>1275</i>&nbsp;
+<b class="nc"><i>1276</i>&nbsp;        return null;</b>
+<i>1277</i>&nbsp;    }
+<i>1278</i>&nbsp;
+<i>1279</i>&nbsp;    private String formatUnresolvedLookupMessage(Styleable styleable, CssMetaData cssMetaData, Style style, ParsedValue resolved, ClassCastException cce) {
+<i>1280</i>&nbsp;
+<i>1281</i>&nbsp;        // Find value that could not be looked up. If the resolved value does not contain lookups, then the
+<i>1282</i>&nbsp;        // ClassCastException is not because of trying to convert a String (which is the missing lookup)
+<i>1283</i>&nbsp;        // to some value, but is because the convert method got some wrong value - like a paint when it should be a color.
+<i>1284</i>&nbsp;        // See RT-33319 for an example of this.
+<b class="nc"><i>1285</i>&nbsp;        String missingLookup = resolved != null &amp;&amp; resolved.isContainsLookups() ? getUnresolvedLookup(resolved) : null;</b>
+<i>1286</i>&nbsp;
+<b class="nc"><i>1287</i>&nbsp;        StringBuilder sbuf = new StringBuilder();</b>
+<b class="nc"><i>1288</i>&nbsp;        if (missingLookup != null) {</b>
+<b class="nc"><i>1289</i>&nbsp;            sbuf.append(&quot;Could not resolve &#39;&quot;)</b>
+<b class="nc"><i>1290</i>&nbsp;                    .append(missingLookup)</b>
+<b class="nc"><i>1291</i>&nbsp;                    .append(&quot;&#39;&quot;)</b>
+<b class="nc"><i>1292</i>&nbsp;                    .append(&quot; while resolving lookups for &#39;&quot;)</b>
+<b class="nc"><i>1293</i>&nbsp;                    .append(cssMetaData.getProperty())</b>
+<b class="nc"><i>1294</i>&nbsp;                    .append(&quot;&#39;&quot;);</b>
+<i>1295</i>&nbsp;        } else {
+<b class="nc"><i>1296</i>&nbsp;            sbuf.append(&quot;Caught &#39;&quot;)</b>
+<b class="nc"><i>1297</i>&nbsp;                    .append(cce)</b>
+<b class="nc"><i>1298</i>&nbsp;                    .append(&quot;&#39;&quot;)</b>
+<b class="nc"><i>1299</i>&nbsp;                    .append(&quot; while converting value for &#39;&quot;)</b>
+<b class="nc"><i>1300</i>&nbsp;                    .append(cssMetaData.getProperty())</b>
+<b class="nc"><i>1301</i>&nbsp;                    .append(&quot;&#39;&quot;);</b>
+<i>1302</i>&nbsp;        }
+<i>1303</i>&nbsp;
+<b class="nc"><i>1304</i>&nbsp;        final Rule rule = style != null ? style.getDeclaration().getRule(): null;</b>
+<b class="nc"><i>1305</i>&nbsp;        final Stylesheet stylesheet = rule != null ? rule.getStylesheet() : null;</b>
+<b class="nc"><i>1306</i>&nbsp;        final String url = stylesheet != null ? stylesheet.getUrl() : null;</b>
+<b class="nc"><i>1307</i>&nbsp;        if (url != null) {</b>
+<b class="nc"><i>1308</i>&nbsp;            sbuf.append(&quot; from rule &#39;&quot;)</b>
+<b class="nc"><i>1309</i>&nbsp;                .append(style.getSelector())</b>
+<b class="nc"><i>1310</i>&nbsp;                .append(&quot;&#39; in stylesheet &quot;).append(url);</b>
+<b class="nc"><i>1311</i>&nbsp;        } else if (stylesheet != null &amp;&amp; StyleOrigin.INLINE == stylesheet.getOrigin()) {</b>
+<b class="nc"><i>1312</i>&nbsp;            sbuf.append(&quot; from inline style on &quot; )</b>
+<b class="nc"><i>1313</i>&nbsp;                .append(styleable.toString());</b>
+<i>1314</i>&nbsp;        }
+<i>1315</i>&nbsp;
+<b class="nc"><i>1316</i>&nbsp;        return sbuf.toString();</b>
+<i>1317</i>&nbsp;    }
+<i>1318</i>&nbsp;
+<i>1319</i>&nbsp;    private String formatExceptionMessage(Styleable styleable, CssMetaData cssMetaData, Style style, Exception e) {
+<i>1320</i>&nbsp;
+<b class="nc"><i>1321</i>&nbsp;        StringBuilder sbuf = new StringBuilder();</b>
+<b class="nc"><i>1322</i>&nbsp;        sbuf.append(&quot;Caught &quot;)</b>
+<b class="nc"><i>1323</i>&nbsp;            .append(String.valueOf(e));</b>
+<i>1324</i>&nbsp;
+<b class="nc"><i>1325</i>&nbsp;        if (cssMetaData != null) {</b>
+<b class="nc"><i>1326</i>&nbsp;            sbuf.append(&quot;&#39;&quot;)</b>
+<b class="nc"><i>1327</i>&nbsp;                .append(&quot; while calculating value for &#39;&quot;)</b>
+<b class="nc"><i>1328</i>&nbsp;                .append(cssMetaData.getProperty())</b>
+<b class="nc"><i>1329</i>&nbsp;                .append(&quot;&#39;&quot;);</b>
+<i>1330</i>&nbsp;        }
+<i>1331</i>&nbsp;
+<b class="nc"><i>1332</i>&nbsp;        if (style != null) {</b>
+<i>1333</i>&nbsp;
+<b class="nc"><i>1334</i>&nbsp;            final Rule rule = style.getDeclaration().getRule();</b>
+<b class="nc"><i>1335</i>&nbsp;            final Stylesheet stylesheet = rule != null ? rule.getStylesheet() : null;</b>
+<b class="nc"><i>1336</i>&nbsp;            final String url = stylesheet != null ? stylesheet.getUrl() : null;</b>
+<i>1337</i>&nbsp;
+<b class="nc"><i>1338</i>&nbsp;            if (url != null) {</b>
+<b class="nc"><i>1339</i>&nbsp;                sbuf.append(&quot; from rule &#39;&quot;)</b>
+<b class="nc"><i>1340</i>&nbsp;                        .append(style.getSelector())</b>
+<b class="nc"><i>1341</i>&nbsp;                        .append(&quot;&#39; in stylesheet &quot;).append(url);</b>
+<b class="nc"><i>1342</i>&nbsp;            } else if (styleable != null &amp;&amp; stylesheet != null &amp;&amp; StyleOrigin.INLINE == stylesheet.getOrigin()) {</b>
+<b class="nc"><i>1343</i>&nbsp;                sbuf.append(&quot; from inline style on &quot; )</b>
+<b class="nc"><i>1344</i>&nbsp;                        .append(styleable.toString());</b>
+<i>1345</i>&nbsp;            } else {
+<b class="nc"><i>1346</i>&nbsp;                sbuf.append(&quot; from style &#39;&quot;)</b>
+<b class="nc"><i>1347</i>&nbsp;                    .append(String.valueOf(style))</b>
+<b class="nc"><i>1348</i>&nbsp;                    .append(&quot;&#39;&quot;);</b>
+<i>1349</i>&nbsp;            }
+<i>1350</i>&nbsp;        }
+<i>1351</i>&nbsp;
+<b class="nc"><i>1352</i>&nbsp;        return sbuf.toString();</b>
+<i>1353</i>&nbsp;    }
+<i>1354</i>&nbsp;
+<i>1355</i>&nbsp;
+<i>1356</i>&nbsp;    private CalculatedValue calculateValue(
+<i>1357</i>&nbsp;            final CascadingStyle style,
+<i>1358</i>&nbsp;            final Styleable styleable,
+<i>1359</i>&nbsp;            final CssMetaData cssMetaData,
+<i>1360</i>&nbsp;            final StyleMap styleMap, final Set&lt;PseudoClass&gt; states,
+<i>1361</i>&nbsp;            final Styleable originatingStyleable,
+<i>1362</i>&nbsp;            final CalculatedValue fontFromCacheEntry) {
+<i>1363</i>&nbsp;
+<b class="fc"><i>1364</i>&nbsp;        final ParsedValue cssValue = style.getParsedValue();</b>
+<b class="fc"><i>1365</i>&nbsp;        if (cssValue != null &amp;&amp; !(&quot;null&quot;.equals(cssValue.getValue()) || &quot;none&quot;.equals(cssValue.getValue()))) {</b>
+<i>1366</i>&nbsp;
+<b class="fc"><i>1367</i>&nbsp;            ParsedValue resolved = null;</b>
+<i>1368</i>&nbsp;            try {
+<i>1369</i>&nbsp;
+<b class="fc"><i>1370</i>&nbsp;                ObjectProperty&lt;StyleOrigin&gt; whence = new SimpleObjectProperty&lt;&gt;(style.getOrigin());</b>
+<b class="fc"><i>1371</i>&nbsp;                resolved = resolveLookups(styleable, cssValue, styleMap, states, whence, new HashSet&lt;&gt;());</b>
+<i>1372</i>&nbsp;
+<b class="fc"><i>1373</i>&nbsp;                final String property = cssMetaData.getProperty();</b>
+<i>1374</i>&nbsp;
+<i>1375</i>&nbsp;                // The computed value
+<b class="fc"><i>1376</i>&nbsp;                Object val = null;</b>
+<b class="fc"><i>1377</i>&nbsp;                boolean isFontProperty =</b>
+<b class="fc"><i>1378</i>&nbsp;                        &quot;-fx-font&quot;.equals(property) ||</b>
+<b class="fc"><i>1379</i>&nbsp;                        &quot;-fx-font-size&quot;.equals(property);</b>
+<i>1380</i>&nbsp;
+<b class="fc"><i>1381</i>&nbsp;                boolean isRelative = ParsedValueImpl.containsFontRelativeSize(resolved, isFontProperty);</b>
+<i>1382</i>&nbsp;
+<i>1383</i>&nbsp;                //
+<i>1384</i>&nbsp;                // Avoid using a font calculated from a relative size
+<i>1385</i>&nbsp;                // to calculate a font with a relative size.
+<i>1386</i>&nbsp;                // For example:
+<i>1387</i>&nbsp;                // Assume the default font size is 13 and we have a style with
+<i>1388</i>&nbsp;                // -fx-font-size: 1.5em, then the cacheEntry font value will
+<i>1389</i>&nbsp;                // have a size of 13*1.5=19.5.
+<i>1390</i>&nbsp;                // Now, when converting that same font size again in response
+<i>1391</i>&nbsp;                // to looking up a value for -fx-font, we do not want to use
+<i>1392</i>&nbsp;                // 19.5 as the font for relative size conversion since this will
+<i>1393</i>&nbsp;                // yield a font 19.5*1.5=29.25 when really what we want is
+<i>1394</i>&nbsp;                // a font size of 19.5.
+<i>1395</i>&nbsp;                // In this situation, then, we use the font from the parent&#39;s
+<i>1396</i>&nbsp;                // cache entry.
+<b class="fc"><i>1397</i>&nbsp;                Font fontForFontRelativeSizes = null;</b>
+<i>1398</i>&nbsp;
+<b class="fc"><i>1399</i>&nbsp;                if (isRelative &amp;&amp; isFontProperty &amp;&amp;</b>
+<b class="nc"><i>1400</i>&nbsp;                    (fontFromCacheEntry == null || fontFromCacheEntry.isRelative())) {</b>
+<i>1401</i>&nbsp;
+<b class="nc"><i>1402</i>&nbsp;                    Styleable parent = styleable;</b>
+<b class="nc"><i>1403</i>&nbsp;                    CalculatedValue childsCachedFont = fontFromCacheEntry;</b>
+<i>1404</i>&nbsp;                    do {
+<i>1405</i>&nbsp;
+<b class="nc"><i>1406</i>&nbsp;                        CalculatedValue parentsCachedFont = getCachedFont(parent.getStyleableParent());</b>
+<i>1407</i>&nbsp;
+<b class="nc"><i>1408</i>&nbsp;                        if (parentsCachedFont != null)  {</b>
+<i>1409</i>&nbsp;
+<b class="nc"><i>1410</i>&nbsp;                            if (parentsCachedFont.isRelative()) {</b>
+<i>1411</i>&nbsp;
+<i>1412</i>&nbsp;                                //
+<i>1413</i>&nbsp;                                // If the cached fonts are the same, then the cached font came from the same
+<i>1414</i>&nbsp;                                // style and we need to keep looking. Otherwise, use the font we found.
+<i>1415</i>&nbsp;                                //
+<b class="nc"><i>1416</i>&nbsp;                                if (childsCachedFont == null || parentsCachedFont.equals(childsCachedFont)) {</b>
+<b class="nc"><i>1417</i>&nbsp;                                    childsCachedFont = parentsCachedFont;</b>
+<i>1418</i>&nbsp;                                } else {
+<b class="nc"><i>1419</i>&nbsp;                                    fontForFontRelativeSizes = (Font)parentsCachedFont.getValue();</b>
+<i>1420</i>&nbsp;                                }
+<i>1421</i>&nbsp;
+<i>1422</i>&nbsp;                            } else  {
+<i>1423</i>&nbsp;                                // fontValue.isRelative() == false!
+<b class="nc"><i>1424</i>&nbsp;                                fontForFontRelativeSizes = (Font)parentsCachedFont.getValue();</b>
+<i>1425</i>&nbsp;                            }
+<i>1426</i>&nbsp;
+<i>1427</i>&nbsp;                        }
+<i>1428</i>&nbsp;
+<b class="nc"><i>1429</i>&nbsp;                    } while(fontForFontRelativeSizes == null &amp;&amp;</b>
+<b class="nc"><i>1430</i>&nbsp;                            (parent = parent.getStyleableParent()) != null);</b>
+<i>1431</i>&nbsp;                }
+<i>1432</i>&nbsp;
+<i>1433</i>&nbsp;                // did we get a fontValue from the preceding block?
+<i>1434</i>&nbsp;                // if not, get it from our cacheEntry or choose the default
+<b class="fc"><i>1435</i>&nbsp;                if (fontForFontRelativeSizes == null) {</b>
+<b class="fc"><i>1436</i>&nbsp;                    if (fontFromCacheEntry != null &amp;&amp; fontFromCacheEntry.isRelative() == false) {</b>
+<b class="fc"><i>1437</i>&nbsp;                        fontForFontRelativeSizes = (Font)fontFromCacheEntry.getValue();</b>
+<i>1438</i>&nbsp;                    } else {
+<b class="nc"><i>1439</i>&nbsp;                        fontForFontRelativeSizes = Font.getDefault();</b>
+<i>1440</i>&nbsp;                    }
+<i>1441</i>&nbsp;                }
+<i>1442</i>&nbsp;
+<b class="fc"><i>1443</i>&nbsp;                final StyleConverter cssMetaDataConverter = cssMetaData.getConverter();</b>
+<i>1444</i>&nbsp;                // RT-37727 - handling of properties that are insets is wonky. If the property is -fx-inset, then
+<i>1445</i>&nbsp;                // there isn&#39;t an issue because the converter assigns the InsetsConverter to the ParsedValue.
+<i>1446</i>&nbsp;                // But -my-insets will parse as an array of numbers and the parser will assign the Size sequence
+<i>1447</i>&nbsp;                // converter to it. So, if the CssMetaData says it uses InsetsConverter, use the InsetsConverter
+<i>1448</i>&nbsp;                // and not the parser assigned converter.
+<b class="fc"><i>1449</i>&nbsp;                if (cssMetaDataConverter == StyleConverter.getInsetsConverter()) {</b>
+<b class="fc"><i>1450</i>&nbsp;                    if (resolved.getValue() instanceof ParsedValue) {</b>
+<i>1451</i>&nbsp;                        // If you give the parser &quot;-my-insets: 5;&quot; you end up with a ParsedValue&lt;ParsedValue&lt;?,Size&gt;, Number&gt;
+<i>1452</i>&nbsp;                        // and not a ParsedValue&lt;ParsedValue[], Number[]&gt; so here we wrap the value into an array
+<i>1453</i>&nbsp;                        // to make the InsetsConverter happy.
+<b class="nc"><i>1454</i>&nbsp;                        resolved = new ParsedValueImpl(new ParsedValue[] {(ParsedValue)resolved.getValue()}, null, false);</b>
+<i>1455</i>&nbsp;                    }
+<b class="fc"><i>1456</i>&nbsp;                    val = cssMetaDataConverter.convert(resolved, fontForFontRelativeSizes);</b>
+<i>1457</i>&nbsp;                }
+<b class="fc"><i>1458</i>&nbsp;                else if (resolved.getConverter() != null)</b>
+<b class="fc"><i>1459</i>&nbsp;                    val = resolved.convert(fontForFontRelativeSizes);</b>
+<i>1460</i>&nbsp;                else
+<b class="fc"><i>1461</i>&nbsp;                    val = cssMetaData.getConverter().convert(resolved, fontForFontRelativeSizes);</b>
+<i>1462</i>&nbsp;
+<b class="fc"><i>1463</i>&nbsp;                final StyleOrigin origin = whence.get();</b>
+<b class="fc"><i>1464</i>&nbsp;                return new CalculatedValue(val, origin, isRelative);</b>
+<i>1465</i>&nbsp;
+<b class="nc"><i>1466</i>&nbsp;            } catch (ClassCastException cce) {</b>
+<b class="nc"><i>1467</i>&nbsp;                final String msg = formatUnresolvedLookupMessage(styleable, cssMetaData, style.getStyle(),resolved, cce);</b>
+<b class="nc"><i>1468</i>&nbsp;                List&lt;CssParser.ParseError&gt; errors = null;</b>
+<b class="nc"><i>1469</i>&nbsp;                if ((errors = StyleManager.getErrors()) != null) {</b>
+<b class="nc"><i>1470</i>&nbsp;                    final CssParser.ParseError error = new CssParser.ParseError.PropertySetError(cssMetaData, styleable, msg);</b>
+<b class="nc"><i>1471</i>&nbsp;                    errors.add(error);</b>
+<i>1472</i>&nbsp;                }
+<b class="nc"><i>1473</i>&nbsp;                if (LOGGER.isLoggable(Level.WARNING)) {</b>
+<b class="nc"><i>1474</i>&nbsp;                    LOGGER.warning(msg);</b>
+<b class="nc"><i>1475</i>&nbsp;                    LOGGER.fine(&quot;node = &quot; + styleable.toString());</b>
+<b class="nc"><i>1476</i>&nbsp;                    LOGGER.fine(&quot;cssMetaData = &quot; + cssMetaData);</b>
+<b class="nc"><i>1477</i>&nbsp;                    LOGGER.fine(&quot;styles = &quot; + getMatchingStyles(styleable, cssMetaData));</b>
+<i>1478</i>&nbsp;                }
+<b class="nc"><i>1479</i>&nbsp;                return SKIP;</b>
+<b class="nc"><i>1480</i>&nbsp;            } catch (IllegalArgumentException iae) {</b>
+<b class="nc"><i>1481</i>&nbsp;                final String msg = formatExceptionMessage(styleable, cssMetaData, style.getStyle(), iae);</b>
+<b class="nc"><i>1482</i>&nbsp;                List&lt;CssParser.ParseError&gt; errors = null;</b>
+<b class="nc"><i>1483</i>&nbsp;                if ((errors = StyleManager.getErrors()) != null) {</b>
+<b class="nc"><i>1484</i>&nbsp;                    final CssParser.ParseError error = new CssParser.ParseError.PropertySetError(cssMetaData, styleable, msg);</b>
+<b class="nc"><i>1485</i>&nbsp;                    errors.add(error);</b>
+<i>1486</i>&nbsp;                }
+<b class="nc"><i>1487</i>&nbsp;                if (LOGGER.isLoggable(Level.WARNING)) {</b>
+<b class="nc"><i>1488</i>&nbsp;                    LOGGER.warning(msg);</b>
+<b class="nc"><i>1489</i>&nbsp;                    LOGGER.fine(&quot;caught: &quot;, iae);</b>
+<b class="nc"><i>1490</i>&nbsp;                    LOGGER.fine(&quot;styleable = &quot; + cssMetaData);</b>
+<b class="nc"><i>1491</i>&nbsp;                    LOGGER.fine(&quot;node = &quot; + styleable.toString());</b>
+<i>1492</i>&nbsp;                }
+<b class="nc"><i>1493</i>&nbsp;                return SKIP;</b>
+<b class="nc"><i>1494</i>&nbsp;            } catch (NullPointerException npe) {</b>
+<b class="nc"><i>1495</i>&nbsp;                final String msg = formatExceptionMessage(styleable, cssMetaData, style.getStyle(), npe);</b>
+<b class="nc"><i>1496</i>&nbsp;                List&lt;CssParser.ParseError&gt; errors = null;</b>
+<b class="nc"><i>1497</i>&nbsp;                if ((errors = StyleManager.getErrors()) != null) {</b>
+<b class="nc"><i>1498</i>&nbsp;                    final CssParser.ParseError error = new CssParser.ParseError.PropertySetError(cssMetaData, styleable, msg);</b>
+<b class="nc"><i>1499</i>&nbsp;                    errors.add(error);</b>
+<i>1500</i>&nbsp;                }
+<b class="nc"><i>1501</i>&nbsp;                if (LOGGER.isLoggable(Level.WARNING)) {</b>
+<b class="nc"><i>1502</i>&nbsp;                    LOGGER.warning(msg);</b>
+<b class="nc"><i>1503</i>&nbsp;                    LOGGER.fine(&quot;caught: &quot;, npe);</b>
+<b class="nc"><i>1504</i>&nbsp;                    LOGGER.fine(&quot;styleable = &quot; + cssMetaData);</b>
+<b class="nc"><i>1505</i>&nbsp;                    LOGGER.fine(&quot;node = &quot; + styleable.toString());</b>
+<i>1506</i>&nbsp;                }
+<b class="nc"><i>1507</i>&nbsp;                return SKIP;</b>
+<i>1508</i>&nbsp;            }
+<i>1509</i>&nbsp;
+<i>1510</i>&nbsp;        }
+<i>1511</i>&nbsp;        // either cssValue was null or cssValue&#39;s value was &quot;null&quot; or &quot;none&quot;
+<b class="nc"><i>1512</i>&nbsp;        return new CalculatedValue(null, style.getOrigin(), false);</b>
+<i>1513</i>&nbsp;
+<i>1514</i>&nbsp;    }
+<i>1515</i>&nbsp;
+<b class="fc"><i>1516</i>&nbsp;    private static final CssMetaData dummyFontProperty =</b>
+<b class="fc"><i>1517</i>&nbsp;            new FontCssMetaData&lt;Node&gt;(&quot;-fx-font&quot;, Font.getDefault()) {</b>
+<i>1518</i>&nbsp;
+<i>1519</i>&nbsp;        @Override
+<i>1520</i>&nbsp;        public boolean isSettable(Node node) {
+<b class="nc"><i>1521</i>&nbsp;            return true;</b>
+<i>1522</i>&nbsp;        }
+<i>1523</i>&nbsp;
+<i>1524</i>&nbsp;        @Override
+<i>1525</i>&nbsp;        public StyleableProperty&lt;Font&gt; getStyleableProperty(Node node) {
+<b class="nc"><i>1526</i>&nbsp;            return null;</b>
+<i>1527</i>&nbsp;        }
+<i>1528</i>&nbsp;    };
+<i>1529</i>&nbsp;
+<i>1530</i>&nbsp;    private CalculatedValue getCachedFont(final Styleable styleable) {
+<i>1531</i>&nbsp;
+<b class="fc"><i>1532</i>&nbsp;        if (styleable instanceof Node == false) return null;</b>
+<i>1533</i>&nbsp;
+<b class="fc"><i>1534</i>&nbsp;        CalculatedValue cachedFont = null;</b>
+<i>1535</i>&nbsp;
+<b class="fc"><i>1536</i>&nbsp;        Node parent = (Node)styleable;</b>
+<i>1537</i>&nbsp;
+<b class="fc"><i>1538</i>&nbsp;        final CssStyleHelper parentHelper = parent.styleHelper;</b>
+<i>1539</i>&nbsp;
+<i>1540</i>&nbsp;        // if there is no parentHelper,
+<i>1541</i>&nbsp;        // or there is a parentHelper but no cacheContainer,
+<i>1542</i>&nbsp;        // then look to the next parent
+<b class="fc"><i>1543</i>&nbsp;        if (parentHelper == null || parentHelper.cacheContainer == null) {</b>
+<i>1544</i>&nbsp;
+<b class="fc"><i>1545</i>&nbsp;            cachedFont = getCachedFont(parent.getStyleableParent());</b>
+<i>1546</i>&nbsp;
+<i>1547</i>&nbsp;        // there is a parent helper and a cacheContainer,
+<i>1548</i>&nbsp;        } else  {
+<i>1549</i>&nbsp;
+<b class="fc"><i>1550</i>&nbsp;            CacheContainer parentCacheContainer = parentHelper.cacheContainer;</b>
+<b class="fc"><i>1551</i>&nbsp;            if ( parentCacheContainer != null</b>
+<b class="fc"><i>1552</i>&nbsp;                    &amp;&amp; parentCacheContainer.fontSizeCache != null</b>
+<b class="fc"><i>1553</i>&nbsp;                    &amp;&amp; parentCacheContainer.fontSizeCache.isEmpty() == false) {</b>
+<i>1554</i>&nbsp;
+<b class="fc"><i>1555</i>&nbsp;                Set&lt;PseudoClass&gt;[] transitionStates = parentHelper.getTransitionStates(parent);</b>
+<b class="fc"><i>1556</i>&nbsp;                StyleCacheEntry.Key parentCacheEntryKey = new StyleCacheEntry.Key(transitionStates, Font.getDefault());</b>
+<b class="fc"><i>1557</i>&nbsp;                cachedFont = parentCacheContainer.fontSizeCache.get(parentCacheEntryKey);</b>
+<i>1558</i>&nbsp;            }
+<i>1559</i>&nbsp;
+<b class="fc"><i>1560</i>&nbsp;            if (cachedFont == null)  {</b>
+<b class="fc"><i>1561</i>&nbsp;                StyleMap smap = parentHelper.getStyleMap(parent);</b>
+<b class="fc"><i>1562</i>&nbsp;                cachedFont = parentHelper.lookupFont(parent, &quot;-fx-font&quot;, smap, null);</b>
+<i>1563</i>&nbsp;            }
+<i>1564</i>&nbsp;        }
+<i>1565</i>&nbsp;
+<b class="fc"><i>1566</i>&nbsp;        return cachedFont != SKIP ? cachedFont : null;</b>
+<i>1567</i>&nbsp;    }
+<i>1568</i>&nbsp;
+<i>1569</i>&nbsp;    /*package access for testing*/ FontPosture getFontPosture(Font font) {
+<b class="fc"><i>1570</i>&nbsp;        if (font == null) return FontPosture.REGULAR;</b>
+<i>1571</i>&nbsp;
+<b class="fc"><i>1572</i>&nbsp;        String fontName = font.getName().toLowerCase(Locale.ROOT);</b>
+<i>1573</i>&nbsp;
+<b class="fc"><i>1574</i>&nbsp;        if (fontName.contains(&quot;italic&quot;)) {</b>
+<b class="nc"><i>1575</i>&nbsp;            return FontPosture.ITALIC;</b>
+<i>1576</i>&nbsp;        }
+<i>1577</i>&nbsp;
+<b class="fc"><i>1578</i>&nbsp;        return FontPosture.REGULAR;</b>
+<i>1579</i>&nbsp;    }
+<i>1580</i>&nbsp;
+<i>1581</i>&nbsp;    /*package access for testing*/ FontWeight getFontWeight(Font font) {
+<b class="fc"><i>1582</i>&nbsp;        if (font == null) return FontWeight.NORMAL;</b>
+<i>1583</i>&nbsp;
+<b class="fc"><i>1584</i>&nbsp;        String fontName = font.getName().toLowerCase(Locale.ROOT);</b>
+<i>1585</i>&nbsp;
+<b class="fc"><i>1586</i>&nbsp;        if (fontName.contains(&quot;bold&quot;)) {</b>
+<b class="nc"><i>1587</i>&nbsp;            if (fontName.contains(&quot;extra&quot;)) return FontWeight.EXTRA_BOLD;</b>
+<b class="nc"><i>1588</i>&nbsp;            if (fontName.contains(&quot;ultra&quot;)) return FontWeight.EXTRA_BOLD;</b>
+<b class="nc"><i>1589</i>&nbsp;            else if (fontName.contains(&quot;semi&quot;)) return FontWeight.SEMI_BOLD;</b>
+<b class="nc"><i>1590</i>&nbsp;            else if (fontName.contains(&quot;demi&quot;)) return FontWeight.SEMI_BOLD;</b>
+<b class="nc"><i>1591</i>&nbsp;            else return FontWeight.BOLD;</b>
+<i>1592</i>&nbsp;
+<b class="fc"><i>1593</i>&nbsp;        } else if (fontName.contains(&quot;light&quot;)) {</b>
+<b class="nc"><i>1594</i>&nbsp;            if (fontName.contains(&quot;extra&quot;)) return FontWeight.EXTRA_LIGHT;</b>
+<b class="nc"><i>1595</i>&nbsp;            if (fontName.contains(&quot;ultra&quot;)) return FontWeight.EXTRA_LIGHT;</b>
+<b class="nc"><i>1596</i>&nbsp;            else return FontWeight.LIGHT;</b>
+<i>1597</i>&nbsp;
+<b class="fc"><i>1598</i>&nbsp;        } else if (fontName.contains(&quot;black&quot;)) {</b>
+<b class="nc"><i>1599</i>&nbsp;            return FontWeight.BLACK;</b>
+<i>1600</i>&nbsp;
+<b class="fc"><i>1601</i>&nbsp;        } else if (fontName.contains(&quot;heavy&quot;)) {</b>
+<b class="nc"><i>1602</i>&nbsp;            return FontWeight.BLACK;</b>
+<i>1603</i>&nbsp;
+<b class="fc"><i>1604</i>&nbsp;        } else if (fontName.contains(&quot;medium&quot;)) {</b>
+<b class="nc"><i>1605</i>&nbsp;            return FontWeight.MEDIUM;</b>
+<i>1606</i>&nbsp;        }
+<i>1607</i>&nbsp;
+<b class="fc"><i>1608</i>&nbsp;        return FontWeight.NORMAL;</b>
+<i>1609</i>&nbsp;
+<i>1610</i>&nbsp;    }
+<i>1611</i>&nbsp;
+<i>1612</i>&nbsp;    /*package access for testing*/ String getFontFamily(Font font) {
+<b class="fc"><i>1613</i>&nbsp;        if (font == null) return Font.getDefault().getFamily();</b>
+<b class="fc"><i>1614</i>&nbsp;        return font.getFamily();</b>
+<i>1615</i>&nbsp;    }
+<i>1616</i>&nbsp;
+<i>1617</i>&nbsp;
+<i>1618</i>&nbsp;    /*package access for testing*/ Font deriveFont(
+<i>1619</i>&nbsp;            Font font,
+<i>1620</i>&nbsp;            String fontFamily,
+<i>1621</i>&nbsp;            FontWeight fontWeight,
+<i>1622</i>&nbsp;            FontPosture fontPosture,
+<i>1623</i>&nbsp;            double fontSize) {
+<i>1624</i>&nbsp;
+<b class="nc"><i>1625</i>&nbsp;        if (font != null &amp;&amp; fontFamily == null) fontFamily = getFontFamily(font);</b>
+<b class="nc"><i>1626</i>&nbsp;        else if (fontFamily != null) fontFamily = Utils.stripQuotes(fontFamily);</b>
+<i>1627</i>&nbsp;
+<b class="nc"><i>1628</i>&nbsp;        if (font != null &amp;&amp; fontWeight == null) fontWeight = getFontWeight(font);</b>
+<b class="nc"><i>1629</i>&nbsp;        if (font != null &amp;&amp; fontPosture == null) fontPosture = getFontPosture(font);</b>
+<b class="nc"><i>1630</i>&nbsp;        if (font != null &amp;&amp; fontSize &lt;= 0) fontSize = font.getSize();</b>
+<i>1631</i>&nbsp;
+<b class="nc"><i>1632</i>&nbsp;        return  Font.font(</b>
+<i>1633</i>&nbsp;                fontFamily,
+<i>1634</i>&nbsp;                fontWeight,
+<i>1635</i>&nbsp;                fontPosture,
+<i>1636</i>&nbsp;                fontSize);
+<i>1637</i>&nbsp;    }
+<i>1638</i>&nbsp;
+<i>1639</i>&nbsp;    /**
+<i>1640</i>&nbsp;     * Look up a font property. This is handled separately from lookup since
+<i>1641</i>&nbsp;     * font is inherited and has sub-properties. One should expect that the
+<i>1642</i>&nbsp;     * text font for the following would be 16px Arial. The lookup method would
+<i>1643</i>&nbsp;     * give 16px system since it would look &lt;em&gt;only&lt;/em&gt; for font-size,
+<i>1644</i>&nbsp;     * font-family, etc &lt;em&gt;only&lt;/em&gt; if the lookup on font failed.
+<i>1645</i>&nbsp;     * &lt;pre&gt;
+<i>1646</i>&nbsp;     * Text text = new Text(&quot;Hello World&quot;);
+<i>1647</i>&nbsp;     * text.setStyle(&quot;-fx-font-size: 16px;&quot;);
+<i>1648</i>&nbsp;     * Group group = new Group();
+<i>1649</i>&nbsp;     * group.setStyle(&quot;-fx-font: 12px Arial;&quot;);
+<i>1650</i>&nbsp;     * group.getChildren().add(text);
+<i>1651</i>&nbsp;     * &lt;/pre&gt;
+<i>1652</i>&nbsp;     */
+<i>1653</i>&nbsp;     /*package access for testing*/ CalculatedValue lookupFont(
+<i>1654</i>&nbsp;            final Styleable styleable,
+<i>1655</i>&nbsp;            final String property,
+<i>1656</i>&nbsp;            final StyleMap styleMap,
+<i>1657</i>&nbsp;            final CalculatedValue cachedFont)
+<i>1658</i>&nbsp;    {
+<i>1659</i>&nbsp;
+<b class="fc"><i>1660</i>&nbsp;        StyleOrigin origin = null;</b>
+<i>1661</i>&nbsp;
+<i>1662</i>&nbsp;        // How far from this node did we travel to find a font shorthand?
+<i>1663</i>&nbsp;        // Don&#39;t look past this distance for other font properties.
+<b class="fc"><i>1664</i>&nbsp;        int distance = 0;</b>
+<i>1665</i>&nbsp;
+<i>1666</i>&nbsp;        // Did we find a style?
+<b class="fc"><i>1667</i>&nbsp;        boolean foundStyle = false;</b>
+<i>1668</i>&nbsp;
+<b class="fc"><i>1669</i>&nbsp;        String family = null;</b>
+<b class="fc"><i>1670</i>&nbsp;        double size = -1;</b>
+<b class="fc"><i>1671</i>&nbsp;        FontWeight weight = null;</b>
+<b class="fc"><i>1672</i>&nbsp;        FontPosture posture = null;</b>
+<i>1673</i>&nbsp;
+<b class="fc"><i>1674</i>&nbsp;        CalculatedValue cvFont = cachedFont;</b>
+<i>1675</i>&nbsp;
+<i>1676</i>&nbsp;
+<b class="fc"><i>1677</i>&nbsp;        Set&lt;PseudoClass&gt; states = styleable instanceof Node ? ((Node)styleable).pseudoClassStates : styleable.getPseudoClassStates();</b>
+<i>1678</i>&nbsp;
+<i>1679</i>&nbsp;        // RT-20145 - if looking for font size and the node has a font,
+<i>1680</i>&nbsp;        // use the font property&#39;s value if it was set by the user and
+<i>1681</i>&nbsp;        // there is not an inline or author style.
+<i>1682</i>&nbsp;
+<b class="fc"><i>1683</i>&nbsp;        if (cacheContainer.fontProp != null) {</b>
+<b class="fc"><i>1684</i>&nbsp;            StyleableProperty&lt;Font&gt; styleableProp = cacheContainer.fontProp.getStyleableProperty(styleable);</b>
+<b class="fc"><i>1685</i>&nbsp;            StyleOrigin fpOrigin = styleableProp.getStyleOrigin();</b>
+<b class="fc"><i>1686</i>&nbsp;            Font font = styleableProp.getValue();</b>
+<b class="fc"><i>1687</i>&nbsp;            if (font == null) font = Font.getDefault();</b>
+<b class="fc"><i>1688</i>&nbsp;            if (fpOrigin == StyleOrigin.USER) {</b>
+<b class="fc"><i>1689</i>&nbsp;                origin = fpOrigin;</b>
+<b class="fc"><i>1690</i>&nbsp;                family = getFontFamily(font);</b>
+<b class="fc"><i>1691</i>&nbsp;                size = font.getSize();</b>
+<b class="fc"><i>1692</i>&nbsp;                weight = getFontWeight(font);</b>
+<b class="fc"><i>1693</i>&nbsp;                posture = getFontPosture(font);</b>
+<b class="fc"><i>1694</i>&nbsp;                cvFont = new CalculatedValue(font, fpOrigin, false);</b>
+<i>1695</i>&nbsp;            }
+<i>1696</i>&nbsp;        }
+<i>1697</i>&nbsp;
+<b class="fc"><i>1698</i>&nbsp;        CalculatedValue parentCachedFont = getCachedFont(styleable.getStyleableParent());</b>
+<b class="fc"><i>1699</i>&nbsp;        if (parentCachedFont == null) parentCachedFont = new CalculatedValue(Font.getDefault(), null, false);</b>
+<i>1700</i>&nbsp;
+<i>1701</i>&nbsp;        //
+<i>1702</i>&nbsp;        // Look up the font- properties
+<i>1703</i>&nbsp;        //
+<b class="fc"><i>1704</i>&nbsp;        CascadingStyle fontShorthand = getStyle(styleable, property, styleMap, states);</b>
+<i>1705</i>&nbsp;
+<i>1706</i>&nbsp;        // don&#39;t look past current node for font shorthand if user set the font
+<b class="fc"><i>1707</i>&nbsp;        if (fontShorthand == null &amp;&amp; origin != StyleOrigin.USER) {</b>
+<i>1708</i>&nbsp;
+<b class="fc"><i>1709</i>&nbsp;            Styleable parent = styleable != null ? styleable.getStyleableParent() : null;</b>
+<i>1710</i>&nbsp;
+<b class="fc"><i>1711</i>&nbsp;            while (parent != null) {</b>
+<i>1712</i>&nbsp;
+<b class="fc"><i>1713</i>&nbsp;                CssStyleHelper parentStyleHelper = parent instanceof Node ? ((Node)parent).styleHelper : null;</b>
+<b class="fc"><i>1714</i>&nbsp;                if (parentStyleHelper != null) {</b>
+<i>1715</i>&nbsp;
+<b class="fc"><i>1716</i>&nbsp;                    distance += 1;</b>
+<i>1717</i>&nbsp;
+<b class="fc"><i>1718</i>&nbsp;                    StyleMap parentStyleMap = parentStyleHelper.getStyleMap(parent);</b>
+<b class="fc"><i>1719</i>&nbsp;                    Set&lt;PseudoClass&gt; transitionStates = ((Node)parent).pseudoClassStates;</b>
+<b class="fc"><i>1720</i>&nbsp;                    CascadingStyle cascadingStyle = parentStyleHelper.getStyle(parent, property, parentStyleMap, transitionStates);</b>
+<i>1721</i>&nbsp;
+<b class="fc"><i>1722</i>&nbsp;                    if (cascadingStyle != null) {</b>
+<i>1723</i>&nbsp;
+<b class="nc"><i>1724</i>&nbsp;                        final ParsedValue cssValue = cascadingStyle.getParsedValue();</b>
+<i>1725</i>&nbsp;
+<b class="nc"><i>1726</i>&nbsp;                        if (&quot;inherit&quot;.equals(cssValue.getValue()) == false) {</b>
+<b class="nc"><i>1727</i>&nbsp;                            fontShorthand = cascadingStyle;</b>
+<b class="nc"><i>1728</i>&nbsp;                            break;</b>
+<i>1729</i>&nbsp;                        }
+<i>1730</i>&nbsp;                    }
+<i>1731</i>&nbsp;
+<i>1732</i>&nbsp;                }
+<i>1733</i>&nbsp;
+<b class="fc"><i>1734</i>&nbsp;                parent = parent.getStyleableParent();</b>
+<i>1735</i>&nbsp;
+<b class="fc"><i>1736</i>&nbsp;            }</b>
+<i>1737</i>&nbsp;
+<i>1738</i>&nbsp;        }
+<i>1739</i>&nbsp;
+<b class="fc"><i>1740</i>&nbsp;        if (fontShorthand != null) {</b>
+<i>1741</i>&nbsp;
+<i>1742</i>&nbsp;            //
+<i>1743</i>&nbsp;            // If we don&#39;t have an existing font, or if the origin of the
+<i>1744</i>&nbsp;            // existing font is less than that of the shorthand, then
+<i>1745</i>&nbsp;            // take the shorthand. If the origins compare equals, then take
+<i>1746</i>&nbsp;            // the shorthand since the fontProp value will not have been
+<i>1747</i>&nbsp;            // updated yet.
+<i>1748</i>&nbsp;            //
+<b class="nc"><i>1749</i>&nbsp;            if (origin == null || origin.compareTo(fontShorthand.getOrigin()) &lt;= 0) {</b>
+<i>1750</i>&nbsp;
+<b class="nc"><i>1751</i>&nbsp;                final CalculatedValue cv =</b>
+<b class="nc"><i>1752</i>&nbsp;                        calculateValue(fontShorthand, styleable, dummyFontProperty,</b>
+<i>1753</i>&nbsp;                                styleMap, states, styleable, parentCachedFont);
+<i>1754</i>&nbsp;
+<i>1755</i>&nbsp;                // cv could be SKIP
+<b class="nc"><i>1756</i>&nbsp;                if (cv.getValue() instanceof Font) {</b>
+<b class="nc"><i>1757</i>&nbsp;                    origin = cv.getOrigin();</b>
+<b class="nc"><i>1758</i>&nbsp;                    Font font = (Font)cv.getValue();</b>
+<b class="nc"><i>1759</i>&nbsp;                    family = getFontFamily(font);</b>
+<b class="nc"><i>1760</i>&nbsp;                    size = font.getSize();</b>
+<b class="nc"><i>1761</i>&nbsp;                    weight = getFontWeight(font);</b>
+<b class="nc"><i>1762</i>&nbsp;                    posture = getFontPosture(font);</b>
+<b class="nc"><i>1763</i>&nbsp;                    cvFont = cv;</b>
+<b class="nc"><i>1764</i>&nbsp;                    foundStyle = true;</b>
+<i>1765</i>&nbsp;                }
+<i>1766</i>&nbsp;
+<i>1767</i>&nbsp;            }
+<i>1768</i>&nbsp;        }
+<i>1769</i>&nbsp;
+<b class="fc"><i>1770</i>&nbsp;        CascadingStyle fontSize = getStyle(styleable, property.concat(&quot;-size&quot;), styleMap, states);</b>
+<b class="fc"><i>1771</i>&nbsp;        if (fontSize != null) {</b>
+<i>1772</i>&nbsp;            // if we have a font shorthand and it is more specific than font-size, then don&#39;t use the font-size style
+<b class="nc"><i>1773</i>&nbsp;            if (fontShorthand != null &amp;&amp; fontShorthand.compareTo(fontSize) &lt; 0) {</b>
+<b class="nc"><i>1774</i>&nbsp;                fontSize = null;</b>
+<b class="nc"><i>1775</i>&nbsp;            } else if (origin == StyleOrigin.USER) {</b>
+<i>1776</i>&nbsp;                // If fontSize is an inline or author-stylesheet style, use it.
+<i>1777</i>&nbsp;                // Otherwise, fontSize is a user-agent stylesheet style and should not override the USER style.
+<b class="nc"><i>1778</i>&nbsp;                if (StyleOrigin.USER.compareTo(fontSize.getOrigin()) &gt; 0) {</b>
+<b class="nc"><i>1779</i>&nbsp;                    fontSize = null;</b>
+<i>1780</i>&nbsp;                }
+<i>1781</i>&nbsp;            }
+<b class="fc"><i>1782</i>&nbsp;        } else if (origin != StyleOrigin.USER) {</b>
+<i>1783</i>&nbsp;            //
+<i>1784</i>&nbsp;            // If we don&#39;t have a font-size, see if there is an inherited font-size.
+<i>1785</i>&nbsp;            // If lookupInheritedFontProperty returns other than null, then we know that font-size is closer (more specific)
+<i>1786</i>&nbsp;            // than the font shorthand
+<i>1787</i>&nbsp;            //
+<b class="fc"><i>1788</i>&nbsp;            fontSize = lookupInheritedFontProperty(styleable, property.concat(&quot;-size&quot;), styleMap, distance, fontShorthand);</b>
+<i>1789</i>&nbsp;        }
+<i>1790</i>&nbsp;
+<b class="fc"><i>1791</i>&nbsp;        if (fontSize != null) {</b>
+<i>1792</i>&nbsp;
+<i>1793</i>&nbsp;            // The logic above ensures that, if fontSize is not null, then it is either
+<i>1794</i>&nbsp;            // 1) a style matching this node and is more specific than the font shorthand or
+<i>1795</i>&nbsp;            // 2) an inherited style that is more specific than the font shorthand
+<i>1796</i>&nbsp;            // and, therefore, we can use the fontSize style
+<i>1797</i>&nbsp;
+<b class="nc"><i>1798</i>&nbsp;            final CalculatedValue cv =</b>
+<b class="nc"><i>1799</i>&nbsp;                    calculateValue(fontSize, styleable, dummyFontProperty,</b>
+<i>1800</i>&nbsp;                            styleMap, states, styleable, parentCachedFont);
+<i>1801</i>&nbsp;
+<b class="nc"><i>1802</i>&nbsp;            if (cv.getValue() instanceof Double) {</b>
+<b class="nc"><i>1803</i>&nbsp;                if (origin == null || origin.compareTo(fontSize.getOrigin()) &lt;= 0) {</b>
+<i>1804</i>&nbsp;
+<b class="nc"><i>1805</i>&nbsp;                    origin = cv.getOrigin();</b>
+<i>1806</i>&nbsp;                }
+<b class="nc"><i>1807</i>&nbsp;                size = (Double) cv.getValue();</b>
+<i>1808</i>&nbsp;
+<b class="nc"><i>1809</i>&nbsp;                if (cvFont != null) {</b>
+<b class="nc"><i>1810</i>&nbsp;                    boolean isRelative = cvFont.isRelative() || cv.isRelative();</b>
+<b class="nc"><i>1811</i>&nbsp;                    Font font = deriveFont((Font) cvFont.getValue(), family, weight, posture, size);</b>
+<b class="nc"><i>1812</i>&nbsp;                    cvFont = new CalculatedValue(font, origin, isRelative);</b>
+<b class="nc"><i>1813</i>&nbsp;                } else {</b>
+<b class="nc"><i>1814</i>&nbsp;                    boolean isRelative = cv.isRelative();</b>
+<b class="nc"><i>1815</i>&nbsp;                    Font font = deriveFont(Font.getDefault(), family, weight, posture, size);</b>
+<b class="nc"><i>1816</i>&nbsp;                    cvFont = new CalculatedValue(font, origin, isRelative);</b>
+<i>1817</i>&nbsp;                }
+<b class="nc"><i>1818</i>&nbsp;                foundStyle = true;</b>
+<i>1819</i>&nbsp;            }
+<i>1820</i>&nbsp;
+<i>1821</i>&nbsp;        }
+<i>1822</i>&nbsp;
+<i>1823</i>&nbsp;        // if cachedFont is null, then we&#39;re in this method to look up a font for the CacheContainer&#39;s fontSizeCache
+<i>1824</i>&nbsp;        // and we only care about font-size or the size from font shorthand.
+<b class="fc"><i>1825</i>&nbsp;        if (cachedFont == null) {</b>
+<b class="fc"><i>1826</i>&nbsp;            return (cvFont != null) ? cvFont : SKIP;</b>
+<i>1827</i>&nbsp;        }
+<i>1828</i>&nbsp;
+<b class="fc"><i>1829</i>&nbsp;        CascadingStyle fontWeight = getStyle(styleable, property.concat(&quot;-weight&quot;), styleMap, states);</b>
+<b class="fc"><i>1830</i>&nbsp;        if (fontWeight != null) {</b>
+<i>1831</i>&nbsp;            // if we have a font shorthand and it is more specific than font-weight, then don&#39;t use the font-weight style
+<b class="nc"><i>1832</i>&nbsp;            if (fontShorthand != null &amp;&amp; fontShorthand.compareTo(fontWeight) &lt; 0) {</b>
+<b class="nc"><i>1833</i>&nbsp;                fontWeight = null;</b>
+<i>1834</i>&nbsp;            }
+<i>1835</i>&nbsp;
+<b class="fc"><i>1836</i>&nbsp;        } else if (origin != StyleOrigin.USER) {</b>
+<i>1837</i>&nbsp;            //
+<i>1838</i>&nbsp;            // If we don&#39;t have a font-weight, see if there is an inherited font-weight.
+<i>1839</i>&nbsp;            // If lookupInheritedFontProperty returns other than null, then we know that font-weight is closer (more specific)
+<i>1840</i>&nbsp;            // than the font shorthand
+<i>1841</i>&nbsp;            //
+<b class="fc"><i>1842</i>&nbsp;            fontWeight = lookupInheritedFontProperty(styleable, property.concat(&quot;-weight&quot;), styleMap, distance, fontShorthand);</b>
+<i>1843</i>&nbsp;        }
+<i>1844</i>&nbsp;
+<b class="fc"><i>1845</i>&nbsp;        if (fontWeight != null) {</b>
+<i>1846</i>&nbsp;
+<i>1847</i>&nbsp;            // The logic above ensures that, if fontWeight is not null, then it is either
+<i>1848</i>&nbsp;            // 1) a style matching this node and is more specific than the font shorthand or
+<i>1849</i>&nbsp;            // 2) an inherited style that is more specific than the font shorthand
+<i>1850</i>&nbsp;            // and, therefore, we can use the fontWeight style
+<i>1851</i>&nbsp;
+<b class="nc"><i>1852</i>&nbsp;            final CalculatedValue cv =</b>
+<b class="nc"><i>1853</i>&nbsp;                    calculateValue(fontWeight, styleable, dummyFontProperty,</b>
+<i>1854</i>&nbsp;                            styleMap, states, styleable, null);
+<i>1855</i>&nbsp;
+<b class="nc"><i>1856</i>&nbsp;            if (cv.getValue() instanceof FontWeight) {</b>
+<b class="nc"><i>1857</i>&nbsp;                if (origin == null || origin.compareTo(fontWeight.getOrigin()) &lt;= 0) {</b>
+<b class="nc"><i>1858</i>&nbsp;                    origin = cv.getOrigin();</b>
+<i>1859</i>&nbsp;                }
+<b class="nc"><i>1860</i>&nbsp;                weight = (FontWeight)cv.getValue();</b>
+<b class="nc"><i>1861</i>&nbsp;                foundStyle = true;</b>
+<i>1862</i>&nbsp;            }
+<i>1863</i>&nbsp;        }
+<i>1864</i>&nbsp;
+<i>1865</i>&nbsp;
+<b class="fc"><i>1866</i>&nbsp;        CascadingStyle fontStyle = getStyle(styleable, property.concat(&quot;-style&quot;), styleMap, states);</b>
+<b class="fc"><i>1867</i>&nbsp;        if (fontStyle != null) {</b>
+<i>1868</i>&nbsp;            // if we have a font shorthand and it is more specific than font-style, then don&#39;t use the font-style style
+<b class="nc"><i>1869</i>&nbsp;            if (fontShorthand != null &amp;&amp; fontShorthand.compareTo(fontStyle) &lt; 0) {</b>
+<b class="nc"><i>1870</i>&nbsp;                fontStyle = null;</b>
+<i>1871</i>&nbsp;            }
+<i>1872</i>&nbsp;
+<b class="fc"><i>1873</i>&nbsp;        } else if (origin != StyleOrigin.USER) {</b>
+<i>1874</i>&nbsp;            //
+<i>1875</i>&nbsp;            // If we don&#39;t have a font-style, see if there is an inherited font-style.
+<i>1876</i>&nbsp;            // If lookupInheritedFontProperty returns other than null, then we know that font-style is closer (more specific)
+<i>1877</i>&nbsp;            // than the font shorthand
+<i>1878</i>&nbsp;            //
+<b class="fc"><i>1879</i>&nbsp;            fontStyle = lookupInheritedFontProperty(styleable, property.concat(&quot;-style&quot;), styleMap, distance, fontShorthand);</b>
+<i>1880</i>&nbsp;        }
+<i>1881</i>&nbsp;
+<b class="fc"><i>1882</i>&nbsp;        if (fontStyle != null) {</b>
+<i>1883</i>&nbsp;
+<i>1884</i>&nbsp;            // The logic above ensures that, if fontStyle is not null, then it is either
+<i>1885</i>&nbsp;            // 1) a style matching this node and is more specific than the font shorthand or
+<i>1886</i>&nbsp;            // 2) an inherited style that is more specific than the font shorthand
+<i>1887</i>&nbsp;            // and, therefore, we can use the fontStyle style
+<i>1888</i>&nbsp;
+<b class="nc"><i>1889</i>&nbsp;            final CalculatedValue cv =</b>
+<b class="nc"><i>1890</i>&nbsp;                    calculateValue(fontStyle, styleable, dummyFontProperty,</b>
+<i>1891</i>&nbsp;                            styleMap, states, styleable, null);
+<i>1892</i>&nbsp;
+<b class="nc"><i>1893</i>&nbsp;            if (cv.getValue() instanceof FontPosture) {</b>
+<b class="nc"><i>1894</i>&nbsp;                if (origin == null || origin.compareTo(fontStyle.getOrigin()) &lt;= 0) {</b>
+<b class="nc"><i>1895</i>&nbsp;                    origin = cv.getOrigin();</b>
+<i>1896</i>&nbsp;                }
+<b class="nc"><i>1897</i>&nbsp;                posture = (FontPosture)cv.getValue();</b>
+<b class="nc"><i>1898</i>&nbsp;                foundStyle = true;</b>
+<i>1899</i>&nbsp;            }
+<i>1900</i>&nbsp;
+<i>1901</i>&nbsp;        }
+<i>1902</i>&nbsp;
+<b class="fc"><i>1903</i>&nbsp;        CascadingStyle fontFamily = getStyle(styleable, property.concat(&quot;-family&quot;), styleMap, states);</b>
+<b class="fc"><i>1904</i>&nbsp;        if (fontFamily != null) {</b>
+<i>1905</i>&nbsp;            // if we have a font shorthand and it is more specific than font-family, then don&#39;t use the font-family style
+<b class="nc"><i>1906</i>&nbsp;            if (fontShorthand != null &amp;&amp; fontShorthand.compareTo(fontFamily) &lt; 0) {</b>
+<b class="nc"><i>1907</i>&nbsp;                fontFamily = null;</b>
+<i>1908</i>&nbsp;            }
+<i>1909</i>&nbsp;
+<b class="fc"><i>1910</i>&nbsp;        } else if (origin != StyleOrigin.USER) {</b>
+<i>1911</i>&nbsp;            //
+<i>1912</i>&nbsp;            // If we don&#39;t have a font-family, see if there is an inherited font-family.
+<i>1913</i>&nbsp;            // If lookupInheritedFontProperty returns other than null, then we know that font-family is closer (more specific)
+<i>1914</i>&nbsp;            // than the font shorthand
+<i>1915</i>&nbsp;            //
+<b class="fc"><i>1916</i>&nbsp;            fontFamily = lookupInheritedFontProperty(styleable, property.concat(&quot;-family&quot;), styleMap, distance, fontShorthand);</b>
+<i>1917</i>&nbsp;        }
+<i>1918</i>&nbsp;
+<b class="fc"><i>1919</i>&nbsp;        if (fontFamily != null) {</b>
+<i>1920</i>&nbsp;
+<i>1921</i>&nbsp;            // The logic above ensures that, if fontFamily is not null, then it is either
+<i>1922</i>&nbsp;            // 1) a style matching this node and is more specific than the font shorthand or
+<i>1923</i>&nbsp;            // 2) an inherited style that is more specific than the font shorthand
+<i>1924</i>&nbsp;            // and, therefore, we can use the fontFamily style
+<i>1925</i>&nbsp;
+<b class="nc"><i>1926</i>&nbsp;            final CalculatedValue cv =</b>
+<b class="nc"><i>1927</i>&nbsp;                    calculateValue(fontFamily, styleable, dummyFontProperty,</b>
+<i>1928</i>&nbsp;                            styleMap, states, styleable, null);
+<i>1929</i>&nbsp;
+<b class="nc"><i>1930</i>&nbsp;            if (cv.getValue() instanceof String) {</b>
+<b class="nc"><i>1931</i>&nbsp;                if (origin == null || origin.compareTo(fontFamily.getOrigin()) &lt;= 0) {</b>
+<b class="nc"><i>1932</i>&nbsp;                    origin = cv.getOrigin();</b>
+<i>1933</i>&nbsp;                }
+<b class="nc"><i>1934</i>&nbsp;                family = (String)cv.getValue();</b>
+<b class="nc"><i>1935</i>&nbsp;                foundStyle = true;</b>
+<i>1936</i>&nbsp;            }
+<i>1937</i>&nbsp;
+<i>1938</i>&nbsp;        }
+<i>1939</i>&nbsp;
+<b class="fc"><i>1940</i>&nbsp;        if (foundStyle) {</b>
+<i>1941</i>&nbsp;
+<b class="nc"><i>1942</i>&nbsp;            Font font = cvFont != null ? (Font)cvFont.getValue() : Font.getDefault();</b>
+<b class="nc"><i>1943</i>&nbsp;            Font derivedFont = deriveFont(font, family, weight, posture, size);</b>
+<b class="nc"><i>1944</i>&nbsp;            return new CalculatedValue(derivedFont,origin,false);</b>
+<i>1945</i>&nbsp;
+<i>1946</i>&nbsp;        }
+<i>1947</i>&nbsp;
+<b class="fc"><i>1948</i>&nbsp;        return SKIP;</b>
+<i>1949</i>&nbsp;    }
+<i>1950</i>&nbsp;
+<i>1951</i>&nbsp;    private CascadingStyle lookupInheritedFontProperty(
+<i>1952</i>&nbsp;            final Styleable styleable,
+<i>1953</i>&nbsp;            final String property,
+<i>1954</i>&nbsp;            final StyleMap styleMap,
+<i>1955</i>&nbsp;            final int distance,
+<i>1956</i>&nbsp;            CascadingStyle fontShorthand) {
+<i>1957</i>&nbsp;
+<b class="fc"><i>1958</i>&nbsp;        Styleable parent = styleable != null ? styleable.getStyleableParent() : null;</b>
+<i>1959</i>&nbsp;
+<b class="fc"><i>1960</i>&nbsp;        int nlooks = distance;</b>
+<b class="fc"><i>1961</i>&nbsp;        while (parent != null &amp;&amp; nlooks &gt; 0) {</b>
+<i>1962</i>&nbsp;
+<b class="fc"><i>1963</i>&nbsp;            CssStyleHelper parentStyleHelper = parent instanceof Node ? ((Node)parent).styleHelper : null;</b>
+<b class="fc"><i>1964</i>&nbsp;            if (parentStyleHelper != null) {</b>
+<i>1965</i>&nbsp;
+<b class="fc"><i>1966</i>&nbsp;                nlooks -= 1;</b>
+<i>1967</i>&nbsp;
+<b class="fc"><i>1968</i>&nbsp;                StyleMap parentStyleMap = parentStyleHelper.getStyleMap((parent));</b>
+<b class="fc"><i>1969</i>&nbsp;                Set&lt;PseudoClass&gt; transitionStates = ((Node)parent).pseudoClassStates;</b>
+<b class="fc"><i>1970</i>&nbsp;                CascadingStyle cascadingStyle = parentStyleHelper.getStyle(parent, property, parentStyleMap, transitionStates);</b>
+<i>1971</i>&nbsp;
+<b class="fc"><i>1972</i>&nbsp;                if (cascadingStyle != null) {</b>
+<i>1973</i>&nbsp;
+<i>1974</i>&nbsp;                    // If we are closer to the node than the font shorthand, then font shorthand doesn&#39;t matter.
+<i>1975</i>&nbsp;                    // If the font shorthand and this style are the same distance, then we need to compare.
+<b class="nc"><i>1976</i>&nbsp;                    if (fontShorthand != null &amp;&amp; nlooks == 0) {</b>
+<b class="nc"><i>1977</i>&nbsp;                        if (fontShorthand.compareTo(cascadingStyle) &lt; 0) {</b>
+<b class="nc"><i>1978</i>&nbsp;                            return null;</b>
+<i>1979</i>&nbsp;                        }
+<i>1980</i>&nbsp;                    }
+<i>1981</i>&nbsp;
+<b class="nc"><i>1982</i>&nbsp;                    final ParsedValue cssValue = cascadingStyle.getParsedValue();</b>
+<i>1983</i>&nbsp;
+<b class="nc"><i>1984</i>&nbsp;                    if (&quot;inherit&quot;.equals(cssValue.getValue()) == false) {</b>
+<b class="nc"><i>1985</i>&nbsp;                        return cascadingStyle;</b>
+<i>1986</i>&nbsp;                    }
+<i>1987</i>&nbsp;                }
+<i>1988</i>&nbsp;
+<i>1989</i>&nbsp;            }
+<i>1990</i>&nbsp;
+<b class="fc"><i>1991</i>&nbsp;            parent = parent.getStyleableParent();</b>
+<i>1992</i>&nbsp;
+<b class="fc"><i>1993</i>&nbsp;        }</b>
+<i>1994</i>&nbsp;
+<b class="fc"><i>1995</i>&nbsp;        return null;</b>
+<i>1996</i>&nbsp;    }
+<i>1997</i>&nbsp;
+<i>1998</i>&nbsp;
+<i>1999</i>&nbsp;    /**
+<i>2000</i>&nbsp;     * Called from Node NodeHelper.getMatchingStyles
+<i>2001</i>&nbsp;     * @param styleable
+<i>2002</i>&nbsp;     * @param styleableProperty
+<i>2003</i>&nbsp;     * @return
+<i>2004</i>&nbsp;     */
+<i>2005</i>&nbsp;    static List&lt;Style&gt; getMatchingStyles(final Styleable styleable, final CssMetaData styleableProperty) {
+<i>2006</i>&nbsp;
+<b class="nc"><i>2007</i>&nbsp;        if (!(styleable instanceof Node)) return Collections.&lt;Style&gt;emptyList();</b>
+<i>2008</i>&nbsp;
+<b class="nc"><i>2009</i>&nbsp;        Node node = (Node)styleable;</b>
+<b class="nc"><i>2010</i>&nbsp;        final CssStyleHelper helper = (node.styleHelper != null) ? node.styleHelper : createStyleHelper(node);</b>
+<i>2011</i>&nbsp;
+<b class="nc"><i>2012</i>&nbsp;        if (helper != null) {</b>
+<b class="nc"><i>2013</i>&nbsp;            return helper.getMatchingStyles(node, styleableProperty, false);</b>
+<i>2014</i>&nbsp;        }
+<i>2015</i>&nbsp;        else {
+<b class="nc"><i>2016</i>&nbsp;            return Collections.&lt;Style&gt;emptyList();</b>
+<i>2017</i>&nbsp;        }
+<i>2018</i>&nbsp;    }
+<i>2019</i>&nbsp;
+<i>2020</i>&nbsp;    static Map&lt;StyleableProperty&lt;?&gt;, List&lt;Style&gt;&gt; getMatchingStyles(Map&lt;StyleableProperty&lt;?&gt;, List&lt;Style&gt;&gt; map, final Node node) {
+<i>2021</i>&nbsp;
+<b class="nc"><i>2022</i>&nbsp;        final CssStyleHelper helper = (node.styleHelper != null) ? node.styleHelper : createStyleHelper(node);</b>
+<b class="nc"><i>2023</i>&nbsp;        if (helper != null) {</b>
+<b class="nc"><i>2024</i>&nbsp;            if (map == null) map = new HashMap&lt;&gt;();</b>
+<b class="nc"><i>2025</i>&nbsp;            for (CssMetaData metaData : node.getCssMetaData()) {</b>
+<b class="nc"><i>2026</i>&nbsp;                List&lt;Style&gt; styleList = helper.getMatchingStyles(node, metaData, true);</b>
+<b class="nc"><i>2027</i>&nbsp;                if (styleList != null &amp;&amp; !styleList.isEmpty()) {</b>
+<b class="nc"><i>2028</i>&nbsp;                    StyleableProperty prop = metaData.getStyleableProperty(node);</b>
+<b class="nc"><i>2029</i>&nbsp;                    map.put(prop, styleList);</b>
+<i>2030</i>&nbsp;                }
+<b class="nc"><i>2031</i>&nbsp;            }</b>
+<i>2032</i>&nbsp;        }
+<i>2033</i>&nbsp;
+<b class="nc"><i>2034</i>&nbsp;        if (node instanceof Parent) {</b>
+<b class="nc"><i>2035</i>&nbsp;            for (Node child : ((Parent)node).getChildren()) {</b>
+<b class="nc"><i>2036</i>&nbsp;                map = getMatchingStyles(map, child);</b>
+<b class="nc"><i>2037</i>&nbsp;            }</b>
+<i>2038</i>&nbsp;        }
+<i>2039</i>&nbsp;
+<b class="nc"><i>2040</i>&nbsp;        return map;</b>
+<i>2041</i>&nbsp;    }
+<i>2042</i>&nbsp;
+<i>2043</i>&nbsp;    private List&lt;Style&gt; getMatchingStyles(final Styleable node, final CssMetaData styleableProperty, boolean matchState) {
+<i>2044</i>&nbsp;
+<b class="nc"><i>2045</i>&nbsp;        final List&lt;CascadingStyle&gt; styleList = new ArrayList&lt;&gt;();</b>
+<i>2046</i>&nbsp;
+<b class="nc"><i>2047</i>&nbsp;        getMatchingStyles(node, styleableProperty, styleList, matchState);</b>
+<i>2048</i>&nbsp;
+<b class="nc"><i>2049</i>&nbsp;        List&lt;CssMetaData&lt;? extends Styleable, ?&gt;&gt; subProperties = styleableProperty.getSubProperties();</b>
+<b class="nc"><i>2050</i>&nbsp;        if (subProperties != null) {</b>
+<b class="nc"><i>2051</i>&nbsp;            for (int n=0,nMax=subProperties.size(); n&lt;nMax; n++) {</b>
+<b class="nc"><i>2052</i>&nbsp;                final CssMetaData subProperty = subProperties.get(n);</b>
+<b class="nc"><i>2053</i>&nbsp;                getMatchingStyles(node, subProperty, styleList, matchState);</b>
+<i>2054</i>&nbsp;            }
+<i>2055</i>&nbsp;        }
+<i>2056</i>&nbsp;
+<b class="nc"><i>2057</i>&nbsp;        Collections.sort(styleList);</b>
+<i>2058</i>&nbsp;
+<b class="nc"><i>2059</i>&nbsp;        final List&lt;Style&gt; matchingStyles = new ArrayList&lt;&gt;(styleList.size());</b>
+<b class="nc"><i>2060</i>&nbsp;        for (int n=0,nMax=styleList.size(); n&lt;nMax; n++) {</b>
+<b class="nc"><i>2061</i>&nbsp;            final Style style = styleList.get(n).getStyle();</b>
+<b class="nc"><i>2062</i>&nbsp;            if (!matchingStyles.contains(style)) matchingStyles.add(style);</b>
+<i>2063</i>&nbsp;        }
+<i>2064</i>&nbsp;
+<b class="nc"><i>2065</i>&nbsp;        return matchingStyles;</b>
+<i>2066</i>&nbsp;    }
+<i>2067</i>&nbsp;
+<i>2068</i>&nbsp;    private void getMatchingStyles(final Styleable node, final CssMetaData styleableProperty, final List&lt;CascadingStyle&gt; styleList, boolean matchState) {
+<i>2069</i>&nbsp;
+<b class="nc"><i>2070</i>&nbsp;        if (node != null) {</b>
+<i>2071</i>&nbsp;
+<b class="nc"><i>2072</i>&nbsp;            String property = styleableProperty.getProperty();</b>
+<b class="nc"><i>2073</i>&nbsp;            Node _node = node instanceof Node ? (Node)node : null;</b>
+<b class="nc"><i>2074</i>&nbsp;            final StyleMap smap = getStyleMap(_node);</b>
+<b class="nc"><i>2075</i>&nbsp;            if (smap == null) return;</b>
+<i>2076</i>&nbsp;
+<b class="nc"><i>2077</i>&nbsp;            if (matchState) {</b>
+<b class="nc"><i>2078</i>&nbsp;                CascadingStyle cascadingStyle = getStyle(node, styleableProperty.getProperty(), smap, _node.pseudoClassStates);</b>
+<b class="nc"><i>2079</i>&nbsp;                if (cascadingStyle != null) {</b>
+<b class="nc"><i>2080</i>&nbsp;                    styleList.add(cascadingStyle);</b>
+<b class="nc"><i>2081</i>&nbsp;                    final ParsedValue parsedValue = cascadingStyle.getParsedValue();</b>
+<b class="nc"><i>2082</i>&nbsp;                    getMatchingLookupStyles(node, parsedValue, styleList, matchState);</b>
+<i>2083</i>&nbsp;                }
+<b class="nc"><i>2084</i>&nbsp;            }  else {</b>
+<i>2085</i>&nbsp;
+<b class="nc"><i>2086</i>&nbsp;                Map&lt;String, List&lt;CascadingStyle&gt;&gt; cascadingStyleMap = smap.getCascadingStyles();</b>
+<i>2087</i>&nbsp;                // StyleMap.getCascadingStyles() does not return null
+<b class="nc"><i>2088</i>&nbsp;                List&lt;CascadingStyle&gt; styles = cascadingStyleMap.get(property);</b>
+<i>2089</i>&nbsp;
+<b class="nc"><i>2090</i>&nbsp;                if (styles != null) {</b>
+<b class="nc"><i>2091</i>&nbsp;                    styleList.addAll(styles);</b>
+<b class="nc"><i>2092</i>&nbsp;                    for (int n=0, nMax=styles.size(); n&lt;nMax; n++) {</b>
+<b class="nc"><i>2093</i>&nbsp;                        final CascadingStyle style = styles.get(n);</b>
+<b class="nc"><i>2094</i>&nbsp;                        final ParsedValue parsedValue = style.getParsedValue();</b>
+<b class="nc"><i>2095</i>&nbsp;                        getMatchingLookupStyles(node, parsedValue, styleList, matchState);</b>
+<i>2096</i>&nbsp;                    }
+<i>2097</i>&nbsp;                }
+<i>2098</i>&nbsp;            }
+<i>2099</i>&nbsp;
+<b class="nc"><i>2100</i>&nbsp;            if (styleableProperty.isInherits()) {</b>
+<b class="nc"><i>2101</i>&nbsp;                Styleable parent = node.getStyleableParent();</b>
+<b class="nc"><i>2102</i>&nbsp;                while (parent != null) {</b>
+<b class="nc"><i>2103</i>&nbsp;                    CssStyleHelper parentHelper = parent instanceof Node</b>
+<b class="nc"><i>2104</i>&nbsp;                            ? ((Node)parent).styleHelper</b>
+<b class="nc"><i>2105</i>&nbsp;                            : null;</b>
+<b class="nc"><i>2106</i>&nbsp;                    if (parentHelper != null) {</b>
+<b class="nc"><i>2107</i>&nbsp;                        parentHelper.getMatchingStyles(parent, styleableProperty, styleList, matchState);</b>
+<i>2108</i>&nbsp;                    }
+<b class="nc"><i>2109</i>&nbsp;                    parent = parent.getStyleableParent();</b>
+<b class="nc"><i>2110</i>&nbsp;                }</b>
+<i>2111</i>&nbsp;            }
+<i>2112</i>&nbsp;
+<i>2113</i>&nbsp;        }
+<i>2114</i>&nbsp;
+<b class="nc"><i>2115</i>&nbsp;    }</b>
+<i>2116</i>&nbsp;
+<i>2117</i>&nbsp;    // Pretty much a duplicate of resolveLookups, but without the state
+<i>2118</i>&nbsp;    private void getMatchingLookupStyles(final Styleable node, final ParsedValue parsedValue, final List&lt;CascadingStyle&gt; styleList, boolean matchState) {
+<i>2119</i>&nbsp;
+<b class="nc"><i>2120</i>&nbsp;        if (parsedValue.isLookup()) {</b>
+<i>2121</i>&nbsp;
+<b class="nc"><i>2122</i>&nbsp;            Object value = parsedValue.getValue();</b>
+<i>2123</i>&nbsp;
+<b class="nc"><i>2124</i>&nbsp;            if (value instanceof String) {</b>
+<i>2125</i>&nbsp;
+<b class="nc"><i>2126</i>&nbsp;                final String property = (String)value;</b>
+<i>2127</i>&nbsp;                // gather up any and all styles that contain this value as a property
+<b class="nc"><i>2128</i>&nbsp;                Styleable parent = node;</b>
+<i>2129</i>&nbsp;                do {
+<i>2130</i>&nbsp;
+<b class="nc"><i>2131</i>&nbsp;                    final Node _parent = parent instanceof Node ? (Node)parent : null;</b>
+<b class="nc"><i>2132</i>&nbsp;                    final CssStyleHelper helper = _parent != null</b>
+<b class="nc"><i>2133</i>&nbsp;                            ? _parent.styleHelper</b>
+<b class="nc"><i>2134</i>&nbsp;                            : null;</b>
+<b class="nc"><i>2135</i>&nbsp;                    if (helper != null) {</b>
+<i>2136</i>&nbsp;
+<b class="nc"><i>2137</i>&nbsp;                        StyleMap styleMap = helper.getStyleMap(parent);</b>
+<b class="nc"><i>2138</i>&nbsp;                        if (styleMap == null || styleMap.isEmpty()) continue;</b>
+<i>2139</i>&nbsp;
+<b class="nc"><i>2140</i>&nbsp;                        final int start = styleList.size();</b>
+<i>2141</i>&nbsp;
+<b class="nc"><i>2142</i>&nbsp;                        if (matchState) {</b>
+<b class="nc"><i>2143</i>&nbsp;                            CascadingStyle cascadingStyle = helper.resolveRef(_parent, property, styleMap, _parent.pseudoClassStates);</b>
+<b class="nc"><i>2144</i>&nbsp;                            if (cascadingStyle != null) {</b>
+<b class="nc"><i>2145</i>&nbsp;                                styleList.add(cascadingStyle);</b>
+<i>2146</i>&nbsp;                            }
+<b class="nc"><i>2147</i>&nbsp;                        } else {</b>
+<b class="nc"><i>2148</i>&nbsp;                            final Map&lt;String, List&lt;CascadingStyle&gt;&gt; smap = styleMap.getCascadingStyles();</b>
+<i>2149</i>&nbsp;                            // getCascadingStyles does not return null
+<b class="nc"><i>2150</i>&nbsp;                            List&lt;CascadingStyle&gt; styles = smap.get(property);</b>
+<i>2151</i>&nbsp;
+<b class="nc"><i>2152</i>&nbsp;                            if (styles != null) {</b>
+<b class="nc"><i>2153</i>&nbsp;                                styleList.addAll(styles);</b>
+<i>2154</i>&nbsp;                            }
+<i>2155</i>&nbsp;
+<i>2156</i>&nbsp;                        }
+<i>2157</i>&nbsp;
+<b class="nc"><i>2158</i>&nbsp;                        final int end = styleList.size();</b>
+<i>2159</i>&nbsp;
+<b class="nc"><i>2160</i>&nbsp;                        for (int index=start; index&lt;end; index++) {</b>
+<b class="nc"><i>2161</i>&nbsp;                            final CascadingStyle style = styleList.get(index);</b>
+<b class="nc"><i>2162</i>&nbsp;                            getMatchingLookupStyles(parent, style.getParsedValue(), styleList, matchState);</b>
+<i>2163</i>&nbsp;                        }
+<i>2164</i>&nbsp;                    }
+<i>2165</i>&nbsp;
+<b class="nc"><i>2166</i>&nbsp;                } while ((parent = parent.getStyleableParent()) != null);</b>
+<i>2167</i>&nbsp;
+<i>2168</i>&nbsp;            }
+<i>2169</i>&nbsp;        }
+<i>2170</i>&nbsp;
+<i>2171</i>&nbsp;        // If the value doesn&#39;t contain any values that need lookup, then bail
+<b class="nc"><i>2172</i>&nbsp;        if (!parsedValue.isContainsLookups()) {</b>
+<b class="nc"><i>2173</i>&nbsp;            return;</b>
+<i>2174</i>&nbsp;        }
+<i>2175</i>&nbsp;
+<b class="nc"><i>2176</i>&nbsp;        final Object val = parsedValue.getValue();</b>
+<b class="nc"><i>2177</i>&nbsp;        if (val instanceof ParsedValue[][]) {</b>
+<i>2178</i>&nbsp;        // If ParsedValue is a layered sequence of values, resolve the lookups for each.
+<b class="nc"><i>2179</i>&nbsp;            final ParsedValue[][] layers = (ParsedValue[][])val;</b>
+<b class="nc"><i>2180</i>&nbsp;            for (int l=0; l&lt;layers.length; l++) {</b>
+<b class="nc"><i>2181</i>&nbsp;                for (int ll=0; ll&lt;layers[l].length; ll++) {</b>
+<b class="nc"><i>2182</i>&nbsp;                    if (layers[l][ll] == null) continue;</b>
+<b class="nc"><i>2183</i>&nbsp;                        getMatchingLookupStyles(node, layers[l][ll], styleList, matchState);</b>
+<i>2184</i>&nbsp;                }
+<i>2185</i>&nbsp;            }
+<i>2186</i>&nbsp;
+<b class="nc"><i>2187</i>&nbsp;        } else if (val instanceof ParsedValue[]) {</b>
+<i>2188</i>&nbsp;        // If ParsedValue is a sequence of values, resolve the lookups for each.
+<b class="nc"><i>2189</i>&nbsp;            final ParsedValue[] layer = (ParsedValue[])val;</b>
+<b class="nc"><i>2190</i>&nbsp;            for (int l=0; l&lt;layer.length; l++) {</b>
+<b class="nc"><i>2191</i>&nbsp;                if (layer[l] == null) continue;</b>
+<b class="nc"><i>2192</i>&nbsp;                    getMatchingLookupStyles(node, layer[l], styleList, matchState);</b>
+<i>2193</i>&nbsp;            }
+<i>2194</i>&nbsp;        }
+<i>2195</i>&nbsp;
+<b class="nc"><i>2196</i>&nbsp;    }</b>
+<i>2197</i>&nbsp;
+<i>2198</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2017-12-04 21:49</div>
+</div>
+</body>
+</html>

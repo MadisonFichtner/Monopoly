@@ -1,0 +1,170 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: CornerRadiiConverter</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.javafx.scene.layout.region</a> ]
+</div>
+
+<h1>Coverage Summary for Class: CornerRadiiConverter (com.sun.javafx.scene.layout.region)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">CornerRadiiConverter</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (4/ 4)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (25/ 25)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright (c) 2011, 2016, Oracle and/or its affiliates. All rights reserved.
+<i>3</i>&nbsp; * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+<i>4</i>&nbsp; *
+<i>5</i>&nbsp; *
+<i>6</i>&nbsp; *
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; *
+<i>11</i>&nbsp; *
+<i>12</i>&nbsp; *
+<i>13</i>&nbsp; *
+<i>14</i>&nbsp; *
+<i>15</i>&nbsp; *
+<i>16</i>&nbsp; *
+<i>17</i>&nbsp; *
+<i>18</i>&nbsp; *
+<i>19</i>&nbsp; *
+<i>20</i>&nbsp; *
+<i>21</i>&nbsp; *
+<i>22</i>&nbsp; *
+<i>23</i>&nbsp; *
+<i>24</i>&nbsp; */
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;package com.sun.javafx.scene.layout.region;
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;import javafx.css.Size;
+<i>29</i>&nbsp;import javafx.css.SizeUnits;
+<i>30</i>&nbsp;import javafx.css.ParsedValue;
+<i>31</i>&nbsp;import javafx.css.StyleConverter;
+<i>32</i>&nbsp;import javafx.scene.layout.CornerRadii;
+<i>33</i>&nbsp;import javafx.scene.text.Font;
+<i>34</i>&nbsp;
+<i>35</i>&nbsp;/**
+<i>36</i>&nbsp; * Convert parsed value of &amp;lt;size&amp;gt;{1,4} [ &#39;/&#39; &amp;lt;size&amp;gt;{1,4}]? [&#39;,&#39; &amp;lt;size&amp;gt;{1,4} [ &#39;/&#39; &amp;lt;size&amp;gt;{1,4}]?]? to CornerRadii
+<i>37</i>&nbsp; */
+<i>38</i>&nbsp;public final class CornerRadiiConverter extends StyleConverter&lt;ParsedValue&lt;ParsedValue&lt;?,Size&gt;[][],CornerRadii&gt;[], CornerRadii[]&gt; {
+<i>39</i>&nbsp;
+<b class="fc"><i>40</i>&nbsp;    private static final CornerRadiiConverter INSTANCE =</b>
+<i>41</i>&nbsp;            new CornerRadiiConverter();
+<i>42</i>&nbsp;
+<i>43</i>&nbsp;    public static CornerRadiiConverter getInstance() {
+<b class="fc"><i>44</i>&nbsp;        return INSTANCE;</b>
+<i>45</i>&nbsp;    }
+<i>46</i>&nbsp;
+<i>47</i>&nbsp;    // Disallow instantiation
+<b class="fc"><i>48</i>&nbsp;    private CornerRadiiConverter() { }</b>
+<i>49</i>&nbsp;
+<i>50</i>&nbsp;
+<i>51</i>&nbsp;    @Override
+<i>52</i>&nbsp;    public CornerRadii[] convert(ParsedValue&lt;ParsedValue&lt;ParsedValue&lt;?,Size&gt;[][], CornerRadii&gt;[], CornerRadii[]&gt; value, Font font) {
+<i>53</i>&nbsp;
+<b class="fc"><i>54</i>&nbsp;        ParsedValue&lt;ParsedValue&lt;?,Size&gt;[][], CornerRadii&gt;[] values = value.getValue();</b>
+<b class="fc"><i>55</i>&nbsp;        CornerRadii[] cornerRadiiValues = new CornerRadii[values.length];</b>
+<i>56</i>&nbsp;
+<i>57</i>&nbsp;        // parser gives us 2x4 array normalized to the rules in http://www.w3.org/TR/css3-background/#the-border-radius
+<b class="fc"><i>58</i>&nbsp;        for(int n=0; n&lt;values.length; n++) {</b>
+<i>59</i>&nbsp;
+<b class="fc"><i>60</i>&nbsp;            ParsedValue&lt;?,Size&gt;[][] sizes = values[n].getValue();</b>
+<i>61</i>&nbsp;
+<b class="fc"><i>62</i>&nbsp;            Size topLeftHorizontalRadius = sizes[0][0].convert(font);</b>
+<b class="fc"><i>63</i>&nbsp;            Size topRightHorizontalRadius = sizes[0][1].convert(font);</b>
+<b class="fc"><i>64</i>&nbsp;            Size bottomRightHorizontalRadius = sizes[0][2].convert(font);</b>
+<b class="fc"><i>65</i>&nbsp;            Size bottomLeftHorizontalRadius = sizes[0][3].convert(font);</b>
+<b class="fc"><i>66</i>&nbsp;            Size topLeftVerticalRadius = sizes[1][0].convert(font);</b>
+<b class="fc"><i>67</i>&nbsp;            Size topRightVerticalRadius = sizes[1][1].convert(font);</b>
+<b class="fc"><i>68</i>&nbsp;            Size bottomRightVerticalRadius = sizes[1][2].convert(font);</b>
+<b class="fc"><i>69</i>&nbsp;            Size bottomLeftVerticalRadius = sizes[1][3].convert(font);</b>
+<i>70</i>&nbsp;
+<b class="fc"><i>71</i>&nbsp;            cornerRadiiValues[n] = new CornerRadii(</b>
+<b class="fc"><i>72</i>&nbsp;                    topLeftHorizontalRadius.pixels(font),     topLeftVerticalRadius.pixels(font),</b>
+<b class="fc"><i>73</i>&nbsp;                    topRightVerticalRadius.pixels(font),      topRightHorizontalRadius.pixels(font),</b>
+<b class="fc"><i>74</i>&nbsp;                    bottomRightHorizontalRadius.pixels(font), bottomRightVerticalRadius.pixels(font),</b>
+<b class="fc"><i>75</i>&nbsp;                    bottomLeftVerticalRadius.pixels(font),    bottomLeftHorizontalRadius.pixels(font),</b>
+<b class="fc"><i>76</i>&nbsp;                    topLeftHorizontalRadius.getUnits()     == SizeUnits.PERCENT, topLeftVerticalRadius.getUnits()      == SizeUnits.PERCENT,</b>
+<b class="fc"><i>77</i>&nbsp;                    topRightVerticalRadius.getUnits()      == SizeUnits.PERCENT, topRightHorizontalRadius.getUnits()   == SizeUnits.PERCENT,</b>
+<b class="fc"><i>78</i>&nbsp;                    bottomRightHorizontalRadius.getUnits() == SizeUnits.PERCENT, bottomRightVerticalRadius.getUnits()  == SizeUnits.PERCENT,</b>
+<b class="fc"><i>79</i>&nbsp;                    bottomRightVerticalRadius.getUnits()   == SizeUnits.PERCENT, bottomLeftHorizontalRadius.getUnits() == SizeUnits.PERCENT</b>
+<i>80</i>&nbsp;            );
+<i>81</i>&nbsp;
+<i>82</i>&nbsp;        }
+<i>83</i>&nbsp;
+<b class="fc"><i>84</i>&nbsp;        return cornerRadiiValues;</b>
+<i>85</i>&nbsp;
+<i>86</i>&nbsp;    }
+<i>87</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2017-12-04 21:49</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,178 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: PrRenderer</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.scenario.effect.impl.prism</a> ]
+</div>
+
+<h1>Coverage Summary for Class: PrRenderer (com.sun.scenario.effect.impl.prism)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">PrRenderer</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (5/ 5)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    77.8%
+  </span>
+  <span class="absValue">
+    (21/ 27)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright (c) 2011, 2014, Oracle and/or its affiliates. All rights reserved.
+<i>3</i>&nbsp; * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+<i>4</i>&nbsp; *
+<i>5</i>&nbsp; *
+<i>6</i>&nbsp; *
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; *
+<i>11</i>&nbsp; *
+<i>12</i>&nbsp; *
+<i>13</i>&nbsp; *
+<i>14</i>&nbsp; *
+<i>15</i>&nbsp; *
+<i>16</i>&nbsp; *
+<i>17</i>&nbsp; *
+<i>18</i>&nbsp; *
+<i>19</i>&nbsp; *
+<i>20</i>&nbsp; *
+<i>21</i>&nbsp; *
+<i>22</i>&nbsp; *
+<i>23</i>&nbsp; *
+<i>24</i>&nbsp; */
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;package com.sun.scenario.effect.impl.prism;
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;import java.lang.reflect.Method;
+<i>29</i>&nbsp;import java.util.HashSet;
+<i>30</i>&nbsp;import java.util.Set;
+<i>31</i>&nbsp;import com.sun.glass.ui.Screen;
+<i>32</i>&nbsp;import com.sun.prism.GraphicsPipeline;
+<i>33</i>&nbsp;import com.sun.prism.GraphicsPipeline.ShaderModel;
+<i>34</i>&nbsp;import com.sun.prism.RTTexture;
+<i>35</i>&nbsp;import com.sun.scenario.effect.FilterContext;
+<i>36</i>&nbsp;import com.sun.scenario.effect.impl.Renderer;
+<i>37</i>&nbsp;
+<i>38</i>&nbsp;public abstract class PrRenderer extends Renderer {
+<i>39</i>&nbsp;
+<i>40</i>&nbsp;    /**
+<i>41</i>&nbsp;     * Maintain a list of peers that are implemented using Prism, so that
+<i>42</i>&nbsp;     * we can do a fast check to see whether the given peer name is an
+<i>43</i>&nbsp;     * intrinsic one instead of relying on reflection to do the check.
+<i>44</i>&nbsp;     */
+<i>45</i>&nbsp;    private static final Set&lt;String&gt; intrinsicPeerNames;
+<i>46</i>&nbsp;    static {
+<b class="fc"><i>47</i>&nbsp;        intrinsicPeerNames = new HashSet&lt;String&gt;(4);</b>
+<b class="fc"><i>48</i>&nbsp;        intrinsicPeerNames.add(&quot;Crop&quot;);</b>
+<b class="fc"><i>49</i>&nbsp;        intrinsicPeerNames.add(&quot;Flood&quot;);</b>
+<b class="fc"><i>50</i>&nbsp;        intrinsicPeerNames.add(&quot;Merge&quot;);</b>
+<b class="fc"><i>51</i>&nbsp;        intrinsicPeerNames.add(&quot;Reflection&quot;);</b>
+<b class="fc"><i>52</i>&nbsp;    }</b>
+<i>53</i>&nbsp;
+<i>54</i>&nbsp;    /**
+<i>55</i>&nbsp;     * Private constructor to prevent instantiation.
+<i>56</i>&nbsp;     */
+<b class="fc"><i>57</i>&nbsp;    protected PrRenderer() {</b>
+<b class="fc"><i>58</i>&nbsp;    }</b>
+<i>59</i>&nbsp;
+<i>60</i>&nbsp;    public abstract PrDrawable createDrawable(RTTexture rtt);
+<i>61</i>&nbsp;
+<i>62</i>&nbsp;    public static Renderer createRenderer(FilterContext fctx) {
+<b class="fc"><i>63</i>&nbsp;        Object ref = fctx.getReferent();</b>
+<b class="fc"><i>64</i>&nbsp;        if (!(ref instanceof Screen)) {</b>
+<b class="nc"><i>65</i>&nbsp;            return null;</b>
+<i>66</i>&nbsp;        }
+<i>67</i>&nbsp;        boolean isHW;
+<b class="fc"><i>68</i>&nbsp;        if (((PrFilterContext) fctx).isForceSoftware()) {</b>
+<b class="nc"><i>69</i>&nbsp;            isHW = false;</b>
+<i>70</i>&nbsp;        } else {
+<b class="fc"><i>71</i>&nbsp;            GraphicsPipeline pipe = GraphicsPipeline.getPipeline();</b>
+<b class="fc"><i>72</i>&nbsp;            if (pipe == null) {</b>
+<b class="nc"><i>73</i>&nbsp;                return null;</b>
+<i>74</i>&nbsp;            }
+<b class="fc"><i>75</i>&nbsp;            isHW = pipe.supportsShaderModel(ShaderModel.SM3);</b>
+<i>76</i>&nbsp;        }
+<b class="fc"><i>77</i>&nbsp;        return createRenderer(fctx, isHW);</b>
+<i>78</i>&nbsp;    }
+<i>79</i>&nbsp;
+<i>80</i>&nbsp;    private static PrRenderer createRenderer(FilterContext fctx, boolean isHW) {
+<b class="fc"><i>81</i>&nbsp;        String klassName = isHW ?</b>
+<b class="fc"><i>82</i>&nbsp;            Renderer.rootPkg + &quot;.impl.prism.ps.PPSRenderer&quot; :</b>
+<b class="nc"><i>83</i>&nbsp;            Renderer.rootPkg + &quot;.impl.prism.sw.PSWRenderer&quot;;</b>
+<i>84</i>&nbsp;        try {
+<b class="fc"><i>85</i>&nbsp;            Class klass = Class.forName(klassName);</b>
+<b class="fc"><i>86</i>&nbsp;            Method m = klass.getMethod(&quot;createRenderer&quot;, new Class[] { FilterContext.class });</b>
+<b class="fc"><i>87</i>&nbsp;            return (PrRenderer)m.invoke(null, new Object[] { fctx });</b>
+<b class="nc"><i>88</i>&nbsp;        } catch (Throwable e) {}</b>
+<b class="nc"><i>89</i>&nbsp;        return null;</b>
+<i>90</i>&nbsp;    }
+<i>91</i>&nbsp;
+<i>92</i>&nbsp;    public static boolean isIntrinsicPeer(String name) {
+<b class="fc"><i>93</i>&nbsp;        return intrinsicPeerNames.contains(name);</b>
+<i>94</i>&nbsp;    }
+<i>95</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2017-12-04 21:49</div>
+</div>
+</body>
+</html>

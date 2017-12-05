@@ -1,0 +1,778 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: MenuItem</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">javafx.scene.control</a> ]
+</div>
+
+<h1>Coverage Summary for Class: MenuItem (javafx.scene.control)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">MenuItem</td>
+<td class="coverageStat">
+  <span class="percent">
+    57.1%
+  </span>
+  <span class="absValue">
+    (32/ 56)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    51.8%
+  </span>
+  <span class="absValue">
+    (71/ 137)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">MenuItem$1</td>
+<td class="coverageStat">
+  <span class="percent">
+    50%
+  </span>
+  <span class="absValue">
+    (2/ 4)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    60%
+  </span>
+  <span class="absValue">
+    (3/ 5)
+  </span>
+</td>
+  </tr>
+  <tr>
+    <td class="name">MenuItem$2</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 4)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 5)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    53.1%
+  </span>
+  <span class="absValue">
+    (34/ 64)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    50.3%
+  </span>
+  <span class="absValue">
+    (74/ 147)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright (c) 2010, 2017, Oracle and/or its affiliates. All rights reserved.
+<i>3</i>&nbsp; * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+<i>4</i>&nbsp; *
+<i>5</i>&nbsp; *
+<i>6</i>&nbsp; *
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; *
+<i>11</i>&nbsp; *
+<i>12</i>&nbsp; *
+<i>13</i>&nbsp; *
+<i>14</i>&nbsp; *
+<i>15</i>&nbsp; *
+<i>16</i>&nbsp; *
+<i>17</i>&nbsp; *
+<i>18</i>&nbsp; *
+<i>19</i>&nbsp; *
+<i>20</i>&nbsp; *
+<i>21</i>&nbsp; *
+<i>22</i>&nbsp; *
+<i>23</i>&nbsp; *
+<i>24</i>&nbsp; */
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;package javafx.scene.control;
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;import com.sun.javafx.beans.IDProperty;
+<i>29</i>&nbsp;import javafx.collections.ObservableSet;
+<i>30</i>&nbsp;import javafx.css.PseudoClass;
+<i>31</i>&nbsp;import javafx.css.Styleable;
+<i>32</i>&nbsp;import javafx.css.CssMetaData;
+<i>33</i>&nbsp;import javafx.beans.property.BooleanProperty;
+<i>34</i>&nbsp;import javafx.beans.property.ObjectProperty;
+<i>35</i>&nbsp;import javafx.beans.property.ObjectPropertyBase;
+<i>36</i>&nbsp;import javafx.beans.property.SimpleBooleanProperty;
+<i>37</i>&nbsp;import javafx.beans.property.SimpleObjectProperty;
+<i>38</i>&nbsp;import javafx.beans.property.SimpleStringProperty;
+<i>39</i>&nbsp;import javafx.beans.property.StringProperty;
+<i>40</i>&nbsp;import javafx.collections.FXCollections;
+<i>41</i>&nbsp;import javafx.collections.ObservableList;
+<i>42</i>&nbsp;import javafx.event.ActionEvent;
+<i>43</i>&nbsp;import javafx.event.Event;
+<i>44</i>&nbsp;import javafx.event.EventDispatchChain;
+<i>45</i>&nbsp;import javafx.event.EventHandler;
+<i>46</i>&nbsp;import javafx.event.EventTarget;
+<i>47</i>&nbsp;import javafx.event.EventType;
+<i>48</i>&nbsp;import javafx.scene.Node;
+<i>49</i>&nbsp;import javafx.scene.input.KeyCombination;
+<i>50</i>&nbsp;
+<i>51</i>&nbsp;import com.sun.javafx.event.EventHandlerManager;
+<i>52</i>&nbsp;import com.sun.javafx.scene.control.ContextMenuContent;
+<i>53</i>&nbsp;import javafx.scene.control.skin.ContextMenuSkin;
+<i>54</i>&nbsp;import java.util.Collections;
+<i>55</i>&nbsp;import java.util.HashMap;
+<i>56</i>&nbsp;import java.util.List;
+<i>57</i>&nbsp;
+<i>58</i>&nbsp;import javafx.beans.property.ReadOnlyObjectProperty;
+<i>59</i>&nbsp;import javafx.beans.property.ReadOnlyObjectWrapper;
+<i>60</i>&nbsp;import javafx.collections.ObservableMap;
+<i>61</i>&nbsp;import javafx.scene.Parent;
+<i>62</i>&nbsp;
+<i>63</i>&nbsp;/**
+<i>64</i>&nbsp; * &lt;p&gt;
+<i>65</i>&nbsp; * MenuItem is intended to be used in conjunction with {@link Menu} to provide
+<i>66</i>&nbsp; * options to users. MenuItem serves as the base class for the bulk of JavaFX menus
+<i>67</i>&nbsp; * API.
+<i>68</i>&nbsp; * It has a display {@link #getText() text} property, as well as an optional {@link #getGraphic() graphic} node
+<i>69</i>&nbsp; * that can be set on it.
+<i>70</i>&nbsp; * The {@link #getAccelerator() accelerator} property enables accessing the
+<i>71</i>&nbsp; * associated action in one keystroke. Also, as with the {@link Button} control,
+<i>72</i>&nbsp; * by using the {@link #setOnAction} method, you can have an instance of MenuItem
+<i>73</i>&nbsp; * perform any action you wish.
+<i>74</i>&nbsp; * &lt;p&gt;
+<i>75</i>&nbsp; * &lt;b&gt;Note:&lt;/b&gt; Whilst any size of graphic can be inserted into a MenuItem, the most
+<i>76</i>&nbsp; * commonly used size in most applications is 16x16 pixels. This is
+<i>77</i>&nbsp; * the recommended graphic dimension to use if you&#39;re using the default style provided by
+<i>78</i>&nbsp; * JavaFX.
+<i>79</i>&nbsp; * &lt;p&gt;
+<i>80</i>&nbsp; * To create a MenuItem is simple:
+<i>81</i>&nbsp;&lt;pre&gt;&lt;code&gt;
+<i>82</i>&nbsp;MenuItem menuItem = new MenuItem(&quot;Open&quot;);
+<i>83</i>&nbsp;menuItem.setOnAction(new EventHandler&amp;lt;ActionEvent&amp;gt;() {
+<i>84</i>&nbsp;    &amp;#064;Override public void handle(ActionEvent e) {
+<i>85</i>&nbsp;        System.out.println(&quot;Opening Database Connection...&quot;);
+<i>86</i>&nbsp;    }
+<i>87</i>&nbsp;});
+<i>88</i>&nbsp;menuItem.setGraphic(new ImageView(new Image(&quot;flower.png&quot;)));
+<i>89</i>&nbsp;&lt;/code&gt;&lt;/pre&gt;
+<i>90</i>&nbsp; * &lt;p&gt;
+<i>91</i>&nbsp; * Refer to the {@link Menu} page to learn how to insert MenuItem into a menu
+<i>92</i>&nbsp; * instance. Briefly however, you can insert the MenuItem from the previous
+<i>93</i>&nbsp; * example into a Menu as such:
+<i>94</i>&nbsp;&lt;pre&gt;&lt;code&gt;
+<i>95</i>&nbsp;final Menu menu = new Menu(&quot;File&quot;);
+<i>96</i>&nbsp;menu.getItems().add(menuItem);
+<i>97</i>&nbsp;&lt;/code&gt;&lt;/pre&gt;
+<i>98</i>&nbsp; *
+<i>99</i>&nbsp; * @see Menu
+<i>100</i>&nbsp; * @since JavaFX 2.0
+<i>101</i>&nbsp; */
+<i>102</i>&nbsp;@IDProperty(&quot;id&quot;)
+<i>103</i>&nbsp;public class MenuItem implements EventTarget, Styleable {
+<i>104</i>&nbsp;
+<i>105</i>&nbsp;    /***************************************************************************
+<i>106</i>&nbsp;     *                                                                         *
+<i>107</i>&nbsp;     * Constructors                                                            *
+<i>108</i>&nbsp;     *                                                                         *
+<i>109</i>&nbsp;     **************************************************************************/
+<i>110</i>&nbsp;
+<i>111</i>&nbsp;    /**
+<i>112</i>&nbsp;     * Constructs a MenuItem with no display text.
+<i>113</i>&nbsp;     */
+<i>114</i>&nbsp;    public MenuItem() {
+<b class="fc"><i>115</i>&nbsp;        this(null,null);</b>
+<b class="fc"><i>116</i>&nbsp;    }</b>
+<i>117</i>&nbsp;
+<i>118</i>&nbsp;    /**
+<i>119</i>&nbsp;     * Constructs a MenuItem and sets the display text with the specified text
+<i>120</i>&nbsp;     * @param text the display text
+<i>121</i>&nbsp;     * @see #setText
+<i>122</i>&nbsp;     */
+<i>123</i>&nbsp;    public MenuItem(String text) {
+<b class="fc"><i>124</i>&nbsp;        this(text,null);</b>
+<b class="fc"><i>125</i>&nbsp;    }</b>
+<i>126</i>&nbsp;
+<i>127</i>&nbsp;    /**
+<i>128</i>&nbsp;     * Constructor s MenuItem and sets the display text with the specified text
+<i>129</i>&nbsp;     * and sets the graphic {@link Node} to the given node.
+<i>130</i>&nbsp;     * @param text the display text
+<i>131</i>&nbsp;     * @param graphic the graphic node
+<i>132</i>&nbsp;     * @see #setText
+<i>133</i>&nbsp;     * @see #setGraphic
+<i>134</i>&nbsp;     */
+<b class="fc"><i>135</i>&nbsp;    public MenuItem(String text, Node graphic) {</b>
+<b class="fc"><i>136</i>&nbsp;        setText(text);</b>
+<b class="fc"><i>137</i>&nbsp;        setGraphic(graphic);</b>
+<b class="fc"><i>138</i>&nbsp;        styleClass.add(DEFAULT_STYLE_CLASS);</b>
+<b class="fc"><i>139</i>&nbsp;    }</b>
+<i>140</i>&nbsp;
+<i>141</i>&nbsp;
+<i>142</i>&nbsp;
+<i>143</i>&nbsp;    /***************************************************************************
+<i>144</i>&nbsp;     *                                                                         *
+<i>145</i>&nbsp;     * Instance Variables                                                      *
+<i>146</i>&nbsp;     *                                                                         *
+<i>147</i>&nbsp;     **************************************************************************/
+<i>148</i>&nbsp;
+<b class="fc"><i>149</i>&nbsp;    private final ObservableList&lt;String&gt; styleClass = FXCollections.observableArrayList();</b>
+<i>150</i>&nbsp;
+<b class="fc"><i>151</i>&nbsp;    final EventHandlerManager eventHandlerManager =</b>
+<i>152</i>&nbsp;            new EventHandlerManager(this);
+<i>153</i>&nbsp;
+<i>154</i>&nbsp;    private Object userData;
+<i>155</i>&nbsp;    private ObservableMap&lt;Object, Object&gt; properties;
+<i>156</i>&nbsp;
+<i>157</i>&nbsp;    /***************************************************************************
+<i>158</i>&nbsp;     *                                                                         *
+<i>159</i>&nbsp;     * Properties                                                              *
+<i>160</i>&nbsp;     *                                                                         *
+<i>161</i>&nbsp;     **************************************************************************/
+<i>162</i>&nbsp;
+<i>163</i>&nbsp;    /**
+<i>164</i>&nbsp;     * The id of this MenuItem. This simple string identifier is useful for finding
+<i>165</i>&nbsp;     * a specific MenuItem within the scene graph.
+<i>166</i>&nbsp;     */
+<i>167</i>&nbsp;    private StringProperty id;
+<b class="fc"><i>168</i>&nbsp;    public final void setId(String value) { idProperty().set(value); }</b>
+<b class="fc"><i>169</i>&nbsp;    @Override public final String getId() { return id == null ? null : id.get(); }</b>
+<i>170</i>&nbsp;    public final StringProperty idProperty() {
+<b class="fc"><i>171</i>&nbsp;        if (id == null) {</b>
+<b class="fc"><i>172</i>&nbsp;            id = new SimpleStringProperty(this, &quot;id&quot;);</b>
+<i>173</i>&nbsp;        }
+<b class="fc"><i>174</i>&nbsp;        return id;</b>
+<i>175</i>&nbsp;    }
+<i>176</i>&nbsp;
+<i>177</i>&nbsp;    /**
+<i>178</i>&nbsp;     * A string representation of the CSS style associated with this specific MenuItem.
+<i>179</i>&nbsp;     * This is analogous to the &quot;style&quot; attribute of an HTML element. Note that,
+<i>180</i>&nbsp;     * like the HTML style attribute, this variable contains style properties and
+<i>181</i>&nbsp;     * values and not the selector portion of a style rule.
+<i>182</i>&nbsp;     */
+<i>183</i>&nbsp;    private StringProperty style;
+<b class="nc"><i>184</i>&nbsp;    public final void setStyle(String value) { styleProperty().set(value); }</b>
+<b class="nc"><i>185</i>&nbsp;    @Override public final String getStyle() { return style == null ? null : style.get(); }</b>
+<i>186</i>&nbsp;    public final StringProperty styleProperty() {
+<b class="fc"><i>187</i>&nbsp;        if (style == null) {</b>
+<b class="fc"><i>188</i>&nbsp;            style = new SimpleStringProperty(this, &quot;style&quot;);</b>
+<i>189</i>&nbsp;        }
+<b class="fc"><i>190</i>&nbsp;        return style;</b>
+<i>191</i>&nbsp;    }
+<i>192</i>&nbsp;
+<i>193</i>&nbsp;    // --- Parent Menu (useful for submenus)
+<i>194</i>&nbsp;    /**
+<i>195</i>&nbsp;     * This is the {@link Menu} in which this {@code MenuItem} exists. It is
+<i>196</i>&nbsp;     * possible for an instance of this class to not have a {@code parentMenu} -
+<i>197</i>&nbsp;     * this means that this instance is either:
+<i>198</i>&nbsp;     * &lt;ul&gt;
+<i>199</i>&nbsp;     * &lt;li&gt;Not yet associated with its {@code parentMenu}.
+<i>200</i>&nbsp;     * &lt;li&gt;A &#39;root&#39; {@link Menu} (i.e. it is a context menu, attached directly to a
+<i>201</i>&nbsp;     * {@link MenuBar}, {@link MenuButton}, or any of the other controls that use
+<i>202</i>&nbsp;     * {@link Menu} internally.
+<i>203</i>&nbsp;     * &lt;/ul&gt;
+<i>204</i>&nbsp;     */
+<i>205</i>&nbsp;    private ReadOnlyObjectWrapper&lt;Menu&gt; parentMenu;
+<i>206</i>&nbsp;
+<i>207</i>&nbsp;    protected final void setParentMenu(Menu value) {
+<b class="nc"><i>208</i>&nbsp;        parentMenuPropertyImpl().set(value);</b>
+<b class="nc"><i>209</i>&nbsp;    }</b>
+<i>210</i>&nbsp;
+<i>211</i>&nbsp;    public final Menu getParentMenu() {
+<b class="fc"><i>212</i>&nbsp;        return parentMenu == null ? null : parentMenu.get();</b>
+<i>213</i>&nbsp;    }
+<i>214</i>&nbsp;
+<i>215</i>&nbsp;    public final ReadOnlyObjectProperty&lt;Menu&gt; parentMenuProperty() {
+<b class="nc"><i>216</i>&nbsp;        return parentMenuPropertyImpl().getReadOnlyProperty();</b>
+<i>217</i>&nbsp;    }
+<i>218</i>&nbsp;
+<i>219</i>&nbsp;    private ReadOnlyObjectWrapper&lt;Menu&gt; parentMenuPropertyImpl() {
+<b class="nc"><i>220</i>&nbsp;        if (parentMenu == null) {</b>
+<b class="nc"><i>221</i>&nbsp;            parentMenu = new ReadOnlyObjectWrapper&lt;Menu&gt;(this, &quot;parentMenu&quot;);</b>
+<i>222</i>&nbsp;        }
+<b class="nc"><i>223</i>&nbsp;        return parentMenu;</b>
+<i>224</i>&nbsp;    }
+<i>225</i>&nbsp;
+<i>226</i>&nbsp;
+<i>227</i>&nbsp;    // --- Parent Popup
+<i>228</i>&nbsp;     /**
+<i>229</i>&nbsp;     * This is the {@link ContextMenu} in which this {@code MenuItem} exists.
+<i>230</i>&nbsp;     */
+<i>231</i>&nbsp;    private ReadOnlyObjectWrapper&lt;ContextMenu&gt; parentPopup;
+<i>232</i>&nbsp;
+<i>233</i>&nbsp;    protected final void setParentPopup(ContextMenu value) {
+<b class="fc"><i>234</i>&nbsp;        parentPopupPropertyImpl().set(value);</b>
+<b class="fc"><i>235</i>&nbsp;    }</b>
+<i>236</i>&nbsp;
+<i>237</i>&nbsp;    public final ContextMenu getParentPopup() {
+<b class="fc"><i>238</i>&nbsp;        return parentPopup == null ? null : parentPopup.get();</b>
+<i>239</i>&nbsp;    }
+<i>240</i>&nbsp;
+<i>241</i>&nbsp;    public final ReadOnlyObjectProperty&lt;ContextMenu&gt; parentPopupProperty() {
+<b class="nc"><i>242</i>&nbsp;        return parentPopupPropertyImpl().getReadOnlyProperty();</b>
+<i>243</i>&nbsp;    }
+<i>244</i>&nbsp;
+<i>245</i>&nbsp;    private ReadOnlyObjectWrapper&lt;ContextMenu&gt; parentPopupPropertyImpl() {
+<b class="fc"><i>246</i>&nbsp;        if (parentPopup == null) {</b>
+<b class="fc"><i>247</i>&nbsp;            parentPopup = new ReadOnlyObjectWrapper&lt;ContextMenu&gt;(this, &quot;parentPopup&quot;);</b>
+<i>248</i>&nbsp;        }
+<b class="fc"><i>249</i>&nbsp;        return parentPopup;</b>
+<i>250</i>&nbsp;    }
+<i>251</i>&nbsp;
+<i>252</i>&nbsp;
+<i>253</i>&nbsp;    // --- Text
+<i>254</i>&nbsp;    /**
+<i>255</i>&nbsp;     * The text to display in the {@code MenuItem}.
+<i>256</i>&nbsp;     */
+<i>257</i>&nbsp;    private StringProperty text;
+<i>258</i>&nbsp;
+<i>259</i>&nbsp;    public final void setText(String value) {
+<b class="fc"><i>260</i>&nbsp;        textProperty().set(value);</b>
+<b class="fc"><i>261</i>&nbsp;    }</b>
+<i>262</i>&nbsp;
+<i>263</i>&nbsp;    public final String getText() {
+<b class="fc"><i>264</i>&nbsp;        return text == null ? null : text.get();</b>
+<i>265</i>&nbsp;    }
+<i>266</i>&nbsp;
+<i>267</i>&nbsp;    public final StringProperty textProperty() {
+<b class="fc"><i>268</i>&nbsp;        if (text == null) {</b>
+<b class="fc"><i>269</i>&nbsp;            text = new SimpleStringProperty(this, &quot;text&quot;);</b>
+<i>270</i>&nbsp;        }
+<b class="fc"><i>271</i>&nbsp;        return text;</b>
+<i>272</i>&nbsp;    }
+<i>273</i>&nbsp;
+<i>274</i>&nbsp;
+<i>275</i>&nbsp;    // --- Graphic
+<i>276</i>&nbsp;    /**
+<i>277</i>&nbsp;     * An optional graphic for the {@code MenuItem}. This will normally be
+<i>278</i>&nbsp;     * an {@link javafx.scene.image.ImageView} node, but there is no requirement for this to be
+<i>279</i>&nbsp;     * the case.
+<i>280</i>&nbsp;     */
+<i>281</i>&nbsp;    private ObjectProperty&lt;Node&gt; graphic;
+<i>282</i>&nbsp;
+<i>283</i>&nbsp;    public final void setGraphic(Node value) {
+<b class="fc"><i>284</i>&nbsp;        graphicProperty().set(value);</b>
+<b class="fc"><i>285</i>&nbsp;    }</b>
+<i>286</i>&nbsp;
+<i>287</i>&nbsp;    public final Node getGraphic() {
+<b class="fc"><i>288</i>&nbsp;        return graphic == null ? null : graphic.get();</b>
+<i>289</i>&nbsp;    }
+<i>290</i>&nbsp;
+<i>291</i>&nbsp;    public final ObjectProperty&lt;Node&gt; graphicProperty() {
+<b class="fc"><i>292</i>&nbsp;        if (graphic == null) {</b>
+<b class="fc"><i>293</i>&nbsp;            graphic = new SimpleObjectProperty&lt;Node&gt;(this, &quot;graphic&quot;);</b>
+<i>294</i>&nbsp;        }
+<b class="fc"><i>295</i>&nbsp;        return graphic;</b>
+<i>296</i>&nbsp;    }
+<i>297</i>&nbsp;
+<i>298</i>&nbsp;
+<i>299</i>&nbsp;    // --- OnAction
+<i>300</i>&nbsp;    /**
+<i>301</i>&nbsp;     * The action, which is invoked whenever the MenuItem is fired. This
+<i>302</i>&nbsp;     * may be due to the user clicking on the button with the mouse, or by
+<i>303</i>&nbsp;     * a touch event, or by a key press, or if the developer programatically
+<i>304</i>&nbsp;     * invokes the {@link #fire()} method.
+<i>305</i>&nbsp;     */
+<i>306</i>&nbsp;    private ObjectProperty&lt;EventHandler&lt;ActionEvent&gt;&gt; onAction;
+<i>307</i>&nbsp;
+<i>308</i>&nbsp;    public final void setOnAction(EventHandler&lt;ActionEvent&gt; value) {
+<b class="fc"><i>309</i>&nbsp;        onActionProperty().set( value);</b>
+<b class="fc"><i>310</i>&nbsp;    }</b>
+<i>311</i>&nbsp;
+<i>312</i>&nbsp;    public final EventHandler&lt;ActionEvent&gt; getOnAction() {
+<b class="nc"><i>313</i>&nbsp;        return onAction == null ? null : onAction.get();</b>
+<i>314</i>&nbsp;    }
+<i>315</i>&nbsp;
+<i>316</i>&nbsp;    public final ObjectProperty&lt;EventHandler&lt;ActionEvent&gt;&gt; onActionProperty() {
+<b class="fc"><i>317</i>&nbsp;        if (onAction == null) {</b>
+<b class="fc"><i>318</i>&nbsp;            onAction = new ObjectPropertyBase&lt;EventHandler&lt;ActionEvent&gt;&gt;() {</b>
+<i>319</i>&nbsp;                @Override protected void invalidated() {
+<b class="fc"><i>320</i>&nbsp;                    eventHandlerManager.setEventHandler(ActionEvent.ACTION, get());</b>
+<b class="fc"><i>321</i>&nbsp;                }</b>
+<i>322</i>&nbsp;
+<i>323</i>&nbsp;                @Override
+<i>324</i>&nbsp;                public Object getBean() {
+<b class="nc"><i>325</i>&nbsp;                    return MenuItem.this;</b>
+<i>326</i>&nbsp;                }
+<i>327</i>&nbsp;
+<i>328</i>&nbsp;                @Override
+<i>329</i>&nbsp;                public String getName() {
+<b class="nc"><i>330</i>&nbsp;                    return &quot;onAction&quot;;</b>
+<i>331</i>&nbsp;                }
+<i>332</i>&nbsp;            };
+<i>333</i>&nbsp;        }
+<b class="fc"><i>334</i>&nbsp;        return onAction;</b>
+<i>335</i>&nbsp;    }
+<i>336</i>&nbsp;
+<i>337</i>&nbsp;    /**
+<i>338</i>&nbsp;     * &lt;p&gt;Called when a accelerator for the Menuitem is invoked&lt;/p&gt;
+<i>339</i>&nbsp;     * @since JavaFX 2.2
+<i>340</i>&nbsp;     */
+<b class="fc"><i>341</i>&nbsp;    public static final EventType&lt;Event&gt; MENU_VALIDATION_EVENT = new EventType&lt;Event&gt;</b>
+<i>342</i>&nbsp;            (Event.ANY, &quot;MENU_VALIDATION_EVENT&quot;);
+<i>343</i>&nbsp;
+<i>344</i>&nbsp;    /**
+<i>345</i>&nbsp;     * The event handler that is associated with invocation of an accelerator for a MenuItem. This
+<i>346</i>&nbsp;     * can happen when a key sequence for an accelerator is pressed. The event handler is also
+<i>347</i>&nbsp;     * invoked when onShowing event handler is called.
+<i>348</i>&nbsp;     * @since JavaFX 2.2
+<i>349</i>&nbsp;     */
+<i>350</i>&nbsp;    private ObjectProperty&lt;EventHandler&lt;Event&gt;&gt; onMenuValidation;
+<i>351</i>&nbsp;
+<i>352</i>&nbsp;    public final void setOnMenuValidation(EventHandler&lt;Event&gt; value) {
+<b class="nc"><i>353</i>&nbsp;        onMenuValidationProperty().set( value);</b>
+<b class="nc"><i>354</i>&nbsp;    }</b>
+<i>355</i>&nbsp;
+<i>356</i>&nbsp;    public final EventHandler&lt;Event&gt; getOnMenuValidation() {
+<b class="nc"><i>357</i>&nbsp;        return onMenuValidation == null ? null : onMenuValidation.get();</b>
+<i>358</i>&nbsp;    }
+<i>359</i>&nbsp;
+<i>360</i>&nbsp;    public final ObjectProperty&lt;EventHandler&lt;Event&gt;&gt; onMenuValidationProperty() {
+<b class="nc"><i>361</i>&nbsp;        if (onMenuValidation == null) {</b>
+<b class="nc"><i>362</i>&nbsp;            onMenuValidation = new ObjectPropertyBase&lt;EventHandler&lt;Event&gt;&gt;() {</b>
+<i>363</i>&nbsp;                @Override protected void invalidated() {
+<b class="nc"><i>364</i>&nbsp;                    eventHandlerManager.setEventHandler(MENU_VALIDATION_EVENT, get());</b>
+<b class="nc"><i>365</i>&nbsp;                }</b>
+<i>366</i>&nbsp;                @Override public Object getBean() {
+<b class="nc"><i>367</i>&nbsp;                    return MenuItem.this;</b>
+<i>368</i>&nbsp;                }
+<i>369</i>&nbsp;                @Override public String getName() {
+<b class="nc"><i>370</i>&nbsp;                    return &quot;onMenuValidation&quot;;</b>
+<i>371</i>&nbsp;                }
+<i>372</i>&nbsp;            };
+<i>373</i>&nbsp;        }
+<b class="nc"><i>374</i>&nbsp;        return onMenuValidation;</b>
+<i>375</i>&nbsp;    }
+<i>376</i>&nbsp;
+<i>377</i>&nbsp;    // --- Disable
+<i>378</i>&nbsp;    /**
+<i>379</i>&nbsp;     * Sets the individual disabled state of this MenuItem.
+<i>380</i>&nbsp;     * Setting disable to true will cause this MenuItem to become disabled.
+<i>381</i>&nbsp;     */
+<i>382</i>&nbsp;    private BooleanProperty disable;
+<b class="nc"><i>383</i>&nbsp;    public final void setDisable(boolean value) { disableProperty().set(value); }</b>
+<b class="fc"><i>384</i>&nbsp;    public final boolean isDisable() { return disable == null ? false : disable.get(); }</b>
+<i>385</i>&nbsp;    public final BooleanProperty disableProperty() {
+<b class="fc"><i>386</i>&nbsp;        if (disable == null) {</b>
+<b class="fc"><i>387</i>&nbsp;            disable = new SimpleBooleanProperty(this, &quot;disable&quot;);</b>
+<i>388</i>&nbsp;        }
+<b class="fc"><i>389</i>&nbsp;        return disable;</b>
+<i>390</i>&nbsp;    }
+<i>391</i>&nbsp;
+<i>392</i>&nbsp;
+<i>393</i>&nbsp;    // --- Visible
+<i>394</i>&nbsp;    /**
+<i>395</i>&nbsp;     * Specifies whether this MenuItem should be rendered as part of the scene graph.
+<i>396</i>&nbsp;     */
+<i>397</i>&nbsp;    private BooleanProperty visible;
+<b class="nc"><i>398</i>&nbsp;    public final void setVisible(boolean value) { visibleProperty().set(value); }</b>
+<b class="nc"><i>399</i>&nbsp;    public final boolean isVisible() { return visible == null ? true : visible.get(); }</b>
+<i>400</i>&nbsp;    public final BooleanProperty visibleProperty() {
+<b class="fc"><i>401</i>&nbsp;        if (visible == null) {</b>
+<b class="fc"><i>402</i>&nbsp;            visible = new SimpleBooleanProperty(this, &quot;visible&quot;, true);</b>
+<i>403</i>&nbsp;        }
+<b class="fc"><i>404</i>&nbsp;        return visible;</b>
+<i>405</i>&nbsp;    }
+<i>406</i>&nbsp;
+<i>407</i>&nbsp;    /**
+<i>408</i>&nbsp;     * The accelerator property enables accessing the associated action in one keystroke.
+<i>409</i>&nbsp;     * It is a convenience offered to perform quickly a given action.
+<i>410</i>&nbsp;     */
+<i>411</i>&nbsp;    private ObjectProperty&lt;KeyCombination&gt; accelerator;
+<i>412</i>&nbsp;    public final void setAccelerator(KeyCombination value) {
+<b class="nc"><i>413</i>&nbsp;        acceleratorProperty().set(value);</b>
+<b class="nc"><i>414</i>&nbsp;    }</b>
+<i>415</i>&nbsp;    public final KeyCombination getAccelerator() {
+<b class="fc"><i>416</i>&nbsp;        return accelerator == null ? null : accelerator.get();</b>
+<i>417</i>&nbsp;    }
+<i>418</i>&nbsp;    public final ObjectProperty&lt;KeyCombination&gt; acceleratorProperty() {
+<b class="fc"><i>419</i>&nbsp;        if (accelerator == null) {</b>
+<b class="fc"><i>420</i>&nbsp;            accelerator = new SimpleObjectProperty&lt;KeyCombination&gt;(this, &quot;accelerator&quot;);</b>
+<i>421</i>&nbsp;        }
+<b class="fc"><i>422</i>&nbsp;        return accelerator;</b>
+<i>423</i>&nbsp;    }
+<i>424</i>&nbsp;
+<i>425</i>&nbsp;    /**
+<i>426</i>&nbsp;     * MnemonicParsing property to enable/disable text parsing.
+<i>427</i>&nbsp;     * If this is set to true, then the MenuItem text will be
+<i>428</i>&nbsp;     * parsed to see if it contains the mnemonic parsing character &#39;_&#39;.
+<i>429</i>&nbsp;     * When a mnemonic is detected the key combination will
+<i>430</i>&nbsp;     * be determined based on the succeeding character, and the mnemonic
+<i>431</i>&nbsp;     * added.
+<i>432</i>&nbsp;     *
+<i>433</i>&nbsp;     * &lt;p&gt;
+<i>434</i>&nbsp;     * The default value for MenuItem is true.
+<i>435</i>&nbsp;     * &lt;/p&gt;
+<i>436</i>&nbsp;     */
+<i>437</i>&nbsp;    private BooleanProperty mnemonicParsing;
+<i>438</i>&nbsp;    public final void setMnemonicParsing(boolean value) {
+<b class="fc"><i>439</i>&nbsp;        mnemonicParsingProperty().set(value);</b>
+<b class="fc"><i>440</i>&nbsp;    }</b>
+<i>441</i>&nbsp;    public final boolean isMnemonicParsing() {
+<b class="fc"><i>442</i>&nbsp;        return mnemonicParsing == null ? true : mnemonicParsing.get();</b>
+<i>443</i>&nbsp;    }
+<i>444</i>&nbsp;    public final BooleanProperty mnemonicParsingProperty() {
+<b class="fc"><i>445</i>&nbsp;        if (mnemonicParsing == null) {</b>
+<b class="fc"><i>446</i>&nbsp;            mnemonicParsing = new SimpleBooleanProperty(this, &quot;mnemonicParsing&quot;, true);</b>
+<i>447</i>&nbsp;        }
+<b class="fc"><i>448</i>&nbsp;        return mnemonicParsing;</b>
+<i>449</i>&nbsp;    }
+<i>450</i>&nbsp;
+<i>451</i>&nbsp;    /***************************************************************************
+<i>452</i>&nbsp;     *                                                                         *
+<i>453</i>&nbsp;     * Public API                                                              *
+<i>454</i>&nbsp;     *                                                                         *
+<i>455</i>&nbsp;     **************************************************************************/
+<i>456</i>&nbsp;
+<i>457</i>&nbsp;    @Override public ObservableList&lt;String&gt; getStyleClass() {
+<b class="fc"><i>458</i>&nbsp;        return styleClass;</b>
+<i>459</i>&nbsp;    }
+<i>460</i>&nbsp;
+<i>461</i>&nbsp;    /**
+<i>462</i>&nbsp;     * Fires a new ActionEvent.
+<i>463</i>&nbsp;     */
+<i>464</i>&nbsp;    public void fire() {
+<b class="fc"><i>465</i>&nbsp;        Event.fireEvent(this, new ActionEvent(this, this));</b>
+<b class="fc"><i>466</i>&nbsp;    }</b>
+<i>467</i>&nbsp;
+<i>468</i>&nbsp;    /**
+<i>469</i>&nbsp;     * Registers an event handler to this MenuItem. The handler is called when the
+<i>470</i>&nbsp;     * menu item receives an {@code Event} of the specified type during the bubbling
+<i>471</i>&nbsp;     * phase of event delivery.
+<i>472</i>&nbsp;     *
+<i>473</i>&nbsp;     * @param &lt;E&gt; the specific event class of the handler
+<i>474</i>&nbsp;     * @param eventType the type of the events to receive by the handler
+<i>475</i>&nbsp;     * @param eventHandler the handler to register
+<i>476</i>&nbsp;     * @throws NullPointerException if the event type or handler is null
+<i>477</i>&nbsp;     */
+<i>478</i>&nbsp;    public &lt;E extends Event&gt; void addEventHandler(EventType&lt;E&gt; eventType, EventHandler&lt;E&gt; eventHandler) {
+<b class="nc"><i>479</i>&nbsp;        eventHandlerManager.addEventHandler(eventType, eventHandler);</b>
+<b class="nc"><i>480</i>&nbsp;    }</b>
+<i>481</i>&nbsp;
+<i>482</i>&nbsp;    /**
+<i>483</i>&nbsp;     * Unregisters a previously registered event handler from this MenuItem. One
+<i>484</i>&nbsp;     * handler might have been registered for different event types, so the
+<i>485</i>&nbsp;     * caller needs to specify the particular event type from which to
+<i>486</i>&nbsp;     * unregister the handler.
+<i>487</i>&nbsp;     *
+<i>488</i>&nbsp;     * @param &lt;E&gt; the specific event class of the handler
+<i>489</i>&nbsp;     * @param eventType the event type from which to unregister
+<i>490</i>&nbsp;     * @param eventHandler the handler to unregister
+<i>491</i>&nbsp;     * @throws NullPointerException if the event type or handler is null
+<i>492</i>&nbsp;     */
+<i>493</i>&nbsp;    public &lt;E extends Event&gt; void removeEventHandler(EventType&lt;E&gt; eventType, EventHandler&lt;E&gt; eventHandler) {
+<b class="nc"><i>494</i>&nbsp;        eventHandlerManager.removeEventHandler(eventType, eventHandler);</b>
+<b class="nc"><i>495</i>&nbsp;    }</b>
+<i>496</i>&nbsp;
+<i>497</i>&nbsp;    /** {@inheritDoc} */
+<i>498</i>&nbsp;    @Override public EventDispatchChain buildEventDispatchChain(EventDispatchChain tail) {
+<i>499</i>&nbsp;        // FIXME review that these are configure properly
+<b class="fc"><i>500</i>&nbsp;        if (getParentPopup() != null) {</b>
+<b class="fc"><i>501</i>&nbsp;            getParentPopup().buildEventDispatchChain(tail);</b>
+<i>502</i>&nbsp;        }
+<i>503</i>&nbsp;
+<b class="fc"><i>504</i>&nbsp;        if (getParentMenu() != null) {</b>
+<b class="nc"><i>505</i>&nbsp;            getParentMenu().buildEventDispatchChain(tail);</b>
+<i>506</i>&nbsp;        }
+<i>507</i>&nbsp;
+<b class="fc"><i>508</i>&nbsp;        return tail.prepend(eventHandlerManager);</b>
+<i>509</i>&nbsp;    }
+<i>510</i>&nbsp;
+<i>511</i>&nbsp;    /**
+<i>512</i>&nbsp;     * Returns a previously set Object property, or null if no such property
+<i>513</i>&nbsp;     * has been set using the {@link MenuItem#setUserData(java.lang.Object)} method.
+<i>514</i>&nbsp;     *
+<i>515</i>&nbsp;     * @return The Object that was previously set, or null if no property
+<i>516</i>&nbsp;     *          has been set or if null was set.
+<i>517</i>&nbsp;     */
+<i>518</i>&nbsp;    public Object getUserData() {
+<b class="nc"><i>519</i>&nbsp;        return userData;</b>
+<i>520</i>&nbsp;    }
+<i>521</i>&nbsp;
+<i>522</i>&nbsp;    /**
+<i>523</i>&nbsp;     * Convenience method for setting a single Object property that can be
+<i>524</i>&nbsp;     * retrieved at a later date. This is functionally equivalent to calling
+<i>525</i>&nbsp;     * the getProperties().put(Object key, Object value) method. This can later
+<i>526</i>&nbsp;     * be retrieved by calling {@link Node#getUserData()}.
+<i>527</i>&nbsp;     *
+<i>528</i>&nbsp;     * @param value The value to be stored - this can later be retrieved by calling
+<i>529</i>&nbsp;     *          {@link Node#getUserData()}.
+<i>530</i>&nbsp;     */
+<i>531</i>&nbsp;    public void setUserData(Object value) {
+<b class="nc"><i>532</i>&nbsp;        this.userData = value;</b>
+<b class="nc"><i>533</i>&nbsp;    }</b>
+<i>534</i>&nbsp;
+<i>535</i>&nbsp;    /**
+<i>536</i>&nbsp;     * Returns an observable map of properties on this menu item for use primarily
+<i>537</i>&nbsp;     * by application developers.
+<i>538</i>&nbsp;     *
+<i>539</i>&nbsp;     * @return an observable map of properties on this menu item for use primarily
+<i>540</i>&nbsp;     * by application developers
+<i>541</i>&nbsp;     */
+<i>542</i>&nbsp;    public ObservableMap&lt;Object, Object&gt; getProperties() {
+<b class="fc"><i>543</i>&nbsp;        if (properties == null) {</b>
+<b class="fc"><i>544</i>&nbsp;            properties = FXCollections.observableMap(new HashMap&lt;Object, Object&gt;());</b>
+<i>545</i>&nbsp;        }
+<b class="fc"><i>546</i>&nbsp;        return properties;</b>
+<i>547</i>&nbsp;    }
+<i>548</i>&nbsp;
+<i>549</i>&nbsp;    /***************************************************************************
+<i>550</i>&nbsp;     *                                                                         *
+<i>551</i>&nbsp;     * Stylesheet Handling                                                     *
+<i>552</i>&nbsp;     *                                                                         *
+<i>553</i>&nbsp;     **************************************************************************/
+<i>554</i>&nbsp;
+<i>555</i>&nbsp;    private static final String DEFAULT_STYLE_CLASS = &quot;menu-item&quot;;
+<i>556</i>&nbsp;
+<i>557</i>&nbsp;    /**
+<i>558</i>&nbsp;     * {@inheritDoc}
+<i>559</i>&nbsp;     * @return &quot;MenuItem&quot;
+<i>560</i>&nbsp;     * @since JavaFX 8.0
+<i>561</i>&nbsp;     */
+<i>562</i>&nbsp;    @Override
+<i>563</i>&nbsp;    public String getTypeSelector() {
+<b class="nc"><i>564</i>&nbsp;        return &quot;MenuItem&quot;;</b>
+<i>565</i>&nbsp;    }
+<i>566</i>&nbsp;
+<i>567</i>&nbsp;    /**
+<i>568</i>&nbsp;     * {@inheritDoc}
+<i>569</i>&nbsp;     * @return {@code getParentMenu()}, or {@code getParentPopup()}
+<i>570</i>&nbsp;     * if {@code parentMenu} is null
+<i>571</i>&nbsp;     * @since JavaFX 8.0
+<i>572</i>&nbsp;     */
+<i>573</i>&nbsp;    @Override
+<i>574</i>&nbsp;    public Styleable getStyleableParent() {
+<i>575</i>&nbsp;
+<b class="nc"><i>576</i>&nbsp;        if(getParentMenu() == null) {</b>
+<b class="nc"><i>577</i>&nbsp;            return getParentPopup();</b>
+<i>578</i>&nbsp;        } else {
+<b class="nc"><i>579</i>&nbsp;            return getParentMenu();</b>
+<i>580</i>&nbsp;        }
+<i>581</i>&nbsp;    }
+<i>582</i>&nbsp;
+<i>583</i>&nbsp;    /**
+<i>584</i>&nbsp;     * {@inheritDoc}
+<i>585</i>&nbsp;     * @since JavaFX 8.0
+<i>586</i>&nbsp;     */
+<i>587</i>&nbsp;    @Override
+<i>588</i>&nbsp;    public final ObservableSet&lt;PseudoClass&gt; getPseudoClassStates() {
+<b class="nc"><i>589</i>&nbsp;        return FXCollections.emptyObservableSet();</b>
+<i>590</i>&nbsp;    }
+<i>591</i>&nbsp;
+<i>592</i>&nbsp;    @Override
+<i>593</i>&nbsp;    public List&lt;CssMetaData&lt;? extends Styleable, ?&gt;&gt; getCssMetaData() {
+<b class="nc"><i>594</i>&nbsp;        return Collections.emptyList();</b>
+<i>595</i>&nbsp;    }
+<i>596</i>&nbsp;
+<i>597</i>&nbsp;    /** {@inheritDoc} */
+<i>598</i>&nbsp;    @Override public Node getStyleableNode() {
+<i>599</i>&nbsp;        // Fix for RT-20582. We dive into the visual representation
+<i>600</i>&nbsp;        // of this MenuItem so that we may return it to the caller.
+<b class="nc"><i>601</i>&nbsp;        ContextMenu parentPopup = MenuItem.this.getParentPopup();</b>
+<b class="nc"><i>602</i>&nbsp;        if (parentPopup == null || ! (parentPopup.getSkin() instanceof ContextMenuSkin)) return null;</b>
+<i>603</i>&nbsp;
+<b class="nc"><i>604</i>&nbsp;        ContextMenuSkin skin = (ContextMenuSkin) parentPopup.getSkin();</b>
+<b class="nc"><i>605</i>&nbsp;        if (! (skin.getNode() instanceof ContextMenuContent)) return null;</b>
+<i>606</i>&nbsp;
+<b class="nc"><i>607</i>&nbsp;        ContextMenuContent content = (ContextMenuContent) skin.getNode();</b>
+<b class="nc"><i>608</i>&nbsp;        Parent nodes = content.getItemsContainer();</b>
+<i>609</i>&nbsp;
+<b class="nc"><i>610</i>&nbsp;        MenuItem desiredMenuItem = MenuItem.this;</b>
+<b class="nc"><i>611</i>&nbsp;        List&lt;Node&gt; childrenNodes = nodes.getChildrenUnmodifiable();</b>
+<b class="nc"><i>612</i>&nbsp;        for (int i = 0; i &lt; childrenNodes.size(); i++) {</b>
+<b class="nc"><i>613</i>&nbsp;            if (! (childrenNodes.get(i) instanceof ContextMenuContent.MenuItemContainer)) continue;</b>
+<i>614</i>&nbsp;
+<b class="nc"><i>615</i>&nbsp;            ContextMenuContent.MenuItemContainer MenuRow =</b>
+<b class="nc"><i>616</i>&nbsp;                    (ContextMenuContent.MenuItemContainer) childrenNodes.get(i);</b>
+<i>617</i>&nbsp;
+<b class="nc"><i>618</i>&nbsp;            if (desiredMenuItem.equals(MenuRow.getItem())) {</b>
+<b class="nc"><i>619</i>&nbsp;                return MenuRow;</b>
+<i>620</i>&nbsp;            }
+<i>621</i>&nbsp;        }
+<i>622</i>&nbsp;
+<b class="nc"><i>623</i>&nbsp;        return null;</b>
+<i>624</i>&nbsp;    }
+<i>625</i>&nbsp;
+<i>626</i>&nbsp;    @Override public String toString() {
+<b class="nc"><i>627</i>&nbsp;        StringBuilder sbuf = new StringBuilder(getClass().getSimpleName());</b>
+<i>628</i>&nbsp;
+<b class="nc"><i>629</i>&nbsp;        boolean hasId = id != null &amp;&amp; !&quot;&quot;.equals(getId());</b>
+<b class="nc"><i>630</i>&nbsp;        boolean hasStyleClass = !getStyleClass().isEmpty();</b>
+<i>631</i>&nbsp;
+<b class="nc"><i>632</i>&nbsp;        if (!hasId) {</b>
+<b class="nc"><i>633</i>&nbsp;            sbuf.append(&#39;@&#39;);</b>
+<b class="nc"><i>634</i>&nbsp;            sbuf.append(Integer.toHexString(hashCode()));</b>
+<i>635</i>&nbsp;        } else {
+<b class="nc"><i>636</i>&nbsp;            sbuf.append(&quot;[id=&quot;);</b>
+<b class="nc"><i>637</i>&nbsp;            sbuf.append(getId());</b>
+<b class="nc"><i>638</i>&nbsp;            if (!hasStyleClass) sbuf.append(&quot;]&quot;);</b>
+<i>639</i>&nbsp;        }
+<i>640</i>&nbsp;
+<b class="nc"><i>641</i>&nbsp;        if (hasStyleClass) {</b>
+<b class="nc"><i>642</i>&nbsp;            if (!hasId) sbuf.append(&#39;[&#39;);</b>
+<b class="nc"><i>643</i>&nbsp;            else sbuf.append(&quot;, &quot;);</b>
+<b class="nc"><i>644</i>&nbsp;            sbuf.append(&quot;styleClass=&quot;);</b>
+<b class="nc"><i>645</i>&nbsp;            sbuf.append(getStyleClass());</b>
+<b class="nc"><i>646</i>&nbsp;            sbuf.append(&quot;]&quot;);</b>
+<i>647</i>&nbsp;        }
+<b class="nc"><i>648</i>&nbsp;        return sbuf.toString();</b>
+<i>649</i>&nbsp;    }
+<i>650</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2017-12-04 21:49</div>
+</div>
+</body>
+</html>

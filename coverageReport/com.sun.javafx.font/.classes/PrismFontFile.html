@@ -1,0 +1,1440 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: PrismFontFile</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.javafx.font</a> ]
+</div>
+
+<h1>Coverage Summary for Class: PrismFontFile (com.sun.javafx.font)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">PrismFontFile</td>
+<td class="coverageStat">
+  <span class="percent">
+    43.9%
+  </span>
+  <span class="absValue">
+    (25/ 57)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    44%
+  </span>
+  <span class="absValue">
+    (257/ 584)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">PrismFontFile$DirectoryEntry</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    44.8%
+  </span>
+  <span class="absValue">
+    (26/ 58)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    44.1%
+  </span>
+  <span class="absValue">
+    (258/ 585)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright (c) 2011, 2016, Oracle and/or its affiliates. All rights reserved.
+<i>3</i>&nbsp; * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+<i>4</i>&nbsp; *
+<i>5</i>&nbsp; *
+<i>6</i>&nbsp; *
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; *
+<i>11</i>&nbsp; *
+<i>12</i>&nbsp; *
+<i>13</i>&nbsp; *
+<i>14</i>&nbsp; *
+<i>15</i>&nbsp; *
+<i>16</i>&nbsp; *
+<i>17</i>&nbsp; *
+<i>18</i>&nbsp; *
+<i>19</i>&nbsp; *
+<i>20</i>&nbsp; *
+<i>21</i>&nbsp; *
+<i>22</i>&nbsp; *
+<i>23</i>&nbsp; *
+<i>24</i>&nbsp; */
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;package com.sun.javafx.font;
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;
+<i>29</i>&nbsp;import java.lang.ref.WeakReference;
+<i>30</i>&nbsp;import java.io.File;
+<i>31</i>&nbsp;import java.io.FileNotFoundException;
+<i>32</i>&nbsp;import java.security.AccessController;
+<i>33</i>&nbsp;import java.security.PrivilegedAction;
+<i>34</i>&nbsp;import java.util.HashMap;
+<i>35</i>&nbsp;import java.util.Locale;
+<i>36</i>&nbsp;import java.util.Map;
+<i>37</i>&nbsp;import java.util.concurrent.ConcurrentHashMap;
+<i>38</i>&nbsp;import com.sun.javafx.geom.RectBounds;
+<i>39</i>&nbsp;import com.sun.javafx.geom.transform.BaseTransform;
+<i>40</i>&nbsp;import com.sun.javafx.font.FontFileReader.Buffer;
+<i>41</i>&nbsp;import static com.sun.javafx.font.PrismMetrics.*;
+<i>42</i>&nbsp;
+<i>43</i>&nbsp;public abstract class PrismFontFile implements FontResource, FontConstants {
+<i>44</i>&nbsp;
+<b class="fc"><i>45</i>&nbsp;    private int fontInstallationType = -1; // unknown, 0=embedded, 1=system</b>
+<i>46</i>&nbsp;
+<i>47</i>&nbsp;    // TrueType fonts can have multiple names, most notably split up by
+<i>48</i>&nbsp;    // platform and locale. Whilst fonts that have different names for
+<i>49</i>&nbsp;    // different platforms are arguable buggy, those with localised names
+<i>50</i>&nbsp;    // are not. This can cause problems. Suppose that a font has English,
+<i>51</i>&nbsp;    // French and German names, and the platform enumerates the name that
+<i>52</i>&nbsp;    // is most appropriate for the user locale. Then suppose a French
+<i>53</i>&nbsp;    // developer uses the French name, but for his German user this font
+<i>54</i>&nbsp;    // is not located by the platform because it reports the German name
+<i>55</i>&nbsp;    // for that font. At runtime we no longer have any connection to the
+<i>56</i>&nbsp;    // locale of the developer so we can&#39;t look for the name for that
+<i>57</i>&nbsp;    // locale, even if the platform have us a performant option for that.
+<i>58</i>&nbsp;    //
+<i>59</i>&nbsp;    // The English name which some might think is supposed
+<i>60</i>&nbsp;    // to be the interoperable name is not treated at all specially in
+<i>61</i>&nbsp;    // the font format and doesn&#39;t even come up for either the user or
+<i>62</i>&nbsp;    // the developer, and in fact doesn&#39;t even have to be present.
+<i>63</i>&nbsp;    // Having said that we&#39;ll probably have the best luck for most users
+<i>64</i>&nbsp;    // and fonts by assuming the English name if the locale name doesn&#39;t
+<i>65</i>&nbsp;    // work. But either way, without platform API support for this
+<i>66</i>&nbsp;    // then its really expensive as all font files need to be opened.
+<i>67</i>&nbsp;    //
+<i>68</i>&nbsp;    String familyName;           /* Family font name (English) */
+<i>69</i>&nbsp;    String fullName;             /* Full font name (English)   */
+<i>70</i>&nbsp;    String psName;               /* PostScript font name       */
+<i>71</i>&nbsp;    String localeFamilyName;
+<i>72</i>&nbsp;    String localeFullName;
+<i>73</i>&nbsp;    String styleName;
+<i>74</i>&nbsp;    String localeStyleName;
+<i>75</i>&nbsp;    String filename;
+<i>76</i>&nbsp;    int filesize;
+<i>77</i>&nbsp;    FontFileReader filereader;
+<b class="fc"><i>78</i>&nbsp;    int numGlyphs = -1;</b>
+<i>79</i>&nbsp;    short indexToLocFormat;
+<i>80</i>&nbsp;    int fontIndex; // into a TTC.
+<i>81</i>&nbsp;    boolean isCFF;
+<b class="fc"><i>82</i>&nbsp;    boolean isEmbedded = false;</b>
+<b class="fc"><i>83</i>&nbsp;    boolean isCopy = false;</b>
+<b class="fc"><i>84</i>&nbsp;    boolean isTracked = false;</b>
+<b class="fc"><i>85</i>&nbsp;    boolean isDecoded = false;</b>
+<b class="fc"><i>86</i>&nbsp;    boolean isRegistered = true;</b>
+<i>87</i>&nbsp;
+<i>88</i>&nbsp;    /* The glyph image data is stored only in a texture, and we
+<i>89</i>&nbsp;     * manage how much of that is kept around. We clearly want
+<i>90</i>&nbsp;     * to keep a reference to the strike that created that data.
+<i>91</i>&nbsp;     */
+<b class="fc"><i>92</i>&nbsp;    Map&lt;FontStrikeDesc, WeakReference&lt;PrismFontStrike&gt;&gt; strikeMap =</b>
+<i>93</i>&nbsp;        new ConcurrentHashMap&lt;FontStrikeDesc, WeakReference&lt;PrismFontStrike&gt;&gt;();
+<i>94</i>&nbsp;
+<i>95</i>&nbsp;    protected PrismFontFile(String name, String filename, int fIndex,
+<i>96</i>&nbsp;                          boolean register, boolean embedded,
+<b class="fc"><i>97</i>&nbsp;                          boolean copy, boolean tracked) throws Exception {</b>
+<b class="fc"><i>98</i>&nbsp;        this.filename = filename;</b>
+<b class="fc"><i>99</i>&nbsp;        this.isRegistered = register;</b>
+<b class="fc"><i>100</i>&nbsp;        this.isEmbedded = embedded;</b>
+<b class="fc"><i>101</i>&nbsp;        this.isCopy = copy;</b>
+<b class="fc"><i>102</i>&nbsp;        this.isTracked = tracked;</b>
+<b class="fc"><i>103</i>&nbsp;        init(name, fIndex);</b>
+<b class="fc"><i>104</i>&nbsp;    }</b>
+<i>105</i>&nbsp;
+<i>106</i>&nbsp;    WeakReference&lt;PrismFontFile&gt; createFileDisposer(PrismFontFactory factory,
+<i>107</i>&nbsp;                                                    FileRefCounter rc) {
+<b class="nc"><i>108</i>&nbsp;        FileDisposer disposer = new FileDisposer(filename, isTracked, rc);</b>
+<b class="nc"><i>109</i>&nbsp;        WeakReference&lt;PrismFontFile&gt; ref = Disposer.addRecord(this, disposer);</b>
+<b class="nc"><i>110</i>&nbsp;        disposer.setFactory(factory, ref);</b>
+<b class="nc"><i>111</i>&nbsp;        return ref;</b>
+<i>112</i>&nbsp;    }
+<i>113</i>&nbsp;
+<i>114</i>&nbsp;    void setIsDecoded(boolean decoded) {
+<b class="nc"><i>115</i>&nbsp;        isDecoded = decoded;</b>
+<b class="nc"><i>116</i>&nbsp;    }</b>
+<i>117</i>&nbsp;
+<i>118</i>&nbsp;    /* This is called only for fonts where a temp file was created
+<i>119</i>&nbsp;     */
+<i>120</i>&nbsp;    protected synchronized void disposeOnShutdown() {
+<b class="nc"><i>121</i>&nbsp;        if (isCopy || isDecoded) {</b>
+<b class="nc"><i>122</i>&nbsp;            AccessController.doPrivileged(</b>
+<i>123</i>&nbsp;                    (PrivilegedAction&lt;Void&gt;) () -&gt; {
+<i>124</i>&nbsp;                        try {
+<i>125</i>&nbsp;                            /* Although there is likely no harm in calling
+<i>126</i>&nbsp;                             * delete on a file &gt; once, we want to refrain
+<i>127</i>&nbsp;                             * from deleting it until the shutdown hook
+<i>128</i>&nbsp;                             * code in subclasses has had an opportunity
+<i>129</i>&nbsp;                             * to clean up native accesses on the resource.
+<i>130</i>&nbsp;                             */
+<b class="nc"><i>131</i>&nbsp;                            if (decFileRefCount() &gt; 0) {</b>
+<b class="nc"><i>132</i>&nbsp;                                return null;</b>
+<i>133</i>&nbsp;                            }
+<b class="nc"><i>134</i>&nbsp;                            boolean delOK = (new File(filename)).delete();</b>
+<b class="nc"><i>135</i>&nbsp;                            if (!delOK &amp;&amp; PrismFontFactory.debugFonts) {</b>
+<b class="nc"><i>136</i>&nbsp;                                 System.err.println(&quot;Temp file not deleted : &quot;</b>
+<i>137</i>&nbsp;                                                    + filename);
+<i>138</i>&nbsp;                            }
+<i>139</i>&nbsp;                            /* Embedded fonts (copy) can also be decoded.
+<i>140</i>&nbsp;                             * Set both flags to false to avoid double deletes.
+<i>141</i>&nbsp;                             */
+<b class="nc"><i>142</i>&nbsp;                            isCopy = isDecoded = false;</b>
+<b class="nc"><i>143</i>&nbsp;                        } catch (Exception e) {</b>
+<b class="nc"><i>144</i>&nbsp;                        }</b>
+<b class="nc"><i>145</i>&nbsp;                        return null;</b>
+<i>146</i>&nbsp;                    }
+<i>147</i>&nbsp;            );
+<b class="nc"><i>148</i>&nbsp;            if (PrismFontFactory.debugFonts) {</b>
+<b class="nc"><i>149</i>&nbsp;                System.err.println(&quot;Temp file deleted: &quot; + filename);</b>
+<i>150</i>&nbsp;            }
+<i>151</i>&nbsp;        }
+<b class="nc"><i>152</i>&nbsp;    }</b>
+<i>153</i>&nbsp;
+<i>154</i>&nbsp;    public int getDefaultAAMode() {
+<b class="fc"><i>155</i>&nbsp;        return AA_GREYSCALE;</b>
+<i>156</i>&nbsp;    }
+<i>157</i>&nbsp;
+<i>158</i>&nbsp;    public boolean isInstalledFont() {
+<b class="nc"><i>159</i>&nbsp;        if (fontInstallationType == -1) {</b>
+<b class="nc"><i>160</i>&nbsp;            PrismFontFactory factory = PrismFontFactory.getFontFactory();</b>
+<b class="nc"><i>161</i>&nbsp;            fontInstallationType = factory.isInstalledFont(filename) ? 1 : 0;</b>
+<i>162</i>&nbsp;        }
+<b class="nc"><i>163</i>&nbsp;        return fontInstallationType &gt; 0;</b>
+<i>164</i>&nbsp;    }
+<i>165</i>&nbsp;
+<i>166</i>&nbsp;
+<i>167</i>&nbsp;    /* A TTC file resource is shared, so reference count and delete
+<i>168</i>&nbsp;     * only when no longer using the file from any PrismFontFile instance
+<i>169</i>&nbsp;     */
+<i>170</i>&nbsp;   static class FileRefCounter {
+<i>171</i>&nbsp;       private int refCnt = 1; // start with 1.
+<i>172</i>&nbsp;
+<i>173</i>&nbsp;       synchronized int getRefCount() {
+<i>174</i>&nbsp;           return refCnt;
+<i>175</i>&nbsp;       }
+<i>176</i>&nbsp;
+<i>177</i>&nbsp;       synchronized int increment() {
+<i>178</i>&nbsp;           return ++refCnt;
+<i>179</i>&nbsp;       }
+<i>180</i>&nbsp;
+<i>181</i>&nbsp;       synchronized int decrement() {
+<i>182</i>&nbsp;           return (refCnt == 0) ? 0 : --refCnt;
+<i>183</i>&nbsp;       }
+<i>184</i>&nbsp;    }
+<i>185</i>&nbsp;
+<b class="fc"><i>186</i>&nbsp;    private FileRefCounter refCounter = null;</b>
+<i>187</i>&nbsp;
+<i>188</i>&nbsp;    FileRefCounter getFileRefCounter() {
+<b class="nc"><i>189</i>&nbsp;        return refCounter;</b>
+<i>190</i>&nbsp;    }
+<i>191</i>&nbsp;
+<i>192</i>&nbsp;    FileRefCounter createFileRefCounter() {
+<b class="nc"><i>193</i>&nbsp;        refCounter = new FileRefCounter();</b>
+<b class="nc"><i>194</i>&nbsp;        return refCounter;</b>
+<i>195</i>&nbsp;    }
+<i>196</i>&nbsp;
+<i>197</i>&nbsp;    void setAndIncFileRefCounter(FileRefCounter rc) {
+<b class="nc"><i>198</i>&nbsp;          this.refCounter = rc;</b>
+<b class="nc"><i>199</i>&nbsp;          this.refCounter.increment();</b>
+<b class="nc"><i>200</i>&nbsp;    }</b>
+<i>201</i>&nbsp;
+<i>202</i>&nbsp;    int decFileRefCount() {
+<b class="nc"><i>203</i>&nbsp;        if (refCounter == null) {</b>
+<b class="nc"><i>204</i>&nbsp;            return 0;</b>
+<i>205</i>&nbsp;         } else {
+<b class="nc"><i>206</i>&nbsp;            return refCounter.decrement();</b>
+<i>207</i>&nbsp;         }
+<i>208</i>&nbsp;    }
+<i>209</i>&nbsp;
+<i>210</i>&nbsp;    static class FileDisposer implements DisposerRecord {
+<i>211</i>&nbsp;        String fileName;
+<i>212</i>&nbsp;        boolean isTracked;
+<i>213</i>&nbsp;        FileRefCounter refCounter;
+<i>214</i>&nbsp;        PrismFontFactory factory;
+<i>215</i>&nbsp;        WeakReference&lt;PrismFontFile&gt; refKey;
+<i>216</i>&nbsp;
+<i>217</i>&nbsp;        public FileDisposer(String fileName, boolean isTracked,
+<i>218</i>&nbsp;                            FileRefCounter rc) {
+<i>219</i>&nbsp;            this.fileName = fileName;
+<i>220</i>&nbsp;            this.isTracked = isTracked;
+<i>221</i>&nbsp;            this.refCounter = rc;
+<i>222</i>&nbsp;        }
+<i>223</i>&nbsp;
+<i>224</i>&nbsp;        public void setFactory(PrismFontFactory factory,
+<i>225</i>&nbsp;                               WeakReference&lt;PrismFontFile&gt; refKey) {
+<i>226</i>&nbsp;            this.factory = factory;
+<i>227</i>&nbsp;            this.refKey = refKey;
+<i>228</i>&nbsp;        }
+<i>229</i>&nbsp;
+<i>230</i>&nbsp;        public synchronized void dispose() {
+<i>231</i>&nbsp;            if (fileName != null) {
+<i>232</i>&nbsp;                AccessController.doPrivileged(
+<i>233</i>&nbsp;                        (PrivilegedAction&lt;Void&gt;) () -&gt; {
+<i>234</i>&nbsp;                            try {
+<i>235</i>&nbsp;                                if (refCounter != null &amp;&amp;
+<i>236</i>&nbsp;                                    refCounter.decrement() &gt; 0)
+<i>237</i>&nbsp;                                {
+<i>238</i>&nbsp;                                    return null;
+<i>239</i>&nbsp;                                }
+<i>240</i>&nbsp;                                File file = new File(fileName);
+<i>241</i>&nbsp;                                int size = (int)file.length();
+<i>242</i>&nbsp;                                file.delete();
+<i>243</i>&nbsp;                                // decrement tracker only after
+<i>244</i>&nbsp;                                // successful deletion.
+<i>245</i>&nbsp;                                if (isTracked) {
+<i>246</i>&nbsp;                                    FontFileWriter.FontTracker.
+<i>247</i>&nbsp;                                        getTracker().subBytes(size);
+<i>248</i>&nbsp;                                }
+<i>249</i>&nbsp;                                if (factory != null &amp;&amp; refKey != null) {
+<i>250</i>&nbsp;                                    Object o = refKey.get();
+<i>251</i>&nbsp;                                    if (o == null) {
+<i>252</i>&nbsp;                                        factory.removeTmpFont(refKey);
+<i>253</i>&nbsp;                                        factory = null;
+<i>254</i>&nbsp;                                        refKey = null;
+<i>255</i>&nbsp;                                    }
+<i>256</i>&nbsp;                                }
+<i>257</i>&nbsp;                                if (PrismFontFactory.debugFonts) {
+<i>258</i>&nbsp;                                    System.err.println(&quot;FileDisposer=&quot; + fileName);
+<i>259</i>&nbsp;                                }
+<i>260</i>&nbsp;                            } catch (Exception e) {
+<i>261</i>&nbsp;                                if (PrismFontFactory.debugFonts) {
+<i>262</i>&nbsp;                                    e.printStackTrace();
+<i>263</i>&nbsp;                                }
+<i>264</i>&nbsp;                            }
+<i>265</i>&nbsp;                            return null;
+<i>266</i>&nbsp;                        }
+<i>267</i>&nbsp;                );
+<i>268</i>&nbsp;                fileName = null;
+<i>269</i>&nbsp;            }
+<i>270</i>&nbsp;        }
+<i>271</i>&nbsp;    }
+<i>272</i>&nbsp;
+<i>273</i>&nbsp;    public String getFileName() {
+<b class="nc"><i>274</i>&nbsp;        return filename;</b>
+<i>275</i>&nbsp;    }
+<i>276</i>&nbsp;
+<i>277</i>&nbsp;    protected int getFileSize() {
+<b class="nc"><i>278</i>&nbsp;        return filesize;</b>
+<i>279</i>&nbsp;    }
+<i>280</i>&nbsp;
+<i>281</i>&nbsp;    protected int getFontIndex() {
+<b class="nc"><i>282</i>&nbsp;        return fontIndex;</b>
+<i>283</i>&nbsp;    }
+<i>284</i>&nbsp;
+<i>285</i>&nbsp;    public String getFullName() {
+<b class="fc"><i>286</i>&nbsp;        return fullName;</b>
+<i>287</i>&nbsp;    }
+<i>288</i>&nbsp;
+<i>289</i>&nbsp;    public String getPSName() {
+<b class="nc"><i>290</i>&nbsp;        if (psName == null) {</b>
+<b class="nc"><i>291</i>&nbsp;            psName = fullName;</b>
+<i>292</i>&nbsp;        }
+<b class="nc"><i>293</i>&nbsp;        return psName;</b>
+<i>294</i>&nbsp;    }
+<i>295</i>&nbsp;
+<i>296</i>&nbsp;    public String getFamilyName() {
+<b class="fc"><i>297</i>&nbsp;        return familyName;</b>
+<i>298</i>&nbsp;    }
+<i>299</i>&nbsp;
+<i>300</i>&nbsp;    public String getStyleName() {
+<b class="nc"><i>301</i>&nbsp;        return styleName;</b>
+<i>302</i>&nbsp;    }
+<i>303</i>&nbsp;
+<i>304</i>&nbsp;    public String getLocaleFullName() {
+<b class="nc"><i>305</i>&nbsp;        return localeFullName;</b>
+<i>306</i>&nbsp;    }
+<i>307</i>&nbsp;
+<i>308</i>&nbsp;    public String getLocaleFamilyName() {
+<b class="nc"><i>309</i>&nbsp;        return localeFamilyName;</b>
+<i>310</i>&nbsp;    }
+<i>311</i>&nbsp;
+<i>312</i>&nbsp;    public String getLocaleStyleName() {
+<b class="nc"><i>313</i>&nbsp;        return localeStyleName;</b>
+<i>314</i>&nbsp;    }
+<i>315</i>&nbsp;
+<i>316</i>&nbsp;    /*
+<i>317</i>&nbsp;     * Returns the features the font supports.
+<i>318</i>&nbsp;     */
+<i>319</i>&nbsp;    public int getFeatures() {
+<i>320</i>&nbsp;        //TODO check font file for features
+<b class="fc"><i>321</i>&nbsp;        return -1;</b>
+<i>322</i>&nbsp;    }
+<i>323</i>&nbsp;
+<i>324</i>&nbsp;    public Map getStrikeMap() {
+<b class="nc"><i>325</i>&nbsp;        return strikeMap;</b>
+<i>326</i>&nbsp;    }
+<i>327</i>&nbsp;
+<i>328</i>&nbsp;    protected abstract PrismFontStrike createStrike(float size,
+<i>329</i>&nbsp;                                                    BaseTransform transform,
+<i>330</i>&nbsp;                                                    int aaMode,
+<i>331</i>&nbsp;                                                    FontStrikeDesc desc);
+<i>332</i>&nbsp;
+<i>333</i>&nbsp;    public FontStrike getStrike(float size, BaseTransform transform,
+<i>334</i>&nbsp;                                int aaMode) {
+<b class="fc"><i>335</i>&nbsp;        FontStrikeDesc desc = new FontStrikeDesc(size, transform, aaMode);</b>
+<b class="fc"><i>336</i>&nbsp;        WeakReference&lt;PrismFontStrike&gt; ref = strikeMap.get(desc);</b>
+<b class="fc"><i>337</i>&nbsp;        PrismFontStrike strike = null;</b>
+<b class="fc"><i>338</i>&nbsp;        if (ref != null) {</b>
+<b class="fc"><i>339</i>&nbsp;            strike = ref.get();</b>
+<i>340</i>&nbsp;        }
+<b class="fc"><i>341</i>&nbsp;        if (strike == null) {</b>
+<b class="fc"><i>342</i>&nbsp;            strike = createStrike(size, transform, aaMode, desc);</b>
+<b class="fc"><i>343</i>&nbsp;            DisposerRecord disposer = strike.getDisposer();</b>
+<b class="fc"><i>344</i>&nbsp;            if (disposer != null) {</b>
+<b class="nc"><i>345</i>&nbsp;                ref = Disposer.addRecord(strike, disposer);</b>
+<i>346</i>&nbsp;            } else {
+<b class="fc"><i>347</i>&nbsp;                ref = new WeakReference&lt;PrismFontStrike&gt;(strike);</b>
+<i>348</i>&nbsp;            }
+<b class="fc"><i>349</i>&nbsp;            strikeMap.put(desc, ref);</b>
+<i>350</i>&nbsp;        }
+<b class="fc"><i>351</i>&nbsp;        return strike;</b>
+<i>352</i>&nbsp;    }
+<i>353</i>&nbsp;
+<b class="fc"><i>354</i>&nbsp;    HashMap&lt;Integer, int[]&gt; bbCache = null;</b>
+<b class="fc"><i>355</i>&nbsp;    static final int[] EMPTY_BOUNDS = new int[4];</b>
+<i>356</i>&nbsp;
+<i>357</i>&nbsp;    protected abstract int[] createGlyphBoundingBox(int gc);
+<i>358</i>&nbsp;
+<i>359</i>&nbsp;    @Override
+<i>360</i>&nbsp;    public float[] getGlyphBoundingBox(int gc, float size, float[] retArr) {
+<b class="fc"><i>361</i>&nbsp;        if (retArr == null || retArr.length &lt; 4) {</b>
+<b class="nc"><i>362</i>&nbsp;            retArr = new float[4];</b>
+<i>363</i>&nbsp;        }
+<b class="fc"><i>364</i>&nbsp;        if (gc &gt;= getNumGlyphs()) {</b>
+<b class="nc"><i>365</i>&nbsp;            retArr[0] = retArr[1] = retArr[2] = retArr[3] = 0;</b>
+<b class="nc"><i>366</i>&nbsp;            return retArr;</b>
+<i>367</i>&nbsp;        }
+<b class="fc"><i>368</i>&nbsp;        if (bbCache == null) {</b>
+<b class="fc"><i>369</i>&nbsp;            bbCache = new HashMap&lt;Integer, int[]&gt;();</b>
+<i>370</i>&nbsp;        }
+<b class="fc"><i>371</i>&nbsp;        int[] bb = bbCache.get(gc);</b>
+<b class="fc"><i>372</i>&nbsp;        if (bb == null) {</b>
+<b class="fc"><i>373</i>&nbsp;            bb = createGlyphBoundingBox(gc);</b>
+<b class="fc"><i>374</i>&nbsp;            if (bb == null) bb = EMPTY_BOUNDS;</b>
+<b class="fc"><i>375</i>&nbsp;            bbCache.put(gc, bb);</b>
+<i>376</i>&nbsp;        }
+<b class="fc"><i>377</i>&nbsp;        float scale = size / getUnitsPerEm();</b>
+<b class="fc"><i>378</i>&nbsp;        retArr[0] = bb[0] * scale;</b>
+<b class="fc"><i>379</i>&nbsp;        retArr[1] = bb[1] * scale;</b>
+<b class="fc"><i>380</i>&nbsp;        retArr[2] = bb[2] * scale;</b>
+<b class="fc"><i>381</i>&nbsp;        retArr[3] = bb[3] * scale;</b>
+<b class="fc"><i>382</i>&nbsp;        return retArr;</b>
+<i>383</i>&nbsp;    }
+<i>384</i>&nbsp;
+<i>385</i>&nbsp;    int getNumGlyphs() {
+<b class="fc"><i>386</i>&nbsp;        if (numGlyphs == -1) {</b>
+<b class="fc"><i>387</i>&nbsp;            Buffer buffer = readTable(maxpTag);</b>
+<b class="fc"><i>388</i>&nbsp;            numGlyphs = buffer.getChar(4); // offset 4 bytes in MAXP table.</b>
+<i>389</i>&nbsp;        }
+<b class="fc"><i>390</i>&nbsp;        return numGlyphs;</b>
+<i>391</i>&nbsp;    }
+<i>392</i>&nbsp;
+<i>393</i>&nbsp;    protected boolean isCFF() {
+<b class="nc"><i>394</i>&nbsp;        return isCFF;</b>
+<i>395</i>&nbsp;    }
+<i>396</i>&nbsp;
+<i>397</i>&nbsp;    private Object peer;
+<i>398</i>&nbsp;    public Object getPeer() {
+<b class="nc"><i>399</i>&nbsp;        return peer;</b>
+<i>400</i>&nbsp;    }
+<i>401</i>&nbsp;
+<i>402</i>&nbsp;    public void setPeer(Object peer) {
+<b class="nc"><i>403</i>&nbsp;        this.peer = peer;</b>
+<b class="nc"><i>404</i>&nbsp;    }</b>
+<i>405</i>&nbsp;
+<i>406</i>&nbsp;    synchronized Buffer readTable(int tag) {
+<b class="fc"><i>407</i>&nbsp;        Buffer buffer = null;</b>
+<b class="fc"><i>408</i>&nbsp;        boolean openedFile = false;</b>
+<i>409</i>&nbsp;        try {
+<b class="fc"><i>410</i>&nbsp;            openedFile = filereader.openFile();</b>
+<b class="fc"><i>411</i>&nbsp;            DirectoryEntry tagDE = getDirectoryEntry(tag);</b>
+<b class="fc"><i>412</i>&nbsp;            if (tagDE != null) {</b>
+<b class="fc"><i>413</i>&nbsp;                buffer = filereader.readBlock(tagDE.offset, tagDE.length);</b>
+<i>414</i>&nbsp;            }
+<b class="nc"><i>415</i>&nbsp;        } catch (Exception e) {</b>
+<b class="nc"><i>416</i>&nbsp;            if (PrismFontFactory.debugFonts) {</b>
+<b class="nc"><i>417</i>&nbsp;                e.printStackTrace();</b>
+<i>418</i>&nbsp;            }
+<i>419</i>&nbsp;        } finally {
+<b class="fc"><i>420</i>&nbsp;            if (openedFile) {</b>
+<i>421</i>&nbsp;                try {
+<b class="fc"><i>422</i>&nbsp;                    filereader.closeFile();</b>
+<b class="nc"><i>423</i>&nbsp;                } catch (Exception e2) {</b>
+<b class="fc"><i>424</i>&nbsp;                }</b>
+<i>425</i>&nbsp;            }
+<i>426</i>&nbsp;        }
+<b class="fc"><i>427</i>&nbsp;        return buffer;</b>
+<i>428</i>&nbsp;    }
+<i>429</i>&nbsp;
+<b class="fc"><i>430</i>&nbsp;    int directoryCount = 1;</b>
+<i>431</i>&nbsp;
+<i>432</i>&nbsp;    /**
+<i>433</i>&nbsp;     * @return number of logical fonts. Is &quot;1&quot; for all but TTC files
+<i>434</i>&nbsp;     */
+<i>435</i>&nbsp;    public int getFontCount() {
+<b class="nc"><i>436</i>&nbsp;        return directoryCount;</b>
+<i>437</i>&nbsp;    }
+<i>438</i>&nbsp;
+<i>439</i>&nbsp;    int numTables;
+<i>440</i>&nbsp;    DirectoryEntry[] tableDirectory;
+<b class="fc"><i>441</i>&nbsp;    static class DirectoryEntry {</b>
+<i>442</i>&nbsp;        int tag;
+<i>443</i>&nbsp;        int offset;
+<i>444</i>&nbsp;        int length;
+<i>445</i>&nbsp;    }
+<i>446</i>&nbsp;
+<i>447</i>&nbsp;    DirectoryEntry getDirectoryEntry(int tag) {
+<b class="fc"><i>448</i>&nbsp;        for (int i=0;i&lt;numTables;i++) {</b>
+<b class="fc"><i>449</i>&nbsp;            if (tableDirectory[i].tag == tag) {</b>
+<b class="fc"><i>450</i>&nbsp;                return tableDirectory[i];</b>
+<i>451</i>&nbsp;            }
+<i>452</i>&nbsp;        }
+<b class="nc"><i>453</i>&nbsp;        return null;</b>
+<i>454</i>&nbsp;    }
+<i>455</i>&nbsp;
+<i>456</i>&nbsp;    /* Called from the constructor. Does the basic work of finding
+<i>457</i>&nbsp;     * the right font in a TTC, the font names and enough info
+<i>458</i>&nbsp;     * (the table offset directory) to be able to locate tables later.
+<i>459</i>&nbsp;     * Throws an exception if it doesn&#39;t like what it finds.
+<i>460</i>&nbsp;     */
+<i>461</i>&nbsp;    private void init(String name, int fIndex) throws Exception {
+<b class="fc"><i>462</i>&nbsp;        filereader = new FontFileReader(filename);</b>
+<b class="fc"><i>463</i>&nbsp;        WoffDecoder decoder = null;</b>
+<i>464</i>&nbsp;        try {
+<b class="fc"><i>465</i>&nbsp;            if (!filereader.openFile()) {</b>
+<b class="nc"><i>466</i>&nbsp;                throw new FileNotFoundException(&quot;Unable to create FontResource&quot;</b>
+<i>467</i>&nbsp;                        + &quot; for file &quot; + filename);
+<i>468</i>&nbsp;            }
+<b class="fc"><i>469</i>&nbsp;            Buffer buffer = filereader.readBlock(0, TTCHEADERSIZE);</b>
+<b class="fc"><i>470</i>&nbsp;            int sfntTag = buffer.getInt();</b>
+<i>471</i>&nbsp;
+<i>472</i>&nbsp;            /* Handle wOFF files */
+<b class="fc"><i>473</i>&nbsp;            if (sfntTag == woffTag) {</b>
+<b class="nc"><i>474</i>&nbsp;                decoder = new WoffDecoder();</b>
+<b class="nc"><i>475</i>&nbsp;                File file = decoder.openFile();</b>
+<b class="nc"><i>476</i>&nbsp;                decoder.decode(filereader);</b>
+<b class="nc"><i>477</i>&nbsp;                decoder.closeFile();</b>
+<i>478</i>&nbsp;
+<i>479</i>&nbsp;                /* Create a new reader with the decoded file */
+<b class="nc"><i>480</i>&nbsp;                filereader.closeFile();</b>
+<b class="nc"><i>481</i>&nbsp;                filereader = new FontFileReader(file.getPath());</b>
+<b class="nc"><i>482</i>&nbsp;                if (!filereader.openFile()) {</b>
+<b class="nc"><i>483</i>&nbsp;                    throw new FileNotFoundException(&quot;Unable to create &quot;</b>
+<i>484</i>&nbsp;                            + &quot;FontResource for file &quot; + filename);
+<i>485</i>&nbsp;                }
+<b class="nc"><i>486</i>&nbsp;                buffer = filereader.readBlock(0, TTCHEADERSIZE);</b>
+<b class="nc"><i>487</i>&nbsp;                sfntTag = buffer.getInt();</b>
+<i>488</i>&nbsp;            }
+<i>489</i>&nbsp;
+<b class="fc"><i>490</i>&nbsp;            filesize = (int)filereader.getLength();</b>
+<b class="fc"><i>491</i>&nbsp;            int headerOffset = 0;</b>
+<b class="fc"><i>492</i>&nbsp;            if (sfntTag == ttcfTag) {</b>
+<b class="nc"><i>493</i>&nbsp;                buffer.getInt(); // skip TTC version ID</b>
+<b class="nc"><i>494</i>&nbsp;                directoryCount = buffer.getInt();</b>
+<b class="nc"><i>495</i>&nbsp;                if (fIndex &gt;= directoryCount) {</b>
+<b class="nc"><i>496</i>&nbsp;                    throw new Exception(&quot;Bad collection index&quot;);</b>
+<i>497</i>&nbsp;                }
+<b class="nc"><i>498</i>&nbsp;                fontIndex = fIndex;</b>
+<b class="nc"><i>499</i>&nbsp;                buffer = filereader.readBlock(TTCHEADERSIZE+4*fIndex, 4);</b>
+<b class="nc"><i>500</i>&nbsp;                headerOffset = buffer.getInt();</b>
+<b class="nc"><i>501</i>&nbsp;                buffer = filereader.readBlock(headerOffset, 4);</b>
+<b class="nc"><i>502</i>&nbsp;                sfntTag = buffer.getInt();</b>
+<i>503</i>&nbsp;            }
+<i>504</i>&nbsp;
+<b class="fc"><i>505</i>&nbsp;            switch (sfntTag) {</b>
+<i>506</i>&nbsp;            case v1ttTag:
+<i>507</i>&nbsp;            case trueTag:
+<b class="fc"><i>508</i>&nbsp;                break;</b>
+<i>509</i>&nbsp;
+<i>510</i>&nbsp;            case ottoTag:
+<b class="nc"><i>511</i>&nbsp;                isCFF = true;</b>
+<b class="nc"><i>512</i>&nbsp;                break;</b>
+<i>513</i>&nbsp;
+<i>514</i>&nbsp;            default:
+<b class="nc"><i>515</i>&nbsp;                throw new Exception(&quot;Unsupported sfnt &quot; + filename);</b>
+<i>516</i>&nbsp;            }
+<i>517</i>&nbsp;
+<i>518</i>&nbsp;            /* Now have the offset of this TT font (possibly within a TTC)
+<i>519</i>&nbsp;             * After the TT version/scaler type field, is the short
+<i>520</i>&nbsp;             * representing the number of tables in the table directory.
+<i>521</i>&nbsp;             * The table directory begins at 12 bytes after the header.
+<i>522</i>&nbsp;             * Each table entry is 16 bytes long (4 32-bit ints)
+<i>523</i>&nbsp;             */
+<b class="fc"><i>524</i>&nbsp;            buffer = filereader.readBlock(headerOffset+4, 2);</b>
+<b class="fc"><i>525</i>&nbsp;            numTables = buffer.getShort();</b>
+<b class="fc"><i>526</i>&nbsp;            int directoryOffset = headerOffset+DIRECTORYHEADERSIZE;</b>
+<b class="fc"><i>527</i>&nbsp;            Buffer ibuffer = filereader.</b>
+<b class="fc"><i>528</i>&nbsp;                    readBlock(directoryOffset, numTables*DIRECTORYENTRYSIZE);</b>
+<i>529</i>&nbsp;            DirectoryEntry table;
+<b class="fc"><i>530</i>&nbsp;            tableDirectory = new DirectoryEntry[numTables];</b>
+<b class="fc"><i>531</i>&nbsp;            for (int i=0; i&lt;numTables;i++) {</b>
+<b class="fc"><i>532</i>&nbsp;                tableDirectory[i] = table = new DirectoryEntry();</b>
+<b class="fc"><i>533</i>&nbsp;                table.tag   =  ibuffer.getInt();</b>
+<b class="fc"><i>534</i>&nbsp;                /* checksum */ ibuffer.skip(4);</b>
+<b class="fc"><i>535</i>&nbsp;                table.offset = ibuffer.getInt();</b>
+<b class="fc"><i>536</i>&nbsp;                table.length = ibuffer.getInt();</b>
+<b class="fc"><i>537</i>&nbsp;                if (table.offset + table.length &gt; filesize) {</b>
+<b class="nc"><i>538</i>&nbsp;                    throw new Exception(&quot;bad table, tag=&quot;+table.tag);</b>
+<i>539</i>&nbsp;                }
+<i>540</i>&nbsp;            }
+<i>541</i>&nbsp;
+<b class="fc"><i>542</i>&nbsp;            DirectoryEntry headDE = getDirectoryEntry(headTag);</b>
+<b class="fc"><i>543</i>&nbsp;            Buffer headTable = filereader.readBlock(headDE.offset,</b>
+<i>544</i>&nbsp;                                                    headDE.length);
+<i>545</i>&nbsp;            // Important font attribute must be set in order to prevent div by zero
+<b class="fc"><i>546</i>&nbsp;            upem = (float)(headTable.getShort(18) &amp; 0xffff);</b>
+<b class="fc"><i>547</i>&nbsp;            if (!(16 &lt;= upem &amp;&amp; upem &lt;= 16384)) {</b>
+<b class="nc"><i>548</i>&nbsp;                upem = 2048;</b>
+<i>549</i>&nbsp;            }
+<i>550</i>&nbsp;
+<b class="fc"><i>551</i>&nbsp;            indexToLocFormat = headTable.getShort(50);</b>
+<i>552</i>&nbsp;            // 0 for short offsets, 1 for long
+<b class="fc"><i>553</i>&nbsp;            if (indexToLocFormat &lt; 0 || indexToLocFormat &gt; 1) {</b>
+<b class="nc"><i>554</i>&nbsp;                throw new Exception(&quot;Bad indexToLocFormat&quot;);</b>
+<i>555</i>&nbsp;            }
+<i>556</i>&nbsp;
+<i>557</i>&nbsp;            // In a conventional optimised layout, the
+<i>558</i>&nbsp;            // hhea table immediately follows the &#39;head&#39; table.
+<b class="fc"><i>559</i>&nbsp;            Buffer hhea = readTable(hheaTag);</b>
+<b class="fc"><i>560</i>&nbsp;            if (hhea == null) {</b>
+<b class="nc"><i>561</i>&nbsp;                numHMetrics = -1;</b>
+<i>562</i>&nbsp;            } else {
+<i>563</i>&nbsp;                // the font table has the sign of ascent and descent
+<i>564</i>&nbsp;                // reversed from our coordinate system.
+<b class="fc"><i>565</i>&nbsp;                ascent = -(float)hhea.getShort(4);</b>
+<b class="fc"><i>566</i>&nbsp;                descent = -(float)hhea.getShort(6);</b>
+<b class="fc"><i>567</i>&nbsp;                linegap = (float)hhea.getShort(8);</b>
+<i>568</i>&nbsp;                // advanceWidthMax is max horizontal advance of all glyphs in
+<i>569</i>&nbsp;                // font. For some fonts advanceWidthMax is much larger then &quot;M&quot;
+<i>570</i>&nbsp;                // advanceWidthMax = (float)hhea.getChar(10);
+<b class="fc"><i>571</i>&nbsp;                numHMetrics = hhea.getChar(34) &amp; 0xffff;</b>
+<i>572</i>&nbsp;            }
+<i>573</i>&nbsp;
+<i>574</i>&nbsp;            // maxp table is before the OS/2 table. Read it now
+<i>575</i>&nbsp;            // while file is open - will be very cheap as its just
+<i>576</i>&nbsp;            // 32 bytes and we already have it in a byte[].
+<b class="fc"><i>577</i>&nbsp;            getNumGlyphs();</b>
+<i>578</i>&nbsp;
+<b class="fc"><i>579</i>&nbsp;            setStyle();</b>
+<i>580</i>&nbsp;
+<i>581</i>&nbsp;            // sanity check the cmap table
+<b class="fc"><i>582</i>&nbsp;            checkCMAP();</b>
+<i>583</i>&nbsp;
+<i>584</i>&nbsp;            /* Get names last, as the name table is far from the file header.
+<i>585</i>&nbsp;             * Although its also likely too big to fit in the read cache
+<i>586</i>&nbsp;             * in which case that would remain valid, but also will help
+<i>587</i>&nbsp;             * any file read implementation which doesn&#39;t have random access.
+<i>588</i>&nbsp;             */
+<b class="fc"><i>589</i>&nbsp;            initNames();</b>
+<i>590</i>&nbsp;
+<b class="fc"><i>591</i>&nbsp;            if (familyName == null || fullName == null) {</b>
+<b class="nc"><i>592</i>&nbsp;                String fontName = name != null ? name : &quot;&quot;;</b>
+<b class="nc"><i>593</i>&nbsp;                if (fullName == null) {</b>
+<b class="nc"><i>594</i>&nbsp;                    fullName = familyName != null ? familyName : fontName;</b>
+<i>595</i>&nbsp;                }
+<b class="nc"><i>596</i>&nbsp;                if (familyName == null) {</b>
+<b class="nc"><i>597</i>&nbsp;                    familyName = fullName != null ? fullName : fontName;</b>
+<i>598</i>&nbsp;                }
+<b class="nc"><i>599</i>&nbsp;                throw new Exception(&quot;Font name not found.&quot;);</b>
+<i>600</i>&nbsp;            }
+<i>601</i>&nbsp;
+<i>602</i>&nbsp;            /* update the font resource only if the file was decoded
+<i>603</i>&nbsp;             * and initialized successfully.
+<i>604</i>&nbsp;             */
+<b class="fc"><i>605</i>&nbsp;            if (decoder != null) {</b>
+<b class="nc"><i>606</i>&nbsp;                isDecoded = true;</b>
+<b class="nc"><i>607</i>&nbsp;                filename = filereader.getFilename();</b>
+<b class="nc"><i>608</i>&nbsp;                PrismFontFactory.getFontFactory().addDecodedFont(this);</b>
+<i>609</i>&nbsp;            }
+<b class="nc"><i>610</i>&nbsp;        } catch (Exception e) {</b>
+<b class="nc"><i>611</i>&nbsp;            if (decoder != null) {</b>
+<b class="nc"><i>612</i>&nbsp;                decoder.deleteFile();</b>
+<i>613</i>&nbsp;            }
+<b class="nc"><i>614</i>&nbsp;            throw e;</b>
+<i>615</i>&nbsp;        } finally {
+<b class="fc"><i>616</i>&nbsp;            filereader.closeFile();</b>
+<b class="fc"><i>617</i>&nbsp;        }</b>
+<b class="fc"><i>618</i>&nbsp;    }</b>
+<i>619</i>&nbsp;
+<i>620</i>&nbsp;    /* TrueTypeFont can use the fsSelection fields of OS/2 table
+<i>621</i>&nbsp;     * or macStyleBits of the &#39;head&#39; table to determine the style.
+<i>622</i>&nbsp;     */
+<i>623</i>&nbsp;    private static final int fsSelectionItalicBit  = 0x00001;
+<i>624</i>&nbsp;    private static final int fsSelectionBoldBit    = 0x00020;
+<i>625</i>&nbsp;
+<i>626</i>&nbsp;    private static final int MACSTYLE_BOLD_BIT   = 0x1;
+<i>627</i>&nbsp;    private static final int MACSTYLE_ITALIC_BIT = 0x2;
+<i>628</i>&nbsp;
+<i>629</i>&nbsp;    // Comment out some of this until we have both a need and a way to use it.
+<i>630</i>&nbsp;    // private int embeddingInfo;
+<i>631</i>&nbsp;    //private int fontWeight;
+<i>632</i>&nbsp;    private boolean isBold;
+<i>633</i>&nbsp;    private boolean isItalic;
+<i>634</i>&nbsp;    private float upem;
+<i>635</i>&nbsp;    private float ascent, descent, linegap; // in design units
+<i>636</i>&nbsp;    private int numHMetrics;
+<i>637</i>&nbsp;
+<i>638</i>&nbsp;    private void setStyle() {
+<i>639</i>&nbsp;        // A number of fonts on Mac OS X do not have an OS/2
+<i>640</i>&nbsp;        // table. For those need to get info from a different source.
+<b class="fc"><i>641</i>&nbsp;        DirectoryEntry os2_DE = getDirectoryEntry(os_2Tag);</b>
+<b class="fc"><i>642</i>&nbsp;        if (os2_DE != null) {</b>
+<i>643</i>&nbsp;            // os2 Table ver 4      DataType    Offset
+<i>644</i>&nbsp;            //version               USHORT      0
+<i>645</i>&nbsp;            //xAvgCharWidth         SHORT       2
+<i>646</i>&nbsp;            //usWeightClass         USHORT      4
+<i>647</i>&nbsp;            //usWidthClass          USHORT      6
+<i>648</i>&nbsp;            //fsType                USHORT      8
+<i>649</i>&nbsp;            //ySubscriptXSize       SHORT      10
+<i>650</i>&nbsp;            //ySubscriptYSize       SHORT      12
+<i>651</i>&nbsp;            //ySubscriptXOffset     SHORT      14
+<i>652</i>&nbsp;            //ySubscriptYOffset     SHORT      16
+<i>653</i>&nbsp;            //ySuperscriptXSize     SHORT      18
+<i>654</i>&nbsp;            //ySuperscriptYSize     SHORT      20
+<i>655</i>&nbsp;            //ySuperscriptXOffset   SHORT      22
+<i>656</i>&nbsp;            //ySuperscriptYOffset   SHORT      24
+<i>657</i>&nbsp;            //yStrikeoutSize        SHORT      26
+<i>658</i>&nbsp;            //yStrikeoutPosition    SHORT      28
+<i>659</i>&nbsp;            //sFamilyClass          SHORT      30
+<i>660</i>&nbsp;            //panose[10]            BYTE       32
+<i>661</i>&nbsp;            //ulUnicodeRange1       ULONG      42
+<i>662</i>&nbsp;            //ulUnicodeRange2       ULONG      46
+<i>663</i>&nbsp;            //ulUnicodeRange3       ULONG      50
+<i>664</i>&nbsp;            //ulUnicodeRange4       ULONG      54
+<i>665</i>&nbsp;            //achVendID[4]          CHAR       58
+<i>666</i>&nbsp;            //fsSelection           USHORT     62
+<i>667</i>&nbsp;            //usFirstCharIndex      USHORT     64
+<i>668</i>&nbsp;            //usLastCharIndex       USHORT     66
+<i>669</i>&nbsp;            //sTypoAscender         SHORT      68
+<i>670</i>&nbsp;            //sTypoDescender        SHORT      70
+<i>671</i>&nbsp;            //sTypoLineGap          SHORT      72
+<i>672</i>&nbsp;            //usWinAscent           USHORT     74
+<i>673</i>&nbsp;            //usWinDescent          USHORT     76
+<i>674</i>&nbsp;            //ulCodePageRange1      ULONG      78
+<i>675</i>&nbsp;            //ulCodePageRange2      ULONG      82
+<i>676</i>&nbsp;            //sxHeight              SHORT      86
+<i>677</i>&nbsp;            //sCapHeight            SHORT      88
+<i>678</i>&nbsp;            //usDefaultChar         USHORT     90
+<i>679</i>&nbsp;            //usBreakChar           USHORT     92
+<i>680</i>&nbsp;            //usMaxContext          USHORT     94
+<i>681</i>&nbsp;
+<b class="fc"><i>682</i>&nbsp;            Buffer os_2Table = filereader.readBlock(os2_DE.offset,</b>
+<i>683</i>&nbsp;                                                    os2_DE.length);
+<b class="fc"><i>684</i>&nbsp;            int fsSelection = os_2Table.getChar(62) &amp; 0xffff;</b>
+<b class="fc"><i>685</i>&nbsp;            isItalic = (fsSelection &amp; fsSelectionItalicBit) != 0;</b>
+<b class="fc"><i>686</i>&nbsp;            isBold   = (fsSelection &amp; fsSelectionBoldBit) != 0;</b>
+<b class="fc"><i>687</i>&nbsp;        } else {</b>
+<b class="nc"><i>688</i>&nbsp;            DirectoryEntry headDE = getDirectoryEntry(headTag);</b>
+<b class="nc"><i>689</i>&nbsp;            Buffer headTable = filereader.readBlock(headDE.offset,</b>
+<i>690</i>&nbsp;                                                    headDE.length);
+<b class="nc"><i>691</i>&nbsp;            short macStyleBits = headTable.getShort(44);</b>
+<b class="nc"><i>692</i>&nbsp;            isItalic = (macStyleBits &amp; MACSTYLE_ITALIC_BIT) != 0;</b>
+<b class="nc"><i>693</i>&nbsp;            isBold = (macStyleBits &amp; MACSTYLE_BOLD_BIT) != 0;</b>
+<i>694</i>&nbsp;        }
+<b class="fc"><i>695</i>&nbsp;    }</b>
+<i>696</i>&nbsp;
+<i>697</i>&nbsp;    public boolean isBold() {
+<b class="fc"><i>698</i>&nbsp;        return isBold;</b>
+<i>699</i>&nbsp;    }
+<i>700</i>&nbsp;
+<i>701</i>&nbsp;    public boolean isItalic() {
+<b class="fc"><i>702</i>&nbsp;        return isItalic;</b>
+<i>703</i>&nbsp;    }
+<i>704</i>&nbsp;
+<i>705</i>&nbsp;    public boolean isDecoded() {
+<b class="nc"><i>706</i>&nbsp;        return isDecoded;</b>
+<i>707</i>&nbsp;    }
+<i>708</i>&nbsp;
+<i>709</i>&nbsp;    public boolean isRegistered() {
+<b class="nc"><i>710</i>&nbsp;        return isRegistered;</b>
+<i>711</i>&nbsp;    }
+<i>712</i>&nbsp;
+<i>713</i>&nbsp;    public boolean isEmbeddedFont() {
+<b class="fc"><i>714</i>&nbsp;        return isEmbedded;</b>
+<i>715</i>&nbsp;    }
+<i>716</i>&nbsp;
+<i>717</i>&nbsp;    /**
+<i>718</i>&nbsp;     * per the OT spec. this is an unsigned short.
+<i>719</i>&nbsp;     */
+<i>720</i>&nbsp;    public int getUnitsPerEm() {
+<b class="fc"><i>721</i>&nbsp;        return (int)upem;</b>
+<i>722</i>&nbsp;    }
+<i>723</i>&nbsp;
+<i>724</i>&nbsp;    public short getIndexToLocFormat() {
+<b class="nc"><i>725</i>&nbsp;        return indexToLocFormat;</b>
+<i>726</i>&nbsp;    }
+<i>727</i>&nbsp;
+<i>728</i>&nbsp;    /**
+<i>729</i>&nbsp;     * per the OT spec. this is an unsigned short.
+<i>730</i>&nbsp;     */
+<i>731</i>&nbsp;    public int getNumHMetrics() {
+<b class="nc"><i>732</i>&nbsp;        return numHMetrics;</b>
+<i>733</i>&nbsp;    }
+<i>734</i>&nbsp;
+<i>735</i>&nbsp;    /* -- ID&#39;s used in the &#39;name&#39; table */
+<i>736</i>&nbsp;    public static final int MAC_PLATFORM_ID = 1;
+<i>737</i>&nbsp;    public static final int MACROMAN_SPECIFIC_ID = 0;
+<i>738</i>&nbsp;    public static final int MACROMAN_ENGLISH_LANG = 0;
+<i>739</i>&nbsp;
+<i>740</i>&nbsp;    public static final int MS_PLATFORM_ID = 3;
+<i>741</i>&nbsp;    /* MS locale id for US English is the &quot;default&quot; */
+<i>742</i>&nbsp;    public static final short MS_ENGLISH_LOCALE_ID = 0x0409; // 1033 decimal
+<i>743</i>&nbsp;    public static final int FAMILY_NAME_ID = 1;
+<i>744</i>&nbsp;    public static final int STYLE_NAME_ID = 2;
+<i>745</i>&nbsp;    public static final int FULL_NAME_ID = 4;
+<i>746</i>&nbsp;    public static final int PS_NAME_ID = 6;
+<i>747</i>&nbsp;
+<i>748</i>&nbsp;    void initNames() throws Exception {
+<b class="fc"><i>749</i>&nbsp;        byte[] name = new byte[256];</b>
+<i>750</i>&nbsp;
+<b class="fc"><i>751</i>&nbsp;        DirectoryEntry nameDE = getDirectoryEntry(nameTag);</b>
+<b class="fc"><i>752</i>&nbsp;        Buffer buffer = filereader.readBlock(nameDE.offset, nameDE.length);</b>
+<i>753</i>&nbsp;
+<b class="fc"><i>754</i>&nbsp;        buffer.skip(2); // format - not needed.</b>
+<b class="fc"><i>755</i>&nbsp;        short numRecords = buffer.getShort();</b>
+<i>756</i>&nbsp;        /* The name table uses unsigned shorts. Many of these
+<i>757</i>&nbsp;         * are known small values that fit in a short.
+<i>758</i>&nbsp;         * The values that are sizes or offsets into the table could be
+<i>759</i>&nbsp;         * greater than 32767, so read and store those as ints
+<i>760</i>&nbsp;         */
+<b class="fc"><i>761</i>&nbsp;        int stringPtr = buffer.getShort() &amp; 0xffff;</b>
+<i>762</i>&nbsp;
+<i>763</i>&nbsp;        /* Microsoft Windows font names are preferred but numerous Mac
+<i>764</i>&nbsp;         * fonts do not have these, so we must also accept these in the
+<i>765</i>&nbsp;         * absence of the preferred Windows names.
+<i>766</i>&nbsp;         */
+<b class="fc"><i>767</i>&nbsp;        for (int i=0; i&lt;numRecords; i++) {</b>
+<b class="fc"><i>768</i>&nbsp;            short platformID = buffer.getShort();</b>
+<b class="fc"><i>769</i>&nbsp;            if (platformID != MS_PLATFORM_ID &amp;&amp;</b>
+<i>770</i>&nbsp;                platformID != MAC_PLATFORM_ID) {
+<b class="nc"><i>771</i>&nbsp;                buffer.skip(10);</b>
+<b class="nc"><i>772</i>&nbsp;                continue; // skip over this record.</b>
+<i>773</i>&nbsp;            }
+<b class="fc"><i>774</i>&nbsp;            short encodingID = buffer.getShort();</b>
+<i>775</i>&nbsp;            // only want UTF-16 (inc. symbol) encodingIDs for Windows,
+<i>776</i>&nbsp;            // or MacRoman on Mac.
+<b class="fc"><i>777</i>&nbsp;            if ((platformID == MS_PLATFORM_ID &amp;&amp; encodingID &gt; 1) ||</b>
+<i>778</i>&nbsp;                (platformID == MAC_PLATFORM_ID &amp;&amp;
+<i>779</i>&nbsp;                 encodingID != MACROMAN_SPECIFIC_ID)) {
+<b class="nc"><i>780</i>&nbsp;                buffer.skip(8);</b>
+<b class="nc"><i>781</i>&nbsp;                continue;</b>
+<i>782</i>&nbsp;            }
+<b class="fc"><i>783</i>&nbsp;            short langID     = buffer.getShort();</b>
+<b class="fc"><i>784</i>&nbsp;            if (platformID == MAC_PLATFORM_ID &amp;&amp;</b>
+<i>785</i>&nbsp;                langID != MACROMAN_ENGLISH_LANG) {
+<b class="nc"><i>786</i>&nbsp;                buffer.skip(6);</b>
+<b class="nc"><i>787</i>&nbsp;                continue;</b>
+<i>788</i>&nbsp;            }
+<b class="fc"><i>789</i>&nbsp;            short nameID     = buffer.getShort();</b>
+<b class="fc"><i>790</i>&nbsp;            int nameLen    = ((int)buffer.getShort()) &amp; 0xffff;</b>
+<b class="fc"><i>791</i>&nbsp;            int namePtr    = (((int)buffer.getShort()) &amp; 0xffff) + stringPtr;</b>
+<b class="fc"><i>792</i>&nbsp;            String tmpName = null;</b>
+<i>793</i>&nbsp;            String enc;
+<b class="fc"><i>794</i>&nbsp;            switch (nameID) {</b>
+<i>795</i>&nbsp;
+<i>796</i>&nbsp;            case FAMILY_NAME_ID:
+<i>797</i>&nbsp;
+<b class="fc"><i>798</i>&nbsp;                if (familyName == null || langID == MS_ENGLISH_LOCALE_ID ||</b>
+<i>799</i>&nbsp;                    langID == nameLocaleID)
+<i>800</i>&nbsp;                    {
+<b class="fc"><i>801</i>&nbsp;                        buffer.get(namePtr, name, 0, nameLen);</b>
+<b class="fc"><i>802</i>&nbsp;                        if (platformID == MAC_PLATFORM_ID) {</b>
+<b class="nc"><i>803</i>&nbsp;                            enc = &quot;US-ASCII&quot;;</b>
+<i>804</i>&nbsp;                        } else {
+<b class="fc"><i>805</i>&nbsp;                            enc = &quot;UTF-16BE&quot;;</b>
+<i>806</i>&nbsp;                        }
+<b class="fc"><i>807</i>&nbsp;                        tmpName = new String(name, 0, nameLen, enc);</b>
+<i>808</i>&nbsp;
+<b class="fc"><i>809</i>&nbsp;                        if (familyName == null ||</b>
+<i>810</i>&nbsp;                            langID == MS_ENGLISH_LOCALE_ID){
+<b class="fc"><i>811</i>&nbsp;                            familyName = tmpName;</b>
+<i>812</i>&nbsp;                        }
+<b class="fc"><i>813</i>&nbsp;                        if (langID == nameLocaleID) {</b>
+<b class="fc"><i>814</i>&nbsp;                            localeFamilyName = tmpName;</b>
+<i>815</i>&nbsp;                        }
+<i>816</i>&nbsp;                    }
+<i>817</i>&nbsp;                    break;
+<i>818</i>&nbsp;
+<i>819</i>&nbsp;                case FULL_NAME_ID:
+<i>820</i>&nbsp;
+<b class="fc"><i>821</i>&nbsp;                    if (fullName == null ||</b>
+<i>822</i>&nbsp;                        langID == MS_ENGLISH_LOCALE_ID ||
+<i>823</i>&nbsp;                        langID == nameLocaleID)
+<i>824</i>&nbsp;                    {
+<b class="fc"><i>825</i>&nbsp;                        buffer.get(namePtr, name, 0, nameLen);</b>
+<b class="fc"><i>826</i>&nbsp;                        if (platformID == MAC_PLATFORM_ID) {</b>
+<b class="nc"><i>827</i>&nbsp;                            enc = &quot;US-ASCII&quot;;</b>
+<i>828</i>&nbsp;                        } else {
+<b class="fc"><i>829</i>&nbsp;                            enc = &quot;UTF-16BE&quot;;</b>
+<i>830</i>&nbsp;                        }
+<b class="fc"><i>831</i>&nbsp;                        tmpName = new String(name, 0, nameLen, enc);</b>
+<i>832</i>&nbsp;
+<b class="fc"><i>833</i>&nbsp;                        if (fullName == null ||</b>
+<i>834</i>&nbsp;                            langID == MS_ENGLISH_LOCALE_ID) {
+<b class="fc"><i>835</i>&nbsp;                            fullName = tmpName;</b>
+<i>836</i>&nbsp;                        }
+<b class="fc"><i>837</i>&nbsp;                        if (langID == nameLocaleID) {</b>
+<b class="fc"><i>838</i>&nbsp;                            localeFullName = tmpName;</b>
+<i>839</i>&nbsp;                        }
+<i>840</i>&nbsp;                    }
+<i>841</i>&nbsp;                    break;
+<i>842</i>&nbsp;
+<i>843</i>&nbsp;                case PS_NAME_ID:
+<i>844</i>&nbsp;
+<b class="fc"><i>845</i>&nbsp;                    if (psName == null) {</b>
+<b class="fc"><i>846</i>&nbsp;                        buffer.get(namePtr, name, 0, nameLen);</b>
+<b class="fc"><i>847</i>&nbsp;                        if (platformID == MAC_PLATFORM_ID) {</b>
+<b class="nc"><i>848</i>&nbsp;                            enc = &quot;US-ASCII&quot;;</b>
+<i>849</i>&nbsp;                        } else {
+<b class="fc"><i>850</i>&nbsp;                            enc = &quot;UTF-16BE&quot;;</b>
+<i>851</i>&nbsp;                        }
+<b class="fc"><i>852</i>&nbsp;                        psName = new String(name, 0, nameLen, enc);</b>
+<i>853</i>&nbsp;                    }
+<i>854</i>&nbsp;                    break;
+<i>855</i>&nbsp;
+<i>856</i>&nbsp;                case STYLE_NAME_ID:
+<i>857</i>&nbsp;
+<b class="fc"><i>858</i>&nbsp;                    if (styleName == null ||</b>
+<i>859</i>&nbsp;                        langID == MS_ENGLISH_LOCALE_ID ||
+<i>860</i>&nbsp;                        langID == nameLocaleID)
+<i>861</i>&nbsp;                    {
+<b class="fc"><i>862</i>&nbsp;                        buffer.get(namePtr, name, 0, nameLen);</b>
+<b class="fc"><i>863</i>&nbsp;                        if (platformID == MAC_PLATFORM_ID) {</b>
+<b class="nc"><i>864</i>&nbsp;                            enc = &quot;US-ASCII&quot;;</b>
+<i>865</i>&nbsp;                        } else {
+<b class="fc"><i>866</i>&nbsp;                            enc = &quot;UTF-16BE&quot;;</b>
+<i>867</i>&nbsp;                        }
+<b class="fc"><i>868</i>&nbsp;                        tmpName = new String(name, 0, nameLen, enc);</b>
+<i>869</i>&nbsp;
+<b class="fc"><i>870</i>&nbsp;                        if (styleName == null ||</b>
+<i>871</i>&nbsp;                            langID == MS_ENGLISH_LOCALE_ID) {
+<b class="fc"><i>872</i>&nbsp;                            styleName = tmpName;</b>
+<i>873</i>&nbsp;                        }
+<b class="fc"><i>874</i>&nbsp;                        if (langID == nameLocaleID) {</b>
+<b class="fc"><i>875</i>&nbsp;                            localeStyleName = tmpName;</b>
+<i>876</i>&nbsp;                        }
+<i>877</i>&nbsp;                    }
+<i>878</i>&nbsp;                    break;
+<i>879</i>&nbsp;
+<i>880</i>&nbsp;            default:
+<i>881</i>&nbsp;                break;
+<i>882</i>&nbsp;            }
+<i>883</i>&nbsp;
+<b class="fc"><i>884</i>&nbsp;            if (localeFamilyName == null) {</b>
+<b class="fc"><i>885</i>&nbsp;                localeFamilyName = familyName;</b>
+<i>886</i>&nbsp;            }
+<b class="fc"><i>887</i>&nbsp;            if (localeFullName == null) {</b>
+<b class="fc"><i>888</i>&nbsp;                localeFullName = fullName;</b>
+<i>889</i>&nbsp;            }
+<b class="fc"><i>890</i>&nbsp;            if (localeStyleName == null) {</b>
+<b class="fc"><i>891</i>&nbsp;                localeStyleName = styleName;</b>
+<i>892</i>&nbsp;            }
+<i>893</i>&nbsp;        }
+<b class="fc"><i>894</i>&nbsp;    }</b>
+<i>895</i>&nbsp;
+<i>896</i>&nbsp;    private void checkCMAP() throws Exception {
+<b class="fc"><i>897</i>&nbsp;        DirectoryEntry cmapDE = getDirectoryEntry(FontConstants.cmapTag);</b>
+<b class="fc"><i>898</i>&nbsp;        if (cmapDE != null) {</b>
+<b class="fc"><i>899</i>&nbsp;            if (cmapDE.length &lt; 4) {</b>
+<b class="nc"><i>900</i>&nbsp;                throw new Exception(&quot;Invalid cmap table length&quot;);</b>
+<i>901</i>&nbsp;            }
+<b class="fc"><i>902</i>&nbsp;            Buffer cmapTableHeader = filereader.readBlock(cmapDE.offset, 4);</b>
+<b class="fc"><i>903</i>&nbsp;            short version = cmapTableHeader.getShort();</b>
+<b class="fc"><i>904</i>&nbsp;            short numberSubTables = cmapTableHeader.getShort();</b>
+<b class="fc"><i>905</i>&nbsp;            int indexLength = numberSubTables * 8;</b>
+<b class="fc"><i>906</i>&nbsp;            if (numberSubTables &lt;= 0 || cmapDE.length &lt; indexLength + 4) {</b>
+<b class="nc"><i>907</i>&nbsp;                throw new Exception(&quot;Invalid cmap subtables count&quot;);</b>
+<i>908</i>&nbsp;            }
+<b class="fc"><i>909</i>&nbsp;            Buffer cmapTableIndex = filereader.readBlock(cmapDE.offset + 4, indexLength);</b>
+<b class="fc"><i>910</i>&nbsp;            for (int i = 0; i &lt; numberSubTables; i++) {</b>
+<b class="fc"><i>911</i>&nbsp;                short platformID = cmapTableIndex.getShort();</b>
+<b class="fc"><i>912</i>&nbsp;                short encodingID = cmapTableIndex.getShort();</b>
+<b class="fc"><i>913</i>&nbsp;                int offset = cmapTableIndex.getInt();</b>
+<b class="fc"><i>914</i>&nbsp;                if (offset &lt; 0 || offset &gt;= cmapDE.length) {</b>
+<b class="nc"><i>915</i>&nbsp;                    throw new Exception(&quot;Invalid cmap subtable offset&quot;);</b>
+<i>916</i>&nbsp;                }
+<i>917</i>&nbsp;            }
+<i>918</i>&nbsp;        }
+<b class="fc"><i>919</i>&nbsp;    }</b>
+<i>920</i>&nbsp;
+<i>921</i>&nbsp;    /*** BEGIN LOCALE_ID MAPPING ****/
+<i>922</i>&nbsp;
+<i>923</i>&nbsp;    private static Map&lt;String, Short&gt; lcidMap;
+<i>924</i>&nbsp;
+<i>925</i>&nbsp;    // Return a Microsoft LCID from the given Locale.
+<i>926</i>&nbsp;    // Used when getting localized font data.
+<i>927</i>&nbsp;
+<i>928</i>&nbsp;    private static void addLCIDMapEntry(Map&lt;String, Short&gt; map,
+<i>929</i>&nbsp;                                        String key, short value) {
+<b class="nc"><i>930</i>&nbsp;        map.put(key, Short.valueOf(value));</b>
+<b class="nc"><i>931</i>&nbsp;    }</b>
+<i>932</i>&nbsp;
+<i>933</i>&nbsp;    private static synchronized void createLCIDMap() {
+<b class="nc"><i>934</i>&nbsp;        if (lcidMap != null) {</b>
+<b class="nc"><i>935</i>&nbsp;            return;</b>
+<i>936</i>&nbsp;        }
+<i>937</i>&nbsp;
+<b class="nc"><i>938</i>&nbsp;        Map&lt;String, Short&gt; map = new HashMap&lt;String, Short&gt;(200);</b>
+<b class="nc"><i>939</i>&nbsp;        addLCIDMapEntry(map, &quot;ar&quot;, (short) 0x0401);</b>
+<b class="nc"><i>940</i>&nbsp;        addLCIDMapEntry(map, &quot;bg&quot;, (short) 0x0402);</b>
+<b class="nc"><i>941</i>&nbsp;        addLCIDMapEntry(map, &quot;ca&quot;, (short) 0x0403);</b>
+<b class="nc"><i>942</i>&nbsp;        addLCIDMapEntry(map, &quot;zh&quot;, (short) 0x0404);</b>
+<b class="nc"><i>943</i>&nbsp;        addLCIDMapEntry(map, &quot;cs&quot;, (short) 0x0405);</b>
+<b class="nc"><i>944</i>&nbsp;        addLCIDMapEntry(map, &quot;da&quot;, (short) 0x0406);</b>
+<b class="nc"><i>945</i>&nbsp;        addLCIDMapEntry(map, &quot;de&quot;, (short) 0x0407);</b>
+<b class="nc"><i>946</i>&nbsp;        addLCIDMapEntry(map, &quot;el&quot;, (short) 0x0408);</b>
+<b class="nc"><i>947</i>&nbsp;        addLCIDMapEntry(map, &quot;es&quot;, (short) 0x040a);</b>
+<b class="nc"><i>948</i>&nbsp;        addLCIDMapEntry(map, &quot;fi&quot;, (short) 0x040b);</b>
+<b class="nc"><i>949</i>&nbsp;        addLCIDMapEntry(map, &quot;fr&quot;, (short) 0x040c);</b>
+<b class="nc"><i>950</i>&nbsp;        addLCIDMapEntry(map, &quot;iw&quot;, (short) 0x040d);</b>
+<b class="nc"><i>951</i>&nbsp;        addLCIDMapEntry(map, &quot;hu&quot;, (short) 0x040e);</b>
+<b class="nc"><i>952</i>&nbsp;        addLCIDMapEntry(map, &quot;is&quot;, (short) 0x040f);</b>
+<b class="nc"><i>953</i>&nbsp;        addLCIDMapEntry(map, &quot;it&quot;, (short) 0x0410);</b>
+<b class="nc"><i>954</i>&nbsp;        addLCIDMapEntry(map, &quot;ja&quot;, (short) 0x0411);</b>
+<b class="nc"><i>955</i>&nbsp;        addLCIDMapEntry(map, &quot;ko&quot;, (short) 0x0412);</b>
+<b class="nc"><i>956</i>&nbsp;        addLCIDMapEntry(map, &quot;nl&quot;, (short) 0x0413);</b>
+<b class="nc"><i>957</i>&nbsp;        addLCIDMapEntry(map, &quot;no&quot;, (short) 0x0414);</b>
+<b class="nc"><i>958</i>&nbsp;        addLCIDMapEntry(map, &quot;pl&quot;, (short) 0x0415);</b>
+<b class="nc"><i>959</i>&nbsp;        addLCIDMapEntry(map, &quot;pt&quot;, (short) 0x0416);</b>
+<b class="nc"><i>960</i>&nbsp;        addLCIDMapEntry(map, &quot;rm&quot;, (short) 0x0417);</b>
+<b class="nc"><i>961</i>&nbsp;        addLCIDMapEntry(map, &quot;ro&quot;, (short) 0x0418);</b>
+<b class="nc"><i>962</i>&nbsp;        addLCIDMapEntry(map, &quot;ru&quot;, (short) 0x0419);</b>
+<b class="nc"><i>963</i>&nbsp;        addLCIDMapEntry(map, &quot;hr&quot;, (short) 0x041a);</b>
+<b class="nc"><i>964</i>&nbsp;        addLCIDMapEntry(map, &quot;sk&quot;, (short) 0x041b);</b>
+<b class="nc"><i>965</i>&nbsp;        addLCIDMapEntry(map, &quot;sq&quot;, (short) 0x041c);</b>
+<b class="nc"><i>966</i>&nbsp;        addLCIDMapEntry(map, &quot;sv&quot;, (short) 0x041d);</b>
+<b class="nc"><i>967</i>&nbsp;        addLCIDMapEntry(map, &quot;th&quot;, (short) 0x041e);</b>
+<b class="nc"><i>968</i>&nbsp;        addLCIDMapEntry(map, &quot;tr&quot;, (short) 0x041f);</b>
+<b class="nc"><i>969</i>&nbsp;        addLCIDMapEntry(map, &quot;ur&quot;, (short) 0x0420);</b>
+<b class="nc"><i>970</i>&nbsp;        addLCIDMapEntry(map, &quot;in&quot;, (short) 0x0421);</b>
+<b class="nc"><i>971</i>&nbsp;        addLCIDMapEntry(map, &quot;uk&quot;, (short) 0x0422);</b>
+<b class="nc"><i>972</i>&nbsp;        addLCIDMapEntry(map, &quot;be&quot;, (short) 0x0423);</b>
+<b class="nc"><i>973</i>&nbsp;        addLCIDMapEntry(map, &quot;sl&quot;, (short) 0x0424);</b>
+<b class="nc"><i>974</i>&nbsp;        addLCIDMapEntry(map, &quot;et&quot;, (short) 0x0425);</b>
+<b class="nc"><i>975</i>&nbsp;        addLCIDMapEntry(map, &quot;lv&quot;, (short) 0x0426);</b>
+<b class="nc"><i>976</i>&nbsp;        addLCIDMapEntry(map, &quot;lt&quot;, (short) 0x0427);</b>
+<b class="nc"><i>977</i>&nbsp;        addLCIDMapEntry(map, &quot;fa&quot;, (short) 0x0429);</b>
+<b class="nc"><i>978</i>&nbsp;        addLCIDMapEntry(map, &quot;vi&quot;, (short) 0x042a);</b>
+<b class="nc"><i>979</i>&nbsp;        addLCIDMapEntry(map, &quot;hy&quot;, (short) 0x042b);</b>
+<b class="nc"><i>980</i>&nbsp;        addLCIDMapEntry(map, &quot;eu&quot;, (short) 0x042d);</b>
+<b class="nc"><i>981</i>&nbsp;        addLCIDMapEntry(map, &quot;mk&quot;, (short) 0x042f);</b>
+<b class="nc"><i>982</i>&nbsp;        addLCIDMapEntry(map, &quot;tn&quot;, (short) 0x0432);</b>
+<b class="nc"><i>983</i>&nbsp;        addLCIDMapEntry(map, &quot;xh&quot;, (short) 0x0434);</b>
+<b class="nc"><i>984</i>&nbsp;        addLCIDMapEntry(map, &quot;zu&quot;, (short) 0x0435);</b>
+<b class="nc"><i>985</i>&nbsp;        addLCIDMapEntry(map, &quot;af&quot;, (short) 0x0436);</b>
+<b class="nc"><i>986</i>&nbsp;        addLCIDMapEntry(map, &quot;ka&quot;, (short) 0x0437);</b>
+<b class="nc"><i>987</i>&nbsp;        addLCIDMapEntry(map, &quot;fo&quot;, (short) 0x0438);</b>
+<b class="nc"><i>988</i>&nbsp;        addLCIDMapEntry(map, &quot;hi&quot;, (short) 0x0439);</b>
+<b class="nc"><i>989</i>&nbsp;        addLCIDMapEntry(map, &quot;mt&quot;, (short) 0x043a);</b>
+<b class="nc"><i>990</i>&nbsp;        addLCIDMapEntry(map, &quot;se&quot;, (short) 0x043b);</b>
+<b class="nc"><i>991</i>&nbsp;        addLCIDMapEntry(map, &quot;gd&quot;, (short) 0x043c);</b>
+<b class="nc"><i>992</i>&nbsp;        addLCIDMapEntry(map, &quot;ms&quot;, (short) 0x043e);</b>
+<b class="nc"><i>993</i>&nbsp;        addLCIDMapEntry(map, &quot;kk&quot;, (short) 0x043f);</b>
+<b class="nc"><i>994</i>&nbsp;        addLCIDMapEntry(map, &quot;ky&quot;, (short) 0x0440);</b>
+<b class="nc"><i>995</i>&nbsp;        addLCIDMapEntry(map, &quot;sw&quot;, (short) 0x0441);</b>
+<b class="nc"><i>996</i>&nbsp;        addLCIDMapEntry(map, &quot;tt&quot;, (short) 0x0444);</b>
+<b class="nc"><i>997</i>&nbsp;        addLCIDMapEntry(map, &quot;bn&quot;, (short) 0x0445);</b>
+<b class="nc"><i>998</i>&nbsp;        addLCIDMapEntry(map, &quot;pa&quot;, (short) 0x0446);</b>
+<b class="nc"><i>999</i>&nbsp;        addLCIDMapEntry(map, &quot;gu&quot;, (short) 0x0447);</b>
+<b class="nc"><i>1000</i>&nbsp;        addLCIDMapEntry(map, &quot;ta&quot;, (short) 0x0449);</b>
+<b class="nc"><i>1001</i>&nbsp;        addLCIDMapEntry(map, &quot;te&quot;, (short) 0x044a);</b>
+<b class="nc"><i>1002</i>&nbsp;        addLCIDMapEntry(map, &quot;kn&quot;, (short) 0x044b);</b>
+<b class="nc"><i>1003</i>&nbsp;        addLCIDMapEntry(map, &quot;ml&quot;, (short) 0x044c);</b>
+<b class="nc"><i>1004</i>&nbsp;        addLCIDMapEntry(map, &quot;mr&quot;, (short) 0x044e);</b>
+<b class="nc"><i>1005</i>&nbsp;        addLCIDMapEntry(map, &quot;sa&quot;, (short) 0x044f);</b>
+<b class="nc"><i>1006</i>&nbsp;        addLCIDMapEntry(map, &quot;mn&quot;, (short) 0x0450);</b>
+<b class="nc"><i>1007</i>&nbsp;        addLCIDMapEntry(map, &quot;cy&quot;, (short) 0x0452);</b>
+<b class="nc"><i>1008</i>&nbsp;        addLCIDMapEntry(map, &quot;gl&quot;, (short) 0x0456);</b>
+<b class="nc"><i>1009</i>&nbsp;        addLCIDMapEntry(map, &quot;dv&quot;, (short) 0x0465);</b>
+<b class="nc"><i>1010</i>&nbsp;        addLCIDMapEntry(map, &quot;qu&quot;, (short) 0x046b);</b>
+<b class="nc"><i>1011</i>&nbsp;        addLCIDMapEntry(map, &quot;mi&quot;, (short) 0x0481);</b>
+<b class="nc"><i>1012</i>&nbsp;        addLCIDMapEntry(map, &quot;ar_IQ&quot;, (short) 0x0801);</b>
+<b class="nc"><i>1013</i>&nbsp;        addLCIDMapEntry(map, &quot;zh_CN&quot;, (short) 0x0804);</b>
+<b class="nc"><i>1014</i>&nbsp;        addLCIDMapEntry(map, &quot;de_CH&quot;, (short) 0x0807);</b>
+<b class="nc"><i>1015</i>&nbsp;        addLCIDMapEntry(map, &quot;en_GB&quot;, (short) 0x0809);</b>
+<b class="nc"><i>1016</i>&nbsp;        addLCIDMapEntry(map, &quot;es_MX&quot;, (short) 0x080a);</b>
+<b class="nc"><i>1017</i>&nbsp;        addLCIDMapEntry(map, &quot;fr_BE&quot;, (short) 0x080c);</b>
+<b class="nc"><i>1018</i>&nbsp;        addLCIDMapEntry(map, &quot;it_CH&quot;, (short) 0x0810);</b>
+<b class="nc"><i>1019</i>&nbsp;        addLCIDMapEntry(map, &quot;nl_BE&quot;, (short) 0x0813);</b>
+<b class="nc"><i>1020</i>&nbsp;        addLCIDMapEntry(map, &quot;no_NO_NY&quot;, (short) 0x0814);</b>
+<b class="nc"><i>1021</i>&nbsp;        addLCIDMapEntry(map, &quot;pt_PT&quot;, (short) 0x0816);</b>
+<b class="nc"><i>1022</i>&nbsp;        addLCIDMapEntry(map, &quot;ro_MD&quot;, (short) 0x0818);</b>
+<b class="nc"><i>1023</i>&nbsp;        addLCIDMapEntry(map, &quot;ru_MD&quot;, (short) 0x0819);</b>
+<b class="nc"><i>1024</i>&nbsp;        addLCIDMapEntry(map, &quot;sr_CS&quot;, (short) 0x081a);</b>
+<b class="nc"><i>1025</i>&nbsp;        addLCIDMapEntry(map, &quot;sv_FI&quot;, (short) 0x081d);</b>
+<b class="nc"><i>1026</i>&nbsp;        addLCIDMapEntry(map, &quot;az_AZ&quot;, (short) 0x082c);</b>
+<b class="nc"><i>1027</i>&nbsp;        addLCIDMapEntry(map, &quot;se_SE&quot;, (short) 0x083b);</b>
+<b class="nc"><i>1028</i>&nbsp;        addLCIDMapEntry(map, &quot;ga_IE&quot;, (short) 0x083c);</b>
+<b class="nc"><i>1029</i>&nbsp;        addLCIDMapEntry(map, &quot;ms_BN&quot;, (short) 0x083e);</b>
+<b class="nc"><i>1030</i>&nbsp;        addLCIDMapEntry(map, &quot;uz_UZ&quot;, (short) 0x0843);</b>
+<b class="nc"><i>1031</i>&nbsp;        addLCIDMapEntry(map, &quot;qu_EC&quot;, (short) 0x086b);</b>
+<b class="nc"><i>1032</i>&nbsp;        addLCIDMapEntry(map, &quot;ar_EG&quot;, (short) 0x0c01);</b>
+<b class="nc"><i>1033</i>&nbsp;        addLCIDMapEntry(map, &quot;zh_HK&quot;, (short) 0x0c04);</b>
+<b class="nc"><i>1034</i>&nbsp;        addLCIDMapEntry(map, &quot;de_AT&quot;, (short) 0x0c07);</b>
+<b class="nc"><i>1035</i>&nbsp;        addLCIDMapEntry(map, &quot;en_AU&quot;, (short) 0x0c09);</b>
+<b class="nc"><i>1036</i>&nbsp;        addLCIDMapEntry(map, &quot;fr_CA&quot;, (short) 0x0c0c);</b>
+<b class="nc"><i>1037</i>&nbsp;        addLCIDMapEntry(map, &quot;sr_CS&quot;, (short) 0x0c1a);</b>
+<b class="nc"><i>1038</i>&nbsp;        addLCIDMapEntry(map, &quot;se_FI&quot;, (short) 0x0c3b);</b>
+<b class="nc"><i>1039</i>&nbsp;        addLCIDMapEntry(map, &quot;qu_PE&quot;, (short) 0x0c6b);</b>
+<b class="nc"><i>1040</i>&nbsp;        addLCIDMapEntry(map, &quot;ar_LY&quot;, (short) 0x1001);</b>
+<b class="nc"><i>1041</i>&nbsp;        addLCIDMapEntry(map, &quot;zh_SG&quot;, (short) 0x1004);</b>
+<b class="nc"><i>1042</i>&nbsp;        addLCIDMapEntry(map, &quot;de_LU&quot;, (short) 0x1007);</b>
+<b class="nc"><i>1043</i>&nbsp;        addLCIDMapEntry(map, &quot;en_CA&quot;, (short) 0x1009);</b>
+<b class="nc"><i>1044</i>&nbsp;        addLCIDMapEntry(map, &quot;es_GT&quot;, (short) 0x100a);</b>
+<b class="nc"><i>1045</i>&nbsp;        addLCIDMapEntry(map, &quot;fr_CH&quot;, (short) 0x100c);</b>
+<b class="nc"><i>1046</i>&nbsp;        addLCIDMapEntry(map, &quot;hr_BA&quot;, (short) 0x101a);</b>
+<b class="nc"><i>1047</i>&nbsp;        addLCIDMapEntry(map, &quot;ar_DZ&quot;, (short) 0x1401);</b>
+<b class="nc"><i>1048</i>&nbsp;        addLCIDMapEntry(map, &quot;zh_MO&quot;, (short) 0x1404);</b>
+<b class="nc"><i>1049</i>&nbsp;        addLCIDMapEntry(map, &quot;de_LI&quot;, (short) 0x1407);</b>
+<b class="nc"><i>1050</i>&nbsp;        addLCIDMapEntry(map, &quot;en_NZ&quot;, (short) 0x1409);</b>
+<b class="nc"><i>1051</i>&nbsp;        addLCIDMapEntry(map, &quot;es_CR&quot;, (short) 0x140a);</b>
+<b class="nc"><i>1052</i>&nbsp;        addLCIDMapEntry(map, &quot;fr_LU&quot;, (short) 0x140c);</b>
+<b class="nc"><i>1053</i>&nbsp;        addLCIDMapEntry(map, &quot;bs_BA&quot;, (short) 0x141a);</b>
+<b class="nc"><i>1054</i>&nbsp;        addLCIDMapEntry(map, &quot;ar_MA&quot;, (short) 0x1801);</b>
+<b class="nc"><i>1055</i>&nbsp;        addLCIDMapEntry(map, &quot;en_IE&quot;, (short) 0x1809);</b>
+<b class="nc"><i>1056</i>&nbsp;        addLCIDMapEntry(map, &quot;es_PA&quot;, (short) 0x180a);</b>
+<b class="nc"><i>1057</i>&nbsp;        addLCIDMapEntry(map, &quot;fr_MC&quot;, (short) 0x180c);</b>
+<b class="nc"><i>1058</i>&nbsp;        addLCIDMapEntry(map, &quot;sr_BA&quot;, (short) 0x181a);</b>
+<b class="nc"><i>1059</i>&nbsp;        addLCIDMapEntry(map, &quot;ar_TN&quot;, (short) 0x1c01);</b>
+<b class="nc"><i>1060</i>&nbsp;        addLCIDMapEntry(map, &quot;en_ZA&quot;, (short) 0x1c09);</b>
+<b class="nc"><i>1061</i>&nbsp;        addLCIDMapEntry(map, &quot;es_DO&quot;, (short) 0x1c0a);</b>
+<b class="nc"><i>1062</i>&nbsp;        addLCIDMapEntry(map, &quot;sr_BA&quot;, (short) 0x1c1a);</b>
+<b class="nc"><i>1063</i>&nbsp;        addLCIDMapEntry(map, &quot;ar_OM&quot;, (short) 0x2001);</b>
+<b class="nc"><i>1064</i>&nbsp;        addLCIDMapEntry(map, &quot;en_JM&quot;, (short) 0x2009);</b>
+<b class="nc"><i>1065</i>&nbsp;        addLCIDMapEntry(map, &quot;es_VE&quot;, (short) 0x200a);</b>
+<b class="nc"><i>1066</i>&nbsp;        addLCIDMapEntry(map, &quot;ar_YE&quot;, (short) 0x2401);</b>
+<b class="nc"><i>1067</i>&nbsp;        addLCIDMapEntry(map, &quot;es_CO&quot;, (short) 0x240a);</b>
+<b class="nc"><i>1068</i>&nbsp;        addLCIDMapEntry(map, &quot;ar_SY&quot;, (short) 0x2801);</b>
+<b class="nc"><i>1069</i>&nbsp;        addLCIDMapEntry(map, &quot;en_BZ&quot;, (short) 0x2809);</b>
+<b class="nc"><i>1070</i>&nbsp;        addLCIDMapEntry(map, &quot;es_PE&quot;, (short) 0x280a);</b>
+<b class="nc"><i>1071</i>&nbsp;        addLCIDMapEntry(map, &quot;ar_JO&quot;, (short) 0x2c01);</b>
+<b class="nc"><i>1072</i>&nbsp;        addLCIDMapEntry(map, &quot;en_TT&quot;, (short) 0x2c09);</b>
+<b class="nc"><i>1073</i>&nbsp;        addLCIDMapEntry(map, &quot;es_AR&quot;, (short) 0x2c0a);</b>
+<b class="nc"><i>1074</i>&nbsp;        addLCIDMapEntry(map, &quot;ar_LB&quot;, (short) 0x3001);</b>
+<b class="nc"><i>1075</i>&nbsp;        addLCIDMapEntry(map, &quot;en_ZW&quot;, (short) 0x3009);</b>
+<b class="nc"><i>1076</i>&nbsp;        addLCIDMapEntry(map, &quot;es_EC&quot;, (short) 0x300a);</b>
+<b class="nc"><i>1077</i>&nbsp;        addLCIDMapEntry(map, &quot;ar_KW&quot;, (short) 0x3401);</b>
+<b class="nc"><i>1078</i>&nbsp;        addLCIDMapEntry(map, &quot;en_PH&quot;, (short) 0x3409);</b>
+<b class="nc"><i>1079</i>&nbsp;        addLCIDMapEntry(map, &quot;es_CL&quot;, (short) 0x340a);</b>
+<b class="nc"><i>1080</i>&nbsp;        addLCIDMapEntry(map, &quot;ar_AE&quot;, (short) 0x3801);</b>
+<b class="nc"><i>1081</i>&nbsp;        addLCIDMapEntry(map, &quot;es_UY&quot;, (short) 0x380a);</b>
+<b class="nc"><i>1082</i>&nbsp;        addLCIDMapEntry(map, &quot;ar_BH&quot;, (short) 0x3c01);</b>
+<b class="nc"><i>1083</i>&nbsp;        addLCIDMapEntry(map, &quot;es_PY&quot;, (short) 0x3c0a);</b>
+<b class="nc"><i>1084</i>&nbsp;        addLCIDMapEntry(map, &quot;ar_QA&quot;, (short) 0x4001);</b>
+<b class="nc"><i>1085</i>&nbsp;        addLCIDMapEntry(map, &quot;es_BO&quot;, (short) 0x400a);</b>
+<b class="nc"><i>1086</i>&nbsp;        addLCIDMapEntry(map, &quot;es_SV&quot;, (short) 0x440a);</b>
+<b class="nc"><i>1087</i>&nbsp;        addLCIDMapEntry(map, &quot;es_HN&quot;, (short) 0x480a);</b>
+<b class="nc"><i>1088</i>&nbsp;        addLCIDMapEntry(map, &quot;es_NI&quot;, (short) 0x4c0a);</b>
+<b class="nc"><i>1089</i>&nbsp;        addLCIDMapEntry(map, &quot;es_PR&quot;, (short) 0x500a);</b>
+<i>1090</i>&nbsp;
+<b class="nc"><i>1091</i>&nbsp;        lcidMap = map;</b>
+<b class="nc"><i>1092</i>&nbsp;    }</b>
+<i>1093</i>&nbsp;
+<i>1094</i>&nbsp;    private static short getLCIDFromLocale(Locale locale) {
+<i>1095</i>&nbsp;        // optimize for common case
+<b class="nc"><i>1096</i>&nbsp;        if (locale.equals(Locale.US) || locale.getLanguage().equals(&quot;en&quot;)) {</b>
+<b class="nc"><i>1097</i>&nbsp;            return MS_ENGLISH_LOCALE_ID;</b>
+<i>1098</i>&nbsp;        }
+<i>1099</i>&nbsp;
+<b class="nc"><i>1100</i>&nbsp;        if (lcidMap == null) {</b>
+<b class="nc"><i>1101</i>&nbsp;            createLCIDMap();</b>
+<i>1102</i>&nbsp;        }
+<i>1103</i>&nbsp;
+<b class="nc"><i>1104</i>&nbsp;        String key = locale.toString();</b>
+<b class="nc"><i>1105</i>&nbsp;        while (!key.isEmpty()) {</b>
+<b class="nc"><i>1106</i>&nbsp;            Short lcidObject = (Short) lcidMap.get(key);</b>
+<b class="nc"><i>1107</i>&nbsp;            if (lcidObject != null) {</b>
+<b class="nc"><i>1108</i>&nbsp;                return lcidObject.shortValue();</b>
+<i>1109</i>&nbsp;            }
+<b class="nc"><i>1110</i>&nbsp;            int pos = key.lastIndexOf(&#39;_&#39;);</b>
+<b class="nc"><i>1111</i>&nbsp;            if (pos &lt; 1) {</b>
+<b class="nc"><i>1112</i>&nbsp;                return MS_ENGLISH_LOCALE_ID;</b>
+<i>1113</i>&nbsp;            }
+<b class="nc"><i>1114</i>&nbsp;            key = key.substring(0, pos);</b>
+<b class="nc"><i>1115</i>&nbsp;        }</b>
+<i>1116</i>&nbsp;
+<b class="nc"><i>1117</i>&nbsp;        return MS_ENGLISH_LOCALE_ID;</b>
+<i>1118</i>&nbsp;    }
+<i>1119</i>&nbsp;
+<i>1120</i>&nbsp;
+<i>1121</i>&nbsp;    /* On Windows this is set to the System Locale, which matches how
+<i>1122</i>&nbsp;     * GDI enumerates font names. For display purposes we may want
+<i>1123</i>&nbsp;     * the user locale which could be different.
+<i>1124</i>&nbsp;     */
+<b class="fc"><i>1125</i>&nbsp;    static short nameLocaleID = getSystemLCID();</b>
+<i>1126</i>&nbsp;
+<i>1127</i>&nbsp;    private static short getSystemLCID() {
+<b class="fc"><i>1128</i>&nbsp;        if (PrismFontFactory.isWindows) {</b>
+<b class="fc"><i>1129</i>&nbsp;            return PrismFontFactory.getSystemLCID();</b>
+<i>1130</i>&nbsp;        } else {
+<b class="nc"><i>1131</i>&nbsp;            return getLCIDFromLocale(Locale.getDefault());</b>
+<i>1132</i>&nbsp;        }
+<i>1133</i>&nbsp;    }
+<i>1134</i>&nbsp;
+<b class="fc"><i>1135</i>&nbsp;    private OpenTypeGlyphMapper mapper = null;</b>
+<i>1136</i>&nbsp;
+<i>1137</i>&nbsp;    public CharToGlyphMapper getGlyphMapper() {
+<b class="fc"><i>1138</i>&nbsp;        if (mapper == null) {</b>
+<b class="fc"><i>1139</i>&nbsp;            mapper = new OpenTypeGlyphMapper(this);</b>
+<i>1140</i>&nbsp;        }
+<b class="fc"><i>1141</i>&nbsp;        return mapper;</b>
+<i>1142</i>&nbsp;    }
+<i>1143</i>&nbsp;
+<i>1144</i>&nbsp;    public FontStrike getStrike(float size, BaseTransform transform) {
+<b class="fc"><i>1145</i>&nbsp;        return getStrike(size, transform, getDefaultAAMode());</b>
+<i>1146</i>&nbsp;    }
+<i>1147</i>&nbsp;
+<b class="fc"><i>1148</i>&nbsp;    char[] advanceWidths = null;</b>
+<i>1149</i>&nbsp;    /*
+<i>1150</i>&nbsp;     * This is returning the unhinted advance, should be OK so
+<i>1151</i>&nbsp;     * long as we do unhinted rendering. If we are doing hinted glyphs
+<i>1152</i>&nbsp;     * and I suppose, integer metrics, then we can use the hdmx table.
+<i>1153</i>&nbsp;     * But since the hdmx table doesn&#39;t provide anything except integers
+<i>1154</i>&nbsp;     * it will only be useful for some cases. Also even then the ptSize
+<i>1155</i>&nbsp;     * alone doesn&#39;t help, since we need to know the graphics scale
+<i>1156</i>&nbsp;     * to know the real glyph size that&#39;s required, then of course we
+<i>1157</i>&nbsp;     * have to translate that back into user space. So all of that will
+<i>1158</i>&nbsp;     * need to be looked into, or we reserve this path for unhinted rendering.
+<i>1159</i>&nbsp;     * Note that if there&#39;s no hdmx entry for a given size, then we need
+<i>1160</i>&nbsp;     * to scale the glyph to get the hinted advance. However before doing
+<i>1161</i>&nbsp;     * so we should consult the &#39;gasp&#39; table to see it its a size at
+<i>1162</i>&nbsp;     * which hinting should be performed anyway.
+<i>1163</i>&nbsp;     * (1) The GASP table indicates size at which hinting should be applied
+<i>1164</i>&nbsp;     * usually this is all larger sizes so probably wouldn&#39;t help, however
+<i>1165</i>&nbsp;     * (2) If there is a LTSH (Linear Threshold) table, we can use that
+<i>1166</i>&nbsp;     * to see if for the requested &#39;ppem&#39; size, the glyph scales linearly.
+<i>1167</i>&nbsp;     *
+<i>1168</i>&nbsp;     * Interestingly Amble sets the &#39;head&#39; flags bit to say non-linear
+<i>1169</i>&nbsp;     * scaling and so legitimately has a LTSH table but this all may be
+<i>1170</i>&nbsp;     * a hold-over from when its gasp table said to apply hints at some sizes.
+<i>1171</i>&nbsp;     * I suppose I am not 100% certain if the gasp table can be trusted to
+<i>1172</i>&nbsp;     * use as a short-cut for when you don&#39;t need to scale, or if choosing
+<i>1173</i>&nbsp;     * not to hint means you can always just assume linear scaling, but I
+<i>1174</i>&nbsp;     * do find that to be consistent with the data in Microsoft fonts where
+<i>1175</i>&nbsp;     * they do not provide hdmx entry for sizes below that where hinting is
+<i>1176</i>&nbsp;     * required, suggesting the htmx table is fine for such cases.
+<i>1177</i>&nbsp;     */
+<i>1178</i>&nbsp;    public float getAdvance(int glyphCode, float ptSize) {
+<b class="fc"><i>1179</i>&nbsp;        if (glyphCode == CharToGlyphMapper.INVISIBLE_GLYPH_ID)</b>
+<b class="nc"><i>1180</i>&nbsp;            return 0f;</b>
+<i>1181</i>&nbsp;
+<i>1182</i>&nbsp;        // If we haven&#39;t initialised yet, do so now.
+<b class="fc"><i>1183</i>&nbsp;        if (advanceWidths == null &amp;&amp; numHMetrics &gt; 0) {</b>
+<b class="fc"><i>1184</i>&nbsp;            synchronized (this) {</b>
+<b class="fc"><i>1185</i>&nbsp;                Buffer hmtx = readTable(hmtxTag);</b>
+<b class="fc"><i>1186</i>&nbsp;                if (hmtx == null) {</b>
+<b class="nc"><i>1187</i>&nbsp;                    numHMetrics = -1;</b>
+<b class="nc"><i>1188</i>&nbsp;                    return 0;</b>
+<i>1189</i>&nbsp;                }
+<b class="fc"><i>1190</i>&nbsp;                char[] aw = new char[numHMetrics];</b>
+<b class="fc"><i>1191</i>&nbsp;                for (int i=0; i&lt;numHMetrics; i++) {</b>
+<b class="fc"><i>1192</i>&nbsp;                    aw[i] = hmtx.getChar(i*4);</b>
+<i>1193</i>&nbsp;                }
+<b class="fc"><i>1194</i>&nbsp;                advanceWidths = aw;</b>
+<b class="fc"><i>1195</i>&nbsp;            }</b>
+<i>1196</i>&nbsp;        }
+<i>1197</i>&nbsp;
+<i>1198</i>&nbsp;        // If we have a valid numHMetrics, look up the advance
+<b class="fc"><i>1199</i>&nbsp;        if (numHMetrics &gt; 0) {</b>
+<i>1200</i>&nbsp;            char cadv;
+<b class="fc"><i>1201</i>&nbsp;            if (glyphCode &lt; numHMetrics) {</b>
+<b class="fc"><i>1202</i>&nbsp;                cadv = advanceWidths[glyphCode];</b>
+<i>1203</i>&nbsp;            } else {
+<b class="nc"><i>1204</i>&nbsp;                cadv = advanceWidths[numHMetrics-1];</b>
+<i>1205</i>&nbsp;            }
+<b class="fc"><i>1206</i>&nbsp;            return ((float)(cadv &amp; 0xffff)*ptSize)/upem;</b>
+<i>1207</i>&nbsp;        } else { // no valid lookup.
+<b class="nc"><i>1208</i>&nbsp;            return 0f;</b>
+<i>1209</i>&nbsp;        }
+<i>1210</i>&nbsp;    }
+<i>1211</i>&nbsp;
+<i>1212</i>&nbsp;    public PrismMetrics getFontMetrics(float ptSize) {
+<b class="fc"><i>1213</i>&nbsp;        return new PrismMetrics((ascent*ptSize)/upem,</b>
+<i>1214</i>&nbsp;                              (descent*ptSize)/upem,
+<i>1215</i>&nbsp;                              (linegap*ptSize)/upem,
+<i>1216</i>&nbsp;                              this, ptSize);
+<i>1217</i>&nbsp;    }
+<i>1218</i>&nbsp;
+<i>1219</i>&nbsp;    private float[] styleMetrics;
+<i>1220</i>&nbsp;    float[] getStyleMetrics(float ptSize) {
+<b class="fc"><i>1221</i>&nbsp;        if (styleMetrics == null) {</b>
+<b class="fc"><i>1222</i>&nbsp;            float [] smetrics = new float[METRICS_TOTAL];</b>
+<i>1223</i>&nbsp;
+<b class="fc"><i>1224</i>&nbsp;            Buffer os_2 = readTable(os_2Tag);</b>
+<b class="fc"><i>1225</i>&nbsp;            int length = os_2 != null ? os_2.capacity() : 0;</b>
+<i>1226</i>&nbsp;
+<b class="fc"><i>1227</i>&nbsp;            if (length &gt;= 30) {</b>
+<b class="fc"><i>1228</i>&nbsp;                smetrics[STRIKETHROUGH_THICKNESS] = os_2.getShort(26) / upem;</b>
+<b class="fc"><i>1229</i>&nbsp;                smetrics[STRIKETHROUGH_OFFSET] = -os_2.getShort(28) / upem;</b>
+<i>1230</i>&nbsp;            } else {
+<b class="nc"><i>1231</i>&nbsp;                smetrics[STRIKETHROUGH_THICKNESS] = 0.05f;</b>
+<b class="nc"><i>1232</i>&nbsp;                smetrics[STRIKETHROUGH_OFFSET] = -0.4f;</b>
+<i>1233</i>&nbsp;            }
+<b class="fc"><i>1234</i>&nbsp;            if (length &gt;= 74) {</b>
+<i>1235</i>&nbsp;                // ascent, descent, leading are set in constructor
+<b class="fc"><i>1236</i>&nbsp;                smetrics[TYPO_ASCENT] = -os_2.getShort(68) / upem;</b>
+<b class="fc"><i>1237</i>&nbsp;                smetrics[TYPO_DESCENT] = -os_2.getShort(70) / upem;</b>
+<b class="fc"><i>1238</i>&nbsp;                smetrics[TYPO_LINEGAP] = os_2.getShort(72) / upem;</b>
+<i>1239</i>&nbsp;            } else {
+<b class="nc"><i>1240</i>&nbsp;                smetrics[TYPO_ASCENT] = ascent / upem;</b>
+<b class="nc"><i>1241</i>&nbsp;                smetrics[TYPO_DESCENT] = descent / upem;</b>
+<b class="nc"><i>1242</i>&nbsp;                smetrics[TYPO_LINEGAP] = linegap / upem;</b>
+<i>1243</i>&nbsp;            }
+<i>1244</i>&nbsp;            // REMIND : OpenType spec introduced xHeight, many fonts
+<i>1245</i>&nbsp;            // won&#39;t have this info.
+<i>1246</i>&nbsp;            // xHeight should be available in OS2 font table ver. 3 or greater
+<b class="fc"><i>1247</i>&nbsp;            if (length &gt;= 90) {</b>
+<b class="fc"><i>1248</i>&nbsp;                smetrics[XHEIGHT] = os_2.getShort(86) / upem;</b>
+<b class="fc"><i>1249</i>&nbsp;                smetrics[CAPHEIGHT] = os_2.getShort(88);</b>
+<i>1250</i>&nbsp;
+<i>1251</i>&nbsp;                /* Some fonts have bad values for capHeight. For example,
+<i>1252</i>&nbsp;                 * Comic Sans MS. The fix is to ignore the capHeight in the
+<i>1253</i>&nbsp;                 * font file when it is less than half of the ascent */
+<b class="fc"><i>1254</i>&nbsp;                if ((smetrics[CAPHEIGHT] / ascent) &lt; 0.5) {</b>
+<b class="fc"><i>1255</i>&nbsp;                    smetrics[CAPHEIGHT] = 0;</b>
+<i>1256</i>&nbsp;                } else {
+<b class="nc"><i>1257</i>&nbsp;                    smetrics[CAPHEIGHT] /= upem;</b>
+<i>1258</i>&nbsp;                }
+<i>1259</i>&nbsp;            }
+<i>1260</i>&nbsp;
+<b class="fc"><i>1261</i>&nbsp;            if (smetrics[XHEIGHT] == 0 || smetrics[CAPHEIGHT] == 0) {</b>
+<b class="fc"><i>1262</i>&nbsp;                FontStrike strike = getStrike(ptSize, BaseTransform.IDENTITY_TRANSFORM);</b>
+<b class="fc"><i>1263</i>&nbsp;                CharToGlyphMapper mapper = getGlyphMapper();</b>
+<b class="fc"><i>1264</i>&nbsp;                int missingGlyph = mapper.getMissingGlyphCode();</b>
+<i>1265</i>&nbsp;
+<b class="fc"><i>1266</i>&nbsp;                if (smetrics[XHEIGHT] == 0) {</b>
+<b class="nc"><i>1267</i>&nbsp;                    int gc = mapper.charToGlyph(&#39;x&#39;);</b>
+<b class="nc"><i>1268</i>&nbsp;                    if (gc != missingGlyph) {</b>
+<b class="nc"><i>1269</i>&nbsp;                        RectBounds fbds = strike.getGlyph(gc).getBBox();</b>
+<b class="nc"><i>1270</i>&nbsp;                        smetrics[XHEIGHT] = fbds.getHeight() / ptSize;</b>
+<b class="nc"><i>1271</i>&nbsp;                    } else {</b>
+<b class="nc"><i>1272</i>&nbsp;                        smetrics[XHEIGHT] = -ascent * 0.6f / upem;</b>
+<i>1273</i>&nbsp;                    }
+<i>1274</i>&nbsp;                }
+<b class="fc"><i>1275</i>&nbsp;                if (smetrics[CAPHEIGHT] == 0) {</b>
+<b class="fc"><i>1276</i>&nbsp;                    int gc = mapper.charToGlyph(&#39;H&#39;);</b>
+<b class="fc"><i>1277</i>&nbsp;                    if (gc != missingGlyph) {</b>
+<b class="fc"><i>1278</i>&nbsp;                        RectBounds fbds = strike.getGlyph(gc).getBBox();</b>
+<b class="fc"><i>1279</i>&nbsp;                        smetrics[CAPHEIGHT] = fbds.getHeight() / ptSize;</b>
+<b class="fc"><i>1280</i>&nbsp;                    } else {</b>
+<b class="nc"><i>1281</i>&nbsp;                        smetrics[CAPHEIGHT] = -ascent * 0.9f / upem;</b>
+<i>1282</i>&nbsp;                    }
+<i>1283</i>&nbsp;                }
+<i>1284</i>&nbsp;            }
+<i>1285</i>&nbsp;
+<b class="fc"><i>1286</i>&nbsp;            Buffer postTable = readTable(postTag);</b>
+<b class="fc"><i>1287</i>&nbsp;            if (postTable == null || postTable.capacity() &lt; 12) {</b>
+<b class="nc"><i>1288</i>&nbsp;                smetrics[UNDERLINE_OFFSET] = 0.1f;</b>
+<b class="nc"><i>1289</i>&nbsp;                smetrics[UNDERLINE_THICKESS] = 0.05f;</b>
+<i>1290</i>&nbsp;            } else {
+<b class="fc"><i>1291</i>&nbsp;                smetrics[UNDERLINE_OFFSET] = -postTable.getShort(8) / upem;</b>
+<b class="fc"><i>1292</i>&nbsp;                smetrics[UNDERLINE_THICKESS] = postTable.getShort(10) / upem;</b>
+<i>1293</i>&nbsp;            }
+<b class="fc"><i>1294</i>&nbsp;            styleMetrics = smetrics;</b>
+<i>1295</i>&nbsp;        }
+<i>1296</i>&nbsp;
+<b class="fc"><i>1297</i>&nbsp;        float[] metrics = new float[METRICS_TOTAL];</b>
+<b class="fc"><i>1298</i>&nbsp;        for (int i = 0; i &lt; METRICS_TOTAL; i++) {</b>
+<b class="fc"><i>1299</i>&nbsp;            metrics[i] = styleMetrics[i] * ptSize;</b>
+<i>1300</i>&nbsp;        }
+<i>1301</i>&nbsp;
+<b class="fc"><i>1302</i>&nbsp;        return metrics;</b>
+<i>1303</i>&nbsp;    }
+<i>1304</i>&nbsp;
+<i>1305</i>&nbsp;    byte[] getTableBytes(int tag) {
+<b class="nc"><i>1306</i>&nbsp;        Buffer buffer = readTable(tag);</b>
+<b class="nc"><i>1307</i>&nbsp;        byte[] table = null;</b>
+<b class="nc"><i>1308</i>&nbsp;        if(buffer != null){</b>
+<b class="nc"><i>1309</i>&nbsp;            table = new byte[buffer.capacity()];</b>
+<b class="nc"><i>1310</i>&nbsp;            buffer.get(0, table, 0, buffer.capacity());</b>
+<i>1311</i>&nbsp;        }
+<b class="nc"><i>1312</i>&nbsp;        return table;</b>
+<i>1313</i>&nbsp;    }
+<i>1314</i>&nbsp;
+<i>1315</i>&nbsp;    @Override
+<i>1316</i>&nbsp;    public boolean equals(Object obj) {
+<b class="nc"><i>1317</i>&nbsp;        if (obj == null) {</b>
+<b class="nc"><i>1318</i>&nbsp;            return false;</b>
+<i>1319</i>&nbsp;        }
+<b class="nc"><i>1320</i>&nbsp;        if (!(obj instanceof PrismFontFile)) {</b>
+<b class="nc"><i>1321</i>&nbsp;            return false;</b>
+<i>1322</i>&nbsp;        }
+<b class="nc"><i>1323</i>&nbsp;        final PrismFontFile other = (PrismFontFile)obj;</b>
+<b class="nc"><i>1324</i>&nbsp;        return filename.equals(other.filename) &amp;&amp; fullName.equals(other.fullName);</b>
+<i>1325</i>&nbsp;    }
+<i>1326</i>&nbsp;
+<i>1327</i>&nbsp;    @Override
+<i>1328</i>&nbsp;    public int hashCode() {
+<b class="nc"><i>1329</i>&nbsp;        return filename.hashCode() + (71 * fullName.hashCode());</b>
+<i>1330</i>&nbsp;    }
+<i>1331</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2017-12-04 21:49</div>
+</div>
+</body>
+</html>

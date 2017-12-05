@@ -1,0 +1,881 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: Utils</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.javafx.scene.control.skin</a> ]
+</div>
+
+<h1>Coverage Summary for Class: Utils (com.sun.javafx.scene.control.skin)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">Utils</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    26.9%
+  </span>
+  <span class="absValue">
+    (7/ 26)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    7.8%
+  </span>
+  <span class="absValue">
+    (25/ 321)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright (c) 2011, 2016, Oracle and/or its affiliates. All rights reserved.
+<i>3</i>&nbsp; * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+<i>4</i>&nbsp; *
+<i>5</i>&nbsp; *
+<i>6</i>&nbsp; *
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; *
+<i>11</i>&nbsp; *
+<i>12</i>&nbsp; *
+<i>13</i>&nbsp; *
+<i>14</i>&nbsp; *
+<i>15</i>&nbsp; *
+<i>16</i>&nbsp; *
+<i>17</i>&nbsp; *
+<i>18</i>&nbsp; *
+<i>19</i>&nbsp; *
+<i>20</i>&nbsp; *
+<i>21</i>&nbsp; *
+<i>22</i>&nbsp; *
+<i>23</i>&nbsp; *
+<i>24</i>&nbsp; */
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;/*
+<i>27</i>&nbsp; * To change this template, choose Tools | Templates
+<i>28</i>&nbsp; * and open the template in the editor.
+<i>29</i>&nbsp; */
+<i>30</i>&nbsp;
+<i>31</i>&nbsp;package com.sun.javafx.scene.control.skin;
+<i>32</i>&nbsp;
+<i>33</i>&nbsp;import com.sun.javafx.scene.NodeHelper;
+<i>34</i>&nbsp;import com.sun.javafx.scene.control.behavior.TextBinding;
+<i>35</i>&nbsp;import com.sun.javafx.scene.text.TextLayout;
+<i>36</i>&nbsp;import com.sun.javafx.tk.Toolkit;
+<i>37</i>&nbsp;import javafx.application.ConditionalFeature;
+<i>38</i>&nbsp;import javafx.application.Platform;
+<i>39</i>&nbsp;import javafx.beans.InvalidationListener;
+<i>40</i>&nbsp;import javafx.beans.Observable;
+<i>41</i>&nbsp;import javafx.beans.value.ObservableValue;
+<i>42</i>&nbsp;import javafx.collections.ObservableList;
+<i>43</i>&nbsp;import javafx.geometry.Bounds;
+<i>44</i>&nbsp;import javafx.geometry.HPos;
+<i>45</i>&nbsp;import javafx.geometry.Point2D;
+<i>46</i>&nbsp;import javafx.geometry.VPos;
+<i>47</i>&nbsp;import javafx.scene.Scene;
+<i>48</i>&nbsp;import javafx.scene.control.ContextMenu;
+<i>49</i>&nbsp;import javafx.scene.control.MenuItem;
+<i>50</i>&nbsp;import javafx.scene.control.OverrunStyle;
+<i>51</i>&nbsp;import com.sun.javafx.scene.control.ContextMenuContent;
+<i>52</i>&nbsp;import com.sun.javafx.scene.text.FontHelper;
+<i>53</i>&nbsp;import java.net.URL;
+<i>54</i>&nbsp;import javafx.scene.input.KeyCombination;
+<i>55</i>&nbsp;import javafx.scene.input.Mnemonic;
+<i>56</i>&nbsp;import javafx.scene.paint.Color;
+<i>57</i>&nbsp;import javafx.scene.text.Font;
+<i>58</i>&nbsp;import javafx.scene.text.Text;
+<i>59</i>&nbsp;import javafx.scene.text.TextBoundsType;
+<i>60</i>&nbsp;import javafx.scene.text.HitInfo;
+<i>61</i>&nbsp;
+<i>62</i>&nbsp;import java.text.Bidi;
+<i>63</i>&nbsp;import java.util.Locale;
+<i>64</i>&nbsp;import java.util.function.Consumer;
+<i>65</i>&nbsp;
+<i>66</i>&nbsp;import static javafx.scene.control.OverrunStyle.CENTER_ELLIPSIS;
+<i>67</i>&nbsp;import static javafx.scene.control.OverrunStyle.CENTER_WORD_ELLIPSIS;
+<i>68</i>&nbsp;import static javafx.scene.control.OverrunStyle.CLIP;
+<i>69</i>&nbsp;import static javafx.scene.control.OverrunStyle.ELLIPSIS;
+<i>70</i>&nbsp;import static javafx.scene.control.OverrunStyle.LEADING_ELLIPSIS;
+<i>71</i>&nbsp;import static javafx.scene.control.OverrunStyle.LEADING_WORD_ELLIPSIS;
+<i>72</i>&nbsp;import static javafx.scene.control.OverrunStyle.WORD_ELLIPSIS;
+<i>73</i>&nbsp;
+<i>74</i>&nbsp;/**
+<i>75</i>&nbsp; * BE REALLY CAREFUL WITH RESTORING OR RESETTING STATE OF helper NODE AS LEFTOVER
+<i>76</i>&nbsp; * STATE CAUSES REALLY ODD NASTY BUGS!
+<i>77</i>&nbsp; *
+<i>78</i>&nbsp; * We expect all methods to set the Font property of helper but other than that
+<i>79</i>&nbsp; * any properties set should be restored to defaults.
+<i>80</i>&nbsp; */
+<b class="fc"><i>81</i>&nbsp;public class Utils {</b>
+<i>82</i>&nbsp;
+<b class="fc"><i>83</i>&nbsp;    static final Text helper = new Text();</b>
+<b class="fc"><i>84</i>&nbsp;    static final double DEFAULT_WRAPPING_WIDTH = helper.getWrappingWidth();</b>
+<b class="fc"><i>85</i>&nbsp;    static final double DEFAULT_LINE_SPACING = helper.getLineSpacing();</b>
+<b class="fc"><i>86</i>&nbsp;    static final String DEFAULT_TEXT = helper.getText();</b>
+<b class="fc"><i>87</i>&nbsp;    static final TextBoundsType DEFAULT_BOUNDS_TYPE = helper.getBoundsType();</b>
+<i>88</i>&nbsp;
+<i>89</i>&nbsp;    /* Using TextLayout directly for simple text measurement.
+<i>90</i>&nbsp;     * Instead of restoring the TextLayout attributes to default values
+<i>91</i>&nbsp;     * (each renders the TextLayout unable to efficiently cache layout data).
+<i>92</i>&nbsp;     * It always sets all the attributes pertinent to calculation being performed.
+<i>93</i>&nbsp;     * Note that lineSpacing and boundsType are important when computing the height
+<i>94</i>&nbsp;     * but irrelevant when computing the width.
+<i>95</i>&nbsp;     *
+<i>96</i>&nbsp;     * Note: This code assumes that TextBoundsType#VISUAL is never used by controls.
+<i>97</i>&nbsp;     * */
+<b class="fc"><i>98</i>&nbsp;    static final TextLayout layout = Toolkit.getToolkit().getTextLayoutFactory().createLayout();</b>
+<i>99</i>&nbsp;
+<i>100</i>&nbsp;    public static double getAscent(Font font, TextBoundsType boundsType) {
+<b class="nc"><i>101</i>&nbsp;        layout.setContent(&quot;&quot;, FontHelper.getNativeFont(font));</b>
+<b class="nc"><i>102</i>&nbsp;        layout.setWrapWidth(0);</b>
+<b class="nc"><i>103</i>&nbsp;        layout.setLineSpacing(0);</b>
+<b class="nc"><i>104</i>&nbsp;        if (boundsType == TextBoundsType.LOGICAL_VERTICAL_CENTER) {</b>
+<b class="nc"><i>105</i>&nbsp;            layout.setBoundsType(TextLayout.BOUNDS_CENTER);</b>
+<i>106</i>&nbsp;        } else {
+<b class="nc"><i>107</i>&nbsp;            layout.setBoundsType(0);</b>
+<i>108</i>&nbsp;        }
+<b class="nc"><i>109</i>&nbsp;        return -layout.getBounds().getMinY();</b>
+<i>110</i>&nbsp;    }
+<i>111</i>&nbsp;
+<i>112</i>&nbsp;    public static double getLineHeight(Font font, TextBoundsType boundsType) {
+<b class="nc"><i>113</i>&nbsp;        layout.setContent(&quot;&quot;, FontHelper.getNativeFont(font));</b>
+<b class="nc"><i>114</i>&nbsp;        layout.setWrapWidth(0);</b>
+<b class="nc"><i>115</i>&nbsp;        layout.setLineSpacing(0);</b>
+<b class="nc"><i>116</i>&nbsp;        if (boundsType == TextBoundsType.LOGICAL_VERTICAL_CENTER) {</b>
+<b class="nc"><i>117</i>&nbsp;            layout.setBoundsType(TextLayout.BOUNDS_CENTER);</b>
+<i>118</i>&nbsp;        } else {
+<b class="nc"><i>119</i>&nbsp;            layout.setBoundsType(0);</b>
+<i>120</i>&nbsp;        }
+<i>121</i>&nbsp;
+<i>122</i>&nbsp;        // RT-37092: Use the line bounds specifically, to include font leading.
+<b class="nc"><i>123</i>&nbsp;        return layout.getLines()[0].getBounds().getHeight();</b>
+<i>124</i>&nbsp;    }
+<i>125</i>&nbsp;
+<i>126</i>&nbsp;    public static double computeTextWidth(Font font, String text, double wrappingWidth) {
+<b class="fc"><i>127</i>&nbsp;        layout.setContent(text != null ? text : &quot;&quot;, FontHelper.getNativeFont(font));</b>
+<b class="fc"><i>128</i>&nbsp;        layout.setWrapWidth((float)wrappingWidth);</b>
+<b class="fc"><i>129</i>&nbsp;        return layout.getBounds().getWidth();</b>
+<i>130</i>&nbsp;    }
+<i>131</i>&nbsp;
+<i>132</i>&nbsp;    public static double computeTextHeight(Font font, String text, double wrappingWidth, TextBoundsType boundsType) {
+<b class="nc"><i>133</i>&nbsp;        return computeTextHeight(font, text, wrappingWidth, 0, boundsType);</b>
+<i>134</i>&nbsp;    }
+<i>135</i>&nbsp;
+<i>136</i>&nbsp;    @SuppressWarnings(&quot;deprecation&quot;)
+<i>137</i>&nbsp;    public static double computeTextHeight(Font font, String text, double wrappingWidth, double lineSpacing, TextBoundsType boundsType) {
+<b class="fc"><i>138</i>&nbsp;        layout.setContent(text != null ? text : &quot;&quot;, FontHelper.getNativeFont(font));</b>
+<b class="fc"><i>139</i>&nbsp;        layout.setWrapWidth((float)wrappingWidth);</b>
+<b class="fc"><i>140</i>&nbsp;        layout.setLineSpacing((float)lineSpacing);</b>
+<b class="fc"><i>141</i>&nbsp;        if (boundsType == TextBoundsType.LOGICAL_VERTICAL_CENTER) {</b>
+<b class="fc"><i>142</i>&nbsp;            layout.setBoundsType(TextLayout.BOUNDS_CENTER);</b>
+<i>143</i>&nbsp;        } else {
+<b class="nc"><i>144</i>&nbsp;            layout.setBoundsType(0);</b>
+<i>145</i>&nbsp;        }
+<b class="fc"><i>146</i>&nbsp;        return layout.getBounds().getHeight();</b>
+<i>147</i>&nbsp;    }
+<i>148</i>&nbsp;
+<i>149</i>&nbsp;    public static int computeTruncationIndex(Font font, String text, double width) {
+<b class="nc"><i>150</i>&nbsp;        helper.setText(text);</b>
+<b class="nc"><i>151</i>&nbsp;        helper.setFont(font);</b>
+<b class="nc"><i>152</i>&nbsp;        helper.setWrappingWidth(0);</b>
+<b class="nc"><i>153</i>&nbsp;        helper.setLineSpacing(0);</b>
+<i>154</i>&nbsp;        // The -2 is a fudge to make sure the result more often matches
+<i>155</i>&nbsp;        // what we get from using computeTextWidth instead. It&#39;s not yet
+<i>156</i>&nbsp;        // clear what causes the small discrepancies.
+<b class="nc"><i>157</i>&nbsp;        Bounds bounds = helper.getLayoutBounds();</b>
+<b class="nc"><i>158</i>&nbsp;        Point2D endPoint = new Point2D(width - 2, bounds.getMinY() + bounds.getHeight() / 2);</b>
+<b class="nc"><i>159</i>&nbsp;        final int index = helper.hitTest(endPoint).getCharIndex();</b>
+<i>160</i>&nbsp;        // RESTORE STATE
+<b class="nc"><i>161</i>&nbsp;        helper.setWrappingWidth(DEFAULT_WRAPPING_WIDTH);</b>
+<b class="nc"><i>162</i>&nbsp;        helper.setLineSpacing(DEFAULT_LINE_SPACING);</b>
+<b class="nc"><i>163</i>&nbsp;        helper.setText(DEFAULT_TEXT);</b>
+<b class="nc"><i>164</i>&nbsp;        return index;</b>
+<i>165</i>&nbsp;    }
+<i>166</i>&nbsp;
+<i>167</i>&nbsp;    public static String computeClippedText(Font font, String text, double width,
+<i>168</i>&nbsp;                                     OverrunStyle type, String ellipsisString) {
+<b class="fc"><i>169</i>&nbsp;        if (font == null) {</b>
+<b class="nc"><i>170</i>&nbsp;            throw new IllegalArgumentException(&quot;Must specify a font&quot;);</b>
+<i>171</i>&nbsp;        }
+<b class="fc"><i>172</i>&nbsp;        OverrunStyle style = (type == null || type == CLIP) ? ELLIPSIS : type;</b>
+<b class="fc"><i>173</i>&nbsp;        final String ellipsis = (type == CLIP) ? &quot;&quot; : ellipsisString;</b>
+<i>174</i>&nbsp;        // if the text is empty or null or no ellipsis, then it always fits
+<b class="fc"><i>175</i>&nbsp;        if (text == null || &quot;&quot;.equals(text)) {</b>
+<b class="nc"><i>176</i>&nbsp;            return text;</b>
+<i>177</i>&nbsp;        }
+<i>178</i>&nbsp;        // if the string width is &lt; the available width, then it fits and
+<i>179</i>&nbsp;        // doesn&#39;t need to be clipped.  We use a double point comparison
+<i>180</i>&nbsp;        // of 0.001 (1/1000th of a pixel) to account for any numerical
+<i>181</i>&nbsp;        // discrepancies introduced when the available width was calculated.
+<i>182</i>&nbsp;        // MenuItemSkinBase.doLayout, for example, does a number of double
+<i>183</i>&nbsp;        // point operations when computing the available width.
+<b class="fc"><i>184</i>&nbsp;        final double stringWidth = computeTextWidth(font, text, 0);</b>
+<b class="fc"><i>185</i>&nbsp;        if (stringWidth - width &lt; 0.0010F) {</b>
+<b class="fc"><i>186</i>&nbsp;            return text;</b>
+<i>187</i>&nbsp;        }
+<i>188</i>&nbsp;        // the width used by the ellipsis string
+<b class="nc"><i>189</i>&nbsp;        final double ellipsisWidth = computeTextWidth(font, ellipsis, 0);</b>
+<i>190</i>&nbsp;        // the available maximum width to fit chars into. This is essentially
+<i>191</i>&nbsp;        // the width minus the space required for the ellipsis string
+<b class="nc"><i>192</i>&nbsp;        final double availableWidth = width - ellipsisWidth;</b>
+<i>193</i>&nbsp;
+<b class="nc"><i>194</i>&nbsp;        if (width &lt; ellipsisWidth) {</b>
+<i>195</i>&nbsp;            // The ellipsis doesn&#39;t fit.
+<b class="nc"><i>196</i>&nbsp;            return &quot;&quot;;</b>
+<i>197</i>&nbsp;        }
+<i>198</i>&nbsp;
+<i>199</i>&nbsp;        // if we got here, then we must clip the text with an ellipsis.
+<i>200</i>&nbsp;        // this can be pretty expensive depending on whether &quot;complex&quot; text
+<i>201</i>&nbsp;        // layout needs to be taken into account. So each ellipsis option has
+<i>202</i>&nbsp;        // to take into account two code paths: the easy way and the correct
+<i>203</i>&nbsp;        // way. This is flagged by the &quot;complexLayout&quot; boolean
+<i>204</i>&nbsp;        // TODO make sure this function call takes into account ligatures, kerning,
+<i>205</i>&nbsp;        // and such as that will change the layout characteristics of the text
+<i>206</i>&nbsp;        // and will require a full complex layout
+<i>207</i>&nbsp;        // TODO since we don&#39;t have all the stuff available in FX to determine
+<i>208</i>&nbsp;        // complex text, I&#39;m going to for now assume complex text is always false.
+<i>209</i>&nbsp;        final boolean complexLayout = false;
+<i>210</i>&nbsp;        //requiresComplexLayout(font, text);
+<i>211</i>&nbsp;
+<i>212</i>&nbsp;        // generally all we want to do is count characters and add their widths.
+<i>213</i>&nbsp;        // For ellipsis that breaks on words, we do NOT want to include any
+<i>214</i>&nbsp;        // hanging whitespace.
+<b class="nc"><i>215</i>&nbsp;        if (style == ELLIPSIS ||</b>
+<i>216</i>&nbsp;            style == WORD_ELLIPSIS ||
+<i>217</i>&nbsp;            style == LEADING_ELLIPSIS ||
+<i>218</i>&nbsp;            style == LEADING_WORD_ELLIPSIS) {
+<i>219</i>&nbsp;
+<b class="nc"><i>220</i>&nbsp;            final boolean wordTrim =</b>
+<i>221</i>&nbsp;                (style == WORD_ELLIPSIS || style == LEADING_WORD_ELLIPSIS);
+<i>222</i>&nbsp;            String substring;
+<i>223</i>&nbsp;            if (complexLayout) {
+<i>224</i>&nbsp;            //            AttributedString a = new AttributedString(text);
+<i>225</i>&nbsp;            //            LineBreakMeasurer m = new LineBreakMeasurer(a.getIterator(), frc);
+<i>226</i>&nbsp;            //            substring = text.substring(0, m.nextOffset((double)availableWidth));
+<i>227</i>&nbsp;            } else {
+<i>228</i>&nbsp;                // RT-23458: Use a faster algorithm for the most common case
+<i>229</i>&nbsp;                // where truncation happens at the end, i.e. for ELLIPSIS and
+<i>230</i>&nbsp;                // CLIP, but not for other cases such as WORD_ELLIPSIS, etc.
+<b class="nc"><i>231</i>&nbsp;                if (style == ELLIPSIS &amp;&amp; !new Bidi(text, Bidi.DIRECTION_LEFT_TO_RIGHT).isMixed()) {</b>
+<b class="nc"><i>232</i>&nbsp;                    int hit = computeTruncationIndex(font, text, width - ellipsisWidth);</b>
+<b class="nc"><i>233</i>&nbsp;                    if (hit &lt; 0 || hit &gt;= text.length()) {</b>
+<b class="nc"><i>234</i>&nbsp;                        return text;</b>
+<i>235</i>&nbsp;                    } else {
+<b class="nc"><i>236</i>&nbsp;                        return text.substring(0, hit) + ellipsis;</b>
+<i>237</i>&nbsp;                    }
+<i>238</i>&nbsp;                }
+<i>239</i>&nbsp;
+<i>240</i>&nbsp;                // simply total up the widths of all chars to determine how many
+<i>241</i>&nbsp;                // will fit in the available space. Remember the last whitespace
+<i>242</i>&nbsp;                // encountered so that if we&#39;re breaking on words we can trim
+<i>243</i>&nbsp;                // and omit it.
+<b class="nc"><i>244</i>&nbsp;                double total = 0.0F;</b>
+<b class="nc"><i>245</i>&nbsp;                int whitespaceIndex = -1;</b>
+<i>246</i>&nbsp;                // at the termination of the loop, index will be one past the
+<i>247</i>&nbsp;                // end of the substring
+<b class="nc"><i>248</i>&nbsp;                int index = 0;</b>
+<b class="nc"><i>249</i>&nbsp;                int start = (style == LEADING_ELLIPSIS || style == LEADING_WORD_ELLIPSIS) ? (text.length() - 1) : (0);</b>
+<b class="nc"><i>250</i>&nbsp;                int end = (start == 0) ? (text.length() - 1) : 0;</b>
+<b class="nc"><i>251</i>&nbsp;                int stepValue = (start == 0) ? 1 : -1;</b>
+<b class="nc"><i>252</i>&nbsp;                boolean done = (start == 0) ? start &gt; end : start &lt; end;</b>
+<b class="nc"><i>253</i>&nbsp;                for (int i = start; !done ; i += stepValue) {</b>
+<b class="nc"><i>254</i>&nbsp;                    index = i;</b>
+<b class="nc"><i>255</i>&nbsp;                    char c = text.charAt(index);</b>
+<b class="nc"><i>256</i>&nbsp;                    total = computeTextWidth(font,</b>
+<b class="nc"><i>257</i>&nbsp;                                             (start == 0) ? text.substring(0, i + 1)</b>
+<b class="nc"><i>258</i>&nbsp;                                                          : text.substring(i, start + 1),</b>
+<i>259</i>&nbsp;                                             0);
+<b class="nc"><i>260</i>&nbsp;                    if (Character.isWhitespace(c)) {</b>
+<b class="nc"><i>261</i>&nbsp;                        whitespaceIndex = index;</b>
+<i>262</i>&nbsp;                    }
+<b class="nc"><i>263</i>&nbsp;                    if (total &gt; availableWidth) {</b>
+<b class="nc"><i>264</i>&nbsp;                        break;</b>
+<i>265</i>&nbsp;                    }
+<b class="nc"><i>266</i>&nbsp;                    done = start == 0? i &gt;= end : i &lt;= end;</b>
+<i>267</i>&nbsp;                }
+<b class="nc"><i>268</i>&nbsp;                final boolean fullTrim = !wordTrim || whitespaceIndex == -1;</b>
+<b class="nc"><i>269</i>&nbsp;                substring = (start == 0) ?</b>
+<b class="nc"><i>270</i>&nbsp;                    (text.substring(0, fullTrim ? index : whitespaceIndex)) :</b>
+<b class="nc"><i>271</i>&nbsp;                        (text.substring((fullTrim ? index : whitespaceIndex) + 1));</b>
+<b class="nc"><i>272</i>&nbsp;                assert(!text.equals(substring));</b>
+<i>273</i>&nbsp;            }
+<b class="nc"><i>274</i>&nbsp;            if (style == ELLIPSIS || style == WORD_ELLIPSIS) {</b>
+<b class="nc"><i>275</i>&nbsp;                 return substring + ellipsis;</b>
+<i>276</i>&nbsp;            } else {
+<i>277</i>&nbsp;                //style is LEADING_ELLIPSIS or LEADING_WORD_ELLIPSIS
+<b class="nc"><i>278</i>&nbsp;                return ellipsis + substring;</b>
+<i>279</i>&nbsp;            }
+<i>280</i>&nbsp;        } else {
+<i>281</i>&nbsp;            // these two indexes are INCLUSIVE not exclusive
+<b class="nc"><i>282</i>&nbsp;            int leadingIndex = 0;</b>
+<b class="nc"><i>283</i>&nbsp;            int trailingIndex = 0;</b>
+<b class="nc"><i>284</i>&nbsp;            int leadingWhitespace = -1;</b>
+<b class="nc"><i>285</i>&nbsp;            int trailingWhitespace = -1;</b>
+<i>286</i>&nbsp;            // The complex case is going to be killer. What I have to do is
+<i>287</i>&nbsp;            // read all the chars from the left up to the leadingIndex,
+<i>288</i>&nbsp;            // and all the chars from the right up to the trailingIndex,
+<i>289</i>&nbsp;            // and sum those together to get my total. That is, I cannot have
+<i>290</i>&nbsp;            // a running total but must retotal the cummulative chars each time
+<i>291</i>&nbsp;            if (complexLayout) {
+<i>292</i>&nbsp;            } else /*            double leadingTotal = 0;
+<i>293</i>&nbsp;               double trailingTotal = 0;
+<i>294</i>&nbsp;               for (int i=0; i&lt;text.length(); i++) {
+<i>295</i>&nbsp;               double total = computeStringWidth(metrics, text.substring(0, i));
+<i>296</i>&nbsp;               if (total + trailingTotal &gt; availableWidth) break;
+<i>297</i>&nbsp;               leadingIndex = i;
+<i>298</i>&nbsp;               leadingTotal = total;
+<i>299</i>&nbsp;               if (Character.isWhitespace(text.charAt(i))) leadingWhitespace = leadingIndex;
+<i>300</i>&nbsp;
+<i>301</i>&nbsp;               int index = text.length() - (i + 1);
+<i>302</i>&nbsp;               total = computeStringWidth(metrics, text.substring(index - 1));
+<i>303</i>&nbsp;               if (total + leadingTotal &gt; availableWidth) break;
+<i>304</i>&nbsp;               trailingIndex = index;
+<i>305</i>&nbsp;               trailingTotal = total;
+<i>306</i>&nbsp;               if (Character.isWhitespace(text.charAt(index))) trailingWhitespace = trailingIndex;
+<i>307</i>&nbsp;               }*/
+<i>308</i>&nbsp;            {
+<i>309</i>&nbsp;                // either CENTER_ELLIPSIS or CENTER_WORD_ELLIPSIS
+<i>310</i>&nbsp;                // for this case I read one char on the left, then one on the end
+<i>311</i>&nbsp;                // then second on the left, then second from the end, etc until
+<i>312</i>&nbsp;                // I have used up all the availableWidth. At that point, I trim
+<i>313</i>&nbsp;                // the string twice: once from the start to firstIndex, and
+<i>314</i>&nbsp;                // once from secondIndex to the end. I then insert the ellipsis
+<i>315</i>&nbsp;                // between the two.
+<b class="nc"><i>316</i>&nbsp;                leadingIndex = -1;</b>
+<b class="nc"><i>317</i>&nbsp;                trailingIndex = -1;</b>
+<b class="nc"><i>318</i>&nbsp;                double total = 0.0F;</b>
+<b class="nc"><i>319</i>&nbsp;                for (int i = 0; i &lt;= text.length() - 1; i++) {</b>
+<b class="nc"><i>320</i>&nbsp;                    char c = text.charAt(i);</b>
+<i>321</i>&nbsp;                    //total += metrics.charWidth(c);
+<b class="nc"><i>322</i>&nbsp;                    total += computeTextWidth(font, &quot;&quot; + c, 0);</b>
+<b class="nc"><i>323</i>&nbsp;                    if (total &gt; availableWidth) {</b>
+<b class="nc"><i>324</i>&nbsp;                        break;</b>
+<i>325</i>&nbsp;                    }
+<b class="nc"><i>326</i>&nbsp;                    leadingIndex = i;</b>
+<b class="nc"><i>327</i>&nbsp;                    if (Character.isWhitespace(c)) {</b>
+<b class="nc"><i>328</i>&nbsp;                        leadingWhitespace = leadingIndex;</b>
+<i>329</i>&nbsp;                    }
+<b class="nc"><i>330</i>&nbsp;                    int index = text.length() - 1 - i;</b>
+<b class="nc"><i>331</i>&nbsp;                    c = text.charAt(index);</b>
+<i>332</i>&nbsp;                    //total += metrics.charWidth(c);
+<b class="nc"><i>333</i>&nbsp;                    total += computeTextWidth(font, &quot;&quot; + c, 0);</b>
+<b class="nc"><i>334</i>&nbsp;                    if (total &gt; availableWidth) {</b>
+<b class="nc"><i>335</i>&nbsp;                        break;</b>
+<i>336</i>&nbsp;                    }
+<b class="nc"><i>337</i>&nbsp;                    trailingIndex = index;</b>
+<b class="nc"><i>338</i>&nbsp;                    if (Character.isWhitespace(c)) {</b>
+<b class="nc"><i>339</i>&nbsp;                        trailingWhitespace = trailingIndex;</b>
+<i>340</i>&nbsp;                    }
+<i>341</i>&nbsp;                }
+<i>342</i>&nbsp;            }
+<b class="nc"><i>343</i>&nbsp;            if (leadingIndex &lt; 0) {</b>
+<b class="nc"><i>344</i>&nbsp;                return ellipsis;</b>
+<i>345</i>&nbsp;            }
+<b class="nc"><i>346</i>&nbsp;            if (style == CENTER_ELLIPSIS) {</b>
+<b class="nc"><i>347</i>&nbsp;                if (trailingIndex &lt; 0) {</b>
+<b class="nc"><i>348</i>&nbsp;                    return text.substring(0, leadingIndex + 1) + ellipsis;</b>
+<i>349</i>&nbsp;                }
+<b class="nc"><i>350</i>&nbsp;                return text.substring(0, leadingIndex + 1) + ellipsis + text.substring(trailingIndex);</b>
+<i>351</i>&nbsp;            } else {
+<b class="nc"><i>352</i>&nbsp;                boolean leadingIndexIsLastLetterInWord =</b>
+<b class="nc"><i>353</i>&nbsp;                    Character.isWhitespace(text.charAt(leadingIndex + 1));</b>
+<b class="nc"><i>354</i>&nbsp;                int index = (leadingWhitespace == -1 || leadingIndexIsLastLetterInWord) ? (leadingIndex + 1) : (leadingWhitespace);</b>
+<b class="nc"><i>355</i>&nbsp;                String leading = text.substring(0, index);</b>
+<b class="nc"><i>356</i>&nbsp;                if (trailingIndex &lt; 0) {</b>
+<b class="nc"><i>357</i>&nbsp;                    return leading + ellipsis;</b>
+<i>358</i>&nbsp;                }
+<b class="nc"><i>359</i>&nbsp;                boolean trailingIndexIsFirstLetterInWord =</b>
+<b class="nc"><i>360</i>&nbsp;                    Character.isWhitespace(text.charAt(trailingIndex - 1));</b>
+<b class="nc"><i>361</i>&nbsp;                index = (trailingWhitespace == -1 || trailingIndexIsFirstLetterInWord) ? (trailingIndex) : (trailingWhitespace + 1);</b>
+<b class="nc"><i>362</i>&nbsp;                String trailing = text.substring(index);</b>
+<b class="nc"><i>363</i>&nbsp;                return leading + ellipsis + trailing;</b>
+<i>364</i>&nbsp;            }
+<i>365</i>&nbsp;        }
+<i>366</i>&nbsp;    }
+<i>367</i>&nbsp;
+<i>368</i>&nbsp;    public static String computeClippedWrappedText(Font font, String text, double width,
+<i>369</i>&nbsp;                                            double height, OverrunStyle truncationStyle,
+<i>370</i>&nbsp;                                            String ellipsisString, TextBoundsType boundsType) {
+<b class="nc"><i>371</i>&nbsp;        if (font == null) {</b>
+<b class="nc"><i>372</i>&nbsp;            throw new IllegalArgumentException(&quot;Must specify a font&quot;);</b>
+<i>373</i>&nbsp;        }
+<i>374</i>&nbsp;
+<b class="nc"><i>375</i>&nbsp;        String ellipsis = (truncationStyle == CLIP) ? &quot;&quot; : ellipsisString;</b>
+<b class="nc"><i>376</i>&nbsp;        int eLen = ellipsis.length();</b>
+<i>377</i>&nbsp;        // Do this before using helper, as it&#39;s not reentrant.
+<b class="nc"><i>378</i>&nbsp;        double eWidth = computeTextWidth(font, ellipsis, 0);</b>
+<b class="nc"><i>379</i>&nbsp;        double eHeight = computeTextHeight(font, ellipsis, 0, boundsType);</b>
+<i>380</i>&nbsp;
+<b class="nc"><i>381</i>&nbsp;        if (width &lt; eWidth || height &lt; eHeight) {</b>
+<i>382</i>&nbsp;            // The ellipsis doesn&#39;t fit.
+<b class="nc"><i>383</i>&nbsp;            return text; // RT-30868 - return text, not empty string.</b>
+<i>384</i>&nbsp;        }
+<i>385</i>&nbsp;
+<b class="nc"><i>386</i>&nbsp;        helper.setText(text);</b>
+<b class="nc"><i>387</i>&nbsp;        helper.setFont(font);</b>
+<b class="nc"><i>388</i>&nbsp;        helper.setWrappingWidth((int)Math.ceil(width));</b>
+<b class="nc"><i>389</i>&nbsp;        helper.setBoundsType(boundsType);</b>
+<b class="nc"><i>390</i>&nbsp;        helper.setLineSpacing(0);</b>
+<i>391</i>&nbsp;
+<b class="nc"><i>392</i>&nbsp;        boolean leading =  (truncationStyle == LEADING_ELLIPSIS ||</b>
+<i>393</i>&nbsp;                            truncationStyle == LEADING_WORD_ELLIPSIS);
+<b class="nc"><i>394</i>&nbsp;        boolean center =   (truncationStyle == CENTER_ELLIPSIS ||</b>
+<i>395</i>&nbsp;                            truncationStyle == CENTER_WORD_ELLIPSIS);
+<b class="nc"><i>396</i>&nbsp;        boolean trailing = !(leading || center);</b>
+<b class="nc"><i>397</i>&nbsp;        boolean wordTrim = (truncationStyle == WORD_ELLIPSIS ||</b>
+<i>398</i>&nbsp;                            truncationStyle == LEADING_WORD_ELLIPSIS ||
+<i>399</i>&nbsp;                            truncationStyle == CENTER_WORD_ELLIPSIS);
+<i>400</i>&nbsp;
+<b class="nc"><i>401</i>&nbsp;        String result = text;</b>
+<b class="nc"><i>402</i>&nbsp;        int len = (result != null) ? result.length() : 0;</b>
+<b class="nc"><i>403</i>&nbsp;        int centerLen = -1;</b>
+<i>404</i>&nbsp;
+<b class="nc"><i>405</i>&nbsp;        Point2D centerPoint = null;</b>
+<b class="nc"><i>406</i>&nbsp;        if (center) {</b>
+<i>407</i>&nbsp;            // Find index of character in the middle of the visual text area
+<b class="nc"><i>408</i>&nbsp;            centerPoint = new Point2D((width - eWidth) / 2, height / 2 - helper.getBaselineOffset());</b>
+<i>409</i>&nbsp;        }
+<i>410</i>&nbsp;
+<i>411</i>&nbsp;        // Find index of character at the bottom left of the text area.
+<i>412</i>&nbsp;        // This should be the first character of a line that would be clipped.
+<b class="nc"><i>413</i>&nbsp;        Point2D endPoint = new Point2D(0, height - helper.getBaselineOffset());</b>
+<i>414</i>&nbsp;
+<b class="nc"><i>415</i>&nbsp;        int hit = helper.hitTest(endPoint).getCharIndex();</b>
+<b class="nc"><i>416</i>&nbsp;        if (hit &gt;= len) {</b>
+<b class="nc"><i>417</i>&nbsp;            helper.setBoundsType(TextBoundsType.LOGICAL); // restore</b>
+<b class="nc"><i>418</i>&nbsp;            return text;</b>
+<i>419</i>&nbsp;        }
+<b class="nc"><i>420</i>&nbsp;        if (center) {</b>
+<b class="nc"><i>421</i>&nbsp;            hit = helper.hitTest(centerPoint).getCharIndex();</b>
+<i>422</i>&nbsp;        }
+<i>423</i>&nbsp;
+<b class="nc"><i>424</i>&nbsp;        if (hit &gt; 0 &amp;&amp; hit &lt; len) {</b>
+<i>425</i>&nbsp;            // Step one, make a truncation estimate.
+<i>426</i>&nbsp;
+<b class="nc"><i>427</i>&nbsp;            if (center || trailing) {</b>
+<b class="nc"><i>428</i>&nbsp;                int ind = hit;</b>
+<b class="nc"><i>429</i>&nbsp;                if (center) {</b>
+<i>430</i>&nbsp;                    // This is for the first part, i.e. beginning of text up to ellipsis.
+<b class="nc"><i>431</i>&nbsp;                    if (wordTrim) {</b>
+<b class="nc"><i>432</i>&nbsp;                        int brInd = lastBreakCharIndex(text, ind + 1);</b>
+<b class="nc"><i>433</i>&nbsp;                        if (brInd &gt;= 0) {</b>
+<b class="nc"><i>434</i>&nbsp;                            ind = brInd + 1;</b>
+<i>435</i>&nbsp;                        } else {
+<b class="nc"><i>436</i>&nbsp;                            brInd = firstBreakCharIndex(text, ind);</b>
+<b class="nc"><i>437</i>&nbsp;                            if (brInd &gt;= 0) {</b>
+<b class="nc"><i>438</i>&nbsp;                                ind = brInd + 1;</b>
+<i>439</i>&nbsp;                            }
+<i>440</i>&nbsp;                        }
+<i>441</i>&nbsp;                    }
+<b class="nc"><i>442</i>&nbsp;                    centerLen = ind + eLen;</b>
+<i>443</i>&nbsp;                } // else: text node wraps at words, so wordTrim is not needed here.
+<b class="nc"><i>444</i>&nbsp;                result = result.substring(0, ind) + ellipsis;</b>
+<i>445</i>&nbsp;            }
+<i>446</i>&nbsp;
+<b class="nc"><i>447</i>&nbsp;            if (leading || center) {</b>
+<i>448</i>&nbsp;                // The hit is an index counted from the beginning, but we need
+<i>449</i>&nbsp;                // the opposite, i.e. an index counted from the end.  However,
+<i>450</i>&nbsp;                // the Text node does not support wrapped line layout in the
+<i>451</i>&nbsp;                // reverse direction, starting at the bottom right corner.
+<i>452</i>&nbsp;
+<i>453</i>&nbsp;                // We&#39;ll simulate by assuming the index will be a similar
+<i>454</i>&nbsp;                // number, then back up 10 characters just to add some slop.
+<i>455</i>&nbsp;                // For example, the ending lines might pack tighter than the
+<i>456</i>&nbsp;                // beginning lines, and therefore fit a higher number of
+<i>457</i>&nbsp;                // characters.
+<b class="nc"><i>458</i>&nbsp;                int ind = Math.max(0, len - hit - 10);</b>
+<b class="nc"><i>459</i>&nbsp;                if (ind &gt; 0 &amp;&amp; wordTrim) {</b>
+<b class="nc"><i>460</i>&nbsp;                    int brInd = lastBreakCharIndex(text, ind + 1);</b>
+<b class="nc"><i>461</i>&nbsp;                    if (brInd &gt;= 0) {</b>
+<b class="nc"><i>462</i>&nbsp;                        ind = brInd + 1;</b>
+<i>463</i>&nbsp;                    } else {
+<b class="nc"><i>464</i>&nbsp;                        brInd = firstBreakCharIndex(text, ind);</b>
+<b class="nc"><i>465</i>&nbsp;                        if (brInd &gt;= 0) {</b>
+<b class="nc"><i>466</i>&nbsp;                            ind = brInd + 1;</b>
+<i>467</i>&nbsp;                        }
+<i>468</i>&nbsp;                    }
+<i>469</i>&nbsp;                }
+<b class="nc"><i>470</i>&nbsp;                if (center) {</b>
+<i>471</i>&nbsp;                    // This is for the second part, i.e. from ellipsis to end of text.
+<b class="nc"><i>472</i>&nbsp;                    result = result + text.substring(ind);</b>
+<i>473</i>&nbsp;                } else {
+<b class="nc"><i>474</i>&nbsp;                    result = ellipsis + text.substring(ind);</b>
+<i>475</i>&nbsp;                }
+<i>476</i>&nbsp;            }
+<i>477</i>&nbsp;
+<i>478</i>&nbsp;            // Step two, check if text still overflows after we added the ellipsis.
+<i>479</i>&nbsp;            // If so, remove one char or word at a time.
+<i>480</i>&nbsp;            while (true) {
+<b class="nc"><i>481</i>&nbsp;                helper.setText(result);</b>
+<b class="nc"><i>482</i>&nbsp;                int hit2 = helper.hitTest(endPoint).getCharIndex();</b>
+<b class="nc"><i>483</i>&nbsp;                if (center &amp;&amp; hit2 &lt; centerLen) {</b>
+<i>484</i>&nbsp;                    // No room for text after ellipsis. Maybe there is a newline
+<i>485</i>&nbsp;                    // here, and the next line falls outside the view.
+<b class="nc"><i>486</i>&nbsp;                    if (hit2 &gt; 0 &amp;&amp; result.charAt(hit2-1) == &#39;\n&#39;) {</b>
+<b class="nc"><i>487</i>&nbsp;                        hit2--;</b>
+<i>488</i>&nbsp;                    }
+<b class="nc"><i>489</i>&nbsp;                    result = text.substring(0, hit2) + ellipsis;</b>
+<b class="nc"><i>490</i>&nbsp;                    break;</b>
+<b class="nc"><i>491</i>&nbsp;                } else if (hit2 &gt; 0 &amp;&amp; hit2 &lt; result.length()) {</b>
+<b class="nc"><i>492</i>&nbsp;                    if (leading) {</b>
+<b class="nc"><i>493</i>&nbsp;                        int ind = eLen + 1; // Past ellipsis and first char.</b>
+<b class="nc"><i>494</i>&nbsp;                        if (wordTrim) {</b>
+<b class="nc"><i>495</i>&nbsp;                            int brInd = firstBreakCharIndex(result, ind);</b>
+<b class="nc"><i>496</i>&nbsp;                            if (brInd &gt;= 0) {</b>
+<b class="nc"><i>497</i>&nbsp;                                ind = brInd + 1;</b>
+<i>498</i>&nbsp;                            }
+<i>499</i>&nbsp;                        }
+<b class="nc"><i>500</i>&nbsp;                        result = ellipsis + result.substring(ind);</b>
+<b class="nc"><i>501</i>&nbsp;                    } else if (center) {</b>
+<b class="nc"><i>502</i>&nbsp;                        int ind = centerLen + 1; // Past ellipsis and first char.</b>
+<b class="nc"><i>503</i>&nbsp;                        if (wordTrim) {</b>
+<b class="nc"><i>504</i>&nbsp;                            int brInd = firstBreakCharIndex(result, ind);</b>
+<b class="nc"><i>505</i>&nbsp;                            if (brInd &gt;= 0) {</b>
+<b class="nc"><i>506</i>&nbsp;                                ind = brInd + 1;</b>
+<i>507</i>&nbsp;                            }
+<i>508</i>&nbsp;                        }
+<b class="nc"><i>509</i>&nbsp;                        result = result.substring(0, centerLen) + result.substring(ind);</b>
+<b class="nc"><i>510</i>&nbsp;                    } else {</b>
+<b class="nc"><i>511</i>&nbsp;                        int ind = result.length() - eLen - 1; // Before last char and ellipsis.</b>
+<b class="nc"><i>512</i>&nbsp;                        if (wordTrim) {</b>
+<b class="nc"><i>513</i>&nbsp;                            int brInd = lastBreakCharIndex(result, ind);</b>
+<b class="nc"><i>514</i>&nbsp;                            if (brInd &gt;= 0) {</b>
+<b class="nc"><i>515</i>&nbsp;                                ind = brInd;</b>
+<i>516</i>&nbsp;                            }
+<i>517</i>&nbsp;                        }
+<b class="nc"><i>518</i>&nbsp;                        result = result.substring(0, ind) + ellipsis;</b>
+<i>519</i>&nbsp;                    }
+<i>520</i>&nbsp;                } else {
+<i>521</i>&nbsp;                    break;
+<i>522</i>&nbsp;                }
+<b class="nc"><i>523</i>&nbsp;            }</b>
+<i>524</i>&nbsp;        }
+<i>525</i>&nbsp;        // RESTORE STATE
+<b class="nc"><i>526</i>&nbsp;        helper.setWrappingWidth(DEFAULT_WRAPPING_WIDTH);</b>
+<b class="nc"><i>527</i>&nbsp;        helper.setLineSpacing(DEFAULT_LINE_SPACING);</b>
+<b class="nc"><i>528</i>&nbsp;        helper.setText(DEFAULT_TEXT);</b>
+<b class="nc"><i>529</i>&nbsp;        helper.setBoundsType(DEFAULT_BOUNDS_TYPE);</b>
+<b class="nc"><i>530</i>&nbsp;        return result;</b>
+<i>531</i>&nbsp;    }
+<i>532</i>&nbsp;
+<i>533</i>&nbsp;
+<i>534</i>&nbsp;    private static int firstBreakCharIndex(String str, int start) {
+<b class="nc"><i>535</i>&nbsp;        char[] chars = str.toCharArray();</b>
+<b class="nc"><i>536</i>&nbsp;        for (int i = start; i &lt; chars.length; i++) {</b>
+<b class="nc"><i>537</i>&nbsp;            if (isPreferredBreakCharacter(chars[i])) {</b>
+<b class="nc"><i>538</i>&nbsp;                return i;</b>
+<i>539</i>&nbsp;            }
+<i>540</i>&nbsp;        }
+<b class="nc"><i>541</i>&nbsp;        return -1;</b>
+<i>542</i>&nbsp;    }
+<i>543</i>&nbsp;
+<i>544</i>&nbsp;    private static int lastBreakCharIndex(String str, int start) {
+<b class="nc"><i>545</i>&nbsp;        char[] chars = str.toCharArray();</b>
+<b class="nc"><i>546</i>&nbsp;        for (int i = start; i &gt;= 0; i--) {</b>
+<b class="nc"><i>547</i>&nbsp;            if (isPreferredBreakCharacter(chars[i])) {</b>
+<b class="nc"><i>548</i>&nbsp;                return i;</b>
+<i>549</i>&nbsp;            }
+<i>550</i>&nbsp;        }
+<b class="nc"><i>551</i>&nbsp;        return -1;</b>
+<i>552</i>&nbsp;    }
+<i>553</i>&nbsp;
+<i>554</i>&nbsp;    /* Recognizes white space and latin punctuation as preferred
+<i>555</i>&nbsp;     * line break positions. Could do a bit better with using more
+<i>556</i>&nbsp;     * of the properties from the Character class.
+<i>557</i>&nbsp;     */
+<i>558</i>&nbsp;    private static boolean isPreferredBreakCharacter(char ch) {
+<b class="nc"><i>559</i>&nbsp;        if (Character.isWhitespace(ch)) {</b>
+<b class="nc"><i>560</i>&nbsp;            return true;</b>
+<i>561</i>&nbsp;        } else {
+<b class="nc"><i>562</i>&nbsp;            switch (ch) {</b>
+<i>563</i>&nbsp;            case &#39;;&#39; :
+<i>564</i>&nbsp;            case &#39;:&#39; :
+<i>565</i>&nbsp;            case &#39;.&#39; :
+<b class="nc"><i>566</i>&nbsp;                return true;</b>
+<b class="nc"><i>567</i>&nbsp;            default: return false;</b>
+<i>568</i>&nbsp;            }
+<i>569</i>&nbsp;        }
+<i>570</i>&nbsp;    }
+<i>571</i>&nbsp;
+<i>572</i>&nbsp;    private static boolean requiresComplexLayout(Font font, String string) {
+<i>573</i>&nbsp;        /*        Map attrs = font.getAttributes();
+<i>574</i>&nbsp;           if (contains(attrs, KERNING, KERNING_ON) ||
+<i>575</i>&nbsp;           contains(attrs, LIGATURES, LIGATURES_ON) ||
+<i>576</i>&nbsp;           (attrs.containsKey(TRACKING) &amp;&amp; attrs.get(TRACKING) != null)) {
+<i>577</i>&nbsp;           return true;
+<i>578</i>&nbsp;           }
+<i>579</i>&nbsp;           return isComplexLayout(string.toCharArray(), 0, string.length());
+<i>580</i>&nbsp;         */
+<b class="nc"><i>581</i>&nbsp;        return false;</b>
+<i>582</i>&nbsp;    }
+<i>583</i>&nbsp;
+<i>584</i>&nbsp;    static int computeStartOfWord(Font font, String text, int index) {
+<b class="nc"><i>585</i>&nbsp;        if (&quot;&quot;.equals(text) || index &lt; 0) return 0;</b>
+<b class="nc"><i>586</i>&nbsp;        if (text.length() &lt;= index) return text.length();</b>
+<i>587</i>&nbsp;        // if the given index is not in a word (but in whitespace), then
+<i>588</i>&nbsp;        // simply return the index
+<b class="nc"><i>589</i>&nbsp;        if (Character.isWhitespace(text.charAt(index))) {</b>
+<b class="nc"><i>590</i>&nbsp;            return index;</b>
+<i>591</i>&nbsp;        }
+<b class="nc"><i>592</i>&nbsp;        boolean complexLayout = requiresComplexLayout(font, text);</b>
+<b class="nc"><i>593</i>&nbsp;        if (complexLayout) {</b>
+<i>594</i>&nbsp;            // TODO needs implementation
+<b class="nc"><i>595</i>&nbsp;            return 0;</b>
+<i>596</i>&nbsp;        } else {
+<i>597</i>&nbsp;            // just start walking backwards from index until either i&lt;0 or
+<i>598</i>&nbsp;            // the first whitespace is found.
+<b class="nc"><i>599</i>&nbsp;            int i = index;</b>
+<b class="nc"><i>600</i>&nbsp;            while (--i &gt;= 0) {</b>
+<b class="nc"><i>601</i>&nbsp;                if (Character.isWhitespace(text.charAt(i))) {</b>
+<b class="nc"><i>602</i>&nbsp;                    return i + 1;</b>
+<i>603</i>&nbsp;                }
+<i>604</i>&nbsp;            }
+<b class="nc"><i>605</i>&nbsp;            return 0;</b>
+<i>606</i>&nbsp;        }
+<i>607</i>&nbsp;    }
+<i>608</i>&nbsp;
+<i>609</i>&nbsp;    static int computeEndOfWord(Font font, String text, int index) {
+<b class="nc"><i>610</i>&nbsp;        if (text.equals(&quot;&quot;) || index &lt; 0) {</b>
+<b class="nc"><i>611</i>&nbsp;            return 0;</b>
+<i>612</i>&nbsp;        }
+<b class="nc"><i>613</i>&nbsp;        if (text.length() &lt;= index) {</b>
+<b class="nc"><i>614</i>&nbsp;            return text.length();</b>
+<i>615</i>&nbsp;        }
+<i>616</i>&nbsp;        // if the given index is not in a word (but in whitespace), then
+<i>617</i>&nbsp;        // simply return the index
+<b class="nc"><i>618</i>&nbsp;        if (Character.isWhitespace(text.charAt(index))) {</b>
+<b class="nc"><i>619</i>&nbsp;            return index;</b>
+<i>620</i>&nbsp;        }
+<b class="nc"><i>621</i>&nbsp;        boolean complexLayout = requiresComplexLayout(font, text);</b>
+<b class="nc"><i>622</i>&nbsp;        if (complexLayout) {</b>
+<i>623</i>&nbsp;            // TODO needs implementation
+<b class="nc"><i>624</i>&nbsp;            return text.length();</b>
+<i>625</i>&nbsp;        } else {
+<i>626</i>&nbsp;            // just start walking forward from index until either i &gt; length or
+<i>627</i>&nbsp;            // the first whitespace is found.
+<b class="nc"><i>628</i>&nbsp;            int i = index;</b>
+<b class="nc"><i>629</i>&nbsp;            while (++i &lt; text.length()) {</b>
+<b class="nc"><i>630</i>&nbsp;                if (Character.isWhitespace(text.charAt(i))) {</b>
+<b class="nc"><i>631</i>&nbsp;                    return i;</b>
+<i>632</i>&nbsp;                }
+<i>633</i>&nbsp;            }
+<b class="nc"><i>634</i>&nbsp;            return text.length();</b>
+<i>635</i>&nbsp;        }
+<i>636</i>&nbsp;    }
+<i>637</i>&nbsp;
+<i>638</i>&nbsp;    // used for layout to adjust widths to honor the min/max policies consistently
+<i>639</i>&nbsp;    public static double boundedSize(double value, double min, double max) {
+<i>640</i>&nbsp;        // if max &lt; value, return max
+<i>641</i>&nbsp;        // if min &gt; value, return min
+<i>642</i>&nbsp;        // if min &gt; max, return min
+<b class="nc"><i>643</i>&nbsp;        return Math.min(Math.max(value, min), Math.max(min,max));</b>
+<i>644</i>&nbsp;    }
+<i>645</i>&nbsp;
+<i>646</i>&nbsp;    public static void addMnemonics(ContextMenu popup, Scene scene) {
+<b class="nc"><i>647</i>&nbsp;        addMnemonics(popup, scene, false);</b>
+<b class="nc"><i>648</i>&nbsp;    }</b>
+<i>649</i>&nbsp;
+<i>650</i>&nbsp;    public static void addMnemonics(ContextMenu popup, Scene scene, boolean initialState) {
+<i>651</i>&nbsp;
+<b class="nc"><i>652</i>&nbsp;        if (!com.sun.javafx.PlatformUtil.isMac()) {</b>
+<i>653</i>&nbsp;
+<b class="nc"><i>654</i>&nbsp;            ContextMenuContent cmContent = (ContextMenuContent)popup.getSkin().getNode();</b>
+<i>655</i>&nbsp;            MenuItem menuitem;
+<i>656</i>&nbsp;
+<b class="nc"><i>657</i>&nbsp;            for (int i = 0 ; i &lt; popup.getItems().size() ; i++) {</b>
+<b class="nc"><i>658</i>&nbsp;                menuitem = popup.getItems().get(i);</b>
+<i>659</i>&nbsp;                /*
+<i>660</i>&nbsp;                ** check is there are any mnemonics in this menu
+<i>661</i>&nbsp;                */
+<b class="nc"><i>662</i>&nbsp;                if (menuitem.isMnemonicParsing()) {</b>
+<i>663</i>&nbsp;
+<b class="nc"><i>664</i>&nbsp;                    TextBinding bindings = new TextBinding(menuitem.getText());</b>
+<b class="nc"><i>665</i>&nbsp;                    int mnemonicIndex = bindings.getMnemonicIndex() ;</b>
+<b class="nc"><i>666</i>&nbsp;                    if (mnemonicIndex &gt;= 0) {</b>
+<b class="nc"><i>667</i>&nbsp;                        KeyCombination mnemonicKeyCombo = bindings.getMnemonicKeyCombination();</b>
+<b class="nc"><i>668</i>&nbsp;                        Mnemonic myMnemonic = new Mnemonic(cmContent.getLabelAt(i), mnemonicKeyCombo);</b>
+<b class="nc"><i>669</i>&nbsp;                        scene.addMnemonic(myMnemonic);</b>
+<b class="nc"><i>670</i>&nbsp;                        NodeHelper.setShowMnemonics(cmContent.getLabelAt(i), initialState);</b>
+<i>671</i>&nbsp;                    }
+<i>672</i>&nbsp;                }
+<i>673</i>&nbsp;            }
+<i>674</i>&nbsp;        }
+<b class="nc"><i>675</i>&nbsp;    }</b>
+<i>676</i>&nbsp;
+<i>677</i>&nbsp;
+<i>678</i>&nbsp;
+<i>679</i>&nbsp;    public static void removeMnemonics(ContextMenu popup, Scene scene) {
+<i>680</i>&nbsp;
+<b class="nc"><i>681</i>&nbsp;        if (!com.sun.javafx.PlatformUtil.isMac()) {</b>
+<i>682</i>&nbsp;
+<b class="nc"><i>683</i>&nbsp;            ContextMenuContent cmContent = (ContextMenuContent)popup.getSkin().getNode();</b>
+<i>684</i>&nbsp;            MenuItem menuitem;
+<i>685</i>&nbsp;
+<b class="nc"><i>686</i>&nbsp;            for (int i = 0 ; i &lt; popup.getItems().size() ; i++) {</b>
+<b class="nc"><i>687</i>&nbsp;                menuitem = popup.getItems().get(i);</b>
+<i>688</i>&nbsp;                /*
+<i>689</i>&nbsp;                ** check is there are any mnemonics in this menu
+<i>690</i>&nbsp;                */
+<b class="nc"><i>691</i>&nbsp;                if (menuitem.isMnemonicParsing()) {</b>
+<i>692</i>&nbsp;
+<b class="nc"><i>693</i>&nbsp;                    TextBinding bindings = new TextBinding(menuitem.getText());</b>
+<b class="nc"><i>694</i>&nbsp;                    int mnemonicIndex = bindings.getMnemonicIndex() ;</b>
+<b class="nc"><i>695</i>&nbsp;                    if (mnemonicIndex &gt;= 0) {</b>
+<b class="nc"><i>696</i>&nbsp;                        KeyCombination mnemonicKeyCombo = bindings.getMnemonicKeyCombination();</b>
+<i>697</i>&nbsp;
+<b class="nc"><i>698</i>&nbsp;                        ObservableList&lt;Mnemonic&gt; mnemonicsList = scene.getMnemonics().get(mnemonicKeyCombo);</b>
+<b class="nc"><i>699</i>&nbsp;                        if (mnemonicsList != null) {</b>
+<b class="nc"><i>700</i>&nbsp;                            for (int j = 0 ; j &lt; mnemonicsList.size() ; j++) {</b>
+<b class="nc"><i>701</i>&nbsp;                                if (mnemonicsList.get(j).getNode() == cmContent.getLabelAt(i)) {</b>
+<b class="nc"><i>702</i>&nbsp;                                    mnemonicsList.remove(j);</b>
+<i>703</i>&nbsp;                                }
+<i>704</i>&nbsp;                            }
+<i>705</i>&nbsp;                        }
+<i>706</i>&nbsp;                    }
+<i>707</i>&nbsp;                }
+<i>708</i>&nbsp;            }
+<i>709</i>&nbsp;        }
+<b class="nc"><i>710</i>&nbsp;    }</b>
+<i>711</i>&nbsp;
+<i>712</i>&nbsp;    public static double computeXOffset(double width, double contentWidth, HPos hpos) {
+<b class="nc"><i>713</i>&nbsp;        if (hpos == null) {</b>
+<b class="nc"><i>714</i>&nbsp;            return 0;</b>
+<i>715</i>&nbsp;        }
+<i>716</i>&nbsp;
+<b class="nc"><i>717</i>&nbsp;        switch(hpos) {</b>
+<i>718</i>&nbsp;            case LEFT:
+<b class="nc"><i>719</i>&nbsp;               return 0;</b>
+<i>720</i>&nbsp;            case CENTER:
+<b class="nc"><i>721</i>&nbsp;               return (width - contentWidth) / 2;</b>
+<i>722</i>&nbsp;            case RIGHT:
+<b class="nc"><i>723</i>&nbsp;               return width - contentWidth;</b>
+<i>724</i>&nbsp;            default:
+<b class="nc"><i>725</i>&nbsp;                return 0;</b>
+<i>726</i>&nbsp;        }
+<i>727</i>&nbsp;    }
+<i>728</i>&nbsp;
+<i>729</i>&nbsp;    public static double computeYOffset(double height, double contentHeight, VPos vpos) {
+<b class="nc"><i>730</i>&nbsp;        if (vpos == null) {</b>
+<b class="nc"><i>731</i>&nbsp;            return 0;</b>
+<i>732</i>&nbsp;        }
+<i>733</i>&nbsp;
+<b class="nc"><i>734</i>&nbsp;        switch(vpos) {</b>
+<i>735</i>&nbsp;            case TOP:
+<b class="nc"><i>736</i>&nbsp;               return 0;</b>
+<i>737</i>&nbsp;            case CENTER:
+<b class="nc"><i>738</i>&nbsp;               return (height - contentHeight) / 2;</b>
+<i>739</i>&nbsp;            case BOTTOM:
+<b class="nc"><i>740</i>&nbsp;               return height - contentHeight;</b>
+<i>741</i>&nbsp;            default:
+<b class="nc"><i>742</i>&nbsp;                return 0;</b>
+<i>743</i>&nbsp;        }
+<i>744</i>&nbsp;    }
+<i>745</i>&nbsp;
+<i>746</i>&nbsp;    /*
+<i>747</i>&nbsp;    ** Returns true if the platform is to use Two-Level-Focus.
+<i>748</i>&nbsp;    ** This is in the Util class to ease any changes in
+<i>749</i>&nbsp;    ** the criteria for enabling this feature.
+<i>750</i>&nbsp;    **
+<i>751</i>&nbsp;    ** TwoLevelFocus is needed on platforms that
+<i>752</i>&nbsp;    ** only support 5-button navigation (arrow keys and Select/OK).
+<i>753</i>&nbsp;    **
+<i>754</i>&nbsp;    */
+<i>755</i>&nbsp;    public static boolean isTwoLevelFocus() {
+<b class="fc"><i>756</i>&nbsp;        return Platform.isSupported(ConditionalFeature.TWO_LEVEL_FOCUS);</b>
+<i>757</i>&nbsp;    }
+<i>758</i>&nbsp;
+<i>759</i>&nbsp;
+<i>760</i>&nbsp;    // useful method for linking things together when before a property is
+<i>761</i>&nbsp;    // necessarily set
+<i>762</i>&nbsp;    public static &lt;T&gt; void executeOnceWhenPropertyIsNonNull(ObservableValue&lt;T&gt; p, Consumer&lt;T&gt; consumer) {
+<b class="nc"><i>763</i>&nbsp;        if (p == null) return;</b>
+<i>764</i>&nbsp;
+<b class="nc"><i>765</i>&nbsp;        T value = p.getValue();</b>
+<b class="nc"><i>766</i>&nbsp;        if (value != null) {</b>
+<b class="nc"><i>767</i>&nbsp;            consumer.accept(value);</b>
+<i>768</i>&nbsp;        } else {
+<b class="nc"><i>769</i>&nbsp;            final InvalidationListener listener = new InvalidationListener() {</b>
+<i>770</i>&nbsp;                @Override public void invalidated(Observable observable) {
+<i>771</i>&nbsp;                    T value = p.getValue();
+<i>772</i>&nbsp;
+<i>773</i>&nbsp;                    if (value != null) {
+<i>774</i>&nbsp;                        p.removeListener(this);
+<i>775</i>&nbsp;                        consumer.accept(value);
+<i>776</i>&nbsp;                    }
+<i>777</i>&nbsp;                }
+<i>778</i>&nbsp;            };
+<b class="nc"><i>779</i>&nbsp;            p.addListener(listener);</b>
+<i>780</i>&nbsp;        }
+<b class="nc"><i>781</i>&nbsp;    }</b>
+<i>782</i>&nbsp;
+<i>783</i>&nbsp;    public static String formatHexString(Color c) {
+<b class="nc"><i>784</i>&nbsp;        if (c != null) {</b>
+<b class="nc"><i>785</i>&nbsp;            return String.format((Locale) null, &quot;#%02x%02x%02x&quot;,</b>
+<b class="nc"><i>786</i>&nbsp;                    Math.round(c.getRed() * 255),</b>
+<b class="nc"><i>787</i>&nbsp;                    Math.round(c.getGreen() * 255),</b>
+<b class="nc"><i>788</i>&nbsp;                    Math.round(c.getBlue() * 255));</b>
+<i>789</i>&nbsp;        } else {
+<b class="nc"><i>790</i>&nbsp;            return null;</b>
+<i>791</i>&nbsp;        }
+<i>792</i>&nbsp;    }
+<i>793</i>&nbsp;
+<i>794</i>&nbsp;    public static URL getResource(String str) {
+<b class="fc"><i>795</i>&nbsp;        return Utils.class.getResource(str);</b>
+<i>796</i>&nbsp;    }
+<i>797</i>&nbsp;
+<i>798</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2017-12-04 21:49</div>
+</div>
+</body>
+</html>

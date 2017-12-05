@@ -1,0 +1,525 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: PrintLogger</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.javafx.logging</a> ]
+</div>
+
+<h1>Coverage Summary for Class: PrintLogger (com.sun.javafx.logging)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">PrintLogger</td>
+<td class="coverageStat">
+  <span class="percent">
+    28.6%
+  </span>
+  <span class="absValue">
+    (4/ 14)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    7.8%
+  </span>
+  <span class="absValue">
+    (8/ 103)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">PrintLogger$1</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 2)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    25%
+  </span>
+  <span class="absValue">
+    (4/ 16)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    7.6%
+  </span>
+  <span class="absValue">
+    (8/ 105)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright (c) 2014, Oracle and/or its affiliates. All rights reserved.
+<i>3</i>&nbsp; * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+<i>4</i>&nbsp; *
+<i>5</i>&nbsp; *
+<i>6</i>&nbsp; *
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; *
+<i>11</i>&nbsp; *
+<i>12</i>&nbsp; *
+<i>13</i>&nbsp; *
+<i>14</i>&nbsp; *
+<i>15</i>&nbsp; *
+<i>16</i>&nbsp; *
+<i>17</i>&nbsp; *
+<i>18</i>&nbsp; *
+<i>19</i>&nbsp; *
+<i>20</i>&nbsp; *
+<i>21</i>&nbsp; *
+<i>22</i>&nbsp; *
+<i>23</i>&nbsp; *
+<i>24</i>&nbsp; */
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;package com.sun.javafx.logging;
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;import java.security.AccessController;
+<i>29</i>&nbsp;import java.security.PrivilegedAction;
+<i>30</i>&nbsp;import java.util.ArrayList;
+<i>31</i>&nbsp;import java.util.Collections;
+<i>32</i>&nbsp;import java.util.Comparator;
+<i>33</i>&nbsp;import java.util.List;
+<i>34</i>&nbsp;import java.util.Map;
+<i>35</i>&nbsp;import java.util.concurrent.ConcurrentHashMap;
+<i>36</i>&nbsp;import java.util.concurrent.atomic.AtomicInteger;
+<i>37</i>&nbsp;
+<i>38</i>&nbsp;/**
+<i>39</i>&nbsp; * Logs information on a per-pulse basis. When doing performance analysis, a very
+<i>40</i>&nbsp; * easy thing to start with is to run with the PulseLogger enabled, such that various
+<i>41</i>&nbsp; * statistics related to the scene graph and the pulse are recorded and dumped to
+<i>42</i>&nbsp; * the log.
+<i>43</i>&nbsp; * &lt;p&gt;
+<i>44</i>&nbsp; * The pulse logger is designed in such a way as to gather all of the pulse statistics
+<i>45</i>&nbsp; * together even though half of the pulse occurs on the FX thread and half on the
+<i>46</i>&nbsp; * render thread, and therefore two sets of pulse data are being accumulated
+<i>47</i>&nbsp; * concurrently. The {@code pulseStart}, {@code pulseEnd}, {@code renderStart},
+<i>48</i>&nbsp; * and {@code renderEnd} methods must be called appropriately by the runtime
+<i>49</i>&nbsp; * to ensure that the logging system works correctly.
+<i>50</i>&nbsp; */
+<b class="nc"><i>51</i>&nbsp;class PrintLogger extends Logger {</b>
+<i>52</i>&nbsp;
+<i>53</i>&nbsp;    /**
+<i>54</i>&nbsp;     * A reference to the pulse logger. This will be null if pulse logging
+<i>55</i>&nbsp;     * is not enabled.
+<i>56</i>&nbsp;     */
+<i>57</i>&nbsp;    private static PrintLogger printLogger;
+<i>58</i>&nbsp;
+<i>59</i>&nbsp;    /**
+<i>60</i>&nbsp;     * A time in milliseconds which defines the threshold. If a pulse lasts &lt;em&gt;longer&lt;/em&gt; than
+<i>61</i>&nbsp;     * the threshold, then it is logged, otherwise an abbreviated representation including
+<i>62</i>&nbsp;     * only the time of the pulse is logged.
+<i>63</i>&nbsp;     */
+<b class="fc"><i>64</i>&nbsp;    private static long THRESHOLD = (long)</b>
+<b class="fc"><i>65</i>&nbsp;            AccessController.doPrivileged((PrivilegedAction&lt;Integer&gt;) () -&gt; Integer.getInteger(&quot;javafx.pulseLogger.threshold&quot;, 17));</b>
+<i>66</i>&nbsp;
+<i>67</i>&nbsp;    /**
+<i>68</i>&nbsp;     * Optionally exit after a given number of pulses
+<i>69</i>&nbsp;     */
+<b class="fc"><i>70</i>&nbsp;    private static final int EXIT_ON_PULSE =</b>
+<b class="fc"><i>71</i>&nbsp;            AccessController.doPrivileged((PrivilegedAction&lt;Integer&gt;) () -&gt; Integer.getInteger(&quot;javafx.pulseLogger.exitOnPulse&quot;, 0));</b>
+<i>72</i>&nbsp;
+<i>73</i>&nbsp;    /**
+<i>74</i>&nbsp;     * We have a simple counter that keeps track of the current pulse number.
+<i>75</i>&nbsp;     * INTER_PULSE_DATA is used to mark data that comes between pulses.
+<i>76</i>&nbsp;     */
+<b class="nc"><i>77</i>&nbsp;    private int pulseCount = 1;</b>
+<i>78</i>&nbsp;    private static final int INTER_PULSE_DATA = -1;
+<i>79</i>&nbsp;
+<i>80</i>&nbsp;    /**
+<i>81</i>&nbsp;     * When printing the truncated form of the pulse, we just print one truncated
+<i>82</i>&nbsp;     * form after another, such as:
+<i>83</i>&nbsp;     *
+<i>84</i>&nbsp;     * [5][2][4]
+<i>85</i>&nbsp;     *
+<i>86</i>&nbsp;     * This way we don&#39;t cause the console to scroll far vertically in the case of fast
+<i>87</i>&nbsp;     * pulses. We do this so that relevant information (pulses that exceed the threshold)
+<i>88</i>&nbsp;     * is easy to find and remains visible as long as possible in the console. However,
+<i>89</i>&nbsp;     * we don&#39;t want to scroll too far off to the right either, so we keep track of
+<i>90</i>&nbsp;     * how many &quot;quick pulses&quot; have happened in a row. When we&#39;ve exceeded some fixed
+<i>91</i>&nbsp;     * number (20, say) then we will insert a newline into the log.
+<i>92</i>&nbsp;     */
+<b class="nc"><i>93</i>&nbsp;    private volatile int wrapCount = 0;</b>
+<i>94</i>&nbsp;
+<i>95</i>&nbsp;    /**
+<i>96</i>&nbsp;     * References to PulseData for the FX thread (fxData) and the Render thread (renderData).
+<i>97</i>&nbsp;     */
+<i>98</i>&nbsp;    private volatile PulseData fxData, renderData;
+<i>99</i>&nbsp;
+<i>100</i>&nbsp;    /**
+<i>101</i>&nbsp;     * Keeps track of the start of the previous pulse, such that we can print out
+<i>102</i>&nbsp;     * the time interval between the start of pulses.
+<i>103</i>&nbsp;     */
+<i>104</i>&nbsp;    private long lastPulseStartTime;
+<i>105</i>&nbsp;
+<i>106</i>&nbsp;    class ThreadLocalData {
+<i>107</i>&nbsp;        String  phaseName;
+<i>108</i>&nbsp;        long    phaseStart;
+<i>109</i>&nbsp;    }
+<i>110</i>&nbsp;
+<i>111</i>&nbsp;    private Thread fxThread;
+<b class="nc"><i>112</i>&nbsp;    private final ThreadLocal&lt;ThreadLocalData&gt; phaseData =</b>
+<b class="nc"><i>113</i>&nbsp;        new ThreadLocal() {</b>
+<i>114</i>&nbsp;            @Override
+<i>115</i>&nbsp;            public ThreadLocalData initialValue() {
+<b class="nc"><i>116</i>&nbsp;                return new ThreadLocalData();</b>
+<i>117</i>&nbsp;            }
+<i>118</i>&nbsp;        };
+<i>119</i>&nbsp;
+<i>120</i>&nbsp;
+<i>121</i>&nbsp;    /**
+<i>122</i>&nbsp;     * The queue of all PulseData objects, both available and those in use.
+<i>123</i>&nbsp;     * New PulseData objects are allocated from head if the state is AVAILABLE.
+<i>124</i>&nbsp;     * They are re-linked at tail with the state INCOMPLETE. Once fully processed
+<i>125</i>&nbsp;     * they will change their state back to AVAILABLE and will become ready for reuse.
+<i>126</i>&nbsp;     */
+<i>127</i>&nbsp;    private PulseData head;
+<i>128</i>&nbsp;    private PulseData tail;
+<i>129</i>&nbsp;
+<i>130</i>&nbsp;    /**
+<i>131</i>&nbsp;     * A synchronization object for printing arbitrage.
+<i>132</i>&nbsp;     */
+<i>133</i>&nbsp;    private AtomicInteger active;
+<i>134</i>&nbsp;
+<i>135</i>&nbsp;    /**
+<i>136</i>&nbsp;     * PulseData object states
+<i>137</i>&nbsp;     */
+<i>138</i>&nbsp;    private static final int AVAILABLE = 0;
+<i>139</i>&nbsp;    private static final int INCOMPLETE = 1;
+<i>140</i>&nbsp;    private static final int COMPLETE = 2;
+<i>141</i>&nbsp;
+<i>142</i>&nbsp;    /**
+<i>143</i>&nbsp;     * Disallow instantiation.
+<i>144</i>&nbsp;     */
+<b class="nc"><i>145</i>&nbsp;    private PrintLogger() {</b>
+<b class="nc"><i>146</i>&nbsp;        head = new PulseData();</b>
+<b class="nc"><i>147</i>&nbsp;        tail = new PulseData();</b>
+<b class="nc"><i>148</i>&nbsp;        head.next = tail;</b>
+<b class="nc"><i>149</i>&nbsp;        active = new AtomicInteger(0);</b>
+<b class="nc"><i>150</i>&nbsp;    }</b>
+<i>151</i>&nbsp;
+<i>152</i>&nbsp;    public static Logger getInstance() {
+<b class="fc"><i>153</i>&nbsp;        if (printLogger == null) {</b>
+<b class="fc"><i>154</i>&nbsp;            boolean enabled = AccessController.doPrivileged((PrivilegedAction&lt;Boolean&gt;) () -&gt; Boolean.getBoolean(&quot;javafx.pulseLogger&quot;));</b>
+<b class="fc"><i>155</i>&nbsp;            if (enabled) {</b>
+<b class="nc"><i>156</i>&nbsp;                printLogger = new PrintLogger();</b>
+<i>157</i>&nbsp;            }
+<i>158</i>&nbsp;        }
+<b class="fc"><i>159</i>&nbsp;        return printLogger;</b>
+<i>160</i>&nbsp;    }
+<i>161</i>&nbsp;
+<i>162</i>&nbsp;    /**
+<i>163</i>&nbsp;     * Allocate and initialize a PulseData object
+<i>164</i>&nbsp;     */
+<i>165</i>&nbsp;    private PulseData allocate(int n) {
+<i>166</i>&nbsp;        PulseData res;
+<b class="nc"><i>167</i>&nbsp;        if (head != tail &amp;&amp; head.state == AVAILABLE) {</b>
+<b class="nc"><i>168</i>&nbsp;            res = head;</b>
+<b class="nc"><i>169</i>&nbsp;            head = head.next;</b>
+<b class="nc"><i>170</i>&nbsp;            res.next = null;</b>
+<i>171</i>&nbsp;        }
+<i>172</i>&nbsp;        else {
+<b class="nc"><i>173</i>&nbsp;            res = new PulseData();</b>
+<i>174</i>&nbsp;        }
+<b class="nc"><i>175</i>&nbsp;        tail.next = res;</b>
+<b class="nc"><i>176</i>&nbsp;        tail = res;</b>
+<b class="nc"><i>177</i>&nbsp;        res.init(n);</b>
+<b class="nc"><i>178</i>&nbsp;        return res;</b>
+<i>179</i>&nbsp;    }
+<i>180</i>&nbsp;
+<i>181</i>&nbsp;    /**
+<i>182</i>&nbsp;     * &lt;strong&gt;MUST&lt;/strong&gt; be called at the start of every pulse.
+<i>183</i>&nbsp;     * This method will initialize the fxData buffer so that subsequent
+<i>184</i>&nbsp;     * calls to fxMessage will write to this buffer.
+<i>185</i>&nbsp;     */
+<i>186</i>&nbsp;    @Override
+<i>187</i>&nbsp;    public void pulseStart() {
+<b class="nc"><i>188</i>&nbsp;        if (fxThread == null) {</b>
+<b class="nc"><i>189</i>&nbsp;            fxThread = Thread.currentThread();</b>
+<i>190</i>&nbsp;        }
+<b class="nc"><i>191</i>&nbsp;        if (fxData != null) {</b>
+<i>192</i>&nbsp;            // Inter pulse data
+<b class="nc"><i>193</i>&nbsp;            fxData.state = COMPLETE;</b>
+<b class="nc"><i>194</i>&nbsp;            if (active.incrementAndGet() == 1) {</b>
+<b class="nc"><i>195</i>&nbsp;                fxData.printAndReset();</b>
+<b class="nc"><i>196</i>&nbsp;                active.decrementAndGet();</b>
+<i>197</i>&nbsp;            }
+<i>198</i>&nbsp;        }
+<b class="nc"><i>199</i>&nbsp;        fxData = allocate(pulseCount++);</b>
+<b class="nc"><i>200</i>&nbsp;        if (lastPulseStartTime &gt; 0) {</b>
+<b class="nc"><i>201</i>&nbsp;            fxData.interval = (fxData.startTime - lastPulseStartTime)/1000000L;</b>
+<i>202</i>&nbsp;        }
+<b class="nc"><i>203</i>&nbsp;        lastPulseStartTime = fxData.startTime;</b>
+<b class="nc"><i>204</i>&nbsp;    }</b>
+<i>205</i>&nbsp;
+<i>206</i>&nbsp;    /**
+<i>207</i>&nbsp;     * &lt;strong&gt;Must&lt;/strong&gt; be called before any set of render jobs
+<i>208</i>&nbsp;     * for a given pulse begin. This method will initialize the
+<i>209</i>&nbsp;     * renderData buffer so that subsequent calls to renderMessage
+<i>210</i>&nbsp;     * will write to this buffer. I have found that sometimes renderMessage
+<i>211</i>&nbsp;     * is called without a pulse being started. Such cases are exceptional
+<i>212</i>&nbsp;     * and appear to happen only at startup, and such cases are simply not
+<i>213</i>&nbsp;     * logged.
+<i>214</i>&nbsp;     */
+<i>215</i>&nbsp;    @Override
+<i>216</i>&nbsp;    public void renderStart() {
+<b class="nc"><i>217</i>&nbsp;        newPhase(null); // finish the current phase on the FX thread</b>
+<b class="nc"><i>218</i>&nbsp;        fxData.pushedRender = true;</b>
+<b class="nc"><i>219</i>&nbsp;        renderData = fxData;</b>
+<b class="nc"><i>220</i>&nbsp;        active.incrementAndGet();</b>
+<b class="nc"><i>221</i>&nbsp;    }</b>
+<i>222</i>&nbsp;
+<i>223</i>&nbsp;    /**
+<i>224</i>&nbsp;     * &lt;strong&gt;Must&lt;/strong&gt; be called at the end of the pulse. If
+<i>225</i>&nbsp;     * there was no rendering started during this pulse, then this
+<i>226</i>&nbsp;     * method will cause the pulse data to be logged. Otherwise, the
+<i>227</i>&nbsp;     * pulse data is logged when rendering is ended. However, as soon
+<i>228</i>&nbsp;     * as pulseEnd is called, we are ready for another call to pulseStart.
+<i>229</i>&nbsp;     */
+<i>230</i>&nbsp;    @Override
+<i>231</i>&nbsp;    public void pulseEnd() {
+<b class="nc"><i>232</i>&nbsp;        if (fxData != null &amp;&amp; !fxData.pushedRender) {</b>
+<b class="nc"><i>233</i>&nbsp;            fxData.state = COMPLETE;</b>
+<b class="nc"><i>234</i>&nbsp;            if (active.incrementAndGet() == 1) {</b>
+<b class="nc"><i>235</i>&nbsp;                fxData.printAndReset();</b>
+<b class="nc"><i>236</i>&nbsp;                active.decrementAndGet();</b>
+<i>237</i>&nbsp;            }
+<i>238</i>&nbsp;        }
+<b class="nc"><i>239</i>&nbsp;        fxData = null;</b>
+<b class="nc"><i>240</i>&nbsp;    }</b>
+<i>241</i>&nbsp;
+<i>242</i>&nbsp;    /**
+<i>243</i>&nbsp;     * &lt;strong&gt;Must&lt;/strong&gt; be called at the end of rendering, if a previous
+<i>244</i>&nbsp;     * call to {@link #renderStart()} had been made. This will cause the pulse
+<i>245</i>&nbsp;     * data to be logged.
+<i>246</i>&nbsp;     */
+<i>247</i>&nbsp;    @Override
+<i>248</i>&nbsp;    public void renderEnd() {
+<b class="nc"><i>249</i>&nbsp;        newPhase(null); // finish the current phase on the render thread</b>
+<b class="nc"><i>250</i>&nbsp;        renderData.state = COMPLETE;</b>
+<i>251</i>&nbsp;        for (;;) {
+<b class="nc"><i>252</i>&nbsp;            renderData.printAndReset();</b>
+<b class="nc"><i>253</i>&nbsp;            if (active.decrementAndGet() == 0) {</b>
+<b class="nc"><i>254</i>&nbsp;                break;</b>
+<i>255</i>&nbsp;            }
+<b class="nc"><i>256</i>&nbsp;            renderData = renderData.next;</b>
+<i>257</i>&nbsp;        }
+<b class="nc"><i>258</i>&nbsp;        renderData = null;</b>
+<b class="nc"><i>259</i>&nbsp;    }</b>
+<i>260</i>&nbsp;
+<i>261</i>&nbsp;    /**
+<i>262</i>&nbsp;     * Adds a message to the log for the pulse.
+<i>263</i>&nbsp;     * @param message The message to log. A newline will be added automatically.
+<i>264</i>&nbsp;     */
+<i>265</i>&nbsp;    @Override
+<i>266</i>&nbsp;    public void addMessage(String message) {
+<i>267</i>&nbsp;        PulseData pulseData;
+<b class="nc"><i>268</i>&nbsp;        if (fxThread == null || Thread.currentThread() == fxThread) {</b>
+<b class="nc"><i>269</i>&nbsp;            if (fxData == null) {</b>
+<b class="nc"><i>270</i>&nbsp;                fxData = allocate(INTER_PULSE_DATA);</b>
+<i>271</i>&nbsp;            }
+<b class="nc"><i>272</i>&nbsp;            pulseData = fxData;</b>
+<i>273</i>&nbsp;        }
+<i>274</i>&nbsp;        else {
+<b class="nc"><i>275</i>&nbsp;            pulseData = renderData;</b>
+<i>276</i>&nbsp;        }
+<b class="nc"><i>277</i>&nbsp;        if (pulseData == null) {</b>
+<b class="nc"><i>278</i>&nbsp;            return;</b>
+<i>279</i>&nbsp;        }
+<b class="nc"><i>280</i>&nbsp;        pulseData.message</b>
+<b class="nc"><i>281</i>&nbsp;            .append(&quot;T&quot;)</b>
+<b class="nc"><i>282</i>&nbsp;            .append(Thread.currentThread().getId())</b>
+<b class="nc"><i>283</i>&nbsp;            .append(&quot; : &quot;)</b>
+<b class="nc"><i>284</i>&nbsp;            .append(message)</b>
+<b class="nc"><i>285</i>&nbsp;            .append(&quot;\n&quot;);</b>
+<b class="nc"><i>286</i>&nbsp;    }</b>
+<i>287</i>&nbsp;
+<i>288</i>&nbsp;    /**
+<i>289</i>&nbsp;     * Increments the given named per-pulse counter.
+<i>290</i>&nbsp;     * @param counter The name for the counter.
+<i>291</i>&nbsp;     */
+<i>292</i>&nbsp;    @Override
+<i>293</i>&nbsp;    public void incrementCounter(String counter) {
+<i>294</i>&nbsp;        PulseData pulseData;
+<b class="nc"><i>295</i>&nbsp;        if (fxThread == null || Thread.currentThread() == fxThread) {</b>
+<b class="nc"><i>296</i>&nbsp;            if (fxData == null) {</b>
+<b class="nc"><i>297</i>&nbsp;                fxData = allocate(INTER_PULSE_DATA);</b>
+<i>298</i>&nbsp;            }
+<b class="nc"><i>299</i>&nbsp;            pulseData = fxData;</b>
+<i>300</i>&nbsp;        }
+<i>301</i>&nbsp;        else {
+<b class="nc"><i>302</i>&nbsp;            pulseData = renderData;</b>
+<i>303</i>&nbsp;        }
+<b class="nc"><i>304</i>&nbsp;        if (pulseData == null) {</b>
+<b class="nc"><i>305</i>&nbsp;            return;</b>
+<i>306</i>&nbsp;        }
+<b class="nc"><i>307</i>&nbsp;        Map&lt;String,Counter&gt; counters = pulseData.counters;</b>
+<b class="nc"><i>308</i>&nbsp;        Counter cval = counters.get(counter);</b>
+<b class="nc"><i>309</i>&nbsp;        if (cval == null) {</b>
+<b class="nc"><i>310</i>&nbsp;            cval = new Counter();</b>
+<b class="nc"><i>311</i>&nbsp;            counters.put(counter, cval);</b>
+<i>312</i>&nbsp;        }
+<b class="nc"><i>313</i>&nbsp;        cval.value += 1;</b>
+<b class="nc"><i>314</i>&nbsp;    }</b>
+<i>315</i>&nbsp;
+<i>316</i>&nbsp;    @Override
+<i>317</i>&nbsp;    public void newPhase(String name) {
+<b class="nc"><i>318</i>&nbsp;        long curTime = System.nanoTime();</b>
+<i>319</i>&nbsp;
+<b class="nc"><i>320</i>&nbsp;        ThreadLocalData curPhase = phaseData.get();</b>
+<b class="nc"><i>321</i>&nbsp;        if (curPhase.phaseName != null) {</b>
+<b class="nc"><i>322</i>&nbsp;            PulseData pulseData = Thread.currentThread() == fxThread ? fxData : renderData;</b>
+<b class="nc"><i>323</i>&nbsp;            if (pulseData != null) {</b>
+<b class="nc"><i>324</i>&nbsp;                pulseData.message</b>
+<b class="nc"><i>325</i>&nbsp;                    .append(&quot;T&quot;)</b>
+<b class="nc"><i>326</i>&nbsp;                    .append(Thread.currentThread().getId())</b>
+<b class="nc"><i>327</i>&nbsp;                    .append(&quot; (&quot;).append((curPhase.phaseStart-pulseData.startTime)/1000000L)</b>
+<b class="nc"><i>328</i>&nbsp;                    .append(&quot; +&quot;).append((curTime - curPhase.phaseStart)/1000000L).append(&quot;ms): &quot;)</b>
+<b class="nc"><i>329</i>&nbsp;                    .append(curPhase.phaseName)</b>
+<b class="nc"><i>330</i>&nbsp;                    .append(&quot;\n&quot;);</b>
+<i>331</i>&nbsp;            }
+<i>332</i>&nbsp;        }
+<b class="nc"><i>333</i>&nbsp;        curPhase.phaseName = name;</b>
+<b class="nc"><i>334</i>&nbsp;        curPhase.phaseStart = curTime;</b>
+<b class="nc"><i>335</i>&nbsp;    }</b>
+<i>336</i>&nbsp;
+<i>337</i>&nbsp;    /**
+<i>338</i>&nbsp;     *  A mutable integer to be used in the counter map
+<i>339</i>&nbsp;     */
+<i>340</i>&nbsp;    private static class Counter {
+<i>341</i>&nbsp;        int     value;
+<i>342</i>&nbsp;    }
+<i>343</i>&nbsp;
+<i>344</i>&nbsp;    /**
+<i>345</i>&nbsp;     * The data we collect per pulse. We store the pulse number
+<i>346</i>&nbsp;     * associated with this pulse, along with what time it
+<i>347</i>&nbsp;     * started at and the interval since the previous pulse.
+<i>348</i>&nbsp;     * We also maintain the message buffer and counters.
+<i>349</i>&nbsp;     */
+<i>350</i>&nbsp;    private final class PulseData {
+<i>351</i>&nbsp;        PulseData next;
+<i>352</i>&nbsp;        volatile int state = AVAILABLE;
+<i>353</i>&nbsp;        long startTime;
+<i>354</i>&nbsp;        long interval;
+<i>355</i>&nbsp;        int pulseCount;
+<i>356</i>&nbsp;        boolean pushedRender;
+<i>357</i>&nbsp;        StringBuffer message = new StringBuffer();
+<i>358</i>&nbsp;        Map&lt;String,Counter&gt; counters = new ConcurrentHashMap();
+<i>359</i>&nbsp;
+<i>360</i>&nbsp;        void init(int n) {
+<i>361</i>&nbsp;            state = INCOMPLETE;
+<i>362</i>&nbsp;            pulseCount = n;
+<i>363</i>&nbsp;            startTime = System.nanoTime();
+<i>364</i>&nbsp;            interval = 0;
+<i>365</i>&nbsp;            pushedRender = false;
+<i>366</i>&nbsp;        }
+<i>367</i>&nbsp;
+<i>368</i>&nbsp;        void printAndReset() {
+<i>369</i>&nbsp;            long endTime = System.nanoTime();
+<i>370</i>&nbsp;            long totalTime = (endTime - startTime)/1000000L;
+<i>371</i>&nbsp;
+<i>372</i>&nbsp;            if (state != COMPLETE) {
+<i>373</i>&nbsp;                System.err.println(&quot;\nWARNING: logging incomplete state&quot;);
+<i>374</i>&nbsp;            }
+<i>375</i>&nbsp;
+<i>376</i>&nbsp;            if (totalTime &lt;= THRESHOLD) {
+<i>377</i>&nbsp;                // Don&#39;t print inter pulse data
+<i>378</i>&nbsp;                if (pulseCount != INTER_PULSE_DATA) {
+<i>379</i>&nbsp;                    System.err.print((wrapCount++ % 10 == 0 ? &quot;\n[&quot; : &quot;[&quot;) + pulseCount+ &quot; &quot; + interval + &quot;ms:&quot; + totalTime + &quot;ms]&quot;);
+<i>380</i>&nbsp;                }
+<i>381</i>&nbsp;            }
+<i>382</i>&nbsp;            else {
+<i>383</i>&nbsp;                if (pulseCount == INTER_PULSE_DATA) {
+<i>384</i>&nbsp;                    System.err.println(&quot;\n\nINTER PULSE LOG DATA&quot;);
+<i>385</i>&nbsp;                }
+<i>386</i>&nbsp;                else {
+<i>387</i>&nbsp;                    System.err.print(&quot;\n\nPULSE: &quot; + pulseCount +
+<i>388</i>&nbsp;                            &quot; [&quot; + interval + &quot;ms:&quot; + totalTime + &quot;ms]&quot;);
+<i>389</i>&nbsp;                    if (!pushedRender) {
+<i>390</i>&nbsp;                        System.err.print(&quot; Required No Rendering&quot;);
+<i>391</i>&nbsp;                    }
+<i>392</i>&nbsp;                    System.err.println();
+<i>393</i>&nbsp;                }
+<i>394</i>&nbsp;                System.err.print(message);
+<i>395</i>&nbsp;                if (!counters.isEmpty()) {
+<i>396</i>&nbsp;                    System.err.println(&quot;Counters:&quot;);
+<i>397</i>&nbsp;                    List&lt;Map.Entry&lt;String,Counter&gt;&gt; entries = new ArrayList(counters.entrySet());
+<i>398</i>&nbsp;                    Collections.sort(entries, (a, b) -&gt; a.getKey().compareTo(b.getKey()));
+<i>399</i>&nbsp;                    for (Map.Entry&lt;String, Counter&gt; entry : entries) {
+<i>400</i>&nbsp;                        System.err.println(&quot;\t&quot; + entry.getKey() + &quot;: &quot; + entry.getValue().value);
+<i>401</i>&nbsp;                    }
+<i>402</i>&nbsp;                }
+<i>403</i>&nbsp;                wrapCount = 0;
+<i>404</i>&nbsp;            }
+<i>405</i>&nbsp;
+<i>406</i>&nbsp;            // Reset the state
+<i>407</i>&nbsp;            message.setLength(0);
+<i>408</i>&nbsp;            counters.clear();
+<i>409</i>&nbsp;            state = AVAILABLE;
+<i>410</i>&nbsp;            if (EXIT_ON_PULSE &gt; 0 &amp;&amp; pulseCount &gt;= EXIT_ON_PULSE) {
+<i>411</i>&nbsp;                System.err.println(&quot;Exiting after pulse #&quot; + pulseCount);
+<i>412</i>&nbsp;                System.exit(0);
+<i>413</i>&nbsp;            }
+<i>414</i>&nbsp;        }
+<i>415</i>&nbsp;    }
+<i>416</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2017-12-04 21:49</div>
+</div>
+</body>
+</html>

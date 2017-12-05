@@ -1,0 +1,169 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: LambdaMultiplePropertyChangeListenerHandler</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.javafx.scene.control</a> ]
+</div>
+
+<h1>Coverage Summary for Class: LambdaMultiplePropertyChangeListenerHandler (com.sun.javafx.scene.control)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">LambdaMultiplePropertyChangeListenerHandler</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    83.3%
+  </span>
+  <span class="absValue">
+    (5/ 6)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    75%
+  </span>
+  <span class="absValue">
+    (15/ 20)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright (c) 2015, 2016, Oracle and/or its affiliates. All rights reserved.
+<i>3</i>&nbsp; * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+<i>4</i>&nbsp; *
+<i>5</i>&nbsp; *
+<i>6</i>&nbsp; *
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; *
+<i>11</i>&nbsp; *
+<i>12</i>&nbsp; *
+<i>13</i>&nbsp; *
+<i>14</i>&nbsp; *
+<i>15</i>&nbsp; *
+<i>16</i>&nbsp; *
+<i>17</i>&nbsp; *
+<i>18</i>&nbsp; *
+<i>19</i>&nbsp; *
+<i>20</i>&nbsp; *
+<i>21</i>&nbsp; *
+<i>22</i>&nbsp; *
+<i>23</i>&nbsp; *
+<i>24</i>&nbsp; */
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;package com.sun.javafx.scene.control;
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;import javafx.beans.value.ChangeListener;
+<i>29</i>&nbsp;import javafx.beans.value.ObservableValue;
+<i>30</i>&nbsp;import javafx.beans.value.WeakChangeListener;
+<i>31</i>&nbsp;
+<i>32</i>&nbsp;import java.util.HashMap;
+<i>33</i>&nbsp;import java.util.Map;
+<i>34</i>&nbsp;import java.util.function.Consumer;
+<i>35</i>&nbsp;
+<i>36</i>&nbsp;public final class LambdaMultiplePropertyChangeListenerHandler {
+<i>37</i>&nbsp;
+<i>38</i>&nbsp;    private final Map&lt;ObservableValue&lt;?&gt;, Consumer&lt;ObservableValue&lt;?&gt;&gt;&gt; propertyReferenceMap;
+<i>39</i>&nbsp;    private final ChangeListener&lt;Object&gt; propertyChangedListener;
+<i>40</i>&nbsp;    private final WeakChangeListener&lt;Object&gt; weakPropertyChangedListener;
+<i>41</i>&nbsp;
+<b class="fc"><i>42</i>&nbsp;    private static final Consumer&lt;ObservableValue&lt;?&gt;&gt; EMPTY_CONSUMER = e -&gt; {};</b>
+<i>43</i>&nbsp;
+<b class="fc"><i>44</i>&nbsp;    public LambdaMultiplePropertyChangeListenerHandler() {</b>
+<b class="fc"><i>45</i>&nbsp;        this.propertyReferenceMap = new HashMap&lt;&gt;();</b>
+<b class="fc"><i>46</i>&nbsp;        this.propertyChangedListener = (observable, oldValue, newValue) -&gt; {</b>
+<i>47</i>&nbsp;            // because all consumers are chained, this calls each consumer for the given property
+<i>48</i>&nbsp;            // in turn.
+<b class="fc"><i>49</i>&nbsp;            propertyReferenceMap.getOrDefault(observable, EMPTY_CONSUMER).accept(observable);</b>
+<b class="fc"><i>50</i>&nbsp;        };</b>
+<b class="fc"><i>51</i>&nbsp;        this.weakPropertyChangedListener = new WeakChangeListener&lt;&gt;(propertyChangedListener);</b>
+<b class="fc"><i>52</i>&nbsp;    }</b>
+<i>53</i>&nbsp;
+<i>54</i>&nbsp;    /**
+<i>55</i>&nbsp;     * Subclasses can invoke this method to register that we want to listen to
+<i>56</i>&nbsp;     * property change events for the given property.
+<i>57</i>&nbsp;     *
+<i>58</i>&nbsp;     * @param property
+<i>59</i>&nbsp;     */
+<i>60</i>&nbsp;    public final void registerChangeListener(ObservableValue&lt;?&gt; property, Consumer&lt;ObservableValue&lt;?&gt;&gt; consumer) {
+<b class="fc"><i>61</i>&nbsp;        if (consumer == null) return;</b>
+<i>62</i>&nbsp;
+<i>63</i>&nbsp;        // we only add a listener if the propertyReferenceMap does not contain the property
+<i>64</i>&nbsp;        // (that is, we&#39;ve added a consumer to this specific property for the first
+<i>65</i>&nbsp;        // time).
+<b class="fc"><i>66</i>&nbsp;        if (!propertyReferenceMap.containsKey(property)) {</b>
+<b class="fc"><i>67</i>&nbsp;            property.addListener(weakPropertyChangedListener);</b>
+<i>68</i>&nbsp;        }
+<i>69</i>&nbsp;
+<b class="fc"><i>70</i>&nbsp;        propertyReferenceMap.merge(property, consumer, Consumer::andThen);</b>
+<b class="fc"><i>71</i>&nbsp;    }</b>
+<i>72</i>&nbsp;
+<i>73</i>&nbsp;    // need to be careful here - removing all listeners on the specific property!
+<i>74</i>&nbsp;    public final Consumer&lt;ObservableValue&lt;?&gt;&gt; unregisterChangeListeners(ObservableValue&lt;?&gt; property) {
+<b class="fc"><i>75</i>&nbsp;        property.removeListener(weakPropertyChangedListener);</b>
+<b class="fc"><i>76</i>&nbsp;        return propertyReferenceMap.remove(property);</b>
+<i>77</i>&nbsp;    }
+<i>78</i>&nbsp;
+<i>79</i>&nbsp;    public void dispose() {
+<i>80</i>&nbsp;        // unhook listeners
+<b class="nc"><i>81</i>&nbsp;        for (ObservableValue&lt;?&gt; value : propertyReferenceMap.keySet()) {</b>
+<b class="nc"><i>82</i>&nbsp;            value.removeListener(weakPropertyChangedListener);</b>
+<b class="nc"><i>83</i>&nbsp;        }</b>
+<b class="nc"><i>84</i>&nbsp;        propertyReferenceMap.clear();</b>
+<b class="nc"><i>85</i>&nbsp;    }</b>
+<i>86</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2017-12-04 21:49</div>
+</div>
+</body>
+</html>

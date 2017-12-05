@@ -1,0 +1,1265 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: Affine3D</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.javafx.geom.transform</a> ]
+</div>
+
+<h1>Coverage Summary for Class: Affine3D (com.sun.javafx.geom.transform)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">Affine3D</td>
+<td class="coverageStat">
+  <span class="percent">
+    46.8%
+  </span>
+  <span class="absValue">
+    (29/ 62)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    23.7%
+  </span>
+  <span class="absValue">
+    (157/ 663)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">Affine3D$1</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    47.6%
+  </span>
+  <span class="absValue">
+    (30/ 63)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    23.8%
+  </span>
+  <span class="absValue">
+    (158/ 664)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright (c) 2011, 2014, Oracle and/or its affiliates. All rights reserved.
+<i>3</i>&nbsp; * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+<i>4</i>&nbsp; *
+<i>5</i>&nbsp; *
+<i>6</i>&nbsp; *
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; *
+<i>11</i>&nbsp; *
+<i>12</i>&nbsp; *
+<i>13</i>&nbsp; *
+<i>14</i>&nbsp; *
+<i>15</i>&nbsp; *
+<i>16</i>&nbsp; *
+<i>17</i>&nbsp; *
+<i>18</i>&nbsp; *
+<i>19</i>&nbsp; *
+<i>20</i>&nbsp; *
+<i>21</i>&nbsp; *
+<i>22</i>&nbsp; *
+<i>23</i>&nbsp; *
+<i>24</i>&nbsp; */
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;package com.sun.javafx.geom.transform;
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;import com.sun.javafx.geom.BaseBounds;
+<i>29</i>&nbsp;import com.sun.javafx.geom.Point2D;
+<i>30</i>&nbsp;import com.sun.javafx.geom.Rectangle;
+<i>31</i>&nbsp;import com.sun.javafx.geom.Vec3d;
+<i>32</i>&nbsp;
+<i>33</i>&nbsp;/**
+<i>34</i>&nbsp; *
+<i>35</i>&nbsp; */
+<i>36</i>&nbsp;public class Affine3D extends AffineBase {
+<i>37</i>&nbsp;    private double mxz;
+<i>38</i>&nbsp;    private double myz;
+<i>39</i>&nbsp;    private double mzx;
+<i>40</i>&nbsp;    private double mzy;
+<i>41</i>&nbsp;    private double mzz;
+<i>42</i>&nbsp;    private double mzt;
+<i>43</i>&nbsp;
+<b class="fc"><i>44</i>&nbsp;    public Affine3D() {</b>
+<b class="fc"><i>45</i>&nbsp;        mxx = myy = mzz = 1.0;</b>
+<i>46</i>&nbsp;//        mxy = mxz = mxt = 0.0;  /* Not needed. */
+<i>47</i>&nbsp;//        myx = myz = myt = 0.0;  /* Not needed. */
+<i>48</i>&nbsp;//        mzx = mzy = mzt = 0.0;  /* Not needed. */
+<i>49</i>&nbsp;//        type = TYPE_IDENTITY;   /* Not needed. */
+<b class="fc"><i>50</i>&nbsp;    }</b>
+<i>51</i>&nbsp;
+<b class="nc"><i>52</i>&nbsp;    public Affine3D(BaseTransform transform) {</b>
+<b class="nc"><i>53</i>&nbsp;        setTransform(transform);</b>
+<b class="nc"><i>54</i>&nbsp;    }</b>
+<i>55</i>&nbsp;
+<i>56</i>&nbsp;    public Affine3D(double mxx, double mxy, double mxz, double mxt,
+<i>57</i>&nbsp;                    double myx, double myy, double myz, double myt,
+<i>58</i>&nbsp;                    double mzx, double mzy, double mzz, double mzt)
+<b class="nc"><i>59</i>&nbsp;    {</b>
+<b class="nc"><i>60</i>&nbsp;        this.mxx = mxx;</b>
+<b class="nc"><i>61</i>&nbsp;        this.mxy = mxy;</b>
+<b class="nc"><i>62</i>&nbsp;        this.mxz = mxz;</b>
+<b class="nc"><i>63</i>&nbsp;        this.mxt = mxt;</b>
+<i>64</i>&nbsp;
+<b class="nc"><i>65</i>&nbsp;        this.myx = myx;</b>
+<b class="nc"><i>66</i>&nbsp;        this.myy = myy;</b>
+<b class="nc"><i>67</i>&nbsp;        this.myz = myz;</b>
+<b class="nc"><i>68</i>&nbsp;        this.myt = myt;</b>
+<i>69</i>&nbsp;
+<b class="nc"><i>70</i>&nbsp;        this.mzx = mzx;</b>
+<b class="nc"><i>71</i>&nbsp;        this.mzy = mzy;</b>
+<b class="nc"><i>72</i>&nbsp;        this.mzz = mzz;</b>
+<b class="nc"><i>73</i>&nbsp;        this.mzt = mzt;</b>
+<i>74</i>&nbsp;
+<b class="nc"><i>75</i>&nbsp;        updateState();</b>
+<b class="nc"><i>76</i>&nbsp;    }</b>
+<i>77</i>&nbsp;
+<b class="fc"><i>78</i>&nbsp;    public Affine3D(Affine3D other) {</b>
+<b class="fc"><i>79</i>&nbsp;        this.mxx = other.mxx;</b>
+<b class="fc"><i>80</i>&nbsp;        this.mxy = other.mxy;</b>
+<b class="fc"><i>81</i>&nbsp;        this.mxz = other.mxz;</b>
+<b class="fc"><i>82</i>&nbsp;        this.mxt = other.mxt;</b>
+<i>83</i>&nbsp;
+<b class="fc"><i>84</i>&nbsp;        this.myx = other.myx;</b>
+<b class="fc"><i>85</i>&nbsp;        this.myy = other.myy;</b>
+<b class="fc"><i>86</i>&nbsp;        this.myz = other.myz;</b>
+<b class="fc"><i>87</i>&nbsp;        this.myt = other.myt;</b>
+<i>88</i>&nbsp;
+<b class="fc"><i>89</i>&nbsp;        this.mzx = other.mzx;</b>
+<b class="fc"><i>90</i>&nbsp;        this.mzy = other.mzy;</b>
+<b class="fc"><i>91</i>&nbsp;        this.mzz = other.mzz;</b>
+<b class="fc"><i>92</i>&nbsp;        this.mzt = other.mzt;</b>
+<i>93</i>&nbsp;
+<b class="fc"><i>94</i>&nbsp;        this.state = other.state;</b>
+<b class="fc"><i>95</i>&nbsp;        this.type = other.type;</b>
+<b class="fc"><i>96</i>&nbsp;    }</b>
+<i>97</i>&nbsp;
+<i>98</i>&nbsp;    @Override
+<i>99</i>&nbsp;    public BaseTransform copy() {
+<b class="fc"><i>100</i>&nbsp;        return new Affine3D(this);</b>
+<i>101</i>&nbsp;    }
+<i>102</i>&nbsp;
+<i>103</i>&nbsp;    @Override
+<i>104</i>&nbsp;    public Degree getDegree() {
+<b class="fc"><i>105</i>&nbsp;        return Degree.AFFINE_3D;</b>
+<i>106</i>&nbsp;    }
+<i>107</i>&nbsp;
+<i>108</i>&nbsp;    @Override
+<i>109</i>&nbsp;    protected void reset3Delements() {
+<b class="fc"><i>110</i>&nbsp;        this.mxz = 0.0;</b>
+<b class="fc"><i>111</i>&nbsp;        this.myz = 0.0;</b>
+<b class="fc"><i>112</i>&nbsp;        this.mzx = 0.0;</b>
+<b class="fc"><i>113</i>&nbsp;        this.mzy = 0.0;</b>
+<b class="fc"><i>114</i>&nbsp;        this.mzz = 1.0;</b>
+<b class="fc"><i>115</i>&nbsp;        this.mzt = 0.0;</b>
+<b class="fc"><i>116</i>&nbsp;    }</b>
+<i>117</i>&nbsp;
+<i>118</i>&nbsp;    @Override
+<i>119</i>&nbsp;    protected void updateState() {
+<b class="fc"><i>120</i>&nbsp;        super.updateState();</b>
+<b class="fc"><i>121</i>&nbsp;        if (!almostZero(mxz) ||</b>
+<b class="fc"><i>122</i>&nbsp;            !almostZero(myz) ||</b>
+<b class="fc"><i>123</i>&nbsp;            !almostZero(mzx) ||</b>
+<b class="fc"><i>124</i>&nbsp;            !almostZero(mzy) ||</b>
+<b class="fc"><i>125</i>&nbsp;            !almostOne(mzz) ||</b>
+<b class="fc"><i>126</i>&nbsp;            !almostZero(mzt))</b>
+<i>127</i>&nbsp;        {
+<b class="nc"><i>128</i>&nbsp;            state |= APPLY_3D;</b>
+<b class="nc"><i>129</i>&nbsp;            if (type != TYPE_UNKNOWN) {</b>
+<b class="nc"><i>130</i>&nbsp;                type |= TYPE_AFFINE_3D;</b>
+<i>131</i>&nbsp;            }
+<i>132</i>&nbsp;        }
+<b class="fc"><i>133</i>&nbsp;    }</b>
+<i>134</i>&nbsp;
+<b class="fc"><i>135</i>&nbsp;    @Override public double getMxz() { return mxz; }</b>
+<b class="fc"><i>136</i>&nbsp;    @Override public double getMyz() { return myz; }</b>
+<b class="fc"><i>137</i>&nbsp;    @Override public double getMzx() { return mzx; }</b>
+<b class="fc"><i>138</i>&nbsp;    @Override public double getMzy() { return mzy; }</b>
+<b class="fc"><i>139</i>&nbsp;    @Override public double getMzz() { return mzz; }</b>
+<b class="fc"><i>140</i>&nbsp;    @Override public double getMzt() { return mzt; }</b>
+<i>141</i>&nbsp;
+<i>142</i>&nbsp;    @Override
+<i>143</i>&nbsp;    public double getDeterminant() {
+<b class="nc"><i>144</i>&nbsp;        if ((state &amp; APPLY_3D) == 0) {</b>
+<b class="nc"><i>145</i>&nbsp;            return super.getDeterminant();</b>
+<i>146</i>&nbsp;        }
+<i>147</i>&nbsp;//        D=a11{a22a33-a32a23}
+<i>148</i>&nbsp;//         +a12{a23a31-a33a21}
+<i>149</i>&nbsp;//         +a13{a21a32-a31a22}
+<b class="nc"><i>150</i>&nbsp;        return (mxx * (myy * mzz - mzy * myz) +</b>
+<i>151</i>&nbsp;                mxy * (myz * mzx - mzz * myx) +
+<i>152</i>&nbsp;                mxz * (myx * mzy - mzx * myy));
+<i>153</i>&nbsp;    }
+<i>154</i>&nbsp;
+<i>155</i>&nbsp;    public void setTransform(BaseTransform transform) {
+<b class="fc"><i>156</i>&nbsp;        this.mxx = transform.getMxx();</b>
+<b class="fc"><i>157</i>&nbsp;        this.mxy = transform.getMxy();</b>
+<b class="fc"><i>158</i>&nbsp;        this.mxz = transform.getMxz();</b>
+<b class="fc"><i>159</i>&nbsp;        this.mxt = transform.getMxt();</b>
+<b class="fc"><i>160</i>&nbsp;        this.myx = transform.getMyx();</b>
+<b class="fc"><i>161</i>&nbsp;        this.myy = transform.getMyy();</b>
+<b class="fc"><i>162</i>&nbsp;        this.myz = transform.getMyz();</b>
+<b class="fc"><i>163</i>&nbsp;        this.myt = transform.getMyt();</b>
+<b class="fc"><i>164</i>&nbsp;        this.mzx = transform.getMzx();</b>
+<b class="fc"><i>165</i>&nbsp;        this.mzy = transform.getMzy();</b>
+<b class="fc"><i>166</i>&nbsp;        this.mzz = transform.getMzz();</b>
+<b class="fc"><i>167</i>&nbsp;        this.mzt = transform.getMzt();</b>
+<b class="fc"><i>168</i>&nbsp;        updateState();</b>
+<b class="fc"><i>169</i>&nbsp;    }</b>
+<i>170</i>&nbsp;
+<i>171</i>&nbsp;    public void setTransform(double mxx, double mxy, double mxz, double mxt,
+<i>172</i>&nbsp;                             double myx, double myy, double myz, double myt,
+<i>173</i>&nbsp;                             double mzx, double mzy, double mzz, double mzt)
+<i>174</i>&nbsp;    {
+<b class="fc"><i>175</i>&nbsp;        this.mxx = mxx;</b>
+<b class="fc"><i>176</i>&nbsp;        this.mxy = mxy;</b>
+<b class="fc"><i>177</i>&nbsp;        this.mxz = mxz;</b>
+<b class="fc"><i>178</i>&nbsp;        this.mxt = mxt;</b>
+<i>179</i>&nbsp;
+<b class="fc"><i>180</i>&nbsp;        this.myx = myx;</b>
+<b class="fc"><i>181</i>&nbsp;        this.myy = myy;</b>
+<b class="fc"><i>182</i>&nbsp;        this.myz = myz;</b>
+<b class="fc"><i>183</i>&nbsp;        this.myt = myt;</b>
+<i>184</i>&nbsp;
+<b class="fc"><i>185</i>&nbsp;        this.mzx = mzx;</b>
+<b class="fc"><i>186</i>&nbsp;        this.mzy = mzy;</b>
+<b class="fc"><i>187</i>&nbsp;        this.mzz = mzz;</b>
+<b class="fc"><i>188</i>&nbsp;        this.mzt = mzt;</b>
+<i>189</i>&nbsp;
+<b class="fc"><i>190</i>&nbsp;        updateState();</b>
+<b class="fc"><i>191</i>&nbsp;    }</b>
+<i>192</i>&nbsp;
+<i>193</i>&nbsp;    public void setToTranslation(double tx, double ty, double tz) {
+<b class="nc"><i>194</i>&nbsp;        this.mxx = 1.0;</b>
+<b class="nc"><i>195</i>&nbsp;        this.mxy = 0.0;</b>
+<b class="nc"><i>196</i>&nbsp;        this.mxz = 0.0;</b>
+<b class="nc"><i>197</i>&nbsp;        this.mxt = tx;</b>
+<i>198</i>&nbsp;
+<b class="nc"><i>199</i>&nbsp;        this.myx = 0.0;</b>
+<b class="nc"><i>200</i>&nbsp;        this.myy = 1.0;</b>
+<b class="nc"><i>201</i>&nbsp;        this.myz = 0.0;</b>
+<b class="nc"><i>202</i>&nbsp;        this.myt = ty;</b>
+<i>203</i>&nbsp;
+<b class="nc"><i>204</i>&nbsp;        this.mzx = 0.0;</b>
+<b class="nc"><i>205</i>&nbsp;        this.mzy = 0.0;</b>
+<b class="nc"><i>206</i>&nbsp;        this.mzz = 1.0;</b>
+<b class="nc"><i>207</i>&nbsp;        this.mzt = tz;</b>
+<i>208</i>&nbsp;
+<b class="nc"><i>209</i>&nbsp;        if (tz == 0.0) {</b>
+<b class="nc"><i>210</i>&nbsp;            if (tx == 0.0 &amp;&amp; ty == 0.0) {</b>
+<b class="nc"><i>211</i>&nbsp;                state = APPLY_IDENTITY;</b>
+<b class="nc"><i>212</i>&nbsp;                type = TYPE_IDENTITY;</b>
+<i>213</i>&nbsp;            } else {
+<b class="nc"><i>214</i>&nbsp;                state = APPLY_TRANSLATE;</b>
+<b class="nc"><i>215</i>&nbsp;                type = TYPE_TRANSLATION;</b>
+<i>216</i>&nbsp;            }
+<i>217</i>&nbsp;        } else {
+<b class="nc"><i>218</i>&nbsp;            if (tx == 0.0 &amp;&amp; ty == 0.0) {</b>
+<b class="nc"><i>219</i>&nbsp;                state = APPLY_3D;</b>
+<b class="nc"><i>220</i>&nbsp;                type = TYPE_AFFINE_3D;</b>
+<i>221</i>&nbsp;            } else {
+<b class="nc"><i>222</i>&nbsp;                state = APPLY_TRANSLATE | APPLY_3D;</b>
+<b class="nc"><i>223</i>&nbsp;                type = TYPE_TRANSLATION | TYPE_AFFINE_3D;</b>
+<i>224</i>&nbsp;            }
+<i>225</i>&nbsp;        }
+<b class="nc"><i>226</i>&nbsp;    }</b>
+<i>227</i>&nbsp;
+<i>228</i>&nbsp;    public void setToScale(double sx, double sy, double sz) {
+<b class="nc"><i>229</i>&nbsp;        this.mxx = sx;</b>
+<b class="nc"><i>230</i>&nbsp;        this.mxy = 0.0;</b>
+<b class="nc"><i>231</i>&nbsp;        this.mxz = 0.0;</b>
+<b class="nc"><i>232</i>&nbsp;        this.mxt = 0.0;</b>
+<i>233</i>&nbsp;
+<b class="nc"><i>234</i>&nbsp;        this.myx = 0.0;</b>
+<b class="nc"><i>235</i>&nbsp;        this.myy = sy;</b>
+<b class="nc"><i>236</i>&nbsp;        this.myz = 0.0;</b>
+<b class="nc"><i>237</i>&nbsp;        this.myt = 0.0;</b>
+<i>238</i>&nbsp;
+<b class="nc"><i>239</i>&nbsp;        this.mzx = 0.0;</b>
+<b class="nc"><i>240</i>&nbsp;        this.mzy = 0.0;</b>
+<b class="nc"><i>241</i>&nbsp;        this.mzz = sz;</b>
+<b class="nc"><i>242</i>&nbsp;        this.mzt = 0.0;</b>
+<i>243</i>&nbsp;
+<b class="nc"><i>244</i>&nbsp;        if (sz == 1.0) {</b>
+<b class="nc"><i>245</i>&nbsp;            if (sx == 1.0 &amp;&amp; sy == 1.0) {</b>
+<b class="nc"><i>246</i>&nbsp;                state = APPLY_IDENTITY;</b>
+<b class="nc"><i>247</i>&nbsp;                type = TYPE_IDENTITY;</b>
+<i>248</i>&nbsp;            } else {
+<b class="nc"><i>249</i>&nbsp;                state = APPLY_SCALE;</b>
+<b class="nc"><i>250</i>&nbsp;                type = TYPE_UNKNOWN;</b>
+<i>251</i>&nbsp;            }
+<i>252</i>&nbsp;        } else {
+<b class="nc"><i>253</i>&nbsp;            if (sx == 1.0 &amp;&amp; sy == 1.0) {</b>
+<b class="nc"><i>254</i>&nbsp;                state = APPLY_3D;</b>
+<b class="nc"><i>255</i>&nbsp;                type = TYPE_AFFINE_3D;</b>
+<i>256</i>&nbsp;            } else {
+<b class="nc"><i>257</i>&nbsp;                state = APPLY_SCALE | APPLY_3D;</b>
+<b class="nc"><i>258</i>&nbsp;                type = TYPE_UNKNOWN;</b>
+<i>259</i>&nbsp;            }
+<i>260</i>&nbsp;        }
+<b class="nc"><i>261</i>&nbsp;    }</b>
+<i>262</i>&nbsp;
+<i>263</i>&nbsp;    public void setToRotation(double theta,
+<i>264</i>&nbsp;                              double axisX, double axisY, double axisZ,
+<i>265</i>&nbsp;                              double pivotX, double pivotY, double pivotZ)
+<i>266</i>&nbsp;    {
+<b class="nc"><i>267</i>&nbsp;        setToRotation(theta, axisX, axisY, axisZ);</b>
+<b class="nc"><i>268</i>&nbsp;        if (pivotX != 0.0 || pivotY != 0.0 || pivotZ != 0.0) {</b>
+<b class="nc"><i>269</i>&nbsp;            preTranslate(pivotX, pivotY, pivotZ);</b>
+<b class="nc"><i>270</i>&nbsp;            translate(-pivotX, -pivotY, -pivotZ);</b>
+<i>271</i>&nbsp;        }
+<b class="nc"><i>272</i>&nbsp;    }</b>
+<i>273</i>&nbsp;
+<i>274</i>&nbsp;    public void setToRotation(double theta, double axisX, double axisY, double axisZ) {
+<b class="nc"><i>275</i>&nbsp;        double mag = Math.sqrt(axisX * axisX + axisY * axisY + axisZ * axisZ);</b>
+<i>276</i>&nbsp;
+<b class="nc"><i>277</i>&nbsp;        if (almostZero(mag)) {</b>
+<b class="nc"><i>278</i>&nbsp;            setToIdentity();</b>
+<b class="nc"><i>279</i>&nbsp;            return;</b>
+<i>280</i>&nbsp;        }
+<b class="nc"><i>281</i>&nbsp;        mag = 1.0 / mag;</b>
+<b class="nc"><i>282</i>&nbsp;        double ax = axisX * mag;</b>
+<b class="nc"><i>283</i>&nbsp;        double ay = axisY * mag;</b>
+<b class="nc"><i>284</i>&nbsp;        double az = axisZ * mag;</b>
+<i>285</i>&nbsp;
+<b class="nc"><i>286</i>&nbsp;        double sinTheta = Math.sin(theta);</b>
+<b class="nc"><i>287</i>&nbsp;        double cosTheta = Math.cos(theta);</b>
+<b class="nc"><i>288</i>&nbsp;        double t = 1.0 - cosTheta;</b>
+<i>289</i>&nbsp;
+<b class="nc"><i>290</i>&nbsp;        double xz = ax * az;</b>
+<b class="nc"><i>291</i>&nbsp;        double xy = ax * ay;</b>
+<b class="nc"><i>292</i>&nbsp;        double yz = ay * az;</b>
+<i>293</i>&nbsp;
+<b class="nc"><i>294</i>&nbsp;        this.mxx = t * ax * ax + cosTheta;</b>
+<b class="nc"><i>295</i>&nbsp;        this.mxy = t * xy - sinTheta * az;</b>
+<b class="nc"><i>296</i>&nbsp;        this.mxz = t * xz + sinTheta * ay;</b>
+<b class="nc"><i>297</i>&nbsp;        this.mxt = 0.0;</b>
+<i>298</i>&nbsp;
+<b class="nc"><i>299</i>&nbsp;        this.myx = t * xy + sinTheta * az;</b>
+<b class="nc"><i>300</i>&nbsp;        this.myy = t * ay * ay + cosTheta;</b>
+<b class="nc"><i>301</i>&nbsp;        this.myz = t * yz - sinTheta * ax;</b>
+<b class="nc"><i>302</i>&nbsp;        this.myt = 0.0;</b>
+<i>303</i>&nbsp;
+<b class="nc"><i>304</i>&nbsp;        this.mzx = t * xz - sinTheta * ay;</b>
+<b class="nc"><i>305</i>&nbsp;        this.mzy = t * yz + sinTheta * ax;</b>
+<b class="nc"><i>306</i>&nbsp;        this.mzz = t * az * az + cosTheta;</b>
+<b class="nc"><i>307</i>&nbsp;        this.mzt = 0.0;</b>
+<i>308</i>&nbsp;
+<b class="nc"><i>309</i>&nbsp;        updateState();</b>
+<b class="nc"><i>310</i>&nbsp;    }</b>
+<i>311</i>&nbsp;
+<i>312</i>&nbsp;    @Override
+<i>313</i>&nbsp;    public BaseBounds transform(BaseBounds src, BaseBounds dst) {
+<b class="fc"><i>314</i>&nbsp;        if ((state &amp; APPLY_3D) == 0) {</b>
+<b class="fc"><i>315</i>&nbsp;            return dst = super.transform(src, dst);</b>
+<i>316</i>&nbsp;        }
+<i>317</i>&nbsp;
+<b class="nc"><i>318</i>&nbsp;        switch (state) {</b>
+<i>319</i>&nbsp;        default:
+<i>320</i>&nbsp;            /* NOBREAK */
+<i>321</i>&nbsp;            // TODO: Optimize these cases ... (RT-26800)
+<i>322</i>&nbsp;            case (APPLY_SHEAR | APPLY_SCALE | APPLY_TRANSLATE):
+<i>323</i>&nbsp;            /* NOBREAK */
+<i>324</i>&nbsp;            case (APPLY_SHEAR | APPLY_SCALE):
+<i>325</i>&nbsp;            /* NOBREAK */
+<i>326</i>&nbsp;            case (APPLY_SHEAR | APPLY_TRANSLATE):
+<i>327</i>&nbsp;            /* NOBREAK */
+<i>328</i>&nbsp;            case (APPLY_SHEAR):
+<b class="nc"><i>329</i>&nbsp;                Vec3d tempV3d = new Vec3d();</b>
+<b class="nc"><i>330</i>&nbsp;                dst = TransformHelper.general3dBoundsTransform(this, src, dst, tempV3d);</b>
+<b class="nc"><i>331</i>&nbsp;                break;</b>
+<i>332</i>&nbsp;            case (APPLY_SCALE | APPLY_TRANSLATE):
+<b class="nc"><i>333</i>&nbsp;                dst = dst.deriveWithNewBoundsAndSort(</b>
+<b class="nc"><i>334</i>&nbsp;                        (float) (src.getMinX() * mxx + mxt),</b>
+<b class="nc"><i>335</i>&nbsp;                        (float) (src.getMinY() * myy + myt),</b>
+<b class="nc"><i>336</i>&nbsp;                        (float) (src.getMinZ() * mzz + mzt),</b>
+<b class="nc"><i>337</i>&nbsp;                        (float) (src.getMaxX() * mxx + mxt),</b>
+<b class="nc"><i>338</i>&nbsp;                        (float) (src.getMaxY() * myy + myt),</b>
+<b class="nc"><i>339</i>&nbsp;                        (float) (src.getMaxZ() * mzz + mzt));</b>
+<b class="nc"><i>340</i>&nbsp;                break;</b>
+<i>341</i>&nbsp;            case (APPLY_SCALE):
+<b class="nc"><i>342</i>&nbsp;                dst = dst.deriveWithNewBoundsAndSort(</b>
+<b class="nc"><i>343</i>&nbsp;                        (float) (src.getMinX() * mxx),</b>
+<b class="nc"><i>344</i>&nbsp;                        (float) (src.getMinY() * myy),</b>
+<b class="nc"><i>345</i>&nbsp;                        (float) (src.getMinZ() * mzz),</b>
+<b class="nc"><i>346</i>&nbsp;                        (float) (src.getMaxX() * mxx),</b>
+<b class="nc"><i>347</i>&nbsp;                        (float) (src.getMaxY() * myy),</b>
+<b class="nc"><i>348</i>&nbsp;                        (float) (src.getMaxZ() * mzz));</b>
+<b class="nc"><i>349</i>&nbsp;                break;</b>
+<i>350</i>&nbsp;            case (APPLY_TRANSLATE):
+<b class="nc"><i>351</i>&nbsp;                dst = dst.deriveWithNewBounds(</b>
+<b class="nc"><i>352</i>&nbsp;                        (float) (src.getMinX() + mxt),</b>
+<b class="nc"><i>353</i>&nbsp;                        (float) (src.getMinY() + myt),</b>
+<b class="nc"><i>354</i>&nbsp;                        (float) (src.getMinZ() + mzt),</b>
+<b class="nc"><i>355</i>&nbsp;                        (float) (src.getMaxX() + mxt),</b>
+<b class="nc"><i>356</i>&nbsp;                        (float) (src.getMaxY() + myt),</b>
+<b class="nc"><i>357</i>&nbsp;                        (float) (src.getMaxZ() + mzt));</b>
+<b class="nc"><i>358</i>&nbsp;                break;</b>
+<i>359</i>&nbsp;            case (APPLY_IDENTITY):
+<b class="nc"><i>360</i>&nbsp;                if (src != dst) {</b>
+<b class="nc"><i>361</i>&nbsp;                    dst = dst.deriveWithNewBounds(src);</b>
+<i>362</i>&nbsp;                }
+<i>363</i>&nbsp;
+<i>364</i>&nbsp;                break;
+<i>365</i>&nbsp;        }
+<b class="nc"><i>366</i>&nbsp;        return dst;</b>
+<i>367</i>&nbsp;    }
+<i>368</i>&nbsp;
+<i>369</i>&nbsp;
+<i>370</i>&nbsp;    @Override
+<i>371</i>&nbsp;    public Vec3d transform(Vec3d src, Vec3d dst) {
+<b class="fc"><i>372</i>&nbsp;        if ((state &amp; APPLY_3D) == 0) {</b>
+<b class="fc"><i>373</i>&nbsp;            return super.transform(src, dst);</b>
+<i>374</i>&nbsp;        }
+<b class="nc"><i>375</i>&nbsp;        if (dst == null) {</b>
+<b class="nc"><i>376</i>&nbsp;            dst = new Vec3d();</b>
+<i>377</i>&nbsp;        }
+<b class="nc"><i>378</i>&nbsp;        double x = src.x;</b>
+<b class="nc"><i>379</i>&nbsp;        double y = src.y;</b>
+<b class="nc"><i>380</i>&nbsp;        double z = src.z;</b>
+<b class="nc"><i>381</i>&nbsp;        dst.x = mxx * x + mxy * y + mxz * z + mxt;</b>
+<b class="nc"><i>382</i>&nbsp;        dst.y = myx * x + myy * y + myz * z + myt;</b>
+<b class="nc"><i>383</i>&nbsp;        dst.z = mzx * x + mzy * y + mzz * z + mzt;</b>
+<b class="nc"><i>384</i>&nbsp;        return dst;</b>
+<i>385</i>&nbsp;    }
+<i>386</i>&nbsp;
+<i>387</i>&nbsp;    @Override
+<i>388</i>&nbsp;    public Vec3d deltaTransform(Vec3d src, Vec3d dst) {
+<b class="fc"><i>389</i>&nbsp;        if ((state &amp; APPLY_3D) == 0) {</b>
+<b class="fc"><i>390</i>&nbsp;            return super.deltaTransform(src, dst);</b>
+<i>391</i>&nbsp;        }
+<b class="nc"><i>392</i>&nbsp;        if (dst == null) {</b>
+<b class="nc"><i>393</i>&nbsp;            dst = new Vec3d();</b>
+<i>394</i>&nbsp;        }
+<b class="nc"><i>395</i>&nbsp;        double x = src.x;</b>
+<b class="nc"><i>396</i>&nbsp;        double y = src.y;</b>
+<b class="nc"><i>397</i>&nbsp;        double z = src.z;</b>
+<b class="nc"><i>398</i>&nbsp;        dst.x = mxx * x + mxy * y + mxz * z;</b>
+<b class="nc"><i>399</i>&nbsp;        dst.y = myx * x + myy * y + myz * z;</b>
+<b class="nc"><i>400</i>&nbsp;        dst.z = mzx * x + mzy * y + mzz * z;</b>
+<b class="nc"><i>401</i>&nbsp;        return dst;</b>
+<i>402</i>&nbsp;    }
+<i>403</i>&nbsp;
+<i>404</i>&nbsp;    @Override
+<i>405</i>&nbsp;    public void inverseTransform(float[] srcPts, int srcOff,
+<i>406</i>&nbsp;                                 float[] dstPts, int dstOff,
+<i>407</i>&nbsp;                                 int numPts)
+<i>408</i>&nbsp;        throws NoninvertibleTransformException
+<i>409</i>&nbsp;    {
+<b class="nc"><i>410</i>&nbsp;        if ((state &amp; APPLY_3D) == 0) {</b>
+<b class="nc"><i>411</i>&nbsp;            super.inverseTransform(srcPts, srcOff, dstPts, dstOff, numPts);</b>
+<i>412</i>&nbsp;        } else {
+<i>413</i>&nbsp;            // TODO: Optimize... (RT-26800)
+<b class="nc"><i>414</i>&nbsp;            createInverse().transform(srcPts, srcOff, dstPts, dstOff, numPts);</b>
+<i>415</i>&nbsp;        }
+<b class="nc"><i>416</i>&nbsp;    }</b>
+<i>417</i>&nbsp;
+<i>418</i>&nbsp;    @Override
+<i>419</i>&nbsp;    public void inverseDeltaTransform(float[] srcPts, int srcOff,
+<i>420</i>&nbsp;                                      float[] dstPts, int dstOff,
+<i>421</i>&nbsp;                                      int numPts)
+<i>422</i>&nbsp;        throws NoninvertibleTransformException
+<i>423</i>&nbsp;    {
+<b class="nc"><i>424</i>&nbsp;        if ((state &amp; APPLY_3D) == 0) {</b>
+<b class="nc"><i>425</i>&nbsp;            super.inverseDeltaTransform(srcPts, srcOff, dstPts, dstOff, numPts);</b>
+<i>426</i>&nbsp;        } else {
+<i>427</i>&nbsp;            // TODO: Optimize... (RT-26800)
+<b class="nc"><i>428</i>&nbsp;            createInverse().deltaTransform(srcPts, srcOff, dstPts, dstOff, numPts);</b>
+<i>429</i>&nbsp;        }
+<b class="nc"><i>430</i>&nbsp;    }</b>
+<i>431</i>&nbsp;
+<i>432</i>&nbsp;    @Override
+<i>433</i>&nbsp;    public void inverseTransform(double[] srcPts, int srcOff,
+<i>434</i>&nbsp;                                 double[] dstPts, int dstOff,
+<i>435</i>&nbsp;                                 int numPts)
+<i>436</i>&nbsp;        throws NoninvertibleTransformException
+<i>437</i>&nbsp;    {
+<b class="nc"><i>438</i>&nbsp;        if ((state &amp; APPLY_3D) == 0) {</b>
+<b class="nc"><i>439</i>&nbsp;            super.inverseTransform(srcPts, srcOff, dstPts, dstOff, numPts);</b>
+<i>440</i>&nbsp;        } else {
+<i>441</i>&nbsp;            // TODO: Optimize... (RT-26800)
+<b class="nc"><i>442</i>&nbsp;            createInverse().transform(srcPts, srcOff, dstPts, dstOff, numPts);</b>
+<i>443</i>&nbsp;        }
+<b class="nc"><i>444</i>&nbsp;    }</b>
+<i>445</i>&nbsp;
+<i>446</i>&nbsp;    @Override
+<i>447</i>&nbsp;    public Point2D inverseTransform(Point2D src, Point2D dst)
+<i>448</i>&nbsp;        throws NoninvertibleTransformException
+<i>449</i>&nbsp;    {
+<b class="nc"><i>450</i>&nbsp;        if ((state &amp; APPLY_3D) == 0) {</b>
+<b class="nc"><i>451</i>&nbsp;            return super.inverseTransform(src, dst);</b>
+<i>452</i>&nbsp;        } else {
+<i>453</i>&nbsp;            // TODO: Optimize... (RT-26800)
+<b class="nc"><i>454</i>&nbsp;            return createInverse().transform(src, dst);</b>
+<i>455</i>&nbsp;        }
+<i>456</i>&nbsp;    }
+<i>457</i>&nbsp;
+<i>458</i>&nbsp;    @Override
+<i>459</i>&nbsp;    public Vec3d inverseTransform(Vec3d src, Vec3d dst)
+<i>460</i>&nbsp;        throws NoninvertibleTransformException
+<i>461</i>&nbsp;    {
+<b class="nc"><i>462</i>&nbsp;        if ((state &amp; APPLY_3D) == 0) {</b>
+<b class="nc"><i>463</i>&nbsp;            return super.inverseTransform(src, dst);</b>
+<i>464</i>&nbsp;        } else {
+<i>465</i>&nbsp;            // TODO: Optimize... (RT-26800)
+<b class="nc"><i>466</i>&nbsp;            return createInverse().transform(src, dst);</b>
+<i>467</i>&nbsp;        }
+<i>468</i>&nbsp;    }
+<i>469</i>&nbsp;
+<i>470</i>&nbsp;    @Override
+<i>471</i>&nbsp;    public Vec3d inverseDeltaTransform(Vec3d src, Vec3d dst)
+<i>472</i>&nbsp;        throws NoninvertibleTransformException
+<i>473</i>&nbsp;    {
+<b class="nc"><i>474</i>&nbsp;        if ((state &amp; APPLY_3D) == 0) {</b>
+<b class="nc"><i>475</i>&nbsp;            return super.inverseDeltaTransform(src, dst);</b>
+<i>476</i>&nbsp;        } else {
+<i>477</i>&nbsp;            // TODO: Optimize... (RT-26800)
+<b class="nc"><i>478</i>&nbsp;            return createInverse().deltaTransform(src, dst);</b>
+<i>479</i>&nbsp;        }
+<i>480</i>&nbsp;    }
+<i>481</i>&nbsp;
+<i>482</i>&nbsp;    @Override
+<i>483</i>&nbsp;    public BaseBounds inverseTransform(BaseBounds bounds, BaseBounds result)
+<i>484</i>&nbsp;        throws NoninvertibleTransformException
+<i>485</i>&nbsp;    {
+<b class="fc"><i>486</i>&nbsp;        if ((state &amp; APPLY_3D) == 0) {</b>
+<b class="fc"><i>487</i>&nbsp;            result = super.inverseTransform(bounds, result);</b>
+<i>488</i>&nbsp;        } else {
+<i>489</i>&nbsp;            // TODO: Optimize... (RT-26800)
+<b class="nc"><i>490</i>&nbsp;            result = createInverse().transform(bounds, result);</b>
+<i>491</i>&nbsp;        }
+<b class="fc"><i>492</i>&nbsp;        return result;</b>
+<i>493</i>&nbsp;    }
+<i>494</i>&nbsp;
+<i>495</i>&nbsp;    @Override
+<i>496</i>&nbsp;    public void inverseTransform(Rectangle bounds, Rectangle result)
+<i>497</i>&nbsp;        throws NoninvertibleTransformException
+<i>498</i>&nbsp;    {
+<b class="nc"><i>499</i>&nbsp;        if ((state &amp; APPLY_3D) == 0) {</b>
+<b class="nc"><i>500</i>&nbsp;            super.inverseTransform(bounds, result);</b>
+<i>501</i>&nbsp;        } else {
+<i>502</i>&nbsp;            // TODO: Optimize... (RT-26800)
+<b class="nc"><i>503</i>&nbsp;            createInverse().transform(bounds, result);</b>
+<i>504</i>&nbsp;        }
+<b class="nc"><i>505</i>&nbsp;    }</b>
+<i>506</i>&nbsp;
+<i>507</i>&nbsp;    @Override
+<i>508</i>&nbsp;    public BaseTransform createInverse()
+<i>509</i>&nbsp;        throws NoninvertibleTransformException
+<i>510</i>&nbsp;    {
+<b class="nc"><i>511</i>&nbsp;        BaseTransform t = copy();</b>
+<b class="nc"><i>512</i>&nbsp;        t.invert();</b>
+<b class="nc"><i>513</i>&nbsp;        return t;</b>
+<i>514</i>&nbsp;    }
+<i>515</i>&nbsp;
+<i>516</i>&nbsp;    @Override
+<i>517</i>&nbsp;    public void invert()
+<i>518</i>&nbsp;        throws NoninvertibleTransformException
+<i>519</i>&nbsp;    {
+<b class="fc"><i>520</i>&nbsp;        if ((state &amp; APPLY_3D) == 0) {</b>
+<b class="fc"><i>521</i>&nbsp;            super.invert();</b>
+<b class="fc"><i>522</i>&nbsp;            return;</b>
+<i>523</i>&nbsp;        }
+<i>524</i>&nbsp;        // InvM = Transpose(Cofactor(M)) / det(M)
+<i>525</i>&nbsp;        // Cofactor(M) = matrix of cofactors(0..3,0..3)
+<i>526</i>&nbsp;        // cofactor(r,c) = (-1 if r+c is odd) * minor(r,c)
+<i>527</i>&nbsp;        // minor(r,c) = det(M with row r and col c removed)
+<i>528</i>&nbsp;        // For an Affine3D matrix, minor(r, 3) is {0, 0, 0, det}
+<i>529</i>&nbsp;        // which generates {0, 0, 0, 1} and so can be ignored.
+<i>530</i>&nbsp;
+<i>531</i>&nbsp;        // TODO: Inlining the minor calculations should allow them
+<i>532</i>&nbsp;        // to be simplified... (RT-26800)
+<b class="nc"><i>533</i>&nbsp;        double cxx =   minor(0, 0);</b>
+<b class="nc"><i>534</i>&nbsp;        double cyx = - minor(0, 1);</b>
+<b class="nc"><i>535</i>&nbsp;        double czx =   minor(0, 2);</b>
+<b class="nc"><i>536</i>&nbsp;        double cxy = - minor(1, 0);</b>
+<b class="nc"><i>537</i>&nbsp;        double cyy =   minor(1, 1);</b>
+<b class="nc"><i>538</i>&nbsp;        double czy = - minor(1, 2);</b>
+<b class="nc"><i>539</i>&nbsp;        double cxz =   minor(2, 0);</b>
+<b class="nc"><i>540</i>&nbsp;        double cyz = - minor(2, 1);</b>
+<b class="nc"><i>541</i>&nbsp;        double czz =   minor(2, 2);</b>
+<b class="nc"><i>542</i>&nbsp;        double cxt = - minor(3, 0);</b>
+<b class="nc"><i>543</i>&nbsp;        double cyt =   minor(3, 1);</b>
+<b class="nc"><i>544</i>&nbsp;        double czt = - minor(3, 2);</b>
+<b class="nc"><i>545</i>&nbsp;        double det = getDeterminant();</b>
+<b class="nc"><i>546</i>&nbsp;        mxx = cxx / det;</b>
+<b class="nc"><i>547</i>&nbsp;        mxy = cxy / det;</b>
+<b class="nc"><i>548</i>&nbsp;        mxz = cxz / det;</b>
+<b class="nc"><i>549</i>&nbsp;        mxt = cxt / det;</b>
+<b class="nc"><i>550</i>&nbsp;        myx = cyx / det;</b>
+<b class="nc"><i>551</i>&nbsp;        myy = cyy / det;</b>
+<b class="nc"><i>552</i>&nbsp;        myz = cyz / det;</b>
+<b class="nc"><i>553</i>&nbsp;        myt = cyt / det;</b>
+<b class="nc"><i>554</i>&nbsp;        mzx = czx / det;</b>
+<b class="nc"><i>555</i>&nbsp;        mzy = czy / det;</b>
+<b class="nc"><i>556</i>&nbsp;        mzz = czz / det;</b>
+<b class="nc"><i>557</i>&nbsp;        mzt = czt / det;</b>
+<b class="nc"><i>558</i>&nbsp;        updateState();</b>
+<b class="nc"><i>559</i>&nbsp;    }</b>
+<i>560</i>&nbsp;
+<i>561</i>&nbsp;    private double minor(int row, int col) {
+<b class="nc"><i>562</i>&nbsp;        double m00 = mxx, m01 = mxy, m02 = mxz;</b>
+<b class="nc"><i>563</i>&nbsp;        double m10 = myx, m11 = myy, m12 = myz;</b>
+<b class="nc"><i>564</i>&nbsp;        double m20 = mzx, m21 = mzy, m22 = mzz;</b>
+<b class="nc"><i>565</i>&nbsp;        switch (col) {</b>
+<i>566</i>&nbsp;            case 0:
+<b class="nc"><i>567</i>&nbsp;                m00 = m01;</b>
+<b class="nc"><i>568</i>&nbsp;                m10 = m11;</b>
+<b class="nc"><i>569</i>&nbsp;                m20 = m21;</b>
+<i>570</i>&nbsp;            case 1:
+<b class="nc"><i>571</i>&nbsp;                m01 = m02;</b>
+<b class="nc"><i>572</i>&nbsp;                m11 = m12;</b>
+<b class="nc"><i>573</i>&nbsp;                m21 = m22;</b>
+<i>574</i>&nbsp;            case 2:
+<b class="nc"><i>575</i>&nbsp;                m02 = mxt;</b>
+<b class="nc"><i>576</i>&nbsp;                m12 = myt;</b>
+<b class="nc"><i>577</i>&nbsp;                m22 = mzt;</b>
+<i>578</i>&nbsp;        }
+<b class="nc"><i>579</i>&nbsp;        switch (row) {</b>
+<i>580</i>&nbsp;            case 0:
+<b class="nc"><i>581</i>&nbsp;                m00 = m10;</b>
+<b class="nc"><i>582</i>&nbsp;                m01 = m11;</b>
+<i>583</i>&nbsp;//                m02 = m12;
+<i>584</i>&nbsp;            case 1:
+<b class="nc"><i>585</i>&nbsp;                m10 = m20;</b>
+<b class="nc"><i>586</i>&nbsp;                m11 = m21;</b>
+<i>587</i>&nbsp;//                m12 = m22;
+<i>588</i>&nbsp;            case 2:
+<i>589</i>&nbsp;//                m20 = 0.0;
+<i>590</i>&nbsp;//                m21 = 0.0;
+<i>591</i>&nbsp;//                m22 = 1.0;
+<b class="nc"><i>592</i>&nbsp;                break;</b>
+<i>593</i>&nbsp;            case 3:
+<i>594</i>&nbsp;                // This is the only row that requires a full 3x3 determinant
+<b class="nc"><i>595</i>&nbsp;                return (m00 * (m11 * m22 - m21 * m12) +</b>
+<i>596</i>&nbsp;                        m01 * (m12 * m20 - m22 * m10) +
+<i>597</i>&nbsp;                        m02 * (m10 * m21 - m20 * m11));
+<i>598</i>&nbsp;        }
+<i>599</i>&nbsp;//        return (m00 * (m11 * 1.0 - 0.0 * m12) +
+<i>600</i>&nbsp;//                m01 * (m12 * 0.0 - 1.0 * m10) +
+<i>601</i>&nbsp;//                m02 * (m10 * 0.0 - 0.0 * m11));
+<b class="nc"><i>602</i>&nbsp;        return (m00 * m11 - m01 * m10);</b>
+<i>603</i>&nbsp;    }
+<i>604</i>&nbsp;
+<i>605</i>&nbsp;    @Override
+<i>606</i>&nbsp;    public Affine3D deriveWithNewTransform(BaseTransform tx) {
+<b class="fc"><i>607</i>&nbsp;        setTransform(tx);</b>
+<b class="fc"><i>608</i>&nbsp;        return this;</b>
+<i>609</i>&nbsp;    }
+<i>610</i>&nbsp;
+<i>611</i>&nbsp;    @Override
+<i>612</i>&nbsp;    public Affine3D deriveWithTranslation(double tx, double ty) {
+<b class="nc"><i>613</i>&nbsp;        translate(tx, ty, 0.0);</b>
+<b class="nc"><i>614</i>&nbsp;        return this;</b>
+<i>615</i>&nbsp;    }
+<i>616</i>&nbsp;
+<i>617</i>&nbsp;    @Override
+<i>618</i>&nbsp;    public void translate(double tx, double ty) {
+<b class="fc"><i>619</i>&nbsp;        if ((state &amp; APPLY_3D) == 0) {</b>
+<b class="fc"><i>620</i>&nbsp;            super.translate(tx, ty);</b>
+<i>621</i>&nbsp;        } else {
+<b class="nc"><i>622</i>&nbsp;            translate(tx, ty, 0.0);</b>
+<i>623</i>&nbsp;        }
+<b class="fc"><i>624</i>&nbsp;    }</b>
+<i>625</i>&nbsp;
+<i>626</i>&nbsp;    public void translate(double tx, double ty, double tz) {
+<b class="nc"><i>627</i>&nbsp;        if ((state &amp; APPLY_3D) == 0) {</b>
+<b class="nc"><i>628</i>&nbsp;            super.translate(tx, ty);</b>
+<b class="nc"><i>629</i>&nbsp;            if (tz != 0.0) {</b>
+<b class="nc"><i>630</i>&nbsp;                this.mzt = tz;</b>
+<b class="nc"><i>631</i>&nbsp;                state |= APPLY_3D;</b>
+<b class="nc"><i>632</i>&nbsp;                if (type != TYPE_UNKNOWN) {</b>
+<b class="nc"><i>633</i>&nbsp;                    type |= TYPE_AFFINE_3D;</b>
+<i>634</i>&nbsp;                }
+<i>635</i>&nbsp;            }
+<b class="nc"><i>636</i>&nbsp;            return;</b>
+<i>637</i>&nbsp;        }
+<b class="nc"><i>638</i>&nbsp;        this.mxt = tx * mxx + ty * mxy + tz * mxz + mxt;</b>
+<b class="nc"><i>639</i>&nbsp;        this.myt = tx * myx + ty * myy + tz * myz + myt;</b>
+<b class="nc"><i>640</i>&nbsp;        this.mzt = tx * mzx + ty * mzy + tz * mzz + mzt;</b>
+<b class="nc"><i>641</i>&nbsp;        updateState();</b>
+<b class="nc"><i>642</i>&nbsp;    }</b>
+<i>643</i>&nbsp;
+<i>644</i>&nbsp;    @Override
+<i>645</i>&nbsp;    public Affine3D deriveWithPreTranslation(double mxt, double myt) {
+<b class="nc"><i>646</i>&nbsp;        preTranslate(mxt, myt, 0.0);</b>
+<b class="nc"><i>647</i>&nbsp;        return this;</b>
+<i>648</i>&nbsp;    }
+<i>649</i>&nbsp;
+<i>650</i>&nbsp;    @Override
+<i>651</i>&nbsp;    public BaseTransform deriveWithTranslation(double mxt, double myt, double mzt) {
+<b class="nc"><i>652</i>&nbsp;        translate(mxt, myt, mzt);</b>
+<b class="nc"><i>653</i>&nbsp;        return this;</b>
+<i>654</i>&nbsp;    }
+<i>655</i>&nbsp;
+<i>656</i>&nbsp;    @Override
+<i>657</i>&nbsp;    public BaseTransform deriveWithScale(double mxx, double myy, double mzz) {
+<b class="nc"><i>658</i>&nbsp;        scale(mxx, myy, mzz);</b>
+<b class="nc"><i>659</i>&nbsp;        return this;</b>
+<i>660</i>&nbsp;    }
+<i>661</i>&nbsp;
+<i>662</i>&nbsp;    @Override
+<i>663</i>&nbsp;    public BaseTransform deriveWithRotation(double theta,
+<i>664</i>&nbsp;            double axisX, double axisY, double axisZ) {
+<b class="nc"><i>665</i>&nbsp;        rotate(theta, axisX, axisY, axisZ);</b>
+<b class="nc"><i>666</i>&nbsp;        return this;</b>
+<i>667</i>&nbsp;    }
+<i>668</i>&nbsp;
+<i>669</i>&nbsp;    public void preTranslate(double mxt, double myt, double mzt) {
+<b class="fc"><i>670</i>&nbsp;        this.mxt += mxt;</b>
+<b class="fc"><i>671</i>&nbsp;        this.myt += myt;</b>
+<b class="fc"><i>672</i>&nbsp;        this.mzt += mzt;</b>
+<b class="fc"><i>673</i>&nbsp;        int clearflags = 0;</b>
+<b class="fc"><i>674</i>&nbsp;        int setflags = 0;</b>
+<b class="fc"><i>675</i>&nbsp;        if (this.mzt == 0.0) {</b>
+<b class="fc"><i>676</i>&nbsp;            if ((state &amp; APPLY_3D) != 0) {</b>
+<i>677</i>&nbsp;                // Might have become non-3D...
+<b class="nc"><i>678</i>&nbsp;                updateState();</b>
+<b class="nc"><i>679</i>&nbsp;                return;</b>
+<i>680</i>&nbsp;            }
+<i>681</i>&nbsp;        } else {
+<b class="nc"><i>682</i>&nbsp;            state |= APPLY_3D;</b>
+<b class="nc"><i>683</i>&nbsp;            setflags = TYPE_AFFINE_3D;</b>
+<i>684</i>&nbsp;        }
+<b class="fc"><i>685</i>&nbsp;        if (this.mxt == 0.0 &amp;&amp; this.myt == 0.0) {</b>
+<b class="nc"><i>686</i>&nbsp;            state &amp;= ~APPLY_TRANSLATE;</b>
+<b class="nc"><i>687</i>&nbsp;            clearflags = TYPE_TRANSLATION;</b>
+<i>688</i>&nbsp;        } else {
+<b class="fc"><i>689</i>&nbsp;            state |= APPLY_TRANSLATE;</b>
+<b class="fc"><i>690</i>&nbsp;            setflags |= TYPE_TRANSLATION;</b>
+<i>691</i>&nbsp;        }
+<b class="fc"><i>692</i>&nbsp;        if (type != TYPE_UNKNOWN) {</b>
+<b class="fc"><i>693</i>&nbsp;            type = ((type &amp; ~clearflags) | setflags);</b>
+<i>694</i>&nbsp;        }
+<b class="fc"><i>695</i>&nbsp;    }</b>
+<i>696</i>&nbsp;
+<i>697</i>&nbsp;    @Override
+<i>698</i>&nbsp;    public void scale(double sx, double sy) {
+<b class="fc"><i>699</i>&nbsp;        if ((state &amp; APPLY_3D) == 0) {</b>
+<b class="fc"><i>700</i>&nbsp;            super.scale(sx, sy);</b>
+<i>701</i>&nbsp;        } else {
+<b class="nc"><i>702</i>&nbsp;            scale(sx, sy, 1.0);</b>
+<i>703</i>&nbsp;        }
+<b class="fc"><i>704</i>&nbsp;    }</b>
+<i>705</i>&nbsp;
+<i>706</i>&nbsp;    public void scale(double sx, double sy, double sz) {
+<b class="nc"><i>707</i>&nbsp;        if ((state &amp; APPLY_3D) == 0) {</b>
+<b class="nc"><i>708</i>&nbsp;            super.scale(sx, sy);</b>
+<b class="nc"><i>709</i>&nbsp;            if (sz != 1.0) {</b>
+<b class="nc"><i>710</i>&nbsp;                this.mzz = sz;</b>
+<b class="nc"><i>711</i>&nbsp;                state |= APPLY_3D;</b>
+<b class="nc"><i>712</i>&nbsp;                if (type != TYPE_UNKNOWN) {</b>
+<b class="nc"><i>713</i>&nbsp;                    type |= TYPE_AFFINE_3D;</b>
+<i>714</i>&nbsp;                }
+<i>715</i>&nbsp;            }
+<b class="nc"><i>716</i>&nbsp;            return;</b>
+<i>717</i>&nbsp;        }
+<b class="nc"><i>718</i>&nbsp;        this.mxx *= sx;</b>
+<b class="nc"><i>719</i>&nbsp;        this.mxy *= sy;</b>
+<b class="nc"><i>720</i>&nbsp;        this.mxz *= sz;</b>
+<i>721</i>&nbsp;
+<b class="nc"><i>722</i>&nbsp;        this.myx *= sx;</b>
+<b class="nc"><i>723</i>&nbsp;        this.myy *= sy;</b>
+<b class="nc"><i>724</i>&nbsp;        this.myz *= sz;</b>
+<i>725</i>&nbsp;
+<b class="nc"><i>726</i>&nbsp;        this.mzx *= sx;</b>
+<b class="nc"><i>727</i>&nbsp;        this.mzy *= sy;</b>
+<b class="nc"><i>728</i>&nbsp;        this.mzz *= sz;</b>
+<i>729</i>&nbsp;
+<i>730</i>&nbsp;        // TODO: Optimize the state... (RT-26800)
+<b class="nc"><i>731</i>&nbsp;        updateState();</b>
+<b class="nc"><i>732</i>&nbsp;    }</b>
+<i>733</i>&nbsp;
+<i>734</i>&nbsp;    @Override
+<i>735</i>&nbsp;    public void rotate(double theta) {
+<b class="fc"><i>736</i>&nbsp;        if ((state &amp; APPLY_3D) == 0) {</b>
+<b class="fc"><i>737</i>&nbsp;            super.rotate(theta);</b>
+<i>738</i>&nbsp;        } else {
+<b class="nc"><i>739</i>&nbsp;            rotate(theta, 0, 0, 1);</b>
+<i>740</i>&nbsp;        }
+<b class="fc"><i>741</i>&nbsp;    }</b>
+<i>742</i>&nbsp;
+<i>743</i>&nbsp;    public void rotate(double theta, double axisX, double axisY, double axisZ) {
+<b class="nc"><i>744</i>&nbsp;        if ((state &amp; APPLY_3D) == 0 &amp;&amp; almostZero(axisX) &amp;&amp; almostZero(axisY)) {</b>
+<b class="nc"><i>745</i>&nbsp;            if (axisZ &gt; 0) {</b>
+<b class="nc"><i>746</i>&nbsp;                super.rotate(theta);</b>
+<b class="nc"><i>747</i>&nbsp;            } else if (axisZ &lt; 0) {</b>
+<b class="nc"><i>748</i>&nbsp;                super.rotate(-theta);</b>
+<i>749</i>&nbsp;            } // else rotating about zero vector - NOP
+<b class="nc"><i>750</i>&nbsp;            return;</b>
+<i>751</i>&nbsp;        }
+<b class="nc"><i>752</i>&nbsp;        double mag = Math.sqrt(axisX * axisX + axisY * axisY + axisZ * axisZ);</b>
+<i>753</i>&nbsp;
+<b class="nc"><i>754</i>&nbsp;        if (almostZero(mag)) {</b>
+<b class="nc"><i>755</i>&nbsp;            return;</b>
+<i>756</i>&nbsp;        }
+<b class="nc"><i>757</i>&nbsp;        mag = 1.0 / mag;</b>
+<b class="nc"><i>758</i>&nbsp;        double ax = axisX * mag;</b>
+<b class="nc"><i>759</i>&nbsp;        double ay = axisY * mag;</b>
+<b class="nc"><i>760</i>&nbsp;        double az = axisZ * mag;</b>
+<i>761</i>&nbsp;
+<b class="nc"><i>762</i>&nbsp;        double sinTheta = Math.sin(theta);</b>
+<b class="nc"><i>763</i>&nbsp;        double cosTheta = Math.cos(theta);</b>
+<b class="nc"><i>764</i>&nbsp;        double t = 1.0 - cosTheta;</b>
+<i>765</i>&nbsp;
+<b class="nc"><i>766</i>&nbsp;        double xz = ax * az;</b>
+<b class="nc"><i>767</i>&nbsp;        double xy = ax * ay;</b>
+<b class="nc"><i>768</i>&nbsp;        double yz = ay * az;</b>
+<i>769</i>&nbsp;
+<b class="nc"><i>770</i>&nbsp;        double Txx = t * ax * ax + cosTheta;</b>
+<b class="nc"><i>771</i>&nbsp;        double Txy = t * xy - sinTheta * az;</b>
+<b class="nc"><i>772</i>&nbsp;        double Txz = t * xz + sinTheta * ay;</b>
+<i>773</i>&nbsp;
+<b class="nc"><i>774</i>&nbsp;        double Tyx = t * xy + sinTheta * az;</b>
+<b class="nc"><i>775</i>&nbsp;        double Tyy = t * ay * ay + cosTheta;</b>
+<b class="nc"><i>776</i>&nbsp;        double Tyz = t * yz - sinTheta * ax;</b>
+<i>777</i>&nbsp;
+<b class="nc"><i>778</i>&nbsp;        double Tzx = t * xz - sinTheta * ay;</b>
+<b class="nc"><i>779</i>&nbsp;        double Tzy = t * yz + sinTheta * ax;</b>
+<b class="nc"><i>780</i>&nbsp;        double Tzz = t * az * az + cosTheta;</b>
+<i>781</i>&nbsp;
+<b class="nc"><i>782</i>&nbsp;        double rxx = (mxx * Txx + mxy * Tyx + mxz * Tzx /* + mxt * 0.0 */);</b>
+<b class="nc"><i>783</i>&nbsp;        double rxy = (mxx * Txy + mxy * Tyy + mxz * Tzy /* + mxt * 0.0 */);</b>
+<b class="nc"><i>784</i>&nbsp;        double rxz = (mxx * Txz + mxy * Tyz + mxz * Tzz /* + mxt * 0.0 */);</b>
+<b class="nc"><i>785</i>&nbsp;        double ryx = (myx * Txx + myy * Tyx + myz * Tzx /* + myt * 0.0 */);</b>
+<b class="nc"><i>786</i>&nbsp;        double ryy = (myx * Txy + myy * Tyy + myz * Tzy /* + myt * 0.0 */);</b>
+<b class="nc"><i>787</i>&nbsp;        double ryz = (myx * Txz + myy * Tyz + myz * Tzz /* + myt * 0.0 */);</b>
+<b class="nc"><i>788</i>&nbsp;        double rzx = (mzx * Txx + mzy * Tyx + mzz * Tzx /* + mzt * 0.0 */);</b>
+<b class="nc"><i>789</i>&nbsp;        double rzy = (mzx * Txy + mzy * Tyy + mzz * Tzy /* + mzt * 0.0 */);</b>
+<b class="nc"><i>790</i>&nbsp;        double rzz = (mzx * Txz + mzy * Tyz + mzz * Tzz /* + mzt * 0.0 */);</b>
+<b class="nc"><i>791</i>&nbsp;        this.mxx = rxx;</b>
+<b class="nc"><i>792</i>&nbsp;        this.mxy = rxy;</b>
+<b class="nc"><i>793</i>&nbsp;        this.mxz = rxz;</b>
+<b class="nc"><i>794</i>&nbsp;        this.myx = ryx;</b>
+<b class="nc"><i>795</i>&nbsp;        this.myy = ryy;</b>
+<b class="nc"><i>796</i>&nbsp;        this.myz = ryz;</b>
+<b class="nc"><i>797</i>&nbsp;        this.mzx = rzx;</b>
+<b class="nc"><i>798</i>&nbsp;        this.mzy = rzy;</b>
+<b class="nc"><i>799</i>&nbsp;        this.mzz = rzz;</b>
+<b class="nc"><i>800</i>&nbsp;        updateState();</b>
+<b class="nc"><i>801</i>&nbsp;    }</b>
+<i>802</i>&nbsp;
+<i>803</i>&nbsp;    @Override
+<i>804</i>&nbsp;    public void shear(double shx, double shy) {
+<b class="nc"><i>805</i>&nbsp;        if ((state &amp; APPLY_3D) == 0) {</b>
+<b class="nc"><i>806</i>&nbsp;            super.shear(shx, shy);</b>
+<b class="nc"><i>807</i>&nbsp;            return;</b>
+<i>808</i>&nbsp;        }
+<b class="nc"><i>809</i>&nbsp;        double rxx = (mxx + mxy * shy);</b>
+<b class="nc"><i>810</i>&nbsp;        double rxy = (mxy + mxx * shx);</b>
+<b class="nc"><i>811</i>&nbsp;        double ryx = (myx + myy * shy);</b>
+<b class="nc"><i>812</i>&nbsp;        double ryy = (myy + myx * shx);</b>
+<b class="nc"><i>813</i>&nbsp;        double rzx = (mzx + mzy * shy);</b>
+<b class="nc"><i>814</i>&nbsp;        double rzy = (mzy + mzx * shx);</b>
+<b class="nc"><i>815</i>&nbsp;        this.mxx = rxx;</b>
+<b class="nc"><i>816</i>&nbsp;        this.mxy = rxy;</b>
+<b class="nc"><i>817</i>&nbsp;        this.myx = ryx;</b>
+<b class="nc"><i>818</i>&nbsp;        this.myy = ryy;</b>
+<b class="nc"><i>819</i>&nbsp;        this.mzx = rzx;</b>
+<b class="nc"><i>820</i>&nbsp;        this.mzy = rzy;</b>
+<b class="nc"><i>821</i>&nbsp;        updateState();</b>
+<b class="nc"><i>822</i>&nbsp;    }</b>
+<i>823</i>&nbsp;
+<i>824</i>&nbsp;    @Override
+<i>825</i>&nbsp;    public Affine3D deriveWithConcatenation(BaseTransform transform) {
+<b class="fc"><i>826</i>&nbsp;        concatenate(transform);</b>
+<b class="fc"><i>827</i>&nbsp;        return this;</b>
+<i>828</i>&nbsp;    }
+<i>829</i>&nbsp;
+<i>830</i>&nbsp;    @Override
+<i>831</i>&nbsp;    public Affine3D deriveWithPreConcatenation(BaseTransform transform) {
+<b class="nc"><i>832</i>&nbsp;        preConcatenate(transform);</b>
+<b class="nc"><i>833</i>&nbsp;        return this;</b>
+<i>834</i>&nbsp;    }
+<i>835</i>&nbsp;
+<i>836</i>&nbsp;    @Override
+<i>837</i>&nbsp;    public void concatenate(BaseTransform transform) {
+<b class="fc"><i>838</i>&nbsp;        switch (transform.getDegree()) {</b>
+<i>839</i>&nbsp;            case IDENTITY:
+<b class="fc"><i>840</i>&nbsp;                return;</b>
+<i>841</i>&nbsp;            case TRANSLATE_2D:
+<b class="fc"><i>842</i>&nbsp;                translate(transform.getMxt(), transform.getMyt());</b>
+<b class="fc"><i>843</i>&nbsp;                return;</b>
+<i>844</i>&nbsp;            case TRANSLATE_3D:
+<b class="nc"><i>845</i>&nbsp;                translate(transform.getMxt(), transform.getMyt(), transform.getMzt());</b>
+<b class="nc"><i>846</i>&nbsp;                return;</b>
+<i>847</i>&nbsp;            case AFFINE_3D:
+<b class="fc"><i>848</i>&nbsp;                if (!transform.is2D()) {</b>
+<b class="nc"><i>849</i>&nbsp;                    break;</b>
+<i>850</i>&nbsp;                }
+<i>851</i>&nbsp;                /* No Break */
+<i>852</i>&nbsp;            case AFFINE_2D:
+<b class="fc"><i>853</i>&nbsp;                if ((state &amp; APPLY_3D) == 0) {</b>
+<b class="fc"><i>854</i>&nbsp;                    super.concatenate(transform);</b>
+<b class="fc"><i>855</i>&nbsp;                    return;</b>
+<i>856</i>&nbsp;                }
+<i>857</i>&nbsp;                break;
+<i>858</i>&nbsp;        }
+<b class="nc"><i>859</i>&nbsp;        double Txx = transform.getMxx();</b>
+<b class="nc"><i>860</i>&nbsp;        double Txy = transform.getMxy();</b>
+<b class="nc"><i>861</i>&nbsp;        double Txz = transform.getMxz();</b>
+<b class="nc"><i>862</i>&nbsp;        double Txt = transform.getMxt();</b>
+<b class="nc"><i>863</i>&nbsp;        double Tyx = transform.getMyx();</b>
+<b class="nc"><i>864</i>&nbsp;        double Tyy = transform.getMyy();</b>
+<b class="nc"><i>865</i>&nbsp;        double Tyz = transform.getMyz();</b>
+<b class="nc"><i>866</i>&nbsp;        double Tyt = transform.getMyt();</b>
+<b class="nc"><i>867</i>&nbsp;        double Tzx = transform.getMzx();</b>
+<b class="nc"><i>868</i>&nbsp;        double Tzy = transform.getMzy();</b>
+<b class="nc"><i>869</i>&nbsp;        double Tzz = transform.getMzz();</b>
+<b class="nc"><i>870</i>&nbsp;        double Tzt = transform.getMzt();</b>
+<b class="nc"><i>871</i>&nbsp;        double rxx = (mxx * Txx + mxy * Tyx + mxz * Tzx /* + mxt * 0.0 */);</b>
+<b class="nc"><i>872</i>&nbsp;        double rxy = (mxx * Txy + mxy * Tyy + mxz * Tzy /* + mxt * 0.0 */);</b>
+<b class="nc"><i>873</i>&nbsp;        double rxz = (mxx * Txz + mxy * Tyz + mxz * Tzz /* + mxt * 0.0 */);</b>
+<b class="nc"><i>874</i>&nbsp;        double rxt = (mxx * Txt + mxy * Tyt + mxz * Tzt + mxt /* * 1.0 */);</b>
+<b class="nc"><i>875</i>&nbsp;        double ryx = (myx * Txx + myy * Tyx + myz * Tzx /* + myt * 0.0 */);</b>
+<b class="nc"><i>876</i>&nbsp;        double ryy = (myx * Txy + myy * Tyy + myz * Tzy /* + myt * 0.0 */);</b>
+<b class="nc"><i>877</i>&nbsp;        double ryz = (myx * Txz + myy * Tyz + myz * Tzz /* + myt * 0.0 */);</b>
+<b class="nc"><i>878</i>&nbsp;        double ryt = (myx * Txt + myy * Tyt + myz * Tzt + myt /* * 1.0 */);</b>
+<b class="nc"><i>879</i>&nbsp;        double rzx = (mzx * Txx + mzy * Tyx + mzz * Tzx /* + mzt * 0.0 */);</b>
+<b class="nc"><i>880</i>&nbsp;        double rzy = (mzx * Txy + mzy * Tyy + mzz * Tzy /* + mzt * 0.0 */);</b>
+<b class="nc"><i>881</i>&nbsp;        double rzz = (mzx * Txz + mzy * Tyz + mzz * Tzz /* + mzt * 0.0 */);</b>
+<b class="nc"><i>882</i>&nbsp;        double rzt = (mzx * Txt + mzy * Tyt + mzz * Tzt + mzt /* * 1.0 */);</b>
+<b class="nc"><i>883</i>&nbsp;        this.mxx = rxx;</b>
+<b class="nc"><i>884</i>&nbsp;        this.mxy = rxy;</b>
+<b class="nc"><i>885</i>&nbsp;        this.mxz = rxz;</b>
+<b class="nc"><i>886</i>&nbsp;        this.mxt = rxt;</b>
+<b class="nc"><i>887</i>&nbsp;        this.myx = ryx;</b>
+<b class="nc"><i>888</i>&nbsp;        this.myy = ryy;</b>
+<b class="nc"><i>889</i>&nbsp;        this.myz = ryz;</b>
+<b class="nc"><i>890</i>&nbsp;        this.myt = ryt;</b>
+<b class="nc"><i>891</i>&nbsp;        this.mzx = rzx;</b>
+<b class="nc"><i>892</i>&nbsp;        this.mzy = rzy;</b>
+<b class="nc"><i>893</i>&nbsp;        this.mzz = rzz;</b>
+<b class="nc"><i>894</i>&nbsp;        this.mzt = rzt;</b>
+<b class="nc"><i>895</i>&nbsp;        updateState();</b>
+<b class="nc"><i>896</i>&nbsp;    }</b>
+<i>897</i>&nbsp;
+<i>898</i>&nbsp;    public void concatenate(double Txx, double Txy, double Txz, double Txt,
+<i>899</i>&nbsp;                            double Tyx, double Tyy, double Tyz, double Tyt,
+<i>900</i>&nbsp;                            double Tzx, double Tzy, double Tzz, double Tzt)
+<i>901</i>&nbsp;    {
+<b class="fc"><i>902</i>&nbsp;        double rxx = (mxx * Txx + mxy * Tyx + mxz * Tzx /* + mxt * 0.0 */);</b>
+<b class="fc"><i>903</i>&nbsp;        double rxy = (mxx * Txy + mxy * Tyy + mxz * Tzy /* + mxt * 0.0 */);</b>
+<b class="fc"><i>904</i>&nbsp;        double rxz = (mxx * Txz + mxy * Tyz + mxz * Tzz /* + mxt * 0.0 */);</b>
+<b class="fc"><i>905</i>&nbsp;        double rxt = (mxx * Txt + mxy * Tyt + mxz * Tzt + mxt /* * 1.0 */);</b>
+<b class="fc"><i>906</i>&nbsp;        double ryx = (myx * Txx + myy * Tyx + myz * Tzx /* + myt * 0.0 */);</b>
+<b class="fc"><i>907</i>&nbsp;        double ryy = (myx * Txy + myy * Tyy + myz * Tzy /* + myt * 0.0 */);</b>
+<b class="fc"><i>908</i>&nbsp;        double ryz = (myx * Txz + myy * Tyz + myz * Tzz /* + myt * 0.0 */);</b>
+<b class="fc"><i>909</i>&nbsp;        double ryt = (myx * Txt + myy * Tyt + myz * Tzt + myt /* * 1.0 */);</b>
+<b class="fc"><i>910</i>&nbsp;        double rzx = (mzx * Txx + mzy * Tyx + mzz * Tzx /* + mzt * 0.0 */);</b>
+<b class="fc"><i>911</i>&nbsp;        double rzy = (mzx * Txy + mzy * Tyy + mzz * Tzy /* + mzt * 0.0 */);</b>
+<b class="fc"><i>912</i>&nbsp;        double rzz = (mzx * Txz + mzy * Tyz + mzz * Tzz /* + mzt * 0.0 */);</b>
+<b class="fc"><i>913</i>&nbsp;        double rzt = (mzx * Txt + mzy * Tyt + mzz * Tzt + mzt /* * 1.0 */);</b>
+<b class="fc"><i>914</i>&nbsp;        this.mxx = rxx;</b>
+<b class="fc"><i>915</i>&nbsp;        this.mxy = rxy;</b>
+<b class="fc"><i>916</i>&nbsp;        this.mxz = rxz;</b>
+<b class="fc"><i>917</i>&nbsp;        this.mxt = rxt;</b>
+<b class="fc"><i>918</i>&nbsp;        this.myx = ryx;</b>
+<b class="fc"><i>919</i>&nbsp;        this.myy = ryy;</b>
+<b class="fc"><i>920</i>&nbsp;        this.myz = ryz;</b>
+<b class="fc"><i>921</i>&nbsp;        this.myt = ryt;</b>
+<b class="fc"><i>922</i>&nbsp;        this.mzx = rzx;</b>
+<b class="fc"><i>923</i>&nbsp;        this.mzy = rzy;</b>
+<b class="fc"><i>924</i>&nbsp;        this.mzz = rzz;</b>
+<b class="fc"><i>925</i>&nbsp;        this.mzt = rzt;</b>
+<b class="fc"><i>926</i>&nbsp;        updateState();</b>
+<b class="fc"><i>927</i>&nbsp;    }</b>
+<i>928</i>&nbsp;
+<i>929</i>&nbsp;    @Override
+<i>930</i>&nbsp;    public Affine3D deriveWithConcatenation(double Txx, double Tyx,
+<i>931</i>&nbsp;                                                 double Txy, double Tyy,
+<i>932</i>&nbsp;                                                 double Txt, double Tyt)
+<i>933</i>&nbsp;    {
+<b class="nc"><i>934</i>&nbsp;        double rxx = (mxx * Txx + mxy * Tyx /* + mxz * 0.0 + mxt * 0.0 */);</b>
+<b class="nc"><i>935</i>&nbsp;        double rxy = (mxx * Txy + mxy * Tyy /* + mxz * 0.0 + mxt * 0.0 */);</b>
+<i>936</i>&nbsp;//        double rxz = (mxz /* * 1.0 + mxx * 0.0 + mxy * 0.0 + mxt * 0.0 */);
+<b class="nc"><i>937</i>&nbsp;        double rxt = (mxx * Txt + mxy * Tyt + mxt /* + mxz * 0.0 * 1.0 */);</b>
+<b class="nc"><i>938</i>&nbsp;        double ryx = (myx * Txx + myy * Tyx /* + myz * 0.0 + myt * 0.0 */);</b>
+<b class="nc"><i>939</i>&nbsp;        double ryy = (myx * Txy + myy * Tyy /* + myz * 0.0 + myt * 0.0 */);</b>
+<i>940</i>&nbsp;//        double ryz = (myz /* * 1.0 + myx * 0.0 + myy * 0.0 + myt * 0.0 */);
+<b class="nc"><i>941</i>&nbsp;        double ryt = (myx * Txt + myy * Tyt + myt /* * 1.0 + myz * 0.0 */);</b>
+<b class="nc"><i>942</i>&nbsp;        double rzx = (mzx * Txx + mzy * Tyx /* + mzz * 0.0 + mzt * 0.0 */);</b>
+<b class="nc"><i>943</i>&nbsp;        double rzy = (mzx * Txy + mzy * Tyy /* + mzz * 0.0 + mzt * 0.0 */);</b>
+<i>944</i>&nbsp;//        double rzz = (mzz /* * 1.0 + mzx * 0.0 + mzy * 0.0 + mzt * 0.0 */);
+<b class="nc"><i>945</i>&nbsp;        double rzt = (mzx * Txt + mzy * Tyt + mzt /* * 1.0 + mzz * 0.0 */);</b>
+<b class="nc"><i>946</i>&nbsp;        this.mxx = rxx;</b>
+<b class="nc"><i>947</i>&nbsp;        this.mxy = rxy;</b>
+<i>948</i>&nbsp;//        this.mxz = rxz; // == mxz anyway
+<b class="nc"><i>949</i>&nbsp;        this.mxt = rxt;</b>
+<b class="nc"><i>950</i>&nbsp;        this.myx = ryx;</b>
+<b class="nc"><i>951</i>&nbsp;        this.myy = ryy;</b>
+<i>952</i>&nbsp;//        this.myz = ryz; // == myz anyway
+<b class="nc"><i>953</i>&nbsp;        this.myt = ryt;</b>
+<b class="nc"><i>954</i>&nbsp;        this.mzx = rzx;</b>
+<b class="nc"><i>955</i>&nbsp;        this.mzy = rzy;</b>
+<i>956</i>&nbsp;//        this.mzz = rzz; // == mzz anyway
+<b class="nc"><i>957</i>&nbsp;        this.mzt = rzt;</b>
+<b class="nc"><i>958</i>&nbsp;        updateState();</b>
+<b class="nc"><i>959</i>&nbsp;        return this;</b>
+<i>960</i>&nbsp;    }
+<i>961</i>&nbsp;
+<i>962</i>&nbsp;    @Override
+<i>963</i>&nbsp;    public BaseTransform deriveWithConcatenation(
+<i>964</i>&nbsp;            double mxx, double mxy, double mxz, double mxt,
+<i>965</i>&nbsp;            double myx, double myy, double myz, double myt,
+<i>966</i>&nbsp;            double mzx, double mzy, double mzz, double mzt) {
+<b class="nc"><i>967</i>&nbsp;        concatenate(mxx, mxy, mxz, mxt,</b>
+<i>968</i>&nbsp;                    myx, myy, myz, myt,
+<i>969</i>&nbsp;                    mzx, mzy, mzz, mzt);
+<b class="nc"><i>970</i>&nbsp;        return this;</b>
+<i>971</i>&nbsp;    }
+<i>972</i>&nbsp;
+<i>973</i>&nbsp;    public void preConcatenate(BaseTransform transform) {
+<b class="nc"><i>974</i>&nbsp;        switch (transform.getDegree()) {</b>
+<i>975</i>&nbsp;            case IDENTITY:
+<b class="nc"><i>976</i>&nbsp;                return;</b>
+<i>977</i>&nbsp;            case TRANSLATE_2D:
+<b class="nc"><i>978</i>&nbsp;                preTranslate(transform.getMxt(), transform.getMyt(), 0.0);</b>
+<b class="nc"><i>979</i>&nbsp;                return;</b>
+<i>980</i>&nbsp;            case TRANSLATE_3D:
+<b class="nc"><i>981</i>&nbsp;                preTranslate(transform.getMxt(), transform.getMyt(), transform.getMzt());</b>
+<b class="nc"><i>982</i>&nbsp;                return;</b>
+<i>983</i>&nbsp;        }
+<b class="nc"><i>984</i>&nbsp;        double Txx = transform.getMxx();</b>
+<b class="nc"><i>985</i>&nbsp;        double Txy = transform.getMxy();</b>
+<b class="nc"><i>986</i>&nbsp;        double Txz = transform.getMxz();</b>
+<b class="nc"><i>987</i>&nbsp;        double Txt = transform.getMxt();</b>
+<b class="nc"><i>988</i>&nbsp;        double Tyx = transform.getMyx();</b>
+<b class="nc"><i>989</i>&nbsp;        double Tyy = transform.getMyy();</b>
+<b class="nc"><i>990</i>&nbsp;        double Tyz = transform.getMyz();</b>
+<b class="nc"><i>991</i>&nbsp;        double Tyt = transform.getMyt();</b>
+<b class="nc"><i>992</i>&nbsp;        double Tzx = transform.getMzx();</b>
+<b class="nc"><i>993</i>&nbsp;        double Tzy = transform.getMzy();</b>
+<b class="nc"><i>994</i>&nbsp;        double Tzz = transform.getMzz();</b>
+<b class="nc"><i>995</i>&nbsp;        double Tzt = transform.getMzt();</b>
+<b class="nc"><i>996</i>&nbsp;        double rxx = (Txx * mxx + Txy * myx + Txz * mzx /* + Txt * 0.0 */);</b>
+<b class="nc"><i>997</i>&nbsp;        double rxy = (Txx * mxy + Txy * myy + Txz * mzy /* + Txt * 0.0 */);</b>
+<b class="nc"><i>998</i>&nbsp;        double rxz = (Txx * mxz + Txy * myz + Txz * mzz /* + Txt * 0.0 */);</b>
+<b class="nc"><i>999</i>&nbsp;        double rxt = (Txx * mxt + Txy * myt + Txz * mzt + Txt /* * 1.0 */);</b>
+<b class="nc"><i>1000</i>&nbsp;        double ryx = (Tyx * mxx + Tyy * myx + Tyz * mzx /* + Tyt * 0.0 */);</b>
+<b class="nc"><i>1001</i>&nbsp;        double ryy = (Tyx * mxy + Tyy * myy + Tyz * mzy /* + Tyt * 0.0 */);</b>
+<b class="nc"><i>1002</i>&nbsp;        double ryz = (Tyx * mxz + Tyy * myz + Tyz * mzz /* + Tyt * 0.0 */);</b>
+<b class="nc"><i>1003</i>&nbsp;        double ryt = (Tyx * mxt + Tyy * myt + Tyz * mzt + Tyt /* * 1.0 */);</b>
+<b class="nc"><i>1004</i>&nbsp;        double rzx = (Tzx * mxx + Tzy * myx + Tzz * mzx /* + Tzt * 0.0 */);</b>
+<b class="nc"><i>1005</i>&nbsp;        double rzy = (Tzx * mxy + Tzy * myy + Tzz * mzy /* + Tzt * 0.0 */);</b>
+<b class="nc"><i>1006</i>&nbsp;        double rzz = (Tzx * mxz + Tzy * myz + Tzz * mzz /* + Tzt * 0.0 */);</b>
+<b class="nc"><i>1007</i>&nbsp;        double rzt = (Tzx * mxt + Tzy * myt + Tzz * mzt + Tzt /* * 1.0 */);</b>
+<b class="nc"><i>1008</i>&nbsp;        this.mxx = rxx;</b>
+<b class="nc"><i>1009</i>&nbsp;        this.mxy = rxy;</b>
+<b class="nc"><i>1010</i>&nbsp;        this.mxz = rxz;</b>
+<b class="nc"><i>1011</i>&nbsp;        this.mxt = rxt;</b>
+<b class="nc"><i>1012</i>&nbsp;        this.myx = ryx;</b>
+<b class="nc"><i>1013</i>&nbsp;        this.myy = ryy;</b>
+<b class="nc"><i>1014</i>&nbsp;        this.myz = ryz;</b>
+<b class="nc"><i>1015</i>&nbsp;        this.myt = ryt;</b>
+<b class="nc"><i>1016</i>&nbsp;        this.mzx = rzx;</b>
+<b class="nc"><i>1017</i>&nbsp;        this.mzy = rzy;</b>
+<b class="nc"><i>1018</i>&nbsp;        this.mzz = rzz;</b>
+<b class="nc"><i>1019</i>&nbsp;        this.mzt = rzt;</b>
+<b class="nc"><i>1020</i>&nbsp;        updateState();</b>
+<b class="nc"><i>1021</i>&nbsp;    }</b>
+<i>1022</i>&nbsp;
+<i>1023</i>&nbsp;    @Override
+<i>1024</i>&nbsp;    public void restoreTransform(double mxx, double myx,
+<i>1025</i>&nbsp;                                 double mxy, double myy,
+<i>1026</i>&nbsp;                                 double mxt, double myt)
+<i>1027</i>&nbsp;    {
+<b class="nc"><i>1028</i>&nbsp;        throw new InternalError(&quot;must use Affine3D restore method &quot;+</b>
+<i>1029</i>&nbsp;                                &quot;to prevent loss of information&quot;);
+<i>1030</i>&nbsp;    }
+<i>1031</i>&nbsp;
+<i>1032</i>&nbsp;    @Override
+<i>1033</i>&nbsp;    public void restoreTransform(double mxx, double mxy, double mxz, double mxt,
+<i>1034</i>&nbsp;                                 double myx, double myy, double myz, double myt,
+<i>1035</i>&nbsp;                                 double mzx, double mzy, double mzz, double mzt)
+<i>1036</i>&nbsp;    {
+<b class="fc"><i>1037</i>&nbsp;        this.mxx = mxx;</b>
+<b class="fc"><i>1038</i>&nbsp;        this.mxy = mxy;</b>
+<b class="fc"><i>1039</i>&nbsp;        this.mxz = mxz;</b>
+<b class="fc"><i>1040</i>&nbsp;        this.mxt = mxt;</b>
+<i>1041</i>&nbsp;
+<b class="fc"><i>1042</i>&nbsp;        this.myx = myx;</b>
+<b class="fc"><i>1043</i>&nbsp;        this.myy = myy;</b>
+<b class="fc"><i>1044</i>&nbsp;        this.myz = myz;</b>
+<b class="fc"><i>1045</i>&nbsp;        this.myt = myt;</b>
+<i>1046</i>&nbsp;
+<b class="fc"><i>1047</i>&nbsp;        this.mzx = mzx;</b>
+<b class="fc"><i>1048</i>&nbsp;        this.mzy = mzy;</b>
+<b class="fc"><i>1049</i>&nbsp;        this.mzz = mzz;</b>
+<b class="fc"><i>1050</i>&nbsp;        this.mzt = mzt;</b>
+<i>1051</i>&nbsp;
+<b class="fc"><i>1052</i>&nbsp;        updateState();</b>
+<b class="fc"><i>1053</i>&nbsp;    }</b>
+<i>1054</i>&nbsp;
+<i>1055</i>&nbsp;    /**
+<i>1056</i>&nbsp;     * Sets this transform to a viewing transform computed from the specified
+<i>1057</i>&nbsp;     * eye point, center point, and up vector.
+<i>1058</i>&nbsp;     * The resulting transform can be used as the view transform
+<i>1059</i>&nbsp;     * in a 3D camera.
+<i>1060</i>&nbsp;     *
+<i>1061</i>&nbsp;     * @param eye the eye point
+<i>1062</i>&nbsp;     *
+<i>1063</i>&nbsp;     * @param center the center point
+<i>1064</i>&nbsp;     *
+<i>1065</i>&nbsp;     * @param up the up vector
+<i>1066</i>&nbsp;     *
+<i>1067</i>&nbsp;     * @return this transform
+<i>1068</i>&nbsp;     */
+<i>1069</i>&nbsp;    public Affine3D lookAt(Vec3d eye, Vec3d center, Vec3d up) {
+<i>1070</i>&nbsp;        double forwardx, forwardy, forwardz, invMag;
+<i>1071</i>&nbsp;        double upx, upy, upz;
+<i>1072</i>&nbsp;        double sidex, sidey, sidez;
+<i>1073</i>&nbsp;
+<b class="nc"><i>1074</i>&nbsp;        forwardx = eye.x - center.x;</b>
+<b class="nc"><i>1075</i>&nbsp;        forwardy = eye.y - center.y;</b>
+<b class="nc"><i>1076</i>&nbsp;        forwardz = eye.z - center.z;</b>
+<i>1077</i>&nbsp;
+<b class="nc"><i>1078</i>&nbsp;        invMag = 1.0 / Math.sqrt(forwardx * forwardx + forwardy * forwardy + forwardz * forwardz);</b>
+<b class="nc"><i>1079</i>&nbsp;        forwardx = forwardx * invMag;</b>
+<b class="nc"><i>1080</i>&nbsp;        forwardy = forwardy * invMag;</b>
+<b class="nc"><i>1081</i>&nbsp;        forwardz = forwardz * invMag;</b>
+<i>1082</i>&nbsp;
+<b class="nc"><i>1083</i>&nbsp;        invMag = 1.0 / Math.sqrt(up.x * up.x + up.y * up.y + up.z * up.z);</b>
+<b class="nc"><i>1084</i>&nbsp;        upx = up.x * invMag;</b>
+<b class="nc"><i>1085</i>&nbsp;        upy = up.y * invMag;</b>
+<b class="nc"><i>1086</i>&nbsp;        upz = up.z * invMag;</b>
+<i>1087</i>&nbsp;
+<i>1088</i>&nbsp;        // side = Up cross forward
+<b class="nc"><i>1089</i>&nbsp;        sidex = upy * forwardz - forwardy * upz;</b>
+<b class="nc"><i>1090</i>&nbsp;        sidey = upz * forwardx - upx * forwardz;</b>
+<b class="nc"><i>1091</i>&nbsp;        sidez = upx * forwardy - upy * forwardx;</b>
+<i>1092</i>&nbsp;
+<b class="nc"><i>1093</i>&nbsp;        invMag = 1.0 / Math.sqrt(sidex * sidex + sidey * sidey + sidez * sidez);</b>
+<b class="nc"><i>1094</i>&nbsp;        sidex *= invMag;</b>
+<b class="nc"><i>1095</i>&nbsp;        sidey *= invMag;</b>
+<b class="nc"><i>1096</i>&nbsp;        sidez *= invMag;</b>
+<i>1097</i>&nbsp;
+<i>1098</i>&nbsp;        // recompute up = forward cross side
+<b class="nc"><i>1099</i>&nbsp;        upx = forwardy * sidez - sidey * forwardz;</b>
+<b class="nc"><i>1100</i>&nbsp;        upy = forwardz * sidex - forwardx * sidez;</b>
+<b class="nc"><i>1101</i>&nbsp;        upz = forwardx * sidey - forwardy * sidex;</b>
+<i>1102</i>&nbsp;
+<i>1103</i>&nbsp;        // transpose because we calculated the inverse of what we want
+<b class="nc"><i>1104</i>&nbsp;        mxx = sidex;</b>
+<b class="nc"><i>1105</i>&nbsp;        mxy = sidey;</b>
+<b class="nc"><i>1106</i>&nbsp;        mxz = sidez;</b>
+<i>1107</i>&nbsp;
+<b class="nc"><i>1108</i>&nbsp;        myx = upx;</b>
+<b class="nc"><i>1109</i>&nbsp;        myy = upy;</b>
+<b class="nc"><i>1110</i>&nbsp;        myz = upz;</b>
+<i>1111</i>&nbsp;
+<b class="nc"><i>1112</i>&nbsp;        mzx = forwardx;</b>
+<b class="nc"><i>1113</i>&nbsp;        mzy = forwardy;</b>
+<b class="nc"><i>1114</i>&nbsp;        mzz = forwardz;</b>
+<i>1115</i>&nbsp;
+<b class="nc"><i>1116</i>&nbsp;        mxt = -eye.x * mxx + -eye.y * mxy + -eye.z * mxz;</b>
+<b class="nc"><i>1117</i>&nbsp;        myt = -eye.x * myx + -eye.y * myy + -eye.z * myz;</b>
+<b class="nc"><i>1118</i>&nbsp;        mzt = -eye.x * mzx + -eye.y * mzy + -eye.z * mzz;</b>
+<i>1119</i>&nbsp;
+<b class="nc"><i>1120</i>&nbsp;        updateState();</b>
+<b class="nc"><i>1121</i>&nbsp;        return this;</b>
+<i>1122</i>&nbsp;    }
+<i>1123</i>&nbsp;
+<i>1124</i>&nbsp;    static boolean almostOne(double a) {
+<b class="fc"><i>1125</i>&nbsp;        return ((a &lt; 1+EPSILON_ABSOLUTE) &amp;&amp; (a &gt; 1-EPSILON_ABSOLUTE));</b>
+<i>1126</i>&nbsp;    }
+<i>1127</i>&nbsp;
+<i>1128</i>&nbsp;    // Round values to sane precision for printing
+<i>1129</i>&nbsp;    // Note that Math.sin(Math.PI) has an error of about 10^-16
+<i>1130</i>&nbsp;    private static double _matround(double matval) {
+<b class="nc"><i>1131</i>&nbsp;        return Math.rint(matval * 1E15) / 1E15;</b>
+<i>1132</i>&nbsp;    }
+<i>1133</i>&nbsp;
+<i>1134</i>&nbsp;    /**
+<i>1135</i>&nbsp;     * Returns a &lt;code&gt;String&lt;/code&gt; that represents the value of this
+<i>1136</i>&nbsp;     * {@link Object}.
+<i>1137</i>&nbsp;     * @return a &lt;code&gt;String&lt;/code&gt; representing the value of this
+<i>1138</i>&nbsp;     * &lt;code&gt;Object&lt;/code&gt;.
+<i>1139</i>&nbsp;     */
+<i>1140</i>&nbsp;    @Override
+<i>1141</i>&nbsp;    public String toString() {
+<b class="nc"><i>1142</i>&nbsp;        return (&quot;Affine3D[[&quot;</b>
+<b class="nc"><i>1143</i>&nbsp;                + _matround(mxx) + &quot;, &quot;</b>
+<b class="nc"><i>1144</i>&nbsp;                + _matround(mxy) + &quot;, &quot;</b>
+<b class="nc"><i>1145</i>&nbsp;                + _matround(mxz) + &quot;, &quot;</b>
+<b class="nc"><i>1146</i>&nbsp;                + _matround(mxt) + &quot;], [&quot;</b>
+<b class="nc"><i>1147</i>&nbsp;                + _matround(myx) + &quot;, &quot;</b>
+<b class="nc"><i>1148</i>&nbsp;                + _matround(myy) + &quot;, &quot;</b>
+<b class="nc"><i>1149</i>&nbsp;                + _matround(myz) + &quot;, &quot;</b>
+<b class="nc"><i>1150</i>&nbsp;                + _matround(myt) + &quot;], [&quot;</b>
+<b class="nc"><i>1151</i>&nbsp;                + _matround(mzx) + &quot;, &quot;</b>
+<b class="nc"><i>1152</i>&nbsp;                + _matround(mzy) + &quot;, &quot;</b>
+<b class="nc"><i>1153</i>&nbsp;                + _matround(mzz) + &quot;, &quot;</b>
+<b class="nc"><i>1154</i>&nbsp;                + _matround(mzt) + &quot;]]&quot;);</b>
+<i>1155</i>&nbsp;    }
+<i>1156</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2017-12-04 21:49</div>
+</div>
+</body>
+</html>

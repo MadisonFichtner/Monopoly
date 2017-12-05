@@ -1,0 +1,354 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: Robot</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.glass.ui</a> ]
+</div>
+
+<h1>Coverage Summary for Class: Robot (com.sun.glass.ui)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">Robot</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 17)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 103)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright (c) 2010, 2016, Oracle and/or its affiliates. All rights reserved.
+<i>3</i>&nbsp; * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+<i>4</i>&nbsp; *
+<i>5</i>&nbsp; *
+<i>6</i>&nbsp; *
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; *
+<i>11</i>&nbsp; *
+<i>12</i>&nbsp; *
+<i>13</i>&nbsp; *
+<i>14</i>&nbsp; *
+<i>15</i>&nbsp; *
+<i>16</i>&nbsp; *
+<i>17</i>&nbsp; *
+<i>18</i>&nbsp; *
+<i>19</i>&nbsp; *
+<i>20</i>&nbsp; *
+<i>21</i>&nbsp; *
+<i>22</i>&nbsp; *
+<i>23</i>&nbsp; *
+<i>24</i>&nbsp; */
+<i>25</i>&nbsp;package com.sun.glass.ui;
+<i>26</i>&nbsp;
+<i>27</i>&nbsp;import static com.sun.javafx.FXPermissions.CREATE_ROBOT_PERMISSION;
+<i>28</i>&nbsp;import java.lang.annotation.Native;
+<i>29</i>&nbsp;import java.nio.IntBuffer;
+<i>30</i>&nbsp;
+<i>31</i>&nbsp;public abstract class Robot {
+<i>32</i>&nbsp;
+<i>33</i>&nbsp;    @Native public static final int MOUSE_LEFT_BTN   = 1;
+<i>34</i>&nbsp;    @Native public static final int MOUSE_RIGHT_BTN  = 2;
+<i>35</i>&nbsp;    @Native public static final int MOUSE_MIDDLE_BTN = 4;
+<i>36</i>&nbsp;
+<i>37</i>&nbsp;    protected abstract void _create();
+<b class="nc"><i>38</i>&nbsp;    protected Robot() {</b>
+<i>39</i>&nbsp;        // Ensure proper permission
+<b class="nc"><i>40</i>&nbsp;        final SecurityManager sm = System.getSecurityManager();</b>
+<b class="nc"><i>41</i>&nbsp;        if (sm != null) {</b>
+<b class="nc"><i>42</i>&nbsp;            sm.checkPermission(CREATE_ROBOT_PERMISSION);</b>
+<i>43</i>&nbsp;        }
+<b class="nc"><i>44</i>&nbsp;        Application.checkEventThread();</b>
+<b class="nc"><i>45</i>&nbsp;        _create();</b>
+<b class="nc"><i>46</i>&nbsp;    }</b>
+<i>47</i>&nbsp;
+<i>48</i>&nbsp;    protected abstract void _destroy();
+<i>49</i>&nbsp;    public void destroy() {
+<b class="nc"><i>50</i>&nbsp;        Application.checkEventThread();</b>
+<b class="nc"><i>51</i>&nbsp;        _destroy();</b>
+<b class="nc"><i>52</i>&nbsp;    }</b>
+<i>53</i>&nbsp;
+<i>54</i>&nbsp;    protected abstract void _keyPress(int code);
+<i>55</i>&nbsp;    /**
+<i>56</i>&nbsp;     * Generate a key pressed event.
+<i>57</i>&nbsp;     * @param code key code for this event
+<i>58</i>&nbsp;     */
+<i>59</i>&nbsp;    public void keyPress(int code) {
+<b class="nc"><i>60</i>&nbsp;        Application.checkEventThread();</b>
+<b class="nc"><i>61</i>&nbsp;        _keyPress(code);</b>
+<b class="nc"><i>62</i>&nbsp;    }</b>
+<i>63</i>&nbsp;
+<i>64</i>&nbsp;    protected abstract void _keyRelease(int code);
+<i>65</i>&nbsp;    /**
+<i>66</i>&nbsp;     * Generate a key released event.
+<i>67</i>&nbsp;     *
+<i>68</i>&nbsp;     * @param code key code for this event
+<i>69</i>&nbsp;     */
+<i>70</i>&nbsp;    public void keyRelease(int code) {
+<b class="nc"><i>71</i>&nbsp;        Application.checkEventThread();</b>
+<b class="nc"><i>72</i>&nbsp;        _keyRelease(code);</b>
+<b class="nc"><i>73</i>&nbsp;    }</b>
+<i>74</i>&nbsp;
+<i>75</i>&nbsp;    protected abstract void _mouseMove(int x, int y);
+<i>76</i>&nbsp;    /**
+<i>77</i>&nbsp;     * Generate a mouse moved event.
+<i>78</i>&nbsp;     *
+<i>79</i>&nbsp;     * @param x screen coordinate x
+<i>80</i>&nbsp;     * @param y screen coordinate y
+<i>81</i>&nbsp;     */
+<i>82</i>&nbsp;    public void mouseMove(int x, int y) {
+<b class="nc"><i>83</i>&nbsp;        Application.checkEventThread();</b>
+<b class="nc"><i>84</i>&nbsp;        _mouseMove(x, y);</b>
+<b class="nc"><i>85</i>&nbsp;    }</b>
+<i>86</i>&nbsp;
+<i>87</i>&nbsp;    protected abstract void _mousePress(int buttons);
+<i>88</i>&nbsp;    /**
+<i>89</i>&nbsp;     * Generate a mouse press event with specified buttons mask.
+<i>90</i>&nbsp;     *
+<i>91</i>&nbsp;     * Up to 32-buttons mice are supported. Other buttons are inaccessible
+<i>92</i>&nbsp;     * by the robot. Bits 0, 1, and 2 mean LEFT, RIGHT, and MIDDLE mouse buttons
+<i>93</i>&nbsp;     * respectively.
+<i>94</i>&nbsp;     *
+<i>95</i>&nbsp;     * @param buttons buttons to have generated the event
+<i>96</i>&nbsp;     */
+<i>97</i>&nbsp;    public void mousePress(int buttons) {
+<b class="nc"><i>98</i>&nbsp;        Application.checkEventThread();</b>
+<b class="nc"><i>99</i>&nbsp;        _mousePress(buttons);</b>
+<b class="nc"><i>100</i>&nbsp;    }</b>
+<i>101</i>&nbsp;
+<i>102</i>&nbsp;    protected abstract void _mouseRelease(int buttons);
+<i>103</i>&nbsp;    /**
+<i>104</i>&nbsp;     * Generate a mouse release event with specified buttons mask.
+<i>105</i>&nbsp;     *
+<i>106</i>&nbsp;     * @param buttons buttons to have generated the event
+<i>107</i>&nbsp;     */
+<i>108</i>&nbsp;    public void mouseRelease(int buttons) {
+<b class="nc"><i>109</i>&nbsp;        Application.checkEventThread();</b>
+<b class="nc"><i>110</i>&nbsp;        _mouseRelease(buttons);</b>
+<b class="nc"><i>111</i>&nbsp;    }</b>
+<i>112</i>&nbsp;
+<i>113</i>&nbsp;    protected abstract void _mouseWheel(int wheelAmt);
+<i>114</i>&nbsp;    /**
+<i>115</i>&nbsp;     * Generate a mouse wheel event.
+<i>116</i>&nbsp;     *
+<i>117</i>&nbsp;     * @param wheelAmt amount the wheel has turned of wheel turning
+<i>118</i>&nbsp;     */
+<i>119</i>&nbsp;    public void mouseWheel(int wheelAmt) {
+<b class="nc"><i>120</i>&nbsp;        Application.checkEventThread();</b>
+<b class="nc"><i>121</i>&nbsp;        _mouseWheel(wheelAmt);</b>
+<b class="nc"><i>122</i>&nbsp;    }</b>
+<i>123</i>&nbsp;
+<i>124</i>&nbsp;    protected abstract int _getMouseX();
+<i>125</i>&nbsp;    public int getMouseX() {
+<b class="nc"><i>126</i>&nbsp;        Application.checkEventThread();</b>
+<b class="nc"><i>127</i>&nbsp;        return _getMouseX();</b>
+<i>128</i>&nbsp;    }
+<i>129</i>&nbsp;
+<i>130</i>&nbsp;    protected abstract int _getMouseY();
+<i>131</i>&nbsp;    public int getMouseY() {
+<b class="nc"><i>132</i>&nbsp;        Application.checkEventThread();</b>
+<b class="nc"><i>133</i>&nbsp;        return _getMouseY();</b>
+<i>134</i>&nbsp;    }
+<i>135</i>&nbsp;
+<i>136</i>&nbsp;    protected abstract int _getPixelColor(int x, int y);
+<i>137</i>&nbsp;    /**
+<i>138</i>&nbsp;     * Returns pixel color at specified screen coordinates in IntARGB format.
+<i>139</i>&nbsp;     */
+<i>140</i>&nbsp;    public int getPixelColor(int x, int y) {
+<b class="nc"><i>141</i>&nbsp;        Application.checkEventThread();</b>
+<b class="nc"><i>142</i>&nbsp;        return _getPixelColor(x, y);</b>
+<i>143</i>&nbsp;    }
+<i>144</i>&nbsp;
+<i>145</i>&nbsp;    // Subclasses must override and implement at least one of the following two
+<i>146</i>&nbsp;    // _getScreenCapture methods
+<i>147</i>&nbsp;
+<i>148</i>&nbsp;    protected void _getScreenCapture(int x, int y, int width, int height, int[] data) {
+<b class="nc"><i>149</i>&nbsp;        throw new UnsupportedOperationException(&quot;Not implementated in the base class&quot;);</b>
+<i>150</i>&nbsp;    }
+<i>151</i>&nbsp;
+<i>152</i>&nbsp;    protected Pixels _getScreenCapture(int x, int y, int width, int height, boolean isHiDPI) {
+<b class="nc"><i>153</i>&nbsp;        Screen mainScreen = Screen.getMainScreen();</b>
+<b class="nc"><i>154</i>&nbsp;        float uiScaleX = mainScreen.getPlatformScaleX();</b>
+<b class="nc"><i>155</i>&nbsp;        float uiScaleY = mainScreen.getPlatformScaleY();</b>
+<i>156</i>&nbsp;        int data[];
+<i>157</i>&nbsp;        int dw, dh;
+<b class="nc"><i>158</i>&nbsp;        if (uiScaleX == 1.0f &amp;&amp; uiScaleY == 1.0f) {</b>
+<b class="nc"><i>159</i>&nbsp;            data = new int[width * height];</b>
+<b class="nc"><i>160</i>&nbsp;            _getScreenCapture(x, y, width, height, data);</b>
+<b class="nc"><i>161</i>&nbsp;            dw = width;</b>
+<b class="nc"><i>162</i>&nbsp;            dh = height;</b>
+<i>163</i>&nbsp;        } else {
+<b class="nc"><i>164</i>&nbsp;            int pminx = (int) Math.floor(x * uiScaleX);</b>
+<b class="nc"><i>165</i>&nbsp;            int pminy = (int) Math.floor(y * uiScaleY);</b>
+<b class="nc"><i>166</i>&nbsp;            int pmaxx = (int) Math.ceil((x + width) * uiScaleX);</b>
+<b class="nc"><i>167</i>&nbsp;            int pmaxy = (int) Math.ceil((y + height) * uiScaleY);</b>
+<b class="nc"><i>168</i>&nbsp;            int pwidth = pmaxx - pminx;</b>
+<b class="nc"><i>169</i>&nbsp;            int pheight = pmaxy - pminy;</b>
+<b class="nc"><i>170</i>&nbsp;            int tmpdata[] = new int[pwidth * pheight];</b>
+<b class="nc"><i>171</i>&nbsp;            _getScreenCapture(pminx, pminy, pwidth, pheight, tmpdata);</b>
+<b class="nc"><i>172</i>&nbsp;            if (isHiDPI) {</b>
+<b class="nc"><i>173</i>&nbsp;                data = tmpdata;</b>
+<b class="nc"><i>174</i>&nbsp;                dw = pwidth;</b>
+<b class="nc"><i>175</i>&nbsp;                dh = pheight;</b>
+<i>176</i>&nbsp;            } else {
+<b class="nc"><i>177</i>&nbsp;                data = new int[width * height];</b>
+<b class="nc"><i>178</i>&nbsp;                int index = 0;</b>
+<b class="nc"><i>179</i>&nbsp;                for (int iy = 0; iy &lt; height; iy++) {</b>
+<b class="nc"><i>180</i>&nbsp;                    float rely = ((y + iy + 0.5f) * uiScaleY) - (pminy + 0.5f);</b>
+<b class="nc"><i>181</i>&nbsp;                    int irely = (int) Math.floor(rely);</b>
+<b class="nc"><i>182</i>&nbsp;                    int fracty = (int) ((rely - irely) * 256);</b>
+<b class="nc"><i>183</i>&nbsp;                    for (int ix = 0; ix &lt; width; ix++) {</b>
+<b class="nc"><i>184</i>&nbsp;                        float relx = ((x + ix + 0.5f) * uiScaleX) - (pminx + 0.5f);</b>
+<b class="nc"><i>185</i>&nbsp;                        int irelx = (int) Math.floor(relx);</b>
+<b class="nc"><i>186</i>&nbsp;                        int fractx = (int) ((relx - irelx) * 256);</b>
+<b class="nc"><i>187</i>&nbsp;                        data[index++] =</b>
+<b class="nc"><i>188</i>&nbsp;                            interp(tmpdata, irelx, irely, pwidth, pheight, fractx, fracty);</b>
+<i>189</i>&nbsp;                    }
+<i>190</i>&nbsp;                }
+<b class="nc"><i>191</i>&nbsp;                dw = width;</b>
+<b class="nc"><i>192</i>&nbsp;                dh = height;</b>
+<i>193</i>&nbsp;            }
+<i>194</i>&nbsp;        }
+<b class="nc"><i>195</i>&nbsp;        return Application.GetApplication().createPixels(dw, dh, IntBuffer.wrap(data));</b>
+<i>196</i>&nbsp;    }
+<i>197</i>&nbsp;
+<i>198</i>&nbsp;    /**
+<i>199</i>&nbsp;     * Returns a capture of the specified rectangular area of the screen.
+<i>200</i>&nbsp;     *
+<i>201</i>&nbsp;     * If {@code isHiDPI} argument is {@code true}, the returned Pixels object
+<i>202</i>&nbsp;     * dimensions may differ from the requested {@code width} and {@code
+<i>203</i>&nbsp;     * height} depending on how many physical pixels the area occupies on the
+<i>204</i>&nbsp;     * screen.  E.g. in HiDPI mode on the Mac (aka Retina display) the pixels
+<i>205</i>&nbsp;     * are doubled, and thus a screen capture of an area of size (10x10) pixels
+<i>206</i>&nbsp;     * will result in a Pixels object with dimensions (20x20). Calling code
+<i>207</i>&nbsp;     * should use the returned objects&#39;s getWidth() and getHeight() methods
+<i>208</i>&nbsp;     * to determine the image size.
+<i>209</i>&nbsp;     *
+<i>210</i>&nbsp;     * If (@code isHiDPI) is {@code false}, the returned Pixels object is of
+<i>211</i>&nbsp;     * the requested size. Note that in this case the image may be scaled in
+<i>212</i>&nbsp;     * order to fit to the requested dimensions if running on a HiDPI display.
+<i>213</i>&nbsp;     */
+<i>214</i>&nbsp;    public Pixels getScreenCapture(int x, int y, int width, int height, boolean isHiDPI) {
+<b class="nc"><i>215</i>&nbsp;        Application.checkEventThread();</b>
+<b class="nc"><i>216</i>&nbsp;        return _getScreenCapture(x, y, width, height, isHiDPI);</b>
+<i>217</i>&nbsp;    }
+<i>218</i>&nbsp;
+<i>219</i>&nbsp;    /**
+<i>220</i>&nbsp;     * Returns a capture of the specified area of the screen.
+<i>221</i>&nbsp;     * It is equivalent to calling getScreenCapture(x, y, width, height, false),
+<i>222</i>&nbsp;     * i.e. this method takes a &quot;LowDPI&quot; screen shot.
+<i>223</i>&nbsp;     */
+<i>224</i>&nbsp;    public Pixels getScreenCapture(int x, int y, int width, int height) {
+<b class="nc"><i>225</i>&nbsp;        return getScreenCapture(x, y, width, height, false);</b>
+<i>226</i>&nbsp;    }
+<i>227</i>&nbsp;
+<i>228</i>&nbsp;    private static int interp(int pixels[], int x, int y, int w, int h, int fractx1, int fracty1) {
+<b class="nc"><i>229</i>&nbsp;        int fractx0 = 256 - fractx1;</b>
+<b class="nc"><i>230</i>&nbsp;        int fracty0 = 256 - fracty1;</b>
+<b class="nc"><i>231</i>&nbsp;        int i = y * w + x;</b>
+<b class="nc"><i>232</i>&nbsp;        int rgb00 = (x &lt; 0 || y &lt; 0 || x &gt;= w || y &gt;= h) ? 0 : pixels[i];</b>
+<b class="nc"><i>233</i>&nbsp;        if (fracty1 == 0) {</b>
+<i>234</i>&nbsp;            // No interplation with pixels[y+1]
+<b class="nc"><i>235</i>&nbsp;            if (fractx1 == 0) {</b>
+<i>236</i>&nbsp;                // No interpolation with any neighbors
+<b class="nc"><i>237</i>&nbsp;                return rgb00;</b>
+<i>238</i>&nbsp;            }
+<b class="nc"><i>239</i>&nbsp;            int rgb10 = (y &lt; 0 || x+1 &gt;= w || y &gt;= h) ? 0 : pixels[i+1];</b>
+<b class="nc"><i>240</i>&nbsp;            return interp(rgb00, rgb10, fractx0, fractx1);</b>
+<b class="nc"><i>241</i>&nbsp;        } else if (fractx1 == 0) {</b>
+<i>242</i>&nbsp;            // No interpolation with pixels[x+1]
+<b class="nc"><i>243</i>&nbsp;            int rgb01 = (x &lt; 0 || x &gt;= w || y+1 &gt;= h) ? 0 : pixels[i+w];</b>
+<b class="nc"><i>244</i>&nbsp;            return interp(rgb00, rgb01, fracty0, fracty1);</b>
+<i>245</i>&nbsp;        } else {
+<i>246</i>&nbsp;            // All 4 neighbors must be interpolated
+<b class="nc"><i>247</i>&nbsp;            int rgb10 = (y &lt; 0 || x+1 &gt;= w || y &gt;= h) ? 0 : pixels[i+1];</b>
+<b class="nc"><i>248</i>&nbsp;            int rgb01 = (x &lt; 0 || x &gt;= w || y+1 &gt;= h) ? 0 : pixels[i+w];</b>
+<b class="nc"><i>249</i>&nbsp;            int rgb11 = (x+1 &gt;= w || y+1 &gt;= h) ? 0 : pixels[i+w+1];</b>
+<b class="nc"><i>250</i>&nbsp;            return interp(interp(rgb00, rgb10, fractx0, fractx1),</b>
+<b class="nc"><i>251</i>&nbsp;                          interp(rgb01, rgb11, fractx0, fractx1),</b>
+<i>252</i>&nbsp;                          fracty0, fracty1);
+<i>253</i>&nbsp;        }
+<i>254</i>&nbsp;    }
+<i>255</i>&nbsp;
+<i>256</i>&nbsp;    private static int interp(int rgb0, int rgb1, int fract0, int fract1) {
+<b class="nc"><i>257</i>&nbsp;        int a0 = (rgb0 &gt;&gt; 24) &amp; 0xff;</b>
+<b class="nc"><i>258</i>&nbsp;        int r0 = (rgb0 &gt;&gt; 16) &amp; 0xff;</b>
+<b class="nc"><i>259</i>&nbsp;        int g0 = (rgb0 &gt;&gt;  8) &amp; 0xff;</b>
+<b class="nc"><i>260</i>&nbsp;        int b0 = (rgb0      ) &amp; 0xff;</b>
+<b class="nc"><i>261</i>&nbsp;        int a1 = (rgb1 &gt;&gt; 24) &amp; 0xff;</b>
+<b class="nc"><i>262</i>&nbsp;        int r1 = (rgb1 &gt;&gt; 16) &amp; 0xff;</b>
+<b class="nc"><i>263</i>&nbsp;        int g1 = (rgb1 &gt;&gt;  8) &amp; 0xff;</b>
+<b class="nc"><i>264</i>&nbsp;        int b1 = (rgb1      ) &amp; 0xff;</b>
+<b class="nc"><i>265</i>&nbsp;        int a = (a0 * fract0 + a1 * fract1) &gt;&gt; 8;</b>
+<b class="nc"><i>266</i>&nbsp;        int r = (r0 * fract0 + r1 * fract1) &gt;&gt; 8;</b>
+<b class="nc"><i>267</i>&nbsp;        int g = (g0 * fract0 + g1 * fract1) &gt;&gt; 8;</b>
+<b class="nc"><i>268</i>&nbsp;        int b = (b0 * fract0 + b1 * fract1) &gt;&gt; 8;</b>
+<b class="nc"><i>269</i>&nbsp;        return (a &lt;&lt; 24) | (r &lt;&lt; 16) | (g &lt;&lt; 8) | b;</b>
+<i>270</i>&nbsp;    }
+<i>271</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2017-12-04 21:49</div>
+</div>
+</body>
+</html>

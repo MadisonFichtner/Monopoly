@@ -1,0 +1,263 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: Graphics</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.prism</a> ]
+</div>
+
+<h1>Coverage Summary for Class: Graphics (com.sun.prism)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+</tr>
+<tr>
+  <td class="name">Graphics</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright (c) 2009, 2016, Oracle and/or its affiliates. All rights reserved.
+<i>3</i>&nbsp; * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+<i>4</i>&nbsp; *
+<i>5</i>&nbsp; *
+<i>6</i>&nbsp; *
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; *
+<i>11</i>&nbsp; *
+<i>12</i>&nbsp; *
+<i>13</i>&nbsp; *
+<i>14</i>&nbsp; *
+<i>15</i>&nbsp; *
+<i>16</i>&nbsp; *
+<i>17</i>&nbsp; *
+<i>18</i>&nbsp; *
+<i>19</i>&nbsp; *
+<i>20</i>&nbsp; *
+<i>21</i>&nbsp; *
+<i>22</i>&nbsp; *
+<i>23</i>&nbsp; *
+<i>24</i>&nbsp; */
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;package com.sun.prism;
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;import com.sun.glass.ui.Screen;
+<i>29</i>&nbsp;import com.sun.javafx.font.FontStrike;
+<i>30</i>&nbsp;import com.sun.javafx.geom.RectBounds;
+<i>31</i>&nbsp;import com.sun.javafx.geom.Rectangle;
+<i>32</i>&nbsp;import com.sun.javafx.geom.Shape;
+<i>33</i>&nbsp;import com.sun.javafx.geom.transform.BaseTransform;
+<i>34</i>&nbsp;import com.sun.javafx.scene.text.GlyphList;
+<i>35</i>&nbsp;import com.sun.javafx.sg.prism.NGCamera;
+<i>36</i>&nbsp;import com.sun.javafx.sg.prism.NGLightBase;
+<i>37</i>&nbsp;import com.sun.javafx.sg.prism.NodePath;
+<i>38</i>&nbsp;import com.sun.prism.paint.Color;
+<i>39</i>&nbsp;import com.sun.prism.paint.Paint;
+<i>40</i>&nbsp;
+<i>41</i>&nbsp;/**
+<i>42</i>&nbsp; *
+<i>43</i>&nbsp; */
+<i>44</i>&nbsp;public interface Graphics {
+<i>45</i>&nbsp;
+<i>46</i>&nbsp;    public BaseTransform getTransformNoClone();
+<i>47</i>&nbsp;    public void setTransform(BaseTransform xform);
+<i>48</i>&nbsp;    public void setTransform(double m00, double m10,
+<i>49</i>&nbsp;                             double m01, double m11,
+<i>50</i>&nbsp;                             double m02, double m12);
+<i>51</i>&nbsp;    public void setTransform3D(double mxx, double mxy, double mxz, double mxt,
+<i>52</i>&nbsp;                               double myx, double myy, double myz, double myt,
+<i>53</i>&nbsp;                               double mzx, double mzy, double mzz, double mzt);
+<i>54</i>&nbsp;    public void transform(BaseTransform xform);
+<i>55</i>&nbsp;    public void translate(float tx, float ty);
+<i>56</i>&nbsp;    public void translate(float tx, float ty, float tz);
+<i>57</i>&nbsp;    public void scale(float sx, float sy);
+<i>58</i>&nbsp;    public void scale(float sx, float sy, float sz);
+<i>59</i>&nbsp;
+<i>60</i>&nbsp;    public void setCamera(NGCamera camera);
+<i>61</i>&nbsp;    public NGCamera getCameraNoClone();
+<i>62</i>&nbsp;    public void setDepthTest(boolean depthTest);
+<i>63</i>&nbsp;    public boolean isDepthTest();
+<i>64</i>&nbsp;    public void setDepthBuffer(boolean depthBuffer);
+<i>65</i>&nbsp;    public boolean isDepthBuffer();
+<i>66</i>&nbsp;    public boolean isAlphaTestShader();
+<i>67</i>&nbsp;    public void setAntialiasedShape(boolean aa);
+<i>68</i>&nbsp;    public boolean isAntialiasedShape();
+<i>69</i>&nbsp;    public RectBounds getFinalClipNoClone();
+<i>70</i>&nbsp;    public Rectangle getClipRect();
+<i>71</i>&nbsp;    public Rectangle getClipRectNoClone();
+<i>72</i>&nbsp;    public void setHasPreCullingBits(boolean hasBits);
+<i>73</i>&nbsp;    public boolean hasPreCullingBits();
+<i>74</i>&nbsp;    public void setClipRect(Rectangle clipRect);
+<i>75</i>&nbsp;    public void setClipRectIndex(int index);
+<i>76</i>&nbsp;    public int getClipRectIndex();
+<i>77</i>&nbsp;    public float getExtraAlpha();
+<i>78</i>&nbsp;    public void setExtraAlpha(float extraAlpha);
+<i>79</i>&nbsp;    public void setLights(NGLightBase[] lights);
+<i>80</i>&nbsp;    public NGLightBase[] getLights();
+<i>81</i>&nbsp;    public Paint getPaint();
+<i>82</i>&nbsp;    public void setPaint(Paint paint);
+<i>83</i>&nbsp;    public BasicStroke getStroke();
+<i>84</i>&nbsp;    public void setStroke(BasicStroke stroke);
+<i>85</i>&nbsp;    public void setCompositeMode(CompositeMode mode);
+<i>86</i>&nbsp;    public CompositeMode getCompositeMode();
+<i>87</i>&nbsp;
+<i>88</i>&nbsp;    /**
+<i>89</i>&nbsp;     * Clears the current {@code RenderTarget} with transparent pixels.
+<i>90</i>&nbsp;     * Note that this operation is affected by the current clip rectangle,
+<i>91</i>&nbsp;     * if set.  To clear the entire surface, call {@code setClipRect(null)}
+<i>92</i>&nbsp;     * prior to calling {@code clear()}.
+<i>93</i>&nbsp;     * &lt;p&gt;
+<i>94</i>&nbsp;     * This is equivalent to calling:
+<i>95</i>&nbsp;     * &lt;code&gt;
+<i>96</i>&nbsp;     * &lt;pre&gt;
+<i>97</i>&nbsp;     *     clear(Color.TRANSPARENT);
+<i>98</i>&nbsp;     * &lt;/pre&gt;
+<i>99</i>&nbsp;     * &lt;/code&gt;
+<i>100</i>&nbsp;     */
+<i>101</i>&nbsp;    public void clear();
+<i>102</i>&nbsp;    /**
+<i>103</i>&nbsp;     * Clears the current {@code RenderTarget} with the given {@code Color}.
+<i>104</i>&nbsp;     * Note that this operation is affected by the current clip rectangle,
+<i>105</i>&nbsp;     * if set.  To clear the entire surface, call {@code setClipRect(null)}
+<i>106</i>&nbsp;     * prior to calling {@code clear()}.
+<i>107</i>&nbsp;     */
+<i>108</i>&nbsp;    public void clear(Color color);
+<i>109</i>&nbsp;    /**
+<i>110</i>&nbsp;     * Clears the region represented by the given quad with transparent pixels.
+<i>111</i>&nbsp;     * Note that this operation is affected by the current clip rectangle,
+<i>112</i>&nbsp;     * if set, as well as the current transform (the quad is specified in
+<i>113</i>&nbsp;     * user space).  Also note that unlike the {@code clear()} methods, this
+<i>114</i>&nbsp;     * method does not attempt to clear the depth buffer.
+<i>115</i>&nbsp;     */
+<i>116</i>&nbsp;    public void clearQuad(float x1, float y1, float x2, float y2);
+<i>117</i>&nbsp;
+<i>118</i>&nbsp;    public void fill(Shape shape);
+<i>119</i>&nbsp;    public void fillQuad(float x1, float y1, float x2, float y2);
+<i>120</i>&nbsp;    public void fillRect(float x, float y, float width, float height);
+<i>121</i>&nbsp;    public void fillRoundRect(float x, float y, float width, float height, float arcw, float arch);
+<i>122</i>&nbsp;    public void fillEllipse(float x, float y, float width, float height);
+<i>123</i>&nbsp;    public void draw(Shape shape);
+<i>124</i>&nbsp;    public void drawLine(float x1, float y1, float x2, float y2);
+<i>125</i>&nbsp;    public void drawRect(float x, float y, float width, float height);
+<i>126</i>&nbsp;    public void drawRoundRect(float x, float y, float width, float height, float arcw, float arch);
+<i>127</i>&nbsp;    public void drawEllipse(float x, float y, float width, float height);
+<i>128</i>&nbsp;
+<i>129</i>&nbsp;    /**
+<i>130</i>&nbsp;     * Set the node bounds for any node that would like to render objects of a
+<i>131</i>&nbsp;     * different size to self.
+<i>132</i>&nbsp;     *
+<i>133</i>&nbsp;     * This is useful for proportional paints, where by definition proportional
+<i>134</i>&nbsp;     * paint should be stretched across node bounds to which it has been
+<i>135</i>&nbsp;     * applied.
+<i>136</i>&nbsp;     *
+<i>137</i>&nbsp;     * In most cases nodes/shapes are rendered in a single draw call, and if
+<i>138</i>&nbsp;     * needed bounds can be determined by inspecting object to be drawn.
+<i>139</i>&nbsp;     * However not all nodes are so simple, NGText for example can have
+<i>140</i>&nbsp;     * hundreds of Graphics.drawString(...), draw(...), and fill(...) calls per
+<i>141</i>&nbsp;     * a single NGText.renderContent().
+<i>142</i>&nbsp;     *
+<i>143</i>&nbsp;     * Use: Before making several draw calls from a single node,
+<i>144</i>&nbsp;     * setNodeBounds(bounds), when complete invalidate nodeBounds by
+<i>145</i>&nbsp;     * setNodeBounds(null).
+<i>146</i>&nbsp;     *
+<i>147</i>&nbsp;     * @param bounds should not include node transform
+<i>148</i>&nbsp;     */
+<i>149</i>&nbsp;    public void setNodeBounds(RectBounds bounds);
+<i>150</i>&nbsp;    public void drawString(GlyphList gl, FontStrike strike, float x, float y,
+<i>151</i>&nbsp;                           Color selectColor, int selectStart, int selectEnd);
+<i>152</i>&nbsp;
+<i>153</i>&nbsp;    public void blit(RTTexture srcTex, RTTexture dstTex,
+<i>154</i>&nbsp;                     int srcX0, int srcY0, int srcX1, int srcY1,
+<i>155</i>&nbsp;                     int dstX0, int dstY0, int dstX1, int dstY1);
+<i>156</i>&nbsp;    public void drawTexture(Texture tex, float x, float y, float w, float h);
+<i>157</i>&nbsp;    public void drawTexture(Texture tex,
+<i>158</i>&nbsp;                            float dx1, float dy1, float dx2, float dy2,
+<i>159</i>&nbsp;                            float sx1, float sy1, float sx2, float sy2);
+<i>160</i>&nbsp;    public void drawTexture3SliceH(Texture tex,
+<i>161</i>&nbsp;                                   float dx1, float dy1, float dx2, float dy2,
+<i>162</i>&nbsp;                                   float sx1, float sy1, float sx2, float sy2,
+<i>163</i>&nbsp;                                   float dh1, float dh2, float sh1, float sh2);
+<i>164</i>&nbsp;    public void drawTexture3SliceV(Texture tex,
+<i>165</i>&nbsp;                                   float dx1, float dy1, float dx2, float dy2,
+<i>166</i>&nbsp;                                   float sx1, float sy1, float sx2, float sy2,
+<i>167</i>&nbsp;                                   float dv1, float dv2, float sv1, float sv2);
+<i>168</i>&nbsp;    public void drawTexture9Slice(Texture tex,
+<i>169</i>&nbsp;                                  float dx1, float dy1, float dx2, float dy2,
+<i>170</i>&nbsp;                                  float sx1, float sy1, float sx2, float sy2,
+<i>171</i>&nbsp;                                  float dh1, float dv1, float dh2, float dv2,
+<i>172</i>&nbsp;                                  float sh1, float sv1, float sh2, float sv2);
+<i>173</i>&nbsp;    public void drawTextureVO(Texture tex,
+<i>174</i>&nbsp;                              float topopacity, float botopacity,
+<i>175</i>&nbsp;                              float dx1, float dy1, float dx2, float dy2,
+<i>176</i>&nbsp;                              float sx1, float sy1, float sx2, float sy2);
+<i>177</i>&nbsp;    public void drawTextureRaw(Texture tex,
+<i>178</i>&nbsp;                               float dx1, float dy1, float dx2, float dy2,
+<i>179</i>&nbsp;                               float tx1, float ty1, float tx2, float ty2);
+<i>180</i>&nbsp;    public void drawMappedTextureRaw(Texture tex,
+<i>181</i>&nbsp;                                     float dx1, float dy1, float dx2, float dy2,
+<i>182</i>&nbsp;                                     float tx11, float ty11, float tx21, float ty21,
+<i>183</i>&nbsp;                                     float tx12, float ty12, float tx22, float ty22);
+<i>184</i>&nbsp;
+<i>185</i>&nbsp;    /**
+<i>186</i>&nbsp;     * Synchronize, or flush, any outstanding rendering operations to the
+<i>187</i>&nbsp;     * destination in preparation for some caller potentially reusing or
+<i>188</i>&nbsp;     * disposing a resource that has been used as the source of a recently
+<i>189</i>&nbsp;     * invoked rendering operation.
+<i>190</i>&nbsp;     *
+<i>191</i>&nbsp;     * This method does not (yet?) guarantee that the actual pixels in the
+<i>192</i>&nbsp;     * destination will be updated - it simply guarantees that no currently
+<i>193</i>&nbsp;     * buffered rendering will depend on any texture data included by
+<i>194</i>&nbsp;     * reference.  The typical usage is before a {@code Texture} disposal
+<i>195</i>&nbsp;     * or &quot;return to texture cache pool&quot; operation.
+<i>196</i>&nbsp;     */
+<i>197</i>&nbsp;    public void sync();
+<i>198</i>&nbsp;
+<i>199</i>&nbsp;    public Screen getAssociatedScreen();
+<i>200</i>&nbsp;    public ResourceFactory getResourceFactory();
+<i>201</i>&nbsp;    public RenderTarget getRenderTarget();
+<i>202</i>&nbsp;
+<i>203</i>&nbsp;    public void setRenderRoot(NodePath root);
+<i>204</i>&nbsp;    public NodePath getRenderRoot();
+<i>205</i>&nbsp;
+<i>206</i>&nbsp;    public void setState3D(boolean flag);
+<i>207</i>&nbsp;    public boolean isState3D();
+<i>208</i>&nbsp;
+<i>209</i>&nbsp;    // TODO: 3D Get better name, and may want to move this into node render method.
+<i>210</i>&nbsp;    // TODO this is dangerous, must be called *after* setState3D is called, or it won&#39;t work
+<i>211</i>&nbsp;    public void setup3DRendering();
+<i>212</i>&nbsp;
+<i>213</i>&nbsp;    public void setPixelScaleFactors(float pixelScaleX, float pixelScaleY);
+<i>214</i>&nbsp;    public float getPixelScaleFactorX();
+<i>215</i>&nbsp;    public float getPixelScaleFactorY();
+<i>216</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2017-12-04 21:49</div>
+</div>
+</body>
+</html>

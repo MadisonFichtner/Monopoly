@@ -1,0 +1,866 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: EventHandlerProperties</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.javafx.scene</a> ]
+</div>
+
+<h1>Coverage Summary for Class: EventHandlerProperties (com.sun.javafx.scene)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">EventHandlerProperties</td>
+<td class="coverageStat">
+  <span class="percent">
+    6.2%
+  </span>
+  <span class="absValue">
+    (5/ 80)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    7.4%
+  </span>
+  <span class="absValue">
+    (12/ 162)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">EventHandlerProperties$EventHandlerProperty</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (2/ 2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (6/ 6)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    8.5%
+  </span>
+  <span class="absValue">
+    (7/ 82)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    10.7%
+  </span>
+  <span class="absValue">
+    (18/ 168)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright (c) 2011, 2013, Oracle and/or its affiliates. All rights reserved.
+<i>3</i>&nbsp; * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+<i>4</i>&nbsp; *
+<i>5</i>&nbsp; *
+<i>6</i>&nbsp; *
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; *
+<i>11</i>&nbsp; *
+<i>12</i>&nbsp; *
+<i>13</i>&nbsp; *
+<i>14</i>&nbsp; *
+<i>15</i>&nbsp; *
+<i>16</i>&nbsp; *
+<i>17</i>&nbsp; *
+<i>18</i>&nbsp; *
+<i>19</i>&nbsp; *
+<i>20</i>&nbsp; *
+<i>21</i>&nbsp; *
+<i>22</i>&nbsp; *
+<i>23</i>&nbsp; *
+<i>24</i>&nbsp; */
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;package com.sun.javafx.scene;
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;import javafx.beans.property.ObjectProperty;
+<i>29</i>&nbsp;import javafx.beans.property.SimpleObjectProperty;
+<i>30</i>&nbsp;import javafx.event.Event;
+<i>31</i>&nbsp;import javafx.event.EventHandler;
+<i>32</i>&nbsp;import javafx.event.EventType;
+<i>33</i>&nbsp;import javafx.scene.input.ContextMenuEvent;
+<i>34</i>&nbsp;import javafx.scene.input.DragEvent;
+<i>35</i>&nbsp;import javafx.scene.input.InputMethodEvent;
+<i>36</i>&nbsp;import javafx.scene.input.KeyEvent;
+<i>37</i>&nbsp;import javafx.scene.input.MouseEvent;
+<i>38</i>&nbsp;
+<i>39</i>&nbsp;import com.sun.javafx.event.EventHandlerManager;
+<i>40</i>&nbsp;import javafx.scene.input.MouseDragEvent;
+<i>41</i>&nbsp;import javafx.scene.input.RotateEvent;
+<i>42</i>&nbsp;import javafx.scene.input.ScrollEvent;
+<i>43</i>&nbsp;import javafx.scene.input.SwipeEvent;
+<i>44</i>&nbsp;import javafx.scene.input.TouchEvent;
+<i>45</i>&nbsp;import javafx.scene.input.ZoomEvent;
+<i>46</i>&nbsp;
+<b class="fc"><i>47</i>&nbsp;public final class EventHandlerProperties {</b>
+<i>48</i>&nbsp;    private final EventHandlerManager eventDispatcher;
+<i>49</i>&nbsp;    private final Object bean;
+<i>50</i>&nbsp;
+<i>51</i>&nbsp;    public EventHandlerProperties(
+<i>52</i>&nbsp;            final EventHandlerManager eventDispatcher,
+<b class="fc"><i>53</i>&nbsp;            final Object bean) {</b>
+<b class="fc"><i>54</i>&nbsp;        this.eventDispatcher = eventDispatcher;</b>
+<b class="fc"><i>55</i>&nbsp;        this.bean = bean;</b>
+<b class="fc"><i>56</i>&nbsp;    }</b>
+<i>57</i>&nbsp;
+<i>58</i>&nbsp;    private EventHandlerProperty&lt;ContextMenuEvent&gt; onMenuContextRequested;
+<i>59</i>&nbsp;
+<i>60</i>&nbsp;    public final EventHandler&lt;? super ContextMenuEvent&gt; onContextMenuRequested() {
+<b class="nc"><i>61</i>&nbsp;        return (onMenuContextRequested == null) ? null : onMenuContextRequested.get();</b>
+<i>62</i>&nbsp;    }
+<i>63</i>&nbsp;
+<i>64</i>&nbsp;    public ObjectProperty&lt;EventHandler&lt;? super ContextMenuEvent&gt;&gt;
+<i>65</i>&nbsp;            onContextMenuRequestedProperty() {
+<b class="nc"><i>66</i>&nbsp;        if (onMenuContextRequested == null) {</b>
+<b class="nc"><i>67</i>&nbsp;            onMenuContextRequested = new EventHandlerProperty&lt;ContextMenuEvent&gt;(</b>
+<i>68</i>&nbsp;                                    bean,
+<i>69</i>&nbsp;                                    &quot;onMenuContextRequested&quot;,
+<i>70</i>&nbsp;                                    ContextMenuEvent.CONTEXT_MENU_REQUESTED);
+<i>71</i>&nbsp;        }
+<b class="nc"><i>72</i>&nbsp;        return onMenuContextRequested;</b>
+<i>73</i>&nbsp;    }
+<i>74</i>&nbsp;
+<i>75</i>&nbsp;    private EventHandlerProperty&lt;MouseEvent&gt; onMouseClicked;
+<i>76</i>&nbsp;
+<i>77</i>&nbsp;    public final EventHandler&lt;? super MouseEvent&gt; getOnMouseClicked() {
+<b class="nc"><i>78</i>&nbsp;        return (onMouseClicked == null) ? null : onMouseClicked.get();</b>
+<i>79</i>&nbsp;    }
+<i>80</i>&nbsp;
+<i>81</i>&nbsp;    public ObjectProperty&lt;EventHandler&lt;? super MouseEvent&gt;&gt;
+<i>82</i>&nbsp;            onMouseClickedProperty() {
+<b class="nc"><i>83</i>&nbsp;        if (onMouseClicked == null) {</b>
+<b class="nc"><i>84</i>&nbsp;            onMouseClicked = new EventHandlerProperty&lt;MouseEvent&gt;(</b>
+<i>85</i>&nbsp;                                     bean,
+<i>86</i>&nbsp;                                     &quot;onMouseClicked&quot;,
+<i>87</i>&nbsp;                                     MouseEvent.MOUSE_CLICKED);
+<i>88</i>&nbsp;        }
+<b class="nc"><i>89</i>&nbsp;        return onMouseClicked;</b>
+<i>90</i>&nbsp;    }
+<i>91</i>&nbsp;
+<i>92</i>&nbsp;    private EventHandlerProperty&lt;MouseEvent&gt; onMouseDragged;
+<i>93</i>&nbsp;
+<i>94</i>&nbsp;    public final EventHandler&lt;? super MouseEvent&gt; getOnMouseDragged() {
+<b class="nc"><i>95</i>&nbsp;        return (onMouseDragged == null) ? null : onMouseDragged.get();</b>
+<i>96</i>&nbsp;    }
+<i>97</i>&nbsp;
+<i>98</i>&nbsp;    public ObjectProperty&lt;EventHandler&lt;? super MouseEvent&gt;&gt;
+<i>99</i>&nbsp;            onMouseDraggedProperty() {
+<b class="nc"><i>100</i>&nbsp;        if (onMouseDragged == null) {</b>
+<b class="nc"><i>101</i>&nbsp;            onMouseDragged = new EventHandlerProperty&lt;MouseEvent&gt;(</b>
+<i>102</i>&nbsp;                                     bean,
+<i>103</i>&nbsp;                                     &quot;onMouseDragged&quot;,
+<i>104</i>&nbsp;                                     MouseEvent.MOUSE_DRAGGED);
+<i>105</i>&nbsp;        }
+<b class="nc"><i>106</i>&nbsp;        return onMouseDragged;</b>
+<i>107</i>&nbsp;    }
+<i>108</i>&nbsp;
+<i>109</i>&nbsp;    private EventHandlerProperty&lt;MouseEvent&gt; onMouseEntered;
+<i>110</i>&nbsp;
+<i>111</i>&nbsp;    public final EventHandler&lt;? super MouseEvent&gt; getOnMouseEntered() {
+<b class="nc"><i>112</i>&nbsp;        return (onMouseEntered == null) ? null : onMouseEntered.get();</b>
+<i>113</i>&nbsp;    }
+<i>114</i>&nbsp;
+<i>115</i>&nbsp;    public ObjectProperty&lt;EventHandler&lt;? super MouseEvent&gt;&gt;
+<i>116</i>&nbsp;            onMouseEnteredProperty() {
+<b class="nc"><i>117</i>&nbsp;        if (onMouseEntered == null) {</b>
+<b class="nc"><i>118</i>&nbsp;            onMouseEntered = new EventHandlerProperty&lt;MouseEvent&gt;(</b>
+<i>119</i>&nbsp;                                     bean,
+<i>120</i>&nbsp;                                     &quot;onMouseEntered&quot;,
+<i>121</i>&nbsp;                                     MouseEvent.MOUSE_ENTERED);
+<i>122</i>&nbsp;        }
+<b class="nc"><i>123</i>&nbsp;        return onMouseEntered;</b>
+<i>124</i>&nbsp;    }
+<i>125</i>&nbsp;
+<i>126</i>&nbsp;    private EventHandlerProperty&lt;MouseEvent&gt; onMouseExited;
+<i>127</i>&nbsp;
+<i>128</i>&nbsp;    public final EventHandler&lt;? super MouseEvent&gt; getOnMouseExited() {
+<b class="nc"><i>129</i>&nbsp;        return (onMouseExited == null) ? null : onMouseExited.get();</b>
+<i>130</i>&nbsp;    }
+<i>131</i>&nbsp;
+<i>132</i>&nbsp;    public ObjectProperty&lt;EventHandler&lt;? super MouseEvent&gt;&gt;
+<i>133</i>&nbsp;            onMouseExitedProperty() {
+<b class="nc"><i>134</i>&nbsp;        if (onMouseExited == null) {</b>
+<b class="nc"><i>135</i>&nbsp;            onMouseExited = new EventHandlerProperty&lt;MouseEvent&gt;(</b>
+<i>136</i>&nbsp;                                     bean,
+<i>137</i>&nbsp;                                     &quot;onMouseExited&quot;,
+<i>138</i>&nbsp;                                     MouseEvent.MOUSE_EXITED);
+<i>139</i>&nbsp;        }
+<b class="nc"><i>140</i>&nbsp;        return onMouseExited;</b>
+<i>141</i>&nbsp;    }
+<i>142</i>&nbsp;
+<i>143</i>&nbsp;    private EventHandlerProperty&lt;MouseEvent&gt; onMouseMoved;
+<i>144</i>&nbsp;
+<i>145</i>&nbsp;    public final EventHandler&lt;? super MouseEvent&gt; getOnMouseMoved() {
+<b class="nc"><i>146</i>&nbsp;        return (onMouseMoved == null) ? null : onMouseMoved.get();</b>
+<i>147</i>&nbsp;    }
+<i>148</i>&nbsp;
+<i>149</i>&nbsp;    public ObjectProperty&lt;EventHandler&lt;? super MouseEvent&gt;&gt;
+<i>150</i>&nbsp;            onMouseMovedProperty() {
+<b class="nc"><i>151</i>&nbsp;        if (onMouseMoved == null) {</b>
+<b class="nc"><i>152</i>&nbsp;            onMouseMoved = new EventHandlerProperty&lt;MouseEvent&gt;(</b>
+<i>153</i>&nbsp;                                     bean,
+<i>154</i>&nbsp;                                     &quot;onMouseMoved&quot;,
+<i>155</i>&nbsp;                                     MouseEvent.MOUSE_MOVED);
+<i>156</i>&nbsp;        }
+<b class="nc"><i>157</i>&nbsp;        return onMouseMoved;</b>
+<i>158</i>&nbsp;    }
+<i>159</i>&nbsp;
+<i>160</i>&nbsp;    private EventHandlerProperty&lt;MouseEvent&gt; onMousePressed;
+<i>161</i>&nbsp;
+<i>162</i>&nbsp;    public final EventHandler&lt;? super MouseEvent&gt; getOnMousePressed() {
+<b class="nc"><i>163</i>&nbsp;        return (onMousePressed == null) ? null : onMousePressed.get();</b>
+<i>164</i>&nbsp;    }
+<i>165</i>&nbsp;
+<i>166</i>&nbsp;    public ObjectProperty&lt;EventHandler&lt;? super MouseEvent&gt;&gt;
+<i>167</i>&nbsp;            onMousePressedProperty() {
+<b class="nc"><i>168</i>&nbsp;        if (onMousePressed == null) {</b>
+<b class="nc"><i>169</i>&nbsp;            onMousePressed = new EventHandlerProperty&lt;MouseEvent&gt;(</b>
+<i>170</i>&nbsp;                                     bean,
+<i>171</i>&nbsp;                                     &quot;onMousePressed&quot;,
+<i>172</i>&nbsp;                                     MouseEvent.MOUSE_PRESSED);
+<i>173</i>&nbsp;        }
+<b class="nc"><i>174</i>&nbsp;        return onMousePressed;</b>
+<i>175</i>&nbsp;    }
+<i>176</i>&nbsp;
+<i>177</i>&nbsp;    private EventHandlerProperty&lt;MouseEvent&gt; onMouseReleased;
+<i>178</i>&nbsp;
+<i>179</i>&nbsp;    public final EventHandler&lt;? super MouseEvent&gt; getOnMouseReleased() {
+<b class="nc"><i>180</i>&nbsp;        return (onMouseReleased == null) ? null : onMouseReleased.get();</b>
+<i>181</i>&nbsp;    }
+<i>182</i>&nbsp;
+<i>183</i>&nbsp;    public ObjectProperty&lt;EventHandler&lt;? super MouseEvent&gt;&gt;
+<i>184</i>&nbsp;            onMouseReleasedProperty() {
+<b class="nc"><i>185</i>&nbsp;        if (onMouseReleased == null) {</b>
+<b class="nc"><i>186</i>&nbsp;            onMouseReleased = new EventHandlerProperty&lt;MouseEvent&gt;(</b>
+<i>187</i>&nbsp;                                     bean,
+<i>188</i>&nbsp;                                     &quot;onMouseReleased&quot;,
+<i>189</i>&nbsp;                                     MouseEvent.MOUSE_RELEASED);
+<i>190</i>&nbsp;        }
+<b class="nc"><i>191</i>&nbsp;        return onMouseReleased;</b>
+<i>192</i>&nbsp;    }
+<i>193</i>&nbsp;
+<i>194</i>&nbsp;    private EventHandlerProperty&lt;MouseEvent&gt; onDragDetected;
+<i>195</i>&nbsp;
+<i>196</i>&nbsp;    public final EventHandler&lt;? super MouseEvent&gt; getOnDragDetected() {
+<b class="nc"><i>197</i>&nbsp;        return (onDragDetected == null) ? null : onDragDetected.get();</b>
+<i>198</i>&nbsp;    }
+<i>199</i>&nbsp;
+<i>200</i>&nbsp;    public ObjectProperty&lt;EventHandler&lt;? super MouseEvent&gt;&gt;
+<i>201</i>&nbsp;            onDragDetectedProperty() {
+<b class="nc"><i>202</i>&nbsp;        if (onDragDetected == null) {</b>
+<b class="nc"><i>203</i>&nbsp;            onDragDetected = new EventHandlerProperty&lt;MouseEvent&gt;(</b>
+<i>204</i>&nbsp;                                     bean,
+<i>205</i>&nbsp;                                     &quot;onDragDetected&quot;,
+<i>206</i>&nbsp;                                     MouseEvent.DRAG_DETECTED);
+<i>207</i>&nbsp;        }
+<b class="nc"><i>208</i>&nbsp;        return onDragDetected;</b>
+<i>209</i>&nbsp;    }
+<i>210</i>&nbsp;
+<i>211</i>&nbsp;    private EventHandlerProperty&lt;ScrollEvent&gt; onScroll;
+<i>212</i>&nbsp;
+<i>213</i>&nbsp;    public final EventHandler&lt;? super ScrollEvent&gt; getOnScroll() {
+<b class="nc"><i>214</i>&nbsp;        return (onScroll == null) ? null : onScroll.get();</b>
+<i>215</i>&nbsp;    }
+<i>216</i>&nbsp;
+<i>217</i>&nbsp;    public ObjectProperty&lt;EventHandler&lt;? super ScrollEvent&gt;&gt;
+<i>218</i>&nbsp;            onScrollProperty() {
+<b class="nc"><i>219</i>&nbsp;        if (onScroll == null) {</b>
+<b class="nc"><i>220</i>&nbsp;            onScroll = new EventHandlerProperty&lt;ScrollEvent&gt;(</b>
+<i>221</i>&nbsp;                                     bean,
+<i>222</i>&nbsp;                                     &quot;onScroll&quot;,
+<i>223</i>&nbsp;                                     ScrollEvent.SCROLL);
+<i>224</i>&nbsp;        }
+<b class="nc"><i>225</i>&nbsp;        return onScroll;</b>
+<i>226</i>&nbsp;    }
+<i>227</i>&nbsp;
+<i>228</i>&nbsp;    private EventHandlerProperty&lt;ScrollEvent&gt; onScrollStarted;
+<i>229</i>&nbsp;
+<i>230</i>&nbsp;    public final EventHandler&lt;? super ScrollEvent&gt; getOnScrollStarted() {
+<b class="nc"><i>231</i>&nbsp;        return (onScrollStarted == null) ? null : onScrollStarted.get();</b>
+<i>232</i>&nbsp;    }
+<i>233</i>&nbsp;
+<i>234</i>&nbsp;    public ObjectProperty&lt;EventHandler&lt;? super ScrollEvent&gt;&gt;
+<i>235</i>&nbsp;            onScrollStartedProperty() {
+<b class="nc"><i>236</i>&nbsp;        if (onScrollStarted == null) {</b>
+<b class="nc"><i>237</i>&nbsp;            onScrollStarted = new EventHandlerProperty&lt;ScrollEvent&gt;(</b>
+<i>238</i>&nbsp;                                     bean,
+<i>239</i>&nbsp;                                     &quot;onScrollStarted&quot;,
+<i>240</i>&nbsp;                                     ScrollEvent.SCROLL_STARTED);
+<i>241</i>&nbsp;        }
+<b class="nc"><i>242</i>&nbsp;        return onScrollStarted;</b>
+<i>243</i>&nbsp;    }
+<i>244</i>&nbsp;
+<i>245</i>&nbsp;    private EventHandlerProperty&lt;ScrollEvent&gt; onScrollFinished;
+<i>246</i>&nbsp;
+<i>247</i>&nbsp;    public final EventHandler&lt;? super ScrollEvent&gt; getOnScrollFinished() {
+<b class="nc"><i>248</i>&nbsp;        return (onScrollFinished == null) ? null : onScrollFinished.get();</b>
+<i>249</i>&nbsp;    }
+<i>250</i>&nbsp;
+<i>251</i>&nbsp;    public ObjectProperty&lt;EventHandler&lt;? super ScrollEvent&gt;&gt;
+<i>252</i>&nbsp;            onScrollFinishedProperty() {
+<b class="nc"><i>253</i>&nbsp;        if (onScrollFinished == null) {</b>
+<b class="nc"><i>254</i>&nbsp;            onScrollFinished = new EventHandlerProperty&lt;ScrollEvent&gt;(</b>
+<i>255</i>&nbsp;                                     bean,
+<i>256</i>&nbsp;                                     &quot;onScrollFinished&quot;,
+<i>257</i>&nbsp;                                     ScrollEvent.SCROLL_FINISHED);
+<i>258</i>&nbsp;        }
+<b class="nc"><i>259</i>&nbsp;        return onScrollFinished;</b>
+<i>260</i>&nbsp;    }
+<i>261</i>&nbsp;
+<i>262</i>&nbsp;    private EventHandlerProperty&lt;RotateEvent&gt; onRotationStarted;
+<i>263</i>&nbsp;
+<i>264</i>&nbsp;    public final EventHandler&lt;? super RotateEvent&gt; getOnRotationStarted() {
+<b class="nc"><i>265</i>&nbsp;        return (onRotationStarted == null) ? null : onRotationStarted.get();</b>
+<i>266</i>&nbsp;    }
+<i>267</i>&nbsp;
+<i>268</i>&nbsp;    public ObjectProperty&lt;EventHandler&lt;? super RotateEvent&gt;&gt;
+<i>269</i>&nbsp;            onRotationStartedProperty() {
+<b class="nc"><i>270</i>&nbsp;        if (onRotationStarted == null) {</b>
+<b class="nc"><i>271</i>&nbsp;            onRotationStarted = new EventHandlerProperty&lt;RotateEvent&gt;(</b>
+<i>272</i>&nbsp;                                     bean,
+<i>273</i>&nbsp;                                     &quot;onRotationStarted&quot;,
+<i>274</i>&nbsp;                                     RotateEvent.ROTATION_STARTED);
+<i>275</i>&nbsp;        }
+<b class="nc"><i>276</i>&nbsp;        return onRotationStarted;</b>
+<i>277</i>&nbsp;    }
+<i>278</i>&nbsp;
+<i>279</i>&nbsp;    private EventHandlerProperty&lt;RotateEvent&gt; onRotate;
+<i>280</i>&nbsp;
+<i>281</i>&nbsp;    public final EventHandler&lt;? super RotateEvent&gt; getOnRotate() {
+<b class="nc"><i>282</i>&nbsp;        return (onRotate == null) ? null : onRotate.get();</b>
+<i>283</i>&nbsp;    }
+<i>284</i>&nbsp;
+<i>285</i>&nbsp;    public ObjectProperty&lt;EventHandler&lt;? super RotateEvent&gt;&gt;
+<i>286</i>&nbsp;            onRotateProperty() {
+<b class="nc"><i>287</i>&nbsp;        if (onRotate == null) {</b>
+<b class="nc"><i>288</i>&nbsp;            onRotate = new EventHandlerProperty&lt;RotateEvent&gt;(</b>
+<i>289</i>&nbsp;                                     bean,
+<i>290</i>&nbsp;                                     &quot;onRotate&quot;,
+<i>291</i>&nbsp;                                     RotateEvent.ROTATE);
+<i>292</i>&nbsp;        }
+<b class="nc"><i>293</i>&nbsp;        return onRotate;</b>
+<i>294</i>&nbsp;    }
+<i>295</i>&nbsp;
+<i>296</i>&nbsp;    private EventHandlerProperty&lt;RotateEvent&gt; onRotationFinished;
+<i>297</i>&nbsp;
+<i>298</i>&nbsp;    public final EventHandler&lt;? super RotateEvent&gt; getOnRotationFinished() {
+<b class="nc"><i>299</i>&nbsp;        return (onRotationFinished == null) ? null : onRotationFinished.get();</b>
+<i>300</i>&nbsp;    }
+<i>301</i>&nbsp;
+<i>302</i>&nbsp;    public ObjectProperty&lt;EventHandler&lt;? super RotateEvent&gt;&gt;
+<i>303</i>&nbsp;            onRotationFinishedProperty() {
+<b class="nc"><i>304</i>&nbsp;        if (onRotationFinished == null) {</b>
+<b class="nc"><i>305</i>&nbsp;            onRotationFinished = new EventHandlerProperty&lt;RotateEvent&gt;(</b>
+<i>306</i>&nbsp;                                     bean,
+<i>307</i>&nbsp;                                     &quot;onRotationFinished&quot;,
+<i>308</i>&nbsp;                                     RotateEvent.ROTATION_FINISHED);
+<i>309</i>&nbsp;        }
+<b class="nc"><i>310</i>&nbsp;        return onRotationFinished;</b>
+<i>311</i>&nbsp;    }
+<i>312</i>&nbsp;
+<i>313</i>&nbsp;    private EventHandlerProperty&lt;ZoomEvent&gt; onZoomStarted;
+<i>314</i>&nbsp;
+<i>315</i>&nbsp;    public final EventHandler&lt;? super ZoomEvent&gt; getOnZoomStarted() {
+<b class="nc"><i>316</i>&nbsp;        return (onZoomStarted == null) ? null : onZoomStarted.get();</b>
+<i>317</i>&nbsp;    }
+<i>318</i>&nbsp;
+<i>319</i>&nbsp;    public ObjectProperty&lt;EventHandler&lt;? super ZoomEvent&gt;&gt;
+<i>320</i>&nbsp;            onZoomStartedProperty() {
+<b class="nc"><i>321</i>&nbsp;        if (onZoomStarted == null) {</b>
+<b class="nc"><i>322</i>&nbsp;            onZoomStarted = new EventHandlerProperty&lt;ZoomEvent&gt;(</b>
+<i>323</i>&nbsp;                                     bean,
+<i>324</i>&nbsp;                                     &quot;onZoomStarted&quot;,
+<i>325</i>&nbsp;                                     ZoomEvent.ZOOM_STARTED);
+<i>326</i>&nbsp;        }
+<b class="nc"><i>327</i>&nbsp;        return onZoomStarted;</b>
+<i>328</i>&nbsp;    }
+<i>329</i>&nbsp;
+<i>330</i>&nbsp;    private EventHandlerProperty&lt;ZoomEvent&gt; onZoom;
+<i>331</i>&nbsp;
+<i>332</i>&nbsp;    public final EventHandler&lt;? super ZoomEvent&gt; getOnZoom() {
+<b class="nc"><i>333</i>&nbsp;        return (onZoom == null) ? null : onZoom.get();</b>
+<i>334</i>&nbsp;    }
+<i>335</i>&nbsp;
+<i>336</i>&nbsp;    public ObjectProperty&lt;EventHandler&lt;? super ZoomEvent&gt;&gt;
+<i>337</i>&nbsp;            onZoomProperty() {
+<b class="nc"><i>338</i>&nbsp;        if (onZoom == null) {</b>
+<b class="nc"><i>339</i>&nbsp;            onZoom = new EventHandlerProperty&lt;ZoomEvent&gt;(</b>
+<i>340</i>&nbsp;                                     bean,
+<i>341</i>&nbsp;                                     &quot;onZoom&quot;,
+<i>342</i>&nbsp;                                     ZoomEvent.ZOOM);
+<i>343</i>&nbsp;        }
+<b class="nc"><i>344</i>&nbsp;        return onZoom;</b>
+<i>345</i>&nbsp;    }
+<i>346</i>&nbsp;
+<i>347</i>&nbsp;    private EventHandlerProperty&lt;ZoomEvent&gt; onZoomFinished;
+<i>348</i>&nbsp;
+<i>349</i>&nbsp;    public final EventHandler&lt;? super ZoomEvent&gt; getOnZoomFinished() {
+<b class="nc"><i>350</i>&nbsp;        return (onZoomFinished == null) ? null : onZoomFinished.get();</b>
+<i>351</i>&nbsp;    }
+<i>352</i>&nbsp;
+<i>353</i>&nbsp;    public ObjectProperty&lt;EventHandler&lt;? super ZoomEvent&gt;&gt;
+<i>354</i>&nbsp;            onZoomFinishedProperty() {
+<b class="nc"><i>355</i>&nbsp;        if (onZoomFinished == null) {</b>
+<b class="nc"><i>356</i>&nbsp;            onZoomFinished = new EventHandlerProperty&lt;ZoomEvent&gt;(</b>
+<i>357</i>&nbsp;                                     bean,
+<i>358</i>&nbsp;                                     &quot;onZoomFinished&quot;,
+<i>359</i>&nbsp;                                     ZoomEvent.ZOOM_FINISHED);
+<i>360</i>&nbsp;        }
+<b class="nc"><i>361</i>&nbsp;        return onZoomFinished;</b>
+<i>362</i>&nbsp;    }
+<i>363</i>&nbsp;
+<i>364</i>&nbsp;    private EventHandlerProperty&lt;SwipeEvent&gt; onSwipeUp;
+<i>365</i>&nbsp;
+<i>366</i>&nbsp;    public final EventHandler&lt;? super SwipeEvent&gt; getOnSwipeUp() {
+<b class="nc"><i>367</i>&nbsp;        return (onSwipeUp == null) ? null : onSwipeUp.get();</b>
+<i>368</i>&nbsp;    }
+<i>369</i>&nbsp;
+<i>370</i>&nbsp;    public ObjectProperty&lt;EventHandler&lt;? super SwipeEvent&gt;&gt;
+<i>371</i>&nbsp;            onSwipeUpProperty() {
+<b class="nc"><i>372</i>&nbsp;        if (onSwipeUp == null) {</b>
+<b class="nc"><i>373</i>&nbsp;            onSwipeUp = new EventHandlerProperty&lt;SwipeEvent&gt;(</b>
+<i>374</i>&nbsp;                                     bean,
+<i>375</i>&nbsp;                                     &quot;onSwipeUp&quot;,
+<i>376</i>&nbsp;                                     SwipeEvent.SWIPE_UP);
+<i>377</i>&nbsp;        }
+<b class="nc"><i>378</i>&nbsp;        return onSwipeUp;</b>
+<i>379</i>&nbsp;    }
+<i>380</i>&nbsp;
+<i>381</i>&nbsp;    private EventHandlerProperty&lt;SwipeEvent&gt; onSwipeDown;
+<i>382</i>&nbsp;
+<i>383</i>&nbsp;    public final EventHandler&lt;? super SwipeEvent&gt; getOnSwipeDown() {
+<b class="nc"><i>384</i>&nbsp;        return (onSwipeDown == null) ? null : onSwipeDown.get();</b>
+<i>385</i>&nbsp;    }
+<i>386</i>&nbsp;
+<i>387</i>&nbsp;    public ObjectProperty&lt;EventHandler&lt;? super SwipeEvent&gt;&gt;
+<i>388</i>&nbsp;            onSwipeDownProperty() {
+<b class="nc"><i>389</i>&nbsp;        if (onSwipeDown == null) {</b>
+<b class="nc"><i>390</i>&nbsp;            onSwipeDown = new EventHandlerProperty&lt;SwipeEvent&gt;(</b>
+<i>391</i>&nbsp;                                     bean,
+<i>392</i>&nbsp;                                     &quot;onSwipeDown&quot;,
+<i>393</i>&nbsp;                                     SwipeEvent.SWIPE_DOWN);
+<i>394</i>&nbsp;        }
+<b class="nc"><i>395</i>&nbsp;        return onSwipeDown;</b>
+<i>396</i>&nbsp;    }
+<i>397</i>&nbsp;
+<i>398</i>&nbsp;    private EventHandlerProperty&lt;SwipeEvent&gt; onSwipeLeft;
+<i>399</i>&nbsp;
+<i>400</i>&nbsp;    public final EventHandler&lt;? super SwipeEvent&gt; getOnSwipeLeft() {
+<b class="nc"><i>401</i>&nbsp;        return (onSwipeLeft == null) ? null : onSwipeLeft.get();</b>
+<i>402</i>&nbsp;    }
+<i>403</i>&nbsp;
+<i>404</i>&nbsp;    public ObjectProperty&lt;EventHandler&lt;? super SwipeEvent&gt;&gt;
+<i>405</i>&nbsp;            onSwipeLeftProperty() {
+<b class="nc"><i>406</i>&nbsp;        if (onSwipeLeft == null) {</b>
+<b class="nc"><i>407</i>&nbsp;            onSwipeLeft = new EventHandlerProperty&lt;SwipeEvent&gt;(</b>
+<i>408</i>&nbsp;                                     bean,
+<i>409</i>&nbsp;                                     &quot;onSwipeLeft&quot;,
+<i>410</i>&nbsp;                                     SwipeEvent.SWIPE_LEFT);
+<i>411</i>&nbsp;        }
+<b class="nc"><i>412</i>&nbsp;        return onSwipeLeft;</b>
+<i>413</i>&nbsp;    }
+<i>414</i>&nbsp;
+<i>415</i>&nbsp;    private EventHandlerProperty&lt;SwipeEvent&gt; onSwipeRight;
+<i>416</i>&nbsp;
+<i>417</i>&nbsp;    public final EventHandler&lt;? super SwipeEvent&gt; getOnSwipeRight() {
+<b class="nc"><i>418</i>&nbsp;        return (onSwipeRight == null) ? null : onSwipeRight.get();</b>
+<i>419</i>&nbsp;    }
+<i>420</i>&nbsp;
+<i>421</i>&nbsp;    public ObjectProperty&lt;EventHandler&lt;? super SwipeEvent&gt;&gt;
+<i>422</i>&nbsp;            onSwipeRightProperty() {
+<b class="nc"><i>423</i>&nbsp;        if (onSwipeRight == null) {</b>
+<b class="nc"><i>424</i>&nbsp;            onSwipeRight = new EventHandlerProperty&lt;SwipeEvent&gt;(</b>
+<i>425</i>&nbsp;                                     bean,
+<i>426</i>&nbsp;                                     &quot;onSwipeRight&quot;,
+<i>427</i>&nbsp;                                     SwipeEvent.SWIPE_RIGHT);
+<i>428</i>&nbsp;        }
+<b class="nc"><i>429</i>&nbsp;        return onSwipeRight;</b>
+<i>430</i>&nbsp;    }
+<i>431</i>&nbsp;
+<i>432</i>&nbsp;    private EventHandlerProperty&lt;MouseDragEvent&gt; onMouseDragOver;
+<i>433</i>&nbsp;
+<i>434</i>&nbsp;    public final EventHandler&lt;? super MouseDragEvent&gt; getOnMouseDragOver() {
+<b class="nc"><i>435</i>&nbsp;        return (onMouseDragOver == null) ? null : onMouseDragOver.get();</b>
+<i>436</i>&nbsp;    }
+<i>437</i>&nbsp;
+<i>438</i>&nbsp;    public ObjectProperty&lt;EventHandler&lt;? super MouseDragEvent&gt;&gt;
+<i>439</i>&nbsp;            onMouseDragOverProperty() {
+<b class="nc"><i>440</i>&nbsp;        if (onMouseDragOver == null) {</b>
+<b class="nc"><i>441</i>&nbsp;            onMouseDragOver = new EventHandlerProperty&lt;MouseDragEvent&gt;(</b>
+<i>442</i>&nbsp;                                     bean,
+<i>443</i>&nbsp;                                     &quot;onMouseDragOver&quot;,
+<i>444</i>&nbsp;                                     MouseDragEvent.MOUSE_DRAG_OVER);
+<i>445</i>&nbsp;        }
+<b class="nc"><i>446</i>&nbsp;        return onMouseDragOver;</b>
+<i>447</i>&nbsp;    }
+<i>448</i>&nbsp;
+<i>449</i>&nbsp;    private EventHandlerProperty&lt;MouseDragEvent&gt; onMouseDragReleased;
+<i>450</i>&nbsp;
+<i>451</i>&nbsp;    public final EventHandler&lt;? super MouseDragEvent&gt; getOnMouseDragReleased() {
+<b class="nc"><i>452</i>&nbsp;        return (onMouseDragReleased == null) ? null : onMouseDragReleased.get();</b>
+<i>453</i>&nbsp;    }
+<i>454</i>&nbsp;
+<i>455</i>&nbsp;    public ObjectProperty&lt;EventHandler&lt;? super MouseDragEvent&gt;&gt;
+<i>456</i>&nbsp;            onMouseDragReleasedProperty() {
+<b class="nc"><i>457</i>&nbsp;        if (onMouseDragReleased == null) {</b>
+<b class="nc"><i>458</i>&nbsp;            onMouseDragReleased = new EventHandlerProperty&lt;MouseDragEvent&gt;(</b>
+<i>459</i>&nbsp;                                     bean,
+<i>460</i>&nbsp;                                     &quot;onMouseDragReleased&quot;,
+<i>461</i>&nbsp;                                     MouseDragEvent.MOUSE_DRAG_RELEASED);
+<i>462</i>&nbsp;        }
+<b class="nc"><i>463</i>&nbsp;        return onMouseDragReleased;</b>
+<i>464</i>&nbsp;    }
+<i>465</i>&nbsp;
+<i>466</i>&nbsp;    private EventHandlerProperty&lt;MouseDragEvent&gt; onMouseDragEntered;
+<i>467</i>&nbsp;
+<i>468</i>&nbsp;    public final EventHandler&lt;? super MouseDragEvent&gt; getOnMouseDragEntered() {
+<b class="nc"><i>469</i>&nbsp;        return (onMouseDragEntered == null) ? null : onMouseDragEntered.get();</b>
+<i>470</i>&nbsp;    }
+<i>471</i>&nbsp;
+<i>472</i>&nbsp;    public ObjectProperty&lt;EventHandler&lt;? super MouseDragEvent&gt;&gt;
+<i>473</i>&nbsp;            onMouseDragEnteredProperty() {
+<b class="nc"><i>474</i>&nbsp;        if (onMouseDragEntered == null) {</b>
+<b class="nc"><i>475</i>&nbsp;            onMouseDragEntered = new EventHandlerProperty&lt;MouseDragEvent&gt;(</b>
+<i>476</i>&nbsp;                                     bean,
+<i>477</i>&nbsp;                                     &quot;onMouseDragEntered&quot;,
+<i>478</i>&nbsp;                                     MouseDragEvent.MOUSE_DRAG_ENTERED);
+<i>479</i>&nbsp;        }
+<b class="nc"><i>480</i>&nbsp;        return onMouseDragEntered;</b>
+<i>481</i>&nbsp;    }
+<i>482</i>&nbsp;
+<i>483</i>&nbsp;    private EventHandlerProperty&lt;MouseDragEvent&gt; onMouseDragExited;
+<i>484</i>&nbsp;
+<i>485</i>&nbsp;    public final EventHandler&lt;? super MouseDragEvent&gt; getOnMouseDragExited() {
+<b class="nc"><i>486</i>&nbsp;        return (onMouseDragExited == null) ? null : onMouseDragExited.get();</b>
+<i>487</i>&nbsp;    }
+<i>488</i>&nbsp;
+<i>489</i>&nbsp;    public ObjectProperty&lt;EventHandler&lt;? super MouseDragEvent&gt;&gt;
+<i>490</i>&nbsp;            onMouseDragExitedProperty() {
+<b class="nc"><i>491</i>&nbsp;        if (onMouseDragExited == null) {</b>
+<b class="nc"><i>492</i>&nbsp;            onMouseDragExited = new EventHandlerProperty&lt;MouseDragEvent&gt;(</b>
+<i>493</i>&nbsp;                                     bean,
+<i>494</i>&nbsp;                                     &quot;onMouseDragExited&quot;,
+<i>495</i>&nbsp;                                     MouseDragEvent.MOUSE_DRAG_EXITED);
+<i>496</i>&nbsp;        }
+<b class="nc"><i>497</i>&nbsp;        return onMouseDragExited;</b>
+<i>498</i>&nbsp;    }
+<i>499</i>&nbsp;
+<i>500</i>&nbsp;    private EventHandlerProperty&lt;KeyEvent&gt; onKeyPressed;
+<i>501</i>&nbsp;
+<i>502</i>&nbsp;    public final EventHandler&lt;? super KeyEvent&gt; getOnKeyPressed() {
+<b class="nc"><i>503</i>&nbsp;        return (onKeyPressed == null) ? null : onKeyPressed.get();</b>
+<i>504</i>&nbsp;    }
+<i>505</i>&nbsp;
+<i>506</i>&nbsp;    public ObjectProperty&lt;EventHandler&lt;? super KeyEvent&gt;&gt;
+<i>507</i>&nbsp;            onKeyPressedProperty() {
+<b class="fc"><i>508</i>&nbsp;        if (onKeyPressed == null) {</b>
+<b class="fc"><i>509</i>&nbsp;            onKeyPressed = new EventHandlerProperty&lt;KeyEvent&gt;(</b>
+<i>510</i>&nbsp;                                     bean,
+<i>511</i>&nbsp;                                     &quot;onKeyPressed&quot;,
+<i>512</i>&nbsp;                                     KeyEvent.KEY_PRESSED);
+<i>513</i>&nbsp;        }
+<b class="fc"><i>514</i>&nbsp;        return onKeyPressed;</b>
+<i>515</i>&nbsp;    }
+<i>516</i>&nbsp;
+<i>517</i>&nbsp;    private EventHandlerProperty&lt;KeyEvent&gt; onKeyReleased;
+<i>518</i>&nbsp;
+<i>519</i>&nbsp;    public final EventHandler&lt;? super KeyEvent&gt; getOnKeyReleased() {
+<b class="nc"><i>520</i>&nbsp;        return (onKeyReleased == null) ? null : onKeyReleased.get();</b>
+<i>521</i>&nbsp;    }
+<i>522</i>&nbsp;
+<i>523</i>&nbsp;    public ObjectProperty&lt;EventHandler&lt;? super KeyEvent&gt;&gt;
+<i>524</i>&nbsp;            onKeyReleasedProperty() {
+<b class="nc"><i>525</i>&nbsp;        if (onKeyReleased == null) {</b>
+<b class="nc"><i>526</i>&nbsp;            onKeyReleased = new EventHandlerProperty&lt;KeyEvent&gt;(</b>
+<i>527</i>&nbsp;                                     bean,
+<i>528</i>&nbsp;                                     &quot;onKeyReleased&quot;,
+<i>529</i>&nbsp;                                     KeyEvent.KEY_RELEASED);
+<i>530</i>&nbsp;        }
+<b class="nc"><i>531</i>&nbsp;        return onKeyReleased;</b>
+<i>532</i>&nbsp;    }
+<i>533</i>&nbsp;
+<i>534</i>&nbsp;    private EventHandlerProperty&lt;KeyEvent&gt; onKeyTyped;
+<i>535</i>&nbsp;
+<i>536</i>&nbsp;    public final EventHandler&lt;? super KeyEvent&gt; getOnKeyTyped() {
+<b class="nc"><i>537</i>&nbsp;        return (onKeyTyped == null) ? null : onKeyTyped.get();</b>
+<i>538</i>&nbsp;    }
+<i>539</i>&nbsp;
+<i>540</i>&nbsp;    public ObjectProperty&lt;EventHandler&lt;? super KeyEvent&gt;&gt;
+<i>541</i>&nbsp;            onKeyTypedProperty() {
+<b class="nc"><i>542</i>&nbsp;        if (onKeyTyped == null) {</b>
+<b class="nc"><i>543</i>&nbsp;            onKeyTyped = new EventHandlerProperty&lt;KeyEvent&gt;(</b>
+<i>544</i>&nbsp;                                     bean,
+<i>545</i>&nbsp;                                     &quot;onKeyTyped&quot;,
+<i>546</i>&nbsp;                                     KeyEvent.KEY_TYPED);
+<i>547</i>&nbsp;        }
+<b class="nc"><i>548</i>&nbsp;        return onKeyTyped;</b>
+<i>549</i>&nbsp;    }
+<i>550</i>&nbsp;
+<i>551</i>&nbsp;    private EventHandlerProperty&lt;InputMethodEvent&gt; onInputMethodTextChanged;
+<i>552</i>&nbsp;
+<i>553</i>&nbsp;    public final EventHandler&lt;? super InputMethodEvent&gt;
+<i>554</i>&nbsp;            getOnInputMethodTextChanged() {
+<b class="fc"><i>555</i>&nbsp;        return (onInputMethodTextChanged == null)</b>
+<b class="nc"><i>556</i>&nbsp;                ? null : onInputMethodTextChanged.get();</b>
+<i>557</i>&nbsp;    }
+<i>558</i>&nbsp;
+<i>559</i>&nbsp;    public ObjectProperty&lt;EventHandler&lt;? super InputMethodEvent&gt;&gt;
+<i>560</i>&nbsp;            onInputMethodTextChangedProperty() {
+<b class="fc"><i>561</i>&nbsp;        if (onInputMethodTextChanged == null) {</b>
+<b class="fc"><i>562</i>&nbsp;            onInputMethodTextChanged =</b>
+<i>563</i>&nbsp;                    new EventHandlerProperty&lt;InputMethodEvent&gt;(
+<i>564</i>&nbsp;                            bean,
+<i>565</i>&nbsp;                            &quot;onInputMethodTextChanged&quot;,
+<i>566</i>&nbsp;                            InputMethodEvent.INPUT_METHOD_TEXT_CHANGED);
+<i>567</i>&nbsp;        }
+<b class="fc"><i>568</i>&nbsp;        return onInputMethodTextChanged;</b>
+<i>569</i>&nbsp;    }
+<i>570</i>&nbsp;
+<i>571</i>&nbsp;    private EventHandlerProperty&lt;DragEvent&gt; onDragEntered;
+<i>572</i>&nbsp;
+<i>573</i>&nbsp;    public final EventHandler&lt;? super DragEvent&gt; getOnDragEntered() {
+<b class="nc"><i>574</i>&nbsp;        return (onDragEntered == null) ? null : onDragEntered.get();</b>
+<i>575</i>&nbsp;    }
+<i>576</i>&nbsp;
+<i>577</i>&nbsp;    public ObjectProperty&lt;EventHandler&lt;? super DragEvent&gt;&gt;
+<i>578</i>&nbsp;            onDragEnteredProperty() {
+<b class="nc"><i>579</i>&nbsp;        if (onDragEntered == null) {</b>
+<b class="nc"><i>580</i>&nbsp;            onDragEntered = new EventHandlerProperty&lt;DragEvent&gt;(</b>
+<i>581</i>&nbsp;                                    bean,
+<i>582</i>&nbsp;                                    &quot;onDragEntered&quot;,
+<i>583</i>&nbsp;                                    DragEvent.DRAG_ENTERED);
+<i>584</i>&nbsp;        }
+<b class="nc"><i>585</i>&nbsp;        return onDragEntered;</b>
+<i>586</i>&nbsp;    }
+<i>587</i>&nbsp;
+<i>588</i>&nbsp;    private EventHandlerProperty&lt;DragEvent&gt; onDragExited;
+<i>589</i>&nbsp;
+<i>590</i>&nbsp;    public final EventHandler&lt;? super DragEvent&gt; getOnDragExited() {
+<b class="nc"><i>591</i>&nbsp;        return (onDragExited == null) ? null : onDragExited.get();</b>
+<i>592</i>&nbsp;    }
+<i>593</i>&nbsp;
+<i>594</i>&nbsp;    public ObjectProperty&lt;EventHandler&lt;? super DragEvent&gt;&gt;
+<i>595</i>&nbsp;            onDragExitedProperty() {
+<b class="nc"><i>596</i>&nbsp;        if (onDragExited == null) {</b>
+<b class="nc"><i>597</i>&nbsp;            onDragExited = new EventHandlerProperty&lt;DragEvent&gt;(</b>
+<i>598</i>&nbsp;                                    bean,
+<i>599</i>&nbsp;                                    &quot;onDragExited&quot;,
+<i>600</i>&nbsp;                                    DragEvent.DRAG_EXITED);
+<i>601</i>&nbsp;        }
+<b class="nc"><i>602</i>&nbsp;        return onDragExited;</b>
+<i>603</i>&nbsp;    }
+<i>604</i>&nbsp;
+<i>605</i>&nbsp;    private EventHandlerProperty&lt;DragEvent&gt; onDragOver;
+<i>606</i>&nbsp;
+<i>607</i>&nbsp;    public final EventHandler&lt;? super DragEvent&gt; getOnDragOver() {
+<b class="nc"><i>608</i>&nbsp;        return (onDragOver == null) ? null : onDragOver.get();</b>
+<i>609</i>&nbsp;    }
+<i>610</i>&nbsp;
+<i>611</i>&nbsp;    public ObjectProperty&lt;EventHandler&lt;? super DragEvent&gt;&gt;
+<i>612</i>&nbsp;            onDragOverProperty() {
+<b class="nc"><i>613</i>&nbsp;        if (onDragOver == null) {</b>
+<b class="nc"><i>614</i>&nbsp;            onDragOver = new EventHandlerProperty&lt;DragEvent&gt;(</b>
+<i>615</i>&nbsp;                                    bean,
+<i>616</i>&nbsp;                                    &quot;onDragOver&quot;,
+<i>617</i>&nbsp;                                    DragEvent.DRAG_OVER);
+<i>618</i>&nbsp;        }
+<b class="nc"><i>619</i>&nbsp;        return onDragOver;</b>
+<i>620</i>&nbsp;    }
+<i>621</i>&nbsp;
+<i>622</i>&nbsp;    // Do we want DRAG_TRANSFER_MODE_CHANGED event?
+<i>623</i>&nbsp;//    private EventHandlerProperty&lt;DragEvent&gt; onDragTransferModeChanged;
+<i>624</i>&nbsp;//
+<i>625</i>&nbsp;//    public final EventHandler&lt;? super DragEvent&gt; getOnDragTransferModeChanged() {
+<i>626</i>&nbsp;//        return (onDragTransferModeChanged == null) ?
+<i>627</i>&nbsp;//            null : onDragTransferModeChanged.get();
+<i>628</i>&nbsp;//    }
+<i>629</i>&nbsp;//
+<i>630</i>&nbsp;//    public ObjectProperty&lt;EventHandler&lt;? super DragEvent&gt;&gt;
+<i>631</i>&nbsp;//            onDragTransferModeChanged() {
+<i>632</i>&nbsp;//        if (onDragTransferModeChanged == null) {
+<i>633</i>&nbsp;//            onDragTransferModeChanged = new EventHandlerProperty&lt;DragEvent&gt;(
+<i>634</i>&nbsp;//                                    DragEvent.DRAG_TRANSFER_MODE_CHANGED);
+<i>635</i>&nbsp;//        }
+<i>636</i>&nbsp;//        return onDragTransferModeChanged;
+<i>637</i>&nbsp;//    }
+<i>638</i>&nbsp;
+<i>639</i>&nbsp;    private EventHandlerProperty&lt;DragEvent&gt; onDragDropped;
+<i>640</i>&nbsp;
+<i>641</i>&nbsp;    public final EventHandler&lt;? super DragEvent&gt; getOnDragDropped() {
+<b class="nc"><i>642</i>&nbsp;        return (onDragDropped == null) ? null : onDragDropped.get();</b>
+<i>643</i>&nbsp;    }
+<i>644</i>&nbsp;
+<i>645</i>&nbsp;    public ObjectProperty&lt;EventHandler&lt;? super DragEvent&gt;&gt;
+<i>646</i>&nbsp;            onDragDroppedProperty() {
+<b class="nc"><i>647</i>&nbsp;        if (onDragDropped == null) {</b>
+<b class="nc"><i>648</i>&nbsp;            onDragDropped = new EventHandlerProperty&lt;DragEvent&gt;(</b>
+<i>649</i>&nbsp;                                    bean,
+<i>650</i>&nbsp;                                    &quot;onDragDropped&quot;,
+<i>651</i>&nbsp;                                    DragEvent.DRAG_DROPPED);
+<i>652</i>&nbsp;        }
+<b class="nc"><i>653</i>&nbsp;        return onDragDropped;</b>
+<i>654</i>&nbsp;    }
+<i>655</i>&nbsp;
+<i>656</i>&nbsp;    private EventHandlerProperty&lt;DragEvent&gt; onDragDone;
+<i>657</i>&nbsp;
+<i>658</i>&nbsp;    public final EventHandler&lt;? super DragEvent&gt; getOnDragDone() {
+<b class="nc"><i>659</i>&nbsp;        return (onDragDone == null) ? null : onDragDone.get();</b>
+<i>660</i>&nbsp;    }
+<i>661</i>&nbsp;
+<i>662</i>&nbsp;    public ObjectProperty&lt;EventHandler&lt;? super DragEvent&gt;&gt;
+<i>663</i>&nbsp;            onDragDoneProperty() {
+<b class="nc"><i>664</i>&nbsp;        if (onDragDone == null) {</b>
+<b class="nc"><i>665</i>&nbsp;            onDragDone = new EventHandlerProperty&lt;DragEvent&gt;(</b>
+<i>666</i>&nbsp;                                    bean,
+<i>667</i>&nbsp;                                    &quot;onDragDone&quot;,
+<i>668</i>&nbsp;                                    DragEvent.DRAG_DONE);
+<i>669</i>&nbsp;        }
+<b class="nc"><i>670</i>&nbsp;        return onDragDone;</b>
+<i>671</i>&nbsp;    }
+<i>672</i>&nbsp;
+<i>673</i>&nbsp;    private final class EventHandlerProperty&lt;T extends Event&gt;
+<i>674</i>&nbsp;            extends SimpleObjectProperty&lt;EventHandler&lt;? super T&gt;&gt; {
+<i>675</i>&nbsp;        private final EventType&lt;T&gt; eventType;
+<i>676</i>&nbsp;
+<i>677</i>&nbsp;        public EventHandlerProperty(final Object bean,
+<i>678</i>&nbsp;                                    final String name,
+<b class="fc"><i>679</i>&nbsp;                                    final EventType&lt;T&gt; eventType) {</b>
+<b class="fc"><i>680</i>&nbsp;            super(bean, name);</b>
+<b class="fc"><i>681</i>&nbsp;            this.eventType = eventType;</b>
+<b class="fc"><i>682</i>&nbsp;        }</b>
+<i>683</i>&nbsp;
+<i>684</i>&nbsp;        @Override
+<i>685</i>&nbsp;        protected void invalidated() {
+<b class="fc"><i>686</i>&nbsp;            eventDispatcher.setEventHandler(eventType, get());</b>
+<b class="fc"><i>687</i>&nbsp;        }</b>
+<i>688</i>&nbsp;    }
+<i>689</i>&nbsp;
+<i>690</i>&nbsp;    private EventHandlerProperty&lt;TouchEvent&gt; onTouchPressed;
+<i>691</i>&nbsp;
+<i>692</i>&nbsp;    public final EventHandler&lt;? super TouchEvent&gt; getOnTouchPressed() {
+<b class="nc"><i>693</i>&nbsp;        return (onTouchPressed == null) ? null : onTouchPressed.get();</b>
+<i>694</i>&nbsp;    }
+<i>695</i>&nbsp;
+<i>696</i>&nbsp;    public ObjectProperty&lt;EventHandler&lt;? super TouchEvent&gt;&gt;
+<i>697</i>&nbsp;            onTouchPressedProperty() {
+<b class="nc"><i>698</i>&nbsp;        if (onTouchPressed == null) {</b>
+<b class="nc"><i>699</i>&nbsp;            onTouchPressed = new EventHandlerProperty&lt;TouchEvent&gt;(</b>
+<i>700</i>&nbsp;                                     bean,
+<i>701</i>&nbsp;                                     &quot;onTouchPressed&quot;,
+<i>702</i>&nbsp;                                     TouchEvent.TOUCH_PRESSED);
+<i>703</i>&nbsp;        }
+<b class="nc"><i>704</i>&nbsp;        return onTouchPressed;</b>
+<i>705</i>&nbsp;    }
+<i>706</i>&nbsp;
+<i>707</i>&nbsp;    private EventHandlerProperty&lt;TouchEvent&gt; onTouchMoved;
+<i>708</i>&nbsp;
+<i>709</i>&nbsp;    public final EventHandler&lt;? super TouchEvent&gt; getOnTouchMoved() {
+<b class="nc"><i>710</i>&nbsp;        return (onTouchMoved == null) ? null : onTouchMoved.get();</b>
+<i>711</i>&nbsp;    }
+<i>712</i>&nbsp;
+<i>713</i>&nbsp;    public ObjectProperty&lt;EventHandler&lt;? super TouchEvent&gt;&gt;
+<i>714</i>&nbsp;            onTouchMovedProperty() {
+<b class="nc"><i>715</i>&nbsp;        if (onTouchMoved == null) {</b>
+<b class="nc"><i>716</i>&nbsp;            onTouchMoved = new EventHandlerProperty&lt;TouchEvent&gt;(</b>
+<i>717</i>&nbsp;                                     bean,
+<i>718</i>&nbsp;                                     &quot;onTouchMoved&quot;,
+<i>719</i>&nbsp;                                     TouchEvent.TOUCH_MOVED);
+<i>720</i>&nbsp;        }
+<b class="nc"><i>721</i>&nbsp;        return onTouchMoved;</b>
+<i>722</i>&nbsp;    }
+<i>723</i>&nbsp;
+<i>724</i>&nbsp;    private EventHandlerProperty&lt;TouchEvent&gt; onTouchReleased;
+<i>725</i>&nbsp;
+<i>726</i>&nbsp;    public final EventHandler&lt;? super TouchEvent&gt; getOnTouchReleased() {
+<b class="nc"><i>727</i>&nbsp;        return (onTouchReleased == null) ? null : onTouchReleased.get();</b>
+<i>728</i>&nbsp;    }
+<i>729</i>&nbsp;
+<i>730</i>&nbsp;    public ObjectProperty&lt;EventHandler&lt;? super TouchEvent&gt;&gt;
+<i>731</i>&nbsp;            onTouchReleasedProperty() {
+<b class="nc"><i>732</i>&nbsp;        if (onTouchReleased == null) {</b>
+<b class="nc"><i>733</i>&nbsp;            onTouchReleased = new EventHandlerProperty&lt;TouchEvent&gt;(</b>
+<i>734</i>&nbsp;                                     bean,
+<i>735</i>&nbsp;                                     &quot;onTouchReleased&quot;,
+<i>736</i>&nbsp;                                     TouchEvent.TOUCH_RELEASED);
+<i>737</i>&nbsp;        }
+<b class="nc"><i>738</i>&nbsp;        return onTouchReleased;</b>
+<i>739</i>&nbsp;    }
+<i>740</i>&nbsp;
+<i>741</i>&nbsp;    private EventHandlerProperty&lt;TouchEvent&gt; onTouchStationary;
+<i>742</i>&nbsp;
+<i>743</i>&nbsp;    public final EventHandler&lt;? super TouchEvent&gt; getOnTouchStationary() {
+<b class="nc"><i>744</i>&nbsp;        return (onTouchStationary == null) ? null : onTouchStationary.get();</b>
+<i>745</i>&nbsp;    }
+<i>746</i>&nbsp;
+<i>747</i>&nbsp;    public ObjectProperty&lt;EventHandler&lt;? super TouchEvent&gt;&gt;
+<i>748</i>&nbsp;            onTouchStationaryProperty() {
+<b class="nc"><i>749</i>&nbsp;        if (onTouchStationary == null) {</b>
+<b class="nc"><i>750</i>&nbsp;            onTouchStationary = new EventHandlerProperty&lt;TouchEvent&gt;(</b>
+<i>751</i>&nbsp;                                     bean,
+<i>752</i>&nbsp;                                     &quot;onTouchStationary&quot;,
+<i>753</i>&nbsp;                                     TouchEvent.TOUCH_STATIONARY);
+<i>754</i>&nbsp;        }
+<b class="nc"><i>755</i>&nbsp;        return onTouchStationary;</b>
+<i>756</i>&nbsp;    }
+<i>757</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2017-12-04 21:49</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,401 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: RectangularShape</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.javafx.geom</a> ]
+</div>
+
+<h1>Coverage Summary for Class: RectangularShape (com.sun.javafx.geom)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">RectangularShape</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    6.2%
+  </span>
+  <span class="absValue">
+    (1/ 16)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    2.2%
+  </span>
+  <span class="absValue">
+    (1/ 45)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright (c) 1997, 2013, Oracle and/or its affiliates. All rights reserved.
+<i>3</i>&nbsp; * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+<i>4</i>&nbsp; *
+<i>5</i>&nbsp; *
+<i>6</i>&nbsp; *
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; *
+<i>11</i>&nbsp; *
+<i>12</i>&nbsp; *
+<i>13</i>&nbsp; *
+<i>14</i>&nbsp; *
+<i>15</i>&nbsp; *
+<i>16</i>&nbsp; *
+<i>17</i>&nbsp; *
+<i>18</i>&nbsp; *
+<i>19</i>&nbsp; *
+<i>20</i>&nbsp; *
+<i>21</i>&nbsp; *
+<i>22</i>&nbsp; *
+<i>23</i>&nbsp; *
+<i>24</i>&nbsp; */
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;package com.sun.javafx.geom;
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;import com.sun.javafx.geom.transform.BaseTransform;
+<i>29</i>&nbsp;
+<i>30</i>&nbsp;/**
+<i>31</i>&nbsp; * &lt;code&gt;RectangularShape&lt;/code&gt; is the base class for a number of
+<i>32</i>&nbsp; * {@link Shape} objects whose geometry is defined by a rectangular frame.
+<i>33</i>&nbsp; * This class does not directly specify any specific geometry by
+<i>34</i>&nbsp; * itself, but merely provides manipulation methods inherited by
+<i>35</i>&nbsp; * a whole category of &lt;code&gt;Shape&lt;/code&gt; objects.
+<i>36</i>&nbsp; * The manipulation methods provided by this class can be used to
+<i>37</i>&nbsp; * query and modify the rectangular frame, which provides a reference
+<i>38</i>&nbsp; * for the subclasses to define their geometry.
+<i>39</i>&nbsp; *
+<i>40</i>&nbsp; * @version     1.26, 05/05/07
+<i>41</i>&nbsp; */
+<i>42</i>&nbsp;public abstract class RectangularShape extends Shape {
+<i>43</i>&nbsp;
+<i>44</i>&nbsp;    /**
+<i>45</i>&nbsp;     * This is an abstract class that cannot be instantiated directly.
+<i>46</i>&nbsp;     *
+<i>47</i>&nbsp;     * @see Arc2D
+<i>48</i>&nbsp;     * @see Ellipse2D
+<i>49</i>&nbsp;     * @see Rectangle2D
+<i>50</i>&nbsp;     * @see RoundRectangle2D
+<i>51</i>&nbsp;     */
+<b class="fc"><i>52</i>&nbsp;    protected RectangularShape() { }</b>
+<i>53</i>&nbsp;
+<i>54</i>&nbsp;    /**
+<i>55</i>&nbsp;     * Returns the X coordinate of the upper-left corner of
+<i>56</i>&nbsp;     * the framing rectangle in &lt;code&gt;double&lt;/code&gt; precision.
+<i>57</i>&nbsp;     * @return the X coordinate of the upper-left corner of
+<i>58</i>&nbsp;     * the framing rectangle.
+<i>59</i>&nbsp;     */
+<i>60</i>&nbsp;    public abstract float getX();
+<i>61</i>&nbsp;
+<i>62</i>&nbsp;    /**
+<i>63</i>&nbsp;     * Returns the Y coordinate of the upper-left corner of
+<i>64</i>&nbsp;     * the framing rectangle in &lt;code&gt;double&lt;/code&gt; precision.
+<i>65</i>&nbsp;     * @return the Y coordinate of the upper-left corner of
+<i>66</i>&nbsp;     * the framing rectangle.
+<i>67</i>&nbsp;     */
+<i>68</i>&nbsp;    public abstract float getY();
+<i>69</i>&nbsp;
+<i>70</i>&nbsp;    /**
+<i>71</i>&nbsp;     * Returns the width of the framing rectangle in
+<i>72</i>&nbsp;     * &lt;code&gt;double&lt;/code&gt; precision.
+<i>73</i>&nbsp;     * @return the width of the framing rectangle.
+<i>74</i>&nbsp;     */
+<i>75</i>&nbsp;    public abstract float getWidth();
+<i>76</i>&nbsp;
+<i>77</i>&nbsp;    /**
+<i>78</i>&nbsp;     * Returns the height of the framing rectangle
+<i>79</i>&nbsp;     * in &lt;code&gt;double&lt;/code&gt; precision.
+<i>80</i>&nbsp;     * @return the height of the framing rectangle.
+<i>81</i>&nbsp;     */
+<i>82</i>&nbsp;    public abstract float getHeight();
+<i>83</i>&nbsp;
+<i>84</i>&nbsp;    /**
+<i>85</i>&nbsp;     * Returns the smallest X coordinate of the framing
+<i>86</i>&nbsp;     * rectangle of the &lt;code&gt;Shape&lt;/code&gt; in &lt;code&gt;double&lt;/code&gt;
+<i>87</i>&nbsp;     * precision.
+<i>88</i>&nbsp;     * @return the smallest X coordinate of the framing
+<i>89</i>&nbsp;     *      rectangle of the &lt;code&gt;Shape&lt;/code&gt;.
+<i>90</i>&nbsp;     */
+<i>91</i>&nbsp;    public float getMinX() {
+<b class="nc"><i>92</i>&nbsp;        return getX();</b>
+<i>93</i>&nbsp;    }
+<i>94</i>&nbsp;
+<i>95</i>&nbsp;    /**
+<i>96</i>&nbsp;     * Returns the smallest Y coordinate of the framing
+<i>97</i>&nbsp;     * rectangle of the &lt;code&gt;Shape&lt;/code&gt; in &lt;code&gt;double&lt;/code&gt;
+<i>98</i>&nbsp;     * precision.
+<i>99</i>&nbsp;     * @return the smallest Y coordinate of the framing
+<i>100</i>&nbsp;     *      rectangle of the &lt;code&gt;Shape&lt;/code&gt;.
+<i>101</i>&nbsp;     */
+<i>102</i>&nbsp;    public float getMinY() {
+<b class="nc"><i>103</i>&nbsp;        return getY();</b>
+<i>104</i>&nbsp;    }
+<i>105</i>&nbsp;
+<i>106</i>&nbsp;    /**
+<i>107</i>&nbsp;     * Returns the largest X coordinate of the framing
+<i>108</i>&nbsp;     * rectangle of the &lt;code&gt;Shape&lt;/code&gt; in &lt;code&gt;double&lt;/code&gt;
+<i>109</i>&nbsp;     * precision.
+<i>110</i>&nbsp;     * @return the largest X coordinate of the framing
+<i>111</i>&nbsp;     *      rectangle of the &lt;code&gt;Shape&lt;/code&gt;.
+<i>112</i>&nbsp;     */
+<i>113</i>&nbsp;    public float getMaxX() {
+<b class="nc"><i>114</i>&nbsp;        return getX() + getWidth();</b>
+<i>115</i>&nbsp;    }
+<i>116</i>&nbsp;
+<i>117</i>&nbsp;    /**
+<i>118</i>&nbsp;     * Returns the largest Y coordinate of the framing
+<i>119</i>&nbsp;     * rectangle of the &lt;code&gt;Shape&lt;/code&gt; in &lt;code&gt;double&lt;/code&gt;
+<i>120</i>&nbsp;     * precision.
+<i>121</i>&nbsp;     * @return the largest Y coordinate of the framing
+<i>122</i>&nbsp;     *      rectangle of the &lt;code&gt;Shape&lt;/code&gt;.
+<i>123</i>&nbsp;     */
+<i>124</i>&nbsp;    public float getMaxY() {
+<b class="nc"><i>125</i>&nbsp;        return getY() + getHeight();</b>
+<i>126</i>&nbsp;    }
+<i>127</i>&nbsp;
+<i>128</i>&nbsp;    /**
+<i>129</i>&nbsp;     * Returns the X coordinate of the center of the framing
+<i>130</i>&nbsp;     * rectangle of the &lt;code&gt;Shape&lt;/code&gt; in &lt;code&gt;double&lt;/code&gt;
+<i>131</i>&nbsp;     * precision.
+<i>132</i>&nbsp;     * @return the X coordinate of the center of the framing rectangle
+<i>133</i>&nbsp;     *      of the &lt;code&gt;Shape&lt;/code&gt;.
+<i>134</i>&nbsp;     */
+<i>135</i>&nbsp;    public float getCenterX() {
+<b class="nc"><i>136</i>&nbsp;        return getX() + getWidth() / 2f;</b>
+<i>137</i>&nbsp;    }
+<i>138</i>&nbsp;
+<i>139</i>&nbsp;    /**
+<i>140</i>&nbsp;     * Returns the Y coordinate of the center of the framing
+<i>141</i>&nbsp;     * rectangle of the &lt;code&gt;Shape&lt;/code&gt; in &lt;code&gt;double&lt;/code&gt;
+<i>142</i>&nbsp;     * precision.
+<i>143</i>&nbsp;     * @return the Y coordinate of the center of the framing rectangle
+<i>144</i>&nbsp;     *      of the &lt;code&gt;Shape&lt;/code&gt;.
+<i>145</i>&nbsp;     */
+<i>146</i>&nbsp;    public float getCenterY() {
+<b class="nc"><i>147</i>&nbsp;        return getY() + getHeight() / 2f;</b>
+<i>148</i>&nbsp;    }
+<i>149</i>&nbsp;
+<i>150</i>&nbsp;    /**
+<i>151</i>&nbsp;     * Determines whether the &lt;code&gt;RectangularShape&lt;/code&gt; is empty.
+<i>152</i>&nbsp;     * When the &lt;code&gt;RectangularShape&lt;/code&gt; is empty, it encloses no
+<i>153</i>&nbsp;     * area.
+<i>154</i>&nbsp;     * @return &lt;code&gt;true&lt;/code&gt; if the &lt;code&gt;RectangularShape&lt;/code&gt; is empty;
+<i>155</i>&nbsp;     *      &lt;code&gt;false&lt;/code&gt; otherwise.
+<i>156</i>&nbsp;     */
+<i>157</i>&nbsp;    public abstract boolean isEmpty();
+<i>158</i>&nbsp;
+<i>159</i>&nbsp;    /**
+<i>160</i>&nbsp;     * Sets the location and size of the framing rectangle of this
+<i>161</i>&nbsp;     * &lt;code&gt;Shape&lt;/code&gt; to the specified rectangular values.
+<i>162</i>&nbsp;     *
+<i>163</i>&nbsp;     * @param x the X coordinate of the upper-left corner of the
+<i>164</i>&nbsp;     *          specified rectangular shape
+<i>165</i>&nbsp;     * @param y the Y coordinate of the upper-left corner of the
+<i>166</i>&nbsp;     *          specified rectangular shape
+<i>167</i>&nbsp;     * @param w the width of the specified rectangular shape
+<i>168</i>&nbsp;     * @param h the height of the specified rectangular shape
+<i>169</i>&nbsp;     * @see #getFrame
+<i>170</i>&nbsp;     */
+<i>171</i>&nbsp;    public abstract void setFrame(float x, float y, float w, float h);
+<i>172</i>&nbsp;
+<i>173</i>&nbsp;    /**
+<i>174</i>&nbsp;     * Sets the location and size of the framing rectangle of this
+<i>175</i>&nbsp;     * &lt;code&gt;Shape&lt;/code&gt; to the specified {@link Point2D} and
+<i>176</i>&nbsp;     * {@link Dimension2D}, respectively.  The framing rectangle is used
+<i>177</i>&nbsp;     * by the subclasses of &lt;code&gt;RectangularShape&lt;/code&gt; to define
+<i>178</i>&nbsp;     * their geometry.
+<i>179</i>&nbsp;     * @param loc the specified &lt;code&gt;Point2D&lt;/code&gt;
+<i>180</i>&nbsp;     * @param size the specified &lt;code&gt;Dimension2D&lt;/code&gt;
+<i>181</i>&nbsp;     * @see #getFrame
+<i>182</i>&nbsp;     */
+<i>183</i>&nbsp;    public void setFrame(Point2D loc, Dimension2D size) {
+<b class="nc"><i>184</i>&nbsp;        setFrame(loc.x, loc.y, size.width, size.height);</b>
+<b class="nc"><i>185</i>&nbsp;    }</b>
+<i>186</i>&nbsp;
+<i>187</i>&nbsp;    /**
+<i>188</i>&nbsp;     * Sets the diagonal of the framing rectangle of this &lt;code&gt;Shape&lt;/code&gt;
+<i>189</i>&nbsp;     * based on the two specified coordinates.  The framing rectangle is
+<i>190</i>&nbsp;     * used by the subclasses of &lt;code&gt;RectangularShape&lt;/code&gt; to define
+<i>191</i>&nbsp;     * their geometry.
+<i>192</i>&nbsp;     *
+<i>193</i>&nbsp;     * @param x1 the X coordinate of the start point of the specified diagonal
+<i>194</i>&nbsp;     * @param y1 the Y coordinate of the start point of the specified diagonal
+<i>195</i>&nbsp;     * @param x2 the X coordinate of the end point of the specified diagonal
+<i>196</i>&nbsp;     * @param y2 the Y coordinate of the end point of the specified diagonal
+<i>197</i>&nbsp;     */
+<i>198</i>&nbsp;    public void setFrameFromDiagonal(float x1, float y1, float x2, float y2) {
+<b class="nc"><i>199</i>&nbsp;        if (x2 &lt; x1) {</b>
+<b class="nc"><i>200</i>&nbsp;            float t = x1;</b>
+<b class="nc"><i>201</i>&nbsp;            x1 = x2;</b>
+<b class="nc"><i>202</i>&nbsp;            x2 = t;</b>
+<i>203</i>&nbsp;        }
+<b class="nc"><i>204</i>&nbsp;        if (y2 &lt; y1) {</b>
+<b class="nc"><i>205</i>&nbsp;            float t = y1;</b>
+<b class="nc"><i>206</i>&nbsp;            y1 = y2;</b>
+<b class="nc"><i>207</i>&nbsp;            y2 = t;</b>
+<i>208</i>&nbsp;        }
+<b class="nc"><i>209</i>&nbsp;        setFrame(x1, y1, x2 - x1, y2 - y1);</b>
+<b class="nc"><i>210</i>&nbsp;    }</b>
+<i>211</i>&nbsp;
+<i>212</i>&nbsp;    /**
+<i>213</i>&nbsp;     * Sets the diagonal of the framing rectangle of this &lt;code&gt;Shape&lt;/code&gt;
+<i>214</i>&nbsp;     * based on two specified &lt;code&gt;Point2D&lt;/code&gt; objects.  The framing
+<i>215</i>&nbsp;     * rectangle is used by the subclasses of &lt;code&gt;RectangularShape&lt;/code&gt;
+<i>216</i>&nbsp;     * to define their geometry.
+<i>217</i>&nbsp;     *
+<i>218</i>&nbsp;     * @param p1 the start &lt;code&gt;Point2D&lt;/code&gt; of the specified diagonal
+<i>219</i>&nbsp;     * @param p2 the end &lt;code&gt;Point2D&lt;/code&gt; of the specified diagonal
+<i>220</i>&nbsp;     */
+<i>221</i>&nbsp;    public void setFrameFromDiagonal(Point2D p1, Point2D p2) {
+<b class="nc"><i>222</i>&nbsp;        setFrameFromDiagonal(p1.x, p1.y, p2.x, p2.y);</b>
+<b class="nc"><i>223</i>&nbsp;    }</b>
+<i>224</i>&nbsp;
+<i>225</i>&nbsp;    /**
+<i>226</i>&nbsp;     * Sets the framing rectangle of this &lt;code&gt;Shape&lt;/code&gt;
+<i>227</i>&nbsp;     * based on the specified center point coordinates and corner point
+<i>228</i>&nbsp;     * coordinates.  The framing rectangle is used by the subclasses of
+<i>229</i>&nbsp;     * &lt;code&gt;RectangularShape&lt;/code&gt; to define their geometry.
+<i>230</i>&nbsp;     *
+<i>231</i>&nbsp;     * @param centerX the X coordinate of the specified center point
+<i>232</i>&nbsp;     * @param centerY the Y coordinate of the specified center point
+<i>233</i>&nbsp;     * @param cornerX the X coordinate of the specified corner point
+<i>234</i>&nbsp;     * @param cornerY the Y coordinate of the specified corner point
+<i>235</i>&nbsp;     */
+<i>236</i>&nbsp;    public void setFrameFromCenter(float centerX, float centerY,
+<i>237</i>&nbsp;                   float cornerX, float cornerY)
+<i>238</i>&nbsp;    {
+<b class="nc"><i>239</i>&nbsp;        float halfW = Math.abs(cornerX - centerX);</b>
+<b class="nc"><i>240</i>&nbsp;        float halfH = Math.abs(cornerY - centerY);</b>
+<b class="nc"><i>241</i>&nbsp;        setFrame(centerX - halfW, centerY - halfH, halfW * 2f, halfH * 2f);</b>
+<b class="nc"><i>242</i>&nbsp;    }</b>
+<i>243</i>&nbsp;
+<i>244</i>&nbsp;    /**
+<i>245</i>&nbsp;     * Sets the framing rectangle of this &lt;code&gt;Shape&lt;/code&gt; based on a
+<i>246</i>&nbsp;     * specified center &lt;code&gt;Point2D&lt;/code&gt; and corner
+<i>247</i>&nbsp;     * &lt;code&gt;Point2D&lt;/code&gt;.  The framing rectangle is used by the subclasses
+<i>248</i>&nbsp;     * of &lt;code&gt;RectangularShape&lt;/code&gt; to define their geometry.
+<i>249</i>&nbsp;     * @param center the specified center &lt;code&gt;Point2D&lt;/code&gt;
+<i>250</i>&nbsp;     * @param corner the specified corner &lt;code&gt;Point2D&lt;/code&gt;
+<i>251</i>&nbsp;     */
+<i>252</i>&nbsp;    public void setFrameFromCenter(Point2D center, Point2D corner) {
+<b class="nc"><i>253</i>&nbsp;        setFrameFromCenter(center.x, center.y, corner.x, corner.y);</b>
+<b class="nc"><i>254</i>&nbsp;    }</b>
+<i>255</i>&nbsp;
+<i>256</i>&nbsp;    /**
+<i>257</i>&nbsp;     * {@inheritDoc}
+<i>258</i>&nbsp;     */
+<i>259</i>&nbsp;    public boolean contains(Point2D p) {
+<b class="nc"><i>260</i>&nbsp;        return contains(p.x, p.y);</b>
+<i>261</i>&nbsp;    }
+<i>262</i>&nbsp;
+<i>263</i>&nbsp;    /**
+<i>264</i>&nbsp;     * {@inheritDoc}
+<i>265</i>&nbsp;     */
+<i>266</i>&nbsp;    public RectBounds getBounds() {
+<b class="nc"><i>267</i>&nbsp;        float width = getWidth();</b>
+<b class="nc"><i>268</i>&nbsp;        float height = getHeight();</b>
+<b class="nc"><i>269</i>&nbsp;        if (width &lt; 0 || height &lt; 0) {</b>
+<b class="nc"><i>270</i>&nbsp;            return new RectBounds();</b>
+<i>271</i>&nbsp;        }
+<b class="nc"><i>272</i>&nbsp;        float x = getX();</b>
+<b class="nc"><i>273</i>&nbsp;        float y = getY();</b>
+<b class="nc"><i>274</i>&nbsp;        float x1 = (float)Math.floor(x);</b>
+<b class="nc"><i>275</i>&nbsp;        float y1 = (float)Math.floor(y);</b>
+<b class="nc"><i>276</i>&nbsp;        float x2 = (float)Math.ceil(x + width);</b>
+<b class="nc"><i>277</i>&nbsp;        float y2 = (float)Math.ceil(y + height);</b>
+<b class="nc"><i>278</i>&nbsp;        return new RectBounds(x1, y1, x2, y2);</b>
+<i>279</i>&nbsp;    }
+<i>280</i>&nbsp;
+<i>281</i>&nbsp;    /**
+<i>282</i>&nbsp;     * Returns an iterator object that iterates along the
+<i>283</i>&nbsp;     * &lt;code&gt;Shape&lt;/code&gt; object&#39;s boundary and provides access to a
+<i>284</i>&nbsp;     * flattened view of the outline of the &lt;code&gt;Shape&lt;/code&gt;
+<i>285</i>&nbsp;     * object&#39;s geometry.
+<i>286</i>&nbsp;     * &lt;p&gt;
+<i>287</i>&nbsp;     * Only SEG_MOVETO, SEG_LINETO, and SEG_CLOSE point types will
+<i>288</i>&nbsp;     * be returned by the iterator.
+<i>289</i>&nbsp;     * &lt;p&gt;
+<i>290</i>&nbsp;     * The amount of subdivision of the curved segments is controlled
+<i>291</i>&nbsp;     * by the &lt;code&gt;flatness&lt;/code&gt; parameter, which specifies the
+<i>292</i>&nbsp;     * maximum distance that any point on the unflattened transformed
+<i>293</i>&nbsp;     * curve can deviate from the returned flattened path segments.
+<i>294</i>&nbsp;     * An optional {@link BaseTransform} can
+<i>295</i>&nbsp;     * be specified so that the coordinates returned in the iteration are
+<i>296</i>&nbsp;     * transformed accordingly.
+<i>297</i>&nbsp;     * @param tx an optional &lt;code&gt;BaseTransform&lt;/code&gt; to be applied to the
+<i>298</i>&nbsp;     *      coordinates as they are returned in the iteration,
+<i>299</i>&nbsp;     *      or &lt;code&gt;null&lt;/code&gt; if untransformed coordinates are desired.
+<i>300</i>&nbsp;     * @param flatness the maximum distance that the line segments used to
+<i>301</i>&nbsp;     *          approximate the curved segments are allowed to deviate
+<i>302</i>&nbsp;     *          from any point on the original curve
+<i>303</i>&nbsp;     * @return a &lt;code&gt;PathIterator&lt;/code&gt; object that provides access to
+<i>304</i>&nbsp;     *      the &lt;code&gt;Shape&lt;/code&gt; object&#39;s flattened geometry.
+<i>305</i>&nbsp;     */
+<i>306</i>&nbsp;    public PathIterator getPathIterator(BaseTransform tx, float flatness) {
+<b class="nc"><i>307</i>&nbsp;        return new FlatteningPathIterator(getPathIterator(tx), flatness);</b>
+<i>308</i>&nbsp;    }
+<i>309</i>&nbsp;
+<i>310</i>&nbsp;    @Override
+<i>311</i>&nbsp;    public String toString() {
+<b class="nc"><i>312</i>&nbsp;        return getClass().getName() +</b>
+<b class="nc"><i>313</i>&nbsp;            &quot;[x=&quot; + getX() +</b>
+<b class="nc"><i>314</i>&nbsp;            &quot;,y=&quot; + getY() +</b>
+<b class="nc"><i>315</i>&nbsp;            &quot;,w=&quot; + getWidth() +</b>
+<b class="nc"><i>316</i>&nbsp;            &quot;,h=&quot; + getHeight() + &quot;]&quot;;</b>
+<i>317</i>&nbsp;    }
+<i>318</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2017-12-04 21:49</div>
+</div>
+</body>
+</html>

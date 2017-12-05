@@ -1,0 +1,166 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: FontResource</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.javafx.font</a> ]
+</div>
+
+<h1>Coverage Summary for Class: FontResource (com.sun.javafx.font)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+</tr>
+<tr>
+  <td class="name">FontResource</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright (c) 2010, 2013, Oracle and/or its affiliates. All rights reserved.
+<i>3</i>&nbsp; * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+<i>4</i>&nbsp; *
+<i>5</i>&nbsp; *
+<i>6</i>&nbsp; *
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; *
+<i>11</i>&nbsp; *
+<i>12</i>&nbsp; *
+<i>13</i>&nbsp; *
+<i>14</i>&nbsp; *
+<i>15</i>&nbsp; *
+<i>16</i>&nbsp; *
+<i>17</i>&nbsp; *
+<i>18</i>&nbsp; *
+<i>19</i>&nbsp; *
+<i>20</i>&nbsp; *
+<i>21</i>&nbsp; *
+<i>22</i>&nbsp; *
+<i>23</i>&nbsp; *
+<i>24</i>&nbsp; */
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;package com.sun.javafx.font;
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;import java.lang.ref.WeakReference;
+<i>29</i>&nbsp;import java.util.Map;
+<i>30</i>&nbsp;
+<i>31</i>&nbsp;import com.sun.javafx.geom.transform.BaseTransform;
+<i>32</i>&nbsp;
+<i>33</i>&nbsp;/**
+<i>34</i>&nbsp; * Presently always represent a font file.
+<i>35</i>&nbsp; * May extend what this exports as needed.
+<i>36</i>&nbsp; */
+<i>37</i>&nbsp;public interface FontResource {
+<i>38</i>&nbsp;
+<i>39</i>&nbsp;    /* Corresponds to FontSmoothingType enum values */
+<i>40</i>&nbsp;    public static final int AA_GREYSCALE = 0;
+<i>41</i>&nbsp;    public static final int AA_LCD       = 1;
+<i>42</i>&nbsp;
+<i>43</i>&nbsp;    /* Font Features - not public API for now */
+<i>44</i>&nbsp;      // CSS naming
+<i>45</i>&nbsp;//    public static final int common_ligatures = 1 &lt;&lt; 0;
+<i>46</i>&nbsp;//    public static final int discretionary_ligatures = 1 &lt;&lt; 0;
+<i>47</i>&nbsp;//    public static final int historical_ligatures = 1 &lt;&lt; 0;
+<i>48</i>&nbsp;//    public static final int contextual = 1 &lt;&lt; 0;
+<i>49</i>&nbsp;//    public static final int small_caps = 1 &lt;&lt; 0;
+<i>50</i>&nbsp;//    public static final int diagonal_fractions = 1 &lt;&lt; 0;
+<i>51</i>&nbsp;//    public static final int stacked_fractions = 1 &lt;&lt; 0;
+<i>52</i>&nbsp;//    public static final int slashed_zero = 1 &lt;&lt; 0;
+<i>53</i>&nbsp;
+<i>54</i>&nbsp;    // OpenType naming
+<i>55</i>&nbsp;    public static final int KERN = 1 &lt;&lt; 0; // Kerning
+<i>56</i>&nbsp;    public static final int CLIG = 1 &lt;&lt; 1; // Contextual Ligatures
+<i>57</i>&nbsp;    public static final int DLIG = 1 &lt;&lt; 2; // Discretionary Ligatures
+<i>58</i>&nbsp;    public static final int HLIG = 1 &lt;&lt; 3; // Historical Ligatures
+<i>59</i>&nbsp;    public static final int LIGA = 1 &lt;&lt; 4; // Standard Ligatures
+<i>60</i>&nbsp;    public static final int RLIG = 1 &lt;&lt; 5; // Required Liagtures
+<i>61</i>&nbsp;    public static final int LIGATURES = CLIG | DLIG | HLIG | LIGA | RLIG;
+<i>62</i>&nbsp;    public static final int SMCP = 1 &lt;&lt; 6; // Small Capitals
+<i>63</i>&nbsp;    public static final int FRAC = 1 &lt;&lt; 7; // Fractions
+<i>64</i>&nbsp;    public static final int AFRC = 1 &lt;&lt; 8; // Alternative Fractions
+<i>65</i>&nbsp;    public static final int ZERO = 1 &lt;&lt; 9; // Slashed Zero
+<i>66</i>&nbsp;    public static final int SWSH = 1 &lt;&lt; 10; // Swash
+<i>67</i>&nbsp;    public static final int CSWH = 1 &lt;&lt; 11; // Contextual Swash
+<i>68</i>&nbsp;    public static final int SALT = 1 &lt;&lt; 12; // Stylistic Alternates
+<i>69</i>&nbsp;    public static final int NALT = 1 &lt;&lt; 13; // Alternate Annotation Forms
+<i>70</i>&nbsp;    public static final int RUBY = 1 &lt;&lt; 14; // Ruby Notation Forms
+<i>71</i>&nbsp;    public static final int SS01 = 1 &lt;&lt; 15; // Stylistic Set 1
+<i>72</i>&nbsp;    public static final int SS02 = 1 &lt;&lt; 16; // Stylistic Set 2
+<i>73</i>&nbsp;    public static final int SS03 = 1 &lt;&lt; 17; // Stylistic Set 3
+<i>74</i>&nbsp;    public static final int SS04 = 1 &lt;&lt; 18; // Stylistic Set 4
+<i>75</i>&nbsp;    public static final int SS05 = 1 &lt;&lt; 19; // Stylistic Set 5
+<i>76</i>&nbsp;    public static final int SS06 = 1 &lt;&lt; 20; // Stylistic Set 6
+<i>77</i>&nbsp;    public static final int SS07 = 1 &lt;&lt; 21; // Stylistic Set 7
+<i>78</i>&nbsp;    //Note: the last two bits are reserved for layout. See GlyphLayout.
+<i>79</i>&nbsp;
+<i>80</i>&nbsp;    public String getFullName();
+<i>81</i>&nbsp;
+<i>82</i>&nbsp;    public String getPSName();
+<i>83</i>&nbsp;
+<i>84</i>&nbsp;    public String getFamilyName();
+<i>85</i>&nbsp;
+<i>86</i>&nbsp;    public String getFileName();
+<i>87</i>&nbsp;
+<i>88</i>&nbsp;    public String getStyleName();
+<i>89</i>&nbsp;
+<i>90</i>&nbsp;    public String getLocaleFullName();
+<i>91</i>&nbsp;
+<i>92</i>&nbsp;    public String getLocaleFamilyName();
+<i>93</i>&nbsp;
+<i>94</i>&nbsp;    public String getLocaleStyleName();
+<i>95</i>&nbsp;
+<i>96</i>&nbsp;    public int getFeatures();
+<i>97</i>&nbsp;
+<i>98</i>&nbsp;    public boolean isBold();
+<i>99</i>&nbsp;
+<i>100</i>&nbsp;    public boolean isItalic();
+<i>101</i>&nbsp;
+<i>102</i>&nbsp;    public float getAdvance(int gc, float size);
+<i>103</i>&nbsp;
+<i>104</i>&nbsp;    public float[] getGlyphBoundingBox(int gc, float size, float[] retArr);
+<i>105</i>&nbsp;
+<i>106</i>&nbsp;    public int getDefaultAAMode();
+<i>107</i>&nbsp;
+<i>108</i>&nbsp;    public CharToGlyphMapper getGlyphMapper();
+<i>109</i>&nbsp;
+<i>110</i>&nbsp;    public Map&lt;FontStrikeDesc, WeakReference&lt;FontStrike&gt;&gt; getStrikeMap();
+<i>111</i>&nbsp;
+<i>112</i>&nbsp;    public FontStrike getStrike(float size, BaseTransform transform);
+<i>113</i>&nbsp;    public FontStrike getStrike(float size, BaseTransform transform,
+<i>114</i>&nbsp;                                int aaMode);
+<i>115</i>&nbsp;    public Object getPeer();
+<i>116</i>&nbsp;    public void setPeer(Object peer);
+<i>117</i>&nbsp;
+<i>118</i>&nbsp;    public boolean isEmbeddedFont();
+<i>119</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2017-12-04 21:49</div>
+</div>
+</body>
+</html>

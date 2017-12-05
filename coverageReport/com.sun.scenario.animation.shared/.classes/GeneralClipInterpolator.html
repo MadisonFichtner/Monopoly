@@ -1,0 +1,276 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: GeneralClipInterpolator</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.scenario.animation.shared</a> ]
+</div>
+
+<h1>Coverage Summary for Class: GeneralClipInterpolator (com.sun.scenario.animation.shared)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">GeneralClipInterpolator</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (5/ 5)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    50.6%
+  </span>
+  <span class="absValue">
+    (43/ 85)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright (c) 2008, 2013, Oracle and/or its affiliates. All rights reserved.
+<i>3</i>&nbsp; * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+<i>4</i>&nbsp; *
+<i>5</i>&nbsp; *
+<i>6</i>&nbsp; *
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; *
+<i>11</i>&nbsp; *
+<i>12</i>&nbsp; *
+<i>13</i>&nbsp; *
+<i>14</i>&nbsp; *
+<i>15</i>&nbsp; *
+<i>16</i>&nbsp; *
+<i>17</i>&nbsp; *
+<i>18</i>&nbsp; *
+<i>19</i>&nbsp; *
+<i>20</i>&nbsp; *
+<i>21</i>&nbsp; *
+<i>22</i>&nbsp; *
+<i>23</i>&nbsp; *
+<i>24</i>&nbsp; */
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;package com.sun.scenario.animation.shared;
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;import java.util.ArrayList;
+<i>29</i>&nbsp;import java.util.HashMap;
+<i>30</i>&nbsp;import java.util.HashSet;
+<i>31</i>&nbsp;import java.util.Iterator;
+<i>32</i>&nbsp;import java.util.List;
+<i>33</i>&nbsp;import java.util.Map;
+<i>34</i>&nbsp;import java.util.Set;
+<i>35</i>&nbsp;
+<i>36</i>&nbsp;import javafx.animation.KeyFrame;
+<i>37</i>&nbsp;import javafx.animation.KeyValue;
+<i>38</i>&nbsp;import javafx.beans.value.WritableValue;
+<i>39</i>&nbsp;
+<i>40</i>&nbsp;/**
+<i>41</i>&nbsp; * General implementation of ClipInterpolator, which covers all use-cases.
+<i>42</i>&nbsp; */
+<i>43</i>&nbsp;
+<i>44</i>&nbsp;// @@OPT:
+<i>45</i>&nbsp;// - A binary search in interpolate might make sense.
+<i>46</i>&nbsp;// - Prepare only first segment when starting timeline and do the rest later =&gt;
+<i>47</i>&nbsp;// improves startup time?
+<i>48</i>&nbsp;// - Store 1 / (rightMillis - leftMillis) for each interval and multiply
+<b class="fc"><i>49</i>&nbsp;class GeneralClipInterpolator extends ClipInterpolator {</b>
+<i>50</i>&nbsp;
+<i>51</i>&nbsp;    private KeyFrame[] keyFrames;
+<i>52</i>&nbsp;    private long[] keyFrameTicks;
+<i>53</i>&nbsp;
+<i>54</i>&nbsp;    // List of interpolation-points associated with each target
+<b class="fc"><i>55</i>&nbsp;    private InterpolationInterval[][] interval = new InterpolationInterval[0][];</b>
+<i>56</i>&nbsp;
+<i>57</i>&nbsp;    // List of indexes for targets with undefined start value
+<b class="fc"><i>58</i>&nbsp;    private int[] undefinedStartValues = new int[0];</b>
+<i>59</i>&nbsp;    // Is internal representation up-to-date?
+<b class="fc"><i>60</i>&nbsp;    private boolean invalid = true;</b>
+<i>61</i>&nbsp;
+<b class="fc"><i>62</i>&nbsp;    GeneralClipInterpolator(KeyFrame[] keyFrames, long[] keyFrameTicks) {</b>
+<b class="fc"><i>63</i>&nbsp;        this.keyFrames = keyFrames;</b>
+<b class="fc"><i>64</i>&nbsp;        this.keyFrameTicks = keyFrameTicks;</b>
+<b class="fc"><i>65</i>&nbsp;    }</b>
+<i>66</i>&nbsp;
+<i>67</i>&nbsp;    // See comment in ClipInterpolator
+<i>68</i>&nbsp;    @Override
+<i>69</i>&nbsp;    ClipInterpolator setKeyFrames(KeyFrame[] keyFrames, long[] keyFrameTicks) {
+<b class="fc"><i>70</i>&nbsp;        if (ClipInterpolator.getRealKeyFrameCount(keyFrames) == 2) {</b>
+<b class="fc"><i>71</i>&nbsp;            return ClipInterpolator.create(keyFrames, keyFrameTicks);</b>
+<i>72</i>&nbsp;        }
+<b class="fc"><i>73</i>&nbsp;        this.keyFrames = keyFrames;</b>
+<b class="fc"><i>74</i>&nbsp;        this.keyFrameTicks = keyFrameTicks;</b>
+<b class="fc"><i>75</i>&nbsp;        invalid = true;</b>
+<b class="fc"><i>76</i>&nbsp;        return this;</b>
+<i>77</i>&nbsp;    }
+<i>78</i>&nbsp;
+<i>79</i>&nbsp;    @Override
+<i>80</i>&nbsp;    void validate(boolean forceSync) {
+<b class="fc"><i>81</i>&nbsp;        if (invalid) {</b>
+<b class="fc"><i>82</i>&nbsp;            final Map&lt;WritableValue&lt;?&gt;, KeyValue&gt; lastKeyValues = new HashMap&lt;&gt;();</b>
+<b class="fc"><i>83</i>&nbsp;            final int n = keyFrames.length;</b>
+<i>84</i>&nbsp;            int index;
+<b class="fc"><i>85</i>&nbsp;            for (index = 0; index &lt; n; index++) {</b>
+<b class="fc"><i>86</i>&nbsp;                final KeyFrame keyFrame = keyFrames[index];</b>
+<b class="fc"><i>87</i>&nbsp;                if (keyFrameTicks[index] == 0) {</b>
+<b class="fc"><i>88</i>&nbsp;                    for (final KeyValue keyValue : keyFrame.getValues()) {</b>
+<b class="nc"><i>89</i>&nbsp;                        lastKeyValues.put(keyValue.getTarget(), keyValue);</b>
+<b class="nc"><i>90</i>&nbsp;                    }</b>
+<i>91</i>&nbsp;                } else {
+<i>92</i>&nbsp;                    break;
+<i>93</i>&nbsp;                }
+<i>94</i>&nbsp;            }
+<i>95</i>&nbsp;
+<b class="fc"><i>96</i>&nbsp;            final Map&lt;WritableValue&lt;?&gt;, List&lt;InterpolationInterval&gt;&gt; map = new HashMap&lt;&gt;();</b>
+<b class="fc"><i>97</i>&nbsp;            final Set&lt;WritableValue&lt;?&gt;&gt; undefinedValues = new HashSet&lt;&gt;();</b>
+<i>98</i>&nbsp;            // iterate through all keyFrames
+<b class="fc"><i>99</i>&nbsp;            for (; index &lt; n; index++) {</b>
+<b class="fc"><i>100</i>&nbsp;                final KeyFrame keyFrame = keyFrames[index];</b>
+<b class="fc"><i>101</i>&nbsp;                final long ticks = keyFrameTicks[index];</b>
+<i>102</i>&nbsp;                // iterate through all keyValues in this keyFrame
+<b class="fc"><i>103</i>&nbsp;                for (final KeyValue rightKeyValue : keyFrame.getValues()) {</b>
+<b class="nc"><i>104</i>&nbsp;                    final WritableValue&lt;?&gt; target = rightKeyValue.getTarget();</b>
+<b class="nc"><i>105</i>&nbsp;                    List&lt;InterpolationInterval&gt; list = map.get(target);</b>
+<b class="nc"><i>106</i>&nbsp;                    final KeyValue leftKeyValue = lastKeyValues.get(target);</b>
+<b class="nc"><i>107</i>&nbsp;                    if (list == null) {</b>
+<i>108</i>&nbsp;                        // first encounter of a particular target, generate a
+<i>109</i>&nbsp;                        // new interval list
+<b class="nc"><i>110</i>&nbsp;                        list = new ArrayList&lt;&gt;();</b>
+<b class="nc"><i>111</i>&nbsp;                        map.put(target, list);</b>
+<b class="nc"><i>112</i>&nbsp;                        if (leftKeyValue == null) {</b>
+<b class="nc"><i>113</i>&nbsp;                            list.add(InterpolationInterval.create(</b>
+<i>114</i>&nbsp;                                    rightKeyValue, ticks));
+<b class="nc"><i>115</i>&nbsp;                            undefinedValues.add(target);</b>
+<i>116</i>&nbsp;                        } else {
+<b class="nc"><i>117</i>&nbsp;                            list.add(InterpolationInterval</b>
+<b class="nc"><i>118</i>&nbsp;                                    .create(rightKeyValue, ticks,</b>
+<i>119</i>&nbsp;                                            leftKeyValue, ticks));
+<i>120</i>&nbsp;                        }
+<i>121</i>&nbsp;                    } else {
+<b class="nc"><i>122</i>&nbsp;                        assert leftKeyValue != null;</b>
+<b class="nc"><i>123</i>&nbsp;                        list.add(InterpolationInterval.create(rightKeyValue,</b>
+<i>124</i>&nbsp;                                ticks, leftKeyValue,
+<b class="nc"><i>125</i>&nbsp;                                ticks - list.get(list.size() - 1).ticks));</b>
+<i>126</i>&nbsp;                    }
+<b class="nc"><i>127</i>&nbsp;                    lastKeyValues.put(target, rightKeyValue);</b>
+<b class="nc"><i>128</i>&nbsp;                }</b>
+<i>129</i>&nbsp;            }
+<i>130</i>&nbsp;
+<i>131</i>&nbsp;            // copy everything to arrays
+<b class="fc"><i>132</i>&nbsp;            final int targetCount = map.size();</b>
+<b class="fc"><i>133</i>&nbsp;            if (interval.length != targetCount) {</b>
+<b class="nc"><i>134</i>&nbsp;                interval = new InterpolationInterval[targetCount][];</b>
+<i>135</i>&nbsp;            }
+<b class="fc"><i>136</i>&nbsp;            final int undefinedStartValuesCount = undefinedValues.size();</b>
+<b class="fc"><i>137</i>&nbsp;            if (undefinedStartValues.length != undefinedStartValuesCount) {</b>
+<b class="nc"><i>138</i>&nbsp;                undefinedStartValues = new int[undefinedStartValuesCount];</b>
+<i>139</i>&nbsp;            }
+<b class="fc"><i>140</i>&nbsp;            int undefinedStartValuesIndex = 0;</b>
+<b class="fc"><i>141</i>&nbsp;            final Iterator&lt;Map.Entry&lt;WritableValue&lt;?&gt;, List&lt;InterpolationInterval&gt;&gt;&gt; iterator = map</b>
+<b class="fc"><i>142</i>&nbsp;                    .entrySet().iterator();</b>
+<b class="fc"><i>143</i>&nbsp;            for (int i = 0; i &lt; targetCount; i++) {</b>
+<b class="nc"><i>144</i>&nbsp;                final Map.Entry&lt;WritableValue&lt;?&gt;, List&lt;InterpolationInterval&gt;&gt; entry = iterator</b>
+<b class="nc"><i>145</i>&nbsp;                        .next();</b>
+<b class="nc"><i>146</i>&nbsp;                interval[i] = new InterpolationInterval[entry.getValue().size()];</b>
+<b class="nc"><i>147</i>&nbsp;                entry.getValue().toArray(interval[i]);</b>
+<b class="nc"><i>148</i>&nbsp;                if (undefinedValues.contains(entry.getKey())) {</b>
+<b class="nc"><i>149</i>&nbsp;                    undefinedStartValues[undefinedStartValuesIndex++] = i;</b>
+<i>150</i>&nbsp;                }
+<i>151</i>&nbsp;            }
+<b class="fc"><i>152</i>&nbsp;            invalid = false;</b>
+<b class="fc"><i>153</i>&nbsp;        } else if (forceSync) {</b>
+<b class="fc"><i>154</i>&nbsp;            final int n = undefinedStartValues.length;</b>
+<b class="fc"><i>155</i>&nbsp;            for (int i = 0; i &lt; n; i++) {</b>
+<b class="nc"><i>156</i>&nbsp;                final int index = undefinedStartValues[i];</b>
+<b class="nc"><i>157</i>&nbsp;                interval[index][0].recalculateStartValue();</b>
+<i>158</i>&nbsp;            }
+<i>159</i>&nbsp;        }
+<b class="fc"><i>160</i>&nbsp;    }</b>
+<i>161</i>&nbsp;
+<i>162</i>&nbsp;    @Override
+<i>163</i>&nbsp;    void interpolate(long ticks) {
+<b class="fc"><i>164</i>&nbsp;        final int targetCount = interval.length;</b>
+<i>165</i>&nbsp;        // iterate through all targets
+<b class="fc"><i>166</i>&nbsp;        targetLoop: for (int targetIndex = 0; targetIndex &lt; targetCount; targetIndex++) {</b>
+<b class="nc"><i>167</i>&nbsp;            InterpolationInterval[] intervalList = interval[targetIndex];</b>
+<b class="nc"><i>168</i>&nbsp;            final int intervalCount = intervalList.length;</b>
+<i>169</i>&nbsp;            // leftMillis keeps the timestamp of the left side of the interval
+<b class="nc"><i>170</i>&nbsp;            long leftTicks = 0;</b>
+<i>171</i>&nbsp;            // iterate through all intervals except the last one
+<b class="nc"><i>172</i>&nbsp;            for (int intervalIndex = 0; intervalIndex &lt; intervalCount - 1; intervalIndex++) {</b>
+<b class="nc"><i>173</i>&nbsp;                final InterpolationInterval i = intervalList[intervalIndex];</b>
+<b class="nc"><i>174</i>&nbsp;                final long rightTicks = i.ticks;</b>
+<b class="nc"><i>175</i>&nbsp;                if (ticks &lt;= rightTicks) {</b>
+<i>176</i>&nbsp;                    // we found the current interval
+<b class="nc"><i>177</i>&nbsp;                    final double frac = (double)(ticks - leftTicks)</b>
+<i>178</i>&nbsp;                            / (rightTicks - leftTicks);
+<b class="nc"><i>179</i>&nbsp;                    i.interpolate(frac);</b>
+<b class="nc"><i>180</i>&nbsp;                    continue targetLoop;</b>
+<i>181</i>&nbsp;                }
+<b class="nc"><i>182</i>&nbsp;                leftTicks = rightTicks;</b>
+<i>183</i>&nbsp;            }
+<i>184</i>&nbsp;            // we did not find a current interval, use the last one
+<b class="nc"><i>185</i>&nbsp;            final InterpolationInterval i = intervalList[intervalCount - 1];</b>
+<i>186</i>&nbsp;            // the last interval may end before the timeline ends, make sure we
+<i>187</i>&nbsp;            // set the end value
+<b class="nc"><i>188</i>&nbsp;            final double frac = Math.min(1.0, (double)(ticks - leftTicks)</b>
+<i>189</i>&nbsp;                    / (i.ticks - leftTicks));
+<b class="nc"><i>190</i>&nbsp;            i.interpolate(frac);</b>
+<i>191</i>&nbsp;        }
+<b class="fc"><i>192</i>&nbsp;    }</b>
+<i>193</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2017-12-04 21:49</div>
+</div>
+</body>
+</html>

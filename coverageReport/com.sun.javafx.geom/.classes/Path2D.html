@@ -1,0 +1,2556 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: Path2D</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.javafx.geom</a> ]
+</div>
+
+<h1>Coverage Summary for Class: Path2D (com.sun.javafx.geom)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">Path2D</td>
+<td class="coverageStat">
+  <span class="percent">
+    45.2%
+  </span>
+  <span class="absValue">
+    (28/ 62)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    30.1%
+  </span>
+  <span class="absValue">
+    (202/ 671)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">Path2D$CopyIterator</td>
+<td class="coverageStat">
+  <span class="percent">
+    66.7%
+  </span>
+  <span class="absValue">
+    (2/ 3)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    57.1%
+  </span>
+  <span class="absValue">
+    (8/ 14)
+  </span>
+</td>
+  </tr>
+  <tr>
+    <td class="name">Path2D$CornerPrefix</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (2/ 2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (4/ 4)
+  </span>
+</td>
+  </tr>
+  <tr>
+    <td class="name">Path2D$Iterator</td>
+<td class="coverageStat">
+  <span class="percent">
+    75%
+  </span>
+  <span class="absValue">
+    (3/ 4)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    87.5%
+  </span>
+  <span class="absValue">
+    (7/ 8)
+  </span>
+</td>
+  </tr>
+  <tr>
+    <td class="name">Path2D$SVGParser</td>
+<td class="coverageStat">
+  <span class="percent">
+    80%
+  </span>
+  <span class="absValue">
+    (8/ 10)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    63.9%
+  </span>
+  <span class="absValue">
+    (39/ 61)
+  </span>
+</td>
+  </tr>
+  <tr>
+    <td class="name">Path2D$TxIterator</td>
+<td class="coverageStat">
+  <span class="percent">
+    66.7%
+  </span>
+  <span class="absValue">
+    (2/ 3)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    64.3%
+  </span>
+  <span class="absValue">
+    (9/ 14)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    53.6%
+  </span>
+  <span class="absValue">
+    (45/ 84)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    34.8%
+  </span>
+  <span class="absValue">
+    (269/ 772)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright (c) 2006, 2016, Oracle and/or its affiliates. All rights reserved.
+<i>3</i>&nbsp; * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+<i>4</i>&nbsp; *
+<i>5</i>&nbsp; *
+<i>6</i>&nbsp; *
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; *
+<i>11</i>&nbsp; *
+<i>12</i>&nbsp; *
+<i>13</i>&nbsp; *
+<i>14</i>&nbsp; *
+<i>15</i>&nbsp; *
+<i>16</i>&nbsp; *
+<i>17</i>&nbsp; *
+<i>18</i>&nbsp; *
+<i>19</i>&nbsp; *
+<i>20</i>&nbsp; *
+<i>21</i>&nbsp; *
+<i>22</i>&nbsp; *
+<i>23</i>&nbsp; *
+<i>24</i>&nbsp; */
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;package com.sun.javafx.geom;
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;import com.sun.javafx.geom.transform.BaseTransform;
+<i>29</i>&nbsp;import java.util.Arrays;
+<i>30</i>&nbsp;
+<i>31</i>&nbsp;/**
+<i>32</i>&nbsp; * The {@code Path2D} class provides a simple, yet flexible
+<i>33</i>&nbsp; * shape which represents an arbitrary geometric path.
+<i>34</i>&nbsp; * It can fully represent any path which can be iterated by the
+<i>35</i>&nbsp; * {@link PathIterator} interface including all of its segment
+<i>36</i>&nbsp; * types and winding rules and it implements all of the
+<i>37</i>&nbsp; * basic hit testing methods of the {@link Shape} interface.
+<i>38</i>&nbsp; * &lt;p&gt;
+<i>39</i>&nbsp; * Use {@link Path2D} when dealing with data that can be represented
+<i>40</i>&nbsp; * and used with floating point precision.
+<i>41</i>&nbsp; * &lt;p&gt;
+<i>42</i>&nbsp; * {@code Path2D} provides exactly those facilities required for
+<i>43</i>&nbsp; * basic construction and management of a geometric path and
+<i>44</i>&nbsp; * implementation of the above interfaces with little added
+<i>45</i>&nbsp; * interpretation.
+<i>46</i>&nbsp; * If it is useful to manipulate the interiors of closed
+<i>47</i>&nbsp; * geometric shapes beyond simple hit testing then the
+<i>48</i>&nbsp; * {@link Area} class provides additional capabilities
+<i>49</i>&nbsp; * specifically targeted at closed figures.
+<i>50</i>&nbsp; * While both classes nominally implement the {@code Shape}
+<i>51</i>&nbsp; * interface, they differ in purpose and together they provide
+<i>52</i>&nbsp; * two useful views of a geometric shape where {@code Path2D}
+<i>53</i>&nbsp; * deals primarily with a trajectory formed by path segments
+<i>54</i>&nbsp; * and {@code Area} deals more with interpretation and manipulation
+<i>55</i>&nbsp; * of enclosed regions of 2D geometric space.
+<i>56</i>&nbsp; * &lt;p&gt;
+<i>57</i>&nbsp; * The {@link PathIterator} interface has more detailed descriptions
+<i>58</i>&nbsp; * of the types of segments that make up a path and the winding rules
+<i>59</i>&nbsp; * that control how to determine which regions are inside or outside
+<i>60</i>&nbsp; * the path.
+<i>61</i>&nbsp; *
+<i>62</i>&nbsp; * @version 1.10, 05/05/07
+<i>63</i>&nbsp; */
+<b class="fc"><i>64</i>&nbsp; public class Path2D extends Shape implements PathConsumer2D {</b>
+<i>65</i>&nbsp;
+<b class="fc"><i>66</i>&nbsp;     static final int curvecoords[] = {2, 2, 4, 6, 0};</b>
+<i>67</i>&nbsp;
+<b class="fc"><i>68</i>&nbsp;     public enum CornerPrefix {</b>
+<b class="fc"><i>69</i>&nbsp;         CORNER_ONLY,</b>
+<b class="fc"><i>70</i>&nbsp;         MOVE_THEN_CORNER,</b>
+<b class="fc"><i>71</i>&nbsp;         LINE_THEN_CORNER</b>
+<i>72</i>&nbsp;     }
+<i>73</i>&nbsp;
+<i>74</i>&nbsp;     /**
+<i>75</i>&nbsp;     * An even-odd winding rule for determining the interior of
+<i>76</i>&nbsp;     * a path.
+<i>77</i>&nbsp;     *
+<i>78</i>&nbsp;     * @see PathIterator#WIND_EVEN_ODD
+<i>79</i>&nbsp;     */
+<i>80</i>&nbsp;    public static final int WIND_EVEN_ODD = PathIterator.WIND_EVEN_ODD;
+<i>81</i>&nbsp;
+<i>82</i>&nbsp;    /**
+<i>83</i>&nbsp;     * A non-zero winding rule for determining the interior of a
+<i>84</i>&nbsp;     * path.
+<i>85</i>&nbsp;     *
+<i>86</i>&nbsp;     * @see PathIterator#WIND_NON_ZERO
+<i>87</i>&nbsp;     */
+<i>88</i>&nbsp;    public static final int WIND_NON_ZERO = PathIterator.WIND_NON_ZERO;
+<i>89</i>&nbsp;
+<i>90</i>&nbsp;    // For code simplicity, copy these constants to our namespace
+<i>91</i>&nbsp;    // and cast them to byte constants for easy storage.
+<i>92</i>&nbsp;    private static final byte SEG_MOVETO  = (byte) PathIterator.SEG_MOVETO;
+<i>93</i>&nbsp;    private static final byte SEG_LINETO  = (byte) PathIterator.SEG_LINETO;
+<i>94</i>&nbsp;    private static final byte SEG_QUADTO  = (byte) PathIterator.SEG_QUADTO;
+<i>95</i>&nbsp;    private static final byte SEG_CUBICTO = (byte) PathIterator.SEG_CUBICTO;
+<i>96</i>&nbsp;    private static final byte SEG_CLOSE   = (byte) PathIterator.SEG_CLOSE;
+<i>97</i>&nbsp;
+<i>98</i>&nbsp;    byte[] pointTypes;
+<i>99</i>&nbsp;    int numTypes;
+<i>100</i>&nbsp;    int numCoords;
+<i>101</i>&nbsp;    int windingRule;
+<i>102</i>&nbsp;
+<i>103</i>&nbsp;    static final int INIT_SIZE = 20;
+<i>104</i>&nbsp;    static final int EXPAND_MAX = 500;
+<i>105</i>&nbsp;    static final int EXPAND_MAX_COORDS = EXPAND_MAX * 2;
+<i>106</i>&nbsp;
+<i>107</i>&nbsp;    float floatCoords[];
+<i>108</i>&nbsp;    float moveX, moveY;
+<i>109</i>&nbsp;    float prevX, prevY;
+<i>110</i>&nbsp;    float currX, currY;
+<i>111</i>&nbsp;
+<i>112</i>&nbsp;    /**
+<i>113</i>&nbsp;     * Constructs a new empty single precision {@code Path2D} object
+<i>114</i>&nbsp;     * with a default winding rule of {@link #WIND_NON_ZERO}.
+<i>115</i>&nbsp;     */
+<i>116</i>&nbsp;    public Path2D() {
+<b class="fc"><i>117</i>&nbsp;        this(WIND_NON_ZERO, INIT_SIZE);</b>
+<b class="fc"><i>118</i>&nbsp;    }</b>
+<i>119</i>&nbsp;
+<i>120</i>&nbsp;    /**
+<i>121</i>&nbsp;     * Constructs a new empty single precision {@code Path2D} object
+<i>122</i>&nbsp;     * with the specified winding rule to control operations that
+<i>123</i>&nbsp;     * require the interior of the path to be defined.
+<i>124</i>&nbsp;     *
+<i>125</i>&nbsp;     * @param rule the winding rule
+<i>126</i>&nbsp;     * @see #WIND_EVEN_ODD
+<i>127</i>&nbsp;     * @see #WIND_NON_ZERO
+<i>128</i>&nbsp;     */
+<i>129</i>&nbsp;    public Path2D(int rule) {
+<b class="fc"><i>130</i>&nbsp;        this(rule, INIT_SIZE);</b>
+<b class="fc"><i>131</i>&nbsp;    }</b>
+<i>132</i>&nbsp;
+<i>133</i>&nbsp;    /**
+<i>134</i>&nbsp;     * Constructs a new empty single precision {@code Path2D} object
+<i>135</i>&nbsp;     * with the specified winding rule and the specified initial
+<i>136</i>&nbsp;     * capacity to store path segments.
+<i>137</i>&nbsp;     * This number is an initial guess as to how many path segments
+<i>138</i>&nbsp;     * will be added to the path, but the storage is expanded as
+<i>139</i>&nbsp;     * needed to store whatever path segments are added.
+<i>140</i>&nbsp;     *
+<i>141</i>&nbsp;     * @param rule the winding rule
+<i>142</i>&nbsp;     * @param initialCapacity the estimate for the number of path segments
+<i>143</i>&nbsp;     *                        in the path
+<i>144</i>&nbsp;     * @see #WIND_EVEN_ODD
+<i>145</i>&nbsp;     * @see #WIND_NON_ZERO
+<i>146</i>&nbsp;     */
+<b class="fc"><i>147</i>&nbsp;    public Path2D(int rule, int initialCapacity) {</b>
+<b class="fc"><i>148</i>&nbsp;        setWindingRule(rule);</b>
+<b class="fc"><i>149</i>&nbsp;        this.pointTypes = new byte[initialCapacity];</b>
+<b class="fc"><i>150</i>&nbsp;        floatCoords = new float[initialCapacity * 2];</b>
+<b class="fc"><i>151</i>&nbsp;    }</b>
+<i>152</i>&nbsp;
+<i>153</i>&nbsp;    /**
+<i>154</i>&nbsp;     * Constructs a new single precision {@code Path2D} object
+<i>155</i>&nbsp;     * from an arbitrary {@link Shape} object.
+<i>156</i>&nbsp;     * All of the initial geometry and the winding rule for this path are
+<i>157</i>&nbsp;     * taken from the specified {@code Shape} object.
+<i>158</i>&nbsp;     *
+<i>159</i>&nbsp;     * @param s the specified {@code Shape} object
+<i>160</i>&nbsp;     */
+<i>161</i>&nbsp;    public Path2D(Shape s) {
+<b class="fc"><i>162</i>&nbsp;        this(s, null);</b>
+<b class="fc"><i>163</i>&nbsp;    }</b>
+<i>164</i>&nbsp;
+<i>165</i>&nbsp;    /**
+<i>166</i>&nbsp;     * Constructs a new single precision {@code Path2D} object
+<i>167</i>&nbsp;     * from an arbitrary {@link Shape} object, transformed by an
+<i>168</i>&nbsp;     * {@link BaseTransform} object.
+<i>169</i>&nbsp;     * All of the initial geometry and the winding rule for this path are
+<i>170</i>&nbsp;     * taken from the specified {@code Shape} object and transformed
+<i>171</i>&nbsp;     * by the specified {@code BaseTransform} object.
+<i>172</i>&nbsp;     *
+<i>173</i>&nbsp;     * @param s the specified {@code Shape} object
+<i>174</i>&nbsp;     * @param tx the specified {@code BaseTransform} object
+<i>175</i>&nbsp;     */
+<b class="fc"><i>176</i>&nbsp;    public Path2D(Shape s, BaseTransform tx) {</b>
+<b class="fc"><i>177</i>&nbsp;        if (s instanceof Path2D) {</b>
+<b class="fc"><i>178</i>&nbsp;            Path2D p2d = (Path2D) s;</b>
+<b class="fc"><i>179</i>&nbsp;            setWindingRule(p2d.windingRule);</b>
+<b class="fc"><i>180</i>&nbsp;            this.numTypes = p2d.numTypes;</b>
+<b class="fc"><i>181</i>&nbsp;            this.pointTypes = Arrays.copyOf(p2d.pointTypes, numTypes);</b>
+<b class="fc"><i>182</i>&nbsp;            this.numCoords = p2d.numCoords;</b>
+<b class="fc"><i>183</i>&nbsp;            if (tx == null || tx.isIdentity()) {</b>
+<b class="fc"><i>184</i>&nbsp;                this.floatCoords = Arrays.copyOf(p2d.floatCoords, numCoords);</b>
+<b class="fc"><i>185</i>&nbsp;                this.moveX = p2d.moveX;</b>
+<b class="fc"><i>186</i>&nbsp;                this.moveY = p2d.moveY;</b>
+<b class="fc"><i>187</i>&nbsp;                this.prevX = p2d.prevX;</b>
+<b class="fc"><i>188</i>&nbsp;                this.prevY = p2d.prevY;</b>
+<b class="fc"><i>189</i>&nbsp;                this.currX = p2d.currX;</b>
+<b class="fc"><i>190</i>&nbsp;                this.currY = p2d.currY;</b>
+<i>191</i>&nbsp;            } else {
+<b class="fc"><i>192</i>&nbsp;                this.floatCoords = new float[numCoords + 6];</b>
+<b class="fc"><i>193</i>&nbsp;                tx.transform(p2d.floatCoords, 0, this.floatCoords, 0, numCoords / 2);</b>
+<b class="fc"><i>194</i>&nbsp;                floatCoords[numCoords + 0] = moveX;</b>
+<b class="fc"><i>195</i>&nbsp;                floatCoords[numCoords + 1] = moveY;</b>
+<b class="fc"><i>196</i>&nbsp;                floatCoords[numCoords + 2] = prevX;</b>
+<b class="fc"><i>197</i>&nbsp;                floatCoords[numCoords + 3] = prevY;</b>
+<b class="fc"><i>198</i>&nbsp;                floatCoords[numCoords + 4] = currX;</b>
+<b class="fc"><i>199</i>&nbsp;                floatCoords[numCoords + 5] = currY;</b>
+<b class="fc"><i>200</i>&nbsp;                tx.transform(this.floatCoords, numCoords, this.floatCoords, numCoords, 3);</b>
+<b class="fc"><i>201</i>&nbsp;                moveX = floatCoords[numCoords + 0];</b>
+<b class="fc"><i>202</i>&nbsp;                moveY = floatCoords[numCoords + 1];</b>
+<b class="fc"><i>203</i>&nbsp;                prevX = floatCoords[numCoords + 2];</b>
+<b class="fc"><i>204</i>&nbsp;                prevY = floatCoords[numCoords + 3];</b>
+<b class="fc"><i>205</i>&nbsp;                currX = floatCoords[numCoords + 4];</b>
+<b class="fc"><i>206</i>&nbsp;                currY = floatCoords[numCoords + 5];</b>
+<i>207</i>&nbsp;            }
+<b class="fc"><i>208</i>&nbsp;        } else {</b>
+<b class="nc"><i>209</i>&nbsp;            PathIterator pi = s.getPathIterator(tx);</b>
+<b class="nc"><i>210</i>&nbsp;            setWindingRule(pi.getWindingRule());</b>
+<b class="nc"><i>211</i>&nbsp;            this.pointTypes = new byte[INIT_SIZE];</b>
+<b class="nc"><i>212</i>&nbsp;            this.floatCoords = new float[INIT_SIZE * 2];</b>
+<b class="nc"><i>213</i>&nbsp;            append(pi, false);</b>
+<i>214</i>&nbsp;        }
+<b class="fc"><i>215</i>&nbsp;    }</b>
+<i>216</i>&nbsp;
+<i>217</i>&nbsp;
+<i>218</i>&nbsp;     /**
+<i>219</i>&nbsp;      * Construct a Path2D from pre-composed data.
+<i>220</i>&nbsp;      * Used by internal font code which has obtained the path data
+<i>221</i>&nbsp;      * for a glyph outline, and which promises not to
+<i>222</i>&nbsp;      * mess with the arrays, dropping all other references,
+<i>223</i>&nbsp;      so there&#39;s no need to clone them here.
+<i>224</i>&nbsp;      */
+<i>225</i>&nbsp;    public Path2D(int windingRule,
+<i>226</i>&nbsp;                  byte[] pointTypes,
+<i>227</i>&nbsp;                  int numTypes,
+<i>228</i>&nbsp;                  float[] pointCoords,
+<i>229</i>&nbsp;                  int numCoords)
+<b class="nc"><i>230</i>&nbsp;    {</b>
+<b class="nc"><i>231</i>&nbsp;        this.windingRule = windingRule;</b>
+<b class="nc"><i>232</i>&nbsp;        this.pointTypes = pointTypes;</b>
+<b class="nc"><i>233</i>&nbsp;        this.numTypes = numTypes;</b>
+<b class="nc"><i>234</i>&nbsp;        this.floatCoords = pointCoords;</b>
+<b class="nc"><i>235</i>&nbsp;        this.numCoords = numCoords;</b>
+<b class="nc"><i>236</i>&nbsp;    }</b>
+<i>237</i>&nbsp;
+<i>238</i>&nbsp;    Point2D getPoint(int coordindex) {
+<b class="nc"><i>239</i>&nbsp;        return new Point2D(floatCoords[coordindex],</b>
+<i>240</i>&nbsp;                           floatCoords[coordindex+1]);
+<i>241</i>&nbsp;    }
+<i>242</i>&nbsp;
+<i>243</i>&nbsp;    private boolean close(int ix, float fx, float tolerance) {
+<b class="nc"><i>244</i>&nbsp;        return (Math.abs(ix - fx) &lt;= tolerance);</b>
+<i>245</i>&nbsp;    }
+<i>246</i>&nbsp;
+<i>247</i>&nbsp;    /**
+<i>248</i>&nbsp;     * Check and return if the fillable interior of the path is a simple
+<i>249</i>&nbsp;     * rectangle on nearly integer bounds and initialize the indicated
+<i>250</i>&nbsp;     * {@link Rectangle} with the integer representation of the rectangle
+<i>251</i>&nbsp;     * if it is.
+<i>252</i>&nbsp;     * The method will return false if the path is not rectangular, or if
+<i>253</i>&nbsp;     * the horizontal and linear segments are not within the indicated
+<i>254</i>&nbsp;     * tolerance of an integer coordinate, or if the resulting rectangle
+<i>255</i>&nbsp;     * cannot be safely represented by the integer attributes of the
+<i>256</i>&nbsp;     * {@code Rectangle} object.
+<i>257</i>&nbsp;     *
+<i>258</i>&nbsp;     * @param retrect the {@code Rectangle} to return the rectangular area,
+<i>259</i>&nbsp;     *                or null
+<i>260</i>&nbsp;     * @param tolerance the maximum difference from an integer allowed
+<i>261</i>&nbsp;     *                  for any edge of the rectangle
+<i>262</i>&nbsp;     * @return true iff the path is a simple rectangle
+<i>263</i>&nbsp;     */
+<i>264</i>&nbsp;    public boolean checkAndGetIntRect(Rectangle retrect, float tolerance) {
+<i>265</i>&nbsp;        // Valid rectangular paths are:
+<i>266</i>&nbsp;        //     4 segs: MOVE, LINE, LINE, LINE (implicit CLOSE)
+<i>267</i>&nbsp;        //     5 segs: MOVE, LINE, LINE, LINE, LINE
+<i>268</i>&nbsp;        //     5 segs: MOVE, LINE, LINE, LINE, CLOSE
+<i>269</i>&nbsp;        //     6 segs: MOVE, LINE, LINE, LINE, LINE, CLOSE
+<b class="nc"><i>270</i>&nbsp;        if (numTypes == 5) {</b>
+<i>271</i>&nbsp;            // points[4] can be LINETO or CLOSE
+<b class="nc"><i>272</i>&nbsp;            if (pointTypes[4] != SEG_LINETO &amp;&amp; pointTypes[4] != SEG_CLOSE) {</b>
+<b class="nc"><i>273</i>&nbsp;                return false;</b>
+<i>274</i>&nbsp;            }
+<b class="nc"><i>275</i>&nbsp;        } else if (numTypes == 6) {</b>
+<i>276</i>&nbsp;            // points[4] must be LINETO and
+<i>277</i>&nbsp;            // points[5] must be CLOSE
+<b class="nc"><i>278</i>&nbsp;            if (pointTypes[4] != SEG_LINETO) return false;</b>
+<b class="nc"><i>279</i>&nbsp;            if (pointTypes[5] != SEG_CLOSE) return false;</b>
+<b class="nc"><i>280</i>&nbsp;        } else if (numTypes != 4) {</b>
+<b class="nc"><i>281</i>&nbsp;            return false;</b>
+<i>282</i>&nbsp;        }
+<b class="nc"><i>283</i>&nbsp;        if (pointTypes[0] != SEG_MOVETO) return false;</b>
+<b class="nc"><i>284</i>&nbsp;        if (pointTypes[1] != SEG_LINETO) return false;</b>
+<b class="nc"><i>285</i>&nbsp;        if (pointTypes[2] != SEG_LINETO) return false;</b>
+<b class="nc"><i>286</i>&nbsp;        if (pointTypes[3] != SEG_LINETO) return false;</b>
+<i>287</i>&nbsp;
+<b class="nc"><i>288</i>&nbsp;        int x0 = (int) (floatCoords[0] + 0.5f);</b>
+<b class="nc"><i>289</i>&nbsp;        int y0 = (int) (floatCoords[1] + 0.5f);</b>
+<b class="nc"><i>290</i>&nbsp;        if (!close(x0, floatCoords[0], tolerance)) return false;</b>
+<b class="nc"><i>291</i>&nbsp;        if (!close(y0, floatCoords[1], tolerance)) return false;</b>
+<i>292</i>&nbsp;
+<b class="nc"><i>293</i>&nbsp;        int x1 = (int) (floatCoords[2] + 0.5f);</b>
+<b class="nc"><i>294</i>&nbsp;        int y1 = (int) (floatCoords[3] + 0.5f);</b>
+<b class="nc"><i>295</i>&nbsp;        if (!close(x1, floatCoords[2], tolerance)) return false;</b>
+<b class="nc"><i>296</i>&nbsp;        if (!close(y1, floatCoords[3], tolerance)) return false;</b>
+<i>297</i>&nbsp;
+<b class="nc"><i>298</i>&nbsp;        int x2 = (int) (floatCoords[4] + 0.5f);</b>
+<b class="nc"><i>299</i>&nbsp;        int y2 = (int) (floatCoords[5] + 0.5f);</b>
+<b class="nc"><i>300</i>&nbsp;        if (!close(x2, floatCoords[4], tolerance)) return false;</b>
+<b class="nc"><i>301</i>&nbsp;        if (!close(y2, floatCoords[5], tolerance)) return false;</b>
+<i>302</i>&nbsp;
+<b class="nc"><i>303</i>&nbsp;        int x3 = (int) (floatCoords[6] + 0.5f);</b>
+<b class="nc"><i>304</i>&nbsp;        int y3 = (int) (floatCoords[7] + 0.5f);</b>
+<b class="nc"><i>305</i>&nbsp;        if (!close(x3, floatCoords[6], tolerance)) return false;</b>
+<b class="nc"><i>306</i>&nbsp;        if (!close(y3, floatCoords[7], tolerance)) return false;</b>
+<i>307</i>&nbsp;
+<b class="nc"><i>308</i>&nbsp;        if (numTypes &gt; 4 &amp;&amp; pointTypes[4] == SEG_LINETO) {</b>
+<b class="nc"><i>309</i>&nbsp;            if (!close(x0, floatCoords[8], tolerance)) return false;</b>
+<b class="nc"><i>310</i>&nbsp;            if (!close(y0, floatCoords[9], tolerance)) return false;</b>
+<i>311</i>&nbsp;        }
+<i>312</i>&nbsp;
+<b class="nc"><i>313</i>&nbsp;        if ((x0 == x1 &amp;&amp; x2 == x3 &amp;&amp; y0 == y3 &amp;&amp; y1 == y2) ||</b>
+<i>314</i>&nbsp;            (y0 == y1 &amp;&amp; y2 == y3 &amp;&amp; x0 == x3 &amp;&amp; x1 == x2))
+<i>315</i>&nbsp;        {
+<i>316</i>&nbsp;            // We can use either diagonal to calculate the rectangle:
+<i>317</i>&nbsp;            //     (x0, y0) -&gt; (x2, y2)
+<i>318</i>&nbsp;            //     (x1, y1) -&gt; (x3, y3)
+<i>319</i>&nbsp;            // We also need to deal with upside down and/or backwards rectangles
+<i>320</i>&nbsp;            int x, y, w, h;
+<b class="nc"><i>321</i>&nbsp;            if (x2 &lt; x0) { x = x2; w = x0 - x2; }</b>
+<b class="nc"><i>322</i>&nbsp;            else         { x = x0; w = x2 - x0; }</b>
+<b class="nc"><i>323</i>&nbsp;            if (y2 &lt; y0) { y = y2; h = y0 - y2; }</b>
+<b class="nc"><i>324</i>&nbsp;            else         { y = y0; h = y2 - y0; }</b>
+<i>325</i>&nbsp;            // Overflow protection...
+<b class="nc"><i>326</i>&nbsp;            if (w &lt; 0) return false;</b>
+<b class="nc"><i>327</i>&nbsp;            if (h &lt; 0) return false;</b>
+<i>328</i>&nbsp;
+<b class="nc"><i>329</i>&nbsp;            if (retrect != null) {</b>
+<b class="nc"><i>330</i>&nbsp;                retrect.setBounds(x, y, w, h);</b>
+<i>331</i>&nbsp;            }
+<b class="nc"><i>332</i>&nbsp;            return true;</b>
+<i>333</i>&nbsp;        }
+<b class="nc"><i>334</i>&nbsp;        return false;</b>
+<i>335</i>&nbsp;    }
+<i>336</i>&nbsp;
+<i>337</i>&nbsp;    void needRoom(boolean needMove, int newCoords) {
+<b class="fc"><i>338</i>&nbsp;        if (needMove &amp;&amp; (numTypes == 0)) {</b>
+<b class="nc"><i>339</i>&nbsp;            throw new IllegalPathStateException(&quot;missing initial moveto &quot;+</b>
+<i>340</i>&nbsp;                                                &quot;in path definition&quot;);
+<i>341</i>&nbsp;        }
+<b class="fc"><i>342</i>&nbsp;        int size = pointTypes.length;</b>
+<b class="fc"><i>343</i>&nbsp;        if (size == 0) {</b>
+<b class="nc"><i>344</i>&nbsp;            pointTypes = new byte[2];</b>
+<b class="fc"><i>345</i>&nbsp;        } else if (numTypes &gt;= size) {</b>
+<b class="nc"><i>346</i>&nbsp;            pointTypes = expandPointTypes(pointTypes, 1);</b>
+<i>347</i>&nbsp;        }
+<b class="fc"><i>348</i>&nbsp;        size = floatCoords.length;</b>
+<b class="fc"><i>349</i>&nbsp;        if (numCoords &gt; (floatCoords.length - newCoords)) {</b>
+<b class="nc"><i>350</i>&nbsp;            floatCoords = expandCoords(floatCoords, newCoords);</b>
+<i>351</i>&nbsp;        }
+<b class="fc"><i>352</i>&nbsp;    }</b>
+<i>353</i>&nbsp;
+<i>354</i>&nbsp;    static byte[] expandPointTypes(byte[] oldPointTypes, int needed) {
+<b class="nc"><i>355</i>&nbsp;        final int oldSize = oldPointTypes.length;</b>
+<b class="nc"><i>356</i>&nbsp;        final int newSizeMin = oldSize + needed;</b>
+<b class="nc"><i>357</i>&nbsp;        if (newSizeMin &lt; oldSize) {</b>
+<i>358</i>&nbsp;            // hard overflow failure - we can&#39;t even accommodate
+<i>359</i>&nbsp;            // new items without overflowing
+<b class="nc"><i>360</i>&nbsp;            throw new ArrayIndexOutOfBoundsException(</b>
+<i>361</i>&nbsp;                          &quot;pointTypes exceeds maximum capacity !&quot;);
+<i>362</i>&nbsp;        }
+<i>363</i>&nbsp;        // growth algorithm computation
+<b class="nc"><i>364</i>&nbsp;        int grow = oldSize;</b>
+<b class="nc"><i>365</i>&nbsp;        if (grow &gt; EXPAND_MAX) {</b>
+<b class="nc"><i>366</i>&nbsp;            grow = Math.max(EXPAND_MAX, oldSize &gt;&gt; 3); // 1/8th min</b>
+<b class="nc"><i>367</i>&nbsp;        } else if (grow &lt; INIT_SIZE) {</b>
+<b class="nc"><i>368</i>&nbsp;            grow = INIT_SIZE; // ensure &gt; 6 (cubics)</b>
+<i>369</i>&nbsp;        }
+<b class="nc"><i>370</i>&nbsp;        assert grow &gt; 0;</b>
+<i>371</i>&nbsp;
+<b class="nc"><i>372</i>&nbsp;        int newSize = oldSize + grow;</b>
+<b class="nc"><i>373</i>&nbsp;        if (newSize &lt; newSizeMin) {</b>
+<i>374</i>&nbsp;            // overflow in growth algorithm computation
+<b class="nc"><i>375</i>&nbsp;            newSize = Integer.MAX_VALUE;</b>
+<i>376</i>&nbsp;        }
+<i>377</i>&nbsp;
+<i>378</i>&nbsp;        while (true) {
+<i>379</i>&nbsp;            try {
+<i>380</i>&nbsp;                // try allocating the larger array
+<b class="nc"><i>381</i>&nbsp;                return Arrays.copyOf(oldPointTypes, newSize);</b>
+<b class="nc"><i>382</i>&nbsp;            } catch (OutOfMemoryError oome) {</b>
+<b class="nc"><i>383</i>&nbsp;                if (newSize == newSizeMin) {</b>
+<b class="nc"><i>384</i>&nbsp;                    throw oome;</b>
+<i>385</i>&nbsp;                }
+<i>386</i>&nbsp;            }
+<b class="nc"><i>387</i>&nbsp;            newSize = newSizeMin + (newSize - newSizeMin) / 2;</b>
+<i>388</i>&nbsp;        }
+<i>389</i>&nbsp;    }
+<i>390</i>&nbsp;
+<i>391</i>&nbsp;    static float[] expandCoords(float[] oldCoords, int needed) {
+<b class="nc"><i>392</i>&nbsp;        final int oldSize = oldCoords.length;</b>
+<b class="nc"><i>393</i>&nbsp;        final int newSizeMin = oldSize + needed;</b>
+<b class="nc"><i>394</i>&nbsp;        if (newSizeMin &lt; oldSize) {</b>
+<i>395</i>&nbsp;            // hard overflow failure - we can&#39;t even accommodate
+<i>396</i>&nbsp;            // new items without overflowing
+<b class="nc"><i>397</i>&nbsp;            throw new ArrayIndexOutOfBoundsException(</b>
+<i>398</i>&nbsp;                          &quot;coords exceeds maximum capacity !&quot;);
+<i>399</i>&nbsp;        }
+<i>400</i>&nbsp;        // growth algorithm computation
+<b class="nc"><i>401</i>&nbsp;        int grow = oldSize;</b>
+<b class="nc"><i>402</i>&nbsp;        if (grow &gt; EXPAND_MAX_COORDS) {</b>
+<b class="nc"><i>403</i>&nbsp;            grow = Math.max(EXPAND_MAX_COORDS, oldSize &gt;&gt; 3); // 1/8th min</b>
+<b class="nc"><i>404</i>&nbsp;        } else if (grow &lt; INIT_SIZE) {</b>
+<b class="nc"><i>405</i>&nbsp;            grow = INIT_SIZE; // ensure &gt; 6 (cubics)</b>
+<i>406</i>&nbsp;        }
+<b class="nc"><i>407</i>&nbsp;        assert grow &gt; needed;</b>
+<i>408</i>&nbsp;
+<b class="nc"><i>409</i>&nbsp;        int newSize = oldSize + grow;</b>
+<b class="nc"><i>410</i>&nbsp;        if (newSize &lt; newSizeMin) {</b>
+<i>411</i>&nbsp;            // overflow in growth algorithm computation
+<b class="nc"><i>412</i>&nbsp;            newSize = Integer.MAX_VALUE;</b>
+<i>413</i>&nbsp;        }
+<i>414</i>&nbsp;        while (true) {
+<i>415</i>&nbsp;            try {
+<i>416</i>&nbsp;                // try allocating the larger array
+<b class="nc"><i>417</i>&nbsp;                return Arrays.copyOf(oldCoords, newSize);</b>
+<b class="nc"><i>418</i>&nbsp;            } catch (OutOfMemoryError oome) {</b>
+<b class="nc"><i>419</i>&nbsp;                if (newSize == newSizeMin) {</b>
+<b class="nc"><i>420</i>&nbsp;                    throw oome;</b>
+<i>421</i>&nbsp;                }
+<i>422</i>&nbsp;            }
+<b class="nc"><i>423</i>&nbsp;            newSize = newSizeMin + (newSize - newSizeMin) / 2;</b>
+<i>424</i>&nbsp;        }
+<i>425</i>&nbsp;    }
+<i>426</i>&nbsp;
+<i>427</i>&nbsp;    /**
+<i>428</i>&nbsp;     * Adds a point to the path by moving to the specified
+<i>429</i>&nbsp;     * coordinates specified in float precision.
+<i>430</i>&nbsp;     *
+<i>431</i>&nbsp;     * @param x the specified X coordinate
+<i>432</i>&nbsp;     * @param y the specified Y coordinate
+<i>433</i>&nbsp;     */
+<i>434</i>&nbsp;    public final void moveTo(float x, float y) {
+<b class="fc"><i>435</i>&nbsp;        if (numTypes &gt; 0 &amp;&amp; pointTypes[numTypes - 1] == SEG_MOVETO) {</b>
+<b class="nc"><i>436</i>&nbsp;            floatCoords[numCoords-2] = moveX = prevX = currX = x;</b>
+<b class="nc"><i>437</i>&nbsp;            floatCoords[numCoords-1] = moveY = prevY = currY = y;</b>
+<i>438</i>&nbsp;        } else {
+<b class="fc"><i>439</i>&nbsp;            needRoom(false, 2);</b>
+<b class="fc"><i>440</i>&nbsp;            pointTypes[numTypes++] = SEG_MOVETO;</b>
+<b class="fc"><i>441</i>&nbsp;            floatCoords[numCoords++] = moveX = prevX = currX = x;</b>
+<b class="fc"><i>442</i>&nbsp;            floatCoords[numCoords++] = moveY = prevY = currY = y;</b>
+<i>443</i>&nbsp;        }
+<b class="fc"><i>444</i>&nbsp;    }</b>
+<i>445</i>&nbsp;
+<i>446</i>&nbsp;    /**
+<i>447</i>&nbsp;     * Adds a point to the path by moving to the specified coordinates
+<i>448</i>&nbsp;     * relative to the current point, specified in float precision.
+<i>449</i>&nbsp;     *
+<i>450</i>&nbsp;     * @param relx the specified relative X coordinate
+<i>451</i>&nbsp;     * @param rely the specified relative Y coordinate
+<i>452</i>&nbsp;     * @see Path2D#moveTo
+<i>453</i>&nbsp;     */
+<i>454</i>&nbsp;    public final void moveToRel(float relx, float rely) {
+<b class="nc"><i>455</i>&nbsp;        if (numTypes &gt; 0 &amp;&amp; pointTypes[numTypes - 1] == SEG_MOVETO) {</b>
+<b class="nc"><i>456</i>&nbsp;            floatCoords[numCoords-2] = moveX = prevX = (currX += relx);</b>
+<b class="nc"><i>457</i>&nbsp;            floatCoords[numCoords-1] = moveY = prevY = (currY += rely);</b>
+<i>458</i>&nbsp;        } else {
+<b class="nc"><i>459</i>&nbsp;            needRoom(true, 2);</b>
+<b class="nc"><i>460</i>&nbsp;            pointTypes[numTypes++] = SEG_MOVETO;</b>
+<b class="nc"><i>461</i>&nbsp;            floatCoords[numCoords++] = moveX = prevX = (currX += relx);</b>
+<b class="nc"><i>462</i>&nbsp;            floatCoords[numCoords++] = moveY = prevY = (currY += rely);</b>
+<i>463</i>&nbsp;        }
+<b class="nc"><i>464</i>&nbsp;    }</b>
+<i>465</i>&nbsp;
+<i>466</i>&nbsp;    /**
+<i>467</i>&nbsp;     * Adds a point to the path by drawing a straight line from the
+<i>468</i>&nbsp;     * current coordinates to the new coordinates.
+<i>469</i>&nbsp;     *
+<i>470</i>&nbsp;     * @param x the specified X coordinate
+<i>471</i>&nbsp;     * @param y the specified Y coordinate
+<i>472</i>&nbsp;     */
+<i>473</i>&nbsp;    public final void lineTo(float x, float y) {
+<b class="fc"><i>474</i>&nbsp;        needRoom(true, 2);</b>
+<b class="fc"><i>475</i>&nbsp;        pointTypes[numTypes++] = SEG_LINETO;</b>
+<b class="fc"><i>476</i>&nbsp;        floatCoords[numCoords++] = prevX = currX = x;</b>
+<b class="fc"><i>477</i>&nbsp;        floatCoords[numCoords++] = prevY = currY = y;</b>
+<b class="fc"><i>478</i>&nbsp;    }</b>
+<i>479</i>&nbsp;
+<i>480</i>&nbsp;    /**
+<i>481</i>&nbsp;     * Adds a point to the path by drawing a straight line from the
+<i>482</i>&nbsp;     * current coordinates to the new coordinates relative to the
+<i>483</i>&nbsp;     * current point.
+<i>484</i>&nbsp;     *
+<i>485</i>&nbsp;     * @param relx the specified relative X coordinate
+<i>486</i>&nbsp;     * @param rely the specified relative Y coordinate
+<i>487</i>&nbsp;     * @see Path2D#lineTo
+<i>488</i>&nbsp;     */
+<i>489</i>&nbsp;    public final void lineToRel(float relx, float rely) {
+<b class="fc"><i>490</i>&nbsp;        needRoom(true, 2);</b>
+<b class="fc"><i>491</i>&nbsp;        pointTypes[numTypes++] = SEG_LINETO;</b>
+<b class="fc"><i>492</i>&nbsp;        floatCoords[numCoords++] = prevX = (currX += relx);</b>
+<b class="fc"><i>493</i>&nbsp;        floatCoords[numCoords++] = prevY = (currY += rely);</b>
+<b class="fc"><i>494</i>&nbsp;    }</b>
+<i>495</i>&nbsp;
+<i>496</i>&nbsp;    /**
+<i>497</i>&nbsp;     * Adds a curved segment to the path, defined by two new points, by
+<i>498</i>&nbsp;     * drawing a Quadratic curve that intersects both the current
+<i>499</i>&nbsp;     * coordinates and the specified coordinates {@code (x2,y2)},
+<i>500</i>&nbsp;     * using the specified point {@code (x1,y1)} as a quadratic
+<i>501</i>&nbsp;     * parametric control point.
+<i>502</i>&nbsp;     *
+<i>503</i>&nbsp;     * @param x1 the X coordinate of the quadratic control point
+<i>504</i>&nbsp;     * @param y1 the Y coordinate of the quadratic control point
+<i>505</i>&nbsp;     * @param x2 the X coordinate of the final end point
+<i>506</i>&nbsp;     * @param y2 the Y coordinate of the final end point
+<i>507</i>&nbsp;     */
+<i>508</i>&nbsp;    public final void quadTo(float x1, float y1,
+<i>509</i>&nbsp;                             float x2, float y2)
+<i>510</i>&nbsp;    {
+<b class="nc"><i>511</i>&nbsp;        needRoom(true, 4);</b>
+<b class="nc"><i>512</i>&nbsp;        pointTypes[numTypes++] = SEG_QUADTO;</b>
+<b class="nc"><i>513</i>&nbsp;        floatCoords[numCoords++] = prevX = x1;</b>
+<b class="nc"><i>514</i>&nbsp;        floatCoords[numCoords++] = prevY = y1;</b>
+<b class="nc"><i>515</i>&nbsp;        floatCoords[numCoords++] = currX = x2;</b>
+<b class="nc"><i>516</i>&nbsp;        floatCoords[numCoords++] = currY = y2;</b>
+<b class="nc"><i>517</i>&nbsp;    }</b>
+<i>518</i>&nbsp;
+<i>519</i>&nbsp;    /**
+<i>520</i>&nbsp;     * Adds a curved segment to the path, defined by two new points
+<i>521</i>&nbsp;     * relative to the current point, by
+<i>522</i>&nbsp;     * drawing a Quadratic curve that intersects both the current
+<i>523</i>&nbsp;     * coordinates and the specified relative coordinates {@code (rx2,ry2)},
+<i>524</i>&nbsp;     * using the specified relative point {@code (rx1,ry1)} as a quadratic
+<i>525</i>&nbsp;     * parametric control point.
+<i>526</i>&nbsp;     * This is equivalent to:
+<i>527</i>&nbsp;     * &lt;pre&gt;
+<i>528</i>&nbsp;     *     quadTo(getCurrentX() + rx1, getCurrentY() + ry1,
+<i>529</i>&nbsp;     *            getCurrentX() + rx2, getCurrentY() + ry2);
+<i>530</i>&nbsp;     * &lt;/pre&gt;
+<i>531</i>&nbsp;     *
+<i>532</i>&nbsp;     * @param relx1 the relative X coordinate of the quadratic control point
+<i>533</i>&nbsp;     * @param rely1 the relative Y coordinate of the quadratic control point
+<i>534</i>&nbsp;     * @param relx2 the relative X coordinate of the final end point
+<i>535</i>&nbsp;     * @param rely2 the relative Y coordinate of the final end point
+<i>536</i>&nbsp;     * @see Path2D#quadTo
+<i>537</i>&nbsp;     */
+<i>538</i>&nbsp;    public final void quadToRel(float relx1, float rely1,
+<i>539</i>&nbsp;                                float relx2, float rely2)
+<i>540</i>&nbsp;    {
+<b class="nc"><i>541</i>&nbsp;        needRoom(true, 4);</b>
+<b class="nc"><i>542</i>&nbsp;        pointTypes[numTypes++] = SEG_QUADTO;</b>
+<b class="nc"><i>543</i>&nbsp;        floatCoords[numCoords++] = prevX = currX + relx1;</b>
+<b class="nc"><i>544</i>&nbsp;        floatCoords[numCoords++] = prevY = currY + rely1;</b>
+<b class="nc"><i>545</i>&nbsp;        floatCoords[numCoords++] = (currX += relx2);</b>
+<b class="nc"><i>546</i>&nbsp;        floatCoords[numCoords++] = (currY += rely2);</b>
+<b class="nc"><i>547</i>&nbsp;    }</b>
+<i>548</i>&nbsp;
+<i>549</i>&nbsp;    /**
+<i>550</i>&nbsp;     * Adds a curved segment to the path, defined by a new point, by
+<i>551</i>&nbsp;     * drawing a Quadratic curve that intersects both the current
+<i>552</i>&nbsp;     * coordinates and the specified coordinates {@code (x,y)},
+<i>553</i>&nbsp;     * using a quadratic parametric control point that is positioned
+<i>554</i>&nbsp;     * symmetrically across the current point from the previous curve
+<i>555</i>&nbsp;     * control point.
+<i>556</i>&nbsp;     * If the previous path segment is not a curve, then the control
+<i>557</i>&nbsp;     * point will be positioned at the current point.  This is
+<i>558</i>&nbsp;     * equivalent to:
+<i>559</i>&nbsp;     * &lt;pre&gt;
+<i>560</i>&nbsp;     *     quadTo(getCurrentX() * 2 - &lt;previousControlX&gt;,
+<i>561</i>&nbsp;     *            getCurrentY() * 2 - &lt;previousControlY&gt;,
+<i>562</i>&nbsp;     *            x, y);
+<i>563</i>&nbsp;     * &lt;/pre&gt;
+<i>564</i>&nbsp;     *
+<i>565</i>&nbsp;     * @param x2 the X coordinate of the final end point
+<i>566</i>&nbsp;     * @param y2 the Y coordinate of the final end point
+<i>567</i>&nbsp;     * @see Path2D#quadTo
+<i>568</i>&nbsp;     */
+<i>569</i>&nbsp;    public final void quadToSmooth(float x2, float y2) {
+<b class="nc"><i>570</i>&nbsp;        needRoom(true, 4);</b>
+<b class="nc"><i>571</i>&nbsp;        pointTypes[numTypes++] = SEG_QUADTO;</b>
+<b class="nc"><i>572</i>&nbsp;        floatCoords[numCoords++] = prevX = (currX * 2.0f - prevX);</b>
+<b class="nc"><i>573</i>&nbsp;        floatCoords[numCoords++] = prevY = (currY * 2.0f - prevY);</b>
+<b class="nc"><i>574</i>&nbsp;        floatCoords[numCoords++] = currX = x2;</b>
+<b class="nc"><i>575</i>&nbsp;        floatCoords[numCoords++] = currY = y2;</b>
+<b class="nc"><i>576</i>&nbsp;    }</b>
+<i>577</i>&nbsp;
+<i>578</i>&nbsp;    /**
+<i>579</i>&nbsp;     * Adds a curved segment to the path, defined by a new point
+<i>580</i>&nbsp;     * relative to the current point, by
+<i>581</i>&nbsp;     * drawing a Quadratic curve that intersects both the current
+<i>582</i>&nbsp;     * coordinates and the specified relative coordinates {@code (x,y)},
+<i>583</i>&nbsp;     * using a quadratic parametric control point that is positioned
+<i>584</i>&nbsp;     * symmetrically across the current point from the previous curve
+<i>585</i>&nbsp;     * control point.
+<i>586</i>&nbsp;     * If the previous path segment is not a curve, then the control
+<i>587</i>&nbsp;     * point will be positioned at the current point.  This is
+<i>588</i>&nbsp;     * equivalent to:
+<i>589</i>&nbsp;     * &lt;pre&gt;
+<i>590</i>&nbsp;     *     quadTo(getCurrentX() * 2 - &lt;previousControlX&gt;,
+<i>591</i>&nbsp;     *            getCurrentY() * 2 - &lt;previousControlY&gt;,
+<i>592</i>&nbsp;     *            getCurrentX() + x, getCurrentY() + y);
+<i>593</i>&nbsp;     * &lt;/pre&gt;
+<i>594</i>&nbsp;     *
+<i>595</i>&nbsp;     * @param relx2 the relative X coordinate of the final end point
+<i>596</i>&nbsp;     * @param rely2 the relative Y coordinate of the final end point
+<i>597</i>&nbsp;     * @see Path2D#quadTo
+<i>598</i>&nbsp;     */
+<i>599</i>&nbsp;    public final void quadToSmoothRel(float relx2, float rely2) {
+<b class="nc"><i>600</i>&nbsp;        needRoom(true, 4);</b>
+<b class="nc"><i>601</i>&nbsp;        pointTypes[numTypes++] = SEG_QUADTO;</b>
+<b class="nc"><i>602</i>&nbsp;        floatCoords[numCoords++] = prevX = (currX * 2.0f - prevX);</b>
+<b class="nc"><i>603</i>&nbsp;        floatCoords[numCoords++] = prevY = (currY * 2.0f - prevY);</b>
+<b class="nc"><i>604</i>&nbsp;        floatCoords[numCoords++] = (currX += relx2);</b>
+<b class="nc"><i>605</i>&nbsp;        floatCoords[numCoords++] = (currY += rely2);</b>
+<b class="nc"><i>606</i>&nbsp;    }</b>
+<i>607</i>&nbsp;
+<i>608</i>&nbsp;    /**
+<i>609</i>&nbsp;     * Adds a curved segment to the path, defined by three new points, by
+<i>610</i>&nbsp;     * drawing a B&amp;eacute;zier curve that intersects both the current
+<i>611</i>&nbsp;     * coordinates and the specified coordinates {@code (x3,y3)},
+<i>612</i>&nbsp;     * using the specified points {@code (x1,y1)} and {@code (x2,y2)} as
+<i>613</i>&nbsp;     * B&amp;eacute;zier control points.
+<i>614</i>&nbsp;     *
+<i>615</i>&nbsp;     * @param x1 the X coordinate of the first B&amp;eacute;zier control point
+<i>616</i>&nbsp;     * @param y1 the Y coordinate of the first B&amp;eacute;zier control point
+<i>617</i>&nbsp;     * @param x2 the X coordinate of the second B&amp;eacute;zier control point
+<i>618</i>&nbsp;     * @param y2 the Y coordinate of the second B&amp;eacute;zier control point
+<i>619</i>&nbsp;     * @param x3 the X coordinate of the final end point
+<i>620</i>&nbsp;     * @param y3 the Y coordinate of the final end point
+<i>621</i>&nbsp;     * @see Path2D#curveTo
+<i>622</i>&nbsp;     */
+<i>623</i>&nbsp;    public final void curveTo(float x1, float y1,
+<i>624</i>&nbsp;                              float x2, float y2,
+<i>625</i>&nbsp;                              float x3, float y3)
+<i>626</i>&nbsp;    {
+<b class="fc"><i>627</i>&nbsp;        needRoom(true, 6);</b>
+<b class="fc"><i>628</i>&nbsp;        pointTypes[numTypes++] = SEG_CUBICTO;</b>
+<b class="fc"><i>629</i>&nbsp;        floatCoords[numCoords++] = x1;</b>
+<b class="fc"><i>630</i>&nbsp;        floatCoords[numCoords++] = y1;</b>
+<b class="fc"><i>631</i>&nbsp;        floatCoords[numCoords++] = prevX = x2;</b>
+<b class="fc"><i>632</i>&nbsp;        floatCoords[numCoords++] = prevY = y2;</b>
+<b class="fc"><i>633</i>&nbsp;        floatCoords[numCoords++] = currX = x3;</b>
+<b class="fc"><i>634</i>&nbsp;        floatCoords[numCoords++] = currY = y3;</b>
+<b class="fc"><i>635</i>&nbsp;    }</b>
+<i>636</i>&nbsp;
+<i>637</i>&nbsp;    /**
+<i>638</i>&nbsp;     * Adds a curved segment to the path, defined by three new points
+<i>639</i>&nbsp;     * relative to the current point, by
+<i>640</i>&nbsp;     * drawing a B&amp;eacute;zier curve that intersects both the current
+<i>641</i>&nbsp;     * coordinates and the specified coordinates {@code (x3,y3)},
+<i>642</i>&nbsp;     * using the specified points {@code (x1,y1)} and {@code (x2,y2)} as
+<i>643</i>&nbsp;     * B&amp;eacute;zier control points.
+<i>644</i>&nbsp;     * This is equivalent to:
+<i>645</i>&nbsp;     * &lt;pre&gt;
+<i>646</i>&nbsp;     *     curveTo(getCurrentX() + rx1, getCurrentY() + ry1,
+<i>647</i>&nbsp;     *             getCurrentX() + rx2, getCurrentY() + ry2,
+<i>648</i>&nbsp;     *             getCurrentX() + rx3, getCurrentY() + ry3)
+<i>649</i>&nbsp;     * &lt;/pre&gt;
+<i>650</i>&nbsp;     *
+<i>651</i>&nbsp;     * @param relx1 the relative X coordinate of the first B&amp;eacute;zier control point
+<i>652</i>&nbsp;     * @param rely1 the relative Y coordinate of the first B&amp;eacute;zier control point
+<i>653</i>&nbsp;     * @param relx2 the relative X coordinate of the second B&amp;eacute;zier control point
+<i>654</i>&nbsp;     * @param rely2 the relative Y coordinate of the second B&amp;eacute;zier control point
+<i>655</i>&nbsp;     * @param relx3 the relative X coordinate of the final end point
+<i>656</i>&nbsp;     * @param rely3 the relative Y coordinate of the final end point
+<i>657</i>&nbsp;     * @see Path2D#curveTo
+<i>658</i>&nbsp;     */
+<i>659</i>&nbsp;    public final void curveToRel(float relx1, float rely1,
+<i>660</i>&nbsp;                                 float relx2, float rely2,
+<i>661</i>&nbsp;                                 float relx3, float rely3)
+<i>662</i>&nbsp;    {
+<b class="nc"><i>663</i>&nbsp;        needRoom(true, 6);</b>
+<b class="nc"><i>664</i>&nbsp;        pointTypes[numTypes++] = SEG_CUBICTO;</b>
+<b class="nc"><i>665</i>&nbsp;        floatCoords[numCoords++] = currX + relx1;</b>
+<b class="nc"><i>666</i>&nbsp;        floatCoords[numCoords++] = currY + rely1;</b>
+<b class="nc"><i>667</i>&nbsp;        floatCoords[numCoords++] = prevX = currX + relx2;</b>
+<b class="nc"><i>668</i>&nbsp;        floatCoords[numCoords++] = prevY = currY + rely2;</b>
+<b class="nc"><i>669</i>&nbsp;        floatCoords[numCoords++] = (currX += relx3);</b>
+<b class="nc"><i>670</i>&nbsp;        floatCoords[numCoords++] = (currY += rely3);</b>
+<b class="nc"><i>671</i>&nbsp;    }</b>
+<i>672</i>&nbsp;
+<i>673</i>&nbsp;    /**
+<i>674</i>&nbsp;     * Adds a curved segment to the path, defined by two new points and
+<i>675</i>&nbsp;     * a third point inferred from the previous curve, by
+<i>676</i>&nbsp;     * drawing a B&amp;eacute;zier curve that intersects both the current
+<i>677</i>&nbsp;     * coordinates and the specified coordinates {@code (x3,y3)},
+<i>678</i>&nbsp;     * using the specified point {@code (x2,y2)} as the second
+<i>679</i>&nbsp;     * B&amp;eacute;zier control point and a first B&amp;eacute;zier control
+<i>680</i>&nbsp;     * point that is positioned
+<i>681</i>&nbsp;     * symmetrically across the current point from the previous curve
+<i>682</i>&nbsp;     * control point.
+<i>683</i>&nbsp;     * This is equivalent to:
+<i>684</i>&nbsp;     * &lt;pre&gt;
+<i>685</i>&nbsp;     *     curveTo(getCurrentX() * 2.0f - &lt;previousControlX&gt;,
+<i>686</i>&nbsp;     *             getCurrentY() * 2.0f - &lt;previousControlY&gt;,
+<i>687</i>&nbsp;     *             x2, y2, x3, y3);
+<i>688</i>&nbsp;     * &lt;/pre&gt;
+<i>689</i>&nbsp;     *
+<i>690</i>&nbsp;     * @param x2 the X coordinate of the second B&amp;eacute;zier control point
+<i>691</i>&nbsp;     * @param y2 the Y coordinate of the second B&amp;eacute;zier control point
+<i>692</i>&nbsp;     * @param x3 the X coordinate of the final end point
+<i>693</i>&nbsp;     * @param y3 the Y coordinate of the final end point
+<i>694</i>&nbsp;     * @see Path2D#curveTo
+<i>695</i>&nbsp;     */
+<i>696</i>&nbsp;    public final void curveToSmooth(float x2, float y2,
+<i>697</i>&nbsp;                                    float x3, float y3)
+<i>698</i>&nbsp;    {
+<b class="nc"><i>699</i>&nbsp;        needRoom(true, 6);</b>
+<b class="nc"><i>700</i>&nbsp;        pointTypes[numTypes++] = SEG_CUBICTO;</b>
+<b class="nc"><i>701</i>&nbsp;        floatCoords[numCoords++] = currX * 2.0f - prevX;</b>
+<b class="nc"><i>702</i>&nbsp;        floatCoords[numCoords++] = currY * 2.0f - prevY;</b>
+<b class="nc"><i>703</i>&nbsp;        floatCoords[numCoords++] = prevX = x2;</b>
+<b class="nc"><i>704</i>&nbsp;        floatCoords[numCoords++] = prevY = y2;</b>
+<b class="nc"><i>705</i>&nbsp;        floatCoords[numCoords++] = currX = x3;</b>
+<b class="nc"><i>706</i>&nbsp;        floatCoords[numCoords++] = currY = y3;</b>
+<b class="nc"><i>707</i>&nbsp;    }</b>
+<i>708</i>&nbsp;
+<i>709</i>&nbsp;    /**
+<i>710</i>&nbsp;     * Adds a curved segment to the path, defined by two new points relative
+<i>711</i>&nbsp;     * to the current point and
+<i>712</i>&nbsp;     * a third point inferred from the previous curve, by
+<i>713</i>&nbsp;     * drawing a B&amp;eacute;zier curve that intersects both the current
+<i>714</i>&nbsp;     * coordinates and the specified relative coordinates {@code (rx3,ry3)},
+<i>715</i>&nbsp;     * using the specified relative point {@code (rx2,ry2)} as the second
+<i>716</i>&nbsp;     * B&amp;eacute;zier control point and a first B&amp;eacute;zier control
+<i>717</i>&nbsp;     * point that is positioned
+<i>718</i>&nbsp;     * symmetrically across the current point from the previous curve
+<i>719</i>&nbsp;     * control point.
+<i>720</i>&nbsp;     * This is equivalent to:
+<i>721</i>&nbsp;     * &lt;pre&gt;
+<i>722</i>&nbsp;     *     curveTo(getCurrentX() * 2.0f - &lt;previousControlX&gt;,
+<i>723</i>&nbsp;     *             getCurrentY() * 2.0f - &lt;previousControlY&gt;,
+<i>724</i>&nbsp;     *             getCurrentX() + x2, getCurrentY() + y2,
+<i>725</i>&nbsp;     *             getCurrentX() + x3, getCurrentY() + y3);
+<i>726</i>&nbsp;     * &lt;/pre&gt;
+<i>727</i>&nbsp;     *
+<i>728</i>&nbsp;     * @param relx2 the relative X coordinate of the second B&amp;eacute;zier control point
+<i>729</i>&nbsp;     * @param rely2 the relative Y coordinate of the second B&amp;eacute;zier control point
+<i>730</i>&nbsp;     * @param relx3 the relative X coordinate of the final end point
+<i>731</i>&nbsp;     * @param rely3 the relative Y coordinate of the final end point
+<i>732</i>&nbsp;     * @see Path2D#curveTo
+<i>733</i>&nbsp;     */
+<i>734</i>&nbsp;    public final void curveToSmoothRel(float relx2, float rely2,
+<i>735</i>&nbsp;                                       float relx3, float rely3)
+<i>736</i>&nbsp;    {
+<b class="nc"><i>737</i>&nbsp;        needRoom(true, 6);</b>
+<b class="nc"><i>738</i>&nbsp;        pointTypes[numTypes++] = SEG_CUBICTO;</b>
+<b class="nc"><i>739</i>&nbsp;        floatCoords[numCoords++] = currX * 2.0f - prevX;</b>
+<b class="nc"><i>740</i>&nbsp;        floatCoords[numCoords++] = currY * 2.0f - prevY;</b>
+<b class="nc"><i>741</i>&nbsp;        floatCoords[numCoords++] = prevX = currX + relx2;</b>
+<b class="nc"><i>742</i>&nbsp;        floatCoords[numCoords++] = prevY = currY + rely2;</b>
+<b class="nc"><i>743</i>&nbsp;        floatCoords[numCoords++] = (currX += relx3);</b>
+<b class="nc"><i>744</i>&nbsp;        floatCoords[numCoords++] = (currY += rely3);</b>
+<b class="nc"><i>745</i>&nbsp;    }</b>
+<i>746</i>&nbsp;
+<i>747</i>&nbsp;    /**
+<i>748</i>&nbsp;     * Append a section of a quadrant of an oval to the current path,
+<i>749</i>&nbsp;     * relative to the current point.
+<i>750</i>&nbsp;     * See {@link appendOvalQuadrant} for a precise definition of the
+<i>751</i>&nbsp;     * path segments to be added, considering that this method uses the
+<i>752</i>&nbsp;     * current point of the path as the first pair of coordinates and
+<i>753</i>&nbsp;     * a hard-coded prefix of {@link CornerPrefix.CORNER_ONLY CORNER_ONLY}.
+<i>754</i>&nbsp;     * This method is equivalent to (and only slightly faster than):
+<i>755</i>&nbsp;     * &lt;pre&gt;
+<i>756</i>&nbsp;     *     appendOvalQuadrant(getCurrentX(), getCurrentY(),
+<i>757</i>&nbsp;     *                        cx, cy, ex, ey, tfrom, tto,
+<i>758</i>&nbsp;     *                        CornerPrefix.CORNER_ONLY);
+<i>759</i>&nbsp;     * &lt;/pre&gt;
+<i>760</i>&nbsp;     * Note that you could define a circle inscribed in the rectangular
+<i>761</i>&nbsp;     * bounding box from {@code (x0, y0)} to {@code (x1, y1)} with the
+<i>762</i>&nbsp;     * following 4 calls to this method:
+<i>763</i>&nbsp;     * &lt;pre&gt;
+<i>764</i>&nbsp;     *     Path2D path = new Path2D();
+<i>765</i>&nbsp;     *     float cx = (x0 + x1) * 0.5f; // center X coordinate of top and bottom
+<i>766</i>&nbsp;     *     float cy = (y0 + y1) * 0.5f; // center Y coordinate of left and right
+<i>767</i>&nbsp;     *     path.moveTo(cx, y0);
+<i>768</i>&nbsp;     *     path.ovalQuadrantTo(x1, y0, x1, cy, 0f, 1f);
+<i>769</i>&nbsp;     *     path.ovalQuadrantTo(x1, y1, cx, y1, 0f, 1f);
+<i>770</i>&nbsp;     *     path.ovalQuadrantTo(x0, y1, x0, cy, 0f, 1f);
+<i>771</i>&nbsp;     *     path.ovalQuadrantTo(x0, y0, cx, y0, 0f, 1f);
+<i>772</i>&nbsp;     *     path.closePath();
+<i>773</i>&nbsp;     * &lt;/pre&gt;
+<i>774</i>&nbsp;     * You could also define a rounded rectangle inscribed in the rectangular
+<i>775</i>&nbsp;     * bounding box from {@code (x0, y0)} to {@code (x1, y1)} with a corner
+<i>776</i>&nbsp;     * arc radius {@code r} less than half the width and the height with the
+<i>777</i>&nbsp;     * following 4 calls to this method:
+<i>778</i>&nbsp;     * &lt;pre&gt;
+<i>779</i>&nbsp;     *     Path2D path = new Path2D();
+<i>780</i>&nbsp;     *     float lx = x0 + r;
+<i>781</i>&nbsp;     *     float rx = x1 - r;
+<i>782</i>&nbsp;     *     float ty = y0 + r;
+<i>783</i>&nbsp;     *     float by = y1 - r;
+<i>784</i>&nbsp;     *     path.moveTo(rx, y0);
+<i>785</i>&nbsp;     *     path.ovalQuadrantTo(x1, y0, x1, ty, 0f, 1f);
+<i>786</i>&nbsp;     *     path.lineTo(x1, by);
+<i>787</i>&nbsp;     *     path.ovalQuadrantTo(x1, y1, rx, y1, 0f, 1f);
+<i>788</i>&nbsp;     *     path.lineTo(lx, y1);
+<i>789</i>&nbsp;     *     path.ovalQuadrantTo(x0, y1, x0, by, 0f, 1f);
+<i>790</i>&nbsp;     *     path.lineTo(x0, by);
+<i>791</i>&nbsp;     *     path.ovalQuadrantTo(x0, y0, lx, y0, 0f, 1f);
+<i>792</i>&nbsp;     *     path.closePath();
+<i>793</i>&nbsp;     * &lt;/pre&gt;
+<i>794</i>&nbsp;     *
+<i>795</i>&nbsp;     * @param cx the X coordinate of the corner
+<i>796</i>&nbsp;     * @param cy the Y coordinate of the corner
+<i>797</i>&nbsp;     * @param ex the X coordinate of the midpoint of the trailing edge
+<i>798</i>&nbsp;     *           interpolated by the oval
+<i>799</i>&nbsp;     * @param ey the Y coordinate of the midpoint of the trailing edge
+<i>800</i>&nbsp;     *           interpolated by the oval
+<i>801</i>&nbsp;     * @param tfrom the fraction of the oval section where the curve should start
+<i>802</i>&nbsp;     * @param tto the fraction of the oval section where the curve should end
+<i>803</i>&nbsp;     * @throws IllegalPathStateException
+<i>804</i>&nbsp;     *     if there is no current point in the path
+<i>805</i>&nbsp;     * @throws IllegalArgumentException
+<i>806</i>&nbsp;     *     if the {@code tfrom} and {@code tto} values do not satisfy the
+<i>807</i>&nbsp;     *     required relationship {@code (0 &lt;= tfrom &lt;= tto &lt;= 1).
+<i>808</i>&nbsp;     */
+<i>809</i>&nbsp;    public final void ovalQuadrantTo(float cx, float cy,
+<i>810</i>&nbsp;                                     float ex, float ey,
+<i>811</i>&nbsp;                                     float tfrom, float tto)
+<i>812</i>&nbsp;    {
+<b class="nc"><i>813</i>&nbsp;        if (numTypes &lt; 1) {</b>
+<b class="nc"><i>814</i>&nbsp;            throw new IllegalPathStateException(&quot;missing initial moveto &quot;+</b>
+<i>815</i>&nbsp;                                                &quot;in path definition&quot;);
+<i>816</i>&nbsp;        }
+<b class="nc"><i>817</i>&nbsp;        appendOvalQuadrant(currX, currY,</b>
+<i>818</i>&nbsp;                           cx, cy, ex, ey, tfrom, tto, CornerPrefix.CORNER_ONLY);
+<b class="nc"><i>819</i>&nbsp;    }</b>
+<i>820</i>&nbsp;
+<i>821</i>&nbsp;    /**
+<i>822</i>&nbsp;     * Append a section of a quadrant of an oval to the current path.
+<i>823</i>&nbsp;     * The oval from which a quadrant is taken is the oval that would be
+<i>824</i>&nbsp;     * inscribed in a parallelogram defined by 3 points,
+<i>825</i>&nbsp;     * {@code (sx, sy)} which is considered to be the midpoint of the edge
+<i>826</i>&nbsp;     * leading into the corner of the oval where the oval grazes it,
+<i>827</i>&nbsp;     * {@code (cx, cy)} which is considered to be the location of the
+<i>828</i>&nbsp;     * corner of the parallelogram in which the oval is inscribed,
+<i>829</i>&nbsp;     * and {@code (ex, ey)} which is considered to be the midpoint of the
+<i>830</i>&nbsp;     * edge leading away from the corner of the oval where the oval grazes it.
+<i>831</i>&nbsp;     * A typical case involves the two segments being equal in length and
+<i>832</i>&nbsp;     * at right angles to each other in which case the oval is a quarter of
+<i>833</i>&nbsp;     * a circle.
+<i>834</i>&nbsp;     * &lt;p&gt;
+<i>835</i>&nbsp;     * Only the portion of the oval from {@code tfrom} to {@code tto}
+<i>836</i>&nbsp;     * will be included where {@code 0f} represents the point where the
+<i>837</i>&nbsp;     * oval grazes the leading edge, {@code 1f} represents the point where
+<i>838</i>&nbsp;     * the oval grazes the trailing edge, and {@code 0.5f} represents the
+<i>839</i>&nbsp;     * point on the oval closest to the corner (i.e. the &quot;45 degree&quot; point).
+<i>840</i>&nbsp;     * The two values must satisfy the relation
+<i>841</i>&nbsp;     * {@code (0 &lt;= tfrom &lt;= tto &lt;= 1)}.
+<i>842</i>&nbsp;     * If {@code tfrom} is not {@code 0f} then the caller would most likely
+<i>843</i>&nbsp;     * want to use one of the {@code prefix} values that inserts a segment
+<i>844</i>&nbsp;     * leading to the initial point (see below).
+<i>845</i>&nbsp;     * &lt;p&gt;
+<i>846</i>&nbsp;     * An initial {@link moveTo} or {@link lineTo} can be added to direct
+<i>847</i>&nbsp;     * the path to the starting point of the oval section if
+<i>848</i>&nbsp;     * {@link CornerPrefix.MOVE_THEN_CORNER MOVE_THEN_CORNER} or
+<i>849</i>&nbsp;     * {@link CornerPrefix.LINE_THEN_CORNER LINE_THEN_CORNER} are
+<i>850</i>&nbsp;     * specified by the prefix argument.
+<i>851</i>&nbsp;     * The {@code lineTo} path segment will only be added if the current point
+<i>852</i>&nbsp;     * is not already at the indicated location to avoid spurious empty line
+<i>853</i>&nbsp;     * segments.
+<i>854</i>&nbsp;     * The prefix can be specified as
+<i>855</i>&nbsp;     * {@link CornerPrefix.CORNER_ONLY CORNER_ONLY} if the current point
+<i>856</i>&nbsp;     * on the path is known to be at the starting point of the oval section,
+<i>857</i>&nbsp;     * but could otherwise produce odd results if the current point is not
+<i>858</i>&nbsp;     * appropriate.
+<i>859</i>&nbsp;     * &lt;p&gt;
+<i>860</i>&nbsp;     * Note that you could define a circle inscribed in the rectangular
+<i>861</i>&nbsp;     * bounding box from {@code (x0, y0)} to {@code (x1, y1)} with the
+<i>862</i>&nbsp;     * following 4 calls to this method:
+<i>863</i>&nbsp;     * &lt;pre&gt;
+<i>864</i>&nbsp;     *     Path2D path = new Path2D();
+<i>865</i>&nbsp;     *     float cx = (x0 + x1) * 0.5f; // center X coordinate of top and bottom
+<i>866</i>&nbsp;     *     float cy = (y0 + y1) * 0.5f; // center Y coordinate of left and right
+<i>867</i>&nbsp;     *     path.appendOvalQuadrant(cx, y0, x1, y0, x1, cy, 0f, 1f, MOVE_THEN_CORNER);
+<i>868</i>&nbsp;     *     path.appendOvalQuadrant(x1, cy, x1, y1, cx, y1, 0f, 1f, CORNER_ONLY);
+<i>869</i>&nbsp;     *     path.appendOvalQuadrant(cx, y1, x0, y1, x0, cy, 0f, 1f, CORNER_ONLY);
+<i>870</i>&nbsp;     *     path.appendOvalQuadrant(x0, cy, x0, y0, cx, y0, 0f, 1f, CORNER_ONLY);
+<i>871</i>&nbsp;     *     path.closePath();
+<i>872</i>&nbsp;     * &lt;/pre&gt;
+<i>873</i>&nbsp;     * You could also define a rounded rectangle inscribed in the rectangular
+<i>874</i>&nbsp;     * bounding box from {@code (x0, y0)} to {@code (x1, y1)} with a corner
+<i>875</i>&nbsp;     * arc radius {@code r} less than half the width and the height with the
+<i>876</i>&nbsp;     * following 4 calls to this method:
+<i>877</i>&nbsp;     * &lt;pre&gt;
+<i>878</i>&nbsp;     *     Path2D path = new Path2D();
+<i>879</i>&nbsp;     *     float lx = x0 + r;
+<i>880</i>&nbsp;     *     float rx = x1 - r;
+<i>881</i>&nbsp;     *     float ty = y0 + r;
+<i>882</i>&nbsp;     *     float by = y1 - r;
+<i>883</i>&nbsp;     *     path.appendOvalQuadrant(rx, y0, x1, y0, x1, ty, 0f, 1f, MOVE_THEN_CORNER);
+<i>884</i>&nbsp;     *     path.appendOvalQuadrant(x1, by, x1, y1, rx, y1, 0f, 1f, LINE_THEN_CORNER);
+<i>885</i>&nbsp;     *     path.appendOvalQuadrant(lx, y1, x0, y1, x0, by, 0f, 1f, LINE_THEN_CORNER);
+<i>886</i>&nbsp;     *     path.appendOvalQuadrant(x0, by, x0, y0, lx, y0, 0f, 1f, LINE_THEN_CORNER);
+<i>887</i>&nbsp;     *     path.closePath();
+<i>888</i>&nbsp;     * &lt;/pre&gt;
+<i>889</i>&nbsp;     *
+<i>890</i>&nbsp;     * @param sx the X coordinate of the midpoint of the leading edge
+<i>891</i>&nbsp;     *           interpolated by the oval
+<i>892</i>&nbsp;     * @param sy the Y coordinate of the midpoint of the leading edge
+<i>893</i>&nbsp;     *           interpolated by the oval
+<i>894</i>&nbsp;     * @param cx the X coordinate of the corner
+<i>895</i>&nbsp;     * @param cy the Y coordinate of the corner
+<i>896</i>&nbsp;     * @param ex the X coordinate of the midpoint of the trailing edge
+<i>897</i>&nbsp;     *           interpolated by the oval
+<i>898</i>&nbsp;     * @param ey the Y coordinate of the midpoint of the trailing edge
+<i>899</i>&nbsp;     *           interpolated by the oval
+<i>900</i>&nbsp;     * @param tfrom the fraction of the oval section where the curve should start
+<i>901</i>&nbsp;     * @param tto the fraction of the oval section where the curve should end
+<i>902</i>&nbsp;     * @param prefix the specification of what additional path segments should
+<i>903</i>&nbsp;     *               be appended to lead the current path to the starting point
+<i>904</i>&nbsp;     * @throws IllegalPathStateException
+<i>905</i>&nbsp;     *     if there is no current point in the path and the prefix is
+<i>906</i>&nbsp;     *     not {@code CornerPrevix.MOVE_THEN_CORNER MOVE_THEN_CORNER}.
+<i>907</i>&nbsp;     * @throws IllegalArgumentException
+<i>908</i>&nbsp;     *     if the {@code tfrom} and {@code tto} values do not satisfy the
+<i>909</i>&nbsp;     *     required relationship {@code (0 &lt;= tfrom &lt;= tto &lt;= 1).
+<i>910</i>&nbsp;     */
+<i>911</i>&nbsp;    public final void appendOvalQuadrant(float sx, float sy,
+<i>912</i>&nbsp;                                         float cx, float cy,
+<i>913</i>&nbsp;                                         float ex, float ey,
+<i>914</i>&nbsp;                                         float tfrom, float tto,
+<i>915</i>&nbsp;                                         CornerPrefix prefix)
+<i>916</i>&nbsp;    {
+<b class="fc"><i>917</i>&nbsp;        if (!(tfrom &gt;= 0f &amp;&amp; tfrom &lt;= tto &amp;&amp; tto &lt;= 1f)) {</b>
+<b class="nc"><i>918</i>&nbsp;            throw new IllegalArgumentException(&quot;0 &lt;= tfrom &lt;= tto &lt;= 1 required&quot;);</b>
+<i>919</i>&nbsp;        }
+<b class="fc"><i>920</i>&nbsp;        float cx0 = (float) (sx + (cx - sx) * EllipseIterator.CtrlVal);</b>
+<b class="fc"><i>921</i>&nbsp;        float cy0 = (float) (sy + (cy - sy) * EllipseIterator.CtrlVal);</b>
+<b class="fc"><i>922</i>&nbsp;        float cx1 = (float) (ex + (cx - ex) * EllipseIterator.CtrlVal);</b>
+<b class="fc"><i>923</i>&nbsp;        float cy1 = (float) (ey + (cy - ey) * EllipseIterator.CtrlVal);</b>
+<b class="fc"><i>924</i>&nbsp;        if (tto &lt; 1f) {</b>
+<b class="nc"><i>925</i>&nbsp;            float t = 1f - tto;</b>
+<b class="nc"><i>926</i>&nbsp;            ex += (cx1 - ex) * t;</b>
+<b class="nc"><i>927</i>&nbsp;            ey += (cy1 - ey) * t;</b>
+<b class="nc"><i>928</i>&nbsp;            cx1 += (cx0 - cx1) * t;</b>
+<b class="nc"><i>929</i>&nbsp;            cy1 += (cy0 - cy1) * t;</b>
+<b class="nc"><i>930</i>&nbsp;            cx0 += (sx - cx0) * t;</b>
+<b class="nc"><i>931</i>&nbsp;            cy0 += (sy - cy0) * t;</b>
+<b class="nc"><i>932</i>&nbsp;            ex += (cx1 - ex) * t;</b>
+<b class="nc"><i>933</i>&nbsp;            ey += (cy1 - ey) * t;</b>
+<b class="nc"><i>934</i>&nbsp;            cx1 += (cx0 - cx1) * t;</b>
+<b class="nc"><i>935</i>&nbsp;            cy1 += (cy0 - cy1) * t;</b>
+<b class="nc"><i>936</i>&nbsp;            ex += (cx1 - ex) * t;</b>
+<b class="nc"><i>937</i>&nbsp;            ey += (cy1 - ey) * t;</b>
+<i>938</i>&nbsp;        }
+<b class="fc"><i>939</i>&nbsp;        if (tfrom &gt; 0f) {</b>
+<b class="nc"><i>940</i>&nbsp;            if (tto &lt; 1f) {</b>
+<b class="nc"><i>941</i>&nbsp;                tfrom = tfrom / tto;</b>
+<i>942</i>&nbsp;            }
+<b class="nc"><i>943</i>&nbsp;            sx += (cx0 - sx) * tfrom;</b>
+<b class="nc"><i>944</i>&nbsp;            sy += (cy0 - sy) * tfrom;</b>
+<b class="nc"><i>945</i>&nbsp;            cx0 += (cx1 - cx0) * tfrom;</b>
+<b class="nc"><i>946</i>&nbsp;            cy0 += (cy1 - cy0) * tfrom;</b>
+<b class="nc"><i>947</i>&nbsp;            cx1 += (ex - cx1) * tfrom;</b>
+<b class="nc"><i>948</i>&nbsp;            cy1 += (ey - cy1) * tfrom;</b>
+<b class="nc"><i>949</i>&nbsp;            sx += (cx0 - sx) * tfrom;</b>
+<b class="nc"><i>950</i>&nbsp;            sy += (cy0 - sy) * tfrom;</b>
+<b class="nc"><i>951</i>&nbsp;            cx0 += (cx1 - cx0) * tfrom;</b>
+<b class="nc"><i>952</i>&nbsp;            cy0 += (cy1 - cy0) * tfrom;</b>
+<b class="nc"><i>953</i>&nbsp;            sx += (cx0 - sx) * tfrom;</b>
+<b class="nc"><i>954</i>&nbsp;            sy += (cy0 - sy) * tfrom;</b>
+<i>955</i>&nbsp;        }
+<b class="fc"><i>956</i>&nbsp;        if (prefix == CornerPrefix.MOVE_THEN_CORNER) {</b>
+<i>957</i>&nbsp;            // Always execute moveTo so we break the path...
+<b class="fc"><i>958</i>&nbsp;            moveTo(sx, sy);</b>
+<b class="fc"><i>959</i>&nbsp;        } else if (prefix == CornerPrefix.LINE_THEN_CORNER) {</b>
+<b class="fc"><i>960</i>&nbsp;            if (numTypes == 1 ||</b>
+<i>961</i>&nbsp;                sx != currX ||
+<i>962</i>&nbsp;                sy != currY)
+<i>963</i>&nbsp;            {
+<b class="fc"><i>964</i>&nbsp;                lineTo(sx, sy);</b>
+<i>965</i>&nbsp;            }
+<i>966</i>&nbsp;        }
+<b class="fc"><i>967</i>&nbsp;        if (tfrom == tto ||</b>
+<i>968</i>&nbsp;            (sx == cx0 &amp;&amp; cx0 == cx1 &amp;&amp; cx1 == ex &amp;&amp;
+<i>969</i>&nbsp;             sy == cy0 &amp;&amp; cy0 == cy1 &amp;&amp; cy1 == ey))
+<i>970</i>&nbsp;        {
+<b class="nc"><i>971</i>&nbsp;            if (prefix != CornerPrefix.LINE_THEN_CORNER) {</b>
+<b class="nc"><i>972</i>&nbsp;                lineTo(ex, ey);</b>
+<i>973</i>&nbsp;            }
+<i>974</i>&nbsp;        } else {
+<b class="fc"><i>975</i>&nbsp;            curveTo(cx0, cy0, cx1, cy1, ex, ey);</b>
+<i>976</i>&nbsp;        }
+<b class="fc"><i>977</i>&nbsp;    }</b>
+<i>978</i>&nbsp;
+<i>979</i>&nbsp;    /**
+<i>980</i>&nbsp;     * Append a portion of an ellipse to the path.
+<i>981</i>&nbsp;     * The ellipse from which the portions are extracted follows the rules:
+<i>982</i>&nbsp;     * &lt;ul&gt;
+<i>983</i>&nbsp;     * &lt;li&gt;The ellipse will have its X axis tilted from horizontal by the
+<i>984</i>&nbsp;     * angle {@code xAxisRotation} specified in radians.
+<i>985</i>&nbsp;     * &lt;li&gt;The ellipse will have the X and Y radii (viewed from its tilted
+<i>986</i>&nbsp;     * coordinate system) specified by {@code radiusx} and {@code radiusy}
+<i>987</i>&nbsp;     * unless that ellipse is too small to bridge the gap from the current
+<i>988</i>&nbsp;     * point to the specified destination point in which case a larger
+<i>989</i>&nbsp;     * ellipse with the same ratio of dimensions will be substituted instead.
+<i>990</i>&nbsp;     * &lt;li&gt;The ellipse may slide perpendicular to the direction from the
+<i>991</i>&nbsp;     * current point to the specified destination point so that it just
+<i>992</i>&nbsp;     * touches the two points.
+<i>993</i>&nbsp;     * The direction it slides (to the &quot;left&quot; or to the &quot;right&quot;) will be
+<i>994</i>&nbsp;     * chosen to meet the criteria specified by the two boolean flags as
+<i>995</i>&nbsp;     * described below.
+<i>996</i>&nbsp;     * Only one direction will allow the method to meet both criteria.
+<i>997</i>&nbsp;     * &lt;li&gt;If the {@code largeArcFlag} is true, then the ellipse will sweep
+<i>998</i>&nbsp;     * the longer way around the ellipse that meets these criteria.
+<i>999</i>&nbsp;     * &lt;li&gt;If the {@code sweepFlag} is true, then the ellipse will sweep
+<i>1000</i>&nbsp;     * clockwise around the ellipse that meets these criteria.
+<i>1001</i>&nbsp;     * &lt;/ul&gt;
+<i>1002</i>&nbsp;     * The method will do nothing if the destination point is the same as
+<i>1003</i>&nbsp;     * the current point.
+<i>1004</i>&nbsp;     * The method will draw a simple line segment to the destination point
+<i>1005</i>&nbsp;     * if either of the two radii are zero.
+<i>1006</i>&nbsp;     * &lt;p&gt;
+<i>1007</i>&nbsp;     * Note: This method adheres to the definition of an elliptical arc path
+<i>1008</i>&nbsp;     * segment from the SVG spec:
+<i>1009</i>&nbsp;     * &lt;pre&gt;
+<i>1010</i>&nbsp;     * http://www.w3.org/TR/SVG/paths.html#PathDataEllipticalArcCommands
+<i>1011</i>&nbsp;     * &lt;/pre&gt;
+<i>1012</i>&nbsp;     *
+<i>1013</i>&nbsp;     * @param radiusx the X radius of the tilted ellipse
+<i>1014</i>&nbsp;     * @param radiusy the Y radius of the tilted ellipse
+<i>1015</i>&nbsp;     * @param xAxisRotation the angle of tilt of the ellipse
+<i>1016</i>&nbsp;     * @param largeArcFlag true iff the path will sweep the long way around
+<i>1017</i>&nbsp;     *                     the ellipse
+<i>1018</i>&nbsp;     * @param sweepFlag true iff the path will sweep clockwise around
+<i>1019</i>&nbsp;     *                  the ellipse
+<i>1020</i>&nbsp;     * @param x the destination X coordinate
+<i>1021</i>&nbsp;     * @param y the destination Y coordinate
+<i>1022</i>&nbsp;     * @throws IllegalPathStateException
+<i>1023</i>&nbsp;     *     if there is no current point in the path
+<i>1024</i>&nbsp;     */
+<i>1025</i>&nbsp;    public void arcTo(float radiusx, float radiusy, float xAxisRotation,
+<i>1026</i>&nbsp;                      boolean largeArcFlag, boolean sweepFlag,
+<i>1027</i>&nbsp;                      float x, float y)
+<i>1028</i>&nbsp;    {
+<i>1029</i>&nbsp;        // First ensure preceding moveto
+<b class="nc"><i>1030</i>&nbsp;        if (numTypes &lt; 1) {</b>
+<b class="nc"><i>1031</i>&nbsp;            throw new IllegalPathStateException(&quot;missing initial moveto &quot;+</b>
+<i>1032</i>&nbsp;                                                &quot;in path definition&quot;);
+<i>1033</i>&nbsp;        }
+<i>1034</i>&nbsp;        // Reference equations are provided for implementation assistance:
+<i>1035</i>&nbsp;        // http://www.w3.org/TR/SVG/implnote.html#ArcImplementationNotes
+<i>1036</i>&nbsp;        // We use the following modifications:
+<i>1037</i>&nbsp;        // They use a secondary coordinate system which is based on
+<i>1038</i>&nbsp;        // - translating to the midpoint between the endpoints
+<i>1039</i>&nbsp;        // - rotating so that the xAxis is &quot;horizontal&quot;
+<i>1040</i>&nbsp;        // You can see that most of their math then has their secondary
+<i>1041</i>&nbsp;        // coordinates being divided by rx and ry everywhere so we scale
+<i>1042</i>&nbsp;        // by 1/rx and 1/ry so that we are working on a unit circle:
+<i>1043</i>&nbsp;        // [ x&#39; ]   [ +cos/rx  +sin/rx ]   [ x - mx ]
+<i>1044</i>&nbsp;        // [    ] = [                  ] * [        ]
+<i>1045</i>&nbsp;        // [ y&#39; ]   [ -sin/ry  +cos/ry ]   [ y - my ]
+<i>1046</i>&nbsp;        // and reversing back to user space coordinates:
+<i>1047</i>&nbsp;        // [ x ]   [ +cos  -sin ]   [ x&#39; * rx ]   [ mx ]
+<i>1048</i>&nbsp;        // [   ] = [            ] * [         ] + [    ]
+<i>1049</i>&nbsp;        // [ y ]   [ +sin  +cos ]   [ y&#39; * ry ]   [ my ]
+<b class="nc"><i>1050</i>&nbsp;        double rx = Math.abs(radiusx);</b>
+<b class="nc"><i>1051</i>&nbsp;        double ry = Math.abs(radiusy);</b>
+<b class="nc"><i>1052</i>&nbsp;        if (rx == 0 || ry == 0) {</b>
+<b class="nc"><i>1053</i>&nbsp;            lineTo(x, y);</b>
+<b class="nc"><i>1054</i>&nbsp;            return;</b>
+<i>1055</i>&nbsp;        }
+<b class="nc"><i>1056</i>&nbsp;        double x1 = currX;</b>
+<b class="nc"><i>1057</i>&nbsp;        double y1 = currY;</b>
+<b class="nc"><i>1058</i>&nbsp;        double x2 = x;</b>
+<b class="nc"><i>1059</i>&nbsp;        double y2 = y;</b>
+<b class="nc"><i>1060</i>&nbsp;        if (x1 == x2 &amp;&amp; y1 == y2) {</b>
+<b class="nc"><i>1061</i>&nbsp;            return;</b>
+<i>1062</i>&nbsp;        }
+<i>1063</i>&nbsp;        double cosphi, sinphi;
+<b class="nc"><i>1064</i>&nbsp;        if (xAxisRotation == 0.0) {</b>
+<b class="nc"><i>1065</i>&nbsp;            cosphi = 1.0;</b>
+<b class="nc"><i>1066</i>&nbsp;            sinphi = 0.0;</b>
+<i>1067</i>&nbsp;        } else {
+<b class="nc"><i>1068</i>&nbsp;            cosphi = Math.cos(xAxisRotation);</b>
+<b class="nc"><i>1069</i>&nbsp;            sinphi = Math.sin(xAxisRotation);</b>
+<i>1070</i>&nbsp;        }
+<b class="nc"><i>1071</i>&nbsp;        double mx = (x1 + x2) / 2.0;</b>
+<b class="nc"><i>1072</i>&nbsp;        double my = (y1 + y2) / 2.0;</b>
+<b class="nc"><i>1073</i>&nbsp;        double relx1 = x1 - mx;</b>
+<b class="nc"><i>1074</i>&nbsp;        double rely1 = y1 - my;</b>
+<b class="nc"><i>1075</i>&nbsp;        double x1p = (cosphi * relx1 + sinphi * rely1) / rx;</b>
+<b class="nc"><i>1076</i>&nbsp;        double y1p = (cosphi * rely1 - sinphi * relx1) / ry;</b>
+<i>1077</i>&nbsp;        // The documentation for the SVG arc operator recommends computing
+<i>1078</i>&nbsp;        // a &quot;scale&quot; value and then scaling the radii appropriately if the
+<i>1079</i>&nbsp;        // scale is greater than 1.  Technically, they are computing the
+<i>1080</i>&nbsp;        // ratio of the distance to the endpoints compared to the distance
+<i>1081</i>&nbsp;        // across the indicated section of the ellipse centered at the midpoint.
+<i>1082</i>&nbsp;        // If the ratio is greater than 1 then the endpoints are outside the
+<i>1083</i>&nbsp;        // ellipse and so the ellipse is not large enough to bridge the gap
+<i>1084</i>&nbsp;        // without growing.  If they are inside, then we slide the ellipse
+<i>1085</i>&nbsp;        // in the appropriate direction as specified by the 2 flags so that
+<i>1086</i>&nbsp;        // the transformed relative points are on the edge.  If they
+<i>1087</i>&nbsp;        // are outside, then we note that we simply have a (distorted) half
+<i>1088</i>&nbsp;        // circle to render in that case since the endpoints will be on
+<i>1089</i>&nbsp;        // opposite sides of a stretched version of the unmoved ellipse.
+<b class="nc"><i>1090</i>&nbsp;        double lenpsq = x1p * x1p + y1p * y1p;</b>
+<b class="nc"><i>1091</i>&nbsp;        if (lenpsq &gt;= 1.0) {</b>
+<i>1092</i>&nbsp;            // Unlike the reference equations, we do not need to scale the
+<i>1093</i>&nbsp;            // radii here since we will work directly from the transformed
+<i>1094</i>&nbsp;            // relative vectors which already have the proper distance from
+<i>1095</i>&nbsp;            // the midpoint.  (They are already on the &quot;stretched&quot; ellipse.)
+<i>1096</i>&nbsp;
+<i>1097</i>&nbsp;            // Produce 2 quadrant circles from:
+<i>1098</i>&nbsp;            // x1p,y1p =&gt; xqp,yqp =&gt; x2p,y2p
+<i>1099</i>&nbsp;            // where x2p,y2p = -x1p,-y1p
+<i>1100</i>&nbsp;            // and xqp,yqp = either y1p,-x1p or -y1p,x1p depending on sweepFlag
+<i>1101</i>&nbsp;            // the corners of the quadrants are at:
+<i>1102</i>&nbsp;            // x1p+xqp,y1p+yqp and x2p+xqp,y2p+yqp
+<i>1103</i>&nbsp;            // or consequently at:
+<i>1104</i>&nbsp;            // x1+(xq-mx),y1+(yq-my) and x2+(xq-mx),y2+(yq-my)
+<b class="nc"><i>1105</i>&nbsp;            double xqpr = y1p * rx;</b>
+<b class="nc"><i>1106</i>&nbsp;            double yqpr = x1p * ry;</b>
+<b class="nc"><i>1107</i>&nbsp;            if (sweepFlag) { xqpr = -xqpr; } else { yqpr = -yqpr; }</b>
+<b class="nc"><i>1108</i>&nbsp;            double relxq = cosphi * xqpr - sinphi * yqpr;</b>
+<b class="nc"><i>1109</i>&nbsp;            double relyq = cosphi * yqpr + sinphi * xqpr;</b>
+<b class="nc"><i>1110</i>&nbsp;            double xq = mx + relxq;</b>
+<b class="nc"><i>1111</i>&nbsp;            double yq = my + relyq;</b>
+<b class="nc"><i>1112</i>&nbsp;            double xc = x1 + relxq;</b>
+<b class="nc"><i>1113</i>&nbsp;            double yc = y1 + relyq;</b>
+<b class="nc"><i>1114</i>&nbsp;            appendOvalQuadrant((float) x1, (float) y1,</b>
+<i>1115</i>&nbsp;                               (float) xc, (float) yc,
+<i>1116</i>&nbsp;                               (float) xq, (float) yq,
+<i>1117</i>&nbsp;                               0f, 1f, CornerPrefix.CORNER_ONLY);
+<b class="nc"><i>1118</i>&nbsp;            xc = x2 + relxq;</b>
+<b class="nc"><i>1119</i>&nbsp;            yc = y2 + relyq;</b>
+<b class="nc"><i>1120</i>&nbsp;            appendOvalQuadrant((float) xq, (float) yq,</b>
+<i>1121</i>&nbsp;                               (float) xc, (float) yc,
+<i>1122</i>&nbsp;                               (float) x2, (float) y2,
+<i>1123</i>&nbsp;                               0f, 1f, CornerPrefix.CORNER_ONLY);
+<b class="nc"><i>1124</i>&nbsp;            return;</b>
+<i>1125</i>&nbsp;        }
+<i>1126</i>&nbsp;        // We now need to displace the circle perpendicularly to the line
+<i>1127</i>&nbsp;        // between the end points so that the new center is at a unit distance
+<i>1128</i>&nbsp;        // to either end point.  One component of the new distance will be
+<i>1129</i>&nbsp;        // the distance from the midpoint to either end point (the square
+<i>1130</i>&nbsp;        // of which is already computed in &quot;den&quot; above).  The other component
+<i>1131</i>&nbsp;        // of the new distances will be how far we displace the center:
+<i>1132</i>&nbsp;        // lenpsq + displen^2 = 1.0
+<i>1133</i>&nbsp;        // displen^2 = 1.0 - lenpsq
+<i>1134</i>&nbsp;        // displen = sqrt(1 - lenpsq)
+<i>1135</i>&nbsp;        // The vector we displace along is the perpendicular of the x1p,y1p
+<i>1136</i>&nbsp;        // vector whose length is sqrt(lenpsq) so we need to divide that vector
+<i>1137</i>&nbsp;        // by that length to turn it into a unit vector:
+<i>1138</i>&nbsp;        // cxp = +/-y1p / sqrt(lenpsq) * displen
+<i>1139</i>&nbsp;        // cyp = +/-x1p / sqrt(lenpsq) * displen
+<i>1140</i>&nbsp;        // To simplify, we combine the &quot;/sqrt(lenpsq)&quot; factor into displen to
+<i>1141</i>&nbsp;        // share the one sqrt() calculation:
+<i>1142</i>&nbsp;        // scalef = displen / sqrt(lenpsq) = sqrt((1-lenpsq)/lenpsq)
+<b class="nc"><i>1143</i>&nbsp;        double scalef = Math.sqrt((1.0 - lenpsq) / lenpsq);</b>
+<i>1144</i>&nbsp;        // cxp,cyp is displaced perpendicularly to the relative vector x1p,y1p
+<i>1145</i>&nbsp;        // by the scalef value.  The perpendicular is either -y1p,x1p or
+<i>1146</i>&nbsp;        // y1p,-x1p depending on the values of the flags.
+<b class="nc"><i>1147</i>&nbsp;        double cxp = scalef * y1p;</b>
+<b class="nc"><i>1148</i>&nbsp;        double cyp = scalef * x1p;</b>
+<i>1149</i>&nbsp;        // The direction of the perpendicular (which component is negated)
+<i>1150</i>&nbsp;        // depends on both flags.
+<b class="nc"><i>1151</i>&nbsp;        if (largeArcFlag == sweepFlag) { cxp = -cxp; } else { cyp = -cyp; }</b>
+<b class="nc"><i>1152</i>&nbsp;        mx += (cosphi * cxp * rx - sinphi * cyp * ry);</b>
+<b class="nc"><i>1153</i>&nbsp;        my += (cosphi * cyp * ry + sinphi * cxp * rx);</b>
+<i>1154</i>&nbsp;        // Now we sweep by quadrants in the direction specified until we
+<i>1155</i>&nbsp;        // reach the angle to the destination point and possibly perform
+<i>1156</i>&nbsp;        // one last partial-quadrant arc segment.
+<i>1157</i>&nbsp;        // First we need to reexpress our vectors relative to the new center.
+<b class="nc"><i>1158</i>&nbsp;        double ux = x1p - cxp;</b>
+<b class="nc"><i>1159</i>&nbsp;        double uy = y1p - cyp;</b>
+<i>1160</i>&nbsp;        // x2p = -x1p; x2p-cxp = -x1p-cxp = -(x1p+cxp)
+<i>1161</i>&nbsp;        // y2p = -y1p; y2p-cyp = -y1p-cyp = -(y1p+cyp)
+<b class="nc"><i>1162</i>&nbsp;        double vx = -(x1p + cxp);</b>
+<b class="nc"><i>1163</i>&nbsp;        double vy = -(y1p + cyp);</b>
+<i>1164</i>&nbsp;        // px and py are the factors that produce the perpendicular for ux,uy
+<i>1165</i>&nbsp;        // in the direction specified by sweepFlag.
+<b class="nc"><i>1166</i>&nbsp;        boolean done = false;  // set to true when we detect &quot;last quadrant&quot;</b>
+<b class="nc"><i>1167</i>&nbsp;        float quadlen = 1.0f;  // 1.0 yields a full 90 degree arc at a time</b>
+<b class="nc"><i>1168</i>&nbsp;        boolean wasclose = false;  // overshoot prevention</b>
+<i>1169</i>&nbsp;        do {
+<i>1170</i>&nbsp;            // Compute the next circle quadrant endpoint, cw or ccw
+<b class="nc"><i>1171</i>&nbsp;            double xqp = uy;</b>
+<b class="nc"><i>1172</i>&nbsp;            double yqp = ux;</b>
+<b class="nc"><i>1173</i>&nbsp;            if (sweepFlag) { xqp = -xqp; } else { yqp = -yqp; }</b>
+<i>1174</i>&nbsp;            // qp.v &gt; 0 tells us if sweep towards v is &lt; 180
+<b class="nc"><i>1175</i>&nbsp;            if (xqp * vx + yqp * vy &gt; 0) {</b>
+<i>1176</i>&nbsp;                // u.v &gt;= 0 now tells us if sweep towards v is &lt;= 90
+<i>1177</i>&nbsp;                // (It is also true for &gt;270, but we already checked for &lt;180)
+<b class="nc"><i>1178</i>&nbsp;                double dot = ux * vx + uy * vy;</b>
+<b class="nc"><i>1179</i>&nbsp;                if (dot &gt;= 0) {</b>
+<i>1180</i>&nbsp;                    // u.v is the cosine of the angle we have left since both
+<i>1181</i>&nbsp;                    // u and v are unit vectors.  We now need to express how
+<i>1182</i>&nbsp;                    // much we want to shorten this last arc segment in terms
+<i>1183</i>&nbsp;                    // of 0.0=&gt;1.0 meaning 0=&gt;90 degrees.
+<b class="nc"><i>1184</i>&nbsp;                    quadlen = (float) (Math.acos(dot) / (Math.PI / 2.0));</b>
+<b class="nc"><i>1185</i>&nbsp;                    done = true;</b>
+<i>1186</i>&nbsp;                }
+<i>1187</i>&nbsp;                // Remember that we were once within 180 degrees so we
+<i>1188</i>&nbsp;                // do not accidentally overshoot due to fp rounding error.
+<b class="nc"><i>1189</i>&nbsp;                wasclose = true;</b>
+<b class="nc"><i>1190</i>&nbsp;            } else if (wasclose) {</b>
+<i>1191</i>&nbsp;                // At some point we were in the &lt;180 case above, but now we
+<i>1192</i>&nbsp;                // are back at the &gt;180 case having never gone into the &lt;90
+<i>1193</i>&nbsp;                // case where done would have been set to true.  This should
+<i>1194</i>&nbsp;                // not happen, but since we are computing the perpendiculars
+<i>1195</i>&nbsp;                // and then expecting that they will have predictable results
+<i>1196</i>&nbsp;                // in the dot product equations, there is a theoretical chance
+<i>1197</i>&nbsp;                // of a tiny round-off error that would cause us to overshoot
+<i>1198</i>&nbsp;                // from just barely &gt;90 left to suddenly past the 0 point.
+<i>1199</i>&nbsp;                // If that ever happens, we will end up in here and we can just
+<i>1200</i>&nbsp;                // break out of the loop since that last quadrant we rendered
+<i>1201</i>&nbsp;                // should have landed us right on top of the vx,vy location.
+<b class="nc"><i>1202</i>&nbsp;                break;</b>
+<i>1203</i>&nbsp;            }
+<b class="nc"><i>1204</i>&nbsp;            double relxq = (cosphi * xqp * rx - sinphi * yqp * ry);</b>
+<b class="nc"><i>1205</i>&nbsp;            double relyq = (cosphi * yqp * ry + sinphi * xqp * rx);</b>
+<b class="nc"><i>1206</i>&nbsp;            double xq = mx + relxq;</b>
+<b class="nc"><i>1207</i>&nbsp;            double yq = my + relyq;</b>
+<b class="nc"><i>1208</i>&nbsp;            double xc = x1 + relxq;</b>
+<b class="nc"><i>1209</i>&nbsp;            double yc = y1 + relyq;</b>
+<b class="nc"><i>1210</i>&nbsp;            appendOvalQuadrant((float) x1, (float) y1,</b>
+<i>1211</i>&nbsp;                               (float) xc, (float) yc,
+<i>1212</i>&nbsp;                               (float) xq, (float) yq,
+<i>1213</i>&nbsp;                               0f, quadlen, CornerPrefix.CORNER_ONLY);
+<b class="nc"><i>1214</i>&nbsp;            x1 = xq;</b>
+<b class="nc"><i>1215</i>&nbsp;            y1 = yq;</b>
+<b class="nc"><i>1216</i>&nbsp;            ux = xqp;</b>
+<b class="nc"><i>1217</i>&nbsp;            uy = yqp;</b>
+<b class="nc"><i>1218</i>&nbsp;        } while (!done);</b>
+<b class="nc"><i>1219</i>&nbsp;    }</b>
+<i>1220</i>&nbsp;
+<i>1221</i>&nbsp;    /**
+<i>1222</i>&nbsp;     * Append a portion of an ellipse to the path using relative coordinates.
+<i>1223</i>&nbsp;     * This method is identical to calling:
+<i>1224</i>&nbsp;     * &lt;pre&gt;
+<i>1225</i>&nbsp;     *     arcTo(radiusX, radiusY, xAxisRotation,
+<i>1226</i>&nbsp;     *           largeArcFlag, sweepFlag,
+<i>1227</i>&nbsp;     *           getCurrentX() + rx, getCurrentY() + ry);
+<i>1228</i>&nbsp;     * &lt;/pre&gt;
+<i>1229</i>&nbsp;     *
+<i>1230</i>&nbsp;     * @param radiusx the X radius of the tilted ellipse
+<i>1231</i>&nbsp;     * @param radiusy the Y radius of the tilted ellipse
+<i>1232</i>&nbsp;     * @param xAxisRotation the angle of tilt of the ellipse
+<i>1233</i>&nbsp;     * @param largeArcFlag true iff the path will sweep the long way around
+<i>1234</i>&nbsp;     *                     the ellipse
+<i>1235</i>&nbsp;     * @param sweepFlag true iff the path will sweep clockwise around
+<i>1236</i>&nbsp;     *                  the ellipse
+<i>1237</i>&nbsp;     * @param relx the relative destination relative X coordinate
+<i>1238</i>&nbsp;     * @param rely the relative destination relative Y coordinate
+<i>1239</i>&nbsp;     * @throws IllegalPathStateException
+<i>1240</i>&nbsp;     *     if there is no current point in the path
+<i>1241</i>&nbsp;     * @see Path2D#arcTo
+<i>1242</i>&nbsp;     */
+<i>1243</i>&nbsp;    public void arcToRel(float radiusx, float radiusy, float xAxisRotation,
+<i>1244</i>&nbsp;                         boolean largeArcFlag, boolean sweepFlag,
+<i>1245</i>&nbsp;                         float relx, float rely)
+<i>1246</i>&nbsp;    {
+<b class="nc"><i>1247</i>&nbsp;        arcTo(radiusx, radiusy, xAxisRotation,</b>
+<i>1248</i>&nbsp;              largeArcFlag, sweepFlag,
+<i>1249</i>&nbsp;              currX + relx, currY + rely);
+<b class="nc"><i>1250</i>&nbsp;    }</b>
+<i>1251</i>&nbsp;
+<i>1252</i>&nbsp;    int pointCrossings(float px, float py) {
+<i>1253</i>&nbsp;        float movx, movy, curx, cury, endx, endy;
+<b class="fc"><i>1254</i>&nbsp;        float coords[] = floatCoords;</b>
+<b class="fc"><i>1255</i>&nbsp;        curx = movx = coords[0];</b>
+<b class="fc"><i>1256</i>&nbsp;        cury = movy = coords[1];</b>
+<b class="fc"><i>1257</i>&nbsp;        int crossings = 0;</b>
+<b class="fc"><i>1258</i>&nbsp;        int ci = 2;</b>
+<b class="fc"><i>1259</i>&nbsp;        for (int i = 1; i &lt; numTypes; i++) {</b>
+<b class="fc"><i>1260</i>&nbsp;            switch (pointTypes[i]) {</b>
+<i>1261</i>&nbsp;            case PathIterator.SEG_MOVETO:
+<b class="nc"><i>1262</i>&nbsp;                if (cury != movy) {</b>
+<b class="nc"><i>1263</i>&nbsp;                    crossings +=</b>
+<b class="nc"><i>1264</i>&nbsp;                        Shape.pointCrossingsForLine(px, py,</b>
+<i>1265</i>&nbsp;                                                    curx, cury,
+<i>1266</i>&nbsp;                                                    movx, movy);
+<i>1267</i>&nbsp;                }
+<b class="nc"><i>1268</i>&nbsp;                movx = curx = coords[ci++];</b>
+<b class="nc"><i>1269</i>&nbsp;                movy = cury = coords[ci++];</b>
+<b class="nc"><i>1270</i>&nbsp;                break;</b>
+<i>1271</i>&nbsp;            case PathIterator.SEG_LINETO:
+<b class="fc"><i>1272</i>&nbsp;                crossings +=</b>
+<b class="fc"><i>1273</i>&nbsp;                    Shape.pointCrossingsForLine(px, py,</b>
+<i>1274</i>&nbsp;                                                curx, cury,
+<i>1275</i>&nbsp;                                                endx = coords[ci++],
+<i>1276</i>&nbsp;                                                endy = coords[ci++]);
+<b class="fc"><i>1277</i>&nbsp;                curx = endx;</b>
+<b class="fc"><i>1278</i>&nbsp;                cury = endy;</b>
+<b class="fc"><i>1279</i>&nbsp;                break;</b>
+<i>1280</i>&nbsp;            case PathIterator.SEG_QUADTO:
+<b class="nc"><i>1281</i>&nbsp;                crossings +=</b>
+<b class="nc"><i>1282</i>&nbsp;                    Shape.pointCrossingsForQuad(px, py,</b>
+<i>1283</i>&nbsp;                                                curx, cury,
+<i>1284</i>&nbsp;                                                coords[ci++],
+<i>1285</i>&nbsp;                                                coords[ci++],
+<i>1286</i>&nbsp;                                                endx = coords[ci++],
+<i>1287</i>&nbsp;                                                endy = coords[ci++],
+<i>1288</i>&nbsp;                                                0);
+<b class="nc"><i>1289</i>&nbsp;                curx = endx;</b>
+<b class="nc"><i>1290</i>&nbsp;                cury = endy;</b>
+<b class="nc"><i>1291</i>&nbsp;                break;</b>
+<i>1292</i>&nbsp;        case PathIterator.SEG_CUBICTO:
+<b class="nc"><i>1293</i>&nbsp;                crossings +=</b>
+<b class="nc"><i>1294</i>&nbsp;                    Shape.pointCrossingsForCubic(px, py,</b>
+<i>1295</i>&nbsp;                                                 curx, cury,
+<i>1296</i>&nbsp;                                                 coords[ci++],
+<i>1297</i>&nbsp;                                                 coords[ci++],
+<i>1298</i>&nbsp;                                                 coords[ci++],
+<i>1299</i>&nbsp;                                                 coords[ci++],
+<i>1300</i>&nbsp;                                                 endx = coords[ci++],
+<i>1301</i>&nbsp;                                                 endy = coords[ci++],
+<i>1302</i>&nbsp;                                                 0);
+<b class="nc"><i>1303</i>&nbsp;                curx = endx;</b>
+<b class="nc"><i>1304</i>&nbsp;                cury = endy;</b>
+<b class="nc"><i>1305</i>&nbsp;                break;</b>
+<i>1306</i>&nbsp;            case PathIterator.SEG_CLOSE:
+<b class="fc"><i>1307</i>&nbsp;                if (cury != movy) {</b>
+<b class="fc"><i>1308</i>&nbsp;                    crossings +=</b>
+<b class="fc"><i>1309</i>&nbsp;                        Shape.pointCrossingsForLine(px, py,</b>
+<i>1310</i>&nbsp;                                                    curx, cury,
+<i>1311</i>&nbsp;                                                    movx, movy);
+<i>1312</i>&nbsp;                }
+<b class="fc"><i>1313</i>&nbsp;                curx = movx;</b>
+<b class="fc"><i>1314</i>&nbsp;                cury = movy;</b>
+<i>1315</i>&nbsp;                break;
+<i>1316</i>&nbsp;            }
+<i>1317</i>&nbsp;        }
+<b class="fc"><i>1318</i>&nbsp;        if (cury != movy) {</b>
+<b class="fc"><i>1319</i>&nbsp;            crossings +=</b>
+<b class="fc"><i>1320</i>&nbsp;                Shape.pointCrossingsForLine(px, py,</b>
+<i>1321</i>&nbsp;                                            curx, cury,
+<i>1322</i>&nbsp;                                            movx, movy);
+<i>1323</i>&nbsp;        }
+<b class="fc"><i>1324</i>&nbsp;        return crossings;</b>
+<i>1325</i>&nbsp;    }
+<i>1326</i>&nbsp;
+<i>1327</i>&nbsp;    int rectCrossings(float rxmin, float rymin,
+<i>1328</i>&nbsp;                      float rxmax, float rymax)
+<i>1329</i>&nbsp;    {
+<b class="nc"><i>1330</i>&nbsp;        float coords[] = floatCoords;</b>
+<i>1331</i>&nbsp;        float curx, cury, movx, movy, endx, endy;
+<b class="nc"><i>1332</i>&nbsp;        curx = movx = coords[0];</b>
+<b class="nc"><i>1333</i>&nbsp;        cury = movy = coords[1];</b>
+<b class="nc"><i>1334</i>&nbsp;        int crossings = 0;</b>
+<b class="nc"><i>1335</i>&nbsp;        int ci = 2;</b>
+<b class="nc"><i>1336</i>&nbsp;        for (int i = 1;</b>
+<b class="nc"><i>1337</i>&nbsp;             crossings != Shape.RECT_INTERSECTS &amp;&amp; i &lt; numTypes;</b>
+<b class="nc"><i>1338</i>&nbsp;             i++)</b>
+<i>1339</i>&nbsp;        {
+<b class="nc"><i>1340</i>&nbsp;            switch (pointTypes[i]) {</b>
+<i>1341</i>&nbsp;            case PathIterator.SEG_MOVETO:
+<b class="nc"><i>1342</i>&nbsp;                if (curx != movx || cury != movy) {</b>
+<b class="nc"><i>1343</i>&nbsp;                    crossings =</b>
+<b class="nc"><i>1344</i>&nbsp;                        Shape.rectCrossingsForLine(crossings,</b>
+<i>1345</i>&nbsp;                                                   rxmin, rymin,
+<i>1346</i>&nbsp;                                                   rxmax, rymax,
+<i>1347</i>&nbsp;                                                   curx, cury,
+<i>1348</i>&nbsp;                                                   movx, movy);
+<i>1349</i>&nbsp;                }
+<i>1350</i>&nbsp;                // Count should always be a multiple of 2 here.
+<i>1351</i>&nbsp;                // assert((crossings &amp; 1) != 0);
+<b class="nc"><i>1352</i>&nbsp;                movx = curx = coords[ci++];</b>
+<b class="nc"><i>1353</i>&nbsp;                movy = cury = coords[ci++];</b>
+<b class="nc"><i>1354</i>&nbsp;                break;</b>
+<i>1355</i>&nbsp;            case PathIterator.SEG_LINETO:
+<b class="nc"><i>1356</i>&nbsp;                crossings =</b>
+<b class="nc"><i>1357</i>&nbsp;                    Shape.rectCrossingsForLine(crossings,</b>
+<i>1358</i>&nbsp;                                               rxmin, rymin,
+<i>1359</i>&nbsp;                                               rxmax, rymax,
+<i>1360</i>&nbsp;                                               curx, cury,
+<i>1361</i>&nbsp;                                               endx = coords[ci++],
+<i>1362</i>&nbsp;                                               endy = coords[ci++]);
+<b class="nc"><i>1363</i>&nbsp;                curx = endx;</b>
+<b class="nc"><i>1364</i>&nbsp;                cury = endy;</b>
+<b class="nc"><i>1365</i>&nbsp;                break;</b>
+<i>1366</i>&nbsp;            case PathIterator.SEG_QUADTO:
+<b class="nc"><i>1367</i>&nbsp;                crossings =</b>
+<b class="nc"><i>1368</i>&nbsp;                    Shape.rectCrossingsForQuad(crossings,</b>
+<i>1369</i>&nbsp;                                               rxmin, rymin,
+<i>1370</i>&nbsp;                                               rxmax, rymax,
+<i>1371</i>&nbsp;                                               curx, cury,
+<i>1372</i>&nbsp;                                               coords[ci++],
+<i>1373</i>&nbsp;                                               coords[ci++],
+<i>1374</i>&nbsp;                                               endx = coords[ci++],
+<i>1375</i>&nbsp;                                               endy = coords[ci++],
+<i>1376</i>&nbsp;                                               0);
+<b class="nc"><i>1377</i>&nbsp;                curx = endx;</b>
+<b class="nc"><i>1378</i>&nbsp;                cury = endy;</b>
+<b class="nc"><i>1379</i>&nbsp;                break;</b>
+<i>1380</i>&nbsp;            case PathIterator.SEG_CUBICTO:
+<b class="nc"><i>1381</i>&nbsp;                crossings =</b>
+<b class="nc"><i>1382</i>&nbsp;                    Shape.rectCrossingsForCubic(crossings,</b>
+<i>1383</i>&nbsp;                                                rxmin, rymin,
+<i>1384</i>&nbsp;                                                rxmax, rymax,
+<i>1385</i>&nbsp;                                                curx, cury,
+<i>1386</i>&nbsp;                                                coords[ci++],
+<i>1387</i>&nbsp;                                                coords[ci++],
+<i>1388</i>&nbsp;                                                coords[ci++],
+<i>1389</i>&nbsp;                                                coords[ci++],
+<i>1390</i>&nbsp;                                                endx = coords[ci++],
+<i>1391</i>&nbsp;                                                endy = coords[ci++],
+<i>1392</i>&nbsp;                                                0);
+<b class="nc"><i>1393</i>&nbsp;                curx = endx;</b>
+<b class="nc"><i>1394</i>&nbsp;                cury = endy;</b>
+<b class="nc"><i>1395</i>&nbsp;                break;</b>
+<i>1396</i>&nbsp;            case PathIterator.SEG_CLOSE:
+<b class="nc"><i>1397</i>&nbsp;                if (curx != movx || cury != movy) {</b>
+<b class="nc"><i>1398</i>&nbsp;                    crossings =</b>
+<b class="nc"><i>1399</i>&nbsp;                        Shape.rectCrossingsForLine(crossings,</b>
+<i>1400</i>&nbsp;                                                   rxmin, rymin,
+<i>1401</i>&nbsp;                                                   rxmax, rymax,
+<i>1402</i>&nbsp;                                                   curx, cury,
+<i>1403</i>&nbsp;                                                   movx, movy);
+<i>1404</i>&nbsp;                }
+<b class="nc"><i>1405</i>&nbsp;                curx = movx;</b>
+<b class="nc"><i>1406</i>&nbsp;                cury = movy;</b>
+<i>1407</i>&nbsp;                // Count should always be a multiple of 2 here.
+<i>1408</i>&nbsp;                // assert((crossings &amp; 1) != 0);
+<i>1409</i>&nbsp;                break;
+<i>1410</i>&nbsp;            }
+<i>1411</i>&nbsp;        }
+<b class="nc"><i>1412</i>&nbsp;        if (crossings != Shape.RECT_INTERSECTS &amp;&amp;</b>
+<i>1413</i>&nbsp;            (curx != movx || cury != movy))
+<i>1414</i>&nbsp;        {
+<b class="nc"><i>1415</i>&nbsp;            crossings =</b>
+<b class="nc"><i>1416</i>&nbsp;                Shape.rectCrossingsForLine(crossings,</b>
+<i>1417</i>&nbsp;                                           rxmin, rymin,
+<i>1418</i>&nbsp;                                           rxmax, rymax,
+<i>1419</i>&nbsp;                                           curx, cury,
+<i>1420</i>&nbsp;                                           movx, movy);
+<i>1421</i>&nbsp;        }
+<i>1422</i>&nbsp;        // Count should always be a multiple of 2 here.
+<i>1423</i>&nbsp;        // assert((crossings &amp; 1) != 0);
+<b class="nc"><i>1424</i>&nbsp;        return crossings;</b>
+<i>1425</i>&nbsp;    }
+<i>1426</i>&nbsp;
+<i>1427</i>&nbsp;    /**
+<i>1428</i>&nbsp;     * {@inheritDoc}
+<i>1429</i>&nbsp;     */
+<i>1430</i>&nbsp;    public final void append(PathIterator pi, boolean connect) {
+<b class="nc"><i>1431</i>&nbsp;        float coords[] = new float[6];</b>
+<b class="nc"><i>1432</i>&nbsp;        while (!pi.isDone()) {</b>
+<b class="nc"><i>1433</i>&nbsp;            switch (pi.currentSegment(coords)) {</b>
+<i>1434</i>&nbsp;            case SEG_MOVETO:
+<b class="nc"><i>1435</i>&nbsp;                if (!connect || numTypes &lt; 1 || numCoords &lt; 1) {</b>
+<b class="nc"><i>1436</i>&nbsp;                    moveTo(coords[0], coords[1]);</b>
+<b class="nc"><i>1437</i>&nbsp;                    break;</b>
+<i>1438</i>&nbsp;                }
+<b class="nc"><i>1439</i>&nbsp;                if (pointTypes[numTypes - 1] != SEG_CLOSE &amp;&amp;</b>
+<i>1440</i>&nbsp;                    floatCoords[numCoords-2] == coords[0] &amp;&amp;
+<i>1441</i>&nbsp;                    floatCoords[numCoords-1] == coords[1])
+<i>1442</i>&nbsp;                {
+<i>1443</i>&nbsp;                    // Collapse out initial moveto/lineto
+<b class="nc"><i>1444</i>&nbsp;                    break;</b>
+<i>1445</i>&nbsp;                }
+<i>1446</i>&nbsp;                // NO BREAK;
+<i>1447</i>&nbsp;            case SEG_LINETO:
+<b class="nc"><i>1448</i>&nbsp;                lineTo(coords[0], coords[1]);</b>
+<b class="nc"><i>1449</i>&nbsp;                break;</b>
+<i>1450</i>&nbsp;            case SEG_QUADTO:
+<b class="nc"><i>1451</i>&nbsp;                quadTo(coords[0], coords[1],</b>
+<i>1452</i>&nbsp;                       coords[2], coords[3]);
+<b class="nc"><i>1453</i>&nbsp;                break;</b>
+<i>1454</i>&nbsp;            case SEG_CUBICTO:
+<b class="nc"><i>1455</i>&nbsp;                curveTo(coords[0], coords[1],</b>
+<i>1456</i>&nbsp;                        coords[2], coords[3],
+<i>1457</i>&nbsp;                        coords[4], coords[5]);
+<b class="nc"><i>1458</i>&nbsp;                break;</b>
+<i>1459</i>&nbsp;            case SEG_CLOSE:
+<b class="nc"><i>1460</i>&nbsp;                closePath();</b>
+<i>1461</i>&nbsp;                break;
+<i>1462</i>&nbsp;            }
+<b class="nc"><i>1463</i>&nbsp;            pi.next();</b>
+<b class="nc"><i>1464</i>&nbsp;            connect = false;</b>
+<i>1465</i>&nbsp;        }
+<b class="nc"><i>1466</i>&nbsp;    }</b>
+<i>1467</i>&nbsp;
+<i>1468</i>&nbsp;    /**
+<i>1469</i>&nbsp;     * {@inheritDoc}
+<i>1470</i>&nbsp;     */
+<i>1471</i>&nbsp;    public final void transform(BaseTransform tx) {
+<b class="nc"><i>1472</i>&nbsp;        if (numCoords == 0) return;</b>
+<b class="nc"><i>1473</i>&nbsp;        needRoom(false, 6);</b>
+<b class="nc"><i>1474</i>&nbsp;        floatCoords[numCoords + 0] = moveX;</b>
+<b class="nc"><i>1475</i>&nbsp;        floatCoords[numCoords + 1] = moveY;</b>
+<b class="nc"><i>1476</i>&nbsp;        floatCoords[numCoords + 2] = prevX;</b>
+<b class="nc"><i>1477</i>&nbsp;        floatCoords[numCoords + 3] = prevY;</b>
+<b class="nc"><i>1478</i>&nbsp;        floatCoords[numCoords + 4] = currX;</b>
+<b class="nc"><i>1479</i>&nbsp;        floatCoords[numCoords + 5] = currY;</b>
+<b class="nc"><i>1480</i>&nbsp;        tx.transform(floatCoords, 0, floatCoords, 0, numCoords / 2 + 3);</b>
+<b class="nc"><i>1481</i>&nbsp;        moveX = floatCoords[numCoords + 0];</b>
+<b class="nc"><i>1482</i>&nbsp;        moveY = floatCoords[numCoords + 1];</b>
+<b class="nc"><i>1483</i>&nbsp;        prevX = floatCoords[numCoords + 2];</b>
+<b class="nc"><i>1484</i>&nbsp;        prevY = floatCoords[numCoords + 3];</b>
+<b class="nc"><i>1485</i>&nbsp;        currX = floatCoords[numCoords + 4];</b>
+<b class="nc"><i>1486</i>&nbsp;        currY = floatCoords[numCoords + 5];</b>
+<b class="nc"><i>1487</i>&nbsp;    }</b>
+<i>1488</i>&nbsp;
+<i>1489</i>&nbsp;    /**
+<i>1490</i>&nbsp;     * {@inheritDoc}
+<i>1491</i>&nbsp;     */
+<i>1492</i>&nbsp;    public final RectBounds getBounds() {
+<i>1493</i>&nbsp;        float x1, y1, x2, y2;
+<b class="fc"><i>1494</i>&nbsp;        int i = numCoords;</b>
+<b class="fc"><i>1495</i>&nbsp;        if (i &gt; 0) {</b>
+<b class="fc"><i>1496</i>&nbsp;            y1 = y2 = floatCoords[--i];</b>
+<b class="fc"><i>1497</i>&nbsp;            x1 = x2 = floatCoords[--i];</b>
+<b class="fc"><i>1498</i>&nbsp;            while (i &gt; 0) {</b>
+<b class="fc"><i>1499</i>&nbsp;                float y = floatCoords[--i];</b>
+<b class="fc"><i>1500</i>&nbsp;                float x = floatCoords[--i];</b>
+<b class="fc"><i>1501</i>&nbsp;                if (x &lt; x1) x1 = x;</b>
+<b class="fc"><i>1502</i>&nbsp;                if (y &lt; y1) y1 = y;</b>
+<b class="fc"><i>1503</i>&nbsp;                if (x &gt; x2) x2 = x;</b>
+<b class="fc"><i>1504</i>&nbsp;                if (y &gt; y2) y2 = y;</b>
+<b class="fc"><i>1505</i>&nbsp;            }</b>
+<i>1506</i>&nbsp;        } else {
+<b class="nc"><i>1507</i>&nbsp;            x1 = y1 = x2 = y2 = 0.0f;</b>
+<i>1508</i>&nbsp;        }
+<b class="fc"><i>1509</i>&nbsp;        return new RectBounds(x1, y1, x2, y2);</b>
+<i>1510</i>&nbsp;    }
+<i>1511</i>&nbsp;
+<i>1512</i>&nbsp;    // The following three methods are used only by Prism to access
+<i>1513</i>&nbsp;    // internal structures; not intended for general use!
+<i>1514</i>&nbsp;    public final int getNumCommands() {
+<b class="fc"><i>1515</i>&nbsp;        return numTypes;</b>
+<i>1516</i>&nbsp;    }
+<i>1517</i>&nbsp;    public final byte[] getCommandsNoClone() {
+<b class="fc"><i>1518</i>&nbsp;        return pointTypes;</b>
+<i>1519</i>&nbsp;    }
+<i>1520</i>&nbsp;    public final float[] getFloatCoordsNoClone() {
+<b class="fc"><i>1521</i>&nbsp;        return floatCoords;</b>
+<i>1522</i>&nbsp;    }
+<i>1523</i>&nbsp;
+<i>1524</i>&nbsp;    /**
+<i>1525</i>&nbsp;     * {@inheritDoc}
+<i>1526</i>&nbsp;     * &lt;p&gt;
+<i>1527</i>&nbsp;     * The iterator for this class is not multi-threaded safe,
+<i>1528</i>&nbsp;     * which means that the {@code Path2D} class does not
+<i>1529</i>&nbsp;     * guarantee that modifications to the geometry of this
+<i>1530</i>&nbsp;     * {@code Path2D} object do not affect any iterations of
+<i>1531</i>&nbsp;     * that geometry that are already in process.
+<i>1532</i>&nbsp;     */
+<i>1533</i>&nbsp;    public PathIterator getPathIterator(BaseTransform tx) {
+<b class="fc"><i>1534</i>&nbsp;        if (tx == null) {</b>
+<b class="fc"><i>1535</i>&nbsp;            return new CopyIterator(this);</b>
+<i>1536</i>&nbsp;        } else {
+<b class="fc"><i>1537</i>&nbsp;            return new TxIterator(this, tx);</b>
+<i>1538</i>&nbsp;        }
+<i>1539</i>&nbsp;    }
+<i>1540</i>&nbsp;
+<i>1541</i>&nbsp;    static class CopyIterator extends Path2D.Iterator {
+<i>1542</i>&nbsp;        float floatCoords[];
+<i>1543</i>&nbsp;
+<i>1544</i>&nbsp;        CopyIterator(Path2D p2df) {
+<b class="fc"><i>1545</i>&nbsp;            super(p2df);</b>
+<b class="fc"><i>1546</i>&nbsp;            this.floatCoords = p2df.floatCoords;</b>
+<b class="fc"><i>1547</i>&nbsp;        }</b>
+<i>1548</i>&nbsp;
+<i>1549</i>&nbsp;        public int currentSegment(float[] coords) {
+<b class="fc"><i>1550</i>&nbsp;            int type = path.pointTypes[typeIdx];</b>
+<b class="fc"><i>1551</i>&nbsp;            int numCoords = curvecoords[type];</b>
+<b class="fc"><i>1552</i>&nbsp;            if (numCoords &gt; 0) {</b>
+<b class="fc"><i>1553</i>&nbsp;                System.arraycopy(floatCoords, pointIdx,</b>
+<i>1554</i>&nbsp;                                 coords, 0, numCoords);
+<i>1555</i>&nbsp;            }
+<b class="fc"><i>1556</i>&nbsp;            return type;</b>
+<i>1557</i>&nbsp;        }
+<i>1558</i>&nbsp;
+<i>1559</i>&nbsp;        public int currentSegment(double[] coords) {
+<b class="nc"><i>1560</i>&nbsp;            int type = path.pointTypes[typeIdx];</b>
+<b class="nc"><i>1561</i>&nbsp;            int numCoords = curvecoords[type];</b>
+<b class="nc"><i>1562</i>&nbsp;            if (numCoords &gt; 0) {</b>
+<b class="nc"><i>1563</i>&nbsp;                for (int i = 0; i &lt; numCoords; i++) {</b>
+<b class="nc"><i>1564</i>&nbsp;                    coords[i] = floatCoords[pointIdx + i];</b>
+<i>1565</i>&nbsp;                }
+<i>1566</i>&nbsp;            }
+<b class="nc"><i>1567</i>&nbsp;            return type;</b>
+<i>1568</i>&nbsp;        }
+<i>1569</i>&nbsp;    }
+<i>1570</i>&nbsp;
+<i>1571</i>&nbsp;    static class TxIterator extends Path2D.Iterator {
+<i>1572</i>&nbsp;        float floatCoords[];
+<i>1573</i>&nbsp;        BaseTransform transform;
+<i>1574</i>&nbsp;
+<i>1575</i>&nbsp;        TxIterator(Path2D p2df, BaseTransform tx) {
+<b class="fc"><i>1576</i>&nbsp;            super(p2df);</b>
+<b class="fc"><i>1577</i>&nbsp;            this.floatCoords = p2df.floatCoords;</b>
+<b class="fc"><i>1578</i>&nbsp;            this.transform = tx;</b>
+<b class="fc"><i>1579</i>&nbsp;        }</b>
+<i>1580</i>&nbsp;
+<i>1581</i>&nbsp;        public int currentSegment(float[] coords) {
+<b class="fc"><i>1582</i>&nbsp;            int type = path.pointTypes[typeIdx];</b>
+<b class="fc"><i>1583</i>&nbsp;            int numCoords = curvecoords[type];</b>
+<b class="fc"><i>1584</i>&nbsp;            if (numCoords &gt; 0) {</b>
+<b class="fc"><i>1585</i>&nbsp;                transform.transform(floatCoords, pointIdx,</b>
+<i>1586</i>&nbsp;                                 coords, 0, numCoords / 2);
+<i>1587</i>&nbsp;            }
+<b class="fc"><i>1588</i>&nbsp;            return type;</b>
+<i>1589</i>&nbsp;        }
+<i>1590</i>&nbsp;
+<i>1591</i>&nbsp;        public int currentSegment(double[] coords) {
+<b class="nc"><i>1592</i>&nbsp;            int type = path.pointTypes[typeIdx];</b>
+<b class="nc"><i>1593</i>&nbsp;            int numCoords = curvecoords[type];</b>
+<b class="nc"><i>1594</i>&nbsp;            if (numCoords &gt; 0) {</b>
+<b class="nc"><i>1595</i>&nbsp;                transform.transform(floatCoords, pointIdx,</b>
+<i>1596</i>&nbsp;                                 coords, 0, numCoords / 2);
+<i>1597</i>&nbsp;            }
+<b class="nc"><i>1598</i>&nbsp;            return type;</b>
+<i>1599</i>&nbsp;        }
+<i>1600</i>&nbsp;    }
+<i>1601</i>&nbsp;
+<i>1602</i>&nbsp;    /**
+<i>1603</i>&nbsp;     * Closes the current subpath by drawing a straight line back to
+<i>1604</i>&nbsp;     * the coordinates of the last {@code moveTo}.  If the path is already
+<i>1605</i>&nbsp;     * closed then this method has no effect.
+<i>1606</i>&nbsp;     */
+<i>1607</i>&nbsp;    public final void closePath() {
+<b class="fc"><i>1608</i>&nbsp;        if (numTypes == 0 || pointTypes[numTypes - 1] != SEG_CLOSE) {</b>
+<b class="fc"><i>1609</i>&nbsp;            needRoom(true, 0);</b>
+<b class="fc"><i>1610</i>&nbsp;            pointTypes[numTypes++] = SEG_CLOSE;</b>
+<b class="fc"><i>1611</i>&nbsp;            prevX = currX = moveX;</b>
+<b class="fc"><i>1612</i>&nbsp;            prevY = currY = moveY;</b>
+<i>1613</i>&nbsp;        }
+<b class="fc"><i>1614</i>&nbsp;    }</b>
+<i>1615</i>&nbsp;
+<i>1616</i>&nbsp;    public void pathDone() {
+<b class="fc"><i>1617</i>&nbsp;    }</b>
+<i>1618</i>&nbsp;
+<i>1619</i>&nbsp;    /**
+<i>1620</i>&nbsp;     * Appends the geometry of the specified {@code Shape} object to the
+<i>1621</i>&nbsp;     * path, possibly connecting the new geometry to the existing path
+<i>1622</i>&nbsp;     * segments with a line segment.
+<i>1623</i>&nbsp;     * If the {@code connect} parameter is {@code true} and the
+<i>1624</i>&nbsp;     * path is not empty then any initial {@code moveTo} in the
+<i>1625</i>&nbsp;     * geometry of the appended {@code Shape}
+<i>1626</i>&nbsp;     * is turned into a {@code lineTo} segment.
+<i>1627</i>&nbsp;     * If the destination coordinates of such a connecting {@code lineTo}
+<i>1628</i>&nbsp;     * segment match the ending coordinates of a currently open
+<i>1629</i>&nbsp;     * subpath then the segment is omitted as superfluous.
+<i>1630</i>&nbsp;     * The winding rule of the specified {@code Shape} is ignored
+<i>1631</i>&nbsp;     * and the appended geometry is governed by the winding
+<i>1632</i>&nbsp;     * rule specified for this path.
+<i>1633</i>&nbsp;     *
+<i>1634</i>&nbsp;     * @param s the {@code Shape} whose geometry is appended
+<i>1635</i>&nbsp;     *          to this path
+<i>1636</i>&nbsp;     * @param connect a boolean to control whether or not to turn an initial
+<i>1637</i>&nbsp;     *                {@code moveTo} segment into a {@code lineTo} segment
+<i>1638</i>&nbsp;     *                to connect the new geometry to the existing path
+<i>1639</i>&nbsp;     */
+<i>1640</i>&nbsp;    public final void append(Shape s, boolean connect) {
+<b class="nc"><i>1641</i>&nbsp;        append(s.getPathIterator(null), connect);</b>
+<b class="nc"><i>1642</i>&nbsp;    }</b>
+<i>1643</i>&nbsp;
+<i>1644</i>&nbsp;    static class SVGParser {
+<i>1645</i>&nbsp;        final String svgpath;
+<i>1646</i>&nbsp;        final int len;
+<i>1647</i>&nbsp;        int pos;
+<i>1648</i>&nbsp;        boolean allowcomma;
+<i>1649</i>&nbsp;
+<b class="fc"><i>1650</i>&nbsp;        public SVGParser(String svgpath) {</b>
+<b class="fc"><i>1651</i>&nbsp;            this.svgpath = svgpath;</b>
+<b class="fc"><i>1652</i>&nbsp;            this.len = svgpath.length();</b>
+<b class="fc"><i>1653</i>&nbsp;        }</b>
+<i>1654</i>&nbsp;
+<i>1655</i>&nbsp;        public boolean isDone() {
+<b class="fc"><i>1656</i>&nbsp;            return (toNextNonWsp() &gt;= len);</b>
+<i>1657</i>&nbsp;        }
+<i>1658</i>&nbsp;
+<i>1659</i>&nbsp;        public char getChar() {
+<b class="fc"><i>1660</i>&nbsp;            return svgpath.charAt(pos++);</b>
+<i>1661</i>&nbsp;        }
+<i>1662</i>&nbsp;
+<i>1663</i>&nbsp;        public boolean nextIsNumber() {
+<b class="fc"><i>1664</i>&nbsp;            if (toNextNonWsp() &lt; len) {</b>
+<b class="fc"><i>1665</i>&nbsp;                switch (svgpath.charAt(pos)) {</b>
+<i>1666</i>&nbsp;                    case &#39;-&#39;:
+<i>1667</i>&nbsp;                    case &#39;+&#39;:
+<i>1668</i>&nbsp;                    case &#39;0&#39;: case &#39;1&#39;: case &#39;2&#39;: case &#39;3&#39;: case &#39;4&#39;:
+<i>1669</i>&nbsp;                    case &#39;5&#39;: case &#39;6&#39;: case &#39;7&#39;: case &#39;8&#39;: case &#39;9&#39;:
+<i>1670</i>&nbsp;                    case &#39;.&#39;:
+<b class="nc"><i>1671</i>&nbsp;                        return true;</b>
+<i>1672</i>&nbsp;                }
+<i>1673</i>&nbsp;            }
+<b class="fc"><i>1674</i>&nbsp;            return false;</b>
+<i>1675</i>&nbsp;        }
+<i>1676</i>&nbsp;
+<i>1677</i>&nbsp;        public float f() {
+<b class="fc"><i>1678</i>&nbsp;            return getFloat();</b>
+<i>1679</i>&nbsp;        }
+<i>1680</i>&nbsp;
+<i>1681</i>&nbsp;        public float a() {
+<b class="nc"><i>1682</i>&nbsp;            return (float) Math.toRadians(getFloat());</b>
+<i>1683</i>&nbsp;        }
+<i>1684</i>&nbsp;
+<i>1685</i>&nbsp;        public float getFloat() {
+<b class="fc"><i>1686</i>&nbsp;            int start = toNextNonWsp();</b>
+<b class="fc"><i>1687</i>&nbsp;            this.allowcomma = true;</b>
+<b class="fc"><i>1688</i>&nbsp;            int end = toNumberEnd();</b>
+<b class="fc"><i>1689</i>&nbsp;            if (start &lt; end) {</b>
+<b class="fc"><i>1690</i>&nbsp;                String flstr = svgpath.substring(start, end);</b>
+<i>1691</i>&nbsp;                try {
+<b class="fc"><i>1692</i>&nbsp;                    return Float.parseFloat(flstr);</b>
+<b class="nc"><i>1693</i>&nbsp;                } catch (NumberFormatException e) {</b>
+<i>1694</i>&nbsp;                }
+<b class="nc"><i>1695</i>&nbsp;                throw new IllegalArgumentException(&quot;invalid float (&quot;+flstr+</b>
+<i>1696</i>&nbsp;                                                   &quot;) in path at pos=&quot;+start);
+<i>1697</i>&nbsp;            }
+<b class="nc"><i>1698</i>&nbsp;            throw new IllegalArgumentException(&quot;end of path looking for float&quot;);</b>
+<i>1699</i>&nbsp;        }
+<i>1700</i>&nbsp;
+<i>1701</i>&nbsp;        public boolean b() {
+<b class="nc"><i>1702</i>&nbsp;            toNextNonWsp();</b>
+<b class="nc"><i>1703</i>&nbsp;            this.allowcomma = true;</b>
+<b class="nc"><i>1704</i>&nbsp;            if (pos &lt; len) {</b>
+<b class="nc"><i>1705</i>&nbsp;                char flag = svgpath.charAt(pos);</b>
+<b class="nc"><i>1706</i>&nbsp;                switch (flag) {</b>
+<b class="nc"><i>1707</i>&nbsp;                    case &#39;0&#39;: pos++; return false;</b>
+<b class="nc"><i>1708</i>&nbsp;                    case &#39;1&#39;: pos++; return true;</b>
+<i>1709</i>&nbsp;                }
+<b class="nc"><i>1710</i>&nbsp;                throw new IllegalArgumentException(&quot;invalid boolean flag (&quot;+flag+</b>
+<i>1711</i>&nbsp;                                                   &quot;) in path at pos=&quot;+pos);
+<i>1712</i>&nbsp;            }
+<b class="nc"><i>1713</i>&nbsp;            throw new IllegalArgumentException(&quot;end of path looking for boolean&quot;);</b>
+<i>1714</i>&nbsp;        }
+<i>1715</i>&nbsp;
+<i>1716</i>&nbsp;        private int toNextNonWsp() {
+<b class="fc"><i>1717</i>&nbsp;            boolean canbecomma = this.allowcomma;</b>
+<b class="fc"><i>1718</i>&nbsp;            while (pos &lt; len) {</b>
+<b class="fc"><i>1719</i>&nbsp;                switch (svgpath.charAt(pos)) {</b>
+<i>1720</i>&nbsp;                    case &#39;,&#39;:
+<b class="nc"><i>1721</i>&nbsp;                        if (!canbecomma) {</b>
+<b class="nc"><i>1722</i>&nbsp;                            return pos;</b>
+<i>1723</i>&nbsp;                        }
+<b class="nc"><i>1724</i>&nbsp;                        canbecomma = false;</b>
+<b class="nc"><i>1725</i>&nbsp;                        break;</b>
+<i>1726</i>&nbsp;                    case &#39; &#39;:
+<i>1727</i>&nbsp;                    case &#39;\t&#39;:
+<i>1728</i>&nbsp;                    case &#39;\r&#39;:
+<i>1729</i>&nbsp;                    case &#39;\n&#39;:
+<b class="fc"><i>1730</i>&nbsp;                        break;</b>
+<i>1731</i>&nbsp;                    default:
+<b class="fc"><i>1732</i>&nbsp;                        return pos;</b>
+<i>1733</i>&nbsp;                }
+<b class="fc"><i>1734</i>&nbsp;                pos++;</b>
+<i>1735</i>&nbsp;            }
+<b class="fc"><i>1736</i>&nbsp;            return pos;</b>
+<i>1737</i>&nbsp;        }
+<i>1738</i>&nbsp;
+<i>1739</i>&nbsp;        private int toNumberEnd() {
+<b class="fc"><i>1740</i>&nbsp;            boolean allowsign = true;</b>
+<b class="fc"><i>1741</i>&nbsp;            boolean hasexp = false;</b>
+<b class="fc"><i>1742</i>&nbsp;            boolean hasdecimal = false;</b>
+<b class="fc"><i>1743</i>&nbsp;            while (pos &lt; len) {</b>
+<b class="fc"><i>1744</i>&nbsp;                switch (svgpath.charAt(pos)) {</b>
+<i>1745</i>&nbsp;                    case &#39;-&#39;:
+<i>1746</i>&nbsp;                    case &#39;+&#39;:
+<b class="fc"><i>1747</i>&nbsp;                        if (!allowsign) return pos;</b>
+<b class="fc"><i>1748</i>&nbsp;                        allowsign = false;</b>
+<b class="fc"><i>1749</i>&nbsp;                        break;</b>
+<i>1750</i>&nbsp;                    case &#39;0&#39;: case &#39;1&#39;: case &#39;2&#39;: case &#39;3&#39;: case &#39;4&#39;:
+<i>1751</i>&nbsp;                    case &#39;5&#39;: case &#39;6&#39;: case &#39;7&#39;: case &#39;8&#39;: case &#39;9&#39;:
+<b class="fc"><i>1752</i>&nbsp;                        allowsign = false;</b>
+<b class="fc"><i>1753</i>&nbsp;                        break;</b>
+<i>1754</i>&nbsp;                    case &#39;E&#39;: case &#39;e&#39;:
+<b class="nc"><i>1755</i>&nbsp;                        if (hasexp) return pos;</b>
+<b class="nc"><i>1756</i>&nbsp;                        hasexp = allowsign = true;</b>
+<b class="nc"><i>1757</i>&nbsp;                        break;</b>
+<i>1758</i>&nbsp;                    case &#39;.&#39;:
+<b class="fc"><i>1759</i>&nbsp;                        if (hasexp || hasdecimal) return pos;</b>
+<b class="fc"><i>1760</i>&nbsp;                        hasdecimal = true;</b>
+<b class="fc"><i>1761</i>&nbsp;                        allowsign = false;</b>
+<b class="fc"><i>1762</i>&nbsp;                        break;</b>
+<i>1763</i>&nbsp;                    default:
+<b class="fc"><i>1764</i>&nbsp;                        return pos;</b>
+<i>1765</i>&nbsp;                }
+<b class="fc"><i>1766</i>&nbsp;                pos++;</b>
+<i>1767</i>&nbsp;            }
+<b class="nc"><i>1768</i>&nbsp;            return pos;</b>
+<i>1769</i>&nbsp;        }
+<i>1770</i>&nbsp;    }
+<i>1771</i>&nbsp;
+<i>1772</i>&nbsp;    /**
+<i>1773</i>&nbsp;     * Appends the geometry of the path in the specified {@code String}
+<i>1774</i>&nbsp;     * argument in the format of an SVG path.
+<i>1775</i>&nbsp;     * The specification of the grammar of the language for an SVG path
+<i>1776</i>&nbsp;     * is specified on the W3C web page:
+<i>1777</i>&nbsp;     * &lt;pre&gt;
+<i>1778</i>&nbsp;     * http://www.w3.org/TR/SVG/paths.html#PathDataBNF
+<i>1779</i>&nbsp;     * &lt;/pre&gt;
+<i>1780</i>&nbsp;     * and the interpretation of the various elements in the format is
+<i>1781</i>&nbsp;     * specified on the W3C web page:
+<i>1782</i>&nbsp;     * &lt;pre&gt;
+<i>1783</i>&nbsp;     * http://www.w3.org/TR/SVG/paths.html#PathData
+<i>1784</i>&nbsp;     * &lt;/pre&gt;
+<i>1785</i>&nbsp;     *
+<i>1786</i>&nbsp;     * @param svgpath the {@code String} object containing the SVG style
+<i>1787</i>&nbsp;     *                definition of the geometry to be apppended
+<i>1788</i>&nbsp;     * @throws IllegalArgumentException
+<i>1789</i>&nbsp;     *     if {@code svgpath} does not match the indicated SVG path grammar
+<i>1790</i>&nbsp;     * @throws IllegalPathStateException
+<i>1791</i>&nbsp;     *     if there is no current point in the path
+<i>1792</i>&nbsp;     */
+<i>1793</i>&nbsp;    public final void appendSVGPath(String svgpath) {
+<b class="fc"><i>1794</i>&nbsp;        SVGParser p = new SVGParser(svgpath);</b>
+<b class="fc"><i>1795</i>&nbsp;        p.allowcomma = false;</b>
+<b class="fc"><i>1796</i>&nbsp;        while (!p.isDone()) {</b>
+<b class="fc"><i>1797</i>&nbsp;            p.allowcomma = false;</b>
+<b class="fc"><i>1798</i>&nbsp;            char cmd = p.getChar();</b>
+<b class="fc"><i>1799</i>&nbsp;            switch (cmd) {</b>
+<i>1800</i>&nbsp;                case &#39;M&#39;:
+<b class="fc"><i>1801</i>&nbsp;                    moveTo(p.f(), p.f());</b>
+<b class="fc"><i>1802</i>&nbsp;                    while (p.nextIsNumber()) {</b>
+<b class="nc"><i>1803</i>&nbsp;                        lineTo(p.f(), p.f());</b>
+<i>1804</i>&nbsp;                    }
+<i>1805</i>&nbsp;                    break;
+<i>1806</i>&nbsp;                case &#39;m&#39;:
+<b class="nc"><i>1807</i>&nbsp;                    if (numTypes &gt; 0) {</b>
+<b class="nc"><i>1808</i>&nbsp;                        moveToRel(p.f(), p.f());</b>
+<i>1809</i>&nbsp;                    } else {
+<b class="nc"><i>1810</i>&nbsp;                        moveTo(p.f(), p.f());</b>
+<i>1811</i>&nbsp;                    }
+<b class="nc"><i>1812</i>&nbsp;                    while (p.nextIsNumber()) {</b>
+<b class="nc"><i>1813</i>&nbsp;                        lineToRel(p.f(), p.f());</b>
+<i>1814</i>&nbsp;                    }
+<i>1815</i>&nbsp;                    break;
+<i>1816</i>&nbsp;                case &#39;L&#39;:
+<i>1817</i>&nbsp;                    do {
+<b class="fc"><i>1818</i>&nbsp;                        lineTo(p.f(), p.f());</b>
+<b class="fc"><i>1819</i>&nbsp;                    } while (p.nextIsNumber());</b>
+<b class="fc"><i>1820</i>&nbsp;                    break;</b>
+<i>1821</i>&nbsp;                case &#39;l&#39;:
+<i>1822</i>&nbsp;                    do {
+<b class="fc"><i>1823</i>&nbsp;                        lineToRel(p.f(), p.f());</b>
+<b class="fc"><i>1824</i>&nbsp;                    } while (p.nextIsNumber());</b>
+<b class="fc"><i>1825</i>&nbsp;                    break;</b>
+<i>1826</i>&nbsp;                case &#39;H&#39;:
+<i>1827</i>&nbsp;                    do {
+<b class="nc"><i>1828</i>&nbsp;                        lineTo(p.f(), currY);</b>
+<b class="nc"><i>1829</i>&nbsp;                    } while (p.nextIsNumber());</b>
+<b class="nc"><i>1830</i>&nbsp;                    break;</b>
+<i>1831</i>&nbsp;                case &#39;h&#39;:
+<i>1832</i>&nbsp;                    do {
+<b class="fc"><i>1833</i>&nbsp;                        lineToRel(p.f(), 0);</b>
+<b class="fc"><i>1834</i>&nbsp;                    } while (p.nextIsNumber());</b>
+<b class="fc"><i>1835</i>&nbsp;                    break;</b>
+<i>1836</i>&nbsp;                case &#39;V&#39;:
+<i>1837</i>&nbsp;                    do {
+<b class="nc"><i>1838</i>&nbsp;                        lineTo(currX, p.f());</b>
+<b class="nc"><i>1839</i>&nbsp;                    } while (p.nextIsNumber());</b>
+<b class="nc"><i>1840</i>&nbsp;                    break;</b>
+<i>1841</i>&nbsp;                case &#39;v&#39;:
+<i>1842</i>&nbsp;                    do {
+<b class="nc"><i>1843</i>&nbsp;                        lineToRel(0, p.f());</b>
+<b class="nc"><i>1844</i>&nbsp;                    } while (p.nextIsNumber());</b>
+<b class="nc"><i>1845</i>&nbsp;                    break;</b>
+<i>1846</i>&nbsp;                case &#39;Q&#39;:
+<i>1847</i>&nbsp;                    do {
+<b class="nc"><i>1848</i>&nbsp;                        quadTo(p.f(), p.f(), p.f(), p.f());</b>
+<b class="nc"><i>1849</i>&nbsp;                    } while (p.nextIsNumber());</b>
+<b class="nc"><i>1850</i>&nbsp;                    break;</b>
+<i>1851</i>&nbsp;                case &#39;q&#39;:
+<i>1852</i>&nbsp;                    do {
+<b class="nc"><i>1853</i>&nbsp;                        quadToRel(p.f(), p.f(), p.f(), p.f());</b>
+<b class="nc"><i>1854</i>&nbsp;                    } while (p.nextIsNumber());</b>
+<b class="nc"><i>1855</i>&nbsp;                    break;</b>
+<i>1856</i>&nbsp;                case &#39;T&#39;:
+<i>1857</i>&nbsp;                    do {
+<b class="nc"><i>1858</i>&nbsp;                        quadToSmooth(p.f(), p.f());</b>
+<b class="nc"><i>1859</i>&nbsp;                    } while (p.nextIsNumber());</b>
+<b class="nc"><i>1860</i>&nbsp;                    break;</b>
+<i>1861</i>&nbsp;                case &#39;t&#39;:
+<i>1862</i>&nbsp;                    do {
+<b class="nc"><i>1863</i>&nbsp;                        quadToSmoothRel(p.f(), p.f());</b>
+<b class="nc"><i>1864</i>&nbsp;                    } while (p.nextIsNumber());</b>
+<b class="nc"><i>1865</i>&nbsp;                    break;</b>
+<i>1866</i>&nbsp;                case &#39;C&#39;:
+<i>1867</i>&nbsp;                    do {
+<b class="nc"><i>1868</i>&nbsp;                        curveTo(p.f(), p.f(), p.f(), p.f(), p.f(), p.f());</b>
+<b class="nc"><i>1869</i>&nbsp;                    } while (p.nextIsNumber());</b>
+<b class="nc"><i>1870</i>&nbsp;                    break;</b>
+<i>1871</i>&nbsp;                case &#39;c&#39;:
+<i>1872</i>&nbsp;                    do {
+<b class="nc"><i>1873</i>&nbsp;                        curveToRel(p.f(), p.f(), p.f(), p.f(), p.f(), p.f());</b>
+<b class="nc"><i>1874</i>&nbsp;                    } while (p.nextIsNumber());</b>
+<b class="nc"><i>1875</i>&nbsp;                    break;</b>
+<i>1876</i>&nbsp;                case &#39;S&#39;:
+<i>1877</i>&nbsp;                    do {
+<b class="nc"><i>1878</i>&nbsp;                        curveToSmooth(p.f(), p.f(), p.f(), p.f());</b>
+<b class="nc"><i>1879</i>&nbsp;                    } while (p.nextIsNumber());</b>
+<b class="nc"><i>1880</i>&nbsp;                    break;</b>
+<i>1881</i>&nbsp;                case &#39;s&#39;:
+<i>1882</i>&nbsp;                    do {
+<b class="nc"><i>1883</i>&nbsp;                        curveToSmoothRel(p.f(), p.f(), p.f(), p.f());</b>
+<b class="nc"><i>1884</i>&nbsp;                    } while (p.nextIsNumber());</b>
+<b class="nc"><i>1885</i>&nbsp;                    break;</b>
+<i>1886</i>&nbsp;                case &#39;A&#39;:
+<i>1887</i>&nbsp;                    do {
+<b class="nc"><i>1888</i>&nbsp;                        arcTo(p.f(), p.f(), p.a(), p.b(), p.b(), p.f(), p.f());</b>
+<b class="nc"><i>1889</i>&nbsp;                    } while (p.nextIsNumber());</b>
+<b class="nc"><i>1890</i>&nbsp;                    break;</b>
+<i>1891</i>&nbsp;                case &#39;a&#39;:
+<i>1892</i>&nbsp;                    do {
+<b class="nc"><i>1893</i>&nbsp;                        arcToRel(p.f(), p.f(), p.a(), p.b(), p.b(), p.f(), p.f());</b>
+<b class="nc"><i>1894</i>&nbsp;                    } while (p.nextIsNumber());</b>
+<b class="nc"><i>1895</i>&nbsp;                    break;</b>
+<b class="fc"><i>1896</i>&nbsp;                case &#39;Z&#39;: case &#39;z&#39;: closePath(); break;</b>
+<i>1897</i>&nbsp;                default:
+<b class="nc"><i>1898</i>&nbsp;                    throw new IllegalArgumentException(&quot;invalid command (&quot;+cmd+</b>
+<i>1899</i>&nbsp;                                                       &quot;) in SVG path at pos=&quot;+p.pos);
+<i>1900</i>&nbsp;            }
+<b class="fc"><i>1901</i>&nbsp;            p.allowcomma = false;</b>
+<b class="fc"><i>1902</i>&nbsp;        }</b>
+<b class="fc"><i>1903</i>&nbsp;    }</b>
+<i>1904</i>&nbsp;
+<i>1905</i>&nbsp;    /**
+<i>1906</i>&nbsp;     * Returns the fill style winding rule.
+<i>1907</i>&nbsp;     *
+<i>1908</i>&nbsp;     * @return an integer representing the current winding rule.
+<i>1909</i>&nbsp;     * @see #WIND_EVEN_ODD
+<i>1910</i>&nbsp;     * @see #WIND_NON_ZERO
+<i>1911</i>&nbsp;     * @see #setWindingRule
+<i>1912</i>&nbsp;     */
+<i>1913</i>&nbsp;    public final int getWindingRule() {
+<b class="fc"><i>1914</i>&nbsp;        return windingRule;</b>
+<i>1915</i>&nbsp;    }
+<i>1916</i>&nbsp;
+<i>1917</i>&nbsp;    /**
+<i>1918</i>&nbsp;     * Sets the winding rule for this path to the specified value.
+<i>1919</i>&nbsp;     *
+<i>1920</i>&nbsp;     * @param rule an integer representing the specified
+<i>1921</i>&nbsp;     *             winding rule
+<i>1922</i>&nbsp;     * @exception IllegalArgumentException if
+<i>1923</i>&nbsp;     *      {@code rule} is not either
+<i>1924</i>&nbsp;     *      {@link #WIND_EVEN_ODD} or
+<i>1925</i>&nbsp;     *      {@link #WIND_NON_ZERO}
+<i>1926</i>&nbsp;     * @see #getWindingRule
+<i>1927</i>&nbsp;     */
+<i>1928</i>&nbsp;    public final void setWindingRule(int rule) {
+<b class="fc"><i>1929</i>&nbsp;        if (rule != WIND_EVEN_ODD &amp;&amp; rule != WIND_NON_ZERO) {</b>
+<b class="nc"><i>1930</i>&nbsp;            throw new IllegalArgumentException(&quot;winding rule must be &quot;+</b>
+<i>1931</i>&nbsp;                               &quot;WIND_EVEN_ODD or &quot;+
+<i>1932</i>&nbsp;                               &quot;WIND_NON_ZERO&quot;);
+<i>1933</i>&nbsp;        }
+<b class="fc"><i>1934</i>&nbsp;        windingRule = rule;</b>
+<b class="fc"><i>1935</i>&nbsp;    }</b>
+<i>1936</i>&nbsp;
+<i>1937</i>&nbsp;    /**
+<i>1938</i>&nbsp;     * Returns the coordinates most recently added to the end of the path
+<i>1939</i>&nbsp;     * as a {@link Point2D} object.
+<i>1940</i>&nbsp;     *
+<i>1941</i>&nbsp;     * @return a {@code Point2D} object containing the ending coordinates of
+<i>1942</i>&nbsp;     *         the path or {@code null} if there are no points in the path.
+<i>1943</i>&nbsp;     */
+<i>1944</i>&nbsp;    public final Point2D getCurrentPoint() {
+<b class="nc"><i>1945</i>&nbsp;        if (numTypes &lt; 1) {</b>
+<b class="nc"><i>1946</i>&nbsp;            return null;</b>
+<i>1947</i>&nbsp;        }
+<b class="nc"><i>1948</i>&nbsp;        return new Point2D(currX, currY);</b>
+<i>1949</i>&nbsp;    }
+<i>1950</i>&nbsp;
+<i>1951</i>&nbsp;    public final float getCurrentX() {
+<b class="nc"><i>1952</i>&nbsp;        if (numTypes &lt; 1) {</b>
+<b class="nc"><i>1953</i>&nbsp;            throw new IllegalPathStateException(&quot;no current point in empty path&quot;);</b>
+<i>1954</i>&nbsp;        }
+<b class="nc"><i>1955</i>&nbsp;        return currX;</b>
+<i>1956</i>&nbsp;    }
+<i>1957</i>&nbsp;
+<i>1958</i>&nbsp;    public final float getCurrentY() {
+<b class="nc"><i>1959</i>&nbsp;        if (numTypes &lt; 1) {</b>
+<b class="nc"><i>1960</i>&nbsp;            throw new IllegalPathStateException(&quot;no current point in empty path&quot;);</b>
+<i>1961</i>&nbsp;        }
+<b class="nc"><i>1962</i>&nbsp;        return currY;</b>
+<i>1963</i>&nbsp;    }
+<i>1964</i>&nbsp;
+<i>1965</i>&nbsp;    /**
+<i>1966</i>&nbsp;     * Resets the path to empty.  The append position is set back to the
+<i>1967</i>&nbsp;     * beginning of the path and all coordinates and point types are
+<i>1968</i>&nbsp;     * forgotten.
+<i>1969</i>&nbsp;     */
+<i>1970</i>&nbsp;    public final void reset() {
+<b class="nc"><i>1971</i>&nbsp;        numTypes = numCoords = 0;</b>
+<b class="nc"><i>1972</i>&nbsp;        moveX = moveY = prevX = prevY = currX = currY = 0;</b>
+<b class="nc"><i>1973</i>&nbsp;    }</b>
+<i>1974</i>&nbsp;
+<i>1975</i>&nbsp;    /**
+<i>1976</i>&nbsp;     * Returns a new {@code Shape} representing a transformed version
+<i>1977</i>&nbsp;     * of this {@code Path2D}.
+<i>1978</i>&nbsp;     * Note that the exact type and coordinate precision of the return
+<i>1979</i>&nbsp;     * value is not specified for this method.
+<i>1980</i>&nbsp;     * The method will return a Shape that contains no less precision
+<i>1981</i>&nbsp;     * for the transformed geometry than this {@code Path2D} currently
+<i>1982</i>&nbsp;     * maintains, but it may contain no more precision either.
+<i>1983</i>&nbsp;     * If the tradeoff of precision vs. storage size in the result is
+<i>1984</i>&nbsp;     * important then the convenience constructors in the
+<i>1985</i>&nbsp;     * {@link Path2D(Shape, BaseTransform) Path2D}
+<i>1986</i>&nbsp;     *
+<i>1987</i>&nbsp;     * @param tx the {@code BaseTransform} used to transform a
+<i>1988</i>&nbsp;     *           new {@code Shape}.
+<i>1989</i>&nbsp;     * @return a new {@code Shape}, transformed with the specified
+<i>1990</i>&nbsp;     *         {@code BaseTransform}.
+<i>1991</i>&nbsp;     */
+<i>1992</i>&nbsp;    public final Shape createTransformedShape(BaseTransform tx) {
+<b class="nc"><i>1993</i>&nbsp;        return new Path2D(this, tx);</b>
+<i>1994</i>&nbsp;    }
+<i>1995</i>&nbsp;
+<i>1996</i>&nbsp;    @Override
+<i>1997</i>&nbsp;    public Path2D copy() {
+<b class="fc"><i>1998</i>&nbsp;        return new Path2D(this);</b>
+<i>1999</i>&nbsp;    }
+<i>2000</i>&nbsp;
+<i>2001</i>&nbsp;    /**
+<i>2002</i>&nbsp;     * {@inheritDoc}
+<i>2003</i>&nbsp;     *
+<i>2004</i>&nbsp;     * Note that this method may return false when the geometry of the
+<i>2005</i>&nbsp;     * given {@code Path2D} is identical to the geometry of this object
+<i>2006</i>&nbsp;     * but is expressed in a different way.  This method will only return
+<i>2007</i>&nbsp;     * true when the internal representation of this object is exactly the
+<i>2008</i>&nbsp;     * same as that of the given object.
+<i>2009</i>&nbsp;     */
+<i>2010</i>&nbsp;    @Override
+<i>2011</i>&nbsp;    public boolean equals(Object obj) {
+<b class="fc"><i>2012</i>&nbsp;        if (obj == this) {</b>
+<b class="fc"><i>2013</i>&nbsp;            return true;</b>
+<i>2014</i>&nbsp;        }
+<b class="fc"><i>2015</i>&nbsp;        if (obj instanceof Path2D) {</b>
+<b class="fc"><i>2016</i>&nbsp;            Path2D p = (Path2D)obj;</b>
+<b class="fc"><i>2017</i>&nbsp;            if (p.numTypes == this.numTypes &amp;&amp;</b>
+<i>2018</i>&nbsp;                p.numCoords == this.numCoords &amp;&amp;
+<i>2019</i>&nbsp;                p.windingRule == this.windingRule)
+<i>2020</i>&nbsp;            {
+<b class="fc"><i>2021</i>&nbsp;                for (int i = 0; i &lt; numTypes; i++) {</b>
+<b class="fc"><i>2022</i>&nbsp;                    if (p.pointTypes[i] != this.pointTypes[i]) {</b>
+<b class="nc"><i>2023</i>&nbsp;                        return false;</b>
+<i>2024</i>&nbsp;                    }
+<i>2025</i>&nbsp;                }
+<b class="fc"><i>2026</i>&nbsp;                for (int i = 0; i &lt; numCoords; i++) {</b>
+<b class="fc"><i>2027</i>&nbsp;                    if (p.floatCoords[i] != this.floatCoords[i]) {</b>
+<b class="nc"><i>2028</i>&nbsp;                        return false;</b>
+<i>2029</i>&nbsp;                    }
+<i>2030</i>&nbsp;                }
+<b class="fc"><i>2031</i>&nbsp;                return true;</b>
+<i>2032</i>&nbsp;            }
+<i>2033</i>&nbsp;        }
+<b class="nc"><i>2034</i>&nbsp;        return false;</b>
+<i>2035</i>&nbsp;    }
+<i>2036</i>&nbsp;
+<i>2037</i>&nbsp;    @Override
+<i>2038</i>&nbsp;    public int hashCode() {
+<b class="fc"><i>2039</i>&nbsp;        int hash = 7;</b>
+<b class="fc"><i>2040</i>&nbsp;        hash = 11 * hash + numTypes;</b>
+<b class="fc"><i>2041</i>&nbsp;        hash = 11 * hash + numCoords;</b>
+<b class="fc"><i>2042</i>&nbsp;        hash = 11 * hash + windingRule;</b>
+<b class="fc"><i>2043</i>&nbsp;        for (int i = 0; i &lt; numTypes; i++) {</b>
+<b class="fc"><i>2044</i>&nbsp;            hash = 11 * hash + pointTypes[i];</b>
+<i>2045</i>&nbsp;        }
+<b class="fc"><i>2046</i>&nbsp;        for (int i = 0; i &lt; numCoords; i++) {</b>
+<b class="fc"><i>2047</i>&nbsp;            hash = 11 * hash + Float.floatToIntBits(floatCoords[i]);</b>
+<i>2048</i>&nbsp;        }
+<b class="fc"><i>2049</i>&nbsp;        return hash;</b>
+<i>2050</i>&nbsp;    }
+<i>2051</i>&nbsp;
+<i>2052</i>&nbsp;    /**
+<i>2053</i>&nbsp;     * Tests if the specified coordinates are inside the closed
+<i>2054</i>&nbsp;     * boundary of the specified {@link PathIterator}.
+<i>2055</i>&nbsp;     * &lt;p&gt;
+<i>2056</i>&nbsp;     * This method provides a basic facility for implementors of
+<i>2057</i>&nbsp;     * the {@link Shape} interface to implement support for the
+<i>2058</i>&nbsp;     * {@link Shape#contains(double, double)} method.
+<i>2059</i>&nbsp;     *
+<i>2060</i>&nbsp;     * @param pi the specified {@code PathIterator}
+<i>2061</i>&nbsp;     * @param x the specified X coordinate
+<i>2062</i>&nbsp;     * @param y the specified Y coordinate
+<i>2063</i>&nbsp;     * @return {@code true} if the specified coordinates are inside the
+<i>2064</i>&nbsp;     *         specified {@code PathIterator}; {@code false} otherwise
+<i>2065</i>&nbsp;     */
+<i>2066</i>&nbsp;    public static boolean contains(PathIterator pi, float x, float y) {
+<b class="nc"><i>2067</i>&nbsp;        if (x * 0f + y * 0f == 0f) {</b>
+<i>2068</i>&nbsp;            /* N * 0.0 is 0.0 only if N is finite.
+<i>2069</i>&nbsp;             * Here we know that both x and y are finite.
+<i>2070</i>&nbsp;             */
+<b class="nc"><i>2071</i>&nbsp;            int mask = (pi.getWindingRule() == WIND_NON_ZERO ? -1 : 1);</b>
+<b class="nc"><i>2072</i>&nbsp;            int cross = Shape.pointCrossingsForPath(pi, x, y);</b>
+<b class="nc"><i>2073</i>&nbsp;            return ((cross &amp; mask) != 0);</b>
+<i>2074</i>&nbsp;        } else {
+<i>2075</i>&nbsp;            /* Either x or y was infinite or NaN.
+<i>2076</i>&nbsp;             * A NaN always produces a negative response to any test
+<i>2077</i>&nbsp;             * and Infinity values cannot be &quot;inside&quot; any path so
+<i>2078</i>&nbsp;             * they should return false as well.
+<i>2079</i>&nbsp;             */
+<b class="nc"><i>2080</i>&nbsp;            return false;</b>
+<i>2081</i>&nbsp;        }
+<i>2082</i>&nbsp;    }
+<i>2083</i>&nbsp;
+<i>2084</i>&nbsp;    /**
+<i>2085</i>&nbsp;     * Tests if the specified {@link Point2D} is inside the closed
+<i>2086</i>&nbsp;     * boundary of the specified {@link PathIterator}.
+<i>2087</i>&nbsp;     * &lt;p&gt;
+<i>2088</i>&nbsp;     * This method provides a basic facility for implementors of
+<i>2089</i>&nbsp;     * the {@link Shape} interface to implement support for the
+<i>2090</i>&nbsp;     * {@link Shape#contains(Point2D)} method.
+<i>2091</i>&nbsp;     *
+<i>2092</i>&nbsp;     * @param pi the specified {@code PathIterator}
+<i>2093</i>&nbsp;     * @param p the specified {@code Point2D}
+<i>2094</i>&nbsp;     * @return {@code true} if the specified coordinates are inside the
+<i>2095</i>&nbsp;     *         specified {@code PathIterator}; {@code false} otherwise
+<i>2096</i>&nbsp;     */
+<i>2097</i>&nbsp;    public static boolean contains(PathIterator pi, Point2D p) {
+<b class="nc"><i>2098</i>&nbsp;        return contains(pi, p.x, p.y);</b>
+<i>2099</i>&nbsp;    }
+<i>2100</i>&nbsp;
+<i>2101</i>&nbsp;    /**
+<i>2102</i>&nbsp;     * {@inheritDoc}
+<i>2103</i>&nbsp;     */
+<i>2104</i>&nbsp;    public final boolean contains(float x, float y) {
+<b class="fc"><i>2105</i>&nbsp;        if (x * 0f + y * 0f == 0f) {</b>
+<i>2106</i>&nbsp;            /* N * 0.0 is 0.0 only if N is finite.
+<i>2107</i>&nbsp;             * Here we know that both x and y are finite.
+<i>2108</i>&nbsp;             */
+<b class="fc"><i>2109</i>&nbsp;            if (numTypes &lt; 2) {</b>
+<b class="nc"><i>2110</i>&nbsp;                return false;</b>
+<i>2111</i>&nbsp;            }
+<b class="fc"><i>2112</i>&nbsp;            int mask = (windingRule == WIND_NON_ZERO ? -1 : 1);</b>
+<b class="fc"><i>2113</i>&nbsp;            return ((pointCrossings(x, y) &amp; mask) != 0);</b>
+<i>2114</i>&nbsp;        } else {
+<i>2115</i>&nbsp;            /* Either x or y was infinite or NaN.
+<i>2116</i>&nbsp;             * A NaN always produces a negative response to any test
+<i>2117</i>&nbsp;             * and Infinity values cannot be &quot;inside&quot; any path so
+<i>2118</i>&nbsp;             * they should return false as well.
+<i>2119</i>&nbsp;             */
+<b class="nc"><i>2120</i>&nbsp;            return false;</b>
+<i>2121</i>&nbsp;        }
+<i>2122</i>&nbsp;    }
+<i>2123</i>&nbsp;
+<i>2124</i>&nbsp;    /**
+<i>2125</i>&nbsp;     * {@inheritDoc}
+<i>2126</i>&nbsp;     */
+<i>2127</i>&nbsp;    @Override
+<i>2128</i>&nbsp;    public final boolean contains(Point2D p) {
+<b class="nc"><i>2129</i>&nbsp;        return contains(p.x, p.y);</b>
+<i>2130</i>&nbsp;    }
+<i>2131</i>&nbsp;
+<i>2132</i>&nbsp;    /**
+<i>2133</i>&nbsp;     * Tests if the specified rectangular area is entirely inside the
+<i>2134</i>&nbsp;     * closed boundary of the specified {@link PathIterator}.
+<i>2135</i>&nbsp;     * &lt;p&gt;
+<i>2136</i>&nbsp;     * This method provides a basic facility for implementors of
+<i>2137</i>&nbsp;     * the {@link Shape} interface to implement support for the
+<i>2138</i>&nbsp;     * {@link Shape#contains(double, double, double, double)} method.
+<i>2139</i>&nbsp;     * &lt;p&gt;
+<i>2140</i>&nbsp;     * This method object may conservatively return false in
+<i>2141</i>&nbsp;     * cases where the specified rectangular area intersects a
+<i>2142</i>&nbsp;     * segment of the path, but that segment does not represent a
+<i>2143</i>&nbsp;     * boundary between the interior and exterior of the path.
+<i>2144</i>&nbsp;     * Such segments could lie entirely within the interior of the
+<i>2145</i>&nbsp;     * path if they are part of a path with a {@link #WIND_NON_ZERO}
+<i>2146</i>&nbsp;     * winding rule or if the segments are retraced in the reverse
+<i>2147</i>&nbsp;     * direction such that the two sets of segments cancel each
+<i>2148</i>&nbsp;     * other out without any exterior area falling between them.
+<i>2149</i>&nbsp;     * To determine whether segments represent true boundaries of
+<i>2150</i>&nbsp;     * the interior of the path would require extensive calculations
+<i>2151</i>&nbsp;     * involving all of the segments of the path and the winding
+<i>2152</i>&nbsp;     * rule and are thus beyond the scope of this implementation.
+<i>2153</i>&nbsp;     *
+<i>2154</i>&nbsp;     * @param pi the specified {@code PathIterator}
+<i>2155</i>&nbsp;     * @param x the specified X coordinate
+<i>2156</i>&nbsp;     * @param y the specified Y coordinate
+<i>2157</i>&nbsp;     * @param w the width of the specified rectangular area
+<i>2158</i>&nbsp;     * @param h the height of the specified rectangular area
+<i>2159</i>&nbsp;     * @return {@code true} if the specified {@code PathIterator} contains
+<i>2160</i>&nbsp;     *         the specified rectangluar area; {@code false} otherwise.
+<i>2161</i>&nbsp;     */
+<i>2162</i>&nbsp;    public static boolean contains(PathIterator pi,
+<i>2163</i>&nbsp;                                   float x, float y, float w, float h)
+<i>2164</i>&nbsp;    {
+<b class="nc"><i>2165</i>&nbsp;        if (java.lang.Float.isNaN(x+w) || java.lang.Float.isNaN(y+h)) {</b>
+<i>2166</i>&nbsp;            /* [xy]+[wh] is NaN if any of those values are NaN,
+<i>2167</i>&nbsp;             * or if adding the two together would produce NaN
+<i>2168</i>&nbsp;             * by virtue of adding opposing Infinte values.
+<i>2169</i>&nbsp;             * Since we need to add them below, their sum must
+<i>2170</i>&nbsp;             * not be NaN.
+<i>2171</i>&nbsp;             * We return false because NaN always produces a
+<i>2172</i>&nbsp;             * negative response to tests
+<i>2173</i>&nbsp;             */
+<b class="nc"><i>2174</i>&nbsp;            return false;</b>
+<i>2175</i>&nbsp;        }
+<b class="nc"><i>2176</i>&nbsp;        if (w &lt;= 0 || h &lt;= 0) {</b>
+<b class="nc"><i>2177</i>&nbsp;            return false;</b>
+<i>2178</i>&nbsp;        }
+<b class="nc"><i>2179</i>&nbsp;        int mask = (pi.getWindingRule() == WIND_NON_ZERO ? -1 : 2);</b>
+<b class="nc"><i>2180</i>&nbsp;        int crossings = Shape.rectCrossingsForPath(pi, x, y, x+w, y+h);</b>
+<b class="nc"><i>2181</i>&nbsp;        return (crossings != Shape.RECT_INTERSECTS &amp;&amp;</b>
+<i>2182</i>&nbsp;                    (crossings &amp; mask) != 0);
+<i>2183</i>&nbsp;    }
+<i>2184</i>&nbsp;
+<i>2185</i>&nbsp;    /**
+<i>2186</i>&nbsp;     * {@inheritDoc}
+<i>2187</i>&nbsp;     * &lt;p&gt;
+<i>2188</i>&nbsp;     * This method object may conservatively return false in
+<i>2189</i>&nbsp;     * cases where the specified rectangular area intersects a
+<i>2190</i>&nbsp;     * segment of the path, but that segment does not represent a
+<i>2191</i>&nbsp;     * boundary between the interior and exterior of the path.
+<i>2192</i>&nbsp;     * Such segments could lie entirely within the interior of the
+<i>2193</i>&nbsp;     * path if they are part of a path with a {@link #WIND_NON_ZERO}
+<i>2194</i>&nbsp;     * winding rule or if the segments are retraced in the reverse
+<i>2195</i>&nbsp;     * direction such that the two sets of segments cancel each
+<i>2196</i>&nbsp;     * other out without any exterior area falling between them.
+<i>2197</i>&nbsp;     * To determine whether segments represent true boundaries of
+<i>2198</i>&nbsp;     * the interior of the path would require extensive calculations
+<i>2199</i>&nbsp;     * involving all of the segments of the path and the winding
+<i>2200</i>&nbsp;     * rule and are thus beyond the scope of this implementation.
+<i>2201</i>&nbsp;     */
+<i>2202</i>&nbsp;    public final boolean contains(float x, float y, float w, float h) {
+<b class="nc"><i>2203</i>&nbsp;        if (java.lang.Float.isNaN(x+w) || java.lang.Float.isNaN(y+h)) {</b>
+<i>2204</i>&nbsp;            /* [xy]+[wh] is NaN if any of those values are NaN,
+<i>2205</i>&nbsp;             * or if adding the two together would produce NaN
+<i>2206</i>&nbsp;             * by virtue of adding opposing Infinte values.
+<i>2207</i>&nbsp;             * Since we need to add them below, their sum must
+<i>2208</i>&nbsp;             * not be NaN.
+<i>2209</i>&nbsp;             * We return false because NaN always produces a
+<i>2210</i>&nbsp;             * negative response to tests
+<i>2211</i>&nbsp;             */
+<b class="nc"><i>2212</i>&nbsp;            return false;</b>
+<i>2213</i>&nbsp;        }
+<b class="nc"><i>2214</i>&nbsp;        if (w &lt;= 0 || h &lt;= 0) {</b>
+<b class="nc"><i>2215</i>&nbsp;            return false;</b>
+<i>2216</i>&nbsp;        }
+<b class="nc"><i>2217</i>&nbsp;        int mask = (windingRule == WIND_NON_ZERO ? -1 : 2);</b>
+<b class="nc"><i>2218</i>&nbsp;        int crossings = rectCrossings(x, y, x+w, y+h);</b>
+<b class="nc"><i>2219</i>&nbsp;        return (crossings != Shape.RECT_INTERSECTS &amp;&amp;</b>
+<i>2220</i>&nbsp;                    (crossings &amp; mask) != 0);
+<i>2221</i>&nbsp;    }
+<i>2222</i>&nbsp;
+<i>2223</i>&nbsp;    /**
+<i>2224</i>&nbsp;     * Tests if the interior of the specified {@link PathIterator}
+<i>2225</i>&nbsp;     * intersects the interior of a specified set of rectangular
+<i>2226</i>&nbsp;     * coordinates.
+<i>2227</i>&nbsp;     * &lt;p&gt;
+<i>2228</i>&nbsp;     * This method provides a basic facility for implementors of
+<i>2229</i>&nbsp;     * the {@link Shape} interface to implement support for the
+<i>2230</i>&nbsp;     * {@link Shape#intersects(double, double, double, double)} method.
+<i>2231</i>&nbsp;     * &lt;p&gt;
+<i>2232</i>&nbsp;     * This method object may conservatively return true in
+<i>2233</i>&nbsp;     * cases where the specified rectangular area intersects a
+<i>2234</i>&nbsp;     * segment of the path, but that segment does not represent a
+<i>2235</i>&nbsp;     * boundary between the interior and exterior of the path.
+<i>2236</i>&nbsp;     * Such a case may occur if some set of segments of the
+<i>2237</i>&nbsp;     * path are retraced in the reverse direction such that the
+<i>2238</i>&nbsp;     * two sets of segments cancel each other out without any
+<i>2239</i>&nbsp;     * interior area between them.
+<i>2240</i>&nbsp;     * To determine whether segments represent true boundaries of
+<i>2241</i>&nbsp;     * the interior of the path would require extensive calculations
+<i>2242</i>&nbsp;     * involving all of the segments of the path and the winding
+<i>2243</i>&nbsp;     * rule and are thus beyond the scope of this implementation.
+<i>2244</i>&nbsp;     *
+<i>2245</i>&nbsp;     * @param pi the specified {@code PathIterator}
+<i>2246</i>&nbsp;     * @param x the specified X coordinate
+<i>2247</i>&nbsp;     * @param y the specified Y coordinate
+<i>2248</i>&nbsp;     * @param w the width of the specified rectangular coordinates
+<i>2249</i>&nbsp;     * @param h the height of the specified rectangular coordinates
+<i>2250</i>&nbsp;     * @return {@code true} if the specified {@code PathIterator} and
+<i>2251</i>&nbsp;     *         the interior of the specified set of rectangular
+<i>2252</i>&nbsp;     *         coordinates intersect each other; {@code false} otherwise.
+<i>2253</i>&nbsp;     */
+<i>2254</i>&nbsp;    public static boolean intersects(PathIterator pi,
+<i>2255</i>&nbsp;                                     float x, float y, float w, float h)
+<i>2256</i>&nbsp;    {
+<b class="nc"><i>2257</i>&nbsp;        if (java.lang.Float.isNaN(x+w) || java.lang.Float.isNaN(y+h)) {</b>
+<i>2258</i>&nbsp;            /* [xy]+[wh] is NaN if any of those values are NaN,
+<i>2259</i>&nbsp;             * or if adding the two together would produce NaN
+<i>2260</i>&nbsp;             * by virtue of adding opposing Infinte values.
+<i>2261</i>&nbsp;             * Since we need to add them below, their sum must
+<i>2262</i>&nbsp;             * not be NaN.
+<i>2263</i>&nbsp;             * We return false because NaN always produces a
+<i>2264</i>&nbsp;             * negative response to tests
+<i>2265</i>&nbsp;             */
+<b class="nc"><i>2266</i>&nbsp;            return false;</b>
+<i>2267</i>&nbsp;        }
+<b class="nc"><i>2268</i>&nbsp;        if (w &lt;= 0 || h &lt;= 0) {</b>
+<b class="nc"><i>2269</i>&nbsp;            return false;</b>
+<i>2270</i>&nbsp;        }
+<b class="nc"><i>2271</i>&nbsp;        int mask = (pi.getWindingRule() == WIND_NON_ZERO ? -1 : 2);</b>
+<b class="nc"><i>2272</i>&nbsp;        int crossings = Shape.rectCrossingsForPath(pi, x, y, x+w, y+h);</b>
+<b class="nc"><i>2273</i>&nbsp;        return (crossings == Shape.RECT_INTERSECTS ||</b>
+<i>2274</i>&nbsp;                    (crossings &amp; mask) != 0);
+<i>2275</i>&nbsp;    }
+<i>2276</i>&nbsp;
+<i>2277</i>&nbsp;    /**
+<i>2278</i>&nbsp;     * {@inheritDoc}
+<i>2279</i>&nbsp;     * &lt;p&gt;
+<i>2280</i>&nbsp;     * This method object may conservatively return true in
+<i>2281</i>&nbsp;     * cases where the specified rectangular area intersects a
+<i>2282</i>&nbsp;     * segment of the path, but that segment does not represent a
+<i>2283</i>&nbsp;     * boundary between the interior and exterior of the path.
+<i>2284</i>&nbsp;     * Such a case may occur if some set of segments of the
+<i>2285</i>&nbsp;     * path are retraced in the reverse direction such that the
+<i>2286</i>&nbsp;     * two sets of segments cancel each other out without any
+<i>2287</i>&nbsp;     * interior area between them.
+<i>2288</i>&nbsp;     * To determine whether segments represent true boundaries of
+<i>2289</i>&nbsp;     * the interior of the path would require extensive calculations
+<i>2290</i>&nbsp;     * involving all of the segments of the path and the winding
+<i>2291</i>&nbsp;     * rule and are thus beyond the scope of this implementation.
+<i>2292</i>&nbsp;     */
+<i>2293</i>&nbsp;    public final boolean intersects(float x, float y, float w, float h) {
+<b class="nc"><i>2294</i>&nbsp;        if (java.lang.Float.isNaN(x+w) || java.lang.Float.isNaN(y+h)) {</b>
+<i>2295</i>&nbsp;            /* [xy]+[wh] is NaN if any of those values are NaN,
+<i>2296</i>&nbsp;             * or if adding the two together would produce NaN
+<i>2297</i>&nbsp;             * by virtue of adding opposing Infinte values.
+<i>2298</i>&nbsp;             * Since we need to add them below, their sum must
+<i>2299</i>&nbsp;             * not be NaN.
+<i>2300</i>&nbsp;             * We return false because NaN always produces a
+<i>2301</i>&nbsp;             * negative response to tests
+<i>2302</i>&nbsp;             */
+<b class="nc"><i>2303</i>&nbsp;            return false;</b>
+<i>2304</i>&nbsp;        }
+<b class="nc"><i>2305</i>&nbsp;        if (w &lt;= 0 || h &lt;= 0) {</b>
+<b class="nc"><i>2306</i>&nbsp;            return false;</b>
+<i>2307</i>&nbsp;        }
+<b class="nc"><i>2308</i>&nbsp;        int mask = (windingRule == WIND_NON_ZERO ? -1 : 2);</b>
+<b class="nc"><i>2309</i>&nbsp;        int crossings = rectCrossings(x, y, x+w, y+h);</b>
+<b class="nc"><i>2310</i>&nbsp;        return (crossings == Shape.RECT_INTERSECTS ||</b>
+<i>2311</i>&nbsp;                    (crossings &amp; mask) != 0);
+<i>2312</i>&nbsp;    }
+<i>2313</i>&nbsp;
+<i>2314</i>&nbsp;    /**
+<i>2315</i>&nbsp;     * {@inheritDoc}
+<i>2316</i>&nbsp;     * &lt;p&gt;
+<i>2317</i>&nbsp;     * The iterator for this class is not multi-threaded safe,
+<i>2318</i>&nbsp;     * which means that this {@code Path2D} class does not
+<i>2319</i>&nbsp;     * guarantee that modifications to the geometry of this
+<i>2320</i>&nbsp;     * {@code Path2D} object do not affect any iterations of
+<i>2321</i>&nbsp;     * that geometry that are already in process.
+<i>2322</i>&nbsp;     */
+<i>2323</i>&nbsp;    public PathIterator getPathIterator(BaseTransform tx,
+<i>2324</i>&nbsp;                                        float flatness)
+<i>2325</i>&nbsp;    {
+<b class="nc"><i>2326</i>&nbsp;        return new FlatteningPathIterator(getPathIterator(tx), flatness);</b>
+<i>2327</i>&nbsp;    }
+<i>2328</i>&nbsp;
+<i>2329</i>&nbsp;    static abstract class Iterator implements PathIterator {
+<i>2330</i>&nbsp;        int typeIdx;
+<i>2331</i>&nbsp;        int pointIdx;
+<i>2332</i>&nbsp;        Path2D path;
+<i>2333</i>&nbsp;
+<b class="fc"><i>2334</i>&nbsp;        Iterator(Path2D path) {</b>
+<b class="fc"><i>2335</i>&nbsp;            this.path = path;</b>
+<b class="fc"><i>2336</i>&nbsp;        }</b>
+<i>2337</i>&nbsp;
+<i>2338</i>&nbsp;        public int getWindingRule() {
+<b class="nc"><i>2339</i>&nbsp;            return path.getWindingRule();</b>
+<i>2340</i>&nbsp;        }
+<i>2341</i>&nbsp;
+<i>2342</i>&nbsp;        public boolean isDone() {
+<b class="fc"><i>2343</i>&nbsp;            return (typeIdx &gt;= path.numTypes);</b>
+<i>2344</i>&nbsp;        }
+<i>2345</i>&nbsp;
+<i>2346</i>&nbsp;        public void next() {
+<b class="fc"><i>2347</i>&nbsp;            int type = path.pointTypes[typeIdx++];</b>
+<b class="fc"><i>2348</i>&nbsp;            pointIdx += curvecoords[type];</b>
+<b class="fc"><i>2349</i>&nbsp;        }</b>
+<i>2350</i>&nbsp;    }
+<i>2351</i>&nbsp;
+<i>2352</i>&nbsp;    public void setTo(Path2D otherPath) {
+<b class="fc"><i>2353</i>&nbsp;        numTypes = otherPath.numTypes;</b>
+<b class="fc"><i>2354</i>&nbsp;        numCoords = otherPath.numCoords;</b>
+<b class="fc"><i>2355</i>&nbsp;        if (numTypes &gt; pointTypes.length) {</b>
+<b class="nc"><i>2356</i>&nbsp;            pointTypes = new byte[numTypes];</b>
+<i>2357</i>&nbsp;        }
+<b class="fc"><i>2358</i>&nbsp;        System.arraycopy(otherPath.pointTypes, 0, pointTypes, 0, numTypes);</b>
+<b class="fc"><i>2359</i>&nbsp;        if (numCoords &gt; floatCoords.length) {</b>
+<b class="nc"><i>2360</i>&nbsp;            floatCoords = new float[numCoords];</b>
+<i>2361</i>&nbsp;        }
+<b class="fc"><i>2362</i>&nbsp;        System.arraycopy(otherPath.floatCoords, 0, floatCoords, 0, numCoords);</b>
+<b class="fc"><i>2363</i>&nbsp;        windingRule = otherPath.windingRule;</b>
+<b class="fc"><i>2364</i>&nbsp;        moveX = otherPath.moveX;</b>
+<b class="fc"><i>2365</i>&nbsp;        moveY = otherPath.moveY;</b>
+<b class="fc"><i>2366</i>&nbsp;        prevX = otherPath.prevX;</b>
+<b class="fc"><i>2367</i>&nbsp;        prevY = otherPath.prevY;</b>
+<b class="fc"><i>2368</i>&nbsp;        currX = otherPath.currX;</b>
+<b class="fc"><i>2369</i>&nbsp;        currY = otherPath.currY;</b>
+<b class="fc"><i>2370</i>&nbsp;    }</b>
+<i>2371</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2017-12-04 21:49</div>
+</div>
+</body>
+</html>

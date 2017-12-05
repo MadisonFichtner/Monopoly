@@ -1,0 +1,282 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: GlassWindowEventHandler</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.javafx.tk.quantum</a> ]
+</div>
+
+<h1>Coverage Summary for Class: GlassWindowEventHandler (com.sun.javafx.tk.quantum)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">GlassWindowEventHandler</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    30.8%
+  </span>
+  <span class="absValue">
+    (4/ 13)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    42.9%
+  </span>
+  <span class="absValue">
+    (42/ 98)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright (c) 2008, 2016, Oracle and/or its affiliates. All rights reserved.
+<i>3</i>&nbsp; * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+<i>4</i>&nbsp; *
+<i>5</i>&nbsp; *
+<i>6</i>&nbsp; *
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; *
+<i>11</i>&nbsp; *
+<i>12</i>&nbsp; *
+<i>13</i>&nbsp; *
+<i>14</i>&nbsp; *
+<i>15</i>&nbsp; *
+<i>16</i>&nbsp; *
+<i>17</i>&nbsp; *
+<i>18</i>&nbsp; *
+<i>19</i>&nbsp; *
+<i>20</i>&nbsp; *
+<i>21</i>&nbsp; *
+<i>22</i>&nbsp; *
+<i>23</i>&nbsp; *
+<i>24</i>&nbsp; */
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;package com.sun.javafx.tk.quantum;
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;import com.sun.glass.events.WindowEvent;
+<i>29</i>&nbsp;import com.sun.glass.ui.Application;
+<i>30</i>&nbsp;import com.sun.glass.ui.Screen;
+<i>31</i>&nbsp;import com.sun.glass.ui.Window;
+<i>32</i>&nbsp;import com.sun.glass.ui.Window.Level;
+<i>33</i>&nbsp;
+<i>34</i>&nbsp;import com.sun.javafx.tk.FocusCause;
+<i>35</i>&nbsp;
+<i>36</i>&nbsp;import java.security.AccessControlContext;
+<i>37</i>&nbsp;import java.security.AccessController;
+<i>38</i>&nbsp;import java.security.PrivilegedAction;
+<i>39</i>&nbsp;
+<i>40</i>&nbsp;class GlassWindowEventHandler extends Window.EventHandler implements PrivilegedAction&lt;Void&gt; {
+<i>41</i>&nbsp;
+<i>42</i>&nbsp;    private final WindowStage stage;
+<i>43</i>&nbsp;
+<i>44</i>&nbsp;    private Window window;
+<i>45</i>&nbsp;    private int type;
+<i>46</i>&nbsp;
+<b class="fc"><i>47</i>&nbsp;    public GlassWindowEventHandler(WindowStage stage) {</b>
+<b class="fc"><i>48</i>&nbsp;        this.stage = stage;</b>
+<b class="fc"><i>49</i>&nbsp;    }</b>
+<i>50</i>&nbsp;
+<i>51</i>&nbsp;    @Override
+<i>52</i>&nbsp;    public Void run() {
+<b class="fc"><i>53</i>&nbsp;        if (stage == null || stage.stageListener == null) {</b>
+<b class="fc"><i>54</i>&nbsp;            return null;</b>
+<i>55</i>&nbsp;        }
+<b class="fc"><i>56</i>&nbsp;        switch (type) {</b>
+<i>57</i>&nbsp;            case WindowEvent.MINIMIZE:
+<b class="nc"><i>58</i>&nbsp;                stage.stageListener.changedIconified(true);</b>
+<b class="nc"><i>59</i>&nbsp;                break;</b>
+<i>60</i>&nbsp;            case WindowEvent.MAXIMIZE:
+<b class="nc"><i>61</i>&nbsp;                stage.stageListener.changedIconified(false);</b>
+<b class="nc"><i>62</i>&nbsp;                stage.stageListener.changedMaximized(true);</b>
+<b class="nc"><i>63</i>&nbsp;                break;</b>
+<i>64</i>&nbsp;            case WindowEvent.RESTORE:
+<b class="nc"><i>65</i>&nbsp;                stage.stageListener.changedIconified(false);</b>
+<b class="nc"><i>66</i>&nbsp;                stage.stageListener.changedMaximized(false);</b>
+<b class="nc"><i>67</i>&nbsp;                break;</b>
+<i>68</i>&nbsp;            case WindowEvent.MOVE: {
+<b class="fc"><i>69</i>&nbsp;                float wx = window.getX();</b>
+<b class="fc"><i>70</i>&nbsp;                float wy = window.getY();</b>
+<b class="fc"><i>71</i>&nbsp;                Screen screen = window.getScreen();</b>
+<i>72</i>&nbsp;                float newx, newy;
+<b class="fc"><i>73</i>&nbsp;                if (screen != null) {</b>
+<b class="fc"><i>74</i>&nbsp;                    float pScaleX = screen.getPlatformScaleX();</b>
+<b class="fc"><i>75</i>&nbsp;                    float pScaleY = screen.getPlatformScaleY();</b>
+<b class="fc"><i>76</i>&nbsp;                    float sx = screen.getX();</b>
+<b class="fc"><i>77</i>&nbsp;                    float sy = screen.getY();</b>
+<b class="fc"><i>78</i>&nbsp;                    float px = screen.getPlatformX();</b>
+<b class="fc"><i>79</i>&nbsp;                    float py = screen.getPlatformY();</b>
+<b class="fc"><i>80</i>&nbsp;                    newx = sx + (wx - px) / pScaleX;</b>
+<b class="fc"><i>81</i>&nbsp;                    newy = sy + (wy - py) / pScaleY;</b>
+<b class="fc"><i>82</i>&nbsp;                } else {</b>
+<b class="nc"><i>83</i>&nbsp;                    newx = wx;</b>
+<b class="nc"><i>84</i>&nbsp;                    newy = wy;</b>
+<i>85</i>&nbsp;                }
+<b class="fc"><i>86</i>&nbsp;                stage.stageListener.changedLocation(newx, newy);</b>
+<i>87</i>&nbsp;                //We need to sync the new x,y for painting
+<b class="fc"><i>88</i>&nbsp;                if (!Application.GetApplication().hasWindowManager()) {</b>
+<b class="nc"><i>89</i>&nbsp;                    QuantumToolkit.runWithRenderLock(() -&gt; {</b>
+<b class="nc"><i>90</i>&nbsp;                        GlassScene scene = stage.getScene();</b>
+<b class="nc"><i>91</i>&nbsp;                        if (scene != null) {</b>
+<b class="nc"><i>92</i>&nbsp;                            scene.updateSceneState();</b>
+<i>93</i>&nbsp;                        }
+<b class="nc"><i>94</i>&nbsp;                        return null;</b>
+<i>95</i>&nbsp;                    });
+<i>96</i>&nbsp;                }
+<i>97</i>&nbsp;                break;
+<i>98</i>&nbsp;            }
+<i>99</i>&nbsp;            case WindowEvent.RESIZE: {
+<b class="fc"><i>100</i>&nbsp;                float pScaleX = window.getPlatformScaleX();</b>
+<b class="fc"><i>101</i>&nbsp;                float pScaleY = window.getPlatformScaleY();</b>
+<b class="fc"><i>102</i>&nbsp;                stage.stageListener.changedSize(window.getWidth()  / pScaleX,</b>
+<b class="fc"><i>103</i>&nbsp;                                                window.getHeight() / pScaleY);</b>
+<b class="fc"><i>104</i>&nbsp;                 break;</b>
+<i>105</i>&nbsp;            }
+<i>106</i>&nbsp;            case WindowEvent.RESCALE: {
+<b class="nc"><i>107</i>&nbsp;                float outScaleX = window.getOutputScaleX();</b>
+<b class="nc"><i>108</i>&nbsp;                float outScaleY = window.getOutputScaleY();</b>
+<b class="nc"><i>109</i>&nbsp;                stage.stageListener.changedScale(outScaleX, outScaleY);</b>
+<i>110</i>&nbsp;                // We need to sync the new scales for painting
+<b class="nc"><i>111</i>&nbsp;                QuantumToolkit.runWithRenderLock(() -&gt; {</b>
+<b class="nc"><i>112</i>&nbsp;                    GlassScene scene = stage.getScene();</b>
+<b class="nc"><i>113</i>&nbsp;                    if (scene != null) {</b>
+<b class="nc"><i>114</i>&nbsp;                        scene.entireSceneNeedsRepaint();</b>
+<b class="nc"><i>115</i>&nbsp;                        scene.updateSceneState();</b>
+<i>116</i>&nbsp;                    }
+<b class="nc"><i>117</i>&nbsp;                    return null;</b>
+<i>118</i>&nbsp;                });
+<b class="nc"><i>119</i>&nbsp;                break;</b>
+<i>120</i>&nbsp;            }
+<i>121</i>&nbsp;            case WindowEvent.FOCUS_GAINED:
+<b class="fc"><i>122</i>&nbsp;                WindowStage.addActiveWindow(stage);</b>
+<b class="fc"><i>123</i>&nbsp;                stage.stageListener.changedFocused(true, FocusCause.ACTIVATED);</b>
+<b class="fc"><i>124</i>&nbsp;                break;</b>
+<i>125</i>&nbsp;            case WindowEvent.FOCUS_LOST:
+<b class="fc"><i>126</i>&nbsp;                stage.stageListener.changedFocused(false, FocusCause.DEACTIVATED);</b>
+<b class="fc"><i>127</i>&nbsp;                break;</b>
+<i>128</i>&nbsp;            case WindowEvent.FOCUS_UNGRAB:
+<b class="fc"><i>129</i>&nbsp;                stage.stageListener.focusUngrab();</b>
+<b class="fc"><i>130</i>&nbsp;                break;</b>
+<i>131</i>&nbsp;            case WindowEvent.FOCUS_GAINED_FORWARD:
+<b class="nc"><i>132</i>&nbsp;                WindowStage.addActiveWindow(stage);</b>
+<b class="nc"><i>133</i>&nbsp;                stage.stageListener.changedFocused(true, FocusCause.TRAVERSED_FORWARD);</b>
+<b class="nc"><i>134</i>&nbsp;                break;</b>
+<i>135</i>&nbsp;            case WindowEvent.FOCUS_GAINED_BACKWARD:
+<b class="nc"><i>136</i>&nbsp;                WindowStage.addActiveWindow(stage);</b>
+<b class="nc"><i>137</i>&nbsp;                stage.stageListener.changedFocused(true, FocusCause.TRAVERSED_BACKWARD);</b>
+<b class="nc"><i>138</i>&nbsp;                break;</b>
+<i>139</i>&nbsp;            case WindowEvent.FOCUS_DISABLED:
+<b class="nc"><i>140</i>&nbsp;                stage.handleFocusDisabled();</b>
+<b class="nc"><i>141</i>&nbsp;                break;</b>
+<i>142</i>&nbsp;            case WindowEvent.DESTROY:
+<b class="nc"><i>143</i>&nbsp;                stage.setPlatformWindowClosed();</b>
+<b class="nc"><i>144</i>&nbsp;                stage.stageListener.closed();</b>
+<b class="nc"><i>145</i>&nbsp;                break;</b>
+<i>146</i>&nbsp;            case WindowEvent.CLOSE:
+<b class="fc"><i>147</i>&nbsp;                stage.stageListener.closing();</b>
+<b class="fc"><i>148</i>&nbsp;                break;</b>
+<i>149</i>&nbsp;            default:
+<b class="nc"><i>150</i>&nbsp;                if (QuantumToolkit.verbose) {</b>
+<b class="nc"><i>151</i>&nbsp;                    System.err.println(&quot;GlassWindowEventHandler: unknown type: &quot; + type);</b>
+<i>152</i>&nbsp;                }
+<i>153</i>&nbsp;                break;
+<i>154</i>&nbsp;        }
+<b class="fc"><i>155</i>&nbsp;        return null;</b>
+<i>156</i>&nbsp;    }
+<i>157</i>&nbsp;
+<i>158</i>&nbsp;    @Override
+<i>159</i>&nbsp;    public void handleLevelEvent(int level) {
+<b class="nc"><i>160</i>&nbsp;        QuantumToolkit.runWithoutRenderLock(() -&gt; {</b>
+<b class="nc"><i>161</i>&nbsp;            AccessControlContext acc = stage.getAccessControlContext();</b>
+<b class="nc"><i>162</i>&nbsp;            return AccessController.doPrivileged((PrivilegedAction&lt;Void&gt;)() -&gt; {</b>
+<b class="nc"><i>163</i>&nbsp;                stage.stageListener.changedAlwaysOnTop(level != Level.NORMAL);</b>
+<b class="nc"><i>164</i>&nbsp;                return (Void)null;</b>
+<i>165</i>&nbsp;            } , acc);
+<i>166</i>&nbsp;        });
+<b class="nc"><i>167</i>&nbsp;    }</b>
+<i>168</i>&nbsp;
+<i>169</i>&nbsp;    @Override
+<i>170</i>&nbsp;    public void handleWindowEvent(final Window window, final long time, final int type) {
+<b class="fc"><i>171</i>&nbsp;        this.window = window;</b>
+<b class="fc"><i>172</i>&nbsp;        this.type = type;</b>
+<i>173</i>&nbsp;
+<b class="fc"><i>174</i>&nbsp;        QuantumToolkit.runWithoutRenderLock(() -&gt; {</b>
+<b class="fc"><i>175</i>&nbsp;            AccessControlContext acc = stage.getAccessControlContext();</b>
+<b class="fc"><i>176</i>&nbsp;            return AccessController.doPrivileged(this, acc);</b>
+<i>177</i>&nbsp;        });
+<b class="fc"><i>178</i>&nbsp;    }</b>
+<i>179</i>&nbsp;
+<i>180</i>&nbsp;    @Override
+<i>181</i>&nbsp;    public void handleScreenChangedEvent(Window window, long time, Screen oldScreen, Screen newScreen) {
+<b class="nc"><i>182</i>&nbsp;        GlassScene scene = stage.getScene();</b>
+<b class="nc"><i>183</i>&nbsp;        if (scene != null) {</b>
+<b class="nc"><i>184</i>&nbsp;            QuantumToolkit.runWithRenderLock(() -&gt; {</b>
+<b class="nc"><i>185</i>&nbsp;                scene.entireSceneNeedsRepaint();</b>
+<b class="nc"><i>186</i>&nbsp;                scene.updateSceneState();</b>
+<b class="nc"><i>187</i>&nbsp;                return null;</b>
+<i>188</i>&nbsp;            });
+<i>189</i>&nbsp;        }
+<i>190</i>&nbsp;
+<b class="nc"><i>191</i>&nbsp;        QuantumToolkit.runWithoutRenderLock(() -&gt; {</b>
+<b class="nc"><i>192</i>&nbsp;            AccessControlContext acc = stage.getAccessControlContext();</b>
+<b class="nc"><i>193</i>&nbsp;            return AccessController.doPrivileged((PrivilegedAction&lt;Void&gt;)() -&gt; {</b>
+<b class="nc"><i>194</i>&nbsp;                stage.stageListener.changedScreen(oldScreen, newScreen);</b>
+<b class="nc"><i>195</i>&nbsp;                return (Void)null;</b>
+<i>196</i>&nbsp;            } , acc);
+<i>197</i>&nbsp;        });
+<b class="nc"><i>198</i>&nbsp;    }</b>
+<i>199</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2017-12-04 21:49</div>
+</div>
+</body>
+</html>

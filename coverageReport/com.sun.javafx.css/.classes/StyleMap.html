@@ -1,0 +1,263 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: StyleMap</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.javafx.css</a> ]
+</div>
+
+<h1>Coverage Summary for Class: StyleMap (com.sun.javafx.css)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">StyleMap</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (6/ 6)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    89.3%
+  </span>
+  <span class="absValue">
+    (50/ 56)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright (c) 2010, 2015, Oracle and/or its affiliates. All rights reserved.
+<i>3</i>&nbsp; * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+<i>4</i>&nbsp; *
+<i>5</i>&nbsp; *
+<i>6</i>&nbsp; *
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; *
+<i>11</i>&nbsp; *
+<i>12</i>&nbsp; *
+<i>13</i>&nbsp; *
+<i>14</i>&nbsp; *
+<i>15</i>&nbsp; *
+<i>16</i>&nbsp; *
+<i>17</i>&nbsp; *
+<i>18</i>&nbsp; *
+<i>19</i>&nbsp; *
+<i>20</i>&nbsp; *
+<i>21</i>&nbsp; *
+<i>22</i>&nbsp; *
+<i>23</i>&nbsp; *
+<i>24</i>&nbsp; */
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;package com.sun.javafx.css;
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;import java.util.ArrayList;
+<i>29</i>&nbsp;import java.util.Collections;
+<i>30</i>&nbsp;import java.util.Comparator;
+<i>31</i>&nbsp;import java.util.HashMap;
+<i>32</i>&nbsp;import java.util.List;
+<i>33</i>&nbsp;import java.util.Map;
+<i>34</i>&nbsp;
+<i>35</i>&nbsp;import javafx.css.Declaration;
+<i>36</i>&nbsp;import javafx.css.Match;
+<i>37</i>&nbsp;import javafx.css.Rule;
+<i>38</i>&nbsp;import javafx.css.Selector;
+<i>39</i>&nbsp;
+<i>40</i>&nbsp;
+<i>41</i>&nbsp;/**
+<i>42</i>&nbsp; * A map of property name to the cascading styles that match a node.
+<i>43</i>&nbsp; */
+<b class="fc"><i>44</i>&nbsp;public final class StyleMap {</b>
+<i>45</i>&nbsp;
+<b class="fc"><i>46</i>&nbsp;    public static final StyleMap EMPTY_MAP =</b>
+<b class="fc"><i>47</i>&nbsp;        new StyleMap(-1, Collections.&lt;Selector&gt;emptyList());</b>
+<i>48</i>&nbsp;
+<i>49</i>&nbsp;    /** Only StyleManager creates StyleMap */
+<b class="fc"><i>50</i>&nbsp;    public StyleMap(int id, List&lt;Selector&gt; selectors) {</b>
+<b class="fc"><i>51</i>&nbsp;        this.id = id;</b>
+<b class="fc"><i>52</i>&nbsp;        this.selectors = selectors;</b>
+<b class="fc"><i>53</i>&nbsp;    }</b>
+<i>54</i>&nbsp;
+<i>55</i>&nbsp;    public int getId() {
+<b class="fc"><i>56</i>&nbsp;        return id;</b>
+<i>57</i>&nbsp;    }
+<i>58</i>&nbsp;
+<i>59</i>&nbsp;    public boolean isEmpty() {
+<b class="fc"><i>60</i>&nbsp;        if (selectors != null) return selectors.isEmpty();</b>
+<b class="fc"><i>61</i>&nbsp;        else if (cascadingStyles != null) return cascadingStyles.isEmpty();</b>
+<b class="nc"><i>62</i>&nbsp;        else return true;</b>
+<i>63</i>&nbsp;    }
+<i>64</i>&nbsp;
+<i>65</i>&nbsp;    public Map&lt;String, List&lt;CascadingStyle&gt;&gt; getCascadingStyles() {
+<i>66</i>&nbsp;
+<b class="fc"><i>67</i>&nbsp;        if (cascadingStyles == null) {</b>
+<i>68</i>&nbsp;
+<b class="fc"><i>69</i>&nbsp;            if (selectors == null || selectors.isEmpty()) {</b>
+<b class="nc"><i>70</i>&nbsp;                cascadingStyles = Collections.emptyMap();</b>
+<b class="nc"><i>71</i>&nbsp;                return cascadingStyles;</b>
+<i>72</i>&nbsp;            }
+<i>73</i>&nbsp;
+<i>74</i>&nbsp;            //
+<i>75</i>&nbsp;            // Creating the map is a three step process. First, create
+<i>76</i>&nbsp;            // a list of CascadingStyles. Second, sort the CascadingStyles.
+<i>77</i>&nbsp;            // And, finally, loop through the CascadingStyles to put them
+<i>78</i>&nbsp;            // into the Map by property name.
+<i>79</i>&nbsp;            //
+<b class="fc"><i>80</i>&nbsp;            List&lt;CascadingStyle&gt; cascadingStyleList = new ArrayList&lt;&gt;();</b>
+<i>81</i>&nbsp;
+<b class="fc"><i>82</i>&nbsp;            int ordinal = 0;</b>
+<b class="fc"><i>83</i>&nbsp;            for (int i=0, iMax=selectors.size(); i&lt;iMax; i++) {</b>
+<i>84</i>&nbsp;
+<b class="fc"><i>85</i>&nbsp;                final Selector selector = selectors.get(i);</b>
+<i>86</i>&nbsp;
+<b class="fc"><i>87</i>&nbsp;                final Match match = selector.createMatch();</b>
+<i>88</i>&nbsp;
+<b class="fc"><i>89</i>&nbsp;                final Rule rule = selector.getRule();</b>
+<i>90</i>&nbsp;
+<b class="fc"><i>91</i>&nbsp;                for (int d = 0, dmax = rule.getDeclarations().size(); d &lt; dmax; d++) {</b>
+<b class="fc"><i>92</i>&nbsp;                    final Declaration decl = rule.getDeclarations().get(d);</b>
+<i>93</i>&nbsp;
+<i>94</i>&nbsp;                    // ordinal increments at declaration level since
+<i>95</i>&nbsp;                    // there may be more than one declaration for the
+<i>96</i>&nbsp;                    // same attribute within a selector or within a stylesheet
+<b class="fc"><i>97</i>&nbsp;                    final CascadingStyle s = new CascadingStyle(decl, match, ordinal++);</b>
+<i>98</i>&nbsp;
+<b class="fc"><i>99</i>&nbsp;                    cascadingStyleList.add(s);</b>
+<i>100</i>&nbsp;
+<i>101</i>&nbsp;                }
+<i>102</i>&nbsp;            }
+<i>103</i>&nbsp;
+<b class="fc"><i>104</i>&nbsp;            if (cascadingStyleList.isEmpty()) {</b>
+<b class="nc"><i>105</i>&nbsp;                cascadingStyles = Collections.emptyMap();</b>
+<b class="nc"><i>106</i>&nbsp;                return cascadingStyles;</b>
+<i>107</i>&nbsp;            }
+<i>108</i>&nbsp;
+<i>109</i>&nbsp;            // apply the cascade. CascadingStyle&#39;s primary sort key is the
+<i>110</i>&nbsp;            // property name, so the same properties should be in sequence.
+<b class="fc"><i>111</i>&nbsp;            Collections.sort(cascadingStyleList, cascadingStyleComparator);</b>
+<i>112</i>&nbsp;
+<i>113</i>&nbsp;            // there may be more entries in this HashMap than we need if there
+<i>114</i>&nbsp;            // is more than one CascadingStyle per property. But this is
+<i>115</i>&nbsp;            // still better than
+<b class="fc"><i>116</i>&nbsp;            final int nCascadingStyles = cascadingStyleList.size();</b>
+<b class="fc"><i>117</i>&nbsp;            cascadingStyles = new HashMap&lt;&gt;(nCascadingStyles);</b>
+<i>118</i>&nbsp;
+<b class="fc"><i>119</i>&nbsp;            CascadingStyle cascadingStyle = cascadingStyleList.get(0);</b>
+<b class="fc"><i>120</i>&nbsp;            String property = cascadingStyle.getProperty();</b>
+<i>121</i>&nbsp;
+<i>122</i>&nbsp;
+<b class="fc"><i>123</i>&nbsp;            for (int fromIndex=0; fromIndex&lt;nCascadingStyles; /*increment is in code*/) {</b>
+<i>124</i>&nbsp;
+<b class="fc"><i>125</i>&nbsp;                List&lt;CascadingStyle&gt; value = cascadingStyles.get(property);</b>
+<b class="fc"><i>126</i>&nbsp;                if (value == null)  {</b>
+<i>127</i>&nbsp;
+<b class="fc"><i>128</i>&nbsp;                    int toIndex = fromIndex;</b>
+<b class="fc"><i>129</i>&nbsp;                    final String currentProperty = property;</b>
+<i>130</i>&nbsp;
+<b class="fc"><i>131</i>&nbsp;                    while (++toIndex &lt; nCascadingStyles) {</b>
+<b class="fc"><i>132</i>&nbsp;                        cascadingStyle = cascadingStyleList.get(toIndex);</b>
+<b class="fc"><i>133</i>&nbsp;                        property = cascadingStyle.getProperty();</b>
+<b class="fc"><i>134</i>&nbsp;                        if (property.equals(currentProperty) == false) break;</b>
+<i>135</i>&nbsp;                    }
+<i>136</i>&nbsp;
+<b class="fc"><i>137</i>&nbsp;                    cascadingStyles.put(currentProperty, cascadingStyleList.subList(fromIndex, toIndex));</b>
+<i>138</i>&nbsp;
+<b class="fc"><i>139</i>&nbsp;                    fromIndex = toIndex;</b>
+<i>140</i>&nbsp;
+<i>141</i>&nbsp;
+<b class="fc"><i>142</i>&nbsp;                } else {</b>
+<i>143</i>&nbsp;                    // logic is broken!
+<b class="nc"><i>144</i>&nbsp;                    assert(false);</b>
+<i>145</i>&nbsp;                }
+<b class="fc"><i>146</i>&nbsp;            }</b>
+<i>147</i>&nbsp;
+<b class="fc"><i>148</i>&nbsp;            selectors.clear();</b>
+<b class="fc"><i>149</i>&nbsp;            selectors = null;</b>
+<i>150</i>&nbsp;
+<i>151</i>&nbsp;        }
+<i>152</i>&nbsp;
+<b class="fc"><i>153</i>&nbsp;        return cascadingStyles;</b>
+<i>154</i>&nbsp;    }
+<i>155</i>&nbsp;
+<b class="fc"><i>156</i>&nbsp;    private static final Comparator&lt;CascadingStyle&gt; cascadingStyleComparator =</b>
+<i>157</i>&nbsp;            (o1, o2) -&gt; {
+<i>158</i>&nbsp;
+<i>159</i>&nbsp;                //
+<i>160</i>&nbsp;                // primary sort is on property. If the property names are the same,
+<i>161</i>&nbsp;                // then go through the cascade logic. Otherwise, sort by property
+<i>162</i>&nbsp;                // name since the cascade doesn&#39;t matter for dissimilar properties.
+<i>163</i>&nbsp;                //
+<i>164</i>&nbsp;                // What we want to end up with is a list where all the same properties
+<i>165</i>&nbsp;                // are together in the list.
+<i>166</i>&nbsp;                //
+<b class="fc"><i>167</i>&nbsp;                String thisProperty = o1.getProperty();</b>
+<b class="fc"><i>168</i>&nbsp;                String otherProperty = o2.getProperty();</b>
+<i>169</i>&nbsp;
+<b class="fc"><i>170</i>&nbsp;                int c = thisProperty.compareTo(otherProperty);</b>
+<b class="fc"><i>171</i>&nbsp;                if (c != 0) return c;</b>
+<i>172</i>&nbsp;
+<b class="fc"><i>173</i>&nbsp;                return o1.compareTo(o2);</b>
+<i>174</i>&nbsp;
+<i>175</i>&nbsp;            };
+<i>176</i>&nbsp;
+<i>177</i>&nbsp;    private final int id; // unique per container
+<i>178</i>&nbsp;    private List&lt;Selector&gt; selectors;
+<i>179</i>&nbsp;    private Map&lt;String, List&lt;CascadingStyle&gt;&gt; cascadingStyles;
+<i>180</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2017-12-04 21:49</div>
+</div>
+</body>
+</html>

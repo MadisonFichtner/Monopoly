@@ -1,0 +1,227 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: TextHelper</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.javafx.scene.shape</a> ]
+</div>
+
+<h1>Coverage Summary for Class: TextHelper (com.sun.javafx.scene.shape)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">TextHelper</td>
+<td class="coverageStat">
+  <span class="percent">
+    62.5%
+  </span>
+  <span class="absValue">
+    (10/ 16)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    73.1%
+  </span>
+  <span class="absValue">
+    (19/ 26)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">TextHelper$TextAccessor</td>
+  </tr>
+<tr>
+  <td class="name"><strong>total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    62.5%
+  </span>
+  <span class="absValue">
+    (10/ 16)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    73.1%
+  </span>
+  <span class="absValue">
+    (19/ 26)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright (c) 2016, Oracle and/or its affiliates. All rights reserved.
+<i>3</i>&nbsp; * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+<i>4</i>&nbsp; *
+<i>5</i>&nbsp; *
+<i>6</i>&nbsp; *
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; *
+<i>11</i>&nbsp; *
+<i>12</i>&nbsp; *
+<i>13</i>&nbsp; *
+<i>14</i>&nbsp; *
+<i>15</i>&nbsp; *
+<i>16</i>&nbsp; *
+<i>17</i>&nbsp; *
+<i>18</i>&nbsp; *
+<i>19</i>&nbsp; *
+<i>20</i>&nbsp; *
+<i>21</i>&nbsp; *
+<i>22</i>&nbsp; *
+<i>23</i>&nbsp; *
+<i>24</i>&nbsp; */
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;package com.sun.javafx.scene.shape;
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;import com.sun.javafx.geom.BaseBounds;
+<i>29</i>&nbsp;import com.sun.javafx.geom.transform.BaseTransform;
+<i>30</i>&nbsp;import com.sun.javafx.sg.prism.NGNode;
+<i>31</i>&nbsp;import com.sun.javafx.util.Utils;
+<i>32</i>&nbsp;import javafx.geometry.Bounds;
+<i>33</i>&nbsp;import javafx.scene.Node;
+<i>34</i>&nbsp;import javafx.scene.shape.Shape;
+<i>35</i>&nbsp;import javafx.scene.text.Text;
+<i>36</i>&nbsp;
+<i>37</i>&nbsp;/**
+<i>38</i>&nbsp; * Used to access internal methods of Text.
+<i>39</i>&nbsp; */
+<b class="fc"><i>40</i>&nbsp;public class TextHelper extends ShapeHelper {</b>
+<i>41</i>&nbsp;
+<i>42</i>&nbsp;    private static final TextHelper theInstance;
+<i>43</i>&nbsp;    private static TextAccessor textAccessor;
+<i>44</i>&nbsp;
+<i>45</i>&nbsp;    static {
+<b class="fc"><i>46</i>&nbsp;        theInstance = new TextHelper();</b>
+<b class="fc"><i>47</i>&nbsp;        Utils.forceInit(Text.class);</b>
+<b class="fc"><i>48</i>&nbsp;    }</b>
+<i>49</i>&nbsp;
+<i>50</i>&nbsp;    private static TextHelper getInstance() {
+<b class="fc"><i>51</i>&nbsp;        return theInstance;</b>
+<i>52</i>&nbsp;    }
+<i>53</i>&nbsp;
+<i>54</i>&nbsp;    public static void initHelper(Text text) {
+<b class="fc"><i>55</i>&nbsp;        setHelper(text, getInstance());</b>
+<b class="fc"><i>56</i>&nbsp;    }</b>
+<i>57</i>&nbsp;
+<i>58</i>&nbsp;    public static BaseBounds superComputeGeomBounds(Node node, BaseBounds bounds,
+<i>59</i>&nbsp;            BaseTransform tx) {
+<b class="nc"><i>60</i>&nbsp;        return ((TextHelper) getHelper(node)).superComputeGeomBoundsImpl(node, bounds, tx);</b>
+<i>61</i>&nbsp;    }
+<i>62</i>&nbsp;
+<i>63</i>&nbsp;    public static Bounds superComputeLayoutBounds(Node node) {
+<b class="nc"><i>64</i>&nbsp;        return ((TextHelper) getHelper(node)).superComputeLayoutBoundsImpl(node);</b>
+<i>65</i>&nbsp;    }
+<i>66</i>&nbsp;
+<i>67</i>&nbsp;    @Override
+<i>68</i>&nbsp;    protected NGNode createPeerImpl(Node node) {
+<b class="fc"><i>69</i>&nbsp;        return textAccessor.doCreatePeer(node);</b>
+<i>70</i>&nbsp;    }
+<i>71</i>&nbsp;
+<i>72</i>&nbsp;    @Override
+<i>73</i>&nbsp;    protected void updatePeerImpl(Node node) {
+<b class="fc"><i>74</i>&nbsp;        super.updatePeerImpl(node);</b>
+<b class="fc"><i>75</i>&nbsp;        textAccessor.doUpdatePeer(node);</b>
+<b class="fc"><i>76</i>&nbsp;    }</b>
+<i>77</i>&nbsp;
+<i>78</i>&nbsp;    BaseBounds superComputeGeomBoundsImpl(Node node, BaseBounds bounds,
+<i>79</i>&nbsp;            BaseTransform tx) {
+<b class="nc"><i>80</i>&nbsp;        return super.computeGeomBoundsImpl(node, bounds, tx);</b>
+<i>81</i>&nbsp;    }
+<i>82</i>&nbsp;
+<i>83</i>&nbsp;    Bounds superComputeLayoutBoundsImpl(Node node) {
+<b class="nc"><i>84</i>&nbsp;        return super.computeLayoutBoundsImpl(node);</b>
+<i>85</i>&nbsp;    }
+<i>86</i>&nbsp;
+<i>87</i>&nbsp;    @Override
+<i>88</i>&nbsp;    protected BaseBounds computeGeomBoundsImpl(Node node, BaseBounds bounds,
+<i>89</i>&nbsp;            BaseTransform tx) {
+<b class="fc"><i>90</i>&nbsp;        return textAccessor.doComputeGeomBounds(node, bounds, tx);</b>
+<i>91</i>&nbsp;    }
+<i>92</i>&nbsp;
+<i>93</i>&nbsp;    @Override
+<i>94</i>&nbsp;    protected Bounds computeLayoutBoundsImpl(Node node) {
+<b class="fc"><i>95</i>&nbsp;        return textAccessor.doComputeLayoutBounds(node);</b>
+<i>96</i>&nbsp;    }
+<i>97</i>&nbsp;
+<i>98</i>&nbsp;    @Override
+<i>99</i>&nbsp;    protected boolean computeContainsImpl(Node node, double localX, double localY) {
+<b class="nc"><i>100</i>&nbsp;        return textAccessor.doComputeContains(node, localX, localY);</b>
+<i>101</i>&nbsp;    }
+<i>102</i>&nbsp;
+<i>103</i>&nbsp;    @Override
+<i>104</i>&nbsp;    protected void geomChangedImpl(Node node) {
+<b class="fc"><i>105</i>&nbsp;        super.geomChangedImpl(node);</b>
+<b class="fc"><i>106</i>&nbsp;        textAccessor.doGeomChanged(node);</b>
+<b class="fc"><i>107</i>&nbsp;    }</b>
+<i>108</i>&nbsp;
+<i>109</i>&nbsp;    @Override
+<i>110</i>&nbsp;    protected  com.sun.javafx.geom.Shape configShapeImpl(Shape shape) {
+<b class="nc"><i>111</i>&nbsp;        return textAccessor.doConfigShape(shape);</b>
+<i>112</i>&nbsp;    }
+<i>113</i>&nbsp;
+<i>114</i>&nbsp;    public static void setTextAccessor(final TextAccessor newAccessor) {
+<b class="fc"><i>115</i>&nbsp;        if (textAccessor != null) {</b>
+<b class="nc"><i>116</i>&nbsp;            throw new IllegalStateException();</b>
+<i>117</i>&nbsp;        }
+<i>118</i>&nbsp;
+<b class="fc"><i>119</i>&nbsp;        textAccessor = newAccessor;</b>
+<b class="fc"><i>120</i>&nbsp;    }</b>
+<i>121</i>&nbsp;
+<i>122</i>&nbsp;    public interface TextAccessor {
+<i>123</i>&nbsp;        NGNode doCreatePeer(Node node);
+<i>124</i>&nbsp;        void doUpdatePeer(Node node);
+<i>125</i>&nbsp;        BaseBounds doComputeGeomBounds(Node node, BaseBounds bounds, BaseTransform tx);
+<i>126</i>&nbsp;        Bounds doComputeLayoutBounds(Node node);
+<i>127</i>&nbsp;        boolean doComputeContains(Node node, double localX, double localY);
+<i>128</i>&nbsp;        void doGeomChanged(Node node);
+<i>129</i>&nbsp;        com.sun.javafx.geom.Shape doConfigShape(Shape shape);
+<i>130</i>&nbsp;    }
+<i>131</i>&nbsp;
+<i>132</i>&nbsp;}
+<i>133</i>&nbsp;
+<i>134</i>&nbsp;
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2017-12-04 21:49</div>
+</div>
+</body>
+</html>

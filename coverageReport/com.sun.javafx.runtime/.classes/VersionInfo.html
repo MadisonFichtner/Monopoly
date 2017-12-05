@@ -1,0 +1,305 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: VersionInfo</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.javafx.runtime</a> ]
+</div>
+
+<h1>Coverage Summary for Class: VersionInfo (com.sun.javafx.runtime)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">VersionInfo</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    55.6%
+  </span>
+  <span class="absValue">
+    (5/ 9)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    62.5%
+  </span>
+  <span class="absValue">
+    (15/ 24)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright (c) 2011, 2015, Oracle and/or its affiliates. All rights reserved.
+<i>3</i>&nbsp; * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+<i>4</i>&nbsp; *
+<i>5</i>&nbsp; *
+<i>6</i>&nbsp; *
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; *
+<i>11</i>&nbsp; *
+<i>12</i>&nbsp; *
+<i>13</i>&nbsp; *
+<i>14</i>&nbsp; *
+<i>15</i>&nbsp; *
+<i>16</i>&nbsp; *
+<i>17</i>&nbsp; *
+<i>18</i>&nbsp; *
+<i>19</i>&nbsp; *
+<i>20</i>&nbsp; *
+<i>21</i>&nbsp; *
+<i>22</i>&nbsp; *
+<i>23</i>&nbsp; *
+<i>24</i>&nbsp; */
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;package com.sun.javafx.runtime;
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;/**
+<i>29</i>&nbsp; * The VersionInfo class contains strings that describe the implementation
+<i>30</i>&nbsp; * and specification version of the javafx pacakges.  These strings
+<i>31</i>&nbsp; * are made available as properties obtained from the System Properties class.
+<i>32</i>&nbsp; *
+<i>33</i>&nbsp; * &lt;p&gt;
+<i>34</i>&nbsp; * This class serves 3 purposes:
+<i>35</i>&nbsp; *
+<i>36</i>&nbsp; * 1. It creates the JavaFX version properties to be added into the Java
+<i>37</i>&nbsp; * System Properties at the loading of the JavaFX Toolkit. The JavaFX properties
+<i>38</i>&nbsp; * are javafx.version and javafx.runtime.version. Their formats follow the
+<i>39</i>&nbsp; * specification of java.version and java.runtime.version respectively.
+<i>40</i>&nbsp; * See http://openjdk.java.net/jeps/223 for details.
+<i>41</i>&nbsp; *
+<i>42</i>&nbsp; * For example, an early access build of JavaFX 9 build 76 will contain
+<i>43</i>&nbsp; * the following properties:
+<i>44</i>&nbsp; *
+<i>45</i>&nbsp; * javafx.version = 9-ea
+<i>46</i>&nbsp; * javafx.runtime.version = 9-ea+76
+<i>47</i>&nbsp; *
+<i>48</i>&nbsp; * An fcs build of JavaFX 9 build 135 will contain the following properties:
+<i>49</i>&nbsp; *
+<i>50</i>&nbsp; * javafx.version = 9
+<i>51</i>&nbsp; * javafx.runtime.version = 9+135
+<i>52</i>&nbsp; *
+<i>53</i>&nbsp; * 2. It provides methods to access Hudson build information and timestamp.
+<i>54</i>&nbsp; * These methods can be used to uniquely identify a particular build
+<i>55</i>&nbsp; * for internal test and deployment:
+<i>56</i>&nbsp; *
+<i>57</i>&nbsp; * The method getHudsonJobName() will returns the name of the hudson job.
+<i>58</i>&nbsp; * For example, a master build will have the name as &quot;presidio&quot;, and a
+<i>59</i>&nbsp; * graphics-scrum will have the name as &quot;presidio-graphics&quot; and so for.
+<i>60</i>&nbsp; * An empty string is returned if the build isn&#39;t build on Hudson, such as a
+<i>61</i>&nbsp; * local build on a developer machine.
+<i>62</i>&nbsp; *
+<i>63</i>&nbsp; * The method getHudsonBuildNumber() will returns the number of the hudson job
+<i>64</i>&nbsp; * on a particular build scrum. The job number is sequentially incremented for
+<i>65</i>&nbsp; * each build job.
+<i>66</i>&nbsp; * For example, a master build job number of 25 was built before master job
+<i>67</i>&nbsp; * number 26.
+<i>68</i>&nbsp; * A string of zeros is returned if the build isn&#39;t build on Hudson, such as a
+<i>69</i>&nbsp; * local build on a developer machine.
+<i>70</i>&nbsp; *
+<i>71</i>&nbsp; * The method getBuildTimestamp() will returns the timestamp of the build.
+<i>72</i>&nbsp; *
+<i>73</i>&nbsp; * 3. To uniquely identify a build that isn&#39;t generated on Hudson, such as a
+<i>74</i>&nbsp; * local build on a developer machine. It substitutes the build number tag of
+<i>75</i>&nbsp; * the javafx.runtime.version string with the build timestamp.
+<i>76</i>&nbsp; * For example, a build of JavaFX 9 on a developer machine will look
+<i>77</i>&nbsp; * something like the following:
+<i>78</i>&nbsp; *
+<i>79</i>&nbsp; * javafx.version = 9-internal
+<i>80</i>&nbsp; * javafx.runtime.version = 9-internal+0-2015-08-10_22-08-04
+<i>81</i>&nbsp; *
+<i>82</i>&nbsp; * &lt;p&gt;
+<i>83</i>&nbsp; * The tags of the form @STRING@ are populated by ant when the project is built
+<i>84</i>&nbsp; *
+<i>85</i>&nbsp; * @see System#getProperties
+<i>86</i>&nbsp; */
+<b class="nc"><i>87</i>&nbsp;public class VersionInfo {</b>
+<i>88</i>&nbsp;
+<i>89</i>&nbsp;    /**
+<i>90</i>&nbsp;     * Build Timestamp.
+<i>91</i>&nbsp;     */
+<i>92</i>&nbsp;    private static final String BUILD_TIMESTAMP = &quot;2017-09-27-091234&quot;;
+<i>93</i>&nbsp;
+<i>94</i>&nbsp;    /**
+<i>95</i>&nbsp;     * Hudson Job Name.
+<i>96</i>&nbsp;     */
+<i>97</i>&nbsp;    private static final String HUDSON_JOB_NAME = &quot;9.0.1&quot;;
+<i>98</i>&nbsp;
+<i>99</i>&nbsp;    /**
+<i>100</i>&nbsp;     * Hudson Build Number.
+<i>101</i>&nbsp;     */
+<i>102</i>&nbsp;    private static final String HUDSON_BUILD_NUMBER = &quot;2&quot;;
+<i>103</i>&nbsp;
+<i>104</i>&nbsp;    /**
+<i>105</i>&nbsp;     * Promoted build number used as part of the runtime version string.
+<i>106</i>&nbsp;     */
+<i>107</i>&nbsp;    private static final String PROMOTED_BUILD_NUMBER = &quot;11&quot;;
+<i>108</i>&nbsp;
+<i>109</i>&nbsp;    /**
+<i>110</i>&nbsp;     * Raw Version number string. (without milestone tag)
+<i>111</i>&nbsp;     */
+<i>112</i>&nbsp;    private static final String RELEASE_VERSION = &quot;9.0.1&quot;;
+<i>113</i>&nbsp;
+<i>114</i>&nbsp;    /**
+<i>115</i>&nbsp;     * Release suffix.
+<i>116</i>&nbsp;     */
+<i>117</i>&nbsp;    private static final String RELEASE_SUFFIX = &quot;&quot;;
+<i>118</i>&nbsp;
+<i>119</i>&nbsp;    /**
+<i>120</i>&nbsp;     * The composite version string. This is composed in the static
+<i>121</i>&nbsp;     * initializer for this class.
+<i>122</i>&nbsp;     */
+<i>123</i>&nbsp;    private static final String VERSION;
+<i>124</i>&nbsp;
+<i>125</i>&nbsp;    /**
+<i>126</i>&nbsp;     * The composite version string include build number.
+<i>127</i>&nbsp;     * This is composed in the static initializer for this class.
+<i>128</i>&nbsp;     */
+<i>129</i>&nbsp;    private static final String RUNTIME_VERSION;
+<i>130</i>&nbsp;
+<i>131</i>&nbsp;    // The static initializer composes the VERSION and RUNTIME_VERSION strings
+<i>132</i>&nbsp;    static {
+<b class="fc"><i>133</i>&nbsp;        String tmpVersion = RELEASE_VERSION;</b>
+<i>134</i>&nbsp;
+<i>135</i>&nbsp;        // Construct the VERSION string adding milestone information,
+<i>136</i>&nbsp;        // such as beta, if present.
+<i>137</i>&nbsp;        // Note: RELEASE_SUFFIX is expected to be empty for fcs versions
+<b class="fc"><i>138</i>&nbsp;        tmpVersion += RELEASE_SUFFIX;</b>
+<b class="fc"><i>139</i>&nbsp;        VERSION = tmpVersion;</b>
+<i>140</i>&nbsp;
+<i>141</i>&nbsp;        // Append the RUNTIME_VERSION string that follow the VERSION string
+<b class="fc"><i>142</i>&nbsp;        tmpVersion += &quot;+&quot; + PROMOTED_BUILD_NUMBER;</b>
+<b class="fc"><i>143</i>&nbsp;        if (getHudsonJobName().length() == 0) {</b>
+<i>144</i>&nbsp;            // Non hudson (developer) build
+<b class="nc"><i>145</i>&nbsp;            tmpVersion += &quot;-&quot; + BUILD_TIMESTAMP;</b>
+<i>146</i>&nbsp;        }
+<b class="fc"><i>147</i>&nbsp;        RUNTIME_VERSION = tmpVersion;</b>
+<b class="fc"><i>148</i>&nbsp;    }</b>
+<i>149</i>&nbsp;
+<i>150</i>&nbsp;    /**
+<i>151</i>&nbsp;     * Setup the System properties with JavaFX API version information.
+<i>152</i>&nbsp;     * The format of the value strings of javafx.version and javafx.runtime.version
+<i>153</i>&nbsp;     * will follow the same pattern as java.version and java.runtime.version
+<i>154</i>&nbsp;     * respectively.
+<i>155</i>&nbsp;     * See http://openjdk.java.net/jeps/223 for details.
+<i>156</i>&nbsp;     */
+<i>157</i>&nbsp;    public static synchronized void setupSystemProperties() {
+<b class="fc"><i>158</i>&nbsp;        if (System.getProperty(&quot;javafx.version&quot;) == null) {</b>
+<b class="fc"><i>159</i>&nbsp;            System.setProperty(&quot;javafx.version&quot;, getVersion());</b>
+<b class="fc"><i>160</i>&nbsp;            System.setProperty(&quot;javafx.runtime.version&quot;, getRuntimeVersion());</b>
+<i>161</i>&nbsp;        }
+<b class="fc"><i>162</i>&nbsp;    }</b>
+<i>163</i>&nbsp;
+<i>164</i>&nbsp;    /**
+<i>165</i>&nbsp;     * Returns the build timestamp of the JavaFx API.
+<i>166</i>&nbsp;     * @return the build timestamp of the JavaFX API
+<i>167</i>&nbsp;     */
+<i>168</i>&nbsp;    public static String getBuildTimestamp() {
+<b class="nc"><i>169</i>&nbsp;        return BUILD_TIMESTAMP;</b>
+<i>170</i>&nbsp;    }
+<i>171</i>&nbsp;
+<i>172</i>&nbsp;    /**
+<i>173</i>&nbsp;     * Returns the Hudson job name, an empty string is return if HUNDSON_JOB_NAME
+<i>174</i>&nbsp;     * is set to &quot;not_hudson&quot;.
+<i>175</i>&nbsp;     * @return the Hudson job name
+<i>176</i>&nbsp;     */
+<i>177</i>&nbsp;    public static String getHudsonJobName() {
+<b class="fc"><i>178</i>&nbsp;        if (HUDSON_JOB_NAME.equals(&quot;not_hudson&quot;)) {</b>
+<b class="nc"><i>179</i>&nbsp;            return &quot;&quot;;</b>
+<i>180</i>&nbsp;        }
+<b class="fc"><i>181</i>&nbsp;        return HUDSON_JOB_NAME;</b>
+<i>182</i>&nbsp;    }
+<i>183</i>&nbsp;
+<i>184</i>&nbsp;    /**
+<i>185</i>&nbsp;     * Returns the Hudson build number.
+<i>186</i>&nbsp;     * @return the Hudson build number
+<i>187</i>&nbsp;     */
+<i>188</i>&nbsp;    public static String getHudsonBuildNumber() {
+<b class="nc"><i>189</i>&nbsp;        return HUDSON_BUILD_NUMBER;</b>
+<i>190</i>&nbsp;    }
+<i>191</i>&nbsp;
+<i>192</i>&nbsp;    /**
+<i>193</i>&nbsp;     * Returns the release milestone string by stripping off the leading &#39;-&#39;
+<i>194</i>&nbsp;     * from the RELEASE_SUFFIX if present.
+<i>195</i>&nbsp;     * Note: RELEASE_SUFFIX is expected to be empty for fcs versions
+<i>196</i>&nbsp;     *
+<i>197</i>&nbsp;     * @return the release milestone string
+<i>198</i>&nbsp;     */
+<i>199</i>&nbsp;    public static String getReleaseMilestone() {
+<b class="nc"><i>200</i>&nbsp;        String str = RELEASE_SUFFIX;</b>
+<b class="nc"><i>201</i>&nbsp;        if (str.startsWith(&quot;-&quot;)) {</b>
+<b class="nc"><i>202</i>&nbsp;            str = str.substring(1);</b>
+<i>203</i>&nbsp;        }
+<b class="nc"><i>204</i>&nbsp;        return str;</b>
+<i>205</i>&nbsp;    }
+<i>206</i>&nbsp;
+<i>207</i>&nbsp;    /**
+<i>208</i>&nbsp;     * Returns the version string.
+<i>209</i>&nbsp;     * @return the version string
+<i>210</i>&nbsp;     */
+<i>211</i>&nbsp;    public static String getVersion() {
+<b class="fc"><i>212</i>&nbsp;        return VERSION;</b>
+<i>213</i>&nbsp;    }
+<i>214</i>&nbsp;
+<i>215</i>&nbsp;    /**
+<i>216</i>&nbsp;     * Returns the runtime version string.
+<i>217</i>&nbsp;     * @return the runtime version string
+<i>218</i>&nbsp;     */
+<i>219</i>&nbsp;    public static String getRuntimeVersion() {
+<b class="fc"><i>220</i>&nbsp;        return RUNTIME_VERSION;</b>
+<i>221</i>&nbsp;    }
+<i>222</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2017-12-04 21:49</div>
+</div>
+</body>
+</html>

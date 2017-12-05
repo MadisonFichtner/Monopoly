@@ -1,0 +1,450 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: Platform</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">javafx.application</a> ]
+</div>
+
+<h1>Coverage Summary for Class: Platform (javafx.application)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">Platform</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    21.4%
+  </span>
+  <span class="absValue">
+    (3/ 14)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    16.7%
+  </span>
+  <span class="absValue">
+    (4/ 24)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright (c) 2010, 2017, Oracle and/or its affiliates. All rights reserved.
+<i>3</i>&nbsp; * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+<i>4</i>&nbsp; *
+<i>5</i>&nbsp; *
+<i>6</i>&nbsp; *
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; *
+<i>11</i>&nbsp; *
+<i>12</i>&nbsp; *
+<i>13</i>&nbsp; *
+<i>14</i>&nbsp; *
+<i>15</i>&nbsp; *
+<i>16</i>&nbsp; *
+<i>17</i>&nbsp; *
+<i>18</i>&nbsp; *
+<i>19</i>&nbsp; *
+<i>20</i>&nbsp; *
+<i>21</i>&nbsp; *
+<i>22</i>&nbsp; *
+<i>23</i>&nbsp; *
+<i>24</i>&nbsp; */
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;package javafx.application;
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;import com.sun.javafx.tk.Toolkit;
+<i>29</i>&nbsp;import javafx.beans.property.ReadOnlyBooleanProperty;
+<i>30</i>&nbsp;import javafx.beans.property.ReadOnlyBooleanWrapper;
+<i>31</i>&nbsp;import com.sun.javafx.application.PlatformImpl;
+<i>32</i>&nbsp;
+<i>33</i>&nbsp;/**
+<i>34</i>&nbsp; * Application platform support class.
+<i>35</i>&nbsp; * @since JavaFX 2.0
+<i>36</i>&nbsp; */
+<i>37</i>&nbsp;public final class Platform {
+<i>38</i>&nbsp;
+<i>39</i>&nbsp;    // To prevent instantiation
+<b class="nc"><i>40</i>&nbsp;    private Platform() {</b>
+<b class="nc"><i>41</i>&nbsp;    }</b>
+<i>42</i>&nbsp;
+<i>43</i>&nbsp;    /**
+<i>44</i>&nbsp;     * This method starts the JavaFX runtime. The specified Runnable will then be
+<i>45</i>&nbsp;     * called on the JavaFX Application Thread. In general it is not necessary to
+<i>46</i>&nbsp;     * explicitly call this method, since it is invoked as a consequence of
+<i>47</i>&nbsp;     * how most JavaFX applications are built. However there are valid use cases
+<i>48</i>&nbsp;     * for calling this method directly. Because this method starts the JavaFX
+<i>49</i>&nbsp;     * runtime, there is not yet any JavaFX Application Thread, so it is normal
+<i>50</i>&nbsp;     * that this method is called directly on the main thread of the application.
+<i>51</i>&nbsp;     *
+<i>52</i>&nbsp;     * &lt;p&gt;
+<i>53</i>&nbsp;     * This method may or may not return to the caller before the run method
+<i>54</i>&nbsp;     * of the specified Runnable has been called. In any case, once this method
+<i>55</i>&nbsp;     * returns, you may call {@link #runLater(Runnable)} with additional Runnables.
+<i>56</i>&nbsp;     * Those Runnables will be called, also on the JavaFX Application Thread,
+<i>57</i>&nbsp;     * after the Runnable passed into this method has been called.
+<i>58</i>&nbsp;     * &lt;/p&gt;
+<i>59</i>&nbsp;     *
+<i>60</i>&nbsp;     * &lt;p&gt;As noted, it is normally the case that the JavaFX Application Thread
+<i>61</i>&nbsp;     * is started automatically. It is important that this method only be called
+<i>62</i>&nbsp;     * when the JavaFX runtime has not yet been initialized. Situations where
+<i>63</i>&nbsp;     * the JavaFX runtime is started automatically include:
+<i>64</i>&nbsp;     * &lt;/p&gt;
+<i>65</i>&nbsp;     *
+<i>66</i>&nbsp;     * &lt;ul&gt;
+<i>67</i>&nbsp;     *   &lt;li&gt;For standard JavaFX applications that extend {@link Application}, and
+<i>68</i>&nbsp;     *   use either the Java launcher or one of the launch methods in the
+<i>69</i>&nbsp;     *   Application class to launch the application, the FX runtime is
+<i>70</i>&nbsp;     *   initialized automatically by the launcher before the {@code Application}
+<i>71</i>&nbsp;     *   class is loaded.&lt;/li&gt;
+<i>72</i>&nbsp;     *   &lt;li&gt;For Swing applications that use {@link javafx.embed.swing.JFXPanel}
+<i>73</i>&nbsp;     *   to display FX content, the
+<i>74</i>&nbsp;     *   FX runtime is initialized when the first {@code JFXPanel} instance is
+<i>75</i>&nbsp;     *   constructed.&lt;/li&gt;
+<i>76</i>&nbsp;     *   &lt;li&gt;For SWT application that use {@code FXCanvas} to display FX content,
+<i>77</i>&nbsp;     *   the FX runtime is initialized when the first {@code FXCanvas} instance is
+<i>78</i>&nbsp;     *   constructed.&lt;/li&gt;
+<i>79</i>&nbsp;     * &lt;/ul&gt;
+<i>80</i>&nbsp;     *
+<i>81</i>&nbsp;     * &lt;p&gt;When an application does not follow any of these common approaches,
+<i>82</i>&nbsp;     * then it becomes the responsibility of the developer to manually start the
+<i>83</i>&nbsp;     * JavaFX runtime by calling this startup method.
+<i>84</i>&nbsp;     * &lt;/p&gt;
+<i>85</i>&nbsp;     *
+<i>86</i>&nbsp;     * &lt;p&gt;Calling this method when the JavaFX runtime is already running will result in an
+<i>87</i>&nbsp;     * {@link IllegalStateException} being thrown - it is only valid to request
+<i>88</i>&nbsp;     * that the JavaFX runtime be started once.
+<i>89</i>&nbsp;     * &lt;/p&gt;
+<i>90</i>&nbsp;     *
+<i>91</i>&nbsp;     * @throws IllegalStateException if the JavaFX runtime is already running
+<i>92</i>&nbsp;     *
+<i>93</i>&nbsp;     * @param runnable the Runnable whose run method will be executed on the
+<i>94</i>&nbsp;     * JavaFX Application Thread once it has been started
+<i>95</i>&nbsp;     *
+<i>96</i>&nbsp;     * @see Application
+<i>97</i>&nbsp;     *
+<i>98</i>&nbsp;     * @since 9
+<i>99</i>&nbsp;     */
+<i>100</i>&nbsp;    public static void startup(Runnable runnable) {
+<b class="nc"><i>101</i>&nbsp;        PlatformImpl.startup(runnable, true);</b>
+<b class="nc"><i>102</i>&nbsp;    }</b>
+<i>103</i>&nbsp;
+<i>104</i>&nbsp;    /**
+<i>105</i>&nbsp;     * Run the specified Runnable on the JavaFX Application Thread at some
+<i>106</i>&nbsp;     * unspecified
+<i>107</i>&nbsp;     * time in the future. This method, which may be called from any thread,
+<i>108</i>&nbsp;     * will post the Runnable to an event queue and then return immediately to
+<i>109</i>&nbsp;     * the caller. The Runnables are executed in the order they are posted.
+<i>110</i>&nbsp;     * A runnable passed into the runLater method will be
+<i>111</i>&nbsp;     * executed before any Runnable passed into a subsequent call to runLater.
+<i>112</i>&nbsp;     * If this method is called after the JavaFX runtime has been shutdown, the
+<i>113</i>&nbsp;     * call will be ignored: the Runnable will not be executed and no
+<i>114</i>&nbsp;     * exception will be thrown.
+<i>115</i>&nbsp;     *
+<i>116</i>&nbsp;     * &lt;p&gt;
+<i>117</i>&nbsp;     * NOTE: applications should avoid flooding JavaFX with too many
+<i>118</i>&nbsp;     * pending Runnables. Otherwise, the application may become unresponsive.
+<i>119</i>&nbsp;     * Applications are encouraged to batch up multiple operations into fewer
+<i>120</i>&nbsp;     * runLater calls.
+<i>121</i>&nbsp;     * Additionally, long-running operations should be done on a background
+<i>122</i>&nbsp;     * thread where possible, freeing up the JavaFX Application Thread for GUI
+<i>123</i>&nbsp;     * operations.
+<i>124</i>&nbsp;     * &lt;/p&gt;
+<i>125</i>&nbsp;     *
+<i>126</i>&nbsp;     * &lt;p&gt;
+<i>127</i>&nbsp;     * This method must not be called before the FX runtime has been
+<i>128</i>&nbsp;     * initialized. For standard JavaFX applications that extend
+<i>129</i>&nbsp;     * {@link Application}, and use either the Java launcher or one of the
+<i>130</i>&nbsp;     * launch methods in the Application class to launch the application,
+<i>131</i>&nbsp;     * the FX runtime is initialized by the launcher before the Application
+<i>132</i>&nbsp;     * class is loaded.
+<i>133</i>&nbsp;     * For Swing applications that use JFXPanel to display FX content, the FX
+<i>134</i>&nbsp;     * runtime is initialized when the first JFXPanel instance is constructed.
+<i>135</i>&nbsp;     * For SWT application that use FXCanvas to display FX content, the FX
+<i>136</i>&nbsp;     * runtime is initialized when the first FXCanvas instance is constructed.
+<i>137</i>&nbsp;     * For applications that do not follow any of these approaches, then it is
+<i>138</i>&nbsp;     * necessary to manually start the JavaFX runtime by calling
+<i>139</i>&nbsp;     * {@link #startup(Runnable)} once.
+<i>140</i>&nbsp;     * &lt;/p&gt;
+<i>141</i>&nbsp;     *
+<i>142</i>&nbsp;     * @param runnable the Runnable whose run method will be executed on the
+<i>143</i>&nbsp;     * JavaFX Application Thread
+<i>144</i>&nbsp;     *
+<i>145</i>&nbsp;     * @throws IllegalStateException if the FX runtime has not been initialized
+<i>146</i>&nbsp;     *
+<i>147</i>&nbsp;     * @see Application
+<i>148</i>&nbsp;     */
+<i>149</i>&nbsp;    public static void runLater(Runnable runnable) {
+<b class="fc"><i>150</i>&nbsp;        PlatformImpl.runLater(runnable);</b>
+<b class="fc"><i>151</i>&nbsp;    }</b>
+<i>152</i>&nbsp;
+<i>153</i>&nbsp;    // NOTE: Add the following if we decide to expose it publicly
+<i>154</i>&nbsp;//    public static void runAndWait(Runnable runnable) {
+<i>155</i>&nbsp;//        PlatformImpl.runAndWait(runnable);
+<i>156</i>&nbsp;//    }
+<i>157</i>&nbsp;
+<i>158</i>&nbsp;    /**
+<i>159</i>&nbsp;     * Requests the Java Runtime to perform a pulse. This will run a pulse
+<i>160</i>&nbsp;     * even if there are no animation timers, scene graph modifications,
+<i>161</i>&nbsp;     * or window events that would otherwise cause the pulse to run.
+<i>162</i>&nbsp;     * If no pulse is in progress, then one will be scheduled to
+<i>163</i>&nbsp;     * run the next time the pulse timer fires.
+<i>164</i>&nbsp;     * If there is already a pulse running, then
+<i>165</i>&nbsp;     * at least one more pulse after the current pulse will be scheduled.
+<i>166</i>&nbsp;     * This method may be called on any thread.
+<i>167</i>&nbsp;     *
+<i>168</i>&nbsp;     * @since 9
+<i>169</i>&nbsp;     */
+<i>170</i>&nbsp;    public static void requestNextPulse() {
+<b class="nc"><i>171</i>&nbsp;        Toolkit.getToolkit().requestNextPulse();</b>
+<b class="nc"><i>172</i>&nbsp;    }</b>
+<i>173</i>&nbsp;
+<i>174</i>&nbsp;    /**
+<i>175</i>&nbsp;     * Returns true if the calling thread is the JavaFX Application Thread.
+<i>176</i>&nbsp;     * Use this call the ensure that a given task is being executed
+<i>177</i>&nbsp;     * (or not being executed) on the JavaFX Application Thread.
+<i>178</i>&nbsp;     *
+<i>179</i>&nbsp;     * @return true if running on the JavaFX Application Thread
+<i>180</i>&nbsp;     */
+<i>181</i>&nbsp;    public static boolean isFxApplicationThread() {
+<b class="fc"><i>182</i>&nbsp;        return PlatformImpl.isFxApplicationThread();</b>
+<i>183</i>&nbsp;    }
+<i>184</i>&nbsp;
+<i>185</i>&nbsp;    /**
+<i>186</i>&nbsp;     * Causes the JavaFX application to terminate. If this method is called
+<i>187</i>&nbsp;     * after the Application start method is called, then the JavaFX launcher
+<i>188</i>&nbsp;     * will call the Application stop method and terminate the JavaFX
+<i>189</i>&nbsp;     * application thread. The launcher thread will then shutdown. If there
+<i>190</i>&nbsp;     * are no other non-daemon threads that are running, the Java VM will exit.
+<i>191</i>&nbsp;     * If this method is called from the Preloader or the Application init
+<i>192</i>&nbsp;     * method, then the Application stop method may not be called.
+<i>193</i>&nbsp;     *
+<i>194</i>&nbsp;     * &lt;p&gt;This method may be called from any thread.&lt;/p&gt;
+<i>195</i>&nbsp;     *
+<i>196</i>&nbsp;     * &lt;p&gt;Note: if the application is embedded in a browser, then this method
+<i>197</i>&nbsp;     * may have no effect.
+<i>198</i>&nbsp;     */
+<i>199</i>&nbsp;    public static void exit() {
+<b class="nc"><i>200</i>&nbsp;        PlatformImpl.exit();</b>
+<b class="nc"><i>201</i>&nbsp;    }</b>
+<i>202</i>&nbsp;
+<i>203</i>&nbsp;    /**
+<i>204</i>&nbsp;     * Sets the implicitExit attribute to the specified value. If this
+<i>205</i>&nbsp;     * attribute is true, the JavaFX runtime will implicitly shutdown
+<i>206</i>&nbsp;     * when the last window is closed; the JavaFX launcher will call the
+<i>207</i>&nbsp;     * {@link Application#stop} method and terminate the JavaFX
+<i>208</i>&nbsp;     * application thread.
+<i>209</i>&nbsp;     * If this attribute is false, the application will continue to
+<i>210</i>&nbsp;     * run normally even after the last window is closed, until the
+<i>211</i>&nbsp;     * application calls {@link #exit}.
+<i>212</i>&nbsp;     * The default value is true.
+<i>213</i>&nbsp;     *
+<i>214</i>&nbsp;     * &lt;p&gt;This method may be called from any thread.&lt;/p&gt;
+<i>215</i>&nbsp;     *
+<i>216</i>&nbsp;     * @param implicitExit a flag indicating whether or not to implicitly exit
+<i>217</i>&nbsp;     * when the last window is closed.
+<i>218</i>&nbsp;     * @since JavaFX 2.2
+<i>219</i>&nbsp;     */
+<i>220</i>&nbsp;    public static void setImplicitExit(boolean implicitExit) {
+<b class="nc"><i>221</i>&nbsp;        PlatformImpl.setImplicitExit(implicitExit);</b>
+<b class="nc"><i>222</i>&nbsp;    }</b>
+<i>223</i>&nbsp;
+<i>224</i>&nbsp;    /**
+<i>225</i>&nbsp;     * Gets the value of the implicitExit attribute.
+<i>226</i>&nbsp;     *
+<i>227</i>&nbsp;     * &lt;p&gt;This method may be called from any thread.&lt;/p&gt;
+<i>228</i>&nbsp;     *
+<i>229</i>&nbsp;     * @return the implicitExit attribute
+<i>230</i>&nbsp;     * @since JavaFX 2.2
+<i>231</i>&nbsp;     */
+<i>232</i>&nbsp;    public static boolean isImplicitExit() {
+<b class="nc"><i>233</i>&nbsp;        return PlatformImpl.isImplicitExit();</b>
+<i>234</i>&nbsp;    }
+<i>235</i>&nbsp;
+<i>236</i>&nbsp;    /**
+<i>237</i>&nbsp;     * Queries whether a specific conditional feature is supported
+<i>238</i>&nbsp;     * by the platform.
+<i>239</i>&nbsp;     * &lt;p&gt;
+<i>240</i>&nbsp;     * For example:
+<i>241</i>&nbsp;     * &lt;pre&gt;
+<i>242</i>&nbsp;     * // Query whether filter effects are supported
+<i>243</i>&nbsp;     * if (Platform.isSupported(ConditionalFeature.EFFECT)) {
+<i>244</i>&nbsp;     *    // use effects
+<i>245</i>&nbsp;     * }
+<i>246</i>&nbsp;     * &lt;/pre&gt;
+<i>247</i>&nbsp;     *
+<i>248</i>&nbsp;     * @param feature the conditional feature in question.
+<i>249</i>&nbsp;     * @return true if a specific conditional feature is supported by the
+<i>250</i>&nbsp;     * platform, otherwise false
+<i>251</i>&nbsp;     */
+<i>252</i>&nbsp;    public static boolean isSupported(ConditionalFeature feature) {
+<b class="fc"><i>253</i>&nbsp;        return PlatformImpl.isSupported(feature);</b>
+<i>254</i>&nbsp;    }
+<i>255</i>&nbsp;
+<i>256</i>&nbsp;    /**
+<i>257</i>&nbsp;     * Enter a nested event loop and block until the corresponding
+<i>258</i>&nbsp;     * exitNestedEventLoop call is made.
+<i>259</i>&nbsp;     * The key passed into this method is used to
+<i>260</i>&nbsp;     * uniquely identify the matched enter/exit pair. This method creates a
+<i>261</i>&nbsp;     * new nested event loop and blocks until the corresponding
+<i>262</i>&nbsp;     * exitNestedEventLoop method is called with the same key.
+<i>263</i>&nbsp;     * The return value of this method will be the {@code rval}
+<i>264</i>&nbsp;     * object supplied to the exitNestedEventLoop method call that unblocks it.
+<i>265</i>&nbsp;     *
+<i>266</i>&nbsp;     * &lt;p&gt;
+<i>267</i>&nbsp;     * This method must either be called from an input event handler or
+<i>268</i>&nbsp;     * from the run method of a Runnable passed to
+<i>269</i>&nbsp;     * {@link javafx.application.Platform#runLater Platform.runLater}.
+<i>270</i>&nbsp;     * It must not be called during animation or layout processing.
+<i>271</i>&nbsp;     * &lt;/p&gt;
+<i>272</i>&nbsp;     *
+<i>273</i>&nbsp;     * @param key the Object that identifies the nested event loop, which
+<i>274</i>&nbsp;     * must not be null
+<i>275</i>&nbsp;     *
+<i>276</i>&nbsp;     * @throws IllegalArgumentException if the specified key is associated
+<i>277</i>&nbsp;     * with a nested event loop that has not yet returned
+<i>278</i>&nbsp;     *
+<i>279</i>&nbsp;     * @throws NullPointerException if the key is null
+<i>280</i>&nbsp;     *
+<i>281</i>&nbsp;     * @throws IllegalStateException if this method is called during
+<i>282</i>&nbsp;     * animation or layout processing.
+<i>283</i>&nbsp;     *
+<i>284</i>&nbsp;     * @throws IllegalStateException if this method is called on a thread
+<i>285</i>&nbsp;     * other than the JavaFX Application Thread.
+<i>286</i>&nbsp;     *
+<i>287</i>&nbsp;     * @return the value passed into the corresponding call to exitEventLoop
+<i>288</i>&nbsp;     *
+<i>289</i>&nbsp;     * @since 9
+<i>290</i>&nbsp;     */
+<i>291</i>&nbsp;    public static Object enterNestedEventLoop(Object key) {
+<b class="nc"><i>292</i>&nbsp;        return Toolkit.getToolkit().enterNestedEventLoop(key);</b>
+<i>293</i>&nbsp;    }
+<i>294</i>&nbsp;
+<i>295</i>&nbsp;    /**
+<i>296</i>&nbsp;     * Exit a nested event loop and unblock the caller of the
+<i>297</i>&nbsp;     * corresponding enterNestedEventLoop.
+<i>298</i>&nbsp;     * The key passed into this method is used to
+<i>299</i>&nbsp;     * uniquely identify the matched enter/exit pair. This method causes the
+<i>300</i>&nbsp;     * nested event loop that was previously created with the key to exit and
+<i>301</i>&nbsp;     * return control to the caller. If the specified nested event loop is not
+<i>302</i>&nbsp;     * the inner-most loop then it will not return until all other inner loops
+<i>303</i>&nbsp;     * also exit.
+<i>304</i>&nbsp;     *
+<i>305</i>&nbsp;     * @param key the Object that identifies the nested event loop, which
+<i>306</i>&nbsp;     * must not be null
+<i>307</i>&nbsp;     *
+<i>308</i>&nbsp;     * @param rval an Object that is returned to the caller of the
+<i>309</i>&nbsp;     * corresponding enterNestedEventLoop. This may be null.
+<i>310</i>&nbsp;     *
+<i>311</i>&nbsp;     * @throws IllegalArgumentException if the specified key is not associated
+<i>312</i>&nbsp;     * with an active nested event loop
+<i>313</i>&nbsp;     *
+<i>314</i>&nbsp;     * @throws NullPointerException if the key is null
+<i>315</i>&nbsp;     *
+<i>316</i>&nbsp;     * @throws IllegalStateException if this method is called on a thread
+<i>317</i>&nbsp;     * other than the FX Application thread
+<i>318</i>&nbsp;     *
+<i>319</i>&nbsp;     * @since 9
+<i>320</i>&nbsp;     */
+<i>321</i>&nbsp;    public static void exitNestedEventLoop(Object key, Object rval) {
+<b class="nc"><i>322</i>&nbsp;        Toolkit.getToolkit().exitNestedEventLoop(key, rval);</b>
+<b class="nc"><i>323</i>&nbsp;    }</b>
+<i>324</i>&nbsp;
+<i>325</i>&nbsp;    /**
+<i>326</i>&nbsp;     * Checks whether a nested event loop is running, returning true to indicate
+<i>327</i>&nbsp;     * that one is, and false if there are no nested event loops currently
+<i>328</i>&nbsp;     * running.
+<i>329</i>&nbsp;     * This method must be called on the JavaFX Application thread.
+<i>330</i>&nbsp;     *
+<i>331</i>&nbsp;     * @return true if there is a nested event loop running, and false otherwise.
+<i>332</i>&nbsp;     *
+<i>333</i>&nbsp;     * @throws IllegalStateException if this method is called on a thread
+<i>334</i>&nbsp;     * other than the JavaFX Application Thread.
+<i>335</i>&nbsp;     *
+<i>336</i>&nbsp;     * @since 9
+<i>337</i>&nbsp;     */
+<i>338</i>&nbsp;    public static boolean isNestedLoopRunning() {
+<b class="nc"><i>339</i>&nbsp;        return Toolkit.getToolkit().isNestedLoopRunning();</b>
+<i>340</i>&nbsp;    }
+<i>341</i>&nbsp;
+<i>342</i>&nbsp;    private static ReadOnlyBooleanWrapper accessibilityActiveProperty;
+<i>343</i>&nbsp;
+<i>344</i>&nbsp;    public static boolean isAccessibilityActive() {
+<b class="nc"><i>345</i>&nbsp;        return accessibilityActiveProperty == null ? false : accessibilityActiveProperty.get();</b>
+<i>346</i>&nbsp;    }
+<i>347</i>&nbsp;
+<i>348</i>&nbsp;    /**
+<i>349</i>&nbsp;     * Indicates whether or not accessibility is active.
+<i>350</i>&nbsp;     * This property is typically set to true the first time an
+<i>351</i>&nbsp;     * assistive technology, such as a screen reader, requests
+<i>352</i>&nbsp;     * information about any JavaFX window or its children.
+<i>353</i>&nbsp;     *
+<i>354</i>&nbsp;     * &lt;p&gt;This method may be called from any thread.&lt;/p&gt;
+<i>355</i>&nbsp;     *
+<i>356</i>&nbsp;     * @return the read-only boolean property indicating if accessibility is active
+<i>357</i>&nbsp;     *
+<i>358</i>&nbsp;     * @since JavaFX 8u40
+<i>359</i>&nbsp;     */
+<i>360</i>&nbsp;    public static ReadOnlyBooleanProperty accessibilityActiveProperty() {
+<b class="nc"><i>361</i>&nbsp;        if (accessibilityActiveProperty == null) {</b>
+<b class="nc"><i>362</i>&nbsp;            accessibilityActiveProperty = new ReadOnlyBooleanWrapper(Platform.class, &quot;accessibilityActive&quot;);</b>
+<b class="nc"><i>363</i>&nbsp;            accessibilityActiveProperty.bind(PlatformImpl.accessibilityActiveProperty());</b>
+<i>364</i>&nbsp;        }
+<b class="nc"><i>365</i>&nbsp;        return accessibilityActiveProperty.getReadOnlyProperty();</b>
+<i>366</i>&nbsp;    }
+<i>367</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2017-12-04 21:49</div>
+</div>
+</body>
+</html>

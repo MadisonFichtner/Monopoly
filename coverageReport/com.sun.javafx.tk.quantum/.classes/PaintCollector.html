@@ -1,0 +1,531 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: PaintCollector</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.javafx.tk.quantum</a> ]
+</div>
+
+<h1>Coverage Summary for Class: PaintCollector (com.sun.javafx.tk.quantum)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">PaintCollector</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (14/ 14)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    70.2%
+  </span>
+  <span class="absValue">
+    (73/ 104)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright (c) 2010, 2015, Oracle and/or its affiliates. All rights reserved.
+<i>3</i>&nbsp; * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+<i>4</i>&nbsp; *
+<i>5</i>&nbsp; *
+<i>6</i>&nbsp; *
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; *
+<i>11</i>&nbsp; *
+<i>12</i>&nbsp; *
+<i>13</i>&nbsp; *
+<i>14</i>&nbsp; *
+<i>15</i>&nbsp; *
+<i>16</i>&nbsp; *
+<i>17</i>&nbsp; *
+<i>18</i>&nbsp; *
+<i>19</i>&nbsp; *
+<i>20</i>&nbsp; *
+<i>21</i>&nbsp; *
+<i>22</i>&nbsp; *
+<i>23</i>&nbsp; *
+<i>24</i>&nbsp; */
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;package com.sun.javafx.tk.quantum;
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;import java.util.ArrayList;
+<i>29</i>&nbsp;import java.util.Collections;
+<i>30</i>&nbsp;import java.util.Comparator;
+<i>31</i>&nbsp;import java.util.List;
+<i>32</i>&nbsp;import java.util.concurrent.CountDownLatch;
+<i>33</i>&nbsp;import com.sun.javafx.PlatformUtil;
+<i>34</i>&nbsp;
+<i>35</i>&nbsp;import com.sun.glass.ui.Application;
+<i>36</i>&nbsp;import com.sun.glass.ui.Window;
+<i>37</i>&nbsp;import com.sun.javafx.tk.CompletionListener;
+<i>38</i>&nbsp;import com.sun.javafx.tk.RenderJob;
+<i>39</i>&nbsp;
+<i>40</i>&nbsp;import static com.sun.javafx.logging.PulseLogger.PULSE_LOGGING_ENABLED;
+<i>41</i>&nbsp;import com.sun.javafx.logging.PulseLogger;
+<i>42</i>&nbsp;
+<i>43</i>&nbsp;/**
+<i>44</i>&nbsp; * Manages the collection and rendering of dirty scenes. This class has
+<i>45</i>&nbsp; * methods which may be called from one of several threads, depending
+<i>46</i>&nbsp; * on the method.
+<i>47</i>&nbsp; *
+<i>48</i>&nbsp; * &lt;ul&gt;
+<i>49</i>&nbsp; *     &lt;li&gt;createInstance: Called by QuantumToolkit once during initialization&lt;/li&gt;
+<i>50</i>&nbsp; *     &lt;li&gt;getInstance: May be called from any thread&lt;/li&gt;
+<i>51</i>&nbsp; *     &lt;li&gt;hasDirty: May be called from any thread&lt;/li&gt;
+<i>52</i>&nbsp; *     &lt;li&gt;addDirtyScene: Called only on the FX Thread&lt;/li&gt;
+<i>53</i>&nbsp; *     &lt;li&gt;removeDirtyScene: Called only on the FX Thread&lt;/li&gt;
+<i>54</i>&nbsp; *     &lt;li&gt;getRendered: May be called from any thread&lt;/li&gt;
+<i>55</i>&nbsp; *     &lt;li&gt;liveRepaintRenderJob: Called only on the FX Thread&lt;/li&gt;
+<i>56</i>&nbsp; *     &lt;li&gt;renderAll: Called only on the FX Thread&lt;/li&gt;
+<i>57</i>&nbsp; * &lt;/ul&gt;
+<i>58</i>&nbsp; *
+<i>59</i>&nbsp; * Assertions have been added to each method to verify whether the calling
+<i>60</i>&nbsp; * thread is the expected thread.
+<i>61</i>&nbsp; */
+<b class="fc"><i>62</i>&nbsp;final class PaintCollector implements CompletionListener {</b>
+<i>63</i>&nbsp;    /*
+<i>64</i>&nbsp;        Generally we would prefer to remove this static state and pass the
+<i>65</i>&nbsp;        collector where it needs to go rather than having code reach into this
+<i>66</i>&nbsp;        static method to get the instance. IoC (inversion of control) makes
+<i>67</i>&nbsp;        the code more readable and testable, in general.
+<i>68</i>&nbsp;    */
+<i>69</i>&nbsp;    private static volatile PaintCollector collector;
+<i>70</i>&nbsp;
+<i>71</i>&nbsp;    static PaintCollector createInstance(QuantumToolkit toolkit) {
+<b class="fc"><i>72</i>&nbsp;        return collector = new PaintCollector(toolkit);</b>
+<i>73</i>&nbsp;    }
+<i>74</i>&nbsp;
+<i>75</i>&nbsp;    static PaintCollector getInstance() {
+<b class="fc"><i>76</i>&nbsp;        return collector;</b>
+<i>77</i>&nbsp;    }
+<i>78</i>&nbsp;
+<i>79</i>&nbsp;    /**
+<i>80</i>&nbsp;     * Sorts the dirty scenes such that asynchronous scenes come first
+<i>81</i>&nbsp;     */
+<b class="fc"><i>82</i>&nbsp;    private static final Comparator&lt;GlassScene&gt; DIRTY_SCENE_SORTER = (o1, o2) -&gt; {</b>
+<b class="fc"><i>83</i>&nbsp;        int i1 = o1.isSynchronous() ? 1 : 0;</b>
+<b class="fc"><i>84</i>&nbsp;        int i2 = o2.isSynchronous() ? 1 : 0;</b>
+<b class="fc"><i>85</i>&nbsp;        return i1 - i2;</b>
+<i>86</i>&nbsp;    };
+<i>87</i>&nbsp;
+<i>88</i>&nbsp;    /**
+<i>89</i>&nbsp;     * Contains a list of all of the dirty scenes. This list is populated
+<i>90</i>&nbsp;     * only from the FX Thread in consequence of a call to addDirtyScene,
+<i>91</i>&nbsp;     * or cleared from the FX Thread in consequence of a call to renderAll
+<i>92</i>&nbsp;     * or removeDirtyScene. It is only ever accessed (both read and write!)
+<i>93</i>&nbsp;     * from the FX thread.
+<i>94</i>&nbsp;     */
+<b class="fc"><i>95</i>&nbsp;    private final List&lt;GlassScene&gt; dirtyScenes = new ArrayList&lt;&gt;();</b>
+<i>96</i>&nbsp;
+<i>97</i>&nbsp;    /**
+<i>98</i>&nbsp;     * Keeps track of the number of scenes which still need to be processed.
+<i>99</i>&nbsp;     * In the renderAll method, we will await on this latch until all currently
+<i>100</i>&nbsp;     * pending scenes are completed. Once they are all completed, we will
+<i>101</i>&nbsp;     * create a new CountDownLatch initialized to the size of the number of
+<i>102</i>&nbsp;     * scenes to be processed, and then process each scene in turn (or rather,
+<i>103</i>&nbsp;     * cause them to render on the render thread). As each scene completes,
+<i>104</i>&nbsp;     * the CompletionListener will be invoked which will decrement the
+<i>105</i>&nbsp;     * allWorkCompletedLatch.
+<i>106</i>&nbsp;     */
+<b class="fc"><i>107</i>&nbsp;    private volatile CountDownLatch allWorkCompletedLatch = new CountDownLatch(0);</b>
+<i>108</i>&nbsp;
+<i>109</i>&nbsp;    /**
+<i>110</i>&nbsp;     * Indicates whether this PaintCollector has any dirty scenes that
+<i>111</i>&nbsp;     * need to be processed. This is used by the QuantumToolkit to detect
+<i>112</i>&nbsp;     * in the postPulse() method whether there are dirty scenes. If there
+<i>113</i>&nbsp;     * are, then the postPulse will potentially post a new pulse event.
+<i>114</i>&nbsp;     * Updated from the FX Thread, but may be read from any thread.
+<i>115</i>&nbsp;     */
+<i>116</i>&nbsp;    private volatile boolean hasDirty;
+<i>117</i>&nbsp;
+<i>118</i>&nbsp;    /**
+<i>119</i>&nbsp;     * A reference to the toolkit. This is supplied in the constructor.
+<i>120</i>&nbsp;     * Although a Toolkit.getToolkit() call and cast to QuantumToolkit
+<i>121</i>&nbsp;     * could be used, it is somewhat cleaner to simply supply these
+<i>122</i>&nbsp;     * parameters in the constructor and not reach out to static state.
+<i>123</i>&nbsp;     */
+<i>124</i>&nbsp;    private final QuantumToolkit toolkit;
+<i>125</i>&nbsp;
+<i>126</i>&nbsp;    /**
+<i>127</i>&nbsp;     * Indicates whether we should attempt to wait for vsync at
+<i>128</i>&nbsp;     * the conclusion of rendering all scenes. This is set in the
+<i>129</i>&nbsp;     * renderAll method if there are any synchronous scenes. If true,
+<i>130</i>&nbsp;     * then after the last scene is processed we will indicate to the
+<i>131</i>&nbsp;     * Toolkit that it should exercise the vsync block, and let it
+<i>132</i>&nbsp;     * decide whether to actually do so or not (based on flags, or
+<i>133</i>&nbsp;     * what OS we&#39;re on, etc).
+<i>134</i>&nbsp;     *
+<i>135</i>&nbsp;     * &lt;p&gt;This field will be set from the FX thread and read from
+<i>136</i>&nbsp;     * the Render thread, hence it is volatile.&lt;/p&gt;
+<i>137</i>&nbsp;     */
+<i>138</i>&nbsp;    private volatile boolean needsHint;
+<i>139</i>&nbsp;
+<i>140</i>&nbsp;    /**
+<i>141</i>&nbsp;     * Singleton constructor.
+<i>142</i>&nbsp;     *
+<i>143</i>&nbsp;     * @param qt The QuantumToolkit instance.
+<i>144</i>&nbsp;     */
+<b class="fc"><i>145</i>&nbsp;    private PaintCollector(QuantumToolkit qt) {</b>
+<b class="fc"><i>146</i>&nbsp;        toolkit  = qt;</b>
+<b class="fc"><i>147</i>&nbsp;    }</b>
+<i>148</i>&nbsp;
+<i>149</i>&nbsp;    /**
+<i>150</i>&nbsp;     * Called by renderAll to wait for rendering to complete before
+<i>151</i>&nbsp;     * continuing.
+<i>152</i>&nbsp;     */
+<i>153</i>&nbsp;    void waitForRenderingToComplete() {
+<i>154</i>&nbsp;        while (true) {
+<i>155</i>&nbsp;            try {
+<i>156</i>&nbsp;                // We need to keep waiting until things are done!
+<b class="fc"><i>157</i>&nbsp;                allWorkCompletedLatch.await();</b>
+<b class="fc"><i>158</i>&nbsp;                return;</b>
+<b class="nc"><i>159</i>&nbsp;            } catch (InterruptedException ex) {</b>
+<i>160</i>&nbsp;                // An interrupted exception at this point is a
+<i>161</i>&nbsp;                // bad thing. It might have happened during shutdown,
+<i>162</i>&nbsp;                // perhaps? Or somebody is poking the FX thread and
+<i>163</i>&nbsp;                // asking it to interrupt. Either way, it means
+<i>164</i>&nbsp;                // that we have not yet completed rendering some
+<i>165</i>&nbsp;                // scenes and we&#39;re about to make a mess of things.
+<i>166</i>&nbsp;                // Best thing to do is to retry.
+<b class="nc"><i>167</i>&nbsp;            }</b>
+<i>168</i>&nbsp;        }
+<i>169</i>&nbsp;    }
+<i>170</i>&nbsp;
+<i>171</i>&nbsp;    /**
+<i>172</i>&nbsp;     * Gets whether there are any dirty scenes that need to be rendered. If
+<i>173</i>&nbsp;     * true, then a subsequent pulse event and renderAll call is required.
+<i>174</i>&nbsp;     *
+<i>175</i>&nbsp;     * @return Whether there are any dirty scenes that need to be rendered.
+<i>176</i>&nbsp;     */
+<i>177</i>&nbsp;    final boolean hasDirty() {
+<b class="fc"><i>178</i>&nbsp;        return hasDirty;</b>
+<i>179</i>&nbsp;    }
+<i>180</i>&nbsp;
+<i>181</i>&nbsp;    /**
+<i>182</i>&nbsp;     * Adds a dirty scene to the PaintCollector for subsequent processing.
+<i>183</i>&nbsp;     * This method simply makes the PaintCollector aware of this new
+<i>184</i>&nbsp;     * scene and ensure it gets processed on the next call to renderAll.
+<i>185</i>&nbsp;     *
+<i>186</i>&nbsp;     * The next QuantumToolkit Glass timer generated pulse or PaintCollector
+<i>187</i>&nbsp;     * rendering vsync hinted pulse will process these dirty scenes.
+<i>188</i>&nbsp;     *
+<i>189</i>&nbsp;     * &lt;p&gt;This method must only be called on the FX Thread&lt;/p&gt;
+<i>190</i>&nbsp;     *
+<i>191</i>&nbsp;     * @param scene    The scene which is dirty. This must not be null.
+<i>192</i>&nbsp;     */
+<i>193</i>&nbsp;    final void addDirtyScene(GlassScene scene) {
+<i>194</i>&nbsp;        // Check that we are on the expected thread.
+<b class="fc"><i>195</i>&nbsp;        assert Thread.currentThread() == QuantumToolkit.getFxUserThread();</b>
+<i>196</i>&nbsp;        // Scene must not be null (using assert for performance)
+<b class="fc"><i>197</i>&nbsp;        assert scene != null;</b>
+<i>198</i>&nbsp;
+<b class="fc"><i>199</i>&nbsp;        if (QuantumToolkit.verbose) {</b>
+<b class="nc"><i>200</i>&nbsp;            System.err.println(&quot;PC.addDirtyScene: &quot; + System.nanoTime() + scene);</b>
+<i>201</i>&nbsp;        }
+<i>202</i>&nbsp;
+<i>203</i>&nbsp;        // Because dirtyScenes is ever only accessed from the FX Thread,
+<i>204</i>&nbsp;        // we don&#39;t need any form of concurrent access here. Note also
+<i>205</i>&nbsp;        // that doing a contains() call here is probably faster than using
+<i>206</i>&nbsp;        // a HashSet because we are dealing with such a small number of
+<i>207</i>&nbsp;        // scenes that simple iteration is likely to be much faster
+<b class="fc"><i>208</i>&nbsp;        if (!dirtyScenes.contains(scene)) {</b>
+<b class="fc"><i>209</i>&nbsp;            dirtyScenes.add(scene);</b>
+<i>210</i>&nbsp;            // Now that we know we have added a scene to dirtyScenes,
+<i>211</i>&nbsp;            // we should ensure hasDirty is true.
+<b class="fc"><i>212</i>&nbsp;            hasDirty = true;</b>
+<i>213</i>&nbsp;        }
+<b class="fc"><i>214</i>&nbsp;    }</b>
+<i>215</i>&nbsp;
+<i>216</i>&nbsp;    /**
+<i>217</i>&nbsp;     * Removes a scene from the dirtyScene list. If the given scene
+<i>218</i>&nbsp;     * was previously added with a call to addDirtyScene, it will
+<i>219</i>&nbsp;     * be removed. Potentially this means that after this call the
+<i>220</i>&nbsp;     * PaintCollector will no longer have any dirty scenes and will
+<i>221</i>&nbsp;     * no longer require a repaint.
+<i>222</i>&nbsp;     *
+<i>223</i>&nbsp;     * &lt;p&gt;This method is typically called when a scene is removed
+<i>224</i>&nbsp;     * from a stage, or when visible becomes false.
+<i>225</i>&nbsp;     * &lt;/p&gt;
+<i>226</i>&nbsp;     *
+<i>227</i>&nbsp;     * &lt;p&gt;This method must only be called on the FX Thread&lt;/p&gt;
+<i>228</i>&nbsp;     *
+<i>229</i>&nbsp;     * @param scene    The scene which is no longer dirty. Must not be null.
+<i>230</i>&nbsp;     */
+<i>231</i>&nbsp;    final void removeDirtyScene(GlassScene scene) {
+<i>232</i>&nbsp;        // Ensure we&#39;re called only from the FX thread
+<b class="fc"><i>233</i>&nbsp;        assert Thread.currentThread() == QuantumToolkit.getFxUserThread();</b>
+<b class="fc"><i>234</i>&nbsp;        assert scene != null;</b>
+<i>235</i>&nbsp;
+<i>236</i>&nbsp;        // Need to convert to use JavaFX Logging instead.
+<b class="fc"><i>237</i>&nbsp;        if (QuantumToolkit.verbose) {</b>
+<b class="nc"><i>238</i>&nbsp;            System.err.println(&quot;PC.removeDirtyScene: &quot; + scene);</b>
+<i>239</i>&nbsp;        }
+<i>240</i>&nbsp;
+<i>241</i>&nbsp;        // Remove the scene
+<b class="fc"><i>242</i>&nbsp;        dirtyScenes.remove(scene);</b>
+<i>243</i>&nbsp;        // Update hasDirty
+<b class="fc"><i>244</i>&nbsp;        hasDirty = !dirtyScenes.isEmpty();</b>
+<b class="fc"><i>245</i>&nbsp;    }</b>
+<i>246</i>&nbsp;
+<i>247</i>&nbsp;    /**
+<i>248</i>&nbsp;     * Gets the CompletionListener which must be notified when a
+<i>249</i>&nbsp;     * GlassScene has completed rendering.
+<i>250</i>&nbsp;     *
+<i>251</i>&nbsp;     * @return The CompletionListener. Will never be null.
+<i>252</i>&nbsp;     */
+<i>253</i>&nbsp;    final CompletionListener getRendered() {
+<b class="fc"><i>254</i>&nbsp;        return this;</b>
+<i>255</i>&nbsp;    }
+<i>256</i>&nbsp;
+<i>257</i>&nbsp;    /**
+<i>258</i>&nbsp;     * This object is a CompletionListener is registered with every GlassScene,
+<i>259</i>&nbsp;     * such that when the repaint has completed, this method is called.
+<i>260</i>&nbsp;     * This method will decrement the count on the allWorkCompletedLatch.
+<i>261</i>&nbsp;     */
+<i>262</i>&nbsp;    @Override public void done(RenderJob job) {
+<i>263</i>&nbsp;        // It would be better to have an assertive check that
+<i>264</i>&nbsp;        // this call is being made on the render thread, rather
+<i>265</i>&nbsp;        // than on the FXT, but this is easier for now.
+<b class="fc"><i>266</i>&nbsp;        assert Thread.currentThread() != QuantumToolkit.getFxUserThread();</b>
+<i>267</i>&nbsp;
+<b class="fc"><i>268</i>&nbsp;        if (!(job instanceof PaintRenderJob)) {</b>
+<b class="nc"><i>269</i>&nbsp;            throw new IllegalArgumentException(&quot;PaintCollector: invalid RenderJob&quot;);</b>
+<i>270</i>&nbsp;        }
+<i>271</i>&nbsp;
+<b class="fc"><i>272</i>&nbsp;        final PaintRenderJob paintjob = (PaintRenderJob)job;</b>
+<b class="fc"><i>273</i>&nbsp;        final GlassScene scene = paintjob.getScene();</b>
+<i>274</i>&nbsp;
+<b class="fc"><i>275</i>&nbsp;        if (scene == null) {</b>
+<b class="nc"><i>276</i>&nbsp;            throw new IllegalArgumentException(&quot;PaintCollector: null scene&quot;);</b>
+<i>277</i>&nbsp;        }
+<i>278</i>&nbsp;
+<i>279</i>&nbsp;        // This callback on Scene only exists to allow the performance
+<i>280</i>&nbsp;        // counter to be notified when a scene has been rendered. We
+<i>281</i>&nbsp;        // could reduce the class count and indirection if we had a more
+<i>282</i>&nbsp;        // direct method for notifying some performance tracker rather
+<i>283</i>&nbsp;        // than going through this round-about way.
+<b class="fc"><i>284</i>&nbsp;        scene.frameRendered();</b>
+<i>285</i>&nbsp;
+<i>286</i>&nbsp;        // Work to be done after all rendering is completed. Note that
+<i>287</i>&nbsp;        // I check against &quot;1&quot; to indicate all rendering is done, and
+<i>288</i>&nbsp;        // only decrement the allWorkCompletedLatch after wards. This is
+<i>289</i>&nbsp;        // because as soon as I decrement the allWorkCompletedLatch to 0,
+<i>290</i>&nbsp;        // then whatever code remains in this method will run concurrently
+<i>291</i>&nbsp;        // with the FX app thread, and I&#39;d prefer to minimize the number
+<i>292</i>&nbsp;        // of things here that could be happening in parallel.
+<b class="fc"><i>293</i>&nbsp;        if (allWorkCompletedLatch.getCount() == 1) {</b>
+<i>294</i>&nbsp;            // In some cases we need to tell the toolkit that
+<i>295</i>&nbsp;            // now would be a great time to vsync!
+<b class="fc"><i>296</i>&nbsp;            if (needsHint &amp;&amp; !toolkit.hasNativeSystemVsync()) {</b>
+<b class="fc"><i>297</i>&nbsp;                toolkit.vsyncHint();</b>
+<i>298</i>&nbsp;            }
+<i>299</i>&nbsp;
+<b class="fc"><i>300</i>&nbsp;            Application.GetApplication().notifyRenderingFinished();</b>
+<i>301</i>&nbsp;
+<i>302</i>&nbsp;            // If pulse logging is enabled, then we must call renderEnd now
+<i>303</i>&nbsp;            // that we know that all of the scene&#39;s being rendered are finished
+<b class="fc"><i>304</i>&nbsp;            if (PULSE_LOGGING_ENABLED) {</b>
+<b class="nc"><i>305</i>&nbsp;                PulseLogger.renderEnd();</b>
+<i>306</i>&nbsp;            }
+<i>307</i>&nbsp;        }
+<i>308</i>&nbsp;
+<i>309</i>&nbsp;        // Count down the latch, indicating that drawing has
+<i>310</i>&nbsp;        // completed for some scene.
+<b class="fc"><i>311</i>&nbsp;        allWorkCompletedLatch.countDown();</b>
+<b class="fc"><i>312</i>&nbsp;    }</b>
+<i>313</i>&nbsp;
+<i>314</i>&nbsp;    /**
+<i>315</i>&nbsp;     * Run a full pulse and repaint before returning.
+<i>316</i>&nbsp;     */
+<i>317</i>&nbsp;    final void liveRepaintRenderJob(final ViewScene scene) {
+<b class="fc"><i>318</i>&nbsp;         ViewPainter viewPainter = scene.getPainter();</b>
+<b class="fc"><i>319</i>&nbsp;         QuantumToolkit quantum = (QuantumToolkit)QuantumToolkit.getToolkit();</b>
+<b class="fc"><i>320</i>&nbsp;         quantum.pulse(false);</b>
+<b class="fc"><i>321</i>&nbsp;         final CountDownLatch latch = new CountDownLatch(1);</b>
+<b class="fc"><i>322</i>&nbsp;         QuantumToolkit.runWithoutRenderLock(() -&gt; {</b>
+<b class="fc"><i>323</i>&nbsp;             quantum.addRenderJob(new RenderJob(viewPainter, rj -&gt; latch.countDown()));</b>
+<i>324</i>&nbsp;             try {
+<b class="fc"><i>325</i>&nbsp;                 latch.await();</b>
+<b class="nc"><i>326</i>&nbsp;             } catch (InterruptedException e) {</b>
+<i>327</i>&nbsp;                 //Fail silently.  If interrupted, then proceed with the UI ...
+<b class="fc"><i>328</i>&nbsp;             }</b>
+<b class="fc"><i>329</i>&nbsp;             return null;</b>
+<i>330</i>&nbsp;         });
+<b class="fc"><i>331</i>&nbsp;     }</b>
+<i>332</i>&nbsp;
+<i>333</i>&nbsp;    /**
+<i>334</i>&nbsp;     * Called by QuantumToolkit during a pulse to render whatever dirty scenes
+<i>335</i>&nbsp;     * we have. This method is only called on the FX thread.
+<i>336</i>&nbsp;     */
+<i>337</i>&nbsp;    final void renderAll() {
+<i>338</i>&nbsp;        // Ensure we&#39;re called only from the FX thread
+<b class="fc"><i>339</i>&nbsp;        assert Thread.currentThread() == QuantumToolkit.getFxUserThread();</b>
+<i>340</i>&nbsp;
+<i>341</i>&nbsp;        // TODO switch to using a logger
+<b class="fc"><i>342</i>&nbsp;        if (QuantumToolkit.pulseDebug) {</b>
+<b class="nc"><i>343</i>&nbsp;            System.err.println(&quot;PC.renderAll(&quot; + dirtyScenes.size() + &quot;): &quot; + System.nanoTime());</b>
+<i>344</i>&nbsp;        }
+<i>345</i>&nbsp;
+<i>346</i>&nbsp;        // Since hasDirty can only be set to true from the FX Thread,
+<i>347</i>&nbsp;        // we can do just a simple boolean check here. If we don&#39;t
+<i>348</i>&nbsp;        // have any dirty scenes to process, then we are done.
+<b class="fc"><i>349</i>&nbsp;        if (!hasDirty) {</b>
+<b class="fc"><i>350</i>&nbsp;            return;</b>
+<i>351</i>&nbsp;        }
+<i>352</i>&nbsp;
+<i>353</i>&nbsp;        // Because hasDirty is tied to dirtyScenes, it should
+<i>354</i>&nbsp;        // not be possible that we reach this point if dirtyScenes
+<i>355</i>&nbsp;        // is empty (since hasDirty was true)
+<b class="fc"><i>356</i>&nbsp;        assert !dirtyScenes.isEmpty();</b>
+<i>357</i>&nbsp;
+<i>358</i>&nbsp;        // Sort the dirty scenes based on whether they are
+<i>359</i>&nbsp;        // synchronous or not. If they are not synchronous,
+<i>360</i>&nbsp;        // then we want to process them first.
+<b class="fc"><i>361</i>&nbsp;        Collections.sort(dirtyScenes, DIRTY_SCENE_SORTER);</b>
+<i>362</i>&nbsp;
+<i>363</i>&nbsp;        // Reset the fields
+<b class="fc"><i>364</i>&nbsp;        hasDirty = false;</b>
+<b class="fc"><i>365</i>&nbsp;        needsHint = false;</b>
+<i>366</i>&nbsp;
+<i>367</i>&nbsp;        // If pulse logging is enabled, then we must call renderStart
+<i>368</i>&nbsp;        // BEFORE we actually call repaint on any of the dirty scenes.
+<b class="fc"><i>369</i>&nbsp;        if (PULSE_LOGGING_ENABLED) {</b>
+<b class="nc"><i>370</i>&nbsp;            PulseLogger.renderStart();</b>
+<i>371</i>&nbsp;        }
+<i>372</i>&nbsp;
+<i>373</i>&nbsp;        // This part needs to be handled a bit differently depending on whether our platform has a native
+<i>374</i>&nbsp;        // window manager or not.
+<i>375</i>&nbsp;        // So, check to see if we do (Note: how we determine this need to be improved, this should
+<i>376</i>&nbsp;        // eventually call down into platform-specific glass code and not rely on
+<i>377</i>&nbsp;        // a system property, but we will use this for now)
+<b class="fc"><i>378</i>&nbsp;        if (!Application.GetApplication().hasWindowManager()) {</b>
+<i>379</i>&nbsp;            // No native window manager.  We call repaint on every scene (to make sure it gets recopied
+<i>380</i>&nbsp;            // to the screen) but we may be able to skip some steps in the repaint.
+<i>381</i>&nbsp;
+<i>382</i>&nbsp;            // Obtain a z-ordered window list from glass.  For platforms without a native window manager,
+<i>383</i>&nbsp;            // we need to recopy the all of the window contents to the screen on every frame.
+<b class="nc"><i>384</i>&nbsp;            final List&lt;com.sun.glass.ui.Window&gt; glassWindowList = com.sun.glass.ui.Window.getWindows();</b>
+<b class="nc"><i>385</i>&nbsp;            allWorkCompletedLatch = new CountDownLatch(glassWindowList.size());</b>
+<b class="nc"><i>386</i>&nbsp;            for (int i = 0, n = glassWindowList.size(); i &lt; n; i++) {</b>
+<b class="nc"><i>387</i>&nbsp;                final Window w = glassWindowList.get(i);</b>
+<b class="nc"><i>388</i>&nbsp;                final WindowStage ws = WindowStage.findWindowStage(w);</b>
+<b class="nc"><i>389</i>&nbsp;                if (ws != null) {</b>
+<b class="nc"><i>390</i>&nbsp;                    final ViewScene vs = ws.getViewScene();</b>
+<i>391</i>&nbsp;
+<i>392</i>&nbsp;                    // Check to see if this scene is in our dirty list.  If so, we will need to render
+<i>393</i>&nbsp;                    // the scene before we recopy it to the screen.  If not, we can skip this step.
+<b class="nc"><i>394</i>&nbsp;                    if (dirtyScenes.indexOf(vs) != -1) {</b>
+<b class="nc"><i>395</i>&nbsp;                        if (!needsHint) {</b>
+<b class="nc"><i>396</i>&nbsp;                            needsHint = vs.isSynchronous();</b>
+<i>397</i>&nbsp;                        }
+<i>398</i>&nbsp;                    }
+<b class="nc"><i>399</i>&nbsp;                    if (!PlatformUtil.useEGL() || i == (n - 1)) {</b>
+<i>400</i>&nbsp;                        // for platforms without a native window manager, we only want to do the
+<i>401</i>&nbsp;                        // swap to the screen after the last window has been rendered
+<b class="nc"><i>402</i>&nbsp;                        vs.setDoPresent(true);</b>
+<i>403</i>&nbsp;                    } else {
+<b class="nc"><i>404</i>&nbsp;                        vs.setDoPresent(false);</b>
+<i>405</i>&nbsp;                    }
+<i>406</i>&nbsp;                    try {
+<b class="nc"><i>407</i>&nbsp;                        vs.repaint();</b>
+<b class="nc"><i>408</i>&nbsp;                    } catch (Throwable t) {</b>
+<b class="nc"><i>409</i>&nbsp;                        t.printStackTrace();</b>
+<b class="nc"><i>410</i>&nbsp;                    }</b>
+<i>411</i>&nbsp;                }
+<i>412</i>&nbsp;            }
+<b class="nc"><i>413</i>&nbsp;        } else {</b>
+<i>414</i>&nbsp;            // We have a native window manager.  Only call repaint on the dirty scenes,
+<i>415</i>&nbsp;            // and swap to the screen on a per-window basis.
+<i>416</i>&nbsp;            //
+<i>417</i>&nbsp;            // Now we are ready to repaint each scene. We will first process
+<i>418</i>&nbsp;            // the uploadScenes, followed by the syncScenes. The reason we
+<i>419</i>&nbsp;            // want to do this is that when the last syncScene is processed,
+<i>420</i>&nbsp;            // if needsHint is true, then we will wait for vsync. We clearly
+<i>421</i>&nbsp;            // don&#39;t want to do this until all the dirty scenes have been
+<i>422</i>&nbsp;            // processed.
+<b class="fc"><i>423</i>&nbsp;            allWorkCompletedLatch = new CountDownLatch(dirtyScenes.size());</b>
+<i>424</i>&nbsp;
+<b class="fc"><i>425</i>&nbsp;            for (final GlassScene gs : dirtyScenes) {</b>
+<i>426</i>&nbsp;                // Only post the vsync hint if there are synchronous scenes
+<b class="fc"><i>427</i>&nbsp;                if (!needsHint) {</b>
+<b class="fc"><i>428</i>&nbsp;                    needsHint = gs.isSynchronous();</b>
+<i>429</i>&nbsp;                }
+<i>430</i>&nbsp;                // On platforms with a window manager, we always set doPresent = true, because
+<i>431</i>&nbsp;                // we always need to rerender the scene  if it&#39;s in the dirty list and we do a
+<i>432</i>&nbsp;                // swap on a per-window basis
+<b class="fc"><i>433</i>&nbsp;                gs.setDoPresent(true);</b>
+<i>434</i>&nbsp;                try {
+<b class="fc"><i>435</i>&nbsp;                    gs.repaint();</b>
+<b class="nc"><i>436</i>&nbsp;                } catch (Throwable t) {</b>
+<b class="nc"><i>437</i>&nbsp;                    t.printStackTrace();</b>
+<b class="fc"><i>438</i>&nbsp;                }</b>
+<b class="fc"><i>439</i>&nbsp;            }</b>
+<i>440</i>&nbsp;        }
+<i>441</i>&nbsp;
+<b class="fc"><i>442</i>&nbsp;        dirtyScenes.clear();</b>
+<i>443</i>&nbsp;
+<b class="fc"><i>444</i>&nbsp;        if (toolkit.shouldWaitForRenderingToComplete()) {</b>
+<b class="nc"><i>445</i>&nbsp;            waitForRenderingToComplete();</b>
+<i>446</i>&nbsp;        }
+<b class="fc"><i>447</i>&nbsp;    }</b>
+<i>448</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2017-12-04 21:49</div>
+</div>
+</body>
+</html>

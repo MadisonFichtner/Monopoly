@@ -1,0 +1,164 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: ShapePair</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.javafx.geom</a> ]
+</div>
+
+<h1>Coverage Summary for Class: ShapePair (com.sun.javafx.geom)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">ShapePair</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright (c) 2009, 2013, Oracle and/or its affiliates. All rights reserved.
+<i>3</i>&nbsp; * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+<i>4</i>&nbsp; *
+<i>5</i>&nbsp; *
+<i>6</i>&nbsp; *
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; *
+<i>11</i>&nbsp; *
+<i>12</i>&nbsp; *
+<i>13</i>&nbsp; *
+<i>14</i>&nbsp; *
+<i>15</i>&nbsp; *
+<i>16</i>&nbsp; *
+<i>17</i>&nbsp; *
+<i>18</i>&nbsp; *
+<i>19</i>&nbsp; *
+<i>20</i>&nbsp; *
+<i>21</i>&nbsp; *
+<i>22</i>&nbsp; *
+<i>23</i>&nbsp; *
+<i>24</i>&nbsp; */
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;package com.sun.javafx.geom;
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;/**
+<i>29</i>&nbsp; * A Shape composed of an Outer {@link Shape} combined in
+<i>30</i>&nbsp; * some manner with an Inner {@link Shape}.
+<i>31</i>&nbsp; * &lt;p&gt;
+<i>32</i>&nbsp; * The resulting combined shape is either the intersection of the two
+<i>33</i>&nbsp; * component shapes, or the Inner shape subtracted from the Outer shape.
+<i>34</i>&nbsp; *
+<i>35</i>&nbsp; */
+<b class="nc"><i>36</i>&nbsp;public abstract class ShapePair extends Shape {</b>
+<i>37</i>&nbsp;    public static final int INCLUDES_O_NOT_I = 1;
+<i>38</i>&nbsp;    public static final int INCLUDES_I_NOT_O = 2;
+<i>39</i>&nbsp;    public static final int INCLUDES_O_AND_I = 4;
+<i>40</i>&nbsp;    public static final int INCLUDES_NEITHER = 8;
+<i>41</i>&nbsp;
+<i>42</i>&nbsp;    /**
+<i>43</i>&nbsp;     * Constant used to indicate that the Inner shape should be
+<i>44</i>&nbsp;     * subtracted from the Outer shape.
+<i>45</i>&nbsp;     */
+<i>46</i>&nbsp;    public static final int TYPE_SUBTRACT = (INCLUDES_O_NOT_I);
+<i>47</i>&nbsp;
+<i>48</i>&nbsp;    /**
+<i>49</i>&nbsp;     * Constant used to indicate that the Inner shape should be
+<i>50</i>&nbsp;     * intersected with the Outer shape.
+<i>51</i>&nbsp;     */
+<i>52</i>&nbsp;    public static final int TYPE_INTERSECT = (INCLUDES_O_AND_I);
+<i>53</i>&nbsp;
+<i>54</i>&nbsp;    // UNION = (O_NOT_I | O_AND_I | I_NOT_O);
+<i>55</i>&nbsp;    // XOR = (O_NOT_I | I_NOT_O);
+<i>56</i>&nbsp;    // INVERT_OUTER = (NEITHER | I_NOT_O);
+<i>57</i>&nbsp;    // etc.
+<i>58</i>&nbsp;
+<i>59</i>&nbsp;    /**
+<i>60</i>&nbsp;     * Returns the method with which to combine the two shapes.
+<i>61</i>&nbsp;     * For now, only {@code TYPE_SUBTRACT} and {@code TYPE_INTERSECT}
+<i>62</i>&nbsp;     * are supported.
+<i>63</i>&nbsp;     *
+<i>64</i>&nbsp;     * @return the method type to use to combine the shapes.
+<i>65</i>&nbsp;     */
+<i>66</i>&nbsp;    public abstract int getCombinationType();
+<i>67</i>&nbsp;
+<i>68</i>&nbsp;    /**
+<i>69</i>&nbsp;     * Returns the outer {@link Shape}.
+<i>70</i>&nbsp;     *
+<i>71</i>&nbsp;     * @return the outer {@link Shape}.
+<i>72</i>&nbsp;     */
+<i>73</i>&nbsp;    public abstract Shape getOuterShape();
+<i>74</i>&nbsp;
+<i>75</i>&nbsp;    /**
+<i>76</i>&nbsp;     * Returns the inner {@link Shape}.
+<i>77</i>&nbsp;     *
+<i>78</i>&nbsp;     * @return the inner {@link Shape}.
+<i>79</i>&nbsp;     */
+<i>80</i>&nbsp;    public abstract Shape getInnerShape();
+<i>81</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2017-12-04 21:49</div>
+</div>
+</body>
+</html>

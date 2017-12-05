@@ -1,0 +1,362 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: NGRectangle</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.javafx.sg.prism</a> ]
+</div>
+
+<h1>Coverage Summary for Class: NGRectangle (com.sun.javafx.sg.prism)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">NGRectangle</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    64.3%
+  </span>
+  <span class="absValue">
+    (9/ 14)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    27.6%
+  </span>
+  <span class="absValue">
+    (29/ 105)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright (c) 2011, 2013, Oracle and/or its affiliates. All rights reserved.
+<i>3</i>&nbsp; * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+<i>4</i>&nbsp; *
+<i>5</i>&nbsp; *
+<i>6</i>&nbsp; *
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; *
+<i>11</i>&nbsp; *
+<i>12</i>&nbsp; *
+<i>13</i>&nbsp; *
+<i>14</i>&nbsp; *
+<i>15</i>&nbsp; *
+<i>16</i>&nbsp; *
+<i>17</i>&nbsp; *
+<i>18</i>&nbsp; *
+<i>19</i>&nbsp; *
+<i>20</i>&nbsp; *
+<i>21</i>&nbsp; *
+<i>22</i>&nbsp; *
+<i>23</i>&nbsp; *
+<i>24</i>&nbsp; */
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;package com.sun.javafx.sg.prism;
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;import com.sun.javafx.geom.RectBounds;
+<i>29</i>&nbsp;import com.sun.javafx.geom.RectangularShape;
+<i>30</i>&nbsp;import com.sun.javafx.geom.RoundRectangle2D;
+<i>31</i>&nbsp;import com.sun.javafx.geom.Shape;
+<i>32</i>&nbsp;import com.sun.javafx.geom.transform.BaseTransform;
+<i>33</i>&nbsp;import com.sun.prism.BasicStroke;
+<i>34</i>&nbsp;import com.sun.prism.Graphics;
+<i>35</i>&nbsp;import com.sun.prism.RectShadowGraphics;
+<i>36</i>&nbsp;import com.sun.prism.paint.Color;
+<i>37</i>&nbsp;import com.sun.prism.shape.ShapeRep;
+<i>38</i>&nbsp;import com.sun.scenario.effect.Effect;
+<i>39</i>&nbsp;import static com.sun.javafx.geom.transform.BaseTransform.TYPE_MASK_SCALE;
+<i>40</i>&nbsp;import static com.sun.javafx.geom.transform.BaseTransform.TYPE_QUADRANT_ROTATION;
+<i>41</i>&nbsp;import static com.sun.javafx.geom.transform.BaseTransform.TYPE_TRANSLATION;
+<i>42</i>&nbsp;
+<i>43</i>&nbsp;/**
+<i>44</i>&nbsp; */
+<b class="fc"><i>45</i>&nbsp;public class NGRectangle extends NGShape {</b>
+<i>46</i>&nbsp;
+<b class="fc"><i>47</i>&nbsp;    private RoundRectangle2D rrect = new RoundRectangle2D();</b>
+<i>48</i>&nbsp;
+<i>49</i>&nbsp;    public void updateRectangle(float x, float y, float width, float height,
+<i>50</i>&nbsp;                                          float arcWidth, float arcHeight) {
+<b class="fc"><i>51</i>&nbsp;        rrect.x = x;</b>
+<b class="fc"><i>52</i>&nbsp;        rrect.y = y;</b>
+<b class="fc"><i>53</i>&nbsp;        rrect.width = width;</b>
+<b class="fc"><i>54</i>&nbsp;        rrect.height = height;</b>
+<b class="fc"><i>55</i>&nbsp;        rrect.arcWidth = arcWidth;</b>
+<b class="fc"><i>56</i>&nbsp;        rrect.arcHeight = arcHeight;</b>
+<b class="fc"><i>57</i>&nbsp;        geometryChanged();</b>
+<b class="fc"><i>58</i>&nbsp;    }</b>
+<i>59</i>&nbsp;
+<i>60</i>&nbsp;    @Override
+<b class="fc"><i>61</i>&nbsp;    protected boolean supportsOpaqueRegions() { return true; }</b>
+<i>62</i>&nbsp;
+<i>63</i>&nbsp;    @Override
+<i>64</i>&nbsp;    protected boolean hasOpaqueRegion() {
+<b class="fc"><i>65</i>&nbsp;        return super.hasOpaqueRegion() &amp;&amp; rrect.width &gt; 1 &amp;&amp; rrect.height &gt; 1;</b>
+<i>66</i>&nbsp;    }
+<i>67</i>&nbsp;
+<i>68</i>&nbsp;    static final float HALF_MINUS_HALF_SQRT_HALF = 0.5f - NGCircle.HALF_SQRT_HALF;
+<i>69</i>&nbsp;
+<i>70</i>&nbsp;    @Override
+<i>71</i>&nbsp;    protected RectBounds computeOpaqueRegion(RectBounds opaqueRegion) {
+<i>72</i>&nbsp;        // Normally the &quot;opaque region&quot; for a rectangle would be the
+<i>73</i>&nbsp;        // x, y, w, h unless it has rounded corners, in which case
+<i>74</i>&nbsp;        // we subtract the arc width and arc height.
+<b class="fc"><i>75</i>&nbsp;        final float x = rrect.x;</b>
+<b class="fc"><i>76</i>&nbsp;        final float y = rrect.y;</b>
+<b class="fc"><i>77</i>&nbsp;        final float w = rrect.width;</b>
+<b class="fc"><i>78</i>&nbsp;        final float h = rrect.height;</b>
+<b class="fc"><i>79</i>&nbsp;        final float aw = rrect.arcWidth;</b>
+<b class="fc"><i>80</i>&nbsp;        final float ah = rrect.arcHeight;</b>
+<i>81</i>&nbsp;
+<b class="fc"><i>82</i>&nbsp;        if (aw &lt;= 0 || ah &lt;= 0) {</b>
+<i>83</i>&nbsp;            // This is the simple case of a rectangle. Note the &quot;||&quot; is correct in the if statement,
+<i>84</i>&nbsp;            // because regardless of the size of aw, if ah &lt;= 0 (or vice versa) we draw a non-rounded
+<i>85</i>&nbsp;            // rectangle, so we should always enter this case for things that get drawn as rectangles
+<b class="fc"><i>86</i>&nbsp;            return (RectBounds) opaqueRegion.deriveWithNewBounds(x, y, 0, x + w, y + h, 0);</b>
+<i>87</i>&nbsp;        } else {
+<i>88</i>&nbsp;            // Gives us a reasonable number of pixels that are the interior of the rounded rectangle
+<i>89</i>&nbsp;            // including when aw / ah is massive (in which case we just render an ellipse with w/h
+<i>90</i>&nbsp;            // as the dimensions).
+<b class="nc"><i>91</i>&nbsp;            final float arcInsetWidth = Math.min(w, aw) * HALF_MINUS_HALF_SQRT_HALF;</b>
+<b class="nc"><i>92</i>&nbsp;            final float arcInsetHeight = Math.min(h, ah) * HALF_MINUS_HALF_SQRT_HALF;</b>
+<b class="nc"><i>93</i>&nbsp;            return (RectBounds) opaqueRegion.deriveWithNewBounds(</b>
+<i>94</i>&nbsp;                    x + arcInsetWidth, y + arcInsetHeight, 0,
+<i>95</i>&nbsp;                    x + w - arcInsetWidth, y + h - arcInsetHeight, 0);
+<i>96</i>&nbsp;        }
+<i>97</i>&nbsp;    }
+<i>98</i>&nbsp;
+<i>99</i>&nbsp;    boolean isRounded() {
+<b class="fc"><i>100</i>&nbsp;        return rrect.arcWidth &gt; 0f &amp;&amp; rrect.arcHeight &gt; 0f;</b>
+<i>101</i>&nbsp;    }
+<i>102</i>&nbsp;
+<i>103</i>&nbsp;    @Override
+<i>104</i>&nbsp;    protected void renderEffect(Graphics g) {
+<b class="nc"><i>105</i>&nbsp;        if (!(g instanceof RectShadowGraphics) || !renderEffectDirectly(g)) {</b>
+<b class="nc"><i>106</i>&nbsp;            super.renderEffect(g);</b>
+<i>107</i>&nbsp;        }
+<b class="nc"><i>108</i>&nbsp;    }</b>
+<i>109</i>&nbsp;
+<i>110</i>&nbsp;    private boolean renderEffectDirectly(Graphics g) {
+<b class="nc"><i>111</i>&nbsp;        if (mode != Mode.FILL || isRounded()) {</b>
+<i>112</i>&nbsp;            // TODO: Allow solid strokes that are square in the corners... (RT-26974)
+<b class="nc"><i>113</i>&nbsp;            return false;</b>
+<i>114</i>&nbsp;        }
+<b class="nc"><i>115</i>&nbsp;        float alpha = g.getExtraAlpha();</b>
+<b class="nc"><i>116</i>&nbsp;        if (fillPaint instanceof Color) {</b>
+<b class="nc"><i>117</i>&nbsp;            alpha *= ((Color) fillPaint).getAlpha();</b>
+<i>118</i>&nbsp;        } else {
+<i>119</i>&nbsp;            // TODO: Check if all colors in a gradient have same alpha... (RT-26974)
+<b class="nc"><i>120</i>&nbsp;            return false;</b>
+<i>121</i>&nbsp;        }
+<b class="nc"><i>122</i>&nbsp;        Effect effect = getEffect();</b>
+<b class="nc"><i>123</i>&nbsp;        if (EffectUtil.renderEffectForRectangularNode(this, g, effect,</b>
+<i>124</i>&nbsp;                                                      alpha, true /* antialiased */,
+<i>125</i>&nbsp;                                                      rrect.x, rrect.y,
+<i>126</i>&nbsp;                                                      rrect.width, rrect.height))
+<i>127</i>&nbsp;        {
+<b class="nc"><i>128</i>&nbsp;            return true;</b>
+<i>129</i>&nbsp;        }
+<b class="nc"><i>130</i>&nbsp;        return false;</b>
+<i>131</i>&nbsp;    }
+<i>132</i>&nbsp;
+<i>133</i>&nbsp;    @Override
+<i>134</i>&nbsp;    public final Shape getShape() {
+<b class="fc"><i>135</i>&nbsp;        return rrect;</b>
+<i>136</i>&nbsp;    }
+<i>137</i>&nbsp;
+<i>138</i>&nbsp;    @Override
+<i>139</i>&nbsp;    protected ShapeRep createShapeRep(Graphics g) {
+<b class="nc"><i>140</i>&nbsp;        return g.getResourceFactory().createRoundRectRep();</b>
+<i>141</i>&nbsp;    }
+<i>142</i>&nbsp;
+<b class="fc"><i>143</i>&nbsp;    private static final double SQRT_2 = Math.sqrt(2.0);</b>
+<i>144</i>&nbsp;    private static boolean hasRightAngleMiterAndNoDashes(BasicStroke bs) {
+<b class="nc"><i>145</i>&nbsp;        return (bs.getLineJoin() == BasicStroke.JOIN_MITER &amp;&amp;</b>
+<b class="nc"><i>146</i>&nbsp;                bs.getMiterLimit() &gt;= SQRT_2 &amp;&amp;</b>
+<b class="nc"><i>147</i>&nbsp;                bs.getDashArray() == null);</b>
+<i>148</i>&nbsp;    }
+<i>149</i>&nbsp;
+<i>150</i>&nbsp;    static boolean rectContains(float x, float y,
+<i>151</i>&nbsp;                                NGShape node,
+<i>152</i>&nbsp;                                RectangularShape r)
+<i>153</i>&nbsp;    {
+<b class="nc"><i>154</i>&nbsp;        double rw = r.getWidth();</b>
+<b class="nc"><i>155</i>&nbsp;        double rh = r.getHeight();</b>
+<b class="nc"><i>156</i>&nbsp;        if (rw &lt; 0 || rh &lt; 0) {</b>
+<b class="nc"><i>157</i>&nbsp;            return false;</b>
+<i>158</i>&nbsp;        }
+<b class="nc"><i>159</i>&nbsp;        Mode mode = node.mode;</b>
+<b class="nc"><i>160</i>&nbsp;        if (mode == Mode.EMPTY) {</b>
+<b class="nc"><i>161</i>&nbsp;            return false;</b>
+<i>162</i>&nbsp;        }
+<b class="nc"><i>163</i>&nbsp;        double rx = r.getX();</b>
+<b class="nc"><i>164</i>&nbsp;        double ry = r.getY();</b>
+<b class="nc"><i>165</i>&nbsp;        if (mode == Mode.FILL) {</b>
+<i>166</i>&nbsp;            // shortcut for common case
+<b class="nc"><i>167</i>&nbsp;            return (x &gt;= rx &amp;&amp; y &gt;= ry &amp;&amp; x &lt; rx+rw &amp;&amp; y &lt; ry+rh);</b>
+<i>168</i>&nbsp;        }
+<i>169</i>&nbsp;        // mode is STROKE or STROKE_FILL
+<b class="nc"><i>170</i>&nbsp;        float outerpad = -1.0f; // check bounds+outerpad if &gt;= 0.0</b>
+<b class="nc"><i>171</i>&nbsp;        float innerpad = -1.0f; // check bounds-innerpad if &gt;= 0.0</b>
+<b class="nc"><i>172</i>&nbsp;        boolean checkstroke = false; // manually check stroke shape if true</b>
+<b class="nc"><i>173</i>&nbsp;        BasicStroke drawstroke = node.drawStroke;</b>
+<b class="nc"><i>174</i>&nbsp;        int type = drawstroke.getType();</b>
+<b class="nc"><i>175</i>&nbsp;        if (type == BasicStroke.TYPE_INNER) {</b>
+<b class="nc"><i>176</i>&nbsp;            if (mode == Mode.STROKE_FILL) {</b>
+<b class="nc"><i>177</i>&nbsp;                outerpad = 0.0f;</b>
+<i>178</i>&nbsp;            } else {
+<b class="nc"><i>179</i>&nbsp;                if (drawstroke.getDashArray() == null) {</b>
+<b class="nc"><i>180</i>&nbsp;                    outerpad = 0.0f;</b>
+<b class="nc"><i>181</i>&nbsp;                    innerpad = drawstroke.getLineWidth();</b>
+<i>182</i>&nbsp;                } else {
+<b class="nc"><i>183</i>&nbsp;                    checkstroke = true;</b>
+<i>184</i>&nbsp;                }
+<i>185</i>&nbsp;            }
+<b class="nc"><i>186</i>&nbsp;        } else if (type == BasicStroke.TYPE_OUTER) {</b>
+<b class="nc"><i>187</i>&nbsp;            if (hasRightAngleMiterAndNoDashes(drawstroke)) {</b>
+<b class="nc"><i>188</i>&nbsp;                outerpad = drawstroke.getLineWidth();</b>
+<b class="nc"><i>189</i>&nbsp;                if (mode == Mode.STROKE) {</b>
+<b class="nc"><i>190</i>&nbsp;                    innerpad = 0.0f;</b>
+<i>191</i>&nbsp;                }
+<i>192</i>&nbsp;            } else {
+<b class="nc"><i>193</i>&nbsp;                if (mode == Mode.STROKE_FILL) {</b>
+<b class="nc"><i>194</i>&nbsp;                    outerpad = 0.0f;</b>
+<i>195</i>&nbsp;                }
+<b class="nc"><i>196</i>&nbsp;                checkstroke = true;</b>
+<i>197</i>&nbsp;            }
+<b class="nc"><i>198</i>&nbsp;        } else if (type == BasicStroke.TYPE_CENTERED) {</b>
+<b class="nc"><i>199</i>&nbsp;            if (hasRightAngleMiterAndNoDashes(drawstroke)) {</b>
+<b class="nc"><i>200</i>&nbsp;                outerpad = drawstroke.getLineWidth() / 2.0f;</b>
+<b class="nc"><i>201</i>&nbsp;                if (mode == Mode.STROKE) {</b>
+<b class="nc"><i>202</i>&nbsp;                    innerpad = outerpad;</b>
+<i>203</i>&nbsp;                }
+<i>204</i>&nbsp;            } else {
+<b class="nc"><i>205</i>&nbsp;                if (mode == Mode.STROKE_FILL) {</b>
+<b class="nc"><i>206</i>&nbsp;                    outerpad = 0.0f;</b>
+<i>207</i>&nbsp;                }
+<b class="nc"><i>208</i>&nbsp;                checkstroke = true;</b>
+<i>209</i>&nbsp;            }
+<i>210</i>&nbsp;        } else {
+<i>211</i>&nbsp;            // TODO: This should never happen... (RT-26974)
+<b class="nc"><i>212</i>&nbsp;            if (mode == Mode.STROKE_FILL) {</b>
+<b class="nc"><i>213</i>&nbsp;                outerpad = 0.0f;</b>
+<i>214</i>&nbsp;            }
+<b class="nc"><i>215</i>&nbsp;            checkstroke = true;</b>
+<i>216</i>&nbsp;        }
+<b class="nc"><i>217</i>&nbsp;        if (outerpad &gt;= 0.0f) {</b>
+<b class="nc"><i>218</i>&nbsp;            if (x &gt;= rx   -outerpad &amp;&amp; y &gt;= ry   -outerpad &amp;&amp;</b>
+<i>219</i>&nbsp;                x &lt;  rx+rw+outerpad &amp;&amp; y &lt;  ry+rh+outerpad) {
+<i>220</i>&nbsp;                // point falls inside padded rectangle
+<b class="nc"><i>221</i>&nbsp;                if (innerpad &gt;= 0.0f &amp;&amp;</b>
+<i>222</i>&nbsp;                    // we have an inner hole to test as well...
+<i>223</i>&nbsp;                    innerpad &lt; rw/2.0f &amp;&amp; innerpad &lt; rh/2.0f &amp;&amp;
+<i>224</i>&nbsp;                    // and lw is small enough to make an inner hole
+<i>225</i>&nbsp;                    x &gt;= rx   +innerpad &amp;&amp; y &gt;= ry   +innerpad &amp;&amp;
+<i>226</i>&nbsp;                    x &lt;  rx+rw-innerpad &amp;&amp; y &lt;  ry+rh-innerpad)
+<i>227</i>&nbsp;                {
+<i>228</i>&nbsp;                    // point falls inside inner hole of stroked rectangle
+<b class="nc"><i>229</i>&nbsp;                    return false;</b>
+<i>230</i>&nbsp;                }
+<b class="nc"><i>231</i>&nbsp;                return true;</b>
+<i>232</i>&nbsp;            }
+<i>233</i>&nbsp;        }
+<b class="nc"><i>234</i>&nbsp;        if (checkstroke) {</b>
+<b class="nc"><i>235</i>&nbsp;            return node.getStrokeShape().contains(x, y);</b>
+<i>236</i>&nbsp;        }
+<b class="nc"><i>237</i>&nbsp;        return false;</b>
+<i>238</i>&nbsp;    }
+<i>239</i>&nbsp;
+<i>240</i>&nbsp;    /**
+<i>241</i>&nbsp;     * Returns whether a clip represented by this node can be rendered using
+<i>242</i>&nbsp;     * axis aligned rect clip.
+<i>243</i>&nbsp;     *
+<i>244</i>&nbsp;     * The return value depends on whether the rectangle has arcs, current
+<i>245</i>&nbsp;     * rendering mode (stroked or not), and whether the transform is only
+<i>246</i>&nbsp;     * translate or scale or something more complex.
+<i>247</i>&nbsp;     *
+<i>248</i>&nbsp;     * @return whether this rectangle is axis aligned when rendered given node&#39;s
+<i>249</i>&nbsp;     * and rendering transform
+<i>250</i>&nbsp;     */
+<i>251</i>&nbsp;    @Override protected final boolean isRectClip(BaseTransform xform, boolean permitRoundedRectangle) {
+<i>252</i>&nbsp;        // must be a simple fill of a non-round rect with opaque paint
+<i>253</i>&nbsp;        // With more work we could optimize the case of a Rectangle with a
+<i>254</i>&nbsp;        // Rectangle as a clip, but that would likely slow down some more
+<i>255</i>&nbsp;        // common cases with an optimization of questionable value.
+<b class="fc"><i>256</i>&nbsp;        if (mode != NGShape.Mode.FILL || getClipNode() != null || (getEffect() != null &amp;&amp; getEffect().reducesOpaquePixels()) ||</b>
+<b class="fc"><i>257</i>&nbsp;            getOpacity() &lt; 1f || (!permitRoundedRectangle &amp;&amp; isRounded()) || !fillPaint.isOpaque())</b>
+<i>258</i>&nbsp;        {
+<b class="nc"><i>259</i>&nbsp;            return false;</b>
+<i>260</i>&nbsp;        }
+<i>261</i>&nbsp;
+<b class="fc"><i>262</i>&nbsp;        BaseTransform nodeXform = getTransform();</b>
+<b class="fc"><i>263</i>&nbsp;        if (!nodeXform.isIdentity()) {</b>
+<i>264</i>&nbsp;            // only bother concatenating if the passed xform is non-id
+<i>265</i>&nbsp;            // otherwise we can just use this node&#39;s tx
+<b class="nc"><i>266</i>&nbsp;            if (!xform.isIdentity()) {</b>
+<b class="nc"><i>267</i>&nbsp;                TEMP_TRANSFORM.setTransform(xform);</b>
+<b class="nc"><i>268</i>&nbsp;                TEMP_TRANSFORM.concatenate(nodeXform);</b>
+<b class="nc"><i>269</i>&nbsp;                xform = TEMP_TRANSFORM;</b>
+<i>270</i>&nbsp;            } else {
+<b class="nc"><i>271</i>&nbsp;                xform = nodeXform;</b>
+<i>272</i>&nbsp;            }
+<i>273</i>&nbsp;        }
+<i>274</i>&nbsp;
+<b class="fc"><i>275</i>&nbsp;        long t = xform.getType();</b>
+<b class="fc"><i>276</i>&nbsp;        return</b>
+<i>277</i>&nbsp;            (t &amp; ~(TYPE_TRANSLATION|TYPE_QUADRANT_ROTATION|TYPE_MASK_SCALE)) == 0;
+<i>278</i>&nbsp;    }
+<i>279</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2017-12-04 21:49</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,173 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: MaskData</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.prism.impl.shape</a> ]
+</div>
+
+<h1>Coverage Summary for Class: MaskData (com.sun.prism.impl.shape)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">MaskData</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (9/ 9)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (19/ 19)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright (c) 2009, 2013, Oracle and/or its affiliates. All rights reserved.
+<i>3</i>&nbsp; * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+<i>4</i>&nbsp; *
+<i>5</i>&nbsp; *
+<i>6</i>&nbsp; *
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; *
+<i>11</i>&nbsp; *
+<i>12</i>&nbsp; *
+<i>13</i>&nbsp; *
+<i>14</i>&nbsp; *
+<i>15</i>&nbsp; *
+<i>16</i>&nbsp; *
+<i>17</i>&nbsp; *
+<i>18</i>&nbsp; *
+<i>19</i>&nbsp; *
+<i>20</i>&nbsp; *
+<i>21</i>&nbsp; *
+<i>22</i>&nbsp; *
+<i>23</i>&nbsp; *
+<i>24</i>&nbsp; */
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;package com.sun.prism.impl.shape;
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;import com.sun.prism.PixelFormat;
+<i>29</i>&nbsp;import com.sun.prism.Texture;
+<i>30</i>&nbsp;import java.nio.ByteBuffer;
+<i>31</i>&nbsp;
+<i>32</i>&nbsp;public class MaskData {
+<i>33</i>&nbsp;
+<i>34</i>&nbsp;    private ByteBuffer maskBuffer;
+<i>35</i>&nbsp;    private int originX;
+<i>36</i>&nbsp;    private int originY;
+<i>37</i>&nbsp;    private int width;
+<i>38</i>&nbsp;    private int height;
+<i>39</i>&nbsp;
+<b class="fc"><i>40</i>&nbsp;    public MaskData() {</b>
+<b class="fc"><i>41</i>&nbsp;    }</b>
+<i>42</i>&nbsp;
+<i>43</i>&nbsp;    public ByteBuffer getMaskBuffer() {
+<b class="fc"><i>44</i>&nbsp;        return maskBuffer;</b>
+<i>45</i>&nbsp;    }
+<i>46</i>&nbsp;
+<i>47</i>&nbsp;    public int getOriginX() {
+<b class="fc"><i>48</i>&nbsp;        return originX;</b>
+<i>49</i>&nbsp;    }
+<i>50</i>&nbsp;
+<i>51</i>&nbsp;    public int getOriginY() {
+<b class="fc"><i>52</i>&nbsp;        return originY;</b>
+<i>53</i>&nbsp;    }
+<i>54</i>&nbsp;
+<i>55</i>&nbsp;    public int getWidth() {
+<b class="fc"><i>56</i>&nbsp;        return width;</b>
+<i>57</i>&nbsp;    }
+<i>58</i>&nbsp;
+<i>59</i>&nbsp;    public int getHeight() {
+<b class="fc"><i>60</i>&nbsp;        return height;</b>
+<i>61</i>&nbsp;    }
+<i>62</i>&nbsp;
+<i>63</i>&nbsp;    public void uploadToTexture(Texture tex, int dstx, int dsty,
+<i>64</i>&nbsp;                                boolean skipFlush)
+<i>65</i>&nbsp;    {
+<b class="fc"><i>66</i>&nbsp;        int scan = width * tex.getPixelFormat().getBytesPerPixelUnit();</b>
+<b class="fc"><i>67</i>&nbsp;        tex.update(maskBuffer, tex.getPixelFormat(),</b>
+<i>68</i>&nbsp;                   dstx, dsty, 0, 0, width, height,
+<i>69</i>&nbsp;                   scan, skipFlush);
+<b class="fc"><i>70</i>&nbsp;    }</b>
+<i>71</i>&nbsp;
+<i>72</i>&nbsp;    public void update(ByteBuffer maskBuffer,
+<i>73</i>&nbsp;                       int originX, int originY, int width, int height)
+<i>74</i>&nbsp;    {
+<b class="fc"><i>75</i>&nbsp;        this.maskBuffer = maskBuffer;</b>
+<b class="fc"><i>76</i>&nbsp;        this.originX = originX;</b>
+<b class="fc"><i>77</i>&nbsp;        this.originY = originY;</b>
+<b class="fc"><i>78</i>&nbsp;        this.width = width;</b>
+<b class="fc"><i>79</i>&nbsp;        this.height = height;</b>
+<b class="fc"><i>80</i>&nbsp;    }</b>
+<i>81</i>&nbsp;
+<i>82</i>&nbsp;    public static MaskData create(byte[] pixels,
+<i>83</i>&nbsp;                                  int originX, int originY,
+<i>84</i>&nbsp;                                  int width, int height)
+<i>85</i>&nbsp;    {
+<b class="fc"><i>86</i>&nbsp;        MaskData maskData = new MaskData();</b>
+<b class="fc"><i>87</i>&nbsp;        maskData.update(ByteBuffer.wrap(pixels), originX, originY, width, height);</b>
+<b class="fc"><i>88</i>&nbsp;        return maskData;</b>
+<i>89</i>&nbsp;    }
+<i>90</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2017-12-04 21:49</div>
+</div>
+</body>
+</html>

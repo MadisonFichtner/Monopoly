@@ -1,0 +1,473 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: PresentableState</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.prism</a> ]
+</div>
+
+<h1>Coverage Summary for Class: PresentableState (com.sun.prism)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">PresentableState</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    67.6%
+  </span>
+  <span class="absValue">
+    (23/ 34)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    78%
+  </span>
+  <span class="absValue">
+    (71/ 91)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright (c) 2013, 2016, Oracle and/or its affiliates. All rights reserved.
+<i>3</i>&nbsp; * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+<i>4</i>&nbsp; *
+<i>5</i>&nbsp; *
+<i>6</i>&nbsp; *
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; *
+<i>11</i>&nbsp; *
+<i>12</i>&nbsp; *
+<i>13</i>&nbsp; *
+<i>14</i>&nbsp; *
+<i>15</i>&nbsp; *
+<i>16</i>&nbsp; *
+<i>17</i>&nbsp; *
+<i>18</i>&nbsp; *
+<i>19</i>&nbsp; *
+<i>20</i>&nbsp; *
+<i>21</i>&nbsp; *
+<i>22</i>&nbsp; *
+<i>23</i>&nbsp; *
+<i>24</i>&nbsp; */
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;package com.sun.prism;
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;import com.sun.glass.ui.Application;
+<i>29</i>&nbsp;import com.sun.glass.ui.Pixels;
+<i>30</i>&nbsp;import com.sun.glass.ui.Screen;
+<i>31</i>&nbsp;import com.sun.glass.ui.View;
+<i>32</i>&nbsp;import com.sun.glass.ui.Window;
+<i>33</i>&nbsp;
+<i>34</i>&nbsp;/**
+<i>35</i>&nbsp; * PresentableState is intended to provide for a shadow copy of View/Window
+<i>36</i>&nbsp; * state for use off the event thread. It is the task of the invoker of
+<i>37</i>&nbsp; * Prism to make sure that the state is consistent for a rendering probably
+<i>38</i>&nbsp; * by use of the AbstractPainter.renderLock to ensure consistent state.
+<i>39</i>&nbsp; */
+<i>40</i>&nbsp;public abstract class PresentableState {
+<i>41</i>&nbsp;
+<i>42</i>&nbsp;    /** The underlying Window and View */
+<i>43</i>&nbsp;    protected Window window;
+<i>44</i>&nbsp;    protected View view;
+<i>45</i>&nbsp;
+<i>46</i>&nbsp;    // Captured state
+<i>47</i>&nbsp;    protected int nativeFrameBuffer;
+<i>48</i>&nbsp;    protected int windowX, windowY;
+<i>49</i>&nbsp;    protected float windowAlpha;
+<i>50</i>&nbsp;    protected long nativeWindowHandle;
+<i>51</i>&nbsp;    protected long nativeView;
+<i>52</i>&nbsp;    protected int viewWidth, viewHeight;
+<i>53</i>&nbsp;    protected float renderScaleX, renderScaleY;
+<i>54</i>&nbsp;    protected int renderWidth, renderHeight;
+<i>55</i>&nbsp;    protected float outputScaleX, outputScaleY;
+<i>56</i>&nbsp;    protected int outputWidth, outputHeight;
+<i>57</i>&nbsp;    protected int screenHeight;
+<i>58</i>&nbsp;    protected int screenWidth;
+<i>59</i>&nbsp;    protected boolean isWindowVisible;
+<i>60</i>&nbsp;    protected boolean isWindowMinimized;
+<b class="fc"><i>61</i>&nbsp;    protected static final boolean hasWindowManager =</b>
+<b class="fc"><i>62</i>&nbsp;            Application.GetApplication().hasWindowManager();</b>
+<i>63</i>&nbsp;    // Between PaintCollector and *Painter, there is a window where
+<i>64</i>&nbsp;    // the associated View can be closed. This variable allows us
+<i>65</i>&nbsp;    // to shortcut the queued *Painter task.
+<i>66</i>&nbsp;    protected boolean isClosed;
+<b class="fc"><i>67</i>&nbsp;    protected final int pixelFormat = Pixels.getNativeFormat();</b>
+<i>68</i>&nbsp;
+<i>69</i>&nbsp;    /** Create a PresentableState based on a View.
+<i>70</i>&nbsp;     *
+<i>71</i>&nbsp;     * Must be called on the event thread.
+<i>72</i>&nbsp;     */
+<b class="fc"><i>73</i>&nbsp;    public PresentableState() {</b>
+<b class="fc"><i>74</i>&nbsp;    }</b>
+<i>75</i>&nbsp;
+<i>76</i>&nbsp;    /**
+<i>77</i>&nbsp;     * The screen relative window X
+<i>78</i>&nbsp;     * @return The screen relative window X
+<i>79</i>&nbsp;     *
+<i>80</i>&nbsp;     * May be called on any thread.
+<i>81</i>&nbsp;     */
+<i>82</i>&nbsp;    public int getWindowX() {
+<b class="nc"><i>83</i>&nbsp;        return windowX;</b>
+<i>84</i>&nbsp;    }
+<i>85</i>&nbsp;
+<i>86</i>&nbsp;    /**
+<i>87</i>&nbsp;     * The screen relative window Y
+<i>88</i>&nbsp;     * @return The screen relative window Y
+<i>89</i>&nbsp;     *
+<i>90</i>&nbsp;     * May be called on any thread.
+<i>91</i>&nbsp;     */
+<i>92</i>&nbsp;    public int getWindowY() {
+<b class="nc"><i>93</i>&nbsp;        return windowY;</b>
+<i>94</i>&nbsp;    }
+<i>95</i>&nbsp;
+<i>96</i>&nbsp;    /**
+<i>97</i>&nbsp;     * @return the width of the View
+<i>98</i>&nbsp;     *
+<i>99</i>&nbsp;     * May be called on any thread.
+<i>100</i>&nbsp;     */
+<i>101</i>&nbsp;    public int getWidth() {
+<b class="fc"><i>102</i>&nbsp;        return viewWidth;</b>
+<i>103</i>&nbsp;    }
+<i>104</i>&nbsp;
+<i>105</i>&nbsp;    /**
+<i>106</i>&nbsp;     * @return the height of the View
+<i>107</i>&nbsp;     *
+<i>108</i>&nbsp;     * May be called on any thread.
+<i>109</i>&nbsp;     */
+<i>110</i>&nbsp;    public int getHeight() {
+<b class="fc"><i>111</i>&nbsp;        return viewHeight;</b>
+<i>112</i>&nbsp;    }
+<i>113</i>&nbsp;
+<i>114</i>&nbsp;    public int getRenderWidth() {
+<b class="fc"><i>115</i>&nbsp;        return renderWidth;</b>
+<i>116</i>&nbsp;    }
+<i>117</i>&nbsp;
+<i>118</i>&nbsp;    public int getRenderHeight() {
+<b class="fc"><i>119</i>&nbsp;        return renderHeight;</b>
+<i>120</i>&nbsp;    }
+<i>121</i>&nbsp;
+<i>122</i>&nbsp;    public int getOutputWidth() {
+<b class="fc"><i>123</i>&nbsp;        return outputWidth;</b>
+<i>124</i>&nbsp;    }
+<i>125</i>&nbsp;
+<i>126</i>&nbsp;    public int getOutputHeight() {
+<b class="fc"><i>127</i>&nbsp;        return outputHeight;</b>
+<i>128</i>&nbsp;    }
+<i>129</i>&nbsp;
+<i>130</i>&nbsp;    /**
+<i>131</i>&nbsp;     * @return Screen.getScale
+<i>132</i>&nbsp;     *
+<i>133</i>&nbsp;     * May be called on any thread
+<i>134</i>&nbsp;     */
+<i>135</i>&nbsp;    public float getRenderScaleX() {
+<b class="fc"><i>136</i>&nbsp;        return renderScaleX;</b>
+<i>137</i>&nbsp;    }
+<i>138</i>&nbsp;
+<i>139</i>&nbsp;    /**
+<i>140</i>&nbsp;     * @return Screen.getScale
+<i>141</i>&nbsp;     *
+<i>142</i>&nbsp;     * May be called on any thread
+<i>143</i>&nbsp;     */
+<i>144</i>&nbsp;    public float getRenderScaleY() {
+<b class="fc"><i>145</i>&nbsp;        return renderScaleY;</b>
+<i>146</i>&nbsp;    }
+<i>147</i>&nbsp;
+<i>148</i>&nbsp;    public float getOutputScaleX() {
+<b class="fc"><i>149</i>&nbsp;        return outputScaleX;</b>
+<i>150</i>&nbsp;    }
+<i>151</i>&nbsp;
+<i>152</i>&nbsp;    public float getOutputScaleY() {
+<b class="fc"><i>153</i>&nbsp;        return outputScaleY;</b>
+<i>154</i>&nbsp;    }
+<i>155</i>&nbsp;
+<i>156</i>&nbsp;    /**
+<i>157</i>&nbsp;     * @return the window&#39;s alpha level
+<i>158</i>&nbsp;     *
+<i>159</i>&nbsp;     * May be called on any thread.
+<i>160</i>&nbsp;     */
+<i>161</i>&nbsp;    public float getAlpha() {
+<b class="nc"><i>162</i>&nbsp;        return windowAlpha;</b>
+<i>163</i>&nbsp;    }
+<i>164</i>&nbsp;
+<i>165</i>&nbsp;    /**
+<i>166</i>&nbsp;     * @return the native handle of the window represented by this
+<i>167</i>&nbsp;     * PresentableState
+<i>168</i>&nbsp;     *
+<i>169</i>&nbsp;     * May be called on any thread.
+<i>170</i>&nbsp;     */
+<i>171</i>&nbsp;    public long getNativeWindow() {
+<b class="nc"><i>172</i>&nbsp;        return nativeWindowHandle;</b>
+<i>173</i>&nbsp;    }
+<i>174</i>&nbsp;
+<i>175</i>&nbsp;    /**
+<i>176</i>&nbsp;     * @return the native handle of the View represented by this
+<i>177</i>&nbsp;     * PresentableState
+<i>178</i>&nbsp;     *
+<i>179</i>&nbsp;     * May be called on any thread.
+<i>180</i>&nbsp;     */
+<i>181</i>&nbsp;    public long getNativeView() {
+<b class="fc"><i>182</i>&nbsp;        return nativeView;</b>
+<i>183</i>&nbsp;    }
+<i>184</i>&nbsp;
+<i>185</i>&nbsp;    /**
+<i>186</i>&nbsp;     * @return the current height of the screen
+<i>187</i>&nbsp;     *
+<i>188</i>&nbsp;     * May be called on any thread.
+<i>189</i>&nbsp;     */
+<i>190</i>&nbsp;    public int getScreenHeight() {
+<b class="nc"><i>191</i>&nbsp;        return screenHeight;</b>
+<i>192</i>&nbsp;    }
+<i>193</i>&nbsp;
+<i>194</i>&nbsp;    /**
+<i>195</i>&nbsp;     * @return the current width of the screen
+<i>196</i>&nbsp;     *
+<i>197</i>&nbsp;     * May be called on any thread.
+<i>198</i>&nbsp;     */
+<i>199</i>&nbsp;    public int getScreenWidth() {
+<b class="nc"><i>200</i>&nbsp;        return screenWidth;</b>
+<i>201</i>&nbsp;    }
+<i>202</i>&nbsp;
+<i>203</i>&nbsp;    /**
+<i>204</i>&nbsp;     * @return true if the underlying View is closed, false otherwise
+<i>205</i>&nbsp;     *
+<i>206</i>&nbsp;     * May be called on any thread.
+<i>207</i>&nbsp;     */
+<i>208</i>&nbsp;    public boolean isViewClosed() {
+<b class="fc"><i>209</i>&nbsp;        return isClosed;</b>
+<i>210</i>&nbsp;    }
+<i>211</i>&nbsp;
+<i>212</i>&nbsp;    /**
+<i>213</i>&nbsp;     * @return true if the underlying Window is minimized, false otherwise
+<i>214</i>&nbsp;     *
+<i>215</i>&nbsp;     * May be called on any thread.
+<i>216</i>&nbsp;     */
+<i>217</i>&nbsp;    public boolean isWindowMinimized() {
+<b class="fc"><i>218</i>&nbsp;        return isWindowMinimized;</b>
+<i>219</i>&nbsp;    }
+<i>220</i>&nbsp;
+<i>221</i>&nbsp;    /**
+<i>222</i>&nbsp;     * @return true if the underlying Window is Visible, false otherwise
+<i>223</i>&nbsp;     *
+<i>224</i>&nbsp;     * May be called on any thread.
+<i>225</i>&nbsp;     */
+<i>226</i>&nbsp;    public boolean isWindowVisible() {
+<b class="fc"><i>227</i>&nbsp;        return isWindowVisible;</b>
+<i>228</i>&nbsp;    }
+<i>229</i>&nbsp;
+<i>230</i>&nbsp;    /**
+<i>231</i>&nbsp;     * @return true if the underlying window is managed by a window manager
+<i>232</i>&nbsp;     * external to JavaFX
+<i>233</i>&nbsp;     *
+<i>234</i>&nbsp;     * May be called on any thread.
+<i>235</i>&nbsp;     */
+<i>236</i>&nbsp;    public boolean hasWindowManager() {
+<b class="nc"><i>237</i>&nbsp;        return hasWindowManager;</b>
+<i>238</i>&nbsp;    }
+<i>239</i>&nbsp;
+<i>240</i>&nbsp;    /**
+<i>241</i>&nbsp;     * @return the underlying Window
+<i>242</i>&nbsp;     *
+<i>243</i>&nbsp;     * May be called on any thread.
+<i>244</i>&nbsp;     */
+<i>245</i>&nbsp;    public Window getWindow() {
+<b class="fc"><i>246</i>&nbsp;        return window;</b>
+<i>247</i>&nbsp;    }
+<i>248</i>&nbsp;
+<b class="nc"><i>249</i>&nbsp;    public boolean isMSAA() { return false; }</b>
+<i>250</i>&nbsp;
+<i>251</i>&nbsp;    /**
+<i>252</i>&nbsp;     * @return the underlying View
+<i>253</i>&nbsp;     *
+<i>254</i>&nbsp;     * May be called on any thread.
+<i>255</i>&nbsp;     */
+<i>256</i>&nbsp;    public View getView() {
+<b class="fc"><i>257</i>&nbsp;        return view;</b>
+<i>258</i>&nbsp;    }
+<i>259</i>&nbsp;
+<i>260</i>&nbsp;    /**
+<i>261</i>&nbsp;     * @return native pixel format
+<i>262</i>&nbsp;     *
+<i>263</i>&nbsp;     * May be called on any thread.
+<i>264</i>&nbsp;     */
+<i>265</i>&nbsp;    public int getPixelFormat() {
+<b class="nc"><i>266</i>&nbsp;        return pixelFormat;</b>
+<i>267</i>&nbsp;    }
+<i>268</i>&nbsp;
+<i>269</i>&nbsp;    /**
+<i>270</i>&nbsp;     * @return native native frame buffer
+<i>271</i>&nbsp;     *
+<i>272</i>&nbsp;     * May be called on any thread.
+<i>273</i>&nbsp;     */
+<i>274</i>&nbsp;    public int getNativeFrameBuffer() {
+<b class="nc"><i>275</i>&nbsp;        return nativeFrameBuffer;</b>
+<i>276</i>&nbsp;    }
+<i>277</i>&nbsp;
+<i>278</i>&nbsp;    /**
+<i>279</i>&nbsp;     * Locks the underlying view for rendering
+<i>280</i>&nbsp;     *
+<i>281</i>&nbsp;     * Must be called on Prism renderer thread.
+<i>282</i>&nbsp;     */
+<i>283</i>&nbsp;    public void lock() {
+<b class="fc"><i>284</i>&nbsp;        if (view != null) {</b>
+<b class="fc"><i>285</i>&nbsp;            view.lock();</b>
+<b class="fc"><i>286</i>&nbsp;            nativeFrameBuffer = view.getNativeFrameBuffer();</b>
+<i>287</i>&nbsp;        }
+<b class="fc"><i>288</i>&nbsp;    }</b>
+<i>289</i>&nbsp;
+<i>290</i>&nbsp;    /**
+<i>291</i>&nbsp;     * Unlocks the underlying view after rendering
+<i>292</i>&nbsp;     *
+<i>293</i>&nbsp;     * Must be called on Prism renderer thread.
+<i>294</i>&nbsp;     */
+<i>295</i>&nbsp;    public void unlock() {
+<b class="fc"><i>296</i>&nbsp;        if (view != null) view.unlock();</b>
+<b class="fc"><i>297</i>&nbsp;    }</b>
+<i>298</i>&nbsp;
+<i>299</i>&nbsp;    /**
+<i>300</i>&nbsp;     * Put the pixels on the screen.
+<i>301</i>&nbsp;     *
+<i>302</i>&nbsp;     * @param source - the source for the Pixels object to be uploaded
+<i>303</i>&nbsp;     */
+<i>304</i>&nbsp;    public void uploadPixels(PixelSource source) {
+<b class="fc"><i>305</i>&nbsp;        Pixels pixels = source.getLatestPixels();</b>
+<b class="fc"><i>306</i>&nbsp;        if (pixels != null) {</b>
+<i>307</i>&nbsp;            try {
+<b class="fc"><i>308</i>&nbsp;                view.uploadPixels(pixels);</b>
+<i>309</i>&nbsp;            } finally {
+<b class="fc"><i>310</i>&nbsp;                source.doneWithPixels(pixels);</b>
+<b class="fc"><i>311</i>&nbsp;            }</b>
+<i>312</i>&nbsp;        }
+<b class="fc"><i>313</i>&nbsp;    }</b>
+<i>314</i>&nbsp;
+<i>315</i>&nbsp;    private int scale(int dim, float fromScale, float toScale) {
+<b class="nc"><i>316</i>&nbsp;        return (fromScale == toScale)</b>
+<b class="nc"><i>317</i>&nbsp;               ? dim</b>
+<b class="nc"><i>318</i>&nbsp;               : (int) Math.ceil(dim * toScale / fromScale);</b>
+<i>319</i>&nbsp;    }
+<i>320</i>&nbsp;
+<i>321</i>&nbsp;    protected void update(float viewScaleX,   float viewScaleY,
+<i>322</i>&nbsp;                          float renderScaleX, float renderScaleY,
+<i>323</i>&nbsp;                          float outputScaleX, float outputScaleY)
+<i>324</i>&nbsp;    {
+<b class="fc"><i>325</i>&nbsp;        this.renderScaleX = renderScaleX;</b>
+<b class="fc"><i>326</i>&nbsp;        this.renderScaleY = renderScaleY;</b>
+<b class="fc"><i>327</i>&nbsp;        this.outputScaleX = outputScaleX;</b>
+<b class="fc"><i>328</i>&nbsp;        this.outputScaleY = outputScaleY;</b>
+<b class="fc"><i>329</i>&nbsp;        if (renderScaleX == viewScaleX &amp;&amp; renderScaleY == viewScaleY) {</b>
+<b class="fc"><i>330</i>&nbsp;            renderWidth = viewWidth;</b>
+<b class="fc"><i>331</i>&nbsp;            renderHeight = viewHeight;</b>
+<i>332</i>&nbsp;        } else {
+<b class="nc"><i>333</i>&nbsp;            renderWidth = scale(viewWidth, viewScaleX, renderScaleX);</b>
+<b class="nc"><i>334</i>&nbsp;            renderHeight = scale(viewHeight, viewScaleY, renderScaleY);</b>
+<i>335</i>&nbsp;        }
+<b class="fc"><i>336</i>&nbsp;        if (outputScaleX == viewScaleX &amp;&amp; outputScaleY == viewScaleY) {</b>
+<b class="fc"><i>337</i>&nbsp;            outputWidth = viewWidth;</b>
+<b class="fc"><i>338</i>&nbsp;            outputHeight = viewHeight;</b>
+<b class="nc"><i>339</i>&nbsp;        } else if (outputScaleX == renderScaleX &amp;&amp; outputScaleY == renderScaleY) {</b>
+<b class="nc"><i>340</i>&nbsp;            outputWidth = renderWidth;</b>
+<b class="nc"><i>341</i>&nbsp;            outputHeight = renderHeight;</b>
+<i>342</i>&nbsp;        } else {
+<b class="nc"><i>343</i>&nbsp;            outputWidth = scale(viewWidth, viewScaleX, outputScaleX);</b>
+<b class="nc"><i>344</i>&nbsp;            outputHeight = scale(viewHeight, viewScaleY, outputScaleY);</b>
+<i>345</i>&nbsp;        }
+<b class="fc"><i>346</i>&nbsp;    }</b>
+<i>347</i>&nbsp;
+<i>348</i>&nbsp;    /** Updates the state of this object based on the current state of its
+<i>349</i>&nbsp;     * nativeWindow.
+<i>350</i>&nbsp;     *
+<i>351</i>&nbsp;     * May only be called from the event thread.
+<i>352</i>&nbsp;     */
+<i>353</i>&nbsp;    public void update() {
+<i>354</i>&nbsp;        // should only be called on the event thread
+<b class="fc"><i>355</i>&nbsp;        if (view != null) {</b>
+<b class="fc"><i>356</i>&nbsp;            viewWidth = view.getWidth();</b>
+<b class="fc"><i>357</i>&nbsp;            viewHeight = view.getHeight();</b>
+<b class="fc"><i>358</i>&nbsp;            window = view.getWindow();</b>
+<i>359</i>&nbsp;        } else {
+<b class="fc"><i>360</i>&nbsp;            viewWidth = viewHeight = -1;</b>
+<b class="fc"><i>361</i>&nbsp;            window = null;</b>
+<i>362</i>&nbsp;        }
+<b class="fc"><i>363</i>&nbsp;        if (window != null) {</b>
+<b class="fc"><i>364</i>&nbsp;            windowX = window.getX();</b>
+<b class="fc"><i>365</i>&nbsp;            windowY = window.getY();</b>
+<b class="fc"><i>366</i>&nbsp;            windowAlpha = window.getAlpha();</b>
+<b class="fc"><i>367</i>&nbsp;            nativeView = view.getNativeView();</b>
+<b class="fc"><i>368</i>&nbsp;            nativeWindowHandle = window.getNativeWindow();</b>
+<b class="fc"><i>369</i>&nbsp;            isClosed = view.isClosed();</b>
+<b class="fc"><i>370</i>&nbsp;            isWindowVisible = window.isVisible();</b>
+<b class="fc"><i>371</i>&nbsp;            isWindowMinimized = window.isMinimized();</b>
+<b class="fc"><i>372</i>&nbsp;            update(window.getPlatformScaleX(), window.getPlatformScaleY(),</b>
+<b class="fc"><i>373</i>&nbsp;                   window.getRenderScaleX(),   window.getRenderScaleY(),</b>
+<b class="fc"><i>374</i>&nbsp;                   window.getOutputScaleX(),   window.getOutputScaleY());</b>
+<b class="fc"><i>375</i>&nbsp;            Screen screen = window.getScreen();</b>
+<b class="fc"><i>376</i>&nbsp;            if (screen != null) {</b>
+<i>377</i>&nbsp;                // note only used by Embedded Z order painting
+<i>378</i>&nbsp;                // !hasWindowManager so should be safe to ignore
+<i>379</i>&nbsp;                // when null, most likely because of &quot;In Browswer&quot;
+<b class="fc"><i>380</i>&nbsp;                screenHeight = screen.getHeight();</b>
+<b class="fc"><i>381</i>&nbsp;                screenWidth = screen.getWidth();</b>
+<i>382</i>&nbsp;            }
+<b class="fc"><i>383</i>&nbsp;        } else {</b>
+<i>384</i>&nbsp;            //TODO - should other variables be cleared?
+<b class="fc"><i>385</i>&nbsp;            nativeView = -1;</b>
+<b class="fc"><i>386</i>&nbsp;            nativeWindowHandle = -1;</b>
+<b class="fc"><i>387</i>&nbsp;            isClosed = true;</b>
+<i>388</i>&nbsp;        }
+<b class="fc"><i>389</i>&nbsp;    }</b>
+<i>390</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2017-12-04 21:49</div>
+</div>
+</body>
+</html>

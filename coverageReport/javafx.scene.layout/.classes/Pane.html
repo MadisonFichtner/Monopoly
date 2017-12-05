@@ -1,0 +1,266 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: Pane</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">javafx.scene.layout</a> ]
+</div>
+
+<h1>Coverage Summary for Class: Pane (javafx.scene.layout)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">Pane</td>
+<td class="coverageStat">
+  <span class="percent">
+    83.3%
+  </span>
+  <span class="absValue">
+    (5/ 6)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    75%
+  </span>
+  <span class="absValue">
+    (15/ 20)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">Pane$1</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    85.7%
+  </span>
+  <span class="absValue">
+    (6/ 7)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    76.2%
+  </span>
+  <span class="absValue">
+    (16/ 21)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright (c) 2011, 2017, Oracle and/or its affiliates. All rights reserved.
+<i>3</i>&nbsp; * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+<i>4</i>&nbsp; *
+<i>5</i>&nbsp; *
+<i>6</i>&nbsp; *
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; *
+<i>11</i>&nbsp; *
+<i>12</i>&nbsp; *
+<i>13</i>&nbsp; *
+<i>14</i>&nbsp; *
+<i>15</i>&nbsp; *
+<i>16</i>&nbsp; *
+<i>17</i>&nbsp; *
+<i>18</i>&nbsp; *
+<i>19</i>&nbsp; *
+<i>20</i>&nbsp; *
+<i>21</i>&nbsp; *
+<i>22</i>&nbsp; *
+<i>23</i>&nbsp; *
+<i>24</i>&nbsp; */
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;package javafx.scene.layout;
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;import com.sun.javafx.scene.layout.PaneHelper;
+<i>29</i>&nbsp;import javafx.beans.DefaultProperty;
+<i>30</i>&nbsp;import javafx.collections.ObservableList;
+<i>31</i>&nbsp;import javafx.scene.Node;
+<i>32</i>&nbsp;
+<i>33</i>&nbsp;/**
+<i>34</i>&nbsp; * Base class for layout panes which need to expose the children list as public
+<i>35</i>&nbsp; * so that users of the subclass can freely add/remove children.
+<i>36</i>&nbsp; * &lt;p&gt;
+<i>37</i>&nbsp; * This class may be used directly in cases where absolute positioning of children
+<i>38</i>&nbsp; * is required since it does not perform layout beyond resizing resizable children
+<i>39</i>&nbsp; * to their preferred sizes. It is the application&#39;s responsibility to position the
+<i>40</i>&nbsp; * children since the pane leaves the positions alone during layout.
+<i>41</i>&nbsp; * For example:
+<i>42</i>&nbsp; * &lt;pre&gt;{@code
+<i>43</i>&nbsp; *     Pane canvas = new Pane();
+<i>44</i>&nbsp; *     canvas.setStyle(&quot;-fx-background-color: black;&quot;);
+<i>45</i>&nbsp; *     canvas.setPrefSize(200,200);
+<i>46</i>&nbsp; *     Circle circle = new Circle(50,Color.BLUE);
+<i>47</i>&nbsp; *     circle.relocate(20, 20);
+<i>48</i>&nbsp; *     Rectangle rectangle = new Rectangle(100,100,Color.RED);
+<i>49</i>&nbsp; *     rectangle.relocate(70,70);
+<i>50</i>&nbsp; *     canvas.getChildren().addAll(circle,rectangle);
+<i>51</i>&nbsp; * }&lt;/pre&gt;
+<i>52</i>&nbsp; * &lt;p&gt;
+<i>53</i>&nbsp; * Note: if an application needs children to be kept aligned within a parent (centered,
+<i>54</i>&nbsp; * positioned at top-left, etc), it should use a {@link javafx.scene.layout.StackPane StackPane}
+<i>55</i>&nbsp; * instead.&lt;/p&gt;
+<i>56</i>&nbsp; *
+<i>57</i>&nbsp; * &lt;p&gt;
+<i>58</i>&nbsp; * Pane resizes each managed child regardless of the child&#39;s visible property value;
+<i>59</i>&nbsp; * unmanaged children are ignored for all layout calculations.&lt;/p&gt;
+<i>60</i>&nbsp; *
+<i>61</i>&nbsp; * &lt;h3&gt;Resizable Range&lt;/h3&gt;
+<i>62</i>&nbsp; *
+<i>63</i>&nbsp; * &lt;p&gt;
+<i>64</i>&nbsp; * A pane&#39;s parent will resize the pane within the pane&#39;s resizable range
+<i>65</i>&nbsp; * during layout.   By default the pane computes this range based on its content
+<i>66</i>&nbsp; * as outlined in the table below:
+<i>67</i>&nbsp; * &lt;/p&gt;
+<i>68</i>&nbsp; *
+<i>69</i>&nbsp; * &lt;table border=&quot;1&quot;&gt;
+<i>70</i>&nbsp; * &lt;caption&gt;Pane Resize Table&lt;/caption&gt;
+<i>71</i>&nbsp; * &lt;tr&gt;&lt;td&gt;&lt;/td&gt;&lt;th&gt;width&lt;/th&gt;&lt;th&gt;height&lt;/th&gt;&lt;/tr&gt;
+<i>72</i>&nbsp; * &lt;tr&gt;&lt;th&gt;minimum&lt;/th&gt;
+<i>73</i>&nbsp; * &lt;td&gt;left plus right insets.&lt;/td&gt;
+<i>74</i>&nbsp; * &lt;td&gt;top plus bottom insets.&lt;/td&gt;&lt;/tr&gt;
+<i>75</i>&nbsp; * &lt;tr&gt;&lt;th&gt;preferred&lt;/th&gt;
+<i>76</i>&nbsp; * &lt;td&gt;width required to encompass each child at its current x location and preferred width.&lt;/td&gt;
+<i>77</i>&nbsp; * &lt;td&gt;height required to encompass each child at its current y location and preferred height.&lt;/td&gt;&lt;/tr&gt;
+<i>78</i>&nbsp; * &lt;tr&gt;&lt;th&gt;maximum&lt;/th&gt;
+<i>79</i>&nbsp; * &lt;td&gt;Double.MAX_VALUE&lt;/td&gt;&lt;td&gt;Double.MAX_VALUE&lt;/td&gt;&lt;/tr&gt;
+<i>80</i>&nbsp; * &lt;/table&gt;
+<i>81</i>&nbsp; * &lt;p&gt;
+<i>82</i>&nbsp; * A pane&#39;s unbounded maximum width and height are an indication to the parent that
+<i>83</i>&nbsp; * it may be resized beyond its preferred size to fill whatever space is assigned to it.
+<i>84</i>&nbsp; * &lt;p&gt;
+<i>85</i>&nbsp; * Pane provides properties for setting the size range directly.  These
+<i>86</i>&nbsp; * properties default to the sentinel value Region.USE_COMPUTED_SIZE, however the
+<i>87</i>&nbsp; * application may set them to other values as needed:
+<i>88</i>&nbsp; * &lt;pre&gt;&lt;code&gt;
+<i>89</i>&nbsp; *     &lt;b&gt;pane.setPrefSize(500,400);&lt;/b&gt;
+<i>90</i>&nbsp; * &lt;/code&gt;&lt;/pre&gt;
+<i>91</i>&nbsp; * Applications may restore the computed values by setting these properties back
+<i>92</i>&nbsp; * to Region.USE_COMPUTED_SIZE.
+<i>93</i>&nbsp; * &lt;p&gt;
+<i>94</i>&nbsp; * Pane does not clip its content by default, so it is possible that childrens&#39;
+<i>95</i>&nbsp; * bounds may extend outside its own bounds, either if children are positioned
+<i>96</i>&nbsp; * at negative coordinates or the pane is resized smaller than its preferred size.&lt;/p&gt;
+<i>97</i>&nbsp; *
+<i>98</i>&nbsp; * @since JavaFX 2.0
+<i>99</i>&nbsp; */
+<i>100</i>&nbsp;@DefaultProperty(&quot;children&quot;)
+<i>101</i>&nbsp;public class Pane extends Region {
+<i>102</i>&nbsp;    static {
+<b class="fc"><i>103</i>&nbsp;        PaneHelper.setPaneAccessor(new PaneHelper.PaneAccessor() {</b>
+<i>104</i>&nbsp;        });
+<b class="fc"><i>105</i>&nbsp;    }</b>
+<i>106</i>&nbsp;
+<i>107</i>&nbsp;    static void setConstraint(Node node, Object key, Object value) {
+<b class="fc"><i>108</i>&nbsp;        if (value == null) {</b>
+<b class="nc"><i>109</i>&nbsp;            node.getProperties().remove(key);</b>
+<i>110</i>&nbsp;        } else {
+<b class="fc"><i>111</i>&nbsp;            node.getProperties().put(key, value);</b>
+<i>112</i>&nbsp;        }
+<b class="fc"><i>113</i>&nbsp;        if (node.getParent() != null) {</b>
+<b class="nc"><i>114</i>&nbsp;            node.getParent().requestLayout();</b>
+<i>115</i>&nbsp;        }
+<b class="fc"><i>116</i>&nbsp;    }</b>
+<i>117</i>&nbsp;
+<i>118</i>&nbsp;    static Object getConstraint(Node node, Object key) {
+<b class="fc"><i>119</i>&nbsp;        if (node.hasProperties()) {</b>
+<b class="fc"><i>120</i>&nbsp;            Object value = node.getProperties().get(key);</b>
+<b class="fc"><i>121</i>&nbsp;            if (value != null) {</b>
+<b class="fc"><i>122</i>&nbsp;                return value;</b>
+<i>123</i>&nbsp;            }
+<i>124</i>&nbsp;        }
+<b class="fc"><i>125</i>&nbsp;        return null;</b>
+<i>126</i>&nbsp;    }
+<i>127</i>&nbsp;
+<i>128</i>&nbsp;    {
+<i>129</i>&nbsp;        // To initialize the class helper at the begining each constructor of this class
+<b class="fc"><i>130</i>&nbsp;        PaneHelper.initHelper(this);</b>
+<i>131</i>&nbsp;    }
+<i>132</i>&nbsp;    /**
+<i>133</i>&nbsp;     * Creates a Pane layout.
+<i>134</i>&nbsp;     */
+<i>135</i>&nbsp;    public Pane() {
+<b class="fc"><i>136</i>&nbsp;        super();</b>
+<b class="fc"><i>137</i>&nbsp;    }</b>
+<i>138</i>&nbsp;
+<i>139</i>&nbsp;    /**
+<i>140</i>&nbsp;     * Creates a Pane layout.
+<i>141</i>&nbsp;     * @param children The initial set of children for this pane.
+<i>142</i>&nbsp;     * @since JavaFX 8.0
+<i>143</i>&nbsp;     */
+<i>144</i>&nbsp;    public Pane(Node... children) {
+<b class="nc"><i>145</i>&nbsp;        super();</b>
+<b class="nc"><i>146</i>&nbsp;        getChildren().addAll(children);</b>
+<b class="nc"><i>147</i>&nbsp;    }</b>
+<i>148</i>&nbsp;
+<i>149</i>&nbsp;    /**
+<i>150</i>&nbsp;     *
+<i>151</i>&nbsp;     * @return modifiable list of children.
+<i>152</i>&nbsp;     */
+<i>153</i>&nbsp;    @Override public ObservableList&lt;Node&gt; getChildren() {
+<b class="fc"><i>154</i>&nbsp;        return super.getChildren();</b>
+<i>155</i>&nbsp;    }
+<i>156</i>&nbsp;
+<i>157</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2017-12-04 21:49</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,365 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: PlatformUtil</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.javafx</a> ]
+</div>
+
+<h1>Coverage Summary for Class: PlatformUtil (com.sun.javafx)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">PlatformUtil</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    57.7%
+  </span>
+  <span class="absValue">
+    (15/ 26)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    30.2%
+  </span>
+  <span class="absValue">
+    (32/ 106)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright (c) 2011, 2014, Oracle and/or its affiliates. All rights reserved.
+<i>3</i>&nbsp; * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+<i>4</i>&nbsp; *
+<i>5</i>&nbsp; *
+<i>6</i>&nbsp; *
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; *
+<i>11</i>&nbsp; *
+<i>12</i>&nbsp; *
+<i>13</i>&nbsp; *
+<i>14</i>&nbsp; *
+<i>15</i>&nbsp; *
+<i>16</i>&nbsp; *
+<i>17</i>&nbsp; *
+<i>18</i>&nbsp; *
+<i>19</i>&nbsp; *
+<i>20</i>&nbsp; *
+<i>21</i>&nbsp; *
+<i>22</i>&nbsp; *
+<i>23</i>&nbsp; *
+<i>24</i>&nbsp; */
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;package com.sun.javafx;
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;import java.security.AccessController;
+<i>29</i>&nbsp;import java.security.PrivilegedAction;
+<i>30</i>&nbsp;import java.io.File;
+<i>31</i>&nbsp;import java.io.FileInputStream;
+<i>32</i>&nbsp;import java.io.InputStream;
+<i>33</i>&nbsp;import java.io.IOException;
+<i>34</i>&nbsp;import java.net.MalformedURLException;
+<i>35</i>&nbsp;import java.net.URL;
+<i>36</i>&nbsp;import java.util.Properties;
+<i>37</i>&nbsp;
+<b class="nc"><i>38</i>&nbsp;public class PlatformUtil {</b>
+<i>39</i>&nbsp;
+<i>40</i>&nbsp;    // NOTE: since this class can be initialized by application code in some
+<i>41</i>&nbsp;    // cases, we must encapsulate all calls to System.getProperty(&quot;...&quot;) in
+<i>42</i>&nbsp;    // a doPrivileged block except for standard JVM properties such as
+<i>43</i>&nbsp;    // os.name, os.version, os.arch, java.vm.name, etc.
+<i>44</i>&nbsp;
+<b class="fc"><i>45</i>&nbsp;    private static final String os = System.getProperty(&quot;os.name&quot;);</b>
+<b class="fc"><i>46</i>&nbsp;    private static final String version = System.getProperty(&quot;os.version&quot;);</b>
+<i>47</i>&nbsp;    private static final boolean embedded;
+<i>48</i>&nbsp;    private static final String embeddedType;
+<i>49</i>&nbsp;    private static final boolean useEGL;
+<i>50</i>&nbsp;    private static final boolean doEGLCompositing;
+<i>51</i>&nbsp;    // a property used to denote a non-default impl for this host
+<i>52</i>&nbsp;    private static String javafxPlatform;
+<i>53</i>&nbsp;
+<i>54</i>&nbsp;    static {
+<b class="fc"><i>55</i>&nbsp;        javafxPlatform = AccessController.doPrivileged((PrivilegedAction&lt;String&gt;) () -&gt; System.getProperty(&quot;javafx.platform&quot;));</b>
+<b class="fc"><i>56</i>&nbsp;        loadProperties();</b>
+<b class="fc"><i>57</i>&nbsp;        embedded = AccessController.doPrivileged((PrivilegedAction&lt;Boolean&gt;) () -&gt; Boolean.getBoolean(&quot;com.sun.javafx.isEmbedded&quot;));</b>
+<b class="fc"><i>58</i>&nbsp;        embeddedType = AccessController.doPrivileged((PrivilegedAction&lt;String&gt;) () -&gt; System.getProperty(&quot;embedded&quot;));</b>
+<b class="fc"><i>59</i>&nbsp;        useEGL = AccessController.doPrivileged((PrivilegedAction&lt;Boolean&gt;) () -&gt; Boolean.getBoolean(&quot;use.egl&quot;));</b>
+<b class="fc"><i>60</i>&nbsp;        if (useEGL) {</b>
+<b class="nc"><i>61</i>&nbsp;            doEGLCompositing = AccessController.doPrivileged((PrivilegedAction&lt;Boolean&gt;) () -&gt; Boolean.getBoolean(&quot;doNativeComposite&quot;));</b>
+<i>62</i>&nbsp;        } else
+<b class="fc"><i>63</i>&nbsp;            doEGLCompositing = false;</b>
+<i>64</i>&nbsp;    }
+<i>65</i>&nbsp;
+<b class="fc"><i>66</i>&nbsp;    private static final boolean ANDROID = &quot;android&quot;.equals(javafxPlatform) || &quot;Dalvik&quot;.equals(System.getProperty(&quot;java.vm.name&quot;));</b>
+<b class="fc"><i>67</i>&nbsp;    private static final boolean WINDOWS = os.startsWith(&quot;Windows&quot;);</b>
+<b class="fc"><i>68</i>&nbsp;    private static final boolean WINDOWS_VISTA_OR_LATER = WINDOWS &amp;&amp; versionNumberGreaterThanOrEqualTo(6.0f);</b>
+<b class="fc"><i>69</i>&nbsp;    private static final boolean WINDOWS_7_OR_LATER = WINDOWS &amp;&amp; versionNumberGreaterThanOrEqualTo(6.1f);</b>
+<b class="fc"><i>70</i>&nbsp;    private static final boolean MAC = os.startsWith(&quot;Mac&quot;);</b>
+<b class="fc"><i>71</i>&nbsp;    private static final boolean LINUX = os.startsWith(&quot;Linux&quot;) &amp;&amp; !ANDROID;</b>
+<b class="fc"><i>72</i>&nbsp;    private static final boolean SOLARIS = os.startsWith(&quot;SunOS&quot;);</b>
+<b class="fc"><i>73</i>&nbsp;    private static final boolean IOS = os.startsWith(&quot;iOS&quot;);</b>
+<i>74</i>&nbsp;
+<i>75</i>&nbsp;    /**
+<i>76</i>&nbsp;     * Utility method used to determine whether the version number as
+<i>77</i>&nbsp;     * reported by system properties is greater than or equal to a given
+<i>78</i>&nbsp;     * value.
+<i>79</i>&nbsp;     *
+<i>80</i>&nbsp;     * @param value The value to test against.
+<i>81</i>&nbsp;     * @return false if the version number cannot be parsed as a float,
+<i>82</i>&nbsp;     *         otherwise the comparison against value.
+<i>83</i>&nbsp;     */
+<i>84</i>&nbsp;    private static boolean versionNumberGreaterThanOrEqualTo(float value) {
+<i>85</i>&nbsp;        try {
+<b class="fc"><i>86</i>&nbsp;            return Float.parseFloat(version) &gt;= value;</b>
+<b class="nc"><i>87</i>&nbsp;        } catch (Exception e) {</b>
+<b class="nc"><i>88</i>&nbsp;            return false;</b>
+<i>89</i>&nbsp;        }
+<i>90</i>&nbsp;    }
+<i>91</i>&nbsp;
+<i>92</i>&nbsp;    /**
+<i>93</i>&nbsp;     * Returns true if the operating system is a form of Windows.
+<i>94</i>&nbsp;     */
+<i>95</i>&nbsp;    public static boolean isWindows(){
+<b class="fc"><i>96</i>&nbsp;        return WINDOWS;</b>
+<i>97</i>&nbsp;    }
+<i>98</i>&nbsp;
+<i>99</i>&nbsp;    /**
+<i>100</i>&nbsp;     * Returns true if the operating system is at least Windows Vista(v6.0).
+<i>101</i>&nbsp;     */
+<i>102</i>&nbsp;    public static boolean isWinVistaOrLater(){
+<b class="fc"><i>103</i>&nbsp;        return WINDOWS_VISTA_OR_LATER;</b>
+<i>104</i>&nbsp;    }
+<i>105</i>&nbsp;
+<i>106</i>&nbsp;    /**
+<i>107</i>&nbsp;     * Returns true if the operating system is at least Windows 7(v6.1).
+<i>108</i>&nbsp;     */
+<i>109</i>&nbsp;    public static boolean isWin7OrLater(){
+<b class="fc"><i>110</i>&nbsp;        return WINDOWS_7_OR_LATER;</b>
+<i>111</i>&nbsp;    }
+<i>112</i>&nbsp;
+<i>113</i>&nbsp;    /**
+<i>114</i>&nbsp;     * Returns true if the operating system is a form of Mac OS.
+<i>115</i>&nbsp;     */
+<i>116</i>&nbsp;    public static boolean isMac(){
+<b class="fc"><i>117</i>&nbsp;        return MAC;</b>
+<i>118</i>&nbsp;    }
+<i>119</i>&nbsp;
+<i>120</i>&nbsp;    /**
+<i>121</i>&nbsp;     * Returns true if the operating system is a form of Linux.
+<i>122</i>&nbsp;     */
+<i>123</i>&nbsp;    public static boolean isLinux(){
+<b class="fc"><i>124</i>&nbsp;        return LINUX;</b>
+<i>125</i>&nbsp;    }
+<i>126</i>&nbsp;
+<i>127</i>&nbsp;    public static boolean useEGL() {
+<b class="nc"><i>128</i>&nbsp;        return useEGL;</b>
+<i>129</i>&nbsp;    }
+<i>130</i>&nbsp;
+<i>131</i>&nbsp;    public static boolean useEGLWindowComposition() {
+<b class="nc"><i>132</i>&nbsp;        return doEGLCompositing;</b>
+<i>133</i>&nbsp;    }
+<i>134</i>&nbsp;
+<i>135</i>&nbsp;    public static boolean useGLES2() {
+<b class="nc"><i>136</i>&nbsp;        String useGles2 = &quot;false&quot;;</b>
+<b class="nc"><i>137</i>&nbsp;        useGles2 =</b>
+<b class="nc"><i>138</i>&nbsp;                AccessController.doPrivileged((PrivilegedAction&lt;String&gt;) () -&gt; System.getProperty(&quot;use.gles2&quot;));</b>
+<b class="nc"><i>139</i>&nbsp;        if (&quot;true&quot;.equals(useGles2))</b>
+<b class="nc"><i>140</i>&nbsp;            return true;</b>
+<i>141</i>&nbsp;        else
+<b class="nc"><i>142</i>&nbsp;            return false;</b>
+<i>143</i>&nbsp;    }
+<i>144</i>&nbsp;
+<i>145</i>&nbsp;    /**
+<i>146</i>&nbsp;     * Returns true if the operating system is a form of Unix, including Linux.
+<i>147</i>&nbsp;     */
+<i>148</i>&nbsp;    public static boolean isSolaris(){
+<b class="nc"><i>149</i>&nbsp;        return SOLARIS;</b>
+<i>150</i>&nbsp;    }
+<i>151</i>&nbsp;
+<i>152</i>&nbsp;    /**
+<i>153</i>&nbsp;     * Returns true if the operating system is a form of Linux or Solaris
+<i>154</i>&nbsp;     */
+<i>155</i>&nbsp;    public static boolean isUnix(){
+<b class="nc"><i>156</i>&nbsp;        return LINUX || SOLARIS;</b>
+<i>157</i>&nbsp;    }
+<i>158</i>&nbsp;
+<i>159</i>&nbsp;    /**
+<i>160</i>&nbsp;     * Returns true if the platform is embedded.
+<i>161</i>&nbsp;     */
+<i>162</i>&nbsp;    public static boolean isEmbedded() {
+<b class="fc"><i>163</i>&nbsp;        return embedded;</b>
+<i>164</i>&nbsp;    }
+<i>165</i>&nbsp;
+<i>166</i>&nbsp;    /**
+<i>167</i>&nbsp;     * Returns a string with the embedded type - ie eglx11, eglfb, dfb or null.
+<i>168</i>&nbsp;     */
+<i>169</i>&nbsp;    public static String getEmbeddedType() {
+<b class="nc"><i>170</i>&nbsp;        return embeddedType;</b>
+<i>171</i>&nbsp;    }
+<i>172</i>&nbsp;
+<i>173</i>&nbsp;    /**
+<i>174</i>&nbsp;     * Returns true if the operating system is iOS
+<i>175</i>&nbsp;     */
+<i>176</i>&nbsp;    public static boolean isIOS(){
+<b class="fc"><i>177</i>&nbsp;        return IOS;</b>
+<i>178</i>&nbsp;    }
+<i>179</i>&nbsp;
+<i>180</i>&nbsp;    private static void loadPropertiesFromFile(final File file) {
+<b class="nc"><i>181</i>&nbsp;        Properties p = new Properties();</b>
+<i>182</i>&nbsp;        try {
+<b class="nc"><i>183</i>&nbsp;            InputStream in = new FileInputStream(file);</b>
+<b class="nc"><i>184</i>&nbsp;            p.load(in);</b>
+<b class="nc"><i>185</i>&nbsp;            in.close();</b>
+<b class="nc"><i>186</i>&nbsp;        } catch (IOException e) {</b>
+<b class="nc"><i>187</i>&nbsp;            e.printStackTrace();</b>
+<b class="nc"><i>188</i>&nbsp;        }</b>
+<b class="nc"><i>189</i>&nbsp;        if (javafxPlatform == null) {</b>
+<b class="nc"><i>190</i>&nbsp;            javafxPlatform = p.getProperty(&quot;javafx.platform&quot;);</b>
+<i>191</i>&nbsp;        }
+<b class="nc"><i>192</i>&nbsp;        String prefix = javafxPlatform + &quot;.&quot;;</b>
+<b class="nc"><i>193</i>&nbsp;        int prefixLength = prefix.length();</b>
+<b class="nc"><i>194</i>&nbsp;        boolean foundPlatform = false;</b>
+<b class="nc"><i>195</i>&nbsp;        for (Object o : p.keySet()) {</b>
+<b class="nc"><i>196</i>&nbsp;            String key = (String) o;</b>
+<b class="nc"><i>197</i>&nbsp;            if (key.startsWith(prefix)) {</b>
+<b class="nc"><i>198</i>&nbsp;                foundPlatform = true;</b>
+<b class="nc"><i>199</i>&nbsp;                String systemKey = key.substring(prefixLength);</b>
+<b class="nc"><i>200</i>&nbsp;                if (System.getProperty(systemKey) == null) {</b>
+<b class="nc"><i>201</i>&nbsp;                    String value = p.getProperty(key);</b>
+<b class="nc"><i>202</i>&nbsp;                    System.setProperty(systemKey, value);</b>
+<i>203</i>&nbsp;                }
+<i>204</i>&nbsp;            }
+<b class="nc"><i>205</i>&nbsp;        }</b>
+<b class="nc"><i>206</i>&nbsp;        if (!foundPlatform) {</b>
+<b class="nc"><i>207</i>&nbsp;            System.err.println(</b>
+<i>208</i>&nbsp;                    &quot;Warning: No settings found for javafx.platform=&#39;&quot;
+<i>209</i>&nbsp;                    + javafxPlatform + &quot;&#39;&quot;);
+<i>210</i>&nbsp;        }
+<b class="nc"><i>211</i>&nbsp;    }</b>
+<i>212</i>&nbsp;
+<i>213</i>&nbsp;    /** Returns the directory containing the JavaFX runtime, or null
+<i>214</i>&nbsp;     * if the directory cannot be located
+<i>215</i>&nbsp;     */
+<i>216</i>&nbsp;    private static File getRTDir() {
+<i>217</i>&nbsp;        try {
+<b class="nc"><i>218</i>&nbsp;            String theClassFile = &quot;PlatformUtil.class&quot;;</b>
+<b class="nc"><i>219</i>&nbsp;            Class theClass = PlatformUtil.class;</b>
+<b class="nc"><i>220</i>&nbsp;            URL url = theClass.getResource(theClassFile);</b>
+<b class="nc"><i>221</i>&nbsp;            if (url == null) return null;</b>
+<b class="nc"><i>222</i>&nbsp;            String classUrlString = url.toString();</b>
+<b class="nc"><i>223</i>&nbsp;            if (!classUrlString.startsWith(&quot;jar:file:&quot;)</b>
+<b class="nc"><i>224</i>&nbsp;                    || classUrlString.indexOf(&#39;!&#39;) == -1) {</b>
+<b class="nc"><i>225</i>&nbsp;                return null;</b>
+<i>226</i>&nbsp;            }
+<i>227</i>&nbsp;            // Strip out the &quot;jar:&quot; and everything after and including the &quot;!&quot;
+<b class="nc"><i>228</i>&nbsp;            String s = classUrlString.substring(4,</b>
+<b class="nc"><i>229</i>&nbsp;                    classUrlString.lastIndexOf(&#39;!&#39;));</b>
+<i>230</i>&nbsp;            // Strip everything after the last &quot;/&quot; or &quot;\&quot; to get rid of the jar filename
+<b class="nc"><i>231</i>&nbsp;            int lastIndexOfSlash = Math.max(</b>
+<b class="nc"><i>232</i>&nbsp;                    s.lastIndexOf(&#39;/&#39;), s.lastIndexOf(&#39;\\&#39;));</b>
+<b class="nc"><i>233</i>&nbsp;            return new File(new URL(s.substring(0, lastIndexOfSlash + 1)).getPath())</b>
+<b class="nc"><i>234</i>&nbsp;                    .getParentFile();</b>
+<b class="nc"><i>235</i>&nbsp;        } catch (MalformedURLException e) {</b>
+<b class="nc"><i>236</i>&nbsp;            return null;</b>
+<i>237</i>&nbsp;        }
+<i>238</i>&nbsp;    }
+<i>239</i>&nbsp;
+<i>240</i>&nbsp;    private static void loadProperties() {
+<b class="fc"><i>241</i>&nbsp;        final String vmname = System.getProperty(&quot;java.vm.name&quot;);</b>
+<b class="fc"><i>242</i>&nbsp;        final String arch = System.getProperty(&quot;os.arch&quot;);</b>
+<i>243</i>&nbsp;
+<b class="fc"><i>244</i>&nbsp;        if (! (javafxPlatform != null ||</b>
+<b class="fc"><i>245</i>&nbsp;                (arch != null &amp;&amp; arch.equals(&quot;arm&quot;)) ||</b>
+<b class="fc"><i>246</i>&nbsp;                (vmname != null &amp;&amp; vmname.indexOf(&quot;Embedded&quot;) &gt; 0))) {</b>
+<b class="fc"><i>247</i>&nbsp;            return;</b>
+<i>248</i>&nbsp;        }
+<b class="nc"><i>249</i>&nbsp;        AccessController.doPrivileged((PrivilegedAction&lt;Void&gt;) () -&gt; {</b>
+<b class="nc"><i>250</i>&nbsp;            final File rtDir = getRTDir();</b>
+<b class="nc"><i>251</i>&nbsp;            final String propertyFilename = &quot;javafx.platform.properties&quot;;</b>
+<b class="nc"><i>252</i>&nbsp;            File rtProperties = new File(rtDir, propertyFilename);</b>
+<i>253</i>&nbsp;            // First look for javafx.platform.properties in the JavaFX runtime
+<i>254</i>&nbsp;            // Then in the installation directory of the JRE
+<b class="nc"><i>255</i>&nbsp;            if (rtProperties.exists()) {</b>
+<b class="nc"><i>256</i>&nbsp;                loadPropertiesFromFile(rtProperties);</b>
+<b class="nc"><i>257</i>&nbsp;                return null;</b>
+<i>258</i>&nbsp;            }
+<b class="nc"><i>259</i>&nbsp;            String javaHome = System.getProperty(&quot;java.home&quot;);</b>
+<b class="nc"><i>260</i>&nbsp;            File javaHomeProperties = new File(javaHome,</b>
+<i>261</i>&nbsp;                                               &quot;lib&quot; + File.separator
+<i>262</i>&nbsp;                                               + propertyFilename);
+<b class="nc"><i>263</i>&nbsp;            if (javaHomeProperties.exists()) {</b>
+<b class="nc"><i>264</i>&nbsp;                loadPropertiesFromFile(javaHomeProperties);</b>
+<b class="nc"><i>265</i>&nbsp;                return null;</b>
+<i>266</i>&nbsp;            }
+<i>267</i>&nbsp;
+<b class="nc"><i>268</i>&nbsp;            String javafxRuntimePath = System.getProperty(&quot;javafx.runtime.path&quot;);</b>
+<b class="nc"><i>269</i>&nbsp;            File javafxRuntimePathProperties = new File(javafxRuntimePath,</b>
+<i>270</i>&nbsp;                                                     File.separator + propertyFilename);
+<b class="nc"><i>271</i>&nbsp;            if (javafxRuntimePathProperties.exists()) {</b>
+<b class="nc"><i>272</i>&nbsp;               loadPropertiesFromFile(javafxRuntimePathProperties);</b>
+<b class="nc"><i>273</i>&nbsp;               return null;</b>
+<i>274</i>&nbsp;            }
+<b class="nc"><i>275</i>&nbsp;            return null;</b>
+<i>276</i>&nbsp;        });
+<b class="nc"><i>277</i>&nbsp;    }</b>
+<i>278</i>&nbsp;
+<i>279</i>&nbsp;    public static boolean isAndroid() {
+<b class="fc"><i>280</i>&nbsp;       return ANDROID;</b>
+<i>281</i>&nbsp;    }
+<i>282</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2017-12-04 21:49</div>
+</div>
+</body>
+</html>

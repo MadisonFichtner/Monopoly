@@ -1,0 +1,213 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: PrismMetrics</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.javafx.font</a> ]
+</div>
+
+<h1>Coverage Summary for Class: PrismMetrics (com.sun.javafx.font)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">PrismMetrics</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    43.8%
+  </span>
+  <span class="absValue">
+    (7/ 16)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    45.9%
+  </span>
+  <span class="absValue">
+    (17/ 37)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright (c) 2011, 2013, Oracle and/or its affiliates. All rights reserved.
+<i>3</i>&nbsp; * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+<i>4</i>&nbsp; *
+<i>5</i>&nbsp; *
+<i>6</i>&nbsp; *
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; *
+<i>11</i>&nbsp; *
+<i>12</i>&nbsp; *
+<i>13</i>&nbsp; *
+<i>14</i>&nbsp; *
+<i>15</i>&nbsp; *
+<i>16</i>&nbsp; *
+<i>17</i>&nbsp; *
+<i>18</i>&nbsp; *
+<i>19</i>&nbsp; *
+<i>20</i>&nbsp; *
+<i>21</i>&nbsp; *
+<i>22</i>&nbsp; *
+<i>23</i>&nbsp; *
+<i>24</i>&nbsp; */
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;package com.sun.javafx.font;
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;
+<i>29</i>&nbsp;public class PrismMetrics implements Metrics {
+<i>30</i>&nbsp;
+<i>31</i>&nbsp;    PrismFontFile fontResource;
+<i>32</i>&nbsp;    float ascent, descent, linegap;
+<i>33</i>&nbsp;    private float[] styleMetrics;
+<i>34</i>&nbsp;    float size;
+<i>35</i>&nbsp;
+<i>36</i>&nbsp;    static final int XHEIGHT = 0;
+<i>37</i>&nbsp;    static final int CAPHEIGHT = 1;
+<i>38</i>&nbsp;    static final int TYPO_ASCENT = 2;
+<i>39</i>&nbsp;    static final int TYPO_DESCENT = 3;
+<i>40</i>&nbsp;    static final int TYPO_LINEGAP = 4;
+<i>41</i>&nbsp;    static final int STRIKETHROUGH_THICKNESS = 5;
+<i>42</i>&nbsp;    static final int STRIKETHROUGH_OFFSET = 6;
+<i>43</i>&nbsp;    static final int UNDERLINE_THICKESS = 7;
+<i>44</i>&nbsp;    static final int UNDERLINE_OFFSET = 8;
+<i>45</i>&nbsp;    static final int METRICS_TOTAL = 9;
+<i>46</i>&nbsp;
+<i>47</i>&nbsp;    PrismMetrics(float ascent, float descent, float linegap,
+<b class="fc"><i>48</i>&nbsp;               PrismFontFile fontResource, float size) {</b>
+<b class="fc"><i>49</i>&nbsp;        this.ascent = ascent;</b>
+<b class="fc"><i>50</i>&nbsp;        this.descent = descent;</b>
+<b class="fc"><i>51</i>&nbsp;        this.linegap = linegap;</b>
+<b class="fc"><i>52</i>&nbsp;        this.fontResource = fontResource;</b>
+<b class="fc"><i>53</i>&nbsp;        this.size = size;</b>
+<b class="fc"><i>54</i>&nbsp;    }</b>
+<i>55</i>&nbsp;
+<i>56</i>&nbsp;    public float getAscent() {
+<b class="fc"><i>57</i>&nbsp;        return ascent;</b>
+<i>58</i>&nbsp;    }
+<i>59</i>&nbsp;
+<i>60</i>&nbsp;    public float getDescent() {
+<b class="fc"><i>61</i>&nbsp;        return descent;</b>
+<i>62</i>&nbsp;    }
+<i>63</i>&nbsp;
+<i>64</i>&nbsp;    public float getLineGap() {
+<b class="fc"><i>65</i>&nbsp;        return linegap;</b>
+<i>66</i>&nbsp;    }
+<i>67</i>&nbsp;
+<i>68</i>&nbsp;    public float getLineHeight() {
+<b class="nc"><i>69</i>&nbsp;        return -ascent + descent + linegap;</b>
+<i>70</i>&nbsp;    }
+<i>71</i>&nbsp;
+<i>72</i>&nbsp;    private void checkStyleMetrics() {
+<b class="fc"><i>73</i>&nbsp;        if (styleMetrics == null) {</b>
+<b class="fc"><i>74</i>&nbsp;            styleMetrics = fontResource.getStyleMetrics(size);</b>
+<i>75</i>&nbsp;        }
+<b class="fc"><i>76</i>&nbsp;    }</b>
+<i>77</i>&nbsp;
+<i>78</i>&nbsp;    public float getTypoAscent() {
+<b class="nc"><i>79</i>&nbsp;        checkStyleMetrics();</b>
+<b class="nc"><i>80</i>&nbsp;        return styleMetrics[TYPO_ASCENT];</b>
+<i>81</i>&nbsp;    }
+<i>82</i>&nbsp;
+<i>83</i>&nbsp;    public float getTypoDescent() {
+<b class="nc"><i>84</i>&nbsp;        checkStyleMetrics();</b>
+<b class="nc"><i>85</i>&nbsp;        return styleMetrics[TYPO_DESCENT];</b>
+<i>86</i>&nbsp;    }
+<i>87</i>&nbsp;
+<i>88</i>&nbsp;    public float getTypoLineGap() {
+<b class="nc"><i>89</i>&nbsp;        checkStyleMetrics();</b>
+<b class="nc"><i>90</i>&nbsp;        return styleMetrics[TYPO_LINEGAP];</b>
+<i>91</i>&nbsp;    }
+<i>92</i>&nbsp;
+<i>93</i>&nbsp;    public float getCapHeight() {
+<b class="fc"><i>94</i>&nbsp;        checkStyleMetrics();</b>
+<b class="fc"><i>95</i>&nbsp;        return styleMetrics[CAPHEIGHT];</b>
+<i>96</i>&nbsp;    }
+<i>97</i>&nbsp;
+<i>98</i>&nbsp;    public float getXHeight() {
+<b class="fc"><i>99</i>&nbsp;        checkStyleMetrics();</b>
+<b class="fc"><i>100</i>&nbsp;        return styleMetrics[XHEIGHT];</b>
+<i>101</i>&nbsp;    }
+<i>102</i>&nbsp;
+<i>103</i>&nbsp;    public float getStrikethroughOffset() {
+<b class="nc"><i>104</i>&nbsp;        checkStyleMetrics();</b>
+<b class="nc"><i>105</i>&nbsp;        return styleMetrics[STRIKETHROUGH_OFFSET];</b>
+<i>106</i>&nbsp;    }
+<i>107</i>&nbsp;
+<i>108</i>&nbsp;    public float getStrikethroughThickness() {
+<b class="nc"><i>109</i>&nbsp;        checkStyleMetrics();</b>
+<b class="nc"><i>110</i>&nbsp;        return styleMetrics[STRIKETHROUGH_THICKNESS];</b>
+<i>111</i>&nbsp;    }
+<i>112</i>&nbsp;
+<i>113</i>&nbsp;    public float getUnderLineOffset() {
+<b class="nc"><i>114</i>&nbsp;        checkStyleMetrics();</b>
+<b class="nc"><i>115</i>&nbsp;        return styleMetrics[UNDERLINE_OFFSET];</b>
+<i>116</i>&nbsp;    }
+<i>117</i>&nbsp;
+<i>118</i>&nbsp;    public float getUnderLineThickness() {
+<b class="nc"><i>119</i>&nbsp;        checkStyleMetrics();</b>
+<b class="nc"><i>120</i>&nbsp;        return styleMetrics[UNDERLINE_THICKESS];</b>
+<i>121</i>&nbsp;    }
+<i>122</i>&nbsp;
+<i>123</i>&nbsp;    public String toString() {
+<b class="nc"><i>124</i>&nbsp;        return</b>
+<b class="nc"><i>125</i>&nbsp;            &quot;ascent = &quot; + getAscent() +</b>
+<b class="nc"><i>126</i>&nbsp;            &quot; descent = &quot; + getDescent() +</b>
+<b class="nc"><i>127</i>&nbsp;            &quot; linegap = &quot; + getLineGap() +</b>
+<b class="nc"><i>128</i>&nbsp;            &quot; lineheight = &quot; +getLineHeight();</b>
+<i>129</i>&nbsp;    }
+<i>130</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2017-12-04 21:49</div>
+</div>
+</body>
+</html>

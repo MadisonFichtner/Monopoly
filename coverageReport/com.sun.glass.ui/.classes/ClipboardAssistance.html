@@ -1,0 +1,230 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: ClipboardAssistance</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.glass.ui</a> ]
+</div>
+
+<h1>Coverage Summary for Class: ClipboardAssistance (com.sun.glass.ui)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">ClipboardAssistance</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    14.3%
+  </span>
+  <span class="absValue">
+    (2/ 14)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    27.8%
+  </span>
+  <span class="absValue">
+    (10/ 36)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright (c) 2010, 2013, Oracle and/or its affiliates. All rights reserved.
+<i>3</i>&nbsp; * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+<i>4</i>&nbsp; *
+<i>5</i>&nbsp; *
+<i>6</i>&nbsp; *
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; *
+<i>11</i>&nbsp; *
+<i>12</i>&nbsp; *
+<i>13</i>&nbsp; *
+<i>14</i>&nbsp; *
+<i>15</i>&nbsp; *
+<i>16</i>&nbsp; *
+<i>17</i>&nbsp; *
+<i>18</i>&nbsp; *
+<i>19</i>&nbsp; *
+<i>20</i>&nbsp; *
+<i>21</i>&nbsp; *
+<i>22</i>&nbsp; *
+<i>23</i>&nbsp; *
+<i>24</i>&nbsp; */
+<i>25</i>&nbsp;package com.sun.glass.ui;
+<i>26</i>&nbsp;
+<i>27</i>&nbsp;import java.util.HashMap;
+<i>28</i>&nbsp;
+<i>29</i>&nbsp;public class ClipboardAssistance {
+<i>30</i>&nbsp;
+<b class="fc"><i>31</i>&nbsp;    private final HashMap &lt;String, Object&gt; cacheData  =  new HashMap &lt;String, Object&gt; ();</b>
+<i>32</i>&nbsp;    private final Clipboard clipboard;
+<b class="fc"><i>33</i>&nbsp;    private int supportedActions = Clipboard.ACTION_ANY;</b>
+<i>34</i>&nbsp;
+<i>35</i>&nbsp;    /**
+<i>36</i>&nbsp;     * Creates clipboard with mentioned name
+<i>37</i>&nbsp;     * @param cipboardName the clipboard name
+<i>38</i>&nbsp;     */
+<b class="fc"><i>39</i>&nbsp;    public ClipboardAssistance (String cipboardName) {</b>
+<b class="fc"><i>40</i>&nbsp;        Application.checkEventThread();</b>
+<b class="fc"><i>41</i>&nbsp;        clipboard = Clipboard.get(cipboardName);</b>
+<b class="fc"><i>42</i>&nbsp;        clipboard.add(this);</b>
+<b class="fc"><i>43</i>&nbsp;    }</b>
+<i>44</i>&nbsp;
+<i>45</i>&nbsp;    /**
+<i>46</i>&nbsp;     * Close the notification channel
+<i>47</i>&nbsp;     */
+<i>48</i>&nbsp;    public void close () {
+<b class="fc"><i>49</i>&nbsp;        Application.checkEventThread();</b>
+<b class="fc"><i>50</i>&nbsp;        clipboard.remove(this);</b>
+<b class="fc"><i>51</i>&nbsp;    }</b>
+<i>52</i>&nbsp;
+<i>53</i>&nbsp;    /**
+<i>54</i>&nbsp;     * Synchronize prepared dataset with local/global clipboard content.
+<i>55</i>&nbsp;     * An application becomes the clipboard owner.
+<i>56</i>&nbsp;     */
+<i>57</i>&nbsp;    public void flush () {
+<b class="nc"><i>58</i>&nbsp;        Application.checkEventThread();</b>
+<b class="nc"><i>59</i>&nbsp;        clipboard.flush(this, cacheData, supportedActions);</b>
+<b class="nc"><i>60</i>&nbsp;    }</b>
+<i>61</i>&nbsp;
+<i>62</i>&nbsp;    /**
+<i>63</i>&nbsp;     * Cleans the local cache.
+<i>64</i>&nbsp;     */
+<i>65</i>&nbsp;    public void emptyCache () {
+<b class="nc"><i>66</i>&nbsp;        Application.checkEventThread();</b>
+<b class="nc"><i>67</i>&nbsp;        cacheData.clear();</b>
+<b class="nc"><i>68</i>&nbsp;    }</b>
+<i>69</i>&nbsp;
+<i>70</i>&nbsp;    public boolean isCacheEmpty() {
+<b class="nc"><i>71</i>&nbsp;        Application.checkEventThread();</b>
+<b class="nc"><i>72</i>&nbsp;        return cacheData.isEmpty();</b>
+<i>73</i>&nbsp;    }
+<i>74</i>&nbsp;
+<i>75</i>&nbsp;    /**
+<i>76</i>&nbsp;     * Fills the cache by a new (mime type, data) pair.
+<i>77</i>&nbsp;     * Performed by flush() call.
+<i>78</i>&nbsp;     * @param mimeType
+<i>79</i>&nbsp;     * @param data
+<i>80</i>&nbsp;     */
+<i>81</i>&nbsp;    //TODO: Auto-flush parameter?
+<i>82</i>&nbsp;    public void setData (String mimeType, Object data) {
+<b class="nc"><i>83</i>&nbsp;        Application.checkEventThread();</b>
+<b class="nc"><i>84</i>&nbsp;        cacheData.put(mimeType, data);</b>
+<b class="nc"><i>85</i>&nbsp;    }</b>
+<i>86</i>&nbsp;
+<i>87</i>&nbsp;    /**
+<i>88</i>&nbsp;     * Returns the data from clipboard by mime type key.
+<i>89</i>&nbsp;     * That is always shared data.
+<i>90</i>&nbsp;     * @param mimeType
+<i>91</i>&nbsp;     * @return the shared data object
+<i>92</i>&nbsp;     */
+<i>93</i>&nbsp;    public Object getData (String mimeType) {
+<b class="nc"><i>94</i>&nbsp;        Application.checkEventThread();</b>
+<b class="nc"><i>95</i>&nbsp;        return clipboard.getData(mimeType);</b>
+<i>96</i>&nbsp;    }
+<i>97</i>&nbsp;
+<i>98</i>&nbsp;    /**
+<i>99</i>&nbsp;     * Sets the actions that are supported by source.
+<i>100</i>&nbsp;     * Performed by flush() call.
+<i>101</i>&nbsp;     * @param supportedActions combination of Clipboard.ACTION_XXXX constants
+<i>102</i>&nbsp;     */
+<i>103</i>&nbsp;    public void setSupportedActions(int supportedActions) {
+<b class="nc"><i>104</i>&nbsp;        Application.checkEventThread();</b>
+<b class="nc"><i>105</i>&nbsp;        this.supportedActions = supportedActions;</b>
+<b class="nc"><i>106</i>&nbsp;    }</b>
+<i>107</i>&nbsp;
+<i>108</i>&nbsp;    /**
+<i>109</i>&nbsp;     * Gets the actions that are supported by source.
+<i>110</i>&nbsp;     * @return combination of Clipboard.ACTION_XXXX constants
+<i>111</i>&nbsp;     */
+<i>112</i>&nbsp;    public int getSupportedSourceActions() {
+<b class="nc"><i>113</i>&nbsp;        Application.checkEventThread();</b>
+<b class="nc"><i>114</i>&nbsp;        return clipboard.getSupportedSourceActions();</b>
+<i>115</i>&nbsp;    }
+<i>116</i>&nbsp;
+<i>117</i>&nbsp;    /**
+<i>118</i>&nbsp;     * Sets the action that clipboard target performed of DnD target can.
+<i>119</i>&nbsp;     * @param actionDone Clipboard.ACTION_COPY, or Clipboard.ACTION_MOVE, or Clipboard.ACTION_REFERENCE
+<i>120</i>&nbsp;     */
+<i>121</i>&nbsp;    public void setTargetAction (int actionDone) {
+<b class="nc"><i>122</i>&nbsp;        Application.checkEventThread();</b>
+<b class="nc"><i>123</i>&nbsp;        clipboard.setTargetAction(actionDone);</b>
+<b class="nc"><i>124</i>&nbsp;    }</b>
+<i>125</i>&nbsp;
+<i>126</i>&nbsp;    /**
+<i>127</i>&nbsp;     * Called by system and notifies that data set in shared buffer were changed
+<i>128</i>&nbsp;     */
+<b class="nc"><i>129</i>&nbsp;    public void contentChanged () {}</b>
+<i>130</i>&nbsp;
+<i>131</i>&nbsp;    /**
+<i>132</i>&nbsp;     * Called by system and notifies about successful data transfer.
+<i>133</i>&nbsp;     * Delete-on-move functionality should be implemented here.
+<i>134</i>&nbsp;     * @param action Clipboard.ACTION_COPY, or Clipboard.ACTION_MOVE, or Clipboard.ACTION_REFERENCE
+<i>135</i>&nbsp;     */
+<b class="nc"><i>136</i>&nbsp;    public void actionPerformed (int action) {}</b>
+<i>137</i>&nbsp;
+<i>138</i>&nbsp;    public String[] getMimeTypes () {
+<b class="nc"><i>139</i>&nbsp;        Application.checkEventThread();</b>
+<b class="nc"><i>140</i>&nbsp;        return clipboard.getMimeTypes();</b>
+<i>141</i>&nbsp;    }
+<i>142</i>&nbsp;
+<i>143</i>&nbsp;    @Override
+<i>144</i>&nbsp;    public String toString () {
+<b class="nc"><i>145</i>&nbsp;        return &quot;ClipboardAssistance[&quot; + clipboard + &quot;]&quot; ;</b>
+<i>146</i>&nbsp;    }
+<i>147</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2017-12-04 21:49</div>
+</div>
+</body>
+</html>

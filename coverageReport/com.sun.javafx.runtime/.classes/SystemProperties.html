@@ -1,0 +1,348 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: SystemProperties</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.javafx.runtime</a> ]
+</div>
+
+<h1>Coverage Summary for Class: SystemProperties (com.sun.javafx.runtime)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">SystemProperties</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    50%
+  </span>
+  <span class="absValue">
+    (6/ 12)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    36.4%
+  </span>
+  <span class="absValue">
+    (32/ 88)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright (c) 2008, 2014, Oracle and/or its affiliates. All rights reserved.
+<i>3</i>&nbsp; * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+<i>4</i>&nbsp; *
+<i>5</i>&nbsp; *
+<i>6</i>&nbsp; *
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; *
+<i>11</i>&nbsp; *
+<i>12</i>&nbsp; *
+<i>13</i>&nbsp; *
+<i>14</i>&nbsp; *
+<i>15</i>&nbsp; *
+<i>16</i>&nbsp; *
+<i>17</i>&nbsp; *
+<i>18</i>&nbsp; *
+<i>19</i>&nbsp; *
+<i>20</i>&nbsp; *
+<i>21</i>&nbsp; *
+<i>22</i>&nbsp; *
+<i>23</i>&nbsp; *
+<i>24</i>&nbsp; */
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;package com.sun.javafx.runtime;
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;import java.io.InputStream;
+<i>29</i>&nbsp;import java.security.AccessController;
+<i>30</i>&nbsp;import java.security.PrivilegedAction;
+<i>31</i>&nbsp;import java.util.Hashtable;
+<i>32</i>&nbsp;
+<b class="nc"><i>33</i>&nbsp;public class  SystemProperties {</b>
+<i>34</i>&nbsp;   /**
+<i>35</i>&nbsp;    * JavaFX System Properties table.
+<i>36</i>&nbsp;    * First column represents javafx property name with &quot;javafx&quot; prefix stripped off.
+<i>37</i>&nbsp;    * Second column represents underlying runtime platform equivalent.
+<i>38</i>&nbsp;    * &quot;jfx_specific&quot; value in the runtime platform equivalent field indicates the property is JavaFX specific.
+<i>39</i>&nbsp;    * Empty string in   the runtime platform equivalent field indicates thete is no equivalent property for given platform.
+<i>40</i>&nbsp;    */
+<b class="fc"><i>41</i>&nbsp;    private static final String[] sysprop_table = {</b>
+<i>42</i>&nbsp;        /*&quot;javafx.*/&quot;application.codebase&quot;, &quot;jfx_specific&quot;, /*&quot;javafx.*/&quot;debug&quot;, &quot;javafx.debug&quot;
+<i>43</i>&nbsp;    };
+<i>44</i>&nbsp;
+<i>45</i>&nbsp;
+<i>46</i>&nbsp;    /**
+<i>47</i>&nbsp;     * JavaFX Specific System Properties table.
+<i>48</i>&nbsp;     * First column represents javafx environment specific property name with &quot;javafx&quot; prefix stripped off.
+<i>49</i>&nbsp;     * Second column represents value of the property
+<i>50</i>&nbsp;    */
+<b class="fc"><i>51</i>&nbsp;    private static final String[] jfxprop_table = {</b>
+<i>52</i>&nbsp;        /*&quot;javafx.*/&quot;application.codebase&quot;, &quot;&quot;,
+<i>53</i>&nbsp;    };
+<i>54</i>&nbsp;
+<b class="fc"><i>55</i>&nbsp;    private static final Hashtable sysprop_list = new Hashtable();</b>
+<b class="fc"><i>56</i>&nbsp;    private static final Hashtable jfxprop_list = new Hashtable();</b>
+<i>57</i>&nbsp;
+<i>58</i>&nbsp;    private static final String versionResourceName =
+<i>59</i>&nbsp;            &quot;/com/sun/javafx/runtime/resources/version.properties&quot;;
+<i>60</i>&nbsp;
+<i>61</i>&nbsp;    private static boolean isDebug;
+<i>62</i>&nbsp;
+<i>63</i>&nbsp;    static {
+<b class="fc"><i>64</i>&nbsp;        AccessController.doPrivileged((PrivilegedAction) () -&gt; {</b>
+<b class="fc"><i>65</i>&nbsp;            addProperties (sysprop_table, false);</b>
+<b class="fc"><i>66</i>&nbsp;            addProperties (jfxprop_table, true);</b>
+<b class="fc"><i>67</i>&nbsp;            setVersions();</b>
+<b class="fc"><i>68</i>&nbsp;            isDebug = &quot;true&quot;.equalsIgnoreCase(getProperty(&quot;javafx.debug&quot;));</b>
+<b class="fc"><i>69</i>&nbsp;            return null;</b>
+<i>70</i>&nbsp;        });
+<b class="fc"><i>71</i>&nbsp;    }</b>
+<i>72</i>&nbsp;
+<i>73</i>&nbsp;    /*
+<i>74</i>&nbsp;     * Populate our well known version strings
+<i>75</i>&nbsp;     */
+<i>76</i>&nbsp;    private static void setVersions() {
+<i>77</i>&nbsp;        int size;
+<b class="fc"><i>78</i>&nbsp;        InputStream is =</b>
+<b class="fc"><i>79</i>&nbsp;                SystemProperties.class.getResourceAsStream(versionResourceName);</b>
+<i>80</i>&nbsp;        try  {
+<b class="fc"><i>81</i>&nbsp;            size = is.available();</b>
+<i>82</i>&nbsp;
+<b class="nc"><i>83</i>&nbsp;            byte[] b = new byte[size];</b>
+<b class="nc"><i>84</i>&nbsp;            int n = is.read(b);</b>
+<b class="nc"><i>85</i>&nbsp;            String inStr = new String(b, &quot;utf-8&quot;);</b>
+<b class="nc"><i>86</i>&nbsp;            SystemProperties.setFXProperty(&quot;javafx.version&quot;,</b>
+<b class="nc"><i>87</i>&nbsp;                    getValue(inStr, &quot;release=&quot;));</b>
+<i>88</i>&nbsp;
+<b class="nc"><i>89</i>&nbsp;            SystemProperties.setFXProperty(&quot;javafx.runtime.version&quot;,</b>
+<b class="nc"><i>90</i>&nbsp;                    getValue(inStr, &quot;full=&quot;));</b>
+<i>91</i>&nbsp;
+<b class="fc"><i>92</i>&nbsp;        } catch (Exception ignore) {</b>
+<b class="nc"><i>93</i>&nbsp;        }</b>
+<b class="fc"><i>94</i>&nbsp;    }</b>
+<i>95</i>&nbsp;    /*
+<i>96</i>&nbsp;     * Returns a value given a name
+<i>97</i>&nbsp;     */
+<i>98</i>&nbsp;    private static String getValue(String toSearch, String name) {
+<b class="nc"><i>99</i>&nbsp;        String s = toSearch;</b>
+<i>100</i>&nbsp;        int index;
+<b class="nc"><i>101</i>&nbsp;        while ((index = s.indexOf(name)) != -1) {</b>
+<b class="nc"><i>102</i>&nbsp;            s = s.substring(index);</b>
+<b class="nc"><i>103</i>&nbsp;            if ((index = s.indexOf(0x0A))!= -1) {</b>
+<b class="nc"><i>104</i>&nbsp;                return (s.substring(name.length(), index)).trim();</b>
+<i>105</i>&nbsp;            }
+<b class="nc"><i>106</i>&nbsp;            return (s.substring(name.length(), s.length())).trim();</b>
+<i>107</i>&nbsp;        }
+<b class="nc"><i>108</i>&nbsp;        return &quot;unknown&quot;;</b>
+<i>109</i>&nbsp;    }
+<i>110</i>&nbsp;    /**
+<i>111</i>&nbsp;     * Registers a statically allocated System Properties table
+<i>112</i>&nbsp;     * Once registered properties listed in the table are availabe for inquiry through FX.getProperty().
+<i>113</i>&nbsp;     * Table is defined as a String array with JavaFX property name followed by property value or property mapping identifier
+<i>114</i>&nbsp;     * depending on whether the table contains JavaFX specific properties or not.
+<i>115</i>&nbsp;     * Note that JavaFX property names have &quot;javafx&quot; stripped out to optimize table lookup.
+<i>116</i>&nbsp;     * The following identifiers are available:
+<i>117</i>&nbsp;     * &lt;/p&gt;
+<i>118</i>&nbsp;     * 1. Underlying runtime platform property name. When listed, FX.getProperty() will invoke System.getProperty()
+<i>119</i>&nbsp;     *    method to retrieve property value.
+<i>120</i>&nbsp;     *    example:
+<i>121</i>&nbsp;     *    {&quot;version&quot;, &quot;java.version&quot;}
+<i>122</i>&nbsp;     * &lt;/p&gt;
+<i>123</i>&nbsp;     * 2. &quot;javafx_specific&quot;. When listed indicates there is no association between the property and underlying runtime
+<i>124</i>&nbsp;     *    platform. Rather the property is JavaFX specific. In that case another table needs to be provided with values
+<i>125</i>&nbsp;     *    for all JavaFX specific properties. JavaFX specific properties table is a string array containing property name
+<i>126</i>&nbsp;     *    and corresponding property value.
+<i>127</i>&nbsp;     *    example:
+<i>128</i>&nbsp;     *    {&quot;hw.radio&quot;, &quot;none&quot;}
+<i>129</i>&nbsp;     * &lt;/p&gt;
+<i>130</i>&nbsp;     * 3. Empty string. When listed, the meaning there is no association between the property and underlying runtime
+<i>131</i>&nbsp;     *    platform nor the property is JavaFX specific. FX.getProperty() invoked on that property returns null.
+<i>132</i>&nbsp;     *    example:
+<i>133</i>&nbsp;     *    {&quot;supports.mixing&quot;, &quot;none&quot;}
+<i>134</i>&nbsp;     * @param table System Properties table
+<i>135</i>&nbsp;     * @param jfx_specific Indicates the table contains JavaFX specific properties
+<i>136</i>&nbsp;     */
+<i>137</i>&nbsp;    public static void addProperties (String[] table, boolean jfx_specific) {
+<b class="fc"><i>138</i>&nbsp;        if (table == null)</b>
+<b class="nc"><i>139</i>&nbsp;            return;</b>
+<i>140</i>&nbsp;
+<i>141</i>&nbsp;        Hashtable props;
+<i>142</i>&nbsp;
+<b class="fc"><i>143</i>&nbsp;        if (jfx_specific) {</b>
+<b class="fc"><i>144</i>&nbsp;            props = jfxprop_list;</b>
+<i>145</i>&nbsp;        } else {
+<b class="fc"><i>146</i>&nbsp;            props = sysprop_list;</b>
+<i>147</i>&nbsp;        }
+<i>148</i>&nbsp;
+<b class="fc"><i>149</i>&nbsp;        for (int i=0; i&lt;table.length; i+=2) {</b>
+<b class="fc"><i>150</i>&nbsp;            props.put(table[i], table[i+1]);</b>
+<i>151</i>&nbsp;        }
+<b class="fc"><i>152</i>&nbsp;    }</b>
+<i>153</i>&nbsp;
+<i>154</i>&nbsp;    public static String getProperty (String key) {
+<b class="fc"><i>155</i>&nbsp;        Hashtable props = sysprop_list;</b>
+<i>156</i>&nbsp;        final String prefix = &quot;javafx.&quot;;
+<i>157</i>&nbsp;
+<b class="fc"><i>158</i>&nbsp;        if (key == null)</b>
+<b class="nc"><i>159</i>&nbsp;                return null;</b>
+<i>160</i>&nbsp;
+<b class="fc"><i>161</i>&nbsp;        if (key.startsWith(prefix)) {</b>
+<b class="fc"><i>162</i>&nbsp;            key = key.substring(prefix.length());</b>
+<i>163</i>&nbsp;        } else {
+<b class="nc"><i>164</i>&nbsp;            return null;</b>
+<i>165</i>&nbsp;        }
+<b class="fc"><i>166</i>&nbsp;        final String found = (String)props.get(key);</b>
+<b class="fc"><i>167</i>&nbsp;        if ((found == null) || (found.equals(&quot;&quot;))) {</b>
+<i>168</i>&nbsp;        // No Java Runtime Environment property equivalent is found
+<b class="nc"><i>169</i>&nbsp;            return null;</b>
+<i>170</i>&nbsp;        }
+<i>171</i>&nbsp;
+<i>172</i>&nbsp;
+<i>173</i>&nbsp;        // Now check if the property is JFX specific and has no association with Runtime Environment
+<b class="fc"><i>174</i>&nbsp;        if (found.equals(&quot;jfx_specific&quot;)) {</b>
+<b class="nc"><i>175</i>&nbsp;            props = jfxprop_list;</b>
+<b class="nc"><i>176</i>&nbsp;            return (String)props.get(key);</b>
+<i>177</i>&nbsp;        } else {
+<b class="fc"><i>178</i>&nbsp;            return System.getProperty(found);</b>
+<i>179</i>&nbsp;        }
+<i>180</i>&nbsp;    }
+<i>181</i>&nbsp;
+<i>182</i>&nbsp;   /*
+<i>183</i>&nbsp;    * Removes the property from JavaFX System Properties list
+<i>184</i>&nbsp;    * @param key JavaFX System Property name
+<i>185</i>&nbsp;    */
+<i>186</i>&nbsp;    public static void clearProperty (String key) {
+<b class="nc"><i>187</i>&nbsp;        if (key == null)</b>
+<b class="nc"><i>188</i>&nbsp;                return;</b>
+<i>189</i>&nbsp;
+<b class="nc"><i>190</i>&nbsp;        Hashtable props = sysprop_list;</b>
+<i>191</i>&nbsp;        final String prefix = &quot;javafx.&quot;;
+<i>192</i>&nbsp;
+<i>193</i>&nbsp;        // Remove &quot;javafx.&quot; prefix from the key
+<b class="nc"><i>194</i>&nbsp;        if (key.startsWith(prefix.toString())) {</b>
+<b class="nc"><i>195</i>&nbsp;            key = key.substring(prefix.length());</b>
+<i>196</i>&nbsp;        } else {
+<b class="nc"><i>197</i>&nbsp;            return;</b>
+<i>198</i>&nbsp;        }
+<i>199</i>&nbsp;
+<b class="nc"><i>200</i>&nbsp;        String value = (String)props.get(key);</b>
+<b class="nc"><i>201</i>&nbsp;        if (value == null)</b>
+<b class="nc"><i>202</i>&nbsp;            return;</b>
+<i>203</i>&nbsp;
+<b class="nc"><i>204</i>&nbsp;        props.remove(key);</b>
+<i>205</i>&nbsp;
+<i>206</i>&nbsp;        // Remove the prop from the JavaFX specific properties table if applicable
+<b class="nc"><i>207</i>&nbsp;        if (value.equals(&quot;jfx_specific&quot;)) {</b>
+<b class="nc"><i>208</i>&nbsp;            props = jfxprop_list;</b>
+<b class="nc"><i>209</i>&nbsp;            props.remove(key);</b>
+<i>210</i>&nbsp;        }
+<b class="nc"><i>211</i>&nbsp;    }</b>
+<i>212</i>&nbsp;
+<i>213</i>&nbsp;    /**
+<i>214</i>&nbsp;     * Adds a new JavaFX specific property or modifyies existing property value.
+<i>215</i>&nbsp;     * Note that there is no method in this class to set underlying platform
+<i>216</i>&nbsp;     * property as MIDP doesn&#39;t support System.setProperty() method.
+<i>217</i>&nbsp;     * @param key JavaFX Property name
+<i>218</i>&nbsp;     * @param value Property value
+<i>219</i>&nbsp;     * @throws NullPointerException if key or value is null
+<i>220</i>&nbsp;     */
+<i>221</i>&nbsp;    public static void setFXProperty (String key, final String value) {
+<i>222</i>&nbsp;
+<b class="nc"><i>223</i>&nbsp;        Hashtable props = sysprop_list;</b>
+<i>224</i>&nbsp;        final String prefix = &quot;javafx.&quot;;
+<i>225</i>&nbsp;
+<i>226</i>&nbsp;        // Remove &quot;javafx.&quot; prefix from the key
+<b class="nc"><i>227</i>&nbsp;        if (key.startsWith(prefix)) {</b>
+<b class="nc"><i>228</i>&nbsp;            key = key.substring(prefix.length());</b>
+<i>229</i>&nbsp;
+<b class="nc"><i>230</i>&nbsp;           String k = (String)props.get(key);</b>
+<i>231</i>&nbsp;           // Add new property to the list
+<b class="nc"><i>232</i>&nbsp;           if (k == null) {</b>
+<b class="nc"><i>233</i>&nbsp;               props.put(key, &quot;jfx_specific&quot;);</b>
+<b class="nc"><i>234</i>&nbsp;               props = jfxprop_list;</b>
+<b class="nc"><i>235</i>&nbsp;               props.put(key, value);</b>
+<b class="nc"><i>236</i>&nbsp;           } else if (k.equals(&quot;jfx_specific&quot;)) {</b>
+<i>237</i>&nbsp;               // Change existing property value
+<b class="nc"><i>238</i>&nbsp;               props = jfxprop_list;</b>
+<b class="nc"><i>239</i>&nbsp;               props.put(key, value);</b>
+<b class="nc"><i>240</i>&nbsp;               if (codebase.equals(prefix+key))</b>
+<b class="nc"><i>241</i>&nbsp;                   codebase_value = value;</b>
+<i>242</i>&nbsp;           }
+<i>243</i>&nbsp;        }
+<b class="nc"><i>244</i>&nbsp;    }</b>
+<i>245</i>&nbsp;
+<i>246</i>&nbsp;    public static boolean isDebug() {
+<b class="fc"><i>247</i>&nbsp;        return isDebug;</b>
+<i>248</i>&nbsp;    }
+<i>249</i>&nbsp;
+<i>250</i>&nbsp;    public static String getCodebase() {
+<b class="nc"><i>251</i>&nbsp;        return codebase_value;</b>
+<i>252</i>&nbsp;    }
+<i>253</i>&nbsp;
+<i>254</i>&nbsp;    public static void setCodebase(String value) {
+<b class="nc"><i>255</i>&nbsp;         if (value == null)</b>
+<b class="nc"><i>256</i>&nbsp;                value = &quot;&quot;;</b>
+<b class="nc"><i>257</i>&nbsp;         codebase_value = value;</b>
+<b class="nc"><i>258</i>&nbsp;         setFXProperty(&quot;javafx.application.codebase&quot;, value);</b>
+<b class="nc"><i>259</i>&nbsp;    }</b>
+<i>260</i>&nbsp;
+<i>261</i>&nbsp;    private static String codebase_value;
+<i>262</i>&nbsp;
+<i>263</i>&nbsp;    public static final String codebase = &quot;javafx.application.codebase&quot;;
+<i>264</i>&nbsp;}
+<i>265</i>&nbsp;
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2017-12-04 21:49</div>
+</div>
+</body>
+</html>

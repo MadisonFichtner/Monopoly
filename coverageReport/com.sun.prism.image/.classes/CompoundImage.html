@@ -1,0 +1,211 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: CompoundImage</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.prism.image</a> ]
+</div>
+
+<h1>Coverage Summary for Class: CompoundImage (com.sun.prism.image)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">CompoundImage</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 8)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 40)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright (c) 2012, 2013, Oracle and/or its affiliates. All rights reserved.
+<i>3</i>&nbsp; * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+<i>4</i>&nbsp; *
+<i>5</i>&nbsp; *
+<i>6</i>&nbsp; *
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; *
+<i>11</i>&nbsp; *
+<i>12</i>&nbsp; *
+<i>13</i>&nbsp; *
+<i>14</i>&nbsp; *
+<i>15</i>&nbsp; *
+<i>16</i>&nbsp; *
+<i>17</i>&nbsp; *
+<i>18</i>&nbsp; *
+<i>19</i>&nbsp; *
+<i>20</i>&nbsp; *
+<i>21</i>&nbsp; *
+<i>22</i>&nbsp; *
+<i>23</i>&nbsp; *
+<i>24</i>&nbsp; */
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;package com.sun.prism.image;
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;import com.sun.prism.Graphics;
+<i>29</i>&nbsp;import com.sun.prism.Image;
+<i>30</i>&nbsp;import com.sun.prism.ResourceFactory;
+<i>31</i>&nbsp;import com.sun.prism.Texture;
+<i>32</i>&nbsp;
+<i>33</i>&nbsp;public abstract class CompoundImage {
+<i>34</i>&nbsp;    /*
+<i>35</i>&nbsp;     * Border used to pad each tile of the image to avoid filtering artifacts.
+<i>36</i>&nbsp;     * A single pixel is enough to avoid artifacts for BILINEAR filtering.
+<i>37</i>&nbsp;     */
+<i>38</i>&nbsp;    public static final int BORDER_SIZE_DEFAULT = 1;
+<i>39</i>&nbsp;
+<i>40</i>&nbsp;    /*
+<i>41</i>&nbsp;     * uSubdivision and vSubdivision contain cutting points, where
+<i>42</i>&nbsp;     * the huge image is cut into a grid of uSections by vSections tiles.
+<i>43</i>&nbsp;     * The dimensions of the arrays are uSections+1 and vSections+1 accordingly.
+<i>44</i>&nbsp;     * 0 and image.getWH are always the first and the last values.
+<i>45</i>&nbsp;     * Actual sub-images are extended (padded) by the appropriate border value.
+<i>46</i>&nbsp;     */
+<i>47</i>&nbsp;    protected final int uSubdivision[], u0[], u1[];
+<i>48</i>&nbsp;    protected final int vSubdivision[], v0[], v1[];
+<i>49</i>&nbsp;    protected final int uSections, vSections;
+<i>50</i>&nbsp;    protected final int uBorderSize, vBorderSize;
+<i>51</i>&nbsp;
+<i>52</i>&nbsp;    protected Image tiles[];
+<i>53</i>&nbsp;
+<i>54</i>&nbsp;    public CompoundImage(Image image, int maxSize) {
+<b class="nc"><i>55</i>&nbsp;        this(image, maxSize, BORDER_SIZE_DEFAULT);</b>
+<b class="nc"><i>56</i>&nbsp;    }</b>
+<i>57</i>&nbsp;
+<b class="nc"><i>58</i>&nbsp;    public CompoundImage(Image image, int maxSize, int borderSize) {</b>
+<i>59</i>&nbsp;        // constrain border size by 1/4th of maxSize
+<b class="nc"><i>60</i>&nbsp;        if (4 * borderSize &gt;= maxSize) borderSize = maxSize / 4;</b>
+<i>61</i>&nbsp;
+<b class="nc"><i>62</i>&nbsp;        int imgW = image.getWidth();</b>
+<b class="nc"><i>63</i>&nbsp;        int imgH = image.getHeight();</b>
+<i>64</i>&nbsp;
+<b class="nc"><i>65</i>&nbsp;        uBorderSize = (imgW &lt;= maxSize) ? 0 : borderSize;</b>
+<b class="nc"><i>66</i>&nbsp;        vBorderSize = (imgH &lt;= maxSize) ? 0 : borderSize;</b>
+<i>67</i>&nbsp;
+<b class="nc"><i>68</i>&nbsp;        uSubdivision = subdivideUVs(imgW, maxSize, uBorderSize);</b>
+<b class="nc"><i>69</i>&nbsp;        vSubdivision = subdivideUVs(imgH, maxSize, vBorderSize);</b>
+<i>70</i>&nbsp;
+<b class="nc"><i>71</i>&nbsp;        uSections = uSubdivision.length - 1;</b>
+<b class="nc"><i>72</i>&nbsp;        vSections = vSubdivision.length - 1;</b>
+<i>73</i>&nbsp;
+<b class="nc"><i>74</i>&nbsp;        u0 = new int[uSections]; u1 = new int[uSections];</b>
+<b class="nc"><i>75</i>&nbsp;        v0 = new int[vSections]; v1 = new int[vSections];</b>
+<i>76</i>&nbsp;
+<i>77</i>&nbsp;        // subdivide initial image
+<b class="nc"><i>78</i>&nbsp;        tiles = new Image[uSections * vSections];</b>
+<i>79</i>&nbsp;
+<b class="nc"><i>80</i>&nbsp;        for (int y = 0; y != vSections; ++y) {</b>
+<b class="nc"><i>81</i>&nbsp;            v0[y] = vSubdivision[y] - uBorder(y);</b>
+<b class="nc"><i>82</i>&nbsp;            v1[y] = vSubdivision[y + 1] + dBorder(y);</b>
+<i>83</i>&nbsp;        }
+<i>84</i>&nbsp;
+<b class="nc"><i>85</i>&nbsp;        for (int x = 0; x != uSections; ++x) {</b>
+<b class="nc"><i>86</i>&nbsp;            u0[x] = uSubdivision[x] - lBorder(x);</b>
+<b class="nc"><i>87</i>&nbsp;            u1[x] = uSubdivision[x + 1] + rBorder(x);</b>
+<i>88</i>&nbsp;        }
+<i>89</i>&nbsp;
+<b class="nc"><i>90</i>&nbsp;        for (int y = 0; y != vSections; ++y) {</b>
+<b class="nc"><i>91</i>&nbsp;            for (int x = 0; x != uSections; ++x) {</b>
+<i>92</i>&nbsp;                // System.out.println(&quot;[&quot;+y+&quot;][&quot;+x+&quot;] : (&quot;+u0[x]+&quot;,&quot;+v0[y]+&quot;)-(&quot;+u1[x]+&quot;,&quot;+v1[y]+&quot;)&quot;);
+<b class="nc"><i>93</i>&nbsp;                tiles[y * uSections + x] =</b>
+<b class="nc"><i>94</i>&nbsp;                        image.createSubImage(u0[x], v0[y], u1[x] - u0[x], v1[y] - v0[y]);</b>
+<i>95</i>&nbsp;            }
+<i>96</i>&nbsp;        }
+<b class="nc"><i>97</i>&nbsp;    }</b>
+<i>98</i>&nbsp;
+<b class="nc"><i>99</i>&nbsp;    private int lBorder(int i) { return i &gt; 0 ? uBorderSize : 0; }</b>
+<b class="nc"><i>100</i>&nbsp;    private int rBorder(int i) { return (i &lt; uSections - 1) ? uBorderSize : 0; }</b>
+<b class="nc"><i>101</i>&nbsp;    private int uBorder(int i) { return i &gt; 0 ? vBorderSize : 0; }</b>
+<b class="nc"><i>102</i>&nbsp;    private int dBorder(int i) { return (i &lt; vSections - 1) ? vBorderSize : 0; }</b>
+<i>103</i>&nbsp;
+<i>104</i>&nbsp;    private static int [] subdivideUVs(int size, int maxSize, int borderSize) {
+<i>105</i>&nbsp;        // for border cases maximum content size is  maxSize-borderSize
+<i>106</i>&nbsp;        // for inner cases maximum content size is  maxSize-borderSize*2
+<i>107</i>&nbsp;
+<b class="nc"><i>108</i>&nbsp;        int contSize = maxSize - borderSize * 2;</b>
+<b class="nc"><i>109</i>&nbsp;        int nImages = ((size - borderSize * 2) + contSize - 1) / contSize;</b>
+<i>110</i>&nbsp;
+<b class="nc"><i>111</i>&nbsp;        int data[] = new int[nImages+1];</b>
+<i>112</i>&nbsp;
+<b class="nc"><i>113</i>&nbsp;        data[0] = 0;</b>
+<b class="nc"><i>114</i>&nbsp;        data[nImages] = size;</b>
+<i>115</i>&nbsp;
+<b class="nc"><i>116</i>&nbsp;        for (int i = 1; i &lt; nImages; ++i) {</b>
+<b class="nc"><i>117</i>&nbsp;            data[i] = borderSize + contSize*i;</b>
+<i>118</i>&nbsp;        }
+<i>119</i>&nbsp;
+<b class="nc"><i>120</i>&nbsp;        return data;</b>
+<i>121</i>&nbsp;    }
+<i>122</i>&nbsp;
+<i>123</i>&nbsp;    abstract protected Texture getTile(int x, int y, ResourceFactory factory);
+<i>124</i>&nbsp;
+<i>125</i>&nbsp;    public void drawLazy(Graphics g, Coords crd, float x, float y) {
+<b class="nc"><i>126</i>&nbsp;        new CompoundCoords(this, crd).draw(g, this, x, y);</b>
+<b class="nc"><i>127</i>&nbsp;    }</b>
+<i>128</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2017-12-04 21:49</div>
+</div>
+</body>
+</html>

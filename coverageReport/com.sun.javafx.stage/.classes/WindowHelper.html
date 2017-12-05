@@ -1,0 +1,277 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: WindowHelper</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.javafx.stage</a> ]
+</div>
+
+<h1>Coverage Summary for Class: WindowHelper (com.sun.javafx.stage)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">WindowHelper</td>
+<td class="coverageStat">
+  <span class="percent">
+    65.2%
+  </span>
+  <span class="absValue">
+    (15/ 23)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    70.7%
+  </span>
+  <span class="absValue">
+    (29/ 41)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">WindowHelper$WindowAccessor</td>
+  </tr>
+<tr>
+  <td class="name"><strong>total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    65.2%
+  </span>
+  <span class="absValue">
+    (15/ 23)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    70.7%
+  </span>
+  <span class="absValue">
+    (29/ 41)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright (c) 2013, 2016, Oracle and/or its affiliates. All rights reserved.
+<i>3</i>&nbsp; * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+<i>4</i>&nbsp; *
+<i>5</i>&nbsp; *
+<i>6</i>&nbsp; *
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; *
+<i>11</i>&nbsp; *
+<i>12</i>&nbsp; *
+<i>13</i>&nbsp; *
+<i>14</i>&nbsp; *
+<i>15</i>&nbsp; *
+<i>16</i>&nbsp; *
+<i>17</i>&nbsp; *
+<i>18</i>&nbsp; *
+<i>19</i>&nbsp; *
+<i>20</i>&nbsp; *
+<i>21</i>&nbsp; *
+<i>22</i>&nbsp; *
+<i>23</i>&nbsp; *
+<i>24</i>&nbsp; */
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;package com.sun.javafx.stage;
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;import com.sun.javafx.tk.TKStage;
+<i>29</i>&nbsp;import com.sun.javafx.util.Utils;
+<i>30</i>&nbsp;import javafx.beans.property.ReadOnlyObjectProperty;
+<i>31</i>&nbsp;import javafx.stage.Screen;
+<i>32</i>&nbsp;import javafx.stage.Window;
+<i>33</i>&nbsp;
+<i>34</i>&nbsp;import java.security.AccessControlContext;
+<i>35</i>&nbsp;
+<i>36</i>&nbsp;/**
+<i>37</i>&nbsp; * Used to access internal window methods.
+<i>38</i>&nbsp; */
+<i>39</i>&nbsp;public class WindowHelper {
+<i>40</i>&nbsp;    private static final WindowHelper theInstance;
+<i>41</i>&nbsp;    private static WindowAccessor windowAccessor;
+<i>42</i>&nbsp;
+<i>43</i>&nbsp;    static {
+<b class="fc"><i>44</i>&nbsp;        theInstance = new WindowHelper();</b>
+<b class="fc"><i>45</i>&nbsp;        Utils.forceInit(Window.class);</b>
+<b class="fc"><i>46</i>&nbsp;    }</b>
+<i>47</i>&nbsp;
+<b class="fc"><i>48</i>&nbsp;    protected WindowHelper() {</b>
+<b class="fc"><i>49</i>&nbsp;    }</b>
+<i>50</i>&nbsp;
+<i>51</i>&nbsp;    private static WindowHelper getInstance() {
+<b class="fc"><i>52</i>&nbsp;        return theInstance;</b>
+<i>53</i>&nbsp;    }
+<i>54</i>&nbsp;
+<i>55</i>&nbsp;    public static void initHelper(Window window) {
+<b class="fc"><i>56</i>&nbsp;        setHelper(window, getInstance());</b>
+<b class="fc"><i>57</i>&nbsp;    }</b>
+<i>58</i>&nbsp;
+<i>59</i>&nbsp;    private static WindowHelper getHelper(Window window) {
+<b class="fc"><i>60</i>&nbsp;        return windowAccessor.getHelper(window);</b>
+<i>61</i>&nbsp;    }
+<i>62</i>&nbsp;
+<i>63</i>&nbsp;    protected static void setHelper(Window window, WindowHelper windowHelper) {
+<b class="fc"><i>64</i>&nbsp;        windowAccessor.setHelper(window, windowHelper);</b>
+<b class="fc"><i>65</i>&nbsp;    }</b>
+<i>66</i>&nbsp;
+<i>67</i>&nbsp;    /*
+<i>68</i>&nbsp;     * Static helper methods for cases where the implementation is done in an
+<i>69</i>&nbsp;     * instance method that is overridden by subclasses.
+<i>70</i>&nbsp;     * These methods exist in the base class only.
+<i>71</i>&nbsp;     */
+<i>72</i>&nbsp;    public static String getMXWindowType(Window window) {
+<b class="nc"><i>73</i>&nbsp;        return getHelper(window).getMXWindowTypeImpl(window);</b>
+<i>74</i>&nbsp;    }
+<i>75</i>&nbsp;
+<i>76</i>&nbsp;    public static void visibleChanging(Window window, boolean visible) {
+<b class="fc"><i>77</i>&nbsp;        getHelper(window).visibleChangingImpl(window, visible);</b>
+<b class="fc"><i>78</i>&nbsp;    }</b>
+<i>79</i>&nbsp;
+<i>80</i>&nbsp;    public static void visibleChanged(Window window, boolean visible) {
+<b class="fc"><i>81</i>&nbsp;        getHelper(window).visibleChangedImpl(window, visible);</b>
+<b class="fc"><i>82</i>&nbsp;    }</b>
+<i>83</i>&nbsp;
+<i>84</i>&nbsp;    /*
+<i>85</i>&nbsp;     * Methods that will be overridden by subclasses
+<i>86</i>&nbsp;     */
+<i>87</i>&nbsp;
+<i>88</i>&nbsp;    protected String getMXWindowTypeImpl(Window window) {
+<b class="nc"><i>89</i>&nbsp;        return windowAccessor.doGetMXWindowType(window);</b>
+<i>90</i>&nbsp;    }
+<i>91</i>&nbsp;
+<i>92</i>&nbsp;    protected void visibleChangingImpl(Window window, boolean visible) {
+<b class="fc"><i>93</i>&nbsp;        windowAccessor.doVisibleChanging(window, visible);</b>
+<b class="fc"><i>94</i>&nbsp;    }</b>
+<i>95</i>&nbsp;
+<i>96</i>&nbsp;    protected void visibleChangedImpl(Window window, boolean visible) {
+<b class="fc"><i>97</i>&nbsp;        windowAccessor.doVisibleChanged(window, visible);</b>
+<b class="fc"><i>98</i>&nbsp;    }</b>
+<i>99</i>&nbsp;
+<i>100</i>&nbsp;    /*
+<i>101</i>&nbsp;     * Methods used by Window (base) class only
+<i>102</i>&nbsp;     */
+<i>103</i>&nbsp;
+<i>104</i>&nbsp;    public static TKStage getPeer(Window window) {
+<b class="fc"><i>105</i>&nbsp;        return windowAccessor.getPeer(window);</b>
+<i>106</i>&nbsp;    }
+<i>107</i>&nbsp;
+<i>108</i>&nbsp;    public static void setPeer(Window window, TKStage peer) {
+<b class="nc"><i>109</i>&nbsp;        windowAccessor.setPeer(window, peer);</b>
+<b class="nc"><i>110</i>&nbsp;    }</b>
+<i>111</i>&nbsp;
+<i>112</i>&nbsp;    public static WindowPeerListener getPeerListener(Window window) {
+<b class="nc"><i>113</i>&nbsp;        return windowAccessor.getPeerListener(window);</b>
+<i>114</i>&nbsp;    }
+<i>115</i>&nbsp;
+<i>116</i>&nbsp;    public static void setPeerListener(Window window, WindowPeerListener peerListener) {
+<b class="nc"><i>117</i>&nbsp;        windowAccessor.setPeerListener(window, peerListener);</b>
+<b class="nc"><i>118</i>&nbsp;    }</b>
+<i>119</i>&nbsp;
+<i>120</i>&nbsp;    public static void setFocused(Window window, boolean value) {
+<b class="fc"><i>121</i>&nbsp;        windowAccessor.setFocused(window, value);</b>
+<b class="fc"><i>122</i>&nbsp;    }</b>
+<i>123</i>&nbsp;
+<i>124</i>&nbsp;    public static void notifyLocationChanged(final Window window,
+<i>125</i>&nbsp;                                             final double x,
+<i>126</i>&nbsp;                                             final double y) {
+<b class="fc"><i>127</i>&nbsp;        windowAccessor.notifyLocationChanged(window, x, y);</b>
+<b class="fc"><i>128</i>&nbsp;    }</b>
+<i>129</i>&nbsp;
+<i>130</i>&nbsp;    public static void notifySizeChanged(final Window window,
+<i>131</i>&nbsp;                                         final double width,
+<i>132</i>&nbsp;                                         final double height) {
+<b class="fc"><i>133</i>&nbsp;        windowAccessor.notifySizeChanged(window, width, height);</b>
+<b class="fc"><i>134</i>&nbsp;    }</b>
+<i>135</i>&nbsp;
+<i>136</i>&nbsp;    public static void notifyScaleChanged(final Window window,
+<i>137</i>&nbsp;                                          final double newOutputScaleX,
+<i>138</i>&nbsp;                                          final double newOutputScaleY) {
+<b class="nc"><i>139</i>&nbsp;        windowAccessor.notifyScaleChanged(window, newOutputScaleX, newOutputScaleY);</b>
+<b class="nc"><i>140</i>&nbsp;    }</b>
+<i>141</i>&nbsp;
+<i>142</i>&nbsp;    static AccessControlContext getAccessControlContext(Window window) {
+<b class="nc"><i>143</i>&nbsp;        return windowAccessor.getAccessControlContext(window);</b>
+<i>144</i>&nbsp;    }
+<i>145</i>&nbsp;
+<i>146</i>&nbsp;    public static void setWindowAccessor(final WindowAccessor newAccessor) {
+<b class="fc"><i>147</i>&nbsp;        if (windowAccessor != null) {</b>
+<b class="nc"><i>148</i>&nbsp;            throw new IllegalStateException();</b>
+<i>149</i>&nbsp;        }
+<i>150</i>&nbsp;
+<b class="fc"><i>151</i>&nbsp;        windowAccessor = newAccessor;</b>
+<b class="fc"><i>152</i>&nbsp;    }</b>
+<i>153</i>&nbsp;
+<i>154</i>&nbsp;    public static WindowAccessor getWindowAccessor() {
+<b class="nc"><i>155</i>&nbsp;        return windowAccessor;</b>
+<i>156</i>&nbsp;    }
+<i>157</i>&nbsp;
+<i>158</i>&nbsp;    public interface WindowAccessor {
+<i>159</i>&nbsp;        WindowHelper getHelper(Window window);
+<i>160</i>&nbsp;        void setHelper(Window window, WindowHelper windowHelper);
+<i>161</i>&nbsp;        String doGetMXWindowType(Window window);
+<i>162</i>&nbsp;        void doVisibleChanging(Window window, boolean visible);
+<i>163</i>&nbsp;        void doVisibleChanged(Window window, boolean visible);
+<i>164</i>&nbsp;        TKStage getPeer(Window window);
+<i>165</i>&nbsp;        void setPeer(Window window, TKStage peer);
+<i>166</i>&nbsp;        WindowPeerListener getPeerListener(Window window);
+<i>167</i>&nbsp;        void setPeerListener(Window window, WindowPeerListener peerListener);
+<i>168</i>&nbsp;        void setFocused(Window window, boolean value);
+<i>169</i>&nbsp;        void notifyLocationChanged(Window window, double x, double y);
+<i>170</i>&nbsp;
+<i>171</i>&nbsp;        void notifySizeChanged(Window window, double width, double height);
+<i>172</i>&nbsp;
+<i>173</i>&nbsp;        void notifyScreenChanged(Window window, Object from, Object to);
+<i>174</i>&nbsp;
+<i>175</i>&nbsp;        float getPlatformScaleX(Window window);
+<i>176</i>&nbsp;        float getPlatformScaleY(Window window);
+<i>177</i>&nbsp;
+<i>178</i>&nbsp;        void notifyScaleChanged(Window window, double newOutputScaleX, double newOutputScaleY);
+<i>179</i>&nbsp;
+<i>180</i>&nbsp;        ReadOnlyObjectProperty&lt;Screen&gt; screenProperty(Window window);
+<i>181</i>&nbsp;
+<i>182</i>&nbsp;        AccessControlContext getAccessControlContext(Window window);
+<i>183</i>&nbsp;    }
+<i>184</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2017-12-04 21:49</div>
+</div>
+</body>
+</html>

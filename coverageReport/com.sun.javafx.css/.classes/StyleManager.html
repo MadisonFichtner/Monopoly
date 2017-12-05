@@ -1,0 +1,2510 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: StyleManager</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.javafx.css</a> ]
+</div>
+
+<h1>Coverage Summary for Class: StyleManager (com.sun.javafx.css)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">StyleManager</td>
+<td class="coverageStat">
+  <span class="percent">
+    48.8%
+  </span>
+  <span class="absValue">
+    (20/ 41)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    30.3%
+  </span>
+  <span class="absValue">
+    (213/ 703)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">StyleManager$Cache</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (3/ 3)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    90.9%
+  </span>
+  <span class="absValue">
+    (40/ 44)
+  </span>
+</td>
+  </tr>
+  <tr>
+    <td class="name">StyleManager$Cache$Key</td>
+<td class="coverageStat">
+  <span class="percent">
+    75%
+  </span>
+  <span class="absValue">
+    (3/ 4)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    73.7%
+  </span>
+  <span class="absValue">
+    (14/ 19)
+  </span>
+</td>
+  </tr>
+  <tr>
+    <td class="name">StyleManager$CacheContainer</td>
+<td class="coverageStat">
+  <span class="percent">
+    88.9%
+  </span>
+  <span class="absValue">
+    (8/ 9)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    42.6%
+  </span>
+  <span class="absValue">
+    (29/ 68)
+  </span>
+</td>
+  </tr>
+  <tr>
+    <td class="name">StyleManager$InstanceHolder</td>
+<td class="coverageStat">
+  <span class="percent">
+    50%
+  </span>
+  <span class="absValue">
+    (1/ 2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    50%
+  </span>
+  <span class="absValue">
+    (1/ 2)
+  </span>
+</td>
+  </tr>
+  <tr>
+    <td class="name">StyleManager$Key</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (4/ 4)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    78.9%
+  </span>
+  <span class="absValue">
+    (15/ 19)
+  </span>
+</td>
+  </tr>
+  <tr>
+    <td class="name">StyleManager$RefList</td>
+<td class="coverageStat">
+  <span class="percent">
+    25%
+  </span>
+  <span class="absValue">
+    (1/ 4)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    7.7%
+  </span>
+  <span class="absValue">
+    (2/ 26)
+  </span>
+</td>
+  </tr>
+  <tr>
+    <td class="name">StyleManager$StylesheetContainer</td>
+<td class="coverageStat">
+  <span class="percent">
+    33.3%
+  </span>
+  <span class="absValue">
+    (2/ 6)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    63.9%
+  </span>
+  <span class="absValue">
+    (23/ 36)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    57.5%
+  </span>
+  <span class="absValue">
+    (42/ 73)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    36.8%
+  </span>
+  <span class="absValue">
+    (337/ 917)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright (c) 2010, 2017, Oracle and/or its affiliates. All rights reserved.
+<i>3</i>&nbsp; * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+<i>4</i>&nbsp; *
+<i>5</i>&nbsp; *
+<i>6</i>&nbsp; *
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; *
+<i>11</i>&nbsp; *
+<i>12</i>&nbsp; *
+<i>13</i>&nbsp; *
+<i>14</i>&nbsp; *
+<i>15</i>&nbsp; *
+<i>16</i>&nbsp; *
+<i>17</i>&nbsp; *
+<i>18</i>&nbsp; *
+<i>19</i>&nbsp; *
+<i>20</i>&nbsp; *
+<i>21</i>&nbsp; *
+<i>22</i>&nbsp; *
+<i>23</i>&nbsp; *
+<i>24</i>&nbsp; */
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;package com.sun.javafx.css;
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;import com.sun.javafx.scene.NodeHelper;
+<i>29</i>&nbsp;import com.sun.javafx.scene.ParentHelper;
+<i>30</i>&nbsp;import javafx.application.Application;
+<i>31</i>&nbsp;import javafx.collections.FXCollections;
+<i>32</i>&nbsp;import javafx.collections.ListChangeListener.Change;
+<i>33</i>&nbsp;import javafx.collections.ObservableList;
+<i>34</i>&nbsp;import javafx.css.CssParser;
+<i>35</i>&nbsp;import javafx.css.FontFace;
+<i>36</i>&nbsp;import javafx.css.PseudoClass;
+<i>37</i>&nbsp;import javafx.css.Rule;
+<i>38</i>&nbsp;import javafx.css.Selector;
+<i>39</i>&nbsp;import javafx.css.StyleOrigin;
+<i>40</i>&nbsp;import javafx.css.Styleable;
+<i>41</i>&nbsp;import javafx.css.StyleConverter;
+<i>42</i>&nbsp;import javafx.css.Stylesheet;
+<i>43</i>&nbsp;import javafx.scene.Node;
+<i>44</i>&nbsp;import javafx.scene.Parent;
+<i>45</i>&nbsp;import javafx.scene.Scene;
+<i>46</i>&nbsp;import javafx.scene.SubScene;
+<i>47</i>&nbsp;import javafx.scene.image.Image;
+<i>48</i>&nbsp;import javafx.scene.layout.Region;
+<i>49</i>&nbsp;import javafx.scene.text.Font;
+<i>50</i>&nbsp;import javafx.stage.Window;
+<i>51</i>&nbsp;import sun.util.logging.PlatformLogger;
+<i>52</i>&nbsp;import sun.util.logging.PlatformLogger.Level;
+<i>53</i>&nbsp;
+<i>54</i>&nbsp;import java.io.FileNotFoundException;
+<i>55</i>&nbsp;import java.io.FilePermission;
+<i>56</i>&nbsp;import java.io.IOException;
+<i>57</i>&nbsp;import java.io.InputStream;
+<i>58</i>&nbsp;import java.lang.ref.Reference;
+<i>59</i>&nbsp;import java.lang.ref.WeakReference;
+<i>60</i>&nbsp;import java.lang.reflect.InvocationTargetException;
+<i>61</i>&nbsp;import java.lang.reflect.Method;
+<i>62</i>&nbsp;import java.net.MalformedURLException;
+<i>63</i>&nbsp;import java.net.URI;
+<i>64</i>&nbsp;import java.net.URISyntaxException;
+<i>65</i>&nbsp;import java.net.URL;
+<i>66</i>&nbsp;import java.security.AccessControlContext;
+<i>67</i>&nbsp;import java.security.AccessController;
+<i>68</i>&nbsp;import java.security.DigestInputStream;
+<i>69</i>&nbsp;import java.security.MessageDigest;
+<i>70</i>&nbsp;import java.security.NoSuchAlgorithmException;
+<i>71</i>&nbsp;import java.security.PermissionCollection;
+<i>72</i>&nbsp;import java.security.PrivilegedAction;
+<i>73</i>&nbsp;import java.security.PrivilegedActionException;
+<i>74</i>&nbsp;import java.security.PrivilegedExceptionAction;
+<i>75</i>&nbsp;import java.security.ProtectionDomain;
+<i>76</i>&nbsp;import java.util.ArrayList;
+<i>77</i>&nbsp;import java.util.Arrays;
+<i>78</i>&nbsp;import java.util.Collections;
+<i>79</i>&nbsp;import java.util.HashMap;
+<i>80</i>&nbsp;import java.util.Iterator;
+<i>81</i>&nbsp;import java.util.List;
+<i>82</i>&nbsp;import java.util.Map;
+<i>83</i>&nbsp;import java.util.Map.Entry;
+<i>84</i>&nbsp;import java.util.Set;
+<i>85</i>&nbsp;import java.util.WeakHashMap;
+<i>86</i>&nbsp;import java.util.jar.JarEntry;
+<i>87</i>&nbsp;import java.util.jar.JarFile;
+<i>88</i>&nbsp;
+<i>89</i>&nbsp;/**
+<i>90</i>&nbsp; * Contains the stylesheet state for a single scene. This includes both the
+<i>91</i>&nbsp; * Stylesheets defined on the Scene itself as well as a map of stylesheets for
+<i>92</i>&nbsp; * &quot;style&quot;s defined on the Node itself. These containers are kept in the
+<i>93</i>&nbsp; * containerMap, key&#39;d by the Scene to which they belong. &lt;p&gt; One of the key
+<i>94</i>&nbsp; * responsibilities of the StylesheetContainer is to create and maintain an
+<i>95</i>&nbsp; * admittedly elaborate series of caches so as to minimize the amount of time it
+<i>96</i>&nbsp; * takes to match a Node to its eventual StyleHelper, and to reuse the
+<i>97</i>&nbsp; * StyleHelper as much as possible. &lt;p&gt; Initially, the cache is empty. It is
+<i>98</i>&nbsp; * recreated whenever the userStylesheets on the container change, or whenever
+<i>99</i>&nbsp; * the userAgentStylesheet changes. The cache is built up as nodes are looked
+<i>100</i>&nbsp; * for, and thus there is some overhead associated with the first lookup but
+<i>101</i>&nbsp; * which is then not repeated for subsequent lookups. &lt;p&gt; The cache system used
+<i>102</i>&nbsp; * is a two level cache. The first level cache simply maps the
+<i>103</i>&nbsp; * classname/id/styleclass combination of the request node to a 2nd level cache.
+<i>104</i>&nbsp; * If the node has &quot;styles&quot; specified then we still use this 2nd level cache,
+<i>105</i>&nbsp; * but must combine its selectors with the selectors specified in &quot;styles&quot; and perform
+<i>106</i>&nbsp; * more work to cascade properly. &lt;p&gt; The 2nd level cache contains a data
+<i>107</i>&nbsp; * structure called the Cache. The Cache contains an ordered sequence of Rules,
+<i>108</i>&nbsp; * a Long, and a Map. The ordered sequence of selectors are the selectors that *may*
+<i>109</i>&nbsp; * match a node with the given classname, id, and style class. For example,
+<i>110</i>&nbsp; * selectors which may apply are any selector where the simple selector of the selector
+<i>111</i>&nbsp; * contains a reference to the id, style class, or classname of the Node, or a
+<i>112</i>&nbsp; * compound selector whose &quot;descendant&quot; part is a simple selector which contains
+<i>113</i>&nbsp; * a reference to the id, style class, or classname of the Node. &lt;p&gt; During
+<i>114</i>&nbsp; * lookup, we will iterate over all the potential selectors and discover if they
+<i>115</i>&nbsp; * apply to this particular node. If so, then we toggle a bit position in the
+<i>116</i>&nbsp; * Long corresponding to the position of the selector that matched. This long then
+<i>117</i>&nbsp; * becomes our key into the final map. &lt;p&gt; Once we have established our key, we
+<i>118</i>&nbsp; * will visit the map and look for an existing StyleHelper. If we find a
+<i>119</i>&nbsp; * StyleHelper, then we will return it. If not, then we will take the Rules that
+<i>120</i>&nbsp; * matched and construct a new StyleHelper from their various parts. &lt;p&gt; This
+<i>121</i>&nbsp; * system, while elaborate, also provides for numerous fast paths and sharing of
+<i>122</i>&nbsp; * data structures which should dramatically reduce the memory and runtime
+<i>123</i>&nbsp; * performance overhead associated with CSS by reducing the matching overhead
+<i>124</i>&nbsp; * and caching as much as possible. We make no attempt to use weak references
+<i>125</i>&nbsp; * here, so if memory issues result one work around would be to toggle the root
+<i>126</i>&nbsp; * user agent stylesheet or stylesheets on the scene to cause the cache to be
+<i>127</i>&nbsp; * flushed.
+<i>128</i>&nbsp; */
+<i>129</i>&nbsp;
+<b class="fc"><i>130</i>&nbsp;final public class StyleManager {</b>
+<i>131</i>&nbsp;
+<i>132</i>&nbsp;    /**
+<i>133</i>&nbsp;     * Global lock object for the StyleManager. StyleManager is a singleton,
+<i>134</i>&nbsp;     * which loads CSS stylesheets and manages style caches for all scenes.
+<i>135</i>&nbsp;     * It needs to be thread-safe since a Node or Scene can be constructed and
+<i>136</i>&nbsp;     * load its stylesheets on an arbitrary thread, meaning that multiple Scenes
+<i>137</i>&nbsp;     * can load or apply their stylesheets concurrently. The global lock is used
+<i>138</i>&nbsp;     * to serialize access to the various state in the StyleManager.
+<i>139</i>&nbsp;     */
+<b class="fc"><i>140</i>&nbsp;    private static final Object styleLock = new Object();</b>
+<i>141</i>&nbsp;
+<i>142</i>&nbsp;    private static PlatformLogger LOGGER;
+<i>143</i>&nbsp;    private static PlatformLogger getLogger() {
+<b class="nc"><i>144</i>&nbsp;        if (LOGGER == null) {</b>
+<b class="nc"><i>145</i>&nbsp;            LOGGER = com.sun.javafx.util.Logging.getCSSLogger();</b>
+<i>146</i>&nbsp;        }
+<b class="nc"><i>147</i>&nbsp;        return LOGGER;</b>
+<i>148</i>&nbsp;    }
+<i>149</i>&nbsp;
+<b class="nc"><i>150</i>&nbsp;    private static class InstanceHolder {</b>
+<b class="fc"><i>151</i>&nbsp;        final static StyleManager INSTANCE = new StyleManager();</b>
+<i>152</i>&nbsp;    }
+<i>153</i>&nbsp;    /**
+<i>154</i>&nbsp;     * Return the StyleManager instance.
+<i>155</i>&nbsp;     */
+<i>156</i>&nbsp;    public static StyleManager getInstance() {
+<b class="fc"><i>157</i>&nbsp;        return InstanceHolder.INSTANCE;</b>
+<i>158</i>&nbsp;    }
+<i>159</i>&nbsp;
+<b class="fc"><i>160</i>&nbsp;    private StyleManager() {</b>
+<b class="fc"><i>161</i>&nbsp;    }</b>
+<i>162</i>&nbsp;
+<i>163</i>&nbsp;    /**
+<i>164</i>&nbsp;     * A map from a parent to its style cache. The parent is either a Scene root, or a
+<i>165</i>&nbsp;     * Parent with author stylesheets. If a Scene or Parent is removed from the scene,
+<i>166</i>&nbsp;     * it&#39;s cache is annihilated.
+<i>167</i>&nbsp;     */
+<i>168</i>&nbsp;    // public for testing
+<b class="fc"><i>169</i>&nbsp;    public static final Map&lt;Parent, CacheContainer&gt; cacheContainerMap = new WeakHashMap&lt;&gt;();</b>
+<i>170</i>&nbsp;
+<i>171</i>&nbsp;    // package for testing
+<i>172</i>&nbsp;    CacheContainer getCacheContainer(Styleable styleable, SubScene subScene) {
+<i>173</i>&nbsp;
+<b class="fc"><i>174</i>&nbsp;        if (styleable == null &amp;&amp; subScene == null) return null;</b>
+<i>175</i>&nbsp;
+<b class="fc"><i>176</i>&nbsp;        Parent root = null;</b>
+<i>177</i>&nbsp;
+<b class="fc"><i>178</i>&nbsp;        if (subScene != null) {</b>
+<b class="nc"><i>179</i>&nbsp;            root = subScene.getRoot();</b>
+<i>180</i>&nbsp;
+<b class="fc"><i>181</i>&nbsp;        } else if (styleable instanceof Node) {</b>
+<i>182</i>&nbsp;
+<b class="fc"><i>183</i>&nbsp;            Node node = (Node)styleable;</b>
+<b class="fc"><i>184</i>&nbsp;            Scene scene = node.getScene();</b>
+<b class="fc"><i>185</i>&nbsp;            if (scene != null) root = scene.getRoot();</b>
+<i>186</i>&nbsp;
+<b class="fc"><i>187</i>&nbsp;        } else if (styleable instanceof Window) {</b>
+<i>188</i>&nbsp;            // this catches the PopupWindow case
+<b class="nc"><i>189</i>&nbsp;            Scene scene = ((Window)styleable).getScene();</b>
+<b class="nc"><i>190</i>&nbsp;            if (scene != null) root = scene.getRoot();</b>
+<i>191</i>&nbsp;        }
+<i>192</i>&nbsp;        // todo: what other Styleables need to be handled here?
+<i>193</i>&nbsp;
+<b class="fc"><i>194</i>&nbsp;        if (root == null) return null;</b>
+<i>195</i>&nbsp;
+<b class="fc"><i>196</i>&nbsp;        synchronized (styleLock) {</b>
+<b class="fc"><i>197</i>&nbsp;            CacheContainer container = cacheContainerMap.get(root);</b>
+<b class="fc"><i>198</i>&nbsp;            if (container == null) {</b>
+<b class="fc"><i>199</i>&nbsp;                container = new CacheContainer();</b>
+<b class="fc"><i>200</i>&nbsp;                cacheContainerMap.put(root, container);</b>
+<i>201</i>&nbsp;            }
+<i>202</i>&nbsp;
+<b class="fc"><i>203</i>&nbsp;            return container;</b>
+<b class="nc"><i>204</i>&nbsp;        }</b>
+<i>205</i>&nbsp;    }
+<i>206</i>&nbsp;
+<i>207</i>&nbsp;    /**
+<i>208</i>&nbsp;     * StyleHelper uses this cache but it lives here so it can be cleared
+<i>209</i>&nbsp;     * when style-sheets change.
+<i>210</i>&nbsp;     */
+<i>211</i>&nbsp;    public StyleCache getSharedCache(Styleable styleable, SubScene subScene, StyleCache.Key key) {
+<i>212</i>&nbsp;
+<b class="fc"><i>213</i>&nbsp;        CacheContainer container = getCacheContainer(styleable, subScene);</b>
+<b class="fc"><i>214</i>&nbsp;        if (container == null) return null;</b>
+<i>215</i>&nbsp;
+<b class="fc"><i>216</i>&nbsp;        Map&lt;StyleCache.Key,StyleCache&gt; styleCache = container.getStyleCache();</b>
+<b class="fc"><i>217</i>&nbsp;        if (styleCache == null) return null;</b>
+<i>218</i>&nbsp;
+<b class="fc"><i>219</i>&nbsp;        StyleCache sharedCache = styleCache.get(key);</b>
+<b class="fc"><i>220</i>&nbsp;        if (sharedCache == null) {</b>
+<b class="fc"><i>221</i>&nbsp;            sharedCache = new StyleCache();</b>
+<b class="fc"><i>222</i>&nbsp;            styleCache.put(new StyleCache.Key(key), sharedCache);</b>
+<i>223</i>&nbsp;        }
+<i>224</i>&nbsp;
+<b class="fc"><i>225</i>&nbsp;        return sharedCache;</b>
+<i>226</i>&nbsp;    }
+<i>227</i>&nbsp;
+<i>228</i>&nbsp;    public StyleMap getStyleMap(Styleable styleable, SubScene subScene, int smapId) {
+<i>229</i>&nbsp;
+<b class="fc"><i>230</i>&nbsp;        if (smapId == -1) return StyleMap.EMPTY_MAP;</b>
+<i>231</i>&nbsp;
+<b class="fc"><i>232</i>&nbsp;        CacheContainer container = getCacheContainer(styleable, subScene);</b>
+<b class="fc"><i>233</i>&nbsp;        if (container == null) return StyleMap.EMPTY_MAP;</b>
+<i>234</i>&nbsp;
+<b class="fc"><i>235</i>&nbsp;        return container.getStyleMap(smapId);</b>
+<i>236</i>&nbsp;    }
+<i>237</i>&nbsp;
+<i>238</i>&nbsp;    /**
+<i>239</i>&nbsp;     * A list of user-agent stylesheets from Scene or SubScene.
+<i>240</i>&nbsp;     * The order of the entries in this list does not matter since a Scene or
+<i>241</i>&nbsp;     * SubScene will only have zero or one user-agent stylesheets.
+<i>242</i>&nbsp;     */
+<i>243</i>&nbsp;    // public for testing
+<b class="fc"><i>244</i>&nbsp;    public final List&lt;StylesheetContainer&gt; userAgentStylesheetContainers = new ArrayList&lt;&gt;();</b>
+<i>245</i>&nbsp;    /**
+<i>246</i>&nbsp;     * A list of user-agent stylesheet urls from calling setDefaultUserAgentStylesheet and
+<i>247</i>&nbsp;     * addUserAgentStylesheet. The order of entries this list matters. The zeroth element is
+<i>248</i>&nbsp;     * _the_ platform default.
+<i>249</i>&nbsp;     */
+<i>250</i>&nbsp;    // public for testing
+<b class="fc"><i>251</i>&nbsp;    public final List&lt;StylesheetContainer&gt; platformUserAgentStylesheetContainers = new ArrayList&lt;&gt;();</b>
+<i>252</i>&nbsp;    // public for testing
+<b class="fc"><i>253</i>&nbsp;    public boolean hasDefaultUserAgentStylesheet = false;</b>
+<i>254</i>&nbsp;
+<i>255</i>&nbsp;    ////////////////////////////////////////////////////////////////////////////
+<i>256</i>&nbsp;    //
+<i>257</i>&nbsp;    // stylesheet handling
+<i>258</i>&nbsp;    //
+<i>259</i>&nbsp;    ////////////////////////////////////////////////////////////////////////////
+<i>260</i>&nbsp;
+<i>261</i>&nbsp;    /*
+<i>262</i>&nbsp;     * A container for stylesheets and the Parents or Scenes that use them.
+<i>263</i>&nbsp;     * If a stylesheet is removed, then all other Parents or Scenes
+<i>264</i>&nbsp;     * that use that stylesheet should get new styles if the
+<i>265</i>&nbsp;     * stylesheet is added back in since the stylesheet may have been
+<i>266</i>&nbsp;     * removed and re-added because it was edited (typical of SceneBuilder).
+<i>267</i>&nbsp;     * This container provides the hooks to get back to those Parents or Scenes.
+<i>268</i>&nbsp;     *
+<i>269</i>&nbsp;     * StylesheetContainer&lt;Parent&gt; are created and added to stylesheetContainerMap
+<i>270</i>&nbsp;     * in the method gatherParentStylesheets.
+<i>271</i>&nbsp;     *
+<i>272</i>&nbsp;     * StylesheetContainer&lt;Scene&gt; are created and added to sceneStylesheetMap in
+<i>273</i>&nbsp;     * the method updateStylesheets
+<i>274</i>&nbsp;     */
+<i>275</i>&nbsp;    // package for testing
+<i>276</i>&nbsp;    static class StylesheetContainer {
+<i>277</i>&nbsp;
+<i>278</i>&nbsp;        // the stylesheet uri
+<i>279</i>&nbsp;        final String fname;
+<i>280</i>&nbsp;        // the parsed stylesheet so we don&#39;t reparse for every parent that uses it
+<i>281</i>&nbsp;        final Stylesheet stylesheet;
+<i>282</i>&nbsp;        // the parents or scenes that use this stylesheet. Typically, this list
+<i>283</i>&nbsp;        //  should be very small.
+<i>284</i>&nbsp;        final SelectorPartitioning selectorPartitioning;
+<i>285</i>&nbsp;
+<i>286</i>&nbsp;        // who uses this stylesheet?
+<i>287</i>&nbsp;        final RefList&lt;Parent&gt; parentUsers;
+<i>288</i>&nbsp;
+<i>289</i>&nbsp;        // RT-24516 -- cache images coming from this stylesheet.
+<i>290</i>&nbsp;        // This just holds a hard reference to the image.
+<i>291</i>&nbsp;        final List&lt;Image&gt; imageCache;
+<i>292</i>&nbsp;
+<i>293</i>&nbsp;        final int hash;
+<i>294</i>&nbsp;        final byte[] checksum;
+<b class="fc"><i>295</i>&nbsp;        boolean checksumInvalid = false;</b>
+<i>296</i>&nbsp;
+<i>297</i>&nbsp;        StylesheetContainer(String fname, Stylesheet stylesheet) {
+<b class="fc"><i>298</i>&nbsp;            this(fname, stylesheet, stylesheet != null ? calculateCheckSum(stylesheet.getUrl()) : new byte[0]);</b>
+<b class="fc"><i>299</i>&nbsp;        }</b>
+<i>300</i>&nbsp;
+<b class="fc"><i>301</i>&nbsp;        StylesheetContainer(String fname, Stylesheet stylesheet, byte[] checksum) {</b>
+<i>302</i>&nbsp;
+<b class="fc"><i>303</i>&nbsp;            this.fname = fname;</b>
+<b class="fc"><i>304</i>&nbsp;            hash = (fname != null) ? fname.hashCode() : 127;</b>
+<i>305</i>&nbsp;
+<b class="fc"><i>306</i>&nbsp;            this.stylesheet = stylesheet;</b>
+<b class="fc"><i>307</i>&nbsp;            if (stylesheet != null) {</b>
+<b class="fc"><i>308</i>&nbsp;                selectorPartitioning = new SelectorPartitioning();</b>
+<b class="fc"><i>309</i>&nbsp;                final List&lt;Rule&gt; rules = stylesheet.getRules();</b>
+<b class="fc"><i>310</i>&nbsp;                final int rMax = rules == null || rules.isEmpty() ? 0 : rules.size();</b>
+<b class="fc"><i>311</i>&nbsp;                for (int r=0; r&lt;rMax; r++) {</b>
+<i>312</i>&nbsp;
+<b class="fc"><i>313</i>&nbsp;                    final Rule rule = rules.get(r);</b>
+<i>314</i>&nbsp;                    // final List&lt;Selector&gt; selectors = rule.getUnobservedSelectorList();
+<b class="fc"><i>315</i>&nbsp;                    final List&lt;Selector&gt; selectors = rule.getSelectors();</b>
+<b class="fc"><i>316</i>&nbsp;                    final int sMax = selectors == null || selectors.isEmpty() ? 0 : selectors.size();</b>
+<b class="fc"><i>317</i>&nbsp;                    for (int s=0; s &lt; sMax; s++) {</b>
+<i>318</i>&nbsp;
+<b class="fc"><i>319</i>&nbsp;                        final Selector selector = selectors.get(s);</b>
+<b class="fc"><i>320</i>&nbsp;                        selectorPartitioning.partition(selector);</b>
+<i>321</i>&nbsp;
+<i>322</i>&nbsp;                    }
+<i>323</i>&nbsp;                }
+<i>324</i>&nbsp;
+<b class="fc"><i>325</i>&nbsp;            } else {</b>
+<b class="nc"><i>326</i>&nbsp;                selectorPartitioning = null;</b>
+<i>327</i>&nbsp;            }
+<i>328</i>&nbsp;
+<b class="fc"><i>329</i>&nbsp;            this.parentUsers = new RefList&lt;Parent&gt;();</b>
+<i>330</i>&nbsp;
+<i>331</i>&nbsp;            // this just holds a hard reference to the image
+<b class="fc"><i>332</i>&nbsp;            this.imageCache = new ArrayList&lt;Image&gt;();</b>
+<i>333</i>&nbsp;
+<b class="fc"><i>334</i>&nbsp;            this.checksum = checksum;</b>
+<b class="fc"><i>335</i>&nbsp;        }</b>
+<i>336</i>&nbsp;
+<i>337</i>&nbsp;        void invalidateChecksum() {
+<i>338</i>&nbsp;            // if checksum is byte[0], then it is forever valid.
+<b class="nc"><i>339</i>&nbsp;            checksumInvalid = checksum.length &gt; 0;</b>
+<b class="nc"><i>340</i>&nbsp;        }</b>
+<i>341</i>&nbsp;        @Override
+<i>342</i>&nbsp;        public int hashCode() {
+<b class="nc"><i>343</i>&nbsp;            return hash;</b>
+<i>344</i>&nbsp;        }
+<i>345</i>&nbsp;
+<i>346</i>&nbsp;        @Override
+<i>347</i>&nbsp;        public boolean equals(Object obj) {
+<b class="nc"><i>348</i>&nbsp;            if (obj == null) {</b>
+<b class="nc"><i>349</i>&nbsp;                return false;</b>
+<i>350</i>&nbsp;            }
+<b class="nc"><i>351</i>&nbsp;            if (getClass() != obj.getClass()) {</b>
+<b class="nc"><i>352</i>&nbsp;                return false;</b>
+<i>353</i>&nbsp;            }
+<b class="nc"><i>354</i>&nbsp;            final StylesheetContainer other = (StylesheetContainer) obj;</b>
+<b class="nc"><i>355</i>&nbsp;            if ((this.fname == null) ? (other.fname != null) : !this.fname.equals(other.fname)) {</b>
+<b class="nc"><i>356</i>&nbsp;                return false;</b>
+<i>357</i>&nbsp;            }
+<b class="nc"><i>358</i>&nbsp;            return true;</b>
+<i>359</i>&nbsp;        }
+<i>360</i>&nbsp;
+<i>361</i>&nbsp;        @Override public String toString() {
+<b class="nc"><i>362</i>&nbsp;            return fname;</b>
+<i>363</i>&nbsp;        }
+<i>364</i>&nbsp;
+<i>365</i>&nbsp;    }
+<i>366</i>&nbsp;
+<i>367</i>&nbsp;    /*
+<i>368</i>&nbsp;     * A list that holds references. Used by StylesheetContainer.
+<i>369</i>&nbsp;     */
+<i>370</i>&nbsp;    // package for testing
+<b class="fc"><i>371</i>&nbsp;    static class RefList&lt;K&gt; {</b>
+<i>372</i>&nbsp;
+<b class="fc"><i>373</i>&nbsp;        final List&lt;Reference&lt;K&gt;&gt; list = new ArrayList&lt;Reference&lt;K&gt;&gt;();</b>
+<i>374</i>&nbsp;
+<i>375</i>&nbsp;        void add(K key) {
+<i>376</i>&nbsp;
+<b class="nc"><i>377</i>&nbsp;            for (int n=list.size()-1; 0&lt;=n; --n) {</b>
+<b class="nc"><i>378</i>&nbsp;                final Reference&lt;K&gt; ref = list.get(n);</b>
+<b class="nc"><i>379</i>&nbsp;                final K k = ref.get();</b>
+<b class="nc"><i>380</i>&nbsp;                if (k == null) {</b>
+<i>381</i>&nbsp;                    // stale reference, remove it.
+<b class="nc"><i>382</i>&nbsp;                    list.remove(n);</b>
+<i>383</i>&nbsp;                } else {
+<i>384</i>&nbsp;                    // already have it, bail
+<b class="nc"><i>385</i>&nbsp;                    if (k == key) {</b>
+<b class="nc"><i>386</i>&nbsp;                        return;</b>
+<i>387</i>&nbsp;                    }
+<i>388</i>&nbsp;                }
+<i>389</i>&nbsp;            }
+<i>390</i>&nbsp;            // not found, add it.
+<b class="nc"><i>391</i>&nbsp;            list.add(new WeakReference&lt;K&gt;(key));</b>
+<b class="nc"><i>392</i>&nbsp;        }</b>
+<i>393</i>&nbsp;
+<i>394</i>&nbsp;        void remove(K key) {
+<i>395</i>&nbsp;
+<b class="nc"><i>396</i>&nbsp;            for (int n=list.size()-1; 0&lt;=n; --n) {</b>
+<b class="nc"><i>397</i>&nbsp;                final Reference&lt;K&gt; ref = list.get(n);</b>
+<b class="nc"><i>398</i>&nbsp;                final K k = ref.get();</b>
+<b class="nc"><i>399</i>&nbsp;                if (k == null) {</b>
+<i>400</i>&nbsp;                    // stale reference, remove it.
+<b class="nc"><i>401</i>&nbsp;                    list.remove(n);</b>
+<i>402</i>&nbsp;                } else {
+<i>403</i>&nbsp;                    // already have it, bail
+<b class="nc"><i>404</i>&nbsp;                    if (k == key) {</b>
+<b class="nc"><i>405</i>&nbsp;                        list.remove(n);</b>
+<b class="nc"><i>406</i>&nbsp;                        return;</b>
+<i>407</i>&nbsp;                    }
+<i>408</i>&nbsp;                }
+<i>409</i>&nbsp;            }
+<b class="nc"><i>410</i>&nbsp;        }</b>
+<i>411</i>&nbsp;
+<i>412</i>&nbsp;        // for unit testing
+<i>413</i>&nbsp;        boolean contains(K key) {
+<b class="nc"><i>414</i>&nbsp;            for (int n=list.size()-1; 0&lt;=n; --n) {</b>
+<b class="nc"><i>415</i>&nbsp;                final Reference&lt;K&gt; ref = list.get(n);</b>
+<b class="nc"><i>416</i>&nbsp;                final K k = ref.get();</b>
+<b class="nc"><i>417</i>&nbsp;                if (k == key) {</b>
+<b class="nc"><i>418</i>&nbsp;                    return true;</b>
+<i>419</i>&nbsp;                }
+<i>420</i>&nbsp;            }
+<b class="nc"><i>421</i>&nbsp;            return false;</b>
+<i>422</i>&nbsp;        }
+<i>423</i>&nbsp;    }
+<i>424</i>&nbsp;
+<i>425</i>&nbsp;    /**
+<i>426</i>&nbsp;     * A map from String =&gt; Stylesheet. If a stylesheet for the
+<i>427</i>&nbsp;     * given URL has already been loaded then we&#39;ll simply reuse the stylesheet
+<i>428</i>&nbsp;     * rather than loading a duplicate.
+<i>429</i>&nbsp;     * This list is for author stylesheets and not for user-agent stylesheets. User-agent
+<i>430</i>&nbsp;     * stylesheets are either platformUserAgentStylesheetContainers or userAgentStylesheetContainers
+<i>431</i>&nbsp;     */
+<i>432</i>&nbsp;    // public for unit testing
+<b class="fc"><i>433</i>&nbsp;    public final Map&lt;String,StylesheetContainer&gt; stylesheetContainerMap = new HashMap&lt;&gt;();</b>
+<i>434</i>&nbsp;
+<i>435</i>&nbsp;
+<i>436</i>&nbsp;    /**
+<i>437</i>&nbsp;     * called from Window when the scene is closed.
+<i>438</i>&nbsp;     */
+<i>439</i>&nbsp;    public void forget(final Scene scene) {
+<i>440</i>&nbsp;
+<b class="fc"><i>441</i>&nbsp;        if (scene == null) return;</b>
+<i>442</i>&nbsp;
+<b class="fc"><i>443</i>&nbsp;        forget(scene.getRoot());</b>
+<i>444</i>&nbsp;
+<b class="fc"><i>445</i>&nbsp;        synchronized (styleLock) {</b>
+<i>446</i>&nbsp;            //
+<i>447</i>&nbsp;            // if this scene has user-agent stylesheets, clean up the userAgentStylesheetContainers list
+<i>448</i>&nbsp;            //
+<b class="fc"><i>449</i>&nbsp;            String sceneUserAgentStylesheet = null;</b>
+<b class="fc"><i>450</i>&nbsp;            if ((scene.getUserAgentStylesheet() != null) &amp;&amp;</b>
+<b class="nc"><i>451</i>&nbsp;                    (!(sceneUserAgentStylesheet = scene.getUserAgentStylesheet().trim()).isEmpty())) {</b>
+<i>452</i>&nbsp;
+<b class="nc"><i>453</i>&nbsp;                for(int n=userAgentStylesheetContainers.size()-1; 0&lt;=n; --n) {</b>
+<b class="nc"><i>454</i>&nbsp;                    StylesheetContainer container = userAgentStylesheetContainers.get(n);</b>
+<b class="nc"><i>455</i>&nbsp;                    if (sceneUserAgentStylesheet.equals(container.fname)) {</b>
+<b class="nc"><i>456</i>&nbsp;                        container.parentUsers.remove(scene.getRoot());</b>
+<b class="nc"><i>457</i>&nbsp;                        if (container.parentUsers.list.size() == 0) {</b>
+<b class="nc"><i>458</i>&nbsp;                            userAgentStylesheetContainers.remove(n);</b>
+<i>459</i>&nbsp;                        }
+<i>460</i>&nbsp;                    }
+<i>461</i>&nbsp;                }
+<i>462</i>&nbsp;            }
+<i>463</i>&nbsp;
+<i>464</i>&nbsp;            //
+<i>465</i>&nbsp;            // remove any parents belonging to this scene from the stylesheetContainerMap
+<i>466</i>&nbsp;            //
+<b class="fc"><i>467</i>&nbsp;            Set&lt;Entry&lt;String,StylesheetContainer&gt;&gt; stylesheetContainers = stylesheetContainerMap.entrySet();</b>
+<b class="fc"><i>468</i>&nbsp;            Iterator&lt;Entry&lt;String,StylesheetContainer&gt;&gt; iter = stylesheetContainers.iterator();</b>
+<i>469</i>&nbsp;
+<b class="fc"><i>470</i>&nbsp;            while(iter.hasNext()) {</b>
+<i>471</i>&nbsp;
+<b class="nc"><i>472</i>&nbsp;                Entry&lt;String,StylesheetContainer&gt; entry = iter.next();</b>
+<b class="nc"><i>473</i>&nbsp;                StylesheetContainer container = entry.getValue();</b>
+<i>474</i>&nbsp;
+<b class="nc"><i>475</i>&nbsp;                Iterator&lt;Reference&lt;Parent&gt;&gt; parentIter = container.parentUsers.list.iterator();</b>
+<b class="nc"><i>476</i>&nbsp;                while (parentIter.hasNext()) {</b>
+<i>477</i>&nbsp;
+<b class="nc"><i>478</i>&nbsp;                    Reference&lt;Parent&gt; ref = parentIter.next();</b>
+<b class="nc"><i>479</i>&nbsp;                    Parent _parent = ref.get();</b>
+<i>480</i>&nbsp;
+<b class="nc"><i>481</i>&nbsp;                    if (_parent == null || _parent.getScene() == scene || _parent.getScene() == null) {</b>
+<b class="nc"><i>482</i>&nbsp;                        ref.clear();</b>
+<b class="nc"><i>483</i>&nbsp;                        parentIter.remove();</b>
+<i>484</i>&nbsp;                    }
+<b class="nc"><i>485</i>&nbsp;                }</b>
+<i>486</i>&nbsp;
+<b class="nc"><i>487</i>&nbsp;                if (container.parentUsers.list.isEmpty()) {</b>
+<b class="nc"><i>488</i>&nbsp;                    iter.remove();</b>
+<i>489</i>&nbsp;                }
+<b class="nc"><i>490</i>&nbsp;            }</b>
+<b class="fc"><i>491</i>&nbsp;        }</b>
+<b class="fc"><i>492</i>&nbsp;    }</b>
+<i>493</i>&nbsp;
+<i>494</i>&nbsp;    /**
+<i>495</i>&nbsp;     * called from Scene&#39;s stylesheets property&#39;s onChanged method
+<i>496</i>&nbsp;     */
+<i>497</i>&nbsp;    public void stylesheetsChanged(Scene scene, Change&lt;String&gt; c) {
+<i>498</i>&nbsp;
+<b class="nc"><i>499</i>&nbsp;        synchronized (styleLock) {</b>
+<i>500</i>&nbsp;            // Clear the cache so the cache will be rebuilt.
+<b class="nc"><i>501</i>&nbsp;            Set&lt;Entry&lt;Parent,CacheContainer&gt;&gt; entrySet = cacheContainerMap.entrySet();</b>
+<b class="nc"><i>502</i>&nbsp;            for(Entry&lt;Parent,CacheContainer&gt; entry : entrySet) {</b>
+<b class="nc"><i>503</i>&nbsp;                Parent parent = entry.getKey();</b>
+<b class="nc"><i>504</i>&nbsp;                CacheContainer container = entry.getValue();</b>
+<b class="nc"><i>505</i>&nbsp;                if (parent.getScene() == scene) {</b>
+<b class="nc"><i>506</i>&nbsp;                    container.clearCache();</b>
+<i>507</i>&nbsp;                }
+<i>508</i>&nbsp;
+<b class="nc"><i>509</i>&nbsp;            }</b>
+<i>510</i>&nbsp;
+<b class="nc"><i>511</i>&nbsp;            c.reset();</b>
+<b class="nc"><i>512</i>&nbsp;            while(c.next()) {</b>
+<b class="nc"><i>513</i>&nbsp;                if (c.wasRemoved()) {</b>
+<b class="nc"><i>514</i>&nbsp;                    for (String fname : c.getRemoved()) {</b>
+<b class="nc"><i>515</i>&nbsp;                        stylesheetRemoved(scene, fname);</b>
+<i>516</i>&nbsp;
+<b class="nc"><i>517</i>&nbsp;                        StylesheetContainer stylesheetContainer = stylesheetContainerMap.get(fname);</b>
+<b class="nc"><i>518</i>&nbsp;                        if (stylesheetContainer != null) {</b>
+<b class="nc"><i>519</i>&nbsp;                            stylesheetContainer.invalidateChecksum();</b>
+<i>520</i>&nbsp;                        }
+<i>521</i>&nbsp;
+<b class="nc"><i>522</i>&nbsp;                    }</b>
+<i>523</i>&nbsp;                }
+<i>524</i>&nbsp;            }
+<b class="nc"><i>525</i>&nbsp;        }</b>
+<b class="nc"><i>526</i>&nbsp;    }</b>
+<i>527</i>&nbsp;
+<i>528</i>&nbsp;    private void stylesheetRemoved(Scene scene, String fname) {
+<b class="nc"><i>529</i>&nbsp;        stylesheetRemoved(scene.getRoot(), fname);</b>
+<b class="nc"><i>530</i>&nbsp;    }</b>
+<i>531</i>&nbsp;
+<i>532</i>&nbsp;    /**
+<i>533</i>&nbsp;     * Called from Parent&#39;s scenesChanged method when the Parent&#39;s scene is set to null.
+<i>534</i>&nbsp;     * @param parent The Parent being removed from the scene-graph
+<i>535</i>&nbsp;     */
+<i>536</i>&nbsp;    public void forget(Parent parent) {
+<i>537</i>&nbsp;
+<b class="fc"><i>538</i>&nbsp;        if (parent == null) return;</b>
+<i>539</i>&nbsp;
+<b class="fc"><i>540</i>&nbsp;        synchronized (styleLock) {</b>
+<i>541</i>&nbsp;            // RT-34863 - clean up CSS cache when Parent is removed from scene-graph
+<b class="fc"><i>542</i>&nbsp;            CacheContainer removedContainer = cacheContainerMap.remove(parent);</b>
+<b class="fc"><i>543</i>&nbsp;            if (removedContainer != null) {</b>
+<b class="fc"><i>544</i>&nbsp;                removedContainer.clearCache();</b>
+<i>545</i>&nbsp;            }
+<i>546</i>&nbsp;
+<b class="fc"><i>547</i>&nbsp;            final List&lt;String&gt; stylesheets = parent.getStylesheets();</b>
+<b class="fc"><i>548</i>&nbsp;            if (stylesheets != null &amp;&amp; !stylesheets.isEmpty()) {</b>
+<b class="nc"><i>549</i>&nbsp;                for (String fname : stylesheets) {</b>
+<b class="nc"><i>550</i>&nbsp;                    stylesheetRemoved(parent, fname);</b>
+<b class="nc"><i>551</i>&nbsp;                }</b>
+<i>552</i>&nbsp;            }
+<i>553</i>&nbsp;
+<b class="fc"><i>554</i>&nbsp;            Iterator&lt;Entry&lt;String,StylesheetContainer&gt;&gt; containerIterator = stylesheetContainerMap.entrySet().iterator();</b>
+<b class="fc"><i>555</i>&nbsp;            while (containerIterator.hasNext()) {</b>
+<b class="nc"><i>556</i>&nbsp;                Entry&lt;String,StylesheetContainer&gt; entry = containerIterator.next();</b>
+<b class="nc"><i>557</i>&nbsp;                StylesheetContainer container = entry.getValue();</b>
+<b class="nc"><i>558</i>&nbsp;                container.parentUsers.remove(parent);</b>
+<b class="nc"><i>559</i>&nbsp;                if (container.parentUsers.list.isEmpty()) {</b>
+<i>560</i>&nbsp;
+<b class="nc"><i>561</i>&nbsp;                    containerIterator.remove();</b>
+<i>562</i>&nbsp;
+<b class="nc"><i>563</i>&nbsp;                    if (container.selectorPartitioning != null) {</b>
+<b class="nc"><i>564</i>&nbsp;                        container.selectorPartitioning.reset();</b>
+<i>565</i>&nbsp;                    }
+<i>566</i>&nbsp;
+<i>567</i>&nbsp;
+<i>568</i>&nbsp;                    // clean up image cache by removing images from the cache that
+<i>569</i>&nbsp;                    // might have come from this stylesheet
+<b class="nc"><i>570</i>&nbsp;                    final String fname = container.fname;</b>
+<b class="nc"><i>571</i>&nbsp;                    cleanUpImageCache(fname);</b>
+<i>572</i>&nbsp;                }
+<b class="nc"><i>573</i>&nbsp;            }</b>
+<i>574</i>&nbsp;
+<i>575</i>&nbsp;            // Do not iterate over children since this method will be called on each from Parent#scenesChanged
+<b class="fc"><i>576</i>&nbsp;        }</b>
+<b class="fc"><i>577</i>&nbsp;    }</b>
+<i>578</i>&nbsp;
+<i>579</i>&nbsp;    /**
+<i>580</i>&nbsp;     * called from Parent&#39;s stylesheets property&#39;s onChanged method
+<i>581</i>&nbsp;     */
+<i>582</i>&nbsp;    public void stylesheetsChanged(Parent parent, Change&lt;String&gt; c) {
+<b class="nc"><i>583</i>&nbsp;        synchronized (styleLock) {</b>
+<b class="nc"><i>584</i>&nbsp;            c.reset();</b>
+<b class="nc"><i>585</i>&nbsp;            while(c.next()) {</b>
+<b class="nc"><i>586</i>&nbsp;                if (c.wasRemoved()) {</b>
+<b class="nc"><i>587</i>&nbsp;                    for (String fname : c.getRemoved()) {</b>
+<b class="nc"><i>588</i>&nbsp;                        stylesheetRemoved(parent, fname);</b>
+<i>589</i>&nbsp;
+<b class="nc"><i>590</i>&nbsp;                        StylesheetContainer stylesheetContainer = stylesheetContainerMap.get(fname);</b>
+<b class="nc"><i>591</i>&nbsp;                        if (stylesheetContainer != null) {</b>
+<b class="nc"><i>592</i>&nbsp;                            stylesheetContainer.invalidateChecksum();</b>
+<i>593</i>&nbsp;                        }
+<b class="nc"><i>594</i>&nbsp;                    }</b>
+<i>595</i>&nbsp;                }
+<i>596</i>&nbsp;            }
+<b class="nc"><i>597</i>&nbsp;        }</b>
+<b class="nc"><i>598</i>&nbsp;    }</b>
+<i>599</i>&nbsp;
+<i>600</i>&nbsp;    private void stylesheetRemoved(Parent parent, String fname) {
+<i>601</i>&nbsp;
+<b class="nc"><i>602</i>&nbsp;        synchronized (styleLock) {</b>
+<b class="nc"><i>603</i>&nbsp;            StylesheetContainer stylesheetContainer = stylesheetContainerMap.get(fname);</b>
+<i>604</i>&nbsp;
+<b class="nc"><i>605</i>&nbsp;            if (stylesheetContainer == null) return;</b>
+<i>606</i>&nbsp;
+<b class="nc"><i>607</i>&nbsp;            stylesheetContainer.parentUsers.remove(parent);</b>
+<i>608</i>&nbsp;
+<b class="nc"><i>609</i>&nbsp;            if (stylesheetContainer.parentUsers.list.isEmpty()) {</b>
+<b class="nc"><i>610</i>&nbsp;                removeStylesheetContainer(stylesheetContainer);</b>
+<i>611</i>&nbsp;            }
+<b class="nc"><i>612</i>&nbsp;        }</b>
+<b class="nc"><i>613</i>&nbsp;    }</b>
+<i>614</i>&nbsp;
+<i>615</i>&nbsp;    /**
+<i>616</i>&nbsp;     * called from Window when the scene is closed.
+<i>617</i>&nbsp;     */
+<i>618</i>&nbsp;    public void forget(final SubScene subScene) {
+<i>619</i>&nbsp;
+<b class="nc"><i>620</i>&nbsp;        if (subScene == null) return;</b>
+<b class="nc"><i>621</i>&nbsp;        final Parent subSceneRoot = subScene.getRoot();</b>
+<i>622</i>&nbsp;
+<b class="nc"><i>623</i>&nbsp;        if (subSceneRoot == null) return;</b>
+<b class="nc"><i>624</i>&nbsp;        forget(subSceneRoot);</b>
+<i>625</i>&nbsp;
+<b class="nc"><i>626</i>&nbsp;        synchronized (styleLock) {</b>
+<i>627</i>&nbsp;            //
+<i>628</i>&nbsp;            // if this scene has user-agent stylesheets, clean up the userAgentStylesheetContainers list
+<i>629</i>&nbsp;            //
+<b class="nc"><i>630</i>&nbsp;            String sceneUserAgentStylesheet = null;</b>
+<b class="nc"><i>631</i>&nbsp;            if ((subScene.getUserAgentStylesheet() != null) &amp;&amp;</b>
+<b class="nc"><i>632</i>&nbsp;                    (!(sceneUserAgentStylesheet = subScene.getUserAgentStylesheet().trim()).isEmpty())) {</b>
+<i>633</i>&nbsp;
+<b class="nc"><i>634</i>&nbsp;                Iterator&lt;StylesheetContainer&gt; iterator = userAgentStylesheetContainers.iterator();</b>
+<b class="nc"><i>635</i>&nbsp;                while(iterator.hasNext()) {</b>
+<b class="nc"><i>636</i>&nbsp;                    StylesheetContainer container = iterator.next();</b>
+<b class="nc"><i>637</i>&nbsp;                    if (sceneUserAgentStylesheet.equals(container.fname)) {</b>
+<b class="nc"><i>638</i>&nbsp;                        container.parentUsers.remove(subScene.getRoot());</b>
+<b class="nc"><i>639</i>&nbsp;                        if (container.parentUsers.list.size() == 0) {</b>
+<b class="nc"><i>640</i>&nbsp;                            iterator.remove();</b>
+<i>641</i>&nbsp;                        }
+<i>642</i>&nbsp;                    }
+<b class="nc"><i>643</i>&nbsp;                }</b>
+<i>644</i>&nbsp;            }
+<i>645</i>&nbsp;
+<i>646</i>&nbsp;            //
+<i>647</i>&nbsp;            // remove any parents belonging to this SubScene from the stylesheetContainerMap
+<i>648</i>&nbsp;            //
+<i>649</i>&nbsp;            // copy the list to avoid concurrent mod.
+<b class="nc"><i>650</i>&nbsp;            List&lt;StylesheetContainer&gt; stylesheetContainers = new ArrayList&lt;&gt;(stylesheetContainerMap.values());</b>
+<i>651</i>&nbsp;
+<b class="nc"><i>652</i>&nbsp;            Iterator&lt;StylesheetContainer&gt; iter = stylesheetContainers.iterator();</b>
+<i>653</i>&nbsp;
+<b class="nc"><i>654</i>&nbsp;            while(iter.hasNext()) {</b>
+<i>655</i>&nbsp;
+<b class="nc"><i>656</i>&nbsp;                StylesheetContainer container = iter.next();</b>
+<i>657</i>&nbsp;
+<b class="nc"><i>658</i>&nbsp;                Iterator&lt;Reference&lt;Parent&gt;&gt; parentIter = container.parentUsers.list.iterator();</b>
+<b class="nc"><i>659</i>&nbsp;                while (parentIter.hasNext()) {</b>
+<i>660</i>&nbsp;
+<b class="nc"><i>661</i>&nbsp;                    final Reference&lt;Parent&gt; ref = parentIter.next();</b>
+<b class="nc"><i>662</i>&nbsp;                    final Parent _parent = ref.get();</b>
+<i>663</i>&nbsp;
+<b class="nc"><i>664</i>&nbsp;                    if (_parent != null) {</b>
+<i>665</i>&nbsp;                        // if this stylesheet refererent is a child of this subscene, nuke it.
+<b class="nc"><i>666</i>&nbsp;                        Parent p = _parent;</b>
+<b class="nc"><i>667</i>&nbsp;                        while (p != null) {</b>
+<b class="nc"><i>668</i>&nbsp;                            if (subSceneRoot == p.getParent()) {</b>
+<b class="nc"><i>669</i>&nbsp;                                ref.clear();</b>
+<b class="nc"><i>670</i>&nbsp;                                parentIter.remove();</b>
+<b class="nc"><i>671</i>&nbsp;                                forget(_parent); // _parent, not p!</b>
+<b class="nc"><i>672</i>&nbsp;                                break;</b>
+<i>673</i>&nbsp;                            }
+<b class="nc"><i>674</i>&nbsp;                            p = p.getParent();</b>
+<i>675</i>&nbsp;                        }
+<i>676</i>&nbsp;                    }
+<b class="nc"><i>677</i>&nbsp;                }</b>
+<i>678</i>&nbsp;
+<i>679</i>&nbsp;                // forget(_parent) will remove the container if the parentUser&#39;s list is empty
+<i>680</i>&nbsp;                // if (container.parentUsers.list.isEmpty()) {
+<i>681</i>&nbsp;                //    iter.remove();
+<i>682</i>&nbsp;                // }
+<b class="nc"><i>683</i>&nbsp;            }</b>
+<b class="nc"><i>684</i>&nbsp;        }</b>
+<i>685</i>&nbsp;
+<b class="nc"><i>686</i>&nbsp;    }</b>
+<i>687</i>&nbsp;
+<i>688</i>&nbsp;    private void removeStylesheetContainer(StylesheetContainer stylesheetContainer) {
+<i>689</i>&nbsp;
+<b class="nc"><i>690</i>&nbsp;        if (stylesheetContainer == null) return;</b>
+<i>691</i>&nbsp;
+<b class="nc"><i>692</i>&nbsp;        synchronized (styleLock) {</b>
+<b class="nc"><i>693</i>&nbsp;            final String fname = stylesheetContainer.fname;</b>
+<i>694</i>&nbsp;
+<b class="nc"><i>695</i>&nbsp;            stylesheetContainerMap.remove(fname);</b>
+<i>696</i>&nbsp;
+<b class="nc"><i>697</i>&nbsp;            if (stylesheetContainer.selectorPartitioning != null) {</b>
+<b class="nc"><i>698</i>&nbsp;                stylesheetContainer.selectorPartitioning.reset();</b>
+<i>699</i>&nbsp;            }
+<i>700</i>&nbsp;
+<i>701</i>&nbsp;            // if container has no references, then remove it
+<b class="nc"><i>702</i>&nbsp;            for(Entry&lt;Parent,CacheContainer&gt; entry : cacheContainerMap.entrySet()) {</b>
+<i>703</i>&nbsp;
+<b class="nc"><i>704</i>&nbsp;                CacheContainer container = entry.getValue();</b>
+<b class="nc"><i>705</i>&nbsp;                if (container == null || container.cacheMap == null || container.cacheMap.isEmpty()) {</b>
+<b class="nc"><i>706</i>&nbsp;                    continue;</b>
+<i>707</i>&nbsp;                }
+<i>708</i>&nbsp;
+<b class="nc"><i>709</i>&nbsp;                List&lt;List&lt;String&gt;&gt; entriesToRemove = new ArrayList&lt;&gt;();</b>
+<i>710</i>&nbsp;
+<b class="nc"><i>711</i>&nbsp;                for (Entry&lt;List&lt;String&gt;, Map&lt;Key,Cache&gt;&gt; cacheMapEntry : container.cacheMap.entrySet()) {</b>
+<b class="nc"><i>712</i>&nbsp;                    List&lt;String&gt; cacheMapKey = cacheMapEntry.getKey();</b>
+<b class="nc"><i>713</i>&nbsp;                    if (cacheMapKey != null ? cacheMapKey.contains(fname) : fname == null) {</b>
+<b class="nc"><i>714</i>&nbsp;                        entriesToRemove.add(cacheMapKey);</b>
+<i>715</i>&nbsp;                    }
+<b class="nc"><i>716</i>&nbsp;                }</b>
+<i>717</i>&nbsp;
+<b class="nc"><i>718</i>&nbsp;                if (!entriesToRemove.isEmpty()) {</b>
+<b class="nc"><i>719</i>&nbsp;                    for (List&lt;String&gt; cacheMapKey : entriesToRemove) {</b>
+<b class="nc"><i>720</i>&nbsp;                        Map&lt;Key,Cache&gt; cacheEntry = container.cacheMap.remove(cacheMapKey);</b>
+<b class="nc"><i>721</i>&nbsp;                        if (cacheEntry != null) {</b>
+<b class="nc"><i>722</i>&nbsp;                            cacheEntry.clear();</b>
+<i>723</i>&nbsp;                        }
+<b class="nc"><i>724</i>&nbsp;                    }</b>
+<i>725</i>&nbsp;                }
+<b class="nc"><i>726</i>&nbsp;            }</b>
+<i>727</i>&nbsp;
+<i>728</i>&nbsp;            // clean up image cache by removing images from the cache that
+<i>729</i>&nbsp;            // might have come from this stylesheet
+<b class="nc"><i>730</i>&nbsp;            cleanUpImageCache(fname);</b>
+<i>731</i>&nbsp;
+<b class="nc"><i>732</i>&nbsp;            final List&lt;Reference&lt;Parent&gt;&gt; parentList = stylesheetContainer.parentUsers.list;</b>
+<i>733</i>&nbsp;
+<b class="nc"><i>734</i>&nbsp;            for (int n=parentList.size()-1; 0&lt;=n; --n) {</b>
+<i>735</i>&nbsp;
+<b class="nc"><i>736</i>&nbsp;                final Reference&lt;Parent&gt; ref = parentList.remove(n);</b>
+<b class="nc"><i>737</i>&nbsp;                final Parent parent = ref.get();</b>
+<b class="nc"><i>738</i>&nbsp;                ref.clear();</b>
+<b class="nc"><i>739</i>&nbsp;                if (parent == null || parent.getScene() == null) {</b>
+<b class="nc"><i>740</i>&nbsp;                    continue;</b>
+<i>741</i>&nbsp;                }
+<i>742</i>&nbsp;
+<i>743</i>&nbsp;                //
+<i>744</i>&nbsp;                // tell parent it needs to reapply css
+<i>745</i>&nbsp;                // No harm is done if parent is in a scene that has had
+<i>746</i>&nbsp;                // NodeHelper.reapplyCSS called on the root.
+<i>747</i>&nbsp;                //
+<b class="nc"><i>748</i>&nbsp;                NodeHelper.reapplyCSS(parent);</b>
+<i>749</i>&nbsp;            }
+<b class="nc"><i>750</i>&nbsp;        }</b>
+<b class="nc"><i>751</i>&nbsp;    }</b>
+<i>752</i>&nbsp;
+<i>753</i>&nbsp;    ////////////////////////////////////////////////////////////////////////////
+<i>754</i>&nbsp;    //
+<i>755</i>&nbsp;    // Image caching
+<i>756</i>&nbsp;    //
+<i>757</i>&nbsp;    ////////////////////////////////////////////////////////////////////////////
+<i>758</i>&nbsp;
+<b class="fc"><i>759</i>&nbsp;    private final Map&lt;String,Image&gt; imageCache = new HashMap&lt;String,Image&gt;();</b>
+<i>760</i>&nbsp;
+<i>761</i>&nbsp;    public Image getCachedImage(String url) {
+<i>762</i>&nbsp;
+<b class="nc"><i>763</i>&nbsp;        synchronized (styleLock) {</b>
+<b class="nc"><i>764</i>&nbsp;            Image image = null;</b>
+<b class="nc"><i>765</i>&nbsp;            if (imageCache.containsKey(url)) {</b>
+<i>766</i>&nbsp;
+<b class="nc"><i>767</i>&nbsp;                image = imageCache.get(url);</b>
+<i>768</i>&nbsp;
+<i>769</i>&nbsp;            } else {
+<i>770</i>&nbsp;
+<i>771</i>&nbsp;                try {
+<i>772</i>&nbsp;
+<b class="nc"><i>773</i>&nbsp;                    image = new Image(url);</b>
+<i>774</i>&nbsp;
+<i>775</i>&nbsp;                    // RT-31865
+<b class="nc"><i>776</i>&nbsp;                    if (image.isError()) {</b>
+<i>777</i>&nbsp;
+<b class="nc"><i>778</i>&nbsp;                        final PlatformLogger logger = getLogger();</b>
+<b class="nc"><i>779</i>&nbsp;                        if (logger != null &amp;&amp; logger.isLoggable(Level.WARNING)) {</b>
+<b class="nc"><i>780</i>&nbsp;                            logger.warning(&quot;Error loading image: &quot; + url);</b>
+<i>781</i>&nbsp;                        }
+<i>782</i>&nbsp;
+<b class="nc"><i>783</i>&nbsp;                        image = null;</b>
+<i>784</i>&nbsp;                    }
+<i>785</i>&nbsp;
+<b class="nc"><i>786</i>&nbsp;                    imageCache.put(url, image);</b>
+<i>787</i>&nbsp;
+<b class="nc"><i>788</i>&nbsp;                } catch (IllegalArgumentException iae) {</b>
+<i>789</i>&nbsp;                    // url was empty!
+<b class="nc"><i>790</i>&nbsp;                    final PlatformLogger logger = getLogger();</b>
+<b class="nc"><i>791</i>&nbsp;                    if (logger != null &amp;&amp; logger.isLoggable(Level.WARNING)) {</b>
+<b class="nc"><i>792</i>&nbsp;                        logger.warning(iae.getLocalizedMessage());</b>
+<i>793</i>&nbsp;                    }
+<i>794</i>&nbsp;
+<b class="nc"><i>795</i>&nbsp;                } catch (NullPointerException npe) {</b>
+<i>796</i>&nbsp;                    // url was null!
+<b class="nc"><i>797</i>&nbsp;                    final PlatformLogger logger = getLogger();</b>
+<b class="nc"><i>798</i>&nbsp;                    if (logger != null &amp;&amp; logger.isLoggable(Level.WARNING)) {</b>
+<b class="nc"><i>799</i>&nbsp;                        logger.warning(npe.getLocalizedMessage());</b>
+<i>800</i>&nbsp;                    }
+<b class="nc"><i>801</i>&nbsp;                }</b>
+<i>802</i>&nbsp;            }
+<i>803</i>&nbsp;
+<b class="nc"><i>804</i>&nbsp;            return image;</b>
+<b class="nc"><i>805</i>&nbsp;        }</b>
+<i>806</i>&nbsp;    }
+<i>807</i>&nbsp;
+<i>808</i>&nbsp;    private void cleanUpImageCache(String imgFname) {
+<i>809</i>&nbsp;
+<b class="nc"><i>810</i>&nbsp;        synchronized (styleLock) {</b>
+<b class="nc"><i>811</i>&nbsp;            if (imgFname == null &amp;&amp; imageCache.isEmpty()) return;</b>
+<i>812</i>&nbsp;
+<b class="nc"><i>813</i>&nbsp;            final String fname = imgFname.trim();</b>
+<b class="nc"><i>814</i>&nbsp;            if (fname.isEmpty()) return;</b>
+<i>815</i>&nbsp;
+<b class="nc"><i>816</i>&nbsp;            int len = fname.lastIndexOf(&#39;/&#39;);</b>
+<b class="nc"><i>817</i>&nbsp;            final String path = (len &gt; 0) ? fname.substring(0,len) : fname;</b>
+<b class="nc"><i>818</i>&nbsp;            final int plen = path.length();</b>
+<i>819</i>&nbsp;
+<b class="nc"><i>820</i>&nbsp;            final String[] entriesToRemove = new String[imageCache.size()];</b>
+<b class="nc"><i>821</i>&nbsp;            int count = 0;</b>
+<i>822</i>&nbsp;
+<b class="nc"><i>823</i>&nbsp;            final Set&lt;Entry&lt;String, Image&gt;&gt; entrySet = imageCache.entrySet();</b>
+<b class="nc"><i>824</i>&nbsp;            for(Entry&lt;String, Image&gt; entry : entrySet) {</b>
+<i>825</i>&nbsp;
+<b class="nc"><i>826</i>&nbsp;                final String key = entry.getKey();</b>
+<b class="nc"><i>827</i>&nbsp;                len = key.lastIndexOf(&#39;/&#39;);</b>
+<b class="nc"><i>828</i>&nbsp;                final String kpath = (len &gt; 0) ? key.substring(0, len) : key;</b>
+<b class="nc"><i>829</i>&nbsp;                final int klen = kpath.length();</b>
+<i>830</i>&nbsp;
+<i>831</i>&nbsp;                // if the longer path begins with the shorter path,
+<i>832</i>&nbsp;                // then assume the image came from this path.
+<b class="nc"><i>833</i>&nbsp;                boolean match = (klen &gt; plen) ? kpath.startsWith(path) : path.startsWith(kpath);</b>
+<b class="nc"><i>834</i>&nbsp;                if (match) entriesToRemove[count++] = key;</b>
+<b class="nc"><i>835</i>&nbsp;            }</b>
+<i>836</i>&nbsp;
+<b class="nc"><i>837</i>&nbsp;            for (int n=0; n&lt;count; n++) {</b>
+<b class="nc"><i>838</i>&nbsp;                Image img = imageCache.remove(entriesToRemove[n]);</b>
+<i>839</i>&nbsp;            }
+<b class="nc"><i>840</i>&nbsp;        }</b>
+<b class="nc"><i>841</i>&nbsp;    }</b>
+<i>842</i>&nbsp;
+<i>843</i>&nbsp;    ////////////////////////////////////////////////////////////////////////////
+<i>844</i>&nbsp;    //
+<i>845</i>&nbsp;    // Stylesheet loading
+<i>846</i>&nbsp;    //
+<i>847</i>&nbsp;    ////////////////////////////////////////////////////////////////////////////
+<i>848</i>&nbsp;
+<i>849</i>&nbsp;
+<i>850</i>&nbsp;    private static final String skinPrefix = &quot;com/sun/javafx/scene/control/skin/&quot;;
+<i>851</i>&nbsp;    private static final String skinUtilsClassName = &quot;com.sun.javafx.scene.control.skin.Utils&quot;;
+<i>852</i>&nbsp;
+<i>853</i>&nbsp;    private static URL getURL(final String str) {
+<i>854</i>&nbsp;
+<i>855</i>&nbsp;        // Note: this code is duplicated, more or less, in URLConverter
+<i>856</i>&nbsp;
+<b class="fc"><i>857</i>&nbsp;        if (str == null || str.trim().isEmpty()) return null;</b>
+<i>858</i>&nbsp;
+<i>859</i>&nbsp;        try {
+<i>860</i>&nbsp;
+<b class="fc"><i>861</i>&nbsp;            URI uri =  new URI(str.trim());</b>
+<i>862</i>&nbsp;
+<i>863</i>&nbsp;            // if url doesn&#39;t have a scheme
+<b class="fc"><i>864</i>&nbsp;            if (uri.isAbsolute() == false) {</b>
+<i>865</i>&nbsp;
+<i>866</i>&nbsp;                // FIXME: JIGSAW -- move this into a utility method, since it will
+<i>867</i>&nbsp;                // likely be needed elsewhere (e.g., in URLConverter)
+<b class="fc"><i>868</i>&nbsp;                if (str.startsWith(skinPrefix) &amp;&amp;</b>
+<b class="fc"><i>869</i>&nbsp;                        (str.endsWith(&quot;.css&quot;) || str.endsWith(&quot;.bss&quot;))) {</b>
+<i>870</i>&nbsp;
+<i>871</i>&nbsp;                    try {
+<b class="fc"><i>872</i>&nbsp;                        ClassLoader cl = StyleManager.class.getClassLoader();</b>
+<b class="fc"><i>873</i>&nbsp;                        Class&lt;?&gt; clz = Class.forName(skinUtilsClassName, true, cl);</b>
+<b class="fc"><i>874</i>&nbsp;                        Method m_getResource = clz.getMethod(&quot;getResource&quot;, String.class);</b>
+<b class="fc"><i>875</i>&nbsp;                        return (URL)m_getResource.invoke(null, str.substring(skinPrefix.length()));</b>
+<b class="nc"><i>876</i>&nbsp;                    } catch (ClassNotFoundException</b>
+<i>877</i>&nbsp;                            | NoSuchMethodException
+<i>878</i>&nbsp;                            | IllegalAccessException
+<i>879</i>&nbsp;                            | InvocationTargetException ex) {
+<b class="nc"><i>880</i>&nbsp;                        ex.printStackTrace();</b>
+<b class="nc"><i>881</i>&nbsp;                        return null;</b>
+<i>882</i>&nbsp;                    }
+<i>883</i>&nbsp;                }
+<i>884</i>&nbsp;
+<b class="nc"><i>885</i>&nbsp;                final ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();</b>
+<b class="nc"><i>886</i>&nbsp;                final String path = uri.getPath();</b>
+<i>887</i>&nbsp;
+<b class="nc"><i>888</i>&nbsp;                URL resource = null;</b>
+<i>889</i>&nbsp;
+<i>890</i>&nbsp;                // FIXME: JIGSAW -- The following will only find resources not in a module
+<b class="nc"><i>891</i>&nbsp;                if (path.startsWith(&quot;/&quot;)) {</b>
+<b class="nc"><i>892</i>&nbsp;                    resource = contextClassLoader.getResource(path.substring(1));</b>
+<i>893</i>&nbsp;                } else {
+<b class="nc"><i>894</i>&nbsp;                    resource = contextClassLoader.getResource(path);</b>
+<i>895</i>&nbsp;                }
+<i>896</i>&nbsp;
+<b class="nc"><i>897</i>&nbsp;                return resource;</b>
+<i>898</i>&nbsp;            }
+<i>899</i>&nbsp;
+<i>900</i>&nbsp;            // else, url does have a scheme
+<b class="fc"><i>901</i>&nbsp;            return uri.toURL();</b>
+<i>902</i>&nbsp;
+<b class="nc"><i>903</i>&nbsp;        } catch (MalformedURLException malf) {</b>
+<i>904</i>&nbsp;            // Do not log exception here - caller will handle null return.
+<i>905</i>&nbsp;            // For example, we might be looking for a .bss that doesn&#39;t exist
+<b class="nc"><i>906</i>&nbsp;            return null;</b>
+<b class="nc"><i>907</i>&nbsp;        } catch (URISyntaxException urise) {</b>
+<b class="nc"><i>908</i>&nbsp;            return null;</b>
+<i>909</i>&nbsp;        }
+<i>910</i>&nbsp;    }
+<i>911</i>&nbsp;
+<i>912</i>&nbsp;    // Calculate checksum for stylesheet file. Return byte[0] if checksum could not be calculated.
+<i>913</i>&nbsp;    static byte[] calculateCheckSum(String fname) {
+<i>914</i>&nbsp;
+<b class="fc"><i>915</i>&nbsp;        if (fname == null || fname.isEmpty()) return new byte[0];</b>
+<i>916</i>&nbsp;
+<i>917</i>&nbsp;        try {
+<b class="fc"><i>918</i>&nbsp;            final URL url = getURL(fname);</b>
+<i>919</i>&nbsp;
+<i>920</i>&nbsp;            // We only care about stylesheets from file: URLs.
+<b class="fc"><i>921</i>&nbsp;            if (url != null &amp;&amp; &quot;file&quot;.equals(url.getProtocol())) {</b>
+<i>922</i>&nbsp;
+<i>923</i>&nbsp;                // not looking for security, just a checksum. MD5 should be faster than SHA
+<b class="nc"><i>924</i>&nbsp;                try (final InputStream stream = url.openStream();</b>
+<b class="nc"><i>925</i>&nbsp;                    final DigestInputStream dis = new DigestInputStream(stream, MessageDigest.getInstance(&quot;MD5&quot;)); ) {</b>
+<b class="nc"><i>926</i>&nbsp;                    dis.getMessageDigest().reset();</b>
+<b class="nc"><i>927</i>&nbsp;                    while (dis.read() != -1) { /* empty loop body is intentional */ }</b>
+<b class="nc"><i>928</i>&nbsp;                    return dis.getMessageDigest().digest();</b>
+<b class="nc"><i>929</i>&nbsp;                }</b>
+<i>930</i>&nbsp;
+<i>931</i>&nbsp;            }
+<i>932</i>&nbsp;
+<b class="nc"><i>933</i>&nbsp;        } catch (IllegalArgumentException | NoSuchAlgorithmException | IOException | SecurityException e) {</b>
+<i>934</i>&nbsp;            // IOException also covers MalformedURLException
+<i>935</i>&nbsp;            // SecurityException means some untrusted applet
+<i>936</i>&nbsp;
+<i>937</i>&nbsp;            // Fall through...
+<b class="fc"><i>938</i>&nbsp;        }</b>
+<b class="fc"><i>939</i>&nbsp;        return new byte[0];</b>
+<i>940</i>&nbsp;    }
+<i>941</i>&nbsp;
+<i>942</i>&nbsp;    public static Stylesheet loadStylesheet(final String fname) {
+<i>943</i>&nbsp;        try {
+<b class="fc"><i>944</i>&nbsp;            return loadStylesheetUnPrivileged(fname);</b>
+<b class="nc"><i>945</i>&nbsp;        } catch (java.security.AccessControlException ace) {</b>
+<i>946</i>&nbsp;
+<i>947</i>&nbsp;            // FIXME: JIGSAW -- we no longer are in a jar file, so this code path
+<i>948</i>&nbsp;            // is obsolete and needs to be redone or eliminated. Fortunately, I
+<i>949</i>&nbsp;            // don&#39;t think it is actually needed.
+<b class="nc"><i>950</i>&nbsp;            System.err.println(&quot;WARNING: security exception trying to load: &quot; + fname);</b>
+<i>951</i>&nbsp;
+<i>952</i>&nbsp;            /*
+<i>953</i>&nbsp;            ** we got an access control exception, so
+<i>954</i>&nbsp;            ** we could be running from an applet/jnlp/or with a security manager.
+<i>955</i>&nbsp;            ** we&#39;ll allow the app to read a css file from our runtime jar,
+<i>956</i>&nbsp;            ** and give it one more chance.
+<i>957</i>&nbsp;            */
+<i>958</i>&nbsp;
+<i>959</i>&nbsp;            /*
+<i>960</i>&nbsp;            ** check that there are enough chars after the !/ to have a valid .css or .bss file name
+<i>961</i>&nbsp;            */
+<b class="nc"><i>962</i>&nbsp;            if ((fname.length() &lt; 7) &amp;&amp; (fname.indexOf(&quot;!/&quot;) &lt; fname.length()-7)) {</b>
+<b class="nc"><i>963</i>&nbsp;                return null;</b>
+<i>964</i>&nbsp;            }
+<i>965</i>&nbsp;
+<i>966</i>&nbsp;            /*
+<i>967</i>&nbsp;            **
+<i>968</i>&nbsp;            ** first check that it&#39;s actually looking for the same runtime jar
+<i>969</i>&nbsp;            ** that we&#39;re running from, and not some other file.
+<i>970</i>&nbsp;            */
+<i>971</i>&nbsp;            try {
+<b class="nc"><i>972</i>&nbsp;                URI requestedFileUrI = new URI(fname);</b>
+<i>973</i>&nbsp;
+<i>974</i>&nbsp;                /*
+<i>975</i>&nbsp;                ** is the requested file in a jar
+<i>976</i>&nbsp;                */
+<b class="nc"><i>977</i>&nbsp;                if (&quot;jar&quot;.equals(requestedFileUrI.getScheme())) {</b>
+<i>978</i>&nbsp;                    /*
+<i>979</i>&nbsp;                    ** let&#39;s check that the css file is being requested from our
+<i>980</i>&nbsp;                    ** runtime jar
+<i>981</i>&nbsp;                    */
+<b class="nc"><i>982</i>&nbsp;                    URI styleManagerJarURI = AccessController.doPrivileged((PrivilegedExceptionAction&lt;URI&gt;) () -&gt; StyleManager.class.getProtectionDomain().getCodeSource().getLocation().toURI());</b>
+<i>983</i>&nbsp;
+<b class="nc"><i>984</i>&nbsp;                    final String styleManagerJarPath = styleManagerJarURI.getSchemeSpecificPart();</b>
+<b class="nc"><i>985</i>&nbsp;                    String requestedFilePath = requestedFileUrI.getSchemeSpecificPart();</b>
+<b class="nc"><i>986</i>&nbsp;                    String requestedFileJarPart = requestedFilePath.substring(requestedFilePath.indexOf(&#39;/&#39;), requestedFilePath.indexOf(&quot;!/&quot;));</b>
+<i>987</i>&nbsp;                    /*
+<i>988</i>&nbsp;                    ** it&#39;s the correct jar, check it&#39;s a file access
+<i>989</i>&nbsp;                    ** strip off the leading jar
+<i>990</i>&nbsp;                    */
+<b class="nc"><i>991</i>&nbsp;                    if (styleManagerJarPath.equals(requestedFileJarPart)) {</b>
+<i>992</i>&nbsp;                        /*
+<i>993</i>&nbsp;                        ** strip off the leading &quot;jar&quot;,
+<i>994</i>&nbsp;                        ** the css file name is past the last &#39;!&#39;
+<i>995</i>&nbsp;                        */
+<b class="nc"><i>996</i>&nbsp;                        String requestedFileJarPathNoLeadingSlash = fname.substring(fname.indexOf(&quot;!/&quot;)+2);</b>
+<i>997</i>&nbsp;                        /*
+<i>998</i>&nbsp;                        ** check that it&#39;s looking for a css file in the runtime jar
+<i>999</i>&nbsp;                        */
+<b class="nc"><i>1000</i>&nbsp;                        if (fname.endsWith(&quot;.css&quot;) || fname.endsWith(&quot;.bss&quot;)) {</b>
+<i>1001</i>&nbsp;                            /*
+<i>1002</i>&nbsp;                            ** set up a read permission for the jar
+<i>1003</i>&nbsp;                            */
+<b class="nc"><i>1004</i>&nbsp;                            FilePermission perm = new FilePermission(styleManagerJarPath, &quot;read&quot;);</b>
+<i>1005</i>&nbsp;
+<b class="nc"><i>1006</i>&nbsp;                            PermissionCollection perms = perm.newPermissionCollection();</b>
+<b class="nc"><i>1007</i>&nbsp;                            perms.add(perm);</b>
+<b class="nc"><i>1008</i>&nbsp;                            AccessControlContext permsAcc = new AccessControlContext(</b>
+<i>1009</i>&nbsp;                                new ProtectionDomain[] {
+<i>1010</i>&nbsp;                                    new ProtectionDomain(null, perms)
+<i>1011</i>&nbsp;                                });
+<i>1012</i>&nbsp;                            /*
+<i>1013</i>&nbsp;                            ** check that the jar file exists, and that we&#39;re allowed to
+<i>1014</i>&nbsp;                            ** read it.
+<i>1015</i>&nbsp;                            */
+<b class="nc"><i>1016</i>&nbsp;                            JarFile jar = null;</b>
+<i>1017</i>&nbsp;                            try {
+<b class="nc"><i>1018</i>&nbsp;                                jar = AccessController.doPrivileged((PrivilegedExceptionAction&lt;JarFile&gt;) () -&gt; new JarFile(styleManagerJarPath), permsAcc);</b>
+<b class="nc"><i>1019</i>&nbsp;                            } catch (PrivilegedActionException pae) {</b>
+<i>1020</i>&nbsp;                                /*
+<i>1021</i>&nbsp;                                ** we got either a FileNotFoundException or an IOException
+<i>1022</i>&nbsp;                                ** in the privileged read. Return the same error as we
+<i>1023</i>&nbsp;                                ** would have returned if the css file hadn&#39;t of existed.
+<i>1024</i>&nbsp;                                */
+<b class="nc"><i>1025</i>&nbsp;                                return null;</b>
+<b class="nc"><i>1026</i>&nbsp;                            }</b>
+<b class="nc"><i>1027</i>&nbsp;                            if (jar != null) {</b>
+<i>1028</i>&nbsp;                                /*
+<i>1029</i>&nbsp;                                ** check that the file is in the jar
+<i>1030</i>&nbsp;                                */
+<b class="nc"><i>1031</i>&nbsp;                                JarEntry entry = jar.getJarEntry(requestedFileJarPathNoLeadingSlash);</b>
+<b class="nc"><i>1032</i>&nbsp;                                if (entry != null) {</b>
+<i>1033</i>&nbsp;                                    /*
+<i>1034</i>&nbsp;                                    ** allow read access to the jar
+<i>1035</i>&nbsp;                                    */
+<b class="nc"><i>1036</i>&nbsp;                                    return AccessController.doPrivileged(</b>
+<b class="nc"><i>1037</i>&nbsp;                                            (PrivilegedAction&lt;Stylesheet&gt;) () -&gt; loadStylesheetUnPrivileged(fname), permsAcc);</b>
+<i>1038</i>&nbsp;                                }
+<i>1039</i>&nbsp;                            }
+<i>1040</i>&nbsp;                        }
+<i>1041</i>&nbsp;                    }
+<i>1042</i>&nbsp;                }
+<i>1043</i>&nbsp;                /*
+<i>1044</i>&nbsp;                ** no matter what happen, we return the same error that would
+<i>1045</i>&nbsp;                ** be returned if the css file hadn&#39;t of existed.
+<i>1046</i>&nbsp;                ** That way there in no information leaked.
+<i>1047</i>&nbsp;                */
+<b class="nc"><i>1048</i>&nbsp;                return null;</b>
+<i>1049</i>&nbsp;            }
+<i>1050</i>&nbsp;            /*
+<i>1051</i>&nbsp;            ** no matter what happen, we return the same error that would
+<i>1052</i>&nbsp;            ** be returned if the css file hadn&#39;t of existed.
+<i>1053</i>&nbsp;            ** That way there in no information leaked.
+<i>1054</i>&nbsp;            */
+<b class="nc"><i>1055</i>&nbsp;            catch (java.net.URISyntaxException e) {</b>
+<b class="nc"><i>1056</i>&nbsp;                return null;</b>
+<i>1057</i>&nbsp;            }
+<b class="nc"><i>1058</i>&nbsp;            catch (java.security.PrivilegedActionException e) {</b>
+<b class="nc"><i>1059</i>&nbsp;                return null;</b>
+<i>1060</i>&nbsp;            }
+<i>1061</i>&nbsp;       }
+<i>1062</i>&nbsp;    }
+<i>1063</i>&nbsp;
+<i>1064</i>&nbsp;
+<i>1065</i>&nbsp;    private static Stylesheet loadStylesheetUnPrivileged(final String fname) {
+<i>1066</i>&nbsp;
+<b class="fc"><i>1067</i>&nbsp;        synchronized (styleLock) {</b>
+<b class="fc"><i>1068</i>&nbsp;            Boolean parse = AccessController.doPrivileged((PrivilegedAction&lt;Boolean&gt;) () -&gt; {</b>
+<i>1069</i>&nbsp;
+<b class="fc"><i>1070</i>&nbsp;                final String bss = System.getProperty(&quot;binary.css&quot;);</b>
+<i>1071</i>&nbsp;                // binary.css is true by default.
+<i>1072</i>&nbsp;                // parse only if the file is not a .bss
+<i>1073</i>&nbsp;                // and binary.css is set to false
+<b class="fc"><i>1074</i>&nbsp;                return (!fname.endsWith(&quot;.bss&quot;) &amp;&amp; bss != null) ?</b>
+<b class="nc"><i>1075</i>&nbsp;                    !Boolean.valueOf(bss) : Boolean.FALSE;</b>
+<i>1076</i>&nbsp;            });
+<i>1077</i>&nbsp;
+<i>1078</i>&nbsp;            try {
+<b class="fc"><i>1079</i>&nbsp;                final String ext = (parse) ? (&quot;.css&quot;) : (&quot;.bss&quot;);</b>
+<b class="fc"><i>1080</i>&nbsp;                java.net.URL url = null;</b>
+<b class="fc"><i>1081</i>&nbsp;                Stylesheet stylesheet = null;</b>
+<i>1082</i>&nbsp;                // check if url has extension, if not then just url as is and always parse as css text
+<b class="fc"><i>1083</i>&nbsp;                if (!(fname.endsWith(&quot;.css&quot;) || fname.endsWith(&quot;.bss&quot;))) {</b>
+<b class="nc"><i>1084</i>&nbsp;                    url = getURL(fname);</b>
+<b class="nc"><i>1085</i>&nbsp;                    parse = true;</b>
+<i>1086</i>&nbsp;                } else {
+<b class="fc"><i>1087</i>&nbsp;                    final String name = fname.substring(0, fname.length() - 4);</b>
+<i>1088</i>&nbsp;
+<b class="fc"><i>1089</i>&nbsp;                    url = getURL(name+ext);</b>
+<b class="fc"><i>1090</i>&nbsp;                    if (url == null &amp;&amp; (parse = !parse)) {</b>
+<i>1091</i>&nbsp;                        // If we failed to get the URL for the .bss file,
+<i>1092</i>&nbsp;                        // fall back to the .css file.
+<i>1093</i>&nbsp;                        // Note that &#39;parse&#39; is toggled in the test.
+<b class="nc"><i>1094</i>&nbsp;                        url = getURL(name+&quot;.css&quot;);</b>
+<i>1095</i>&nbsp;                    }
+<i>1096</i>&nbsp;
+<b class="fc"><i>1097</i>&nbsp;                    if ((url != null) &amp;&amp; !parse) {</b>
+<i>1098</i>&nbsp;
+<i>1099</i>&nbsp;                        try {
+<i>1100</i>&nbsp;                            // RT-36332: if loadBinary throws an IOException, make sure to try .css
+<b class="fc"><i>1101</i>&nbsp;                            stylesheet = Stylesheet.loadBinary(url);</b>
+<b class="nc"><i>1102</i>&nbsp;                        } catch (IOException ioe) {</b>
+<b class="nc"><i>1103</i>&nbsp;                            stylesheet = null;</b>
+<b class="fc"><i>1104</i>&nbsp;                        }</b>
+<i>1105</i>&nbsp;
+<b class="fc"><i>1106</i>&nbsp;                        if (stylesheet == null &amp;&amp; (parse = !parse)) {</b>
+<i>1107</i>&nbsp;                            // If we failed to load the .bss file,
+<i>1108</i>&nbsp;                            // fall back to the .css file.
+<i>1109</i>&nbsp;                            // Note that &#39;parse&#39; is toggled in the test.
+<b class="nc"><i>1110</i>&nbsp;                            url = getURL(fname);</b>
+<i>1111</i>&nbsp;                        }
+<i>1112</i>&nbsp;                    }
+<i>1113</i>&nbsp;                }
+<i>1114</i>&nbsp;
+<i>1115</i>&nbsp;                // either we failed to load the .bss file, or parse
+<i>1116</i>&nbsp;                // was set to true.
+<b class="fc"><i>1117</i>&nbsp;                if ((url != null) &amp;&amp; parse) {</b>
+<b class="nc"><i>1118</i>&nbsp;                    stylesheet = new CssParser().parse(url);</b>
+<i>1119</i>&nbsp;                }
+<i>1120</i>&nbsp;
+<b class="fc"><i>1121</i>&nbsp;                if (stylesheet == null) {</b>
+<b class="nc"><i>1122</i>&nbsp;                    if (errors != null) {</b>
+<b class="nc"><i>1123</i>&nbsp;                        CssParser.ParseError error =</b>
+<i>1124</i>&nbsp;                            new CssParser.ParseError(
+<i>1125</i>&nbsp;                                &quot;Resource \&quot;&quot;+fname+&quot;\&quot; not found.&quot;
+<i>1126</i>&nbsp;                            );
+<b class="nc"><i>1127</i>&nbsp;                        errors.add(error);</b>
+<i>1128</i>&nbsp;                    }
+<b class="nc"><i>1129</i>&nbsp;                    if (getLogger().isLoggable(Level.WARNING)) {</b>
+<b class="nc"><i>1130</i>&nbsp;                        getLogger().warning(</b>
+<b class="nc"><i>1131</i>&nbsp;                            String.format(&quot;Resource \&quot;%s\&quot; not found.&quot;, fname)</b>
+<i>1132</i>&nbsp;                        );
+<i>1133</i>&nbsp;                    }
+<i>1134</i>&nbsp;                }
+<i>1135</i>&nbsp;
+<i>1136</i>&nbsp;                // load any fonts from @font-face
+<b class="fc"><i>1137</i>&nbsp;                if (stylesheet != null) {</b>
+<b class="fc"><i>1138</i>&nbsp;                    faceLoop: for(FontFace fontFace: stylesheet.getFontFaces()) {</b>
+<b class="nc"><i>1139</i>&nbsp;                        if (fontFace instanceof FontFaceImpl) {</b>
+<b class="nc"><i>1140</i>&nbsp;                            for(FontFaceImpl.FontFaceSrc src: ((FontFaceImpl)fontFace).getSources()) {</b>
+<b class="nc"><i>1141</i>&nbsp;                                if (src.getType() == FontFaceImpl.FontFaceSrcType.URL) {</b>
+<b class="nc"><i>1142</i>&nbsp;                                    Font loadedFont = Font.loadFont(src.getSrc(),10);</b>
+<b class="nc"><i>1143</i>&nbsp;                                    if (loadedFont == null) {</b>
+<b class="nc"><i>1144</i>&nbsp;                                        getLogger().info(&quot;Could not load @font-face font [&quot; + src.getSrc() + &quot;]&quot;);</b>
+<i>1145</i>&nbsp;                                    }
+<i>1146</i>&nbsp;                                    continue faceLoop;
+<i>1147</i>&nbsp;                                }
+<b class="nc"><i>1148</i>&nbsp;                            }</b>
+<i>1149</i>&nbsp;                        }
+<b class="nc"><i>1150</i>&nbsp;                    }</b>
+<i>1151</i>&nbsp;                }
+<i>1152</i>&nbsp;
+<b class="fc"><i>1153</i>&nbsp;                return stylesheet;</b>
+<i>1154</i>&nbsp;
+<b class="nc"><i>1155</i>&nbsp;            } catch (FileNotFoundException fnfe) {</b>
+<b class="nc"><i>1156</i>&nbsp;                if (errors != null) {</b>
+<b class="nc"><i>1157</i>&nbsp;                    CssParser.ParseError error =</b>
+<i>1158</i>&nbsp;                        new CssParser.ParseError(
+<i>1159</i>&nbsp;                            &quot;Stylesheet \&quot;&quot;+fname+&quot;\&quot; not found.&quot;
+<i>1160</i>&nbsp;                        );
+<b class="nc"><i>1161</i>&nbsp;                    errors.add(error);</b>
+<i>1162</i>&nbsp;                }
+<b class="nc"><i>1163</i>&nbsp;                if (getLogger().isLoggable(Level.INFO)) {</b>
+<b class="nc"><i>1164</i>&nbsp;                    getLogger().info(&quot;Could not find stylesheet: &quot; + fname);//, fnfe);</b>
+<i>1165</i>&nbsp;                }
+<b class="nc"><i>1166</i>&nbsp;            } catch (IOException ioe) {</b>
+<b class="nc"><i>1167</i>&nbsp;                    if (errors != null) {</b>
+<b class="nc"><i>1168</i>&nbsp;                        CssParser.ParseError error =</b>
+<i>1169</i>&nbsp;                            new CssParser.ParseError(
+<i>1170</i>&nbsp;                                &quot;Could not load stylesheet: &quot; + fname
+<i>1171</i>&nbsp;                            );
+<b class="nc"><i>1172</i>&nbsp;                        errors.add(error);</b>
+<i>1173</i>&nbsp;                    }
+<b class="nc"><i>1174</i>&nbsp;                if (getLogger().isLoggable(Level.INFO)) {</b>
+<b class="nc"><i>1175</i>&nbsp;                    getLogger().info(&quot;Could not load stylesheet: &quot; + fname);//, ioe);</b>
+<i>1176</i>&nbsp;                }
+<b class="nc"><i>1177</i>&nbsp;            }</b>
+<b class="nc"><i>1178</i>&nbsp;            return null;</b>
+<b class="nc"><i>1179</i>&nbsp;        }</b>
+<i>1180</i>&nbsp;    }
+<i>1181</i>&nbsp;
+<i>1182</i>&nbsp;    ////////////////////////////////////////////////////////////////////////////
+<i>1183</i>&nbsp;    //
+<i>1184</i>&nbsp;    // User Agent stylesheet handling
+<i>1185</i>&nbsp;    //
+<i>1186</i>&nbsp;    ////////////////////////////////////////////////////////////////////////////
+<i>1187</i>&nbsp;
+<i>1188</i>&nbsp;
+<i>1189</i>&nbsp;    /**
+<i>1190</i>&nbsp;     * Set a bunch of user agent stylesheets all at once. The order of the stylesheets in the list
+<i>1191</i>&nbsp;     * is the order of their styles in the cascade. Passing null, an empty list, or a list full of empty
+<i>1192</i>&nbsp;     * strings does nothing.
+<i>1193</i>&nbsp;     *
+<i>1194</i>&nbsp;     * @param urls The list of stylesheet URLs as Strings.
+<i>1195</i>&nbsp;     */
+<i>1196</i>&nbsp;    public void setUserAgentStylesheets(List&lt;String&gt; urls) {
+<i>1197</i>&nbsp;
+<b class="fc"><i>1198</i>&nbsp;        if (urls == null || urls.size() == 0) return;</b>
+<i>1199</i>&nbsp;
+<b class="fc"><i>1200</i>&nbsp;        synchronized (styleLock) {</b>
+<i>1201</i>&nbsp;            // Avoid resetting user agent stylesheets if they haven&#39;t changed.
+<b class="fc"><i>1202</i>&nbsp;            if (urls.size() == platformUserAgentStylesheetContainers.size()) {</b>
+<b class="fc"><i>1203</i>&nbsp;                boolean isSame = true;</b>
+<b class="fc"><i>1204</i>&nbsp;                for (int n=0, nMax=urls.size(); n &lt; nMax &amp;&amp; isSame; n++) {</b>
+<i>1205</i>&nbsp;
+<b class="fc"><i>1206</i>&nbsp;                    final String url = urls.get(n);</b>
+<b class="fc"><i>1207</i>&nbsp;                    final String fname = (url != null) ? url.trim() : null;</b>
+<i>1208</i>&nbsp;
+<b class="fc"><i>1209</i>&nbsp;                    if (fname == null || fname.isEmpty()) break;</b>
+<i>1210</i>&nbsp;
+<b class="fc"><i>1211</i>&nbsp;                    StylesheetContainer container = platformUserAgentStylesheetContainers.get(n);</b>
+<i>1212</i>&nbsp;                    // assignment in this conditional is intentional!
+<b class="fc"><i>1213</i>&nbsp;                    if(isSame = fname.equals(container.fname)) {</b>
+<i>1214</i>&nbsp;                        // don&#39;t use fname in calculateCheckSum since it is just the key to
+<i>1215</i>&nbsp;                        // find the StylesheetContainer. Rather, use the URL of the
+<i>1216</i>&nbsp;                        // stylesheet that was already loaded. For example, we could have
+<i>1217</i>&nbsp;                        // fname = &quot;com/sun/javafx/scene/control/skin/modena/modena.css, but
+<i>1218</i>&nbsp;                        // the stylesheet URL could be jar:file://some/path/!com/sun/javafx/scene/control/skin/modena/modena.bss
+<b class="fc"><i>1219</i>&nbsp;                        String stylesheetUrl = container.stylesheet.getUrl();</b>
+<b class="fc"><i>1220</i>&nbsp;                        byte[] checksum = calculateCheckSum(stylesheetUrl);</b>
+<b class="fc"><i>1221</i>&nbsp;                        isSame = Arrays.equals(checksum, container.checksum);</b>
+<i>1222</i>&nbsp;                    }
+<i>1223</i>&nbsp;                }
+<b class="fc"><i>1224</i>&nbsp;                if (isSame) return;</b>
+<i>1225</i>&nbsp;            }
+<i>1226</i>&nbsp;
+<b class="fc"><i>1227</i>&nbsp;            boolean modified = false;</b>
+<i>1228</i>&nbsp;
+<b class="fc"><i>1229</i>&nbsp;            for (int n=0, nMax=urls.size(); n &lt; nMax; n++) {</b>
+<i>1230</i>&nbsp;
+<b class="fc"><i>1231</i>&nbsp;                final String url = urls.get(n);</b>
+<b class="fc"><i>1232</i>&nbsp;                final String fname = (url != null) ? url.trim() : null;</b>
+<i>1233</i>&nbsp;
+<b class="fc"><i>1234</i>&nbsp;                if (fname == null || fname.isEmpty()) continue;</b>
+<i>1235</i>&nbsp;
+<b class="fc"><i>1236</i>&nbsp;                if (!modified) {</b>
+<i>1237</i>&nbsp;                    // we have at least one non null or non-empty url
+<b class="fc"><i>1238</i>&nbsp;                    platformUserAgentStylesheetContainers.clear();</b>
+<b class="fc"><i>1239</i>&nbsp;                    modified = true;</b>
+<i>1240</i>&nbsp;                }
+<i>1241</i>&nbsp;
+<b class="fc"><i>1242</i>&nbsp;                if (n==0) {</b>
+<b class="fc"><i>1243</i>&nbsp;                    _setDefaultUserAgentStylesheet(fname);</b>
+<i>1244</i>&nbsp;                } else {
+<b class="nc"><i>1245</i>&nbsp;                    _addUserAgentStylesheet(fname);</b>
+<i>1246</i>&nbsp;                }
+<i>1247</i>&nbsp;            }
+<i>1248</i>&nbsp;
+<b class="fc"><i>1249</i>&nbsp;            if (modified) {</b>
+<b class="fc"><i>1250</i>&nbsp;                userAgentStylesheetsChanged();</b>
+<i>1251</i>&nbsp;            }
+<b class="fc"><i>1252</i>&nbsp;        }</b>
+<b class="fc"><i>1253</i>&nbsp;    }</b>
+<i>1254</i>&nbsp;
+<i>1255</i>&nbsp;    /**
+<i>1256</i>&nbsp;     * Add a user agent stylesheet, possibly overriding styles in the default
+<i>1257</i>&nbsp;     * user agent stylesheet.
+<i>1258</i>&nbsp;     *
+<i>1259</i>&nbsp;     * @param fname The file URL, either relative or absolute, as a String.
+<i>1260</i>&nbsp;     */
+<i>1261</i>&nbsp;    public void addUserAgentStylesheet(String fname) {
+<b class="nc"><i>1262</i>&nbsp;        addUserAgentStylesheet(null, fname);</b>
+<b class="nc"><i>1263</i>&nbsp;    }</b>
+<i>1264</i>&nbsp;
+<i>1265</i>&nbsp;    /**
+<i>1266</i>&nbsp;     * Add a user agent stylesheet, possibly overriding styles in the default
+<i>1267</i>&nbsp;     * user agent stylesheet.
+<i>1268</i>&nbsp;     * @param scene Only used in CssError for tracking back to the scene that loaded the stylesheet
+<i>1269</i>&nbsp;     * @param url  The file URL, either relative or absolute, as a String.
+<i>1270</i>&nbsp;     */
+<i>1271</i>&nbsp;    // For RT-20643
+<i>1272</i>&nbsp;    public void addUserAgentStylesheet(Scene scene, String url) {
+<i>1273</i>&nbsp;
+<b class="nc"><i>1274</i>&nbsp;        final String fname = (url != null) ? url.trim() : null;</b>
+<b class="nc"><i>1275</i>&nbsp;        if (fname == null || fname.isEmpty()) {</b>
+<b class="nc"><i>1276</i>&nbsp;            return;</b>
+<i>1277</i>&nbsp;        }
+<i>1278</i>&nbsp;
+<b class="nc"><i>1279</i>&nbsp;        synchronized (styleLock) {</b>
+<b class="nc"><i>1280</i>&nbsp;            if (_addUserAgentStylesheet(fname)) {</b>
+<b class="nc"><i>1281</i>&nbsp;                userAgentStylesheetsChanged();</b>
+<i>1282</i>&nbsp;            }
+<b class="nc"><i>1283</i>&nbsp;        }</b>
+<b class="nc"><i>1284</i>&nbsp;    }</b>
+<i>1285</i>&nbsp;
+<i>1286</i>&nbsp;    // fname is assumed to be non null and non empty
+<i>1287</i>&nbsp;    private boolean _addUserAgentStylesheet(String fname) {
+<i>1288</i>&nbsp;
+<b class="nc"><i>1289</i>&nbsp;        synchronized (styleLock) {</b>
+<i>1290</i>&nbsp;            // if we already have this stylesheet, bail
+<b class="nc"><i>1291</i>&nbsp;            for (int n=0, nMax= platformUserAgentStylesheetContainers.size(); n &lt; nMax; n++) {</b>
+<b class="nc"><i>1292</i>&nbsp;                StylesheetContainer container = platformUserAgentStylesheetContainers.get(n);</b>
+<b class="nc"><i>1293</i>&nbsp;                if (fname.equals(container.fname)) {</b>
+<b class="nc"><i>1294</i>&nbsp;                    return false;</b>
+<i>1295</i>&nbsp;                }
+<i>1296</i>&nbsp;            }
+<i>1297</i>&nbsp;
+<b class="nc"><i>1298</i>&nbsp;            final Stylesheet ua_stylesheet = loadStylesheet(fname);</b>
+<i>1299</i>&nbsp;
+<b class="nc"><i>1300</i>&nbsp;            if (ua_stylesheet == null) return false;</b>
+<i>1301</i>&nbsp;
+<b class="nc"><i>1302</i>&nbsp;            ua_stylesheet.setOrigin(StyleOrigin.USER_AGENT);</b>
+<b class="nc"><i>1303</i>&nbsp;            platformUserAgentStylesheetContainers.add(new StylesheetContainer(fname, ua_stylesheet));</b>
+<b class="nc"><i>1304</i>&nbsp;            return true;</b>
+<b class="nc"><i>1305</i>&nbsp;        }</b>
+<i>1306</i>&nbsp;    }
+<i>1307</i>&nbsp;
+<i>1308</i>&nbsp;    /**
+<i>1309</i>&nbsp;     * Add a user agent stylesheet, possibly overriding styles in the default
+<i>1310</i>&nbsp;     * user agent stylesheet.
+<i>1311</i>&nbsp;     * @param scene Only used in CssError for tracking back to the scene that loaded the stylesheet
+<i>1312</i>&nbsp;     * @param ua_stylesheet  The stylesheet to add as a user-agent stylesheet
+<i>1313</i>&nbsp;     */
+<i>1314</i>&nbsp;    public void addUserAgentStylesheet(Scene scene, Stylesheet ua_stylesheet) {
+<i>1315</i>&nbsp;
+<b class="nc"><i>1316</i>&nbsp;        if (ua_stylesheet == null ) {</b>
+<b class="nc"><i>1317</i>&nbsp;            throw new IllegalArgumentException(&quot;null arg ua_stylesheet&quot;);</b>
+<i>1318</i>&nbsp;        }
+<i>1319</i>&nbsp;
+<i>1320</i>&nbsp;        // null url is ok, just means that it is a stylesheet not loaded from a file
+<b class="nc"><i>1321</i>&nbsp;        String url = ua_stylesheet.getUrl();</b>
+<b class="nc"><i>1322</i>&nbsp;        final String fname = url != null ? url.trim() : &quot;&quot;;</b>
+<i>1323</i>&nbsp;
+<b class="nc"><i>1324</i>&nbsp;        synchronized (styleLock) {</b>
+<i>1325</i>&nbsp;            // if we already have this stylesheet, bail
+<b class="nc"><i>1326</i>&nbsp;            for (int n=0, nMax= platformUserAgentStylesheetContainers.size(); n &lt; nMax; n++) {</b>
+<b class="nc"><i>1327</i>&nbsp;                StylesheetContainer container = platformUserAgentStylesheetContainers.get(n);</b>
+<b class="nc"><i>1328</i>&nbsp;                if (fname.equals(container.fname)) {</b>
+<b class="nc"><i>1329</i>&nbsp;                    return;</b>
+<i>1330</i>&nbsp;                }
+<i>1331</i>&nbsp;            }
+<i>1332</i>&nbsp;
+<b class="nc"><i>1333</i>&nbsp;            platformUserAgentStylesheetContainers.add(new StylesheetContainer(fname, ua_stylesheet));</b>
+<i>1334</i>&nbsp;
+<b class="nc"><i>1335</i>&nbsp;            if (ua_stylesheet != null) {</b>
+<b class="nc"><i>1336</i>&nbsp;                ua_stylesheet.setOrigin(StyleOrigin.USER_AGENT);</b>
+<i>1337</i>&nbsp;            }
+<b class="nc"><i>1338</i>&nbsp;            userAgentStylesheetsChanged();</b>
+<b class="nc"><i>1339</i>&nbsp;        }</b>
+<b class="nc"><i>1340</i>&nbsp;    }</b>
+<i>1341</i>&nbsp;
+<i>1342</i>&nbsp;    /**
+<i>1343</i>&nbsp;     * Set the default user agent stylesheet.
+<i>1344</i>&nbsp;     *
+<i>1345</i>&nbsp;     * @param fname The file URL, either relative or absolute, as a String.
+<i>1346</i>&nbsp;     */
+<i>1347</i>&nbsp;    public void setDefaultUserAgentStylesheet(String fname) {
+<b class="nc"><i>1348</i>&nbsp;        setDefaultUserAgentStylesheet(null, fname);</b>
+<b class="nc"><i>1349</i>&nbsp;    }</b>
+<i>1350</i>&nbsp;
+<i>1351</i>&nbsp;    /**
+<i>1352</i>&nbsp;     * Set the default user agent stylesheet
+<i>1353</i>&nbsp;     * @param scene Only used in CssError for tracking back to the scene that loaded the stylesheet
+<i>1354</i>&nbsp;     * @param url  The file URL, either relative or absolute, as a String.
+<i>1355</i>&nbsp;     */
+<i>1356</i>&nbsp;    // For RT-20643
+<i>1357</i>&nbsp;    public void setDefaultUserAgentStylesheet(Scene scene, String url) {
+<i>1358</i>&nbsp;
+<b class="nc"><i>1359</i>&nbsp;        final String fname = (url != null) ? url.trim() : null;</b>
+<b class="nc"><i>1360</i>&nbsp;        if (fname == null || fname.isEmpty()) {</b>
+<b class="nc"><i>1361</i>&nbsp;            return;</b>
+<i>1362</i>&nbsp;        }
+<i>1363</i>&nbsp;
+<b class="nc"><i>1364</i>&nbsp;        synchronized (styleLock) {</b>
+<b class="nc"><i>1365</i>&nbsp;            if(_setDefaultUserAgentStylesheet(fname)) {</b>
+<b class="nc"><i>1366</i>&nbsp;                userAgentStylesheetsChanged();</b>
+<i>1367</i>&nbsp;            }
+<b class="nc"><i>1368</i>&nbsp;        }</b>
+<b class="nc"><i>1369</i>&nbsp;    }</b>
+<i>1370</i>&nbsp;
+<i>1371</i>&nbsp;    // fname is expected to be non null and non empty
+<i>1372</i>&nbsp;    private boolean _setDefaultUserAgentStylesheet(String fname) {
+<i>1373</i>&nbsp;
+<b class="fc"><i>1374</i>&nbsp;        synchronized (styleLock) {</b>
+<i>1375</i>&nbsp;            // if we already have this stylesheet, make sure it is the first element
+<b class="fc"><i>1376</i>&nbsp;            for (int n=0, nMax= platformUserAgentStylesheetContainers.size(); n &lt; nMax; n++) {</b>
+<b class="nc"><i>1377</i>&nbsp;                StylesheetContainer container = platformUserAgentStylesheetContainers.get(n);</b>
+<b class="nc"><i>1378</i>&nbsp;                if (fname.equals(container.fname)) {</b>
+<b class="nc"><i>1379</i>&nbsp;                    if (n &gt; 0) {</b>
+<b class="nc"><i>1380</i>&nbsp;                        platformUserAgentStylesheetContainers.remove(n);</b>
+<b class="nc"><i>1381</i>&nbsp;                        if (hasDefaultUserAgentStylesheet) {</b>
+<b class="nc"><i>1382</i>&nbsp;                            platformUserAgentStylesheetContainers.set(0, container);</b>
+<i>1383</i>&nbsp;                        } else {
+<b class="nc"><i>1384</i>&nbsp;                            platformUserAgentStylesheetContainers.add(0, container);</b>
+<i>1385</i>&nbsp;                        }
+<i>1386</i>&nbsp;                    }
+<i>1387</i>&nbsp;                    // return true only if platformUserAgentStylesheetContainers was modified
+<b class="nc"><i>1388</i>&nbsp;                    return n &gt; 0;</b>
+<i>1389</i>&nbsp;                }
+<i>1390</i>&nbsp;            }
+<i>1391</i>&nbsp;
+<b class="fc"><i>1392</i>&nbsp;            final Stylesheet ua_stylesheet = loadStylesheet(fname);</b>
+<i>1393</i>&nbsp;
+<b class="fc"><i>1394</i>&nbsp;            if (ua_stylesheet == null) return false;</b>
+<i>1395</i>&nbsp;
+<b class="fc"><i>1396</i>&nbsp;            ua_stylesheet.setOrigin(StyleOrigin.USER_AGENT);</b>
+<b class="fc"><i>1397</i>&nbsp;            final StylesheetContainer sc = new StylesheetContainer(fname, ua_stylesheet);</b>
+<i>1398</i>&nbsp;
+<b class="fc"><i>1399</i>&nbsp;            if (platformUserAgentStylesheetContainers.size() == 0) {</b>
+<b class="fc"><i>1400</i>&nbsp;                platformUserAgentStylesheetContainers.add(sc);</b>
+<i>1401</i>&nbsp;            }
+<b class="nc"><i>1402</i>&nbsp;            else if (hasDefaultUserAgentStylesheet) {</b>
+<b class="nc"><i>1403</i>&nbsp;                platformUserAgentStylesheetContainers.set(0,sc);</b>
+<i>1404</i>&nbsp;            }
+<i>1405</i>&nbsp;            else {
+<b class="nc"><i>1406</i>&nbsp;                platformUserAgentStylesheetContainers.add(0,sc);</b>
+<i>1407</i>&nbsp;            }
+<b class="fc"><i>1408</i>&nbsp;            hasDefaultUserAgentStylesheet = true;</b>
+<i>1409</i>&nbsp;
+<b class="fc"><i>1410</i>&nbsp;            return true;</b>
+<b class="nc"><i>1411</i>&nbsp;        }</b>
+<i>1412</i>&nbsp;    }
+<i>1413</i>&nbsp;
+<i>1414</i>&nbsp;    /**
+<i>1415</i>&nbsp;     * Removes the specified stylesheet from the application default user agent
+<i>1416</i>&nbsp;     * stylesheet list.
+<i>1417</i>&nbsp;     * @param url  The file URL, either relative or absolute, as a String.
+<i>1418</i>&nbsp;     */
+<i>1419</i>&nbsp;    public void removeUserAgentStylesheet(String url) {
+<i>1420</i>&nbsp;
+<b class="nc"><i>1421</i>&nbsp;        final String fname = (url != null) ? url.trim() : null;</b>
+<b class="nc"><i>1422</i>&nbsp;        if (fname == null || fname.isEmpty()) {</b>
+<b class="nc"><i>1423</i>&nbsp;            return;</b>
+<i>1424</i>&nbsp;        }
+<i>1425</i>&nbsp;
+<b class="nc"><i>1426</i>&nbsp;        synchronized (styleLock) {</b>
+<i>1427</i>&nbsp;            // if we already have this stylesheet, remove it!
+<b class="nc"><i>1428</i>&nbsp;            boolean removed = false;</b>
+<b class="nc"><i>1429</i>&nbsp;            for (int n = platformUserAgentStylesheetContainers.size() - 1; n &gt;= 0; n--) {</b>
+<i>1430</i>&nbsp;                // don&#39;t remove the platform default user agent stylesheet
+<b class="nc"><i>1431</i>&nbsp;                if (fname.equals(Application.getUserAgentStylesheet())) {</b>
+<b class="nc"><i>1432</i>&nbsp;                    continue;</b>
+<i>1433</i>&nbsp;                }
+<i>1434</i>&nbsp;
+<b class="nc"><i>1435</i>&nbsp;                StylesheetContainer container = platformUserAgentStylesheetContainers.get(n);</b>
+<b class="nc"><i>1436</i>&nbsp;                if (fname.equals(container.fname)) {</b>
+<b class="nc"><i>1437</i>&nbsp;                    platformUserAgentStylesheetContainers.remove(n);</b>
+<b class="nc"><i>1438</i>&nbsp;                    removed = true;</b>
+<i>1439</i>&nbsp;                }
+<i>1440</i>&nbsp;            }
+<i>1441</i>&nbsp;
+<b class="nc"><i>1442</i>&nbsp;            if (removed) {</b>
+<b class="nc"><i>1443</i>&nbsp;                userAgentStylesheetsChanged();</b>
+<i>1444</i>&nbsp;            }
+<b class="nc"><i>1445</i>&nbsp;        }</b>
+<b class="nc"><i>1446</i>&nbsp;    }</b>
+<i>1447</i>&nbsp;
+<i>1448</i>&nbsp;    /**
+<i>1449</i>&nbsp;     * Set the user agent stylesheet. This is the base default stylesheet for
+<i>1450</i>&nbsp;     * the platform
+<i>1451</i>&nbsp;     */
+<i>1452</i>&nbsp;    public void setDefaultUserAgentStylesheet(Stylesheet ua_stylesheet) {
+<b class="nc"><i>1453</i>&nbsp;        if (ua_stylesheet == null ) {</b>
+<b class="nc"><i>1454</i>&nbsp;            return;</b>
+<i>1455</i>&nbsp;        }
+<i>1456</i>&nbsp;
+<i>1457</i>&nbsp;        // null url is ok, just means that it is a stylesheet not loaded from a file
+<b class="nc"><i>1458</i>&nbsp;        String url = ua_stylesheet.getUrl();</b>
+<b class="nc"><i>1459</i>&nbsp;        final String fname = url != null ? url.trim() : &quot;&quot;;</b>
+<i>1460</i>&nbsp;
+<b class="nc"><i>1461</i>&nbsp;        synchronized (styleLock) {</b>
+<i>1462</i>&nbsp;            // if we already have this stylesheet, make sure it is the first element
+<b class="nc"><i>1463</i>&nbsp;            for (int n=0, nMax= platformUserAgentStylesheetContainers.size(); n &lt; nMax; n++) {</b>
+<b class="nc"><i>1464</i>&nbsp;                StylesheetContainer container = platformUserAgentStylesheetContainers.get(n);</b>
+<b class="nc"><i>1465</i>&nbsp;                if (fname.equals(container.fname)) {</b>
+<b class="nc"><i>1466</i>&nbsp;                    if (n &gt; 0) {</b>
+<b class="nc"><i>1467</i>&nbsp;                        platformUserAgentStylesheetContainers.remove(n);</b>
+<b class="nc"><i>1468</i>&nbsp;                        if (hasDefaultUserAgentStylesheet) {</b>
+<b class="nc"><i>1469</i>&nbsp;                            platformUserAgentStylesheetContainers.set(0, container);</b>
+<i>1470</i>&nbsp;                        } else {
+<b class="nc"><i>1471</i>&nbsp;                            platformUserAgentStylesheetContainers.add(0, container);</b>
+<i>1472</i>&nbsp;                        }
+<i>1473</i>&nbsp;                    }
+<b class="nc"><i>1474</i>&nbsp;                    return;</b>
+<i>1475</i>&nbsp;                }
+<i>1476</i>&nbsp;            }
+<i>1477</i>&nbsp;
+<b class="nc"><i>1478</i>&nbsp;            StylesheetContainer sc = new StylesheetContainer(fname, ua_stylesheet);</b>
+<b class="nc"><i>1479</i>&nbsp;            if (platformUserAgentStylesheetContainers.size() == 0) {</b>
+<b class="nc"><i>1480</i>&nbsp;                platformUserAgentStylesheetContainers.add(sc);</b>
+<b class="nc"><i>1481</i>&nbsp;            } else if (hasDefaultUserAgentStylesheet) {</b>
+<b class="nc"><i>1482</i>&nbsp;                platformUserAgentStylesheetContainers.set(0,sc);</b>
+<i>1483</i>&nbsp;            } else {
+<b class="nc"><i>1484</i>&nbsp;                platformUserAgentStylesheetContainers.add(0,sc);</b>
+<i>1485</i>&nbsp;            }
+<b class="nc"><i>1486</i>&nbsp;            hasDefaultUserAgentStylesheet = true;</b>
+<i>1487</i>&nbsp;
+<b class="nc"><i>1488</i>&nbsp;            ua_stylesheet.setOrigin(StyleOrigin.USER_AGENT);</b>
+<b class="nc"><i>1489</i>&nbsp;            userAgentStylesheetsChanged();</b>
+<b class="nc"><i>1490</i>&nbsp;        }</b>
+<b class="nc"><i>1491</i>&nbsp;    }</b>
+<i>1492</i>&nbsp;
+<i>1493</i>&nbsp;    /*
+<i>1494</i>&nbsp;     * If the userAgentStylesheets change, then all scenes are updated.
+<i>1495</i>&nbsp;     */
+<i>1496</i>&nbsp;    private void userAgentStylesheetsChanged() {
+<i>1497</i>&nbsp;
+<b class="fc"><i>1498</i>&nbsp;        List&lt;Parent&gt; parents = new ArrayList&lt;&gt;();</b>
+<i>1499</i>&nbsp;
+<b class="fc"><i>1500</i>&nbsp;        synchronized (styleLock) {</b>
+<b class="fc"><i>1501</i>&nbsp;            for (CacheContainer container : cacheContainerMap.values()) {</b>
+<b class="nc"><i>1502</i>&nbsp;                container.clearCache();</b>
+<b class="nc"><i>1503</i>&nbsp;            }</b>
+<i>1504</i>&nbsp;
+<b class="fc"><i>1505</i>&nbsp;            StyleConverter.clearCache();</b>
+<i>1506</i>&nbsp;
+<b class="fc"><i>1507</i>&nbsp;            for (Parent root : cacheContainerMap.keySet()) {</b>
+<b class="nc"><i>1508</i>&nbsp;                if (root == null) {</b>
+<b class="nc"><i>1509</i>&nbsp;                    continue;</b>
+<i>1510</i>&nbsp;                }
+<b class="nc"><i>1511</i>&nbsp;                parents.add(root);</b>
+<b class="nc"><i>1512</i>&nbsp;            }</b>
+<b class="fc"><i>1513</i>&nbsp;        }</b>
+<i>1514</i>&nbsp;
+<b class="fc"><i>1515</i>&nbsp;        for (Parent root : parents) NodeHelper.reapplyCSS(root);</b>
+<b class="fc"><i>1516</i>&nbsp;    }</b>
+<i>1517</i>&nbsp;
+<i>1518</i>&nbsp;    private List&lt;StylesheetContainer&gt; processStylesheets(List&lt;String&gt; stylesheets, Parent parent) {
+<i>1519</i>&nbsp;
+<b class="nc"><i>1520</i>&nbsp;        synchronized (styleLock) {</b>
+<b class="nc"><i>1521</i>&nbsp;            final List&lt;StylesheetContainer&gt; list = new ArrayList&lt;StylesheetContainer&gt;();</b>
+<b class="nc"><i>1522</i>&nbsp;            for (int n = 0, nMax = stylesheets.size(); n &lt; nMax; n++) {</b>
+<b class="nc"><i>1523</i>&nbsp;                final String fname = stylesheets.get(n);</b>
+<i>1524</i>&nbsp;
+<b class="nc"><i>1525</i>&nbsp;                StylesheetContainer container = null;</b>
+<b class="nc"><i>1526</i>&nbsp;                if (stylesheetContainerMap.containsKey(fname)) {</b>
+<b class="nc"><i>1527</i>&nbsp;                    container = stylesheetContainerMap.get(fname);</b>
+<i>1528</i>&nbsp;
+<b class="nc"><i>1529</i>&nbsp;                    if (!list.contains(container)) {</b>
+<i>1530</i>&nbsp;                        // minor optimization: if existing checksum in byte[0], then don&#39;t bother recalculating
+<b class="nc"><i>1531</i>&nbsp;                        if (container.checksumInvalid) {</b>
+<b class="nc"><i>1532</i>&nbsp;                            final byte[] checksum = calculateCheckSum(fname);</b>
+<b class="nc"><i>1533</i>&nbsp;                            if (!Arrays.equals(checksum, container.checksum)) {</b>
+<b class="nc"><i>1534</i>&nbsp;                                removeStylesheetContainer(container);</b>
+<i>1535</i>&nbsp;
+<i>1536</i>&nbsp;                                // Stylesheet did change. Re-load the stylesheet and update the container map.
+<b class="nc"><i>1537</i>&nbsp;                                Stylesheet stylesheet = loadStylesheet(fname);</b>
+<b class="nc"><i>1538</i>&nbsp;                                container = new StylesheetContainer(fname, stylesheet, checksum);</b>
+<b class="nc"><i>1539</i>&nbsp;                                stylesheetContainerMap.put(fname, container);</b>
+<b class="nc"><i>1540</i>&nbsp;                            } else {</b>
+<b class="nc"><i>1541</i>&nbsp;                                container.checksumInvalid = false;</b>
+<i>1542</i>&nbsp;                            }
+<i>1543</i>&nbsp;                        }
+<b class="nc"><i>1544</i>&nbsp;                        list.add(container);</b>
+<i>1545</i>&nbsp;                    }
+<i>1546</i>&nbsp;
+<i>1547</i>&nbsp;                    // RT-22565: remember that this parent or scene uses this stylesheet.
+<i>1548</i>&nbsp;                    // Later, if the cache is cleared, the parent or scene is told to
+<i>1549</i>&nbsp;                    // reapply css.
+<b class="nc"><i>1550</i>&nbsp;                    container.parentUsers.add(parent);</b>
+<i>1551</i>&nbsp;
+<i>1552</i>&nbsp;                } else {
+<b class="nc"><i>1553</i>&nbsp;                    final Stylesheet stylesheet = loadStylesheet(fname);</b>
+<i>1554</i>&nbsp;                    // stylesheet may be null which would mean that some IOException
+<i>1555</i>&nbsp;                    // was thrown while trying to load it. Add it to the
+<i>1556</i>&nbsp;                    // stylesheetContainerMap anyway as this will prevent further
+<i>1557</i>&nbsp;                    // attempts to parse the file
+<b class="nc"><i>1558</i>&nbsp;                    container = new StylesheetContainer(fname, stylesheet);</b>
+<i>1559</i>&nbsp;                    // RT-22565: remember that this parent or scene uses this stylesheet.
+<i>1560</i>&nbsp;                    // Later, if the cache is cleared, the parent or scene is told to
+<i>1561</i>&nbsp;                    // reapply css.
+<b class="nc"><i>1562</i>&nbsp;                    container.parentUsers.add(parent);</b>
+<b class="nc"><i>1563</i>&nbsp;                    stylesheetContainerMap.put(fname, container);</b>
+<i>1564</i>&nbsp;
+<b class="nc"><i>1565</i>&nbsp;                    list.add(container);</b>
+<i>1566</i>&nbsp;                }
+<i>1567</i>&nbsp;            }
+<b class="nc"><i>1568</i>&nbsp;            return list;</b>
+<b class="nc"><i>1569</i>&nbsp;        }</b>
+<i>1570</i>&nbsp;    }
+<i>1571</i>&nbsp;
+<i>1572</i>&nbsp;    //
+<i>1573</i>&nbsp;    // recurse so that stylesheets of Parents closest to the root are
+<i>1574</i>&nbsp;    // added to the list first. The ensures that declarations for
+<i>1575</i>&nbsp;    // stylesheets further down the tree (closer to the leaf) have
+<i>1576</i>&nbsp;    // a higher ordinal in the cascade.
+<i>1577</i>&nbsp;    //
+<i>1578</i>&nbsp;    private List&lt;StylesheetContainer&gt; gatherParentStylesheets(final Parent parent) {
+<i>1579</i>&nbsp;
+<b class="fc"><i>1580</i>&nbsp;        if (parent == null) {</b>
+<b class="fc"><i>1581</i>&nbsp;            return Collections.&lt;StylesheetContainer&gt;emptyList();</b>
+<i>1582</i>&nbsp;        }
+<i>1583</i>&nbsp;
+<b class="fc"><i>1584</i>&nbsp;        final List&lt;String&gt; parentStylesheets = ParentHelper.getAllParentStylesheets(parent);</b>
+<i>1585</i>&nbsp;
+<b class="fc"><i>1586</i>&nbsp;        if (parentStylesheets == null || parentStylesheets.isEmpty()) {</b>
+<b class="fc"><i>1587</i>&nbsp;            return Collections.&lt;StylesheetContainer&gt;emptyList();</b>
+<i>1588</i>&nbsp;        }
+<i>1589</i>&nbsp;
+<b class="nc"><i>1590</i>&nbsp;        synchronized (styleLock) {</b>
+<b class="nc"><i>1591</i>&nbsp;            return processStylesheets(parentStylesheets, parent);</b>
+<b class="nc"><i>1592</i>&nbsp;        }</b>
+<i>1593</i>&nbsp;    }
+<i>1594</i>&nbsp;
+<i>1595</i>&nbsp;    //
+<i>1596</i>&nbsp;    //
+<i>1597</i>&nbsp;    //
+<i>1598</i>&nbsp;    private List&lt;StylesheetContainer&gt; gatherSceneStylesheets(final Scene scene) {
+<i>1599</i>&nbsp;
+<b class="fc"><i>1600</i>&nbsp;        if (scene == null) {</b>
+<b class="nc"><i>1601</i>&nbsp;            return Collections.&lt;StylesheetContainer&gt;emptyList();</b>
+<i>1602</i>&nbsp;        }
+<i>1603</i>&nbsp;
+<b class="fc"><i>1604</i>&nbsp;        final List&lt;String&gt; sceneStylesheets = scene.getStylesheets();</b>
+<i>1605</i>&nbsp;
+<b class="fc"><i>1606</i>&nbsp;        if (sceneStylesheets == null || sceneStylesheets.isEmpty()) {</b>
+<b class="fc"><i>1607</i>&nbsp;            return Collections.&lt;StylesheetContainer&gt;emptyList();</b>
+<i>1608</i>&nbsp;        }
+<i>1609</i>&nbsp;
+<b class="nc"><i>1610</i>&nbsp;        synchronized (styleLock) {</b>
+<b class="nc"><i>1611</i>&nbsp;            return processStylesheets(sceneStylesheets, scene.getRoot());</b>
+<b class="nc"><i>1612</i>&nbsp;        }</b>
+<i>1613</i>&nbsp;    }
+<i>1614</i>&nbsp;
+<i>1615</i>&nbsp;    // reuse key to avoid creation of numerous small objects
+<b class="fc"><i>1616</i>&nbsp;    private Key key = null;</b>
+<i>1617</i>&nbsp;
+<i>1618</i>&nbsp;    // Stores weak references to regions which return non-null user agent stylesheets
+<b class="fc"><i>1619</i>&nbsp;    private final WeakHashMap&lt;Region, String&gt; weakRegionUserAgentStylesheetMap = new WeakHashMap&lt;&gt;();</b>
+<i>1620</i>&nbsp;
+<i>1621</i>&nbsp;    /**
+<i>1622</i>&nbsp;     * Finds matching styles for this Node.
+<i>1623</i>&nbsp;     */
+<i>1624</i>&nbsp;    public StyleMap findMatchingStyles(Node node, SubScene subScene, Set&lt;PseudoClass&gt;[] triggerStates) {
+<i>1625</i>&nbsp;
+<b class="fc"><i>1626</i>&nbsp;        final Scene scene = node.getScene();</b>
+<b class="fc"><i>1627</i>&nbsp;        if (scene == null) {</b>
+<b class="nc"><i>1628</i>&nbsp;            return StyleMap.EMPTY_MAP;</b>
+<i>1629</i>&nbsp;        }
+<i>1630</i>&nbsp;
+<b class="fc"><i>1631</i>&nbsp;        CacheContainer cacheContainer = getCacheContainer(node, subScene);</b>
+<b class="fc"><i>1632</i>&nbsp;        if (cacheContainer == null) {</b>
+<b class="nc"><i>1633</i>&nbsp;            assert false : node.toString();</b>
+<b class="nc"><i>1634</i>&nbsp;            return StyleMap.EMPTY_MAP;</b>
+<i>1635</i>&nbsp;        }
+<i>1636</i>&nbsp;
+<b class="fc"><i>1637</i>&nbsp;        synchronized (styleLock) {</b>
+<i>1638</i>&nbsp;            final Parent parent =
+<b class="fc"><i>1639</i>&nbsp;                (node instanceof Parent)</b>
+<b class="fc"><i>1640</i>&nbsp;                    ? (Parent) node : node.getParent();</b>
+<i>1641</i>&nbsp;
+<b class="fc"><i>1642</i>&nbsp;            final List&lt;StylesheetContainer&gt; parentStylesheets =</b>
+<b class="fc"><i>1643</i>&nbsp;                        gatherParentStylesheets(parent);</b>
+<i>1644</i>&nbsp;
+<b class="fc"><i>1645</i>&nbsp;            final boolean hasParentStylesheets = parentStylesheets.isEmpty() == false;</b>
+<i>1646</i>&nbsp;
+<b class="fc"><i>1647</i>&nbsp;            final List&lt;StylesheetContainer&gt; sceneStylesheets = gatherSceneStylesheets(scene);</b>
+<i>1648</i>&nbsp;
+<b class="fc"><i>1649</i>&nbsp;            final boolean hasSceneStylesheets = sceneStylesheets.isEmpty() == false;</b>
+<i>1650</i>&nbsp;
+<b class="fc"><i>1651</i>&nbsp;            final String inlineStyle = node.getStyle();</b>
+<b class="fc"><i>1652</i>&nbsp;            final boolean hasInlineStyles = inlineStyle != null &amp;&amp; inlineStyle.trim().isEmpty() == false;</b>
+<i>1653</i>&nbsp;
+<b class="fc"><i>1654</i>&nbsp;            final String sceneUserAgentStylesheet = scene.getUserAgentStylesheet();</b>
+<b class="fc"><i>1655</i>&nbsp;            final boolean hasSceneUserAgentStylesheet =</b>
+<b class="nc"><i>1656</i>&nbsp;                    sceneUserAgentStylesheet != null &amp;&amp; sceneUserAgentStylesheet.trim().isEmpty() == false;</b>
+<i>1657</i>&nbsp;
+<i>1658</i>&nbsp;            final String subSceneUserAgentStylesheet =
+<b class="fc"><i>1659</i>&nbsp;                    (subScene != null) ? subScene.getUserAgentStylesheet() : null;</b>
+<b class="fc"><i>1660</i>&nbsp;            final boolean hasSubSceneUserAgentStylesheet =</b>
+<b class="nc"><i>1661</i>&nbsp;                    subSceneUserAgentStylesheet != null &amp;&amp; subSceneUserAgentStylesheet.trim().isEmpty() == false;</b>
+<i>1662</i>&nbsp;
+<b class="fc"><i>1663</i>&nbsp;            String regionUserAgentStylesheet = null;</b>
+<i>1664</i>&nbsp;            // is this node in a region that has its own stylesheet?
+<b class="fc"><i>1665</i>&nbsp;            Node region = node;</b>
+<b class="fc"><i>1666</i>&nbsp;            while (region != null) {</b>
+<b class="fc"><i>1667</i>&nbsp;                if (region instanceof Region) {</b>
+<b class="fc"><i>1668</i>&nbsp;                    regionUserAgentStylesheet = weakRegionUserAgentStylesheetMap.computeIfAbsent(</b>
+<i>1669</i>&nbsp;                            (Region)region, Region::getUserAgentStylesheet);
+<i>1670</i>&nbsp;
+<b class="fc"><i>1671</i>&nbsp;                    if (regionUserAgentStylesheet != null) {</b>
+<i>1672</i>&nbsp;                        // We want &#39;region&#39; to be the node that has the user agent stylesheet.
+<i>1673</i>&nbsp;                        // &#39;region&#39; is used below - look for if (hasRegionUserAgentStylesheet) block
+<b class="nc"><i>1674</i>&nbsp;                        break;</b>
+<i>1675</i>&nbsp;                    }
+<i>1676</i>&nbsp;                }
+<b class="fc"><i>1677</i>&nbsp;                region = region.getParent();</b>
+<i>1678</i>&nbsp;            }
+<i>1679</i>&nbsp;
+<i>1680</i>&nbsp;
+<b class="fc"><i>1681</i>&nbsp;            final boolean hasRegionUserAgentStylesheet =</b>
+<b class="nc"><i>1682</i>&nbsp;                    regionUserAgentStylesheet != null &amp;&amp; regionUserAgentStylesheet.trim().isEmpty() == false;</b>
+<i>1683</i>&nbsp;
+<i>1684</i>&nbsp;            //
+<i>1685</i>&nbsp;            // Are there any stylesheets at all?
+<i>1686</i>&nbsp;            // If not, then there is nothing to match and the
+<i>1687</i>&nbsp;            // resulting StyleMap is going to end up empty
+<i>1688</i>&nbsp;            //
+<b class="fc"><i>1689</i>&nbsp;            if (hasInlineStyles == false</b>
+<i>1690</i>&nbsp;                    &amp;&amp; hasParentStylesheets == false
+<i>1691</i>&nbsp;                    &amp;&amp; hasSceneStylesheets == false
+<i>1692</i>&nbsp;                    &amp;&amp; hasSceneUserAgentStylesheet == false
+<i>1693</i>&nbsp;                    &amp;&amp; hasSubSceneUserAgentStylesheet == false
+<i>1694</i>&nbsp;                    &amp;&amp; hasRegionUserAgentStylesheet == false
+<b class="fc"><i>1695</i>&nbsp;                    &amp;&amp; platformUserAgentStylesheetContainers.isEmpty()) {</b>
+<b class="nc"><i>1696</i>&nbsp;                return StyleMap.EMPTY_MAP;</b>
+<i>1697</i>&nbsp;            }
+<i>1698</i>&nbsp;
+<b class="fc"><i>1699</i>&nbsp;            final String cname = node.getTypeSelector();</b>
+<b class="fc"><i>1700</i>&nbsp;            final String id = node.getId();</b>
+<b class="fc"><i>1701</i>&nbsp;            final List&lt;String&gt; styleClasses = node.getStyleClass();</b>
+<i>1702</i>&nbsp;
+<b class="fc"><i>1703</i>&nbsp;            if (key == null) {</b>
+<b class="fc"><i>1704</i>&nbsp;                key = new Key();</b>
+<i>1705</i>&nbsp;            }
+<i>1706</i>&nbsp;
+<b class="fc"><i>1707</i>&nbsp;            key.className = cname;</b>
+<b class="fc"><i>1708</i>&nbsp;            key.id = id;</b>
+<b class="fc"><i>1709</i>&nbsp;            for(int n=0, nMax=styleClasses.size(); n&lt;nMax; n++) {</b>
+<i>1710</i>&nbsp;
+<b class="fc"><i>1711</i>&nbsp;                final String styleClass = styleClasses.get(n);</b>
+<b class="fc"><i>1712</i>&nbsp;                if (styleClass == null || styleClass.isEmpty()) continue;</b>
+<i>1713</i>&nbsp;
+<b class="fc"><i>1714</i>&nbsp;                key.styleClasses.add(StyleClassSet.getStyleClass(styleClass));</b>
+<i>1715</i>&nbsp;            }
+<i>1716</i>&nbsp;
+<b class="fc"><i>1717</i>&nbsp;            Map&lt;Key, Cache&gt; cacheMap = cacheContainer.getCacheMap(parentStylesheets,regionUserAgentStylesheet);</b>
+<b class="fc"><i>1718</i>&nbsp;            Cache cache = cacheMap.get(key);</b>
+<i>1719</i>&nbsp;
+<b class="fc"><i>1720</i>&nbsp;            if (cache != null) {</b>
+<i>1721</i>&nbsp;                // key will be reused, so clear the styleClasses for next use
+<b class="fc"><i>1722</i>&nbsp;                key.styleClasses.clear();</b>
+<i>1723</i>&nbsp;
+<i>1724</i>&nbsp;            } else {
+<i>1725</i>&nbsp;
+<i>1726</i>&nbsp;                // If the cache is null, then we need to create a new Cache and
+<i>1727</i>&nbsp;                // add it to the cache map
+<i>1728</i>&nbsp;
+<i>1729</i>&nbsp;                // Construct the list of Selectors that could possibly apply
+<b class="fc"><i>1730</i>&nbsp;                final List&lt;Selector&gt; selectorData = new ArrayList&lt;&gt;();</b>
+<i>1731</i>&nbsp;
+<i>1732</i>&nbsp;                // User agent stylesheets have lowest precedence and go first
+<b class="fc"><i>1733</i>&nbsp;                if (hasSubSceneUserAgentStylesheet || hasSceneUserAgentStylesheet) {</b>
+<i>1734</i>&nbsp;
+<i>1735</i>&nbsp;                    // if has both, use SubScene
+<b class="nc"><i>1736</i>&nbsp;                    final String uaFileName = hasSubSceneUserAgentStylesheet ?</b>
+<b class="nc"><i>1737</i>&nbsp;                            subScene.getUserAgentStylesheet().trim() :</b>
+<b class="nc"><i>1738</i>&nbsp;                            scene.getUserAgentStylesheet().trim();</b>
+<i>1739</i>&nbsp;
+<i>1740</i>&nbsp;
+<b class="nc"><i>1741</i>&nbsp;                    StylesheetContainer container = null;</b>
+<b class="nc"><i>1742</i>&nbsp;                    for (int n=0, nMax=userAgentStylesheetContainers.size(); n&lt;nMax; n++) {</b>
+<b class="nc"><i>1743</i>&nbsp;                        container = userAgentStylesheetContainers.get(n);</b>
+<b class="nc"><i>1744</i>&nbsp;                        if (uaFileName.equals(container.fname)) {</b>
+<b class="nc"><i>1745</i>&nbsp;                            break;</b>
+<i>1746</i>&nbsp;                        }
+<b class="nc"><i>1747</i>&nbsp;                        container = null;</b>
+<i>1748</i>&nbsp;                    }
+<i>1749</i>&nbsp;
+<b class="nc"><i>1750</i>&nbsp;                    if (container == null) {</b>
+<b class="nc"><i>1751</i>&nbsp;                        Stylesheet stylesheet = loadStylesheet(uaFileName);</b>
+<b class="nc"><i>1752</i>&nbsp;                        if (stylesheet != null) {</b>
+<b class="nc"><i>1753</i>&nbsp;                            stylesheet.setOrigin(StyleOrigin.USER_AGENT);</b>
+<i>1754</i>&nbsp;                        }
+<b class="nc"><i>1755</i>&nbsp;                        container = new StylesheetContainer(uaFileName, stylesheet);</b>
+<b class="nc"><i>1756</i>&nbsp;                        userAgentStylesheetContainers.add(container);</b>
+<i>1757</i>&nbsp;                    }
+<i>1758</i>&nbsp;
+<b class="nc"><i>1759</i>&nbsp;                    if (container.selectorPartitioning != null) {</b>
+<i>1760</i>&nbsp;
+<b class="nc"><i>1761</i>&nbsp;                        final Parent root = hasSubSceneUserAgentStylesheet ? subScene.getRoot() : scene.getRoot();</b>
+<b class="nc"><i>1762</i>&nbsp;                        container.parentUsers.add(root);</b>
+<i>1763</i>&nbsp;
+<b class="nc"><i>1764</i>&nbsp;                        final List&lt;Selector&gt; matchingRules =</b>
+<b class="nc"><i>1765</i>&nbsp;                                container.selectorPartitioning.match(id, cname, key.styleClasses);</b>
+<b class="nc"><i>1766</i>&nbsp;                        selectorData.addAll(matchingRules);</b>
+<i>1767</i>&nbsp;                    }
+<i>1768</i>&nbsp;
+<b class="nc"><i>1769</i>&nbsp;                } else if (platformUserAgentStylesheetContainers.isEmpty() == false) {</b>
+<b class="fc"><i>1770</i>&nbsp;                    for(int n=0, nMax= platformUserAgentStylesheetContainers.size(); n&lt;nMax; n++) {</b>
+<b class="fc"><i>1771</i>&nbsp;                        final StylesheetContainer container = platformUserAgentStylesheetContainers.get(n);</b>
+<b class="fc"><i>1772</i>&nbsp;                        if (container != null &amp;&amp; container.selectorPartitioning != null) {</b>
+<b class="fc"><i>1773</i>&nbsp;                            final List&lt;Selector&gt; matchingRules =</b>
+<b class="fc"><i>1774</i>&nbsp;                                    container.selectorPartitioning.match(id, cname, key.styleClasses);</b>
+<b class="fc"><i>1775</i>&nbsp;                            selectorData.addAll(matchingRules);</b>
+<i>1776</i>&nbsp;                        }
+<i>1777</i>&nbsp;                    }
+<i>1778</i>&nbsp;                }
+<i>1779</i>&nbsp;
+<b class="fc"><i>1780</i>&nbsp;                if (hasRegionUserAgentStylesheet) {</b>
+<i>1781</i>&nbsp;                    // Unfortunate duplication of code from previous block. No time to refactor.
+<b class="nc"><i>1782</i>&nbsp;                    StylesheetContainer container = null;</b>
+<b class="nc"><i>1783</i>&nbsp;                    for (int n=0, nMax=userAgentStylesheetContainers.size(); n&lt;nMax; n++) {</b>
+<b class="nc"><i>1784</i>&nbsp;                        container = userAgentStylesheetContainers.get(n);</b>
+<b class="nc"><i>1785</i>&nbsp;                        if (regionUserAgentStylesheet.equals(container.fname)) {</b>
+<b class="nc"><i>1786</i>&nbsp;                            break;</b>
+<i>1787</i>&nbsp;                        }
+<b class="nc"><i>1788</i>&nbsp;                        container = null;</b>
+<i>1789</i>&nbsp;                    }
+<i>1790</i>&nbsp;
+<b class="nc"><i>1791</i>&nbsp;                    if (container == null) {</b>
+<b class="nc"><i>1792</i>&nbsp;                        Stylesheet stylesheet = loadStylesheet(regionUserAgentStylesheet);</b>
+<b class="nc"><i>1793</i>&nbsp;                        if (stylesheet != null) {</b>
+<b class="nc"><i>1794</i>&nbsp;                            stylesheet.setOrigin(StyleOrigin.USER_AGENT);</b>
+<i>1795</i>&nbsp;                        }
+<b class="nc"><i>1796</i>&nbsp;                        container = new StylesheetContainer(regionUserAgentStylesheet, stylesheet);</b>
+<b class="nc"><i>1797</i>&nbsp;                        userAgentStylesheetContainers.add(container);</b>
+<i>1798</i>&nbsp;                    }
+<i>1799</i>&nbsp;
+<b class="nc"><i>1800</i>&nbsp;                    if (container.selectorPartitioning != null) {</b>
+<i>1801</i>&nbsp;
+<i>1802</i>&nbsp;                        // Depending on RefList add method not allowing duplicates.
+<b class="nc"><i>1803</i>&nbsp;                        container.parentUsers.add((Parent)region);</b>
+<i>1804</i>&nbsp;
+<b class="nc"><i>1805</i>&nbsp;                        final List&lt;Selector&gt; matchingRules =</b>
+<b class="nc"><i>1806</i>&nbsp;                                container.selectorPartitioning.match(id, cname, key.styleClasses);</b>
+<b class="nc"><i>1807</i>&nbsp;                        selectorData.addAll(matchingRules);</b>
+<i>1808</i>&nbsp;                    }
+<i>1809</i>&nbsp;
+<i>1810</i>&nbsp;                }
+<i>1811</i>&nbsp;
+<i>1812</i>&nbsp;                // Scene stylesheets come next since declarations from
+<i>1813</i>&nbsp;                // parent stylesheets should take precedence.
+<b class="fc"><i>1814</i>&nbsp;                if (sceneStylesheets.isEmpty() == false) {</b>
+<b class="nc"><i>1815</i>&nbsp;                    for(int n=0, nMax=sceneStylesheets.size(); n&lt;nMax; n++) {</b>
+<b class="nc"><i>1816</i>&nbsp;                        final StylesheetContainer container = sceneStylesheets.get(n);</b>
+<b class="nc"><i>1817</i>&nbsp;                        if (container != null &amp;&amp; container.selectorPartitioning != null) {</b>
+<b class="nc"><i>1818</i>&nbsp;                            final List&lt;Selector&gt; matchingRules =</b>
+<b class="nc"><i>1819</i>&nbsp;                                    container.selectorPartitioning.match(id, cname, key.styleClasses);</b>
+<b class="nc"><i>1820</i>&nbsp;                            selectorData.addAll(matchingRules);</b>
+<i>1821</i>&nbsp;                        }
+<i>1822</i>&nbsp;                    }
+<i>1823</i>&nbsp;                }
+<i>1824</i>&nbsp;
+<i>1825</i>&nbsp;                // lastly, parent stylesheets
+<b class="fc"><i>1826</i>&nbsp;                if (hasParentStylesheets) {</b>
+<b class="nc"><i>1827</i>&nbsp;                    final int nMax = parentStylesheets == null ? 0 : parentStylesheets.size();</b>
+<b class="nc"><i>1828</i>&nbsp;                    for(int n=0; n&lt;nMax; n++) {</b>
+<b class="nc"><i>1829</i>&nbsp;                        final StylesheetContainer container = parentStylesheets.get(n);</b>
+<b class="nc"><i>1830</i>&nbsp;                        if (container.selectorPartitioning != null) {</b>
+<b class="nc"><i>1831</i>&nbsp;                            final List&lt;Selector&gt; matchingRules =</b>
+<b class="nc"><i>1832</i>&nbsp;                                    container.selectorPartitioning.match(id, cname, key.styleClasses);</b>
+<b class="nc"><i>1833</i>&nbsp;                            selectorData.addAll(matchingRules);</b>
+<i>1834</i>&nbsp;                        }
+<i>1835</i>&nbsp;                    }
+<i>1836</i>&nbsp;                }
+<i>1837</i>&nbsp;
+<i>1838</i>&nbsp;                // create a new Cache from these selectors.
+<b class="fc"><i>1839</i>&nbsp;                cache = new Cache(selectorData);</b>
+<b class="fc"><i>1840</i>&nbsp;                cacheMap.put(key, cache);</b>
+<i>1841</i>&nbsp;
+<i>1842</i>&nbsp;                // cause a new Key to be created the next time this method is called
+<b class="fc"><i>1843</i>&nbsp;                key = null;</b>
+<i>1844</i>&nbsp;            }
+<i>1845</i>&nbsp;
+<i>1846</i>&nbsp;            //
+<i>1847</i>&nbsp;            // Create a style helper for this node from the styles that match.
+<i>1848</i>&nbsp;            //
+<b class="fc"><i>1849</i>&nbsp;            StyleMap smap = cache.getStyleMap(cacheContainer, node, triggerStates, hasInlineStyles);</b>
+<i>1850</i>&nbsp;
+<b class="fc"><i>1851</i>&nbsp;            return smap;</b>
+<b class="nc"><i>1852</i>&nbsp;        }</b>
+<i>1853</i>&nbsp;    }
+<i>1854</i>&nbsp;
+<i>1855</i>&nbsp;    ////////////////////////////////////////////////////////////////////////////
+<i>1856</i>&nbsp;    //
+<i>1857</i>&nbsp;    // CssError reporting
+<i>1858</i>&nbsp;    //
+<i>1859</i>&nbsp;    ////////////////////////////////////////////////////////////////////////////
+<i>1860</i>&nbsp;
+<b class="fc"><i>1861</i>&nbsp;    private static ObservableList&lt;CssParser.ParseError&gt; errors = null;</b>
+<i>1862</i>&nbsp;    /**
+<i>1863</i>&nbsp;     * Errors that may have occurred during css processing.
+<i>1864</i>&nbsp;     * This list is null until errorsProperty() is called.
+<i>1865</i>&nbsp;     *
+<i>1866</i>&nbsp;     * NOTE: this is not thread-safe, and cannot readily be made so given the
+<i>1867</i>&nbsp;     * nature of the API.
+<i>1868</i>&nbsp;     * Currently it is only used by SceneBuilder. If a public API is ever
+<i>1869</i>&nbsp;     * needed, then a new API should be designed.
+<i>1870</i>&nbsp;     *
+<i>1871</i>&nbsp;     * @return
+<i>1872</i>&nbsp;     */
+<i>1873</i>&nbsp;    public static ObservableList&lt;CssParser.ParseError&gt; errorsProperty() {
+<b class="nc"><i>1874</i>&nbsp;        if (errors == null) {</b>
+<b class="nc"><i>1875</i>&nbsp;            errors = FXCollections.observableArrayList();</b>
+<i>1876</i>&nbsp;        }
+<b class="nc"><i>1877</i>&nbsp;        return errors;</b>
+<i>1878</i>&nbsp;    }
+<i>1879</i>&nbsp;
+<i>1880</i>&nbsp;    /**
+<i>1881</i>&nbsp;     * Errors that may have occurred during css processing.
+<i>1882</i>&nbsp;     * This list is null until errorsProperty() is called and is used
+<i>1883</i>&nbsp;     * internally to figure out whether or  not anyone is interested in
+<i>1884</i>&nbsp;     * receiving CssError.
+<i>1885</i>&nbsp;     * Not meant for general use - call errorsProperty() instead.
+<i>1886</i>&nbsp;     * @return
+<i>1887</i>&nbsp;     */
+<i>1888</i>&nbsp;    public static ObservableList&lt;CssParser.ParseError&gt; getErrors() {
+<b class="nc"><i>1889</i>&nbsp;        return errors;</b>
+<i>1890</i>&nbsp;    }
+<i>1891</i>&nbsp;
+<i>1892</i>&nbsp;    ////////////////////////////////////////////////////////////////////////////
+<i>1893</i>&nbsp;    //
+<i>1894</i>&nbsp;    // Classes and routines for mapping styles to a Node
+<i>1895</i>&nbsp;    //
+<i>1896</i>&nbsp;    ////////////////////////////////////////////////////////////////////////////
+<i>1897</i>&nbsp;
+<i>1898</i>&nbsp;    private static List&lt;String&gt; cacheMapKey;
+<i>1899</i>&nbsp;
+<i>1900</i>&nbsp;    // Each Scene has its own cache
+<i>1901</i>&nbsp;    // package for testing
+<b class="fc"><i>1902</i>&nbsp;    static class CacheContainer {</b>
+<i>1903</i>&nbsp;
+<i>1904</i>&nbsp;        private Map&lt;StyleCache.Key,StyleCache&gt; getStyleCache() {
+<b class="fc"><i>1905</i>&nbsp;            if (styleCache == null) styleCache = new HashMap&lt;StyleCache.Key, StyleCache&gt;();</b>
+<b class="fc"><i>1906</i>&nbsp;            return styleCache;</b>
+<i>1907</i>&nbsp;        }
+<i>1908</i>&nbsp;
+<i>1909</i>&nbsp;        private Map&lt;Key,Cache&gt; getCacheMap(List&lt;StylesheetContainer&gt; parentStylesheets, String regionUserAgentStylesheet) {
+<i>1910</i>&nbsp;
+<b class="fc"><i>1911</i>&nbsp;            if (cacheMap == null) {</b>
+<b class="fc"><i>1912</i>&nbsp;                cacheMap = new HashMap&lt;List&lt;String&gt;,Map&lt;Key,Cache&gt;&gt;();</b>
+<i>1913</i>&nbsp;            }
+<i>1914</i>&nbsp;
+<b class="fc"><i>1915</i>&nbsp;            synchronized (styleLock) {</b>
+<b class="fc"><i>1916</i>&nbsp;                if ((parentStylesheets == null || parentStylesheets.isEmpty()) &amp;&amp;</b>
+<b class="nc"><i>1917</i>&nbsp;                        (regionUserAgentStylesheet == null || regionUserAgentStylesheet.isEmpty())) {</b>
+<i>1918</i>&nbsp;
+<b class="fc"><i>1919</i>&nbsp;                    Map&lt;Key,Cache&gt; cmap = cacheMap.get(null);</b>
+<b class="fc"><i>1920</i>&nbsp;                    if (cmap == null) {</b>
+<b class="fc"><i>1921</i>&nbsp;                        cmap = new HashMap&lt;Key,Cache&gt;();</b>
+<b class="fc"><i>1922</i>&nbsp;                        cacheMap.put(null, cmap);</b>
+<i>1923</i>&nbsp;                    }
+<b class="fc"><i>1924</i>&nbsp;                    return cmap;</b>
+<i>1925</i>&nbsp;
+<i>1926</i>&nbsp;                } else {
+<i>1927</i>&nbsp;
+<b class="nc"><i>1928</i>&nbsp;                    final int nMax = parentStylesheets.size();</b>
+<b class="nc"><i>1929</i>&nbsp;                    if (cacheMapKey == null) {</b>
+<b class="nc"><i>1930</i>&nbsp;                        cacheMapKey = new ArrayList&lt;String&gt;(nMax);</b>
+<i>1931</i>&nbsp;                    }
+<b class="nc"><i>1932</i>&nbsp;                    for (int n=0; n&lt;nMax; n++) {</b>
+<b class="nc"><i>1933</i>&nbsp;                        StylesheetContainer sc = parentStylesheets.get(n);</b>
+<b class="nc"><i>1934</i>&nbsp;                        if (sc == null || sc.fname == null || sc.fname.isEmpty()) continue;</b>
+<b class="nc"><i>1935</i>&nbsp;                        cacheMapKey.add(sc.fname);</b>
+<i>1936</i>&nbsp;                    }
+<b class="nc"><i>1937</i>&nbsp;                    if (regionUserAgentStylesheet != null) {</b>
+<b class="nc"><i>1938</i>&nbsp;                        cacheMapKey.add(regionUserAgentStylesheet);</b>
+<i>1939</i>&nbsp;                    }
+<b class="nc"><i>1940</i>&nbsp;                    Map&lt;Key,Cache&gt; cmap = cacheMap.get(cacheMapKey);</b>
+<b class="nc"><i>1941</i>&nbsp;                    if (cmap == null) {</b>
+<b class="nc"><i>1942</i>&nbsp;                        cmap = new HashMap&lt;Key,Cache&gt;();</b>
+<b class="nc"><i>1943</i>&nbsp;                        cacheMap.put(cacheMapKey, cmap);</b>
+<i>1944</i>&nbsp;                        // create a new cacheMapKey the next time this method is called
+<b class="nc"><i>1945</i>&nbsp;                        cacheMapKey = null;</b>
+<i>1946</i>&nbsp;                    } else {
+<i>1947</i>&nbsp;                        // reuse cacheMapKey, but not the data, the next time this method is called
+<b class="nc"><i>1948</i>&nbsp;                        cacheMapKey.clear();</b>
+<i>1949</i>&nbsp;                    }
+<b class="nc"><i>1950</i>&nbsp;                    return cmap;</b>
+<i>1951</i>&nbsp;
+<i>1952</i>&nbsp;                }
+<b class="nc"><i>1953</i>&nbsp;            }</b>
+<i>1954</i>&nbsp;
+<i>1955</i>&nbsp;        }
+<i>1956</i>&nbsp;
+<i>1957</i>&nbsp;        private List&lt;StyleMap&gt; getStyleMapList() {
+<b class="fc"><i>1958</i>&nbsp;            if (styleMapList == null) styleMapList = new ArrayList&lt;StyleMap&gt;();</b>
+<b class="fc"><i>1959</i>&nbsp;            return styleMapList;</b>
+<i>1960</i>&nbsp;        }
+<i>1961</i>&nbsp;
+<i>1962</i>&nbsp;        private int nextSmapId() {
+<b class="fc"><i>1963</i>&nbsp;            styleMapId = baseStyleMapId + getStyleMapList().size();</b>
+<b class="fc"><i>1964</i>&nbsp;            return styleMapId;</b>
+<i>1965</i>&nbsp;        }
+<i>1966</i>&nbsp;
+<i>1967</i>&nbsp;        private void addStyleMap(StyleMap smap) {
+<b class="fc"><i>1968</i>&nbsp;            getStyleMapList().add(smap);</b>
+<b class="fc"><i>1969</i>&nbsp;        }</b>
+<i>1970</i>&nbsp;
+<i>1971</i>&nbsp;        public StyleMap getStyleMap(int smapId) {
+<i>1972</i>&nbsp;
+<b class="fc"><i>1973</i>&nbsp;            final int correctedId = smapId - baseStyleMapId;</b>
+<i>1974</i>&nbsp;
+<b class="fc"><i>1975</i>&nbsp;            if (0 &lt;= correctedId &amp;&amp; correctedId &lt; getStyleMapList().size()) {</b>
+<b class="fc"><i>1976</i>&nbsp;                return getStyleMapList().get(correctedId);</b>
+<i>1977</i>&nbsp;            }
+<i>1978</i>&nbsp;
+<b class="nc"><i>1979</i>&nbsp;            return StyleMap.EMPTY_MAP;</b>
+<i>1980</i>&nbsp;        }
+<i>1981</i>&nbsp;
+<i>1982</i>&nbsp;        private void clearCache() {
+<i>1983</i>&nbsp;
+<b class="fc"><i>1984</i>&nbsp;            if (cacheMap != null) cacheMap.clear();</b>
+<b class="fc"><i>1985</i>&nbsp;            if (styleCache != null) styleCache.clear();</b>
+<b class="fc"><i>1986</i>&nbsp;            if (styleMapList != null) styleMapList.clear();</b>
+<i>1987</i>&nbsp;
+<b class="fc"><i>1988</i>&nbsp;            baseStyleMapId = styleMapId;</b>
+<i>1989</i>&nbsp;            // 7/8ths is totally arbitrary
+<b class="fc"><i>1990</i>&nbsp;            if (baseStyleMapId &gt; Integer.MAX_VALUE/8*7) {</b>
+<b class="nc"><i>1991</i>&nbsp;                baseStyleMapId = styleMapId = 0;</b>
+<i>1992</i>&nbsp;            }
+<b class="fc"><i>1993</i>&nbsp;        }</b>
+<i>1994</i>&nbsp;
+<i>1995</i>&nbsp;        /**
+<i>1996</i>&nbsp;         * Get the mapping of property to style from Node.style for this node.
+<i>1997</i>&nbsp;         */
+<i>1998</i>&nbsp;        private Selector getInlineStyleSelector(String inlineStyle) {
+<i>1999</i>&nbsp;
+<i>2000</i>&nbsp;            // If there are no styles for this property then we can just bail
+<b class="nc"><i>2001</i>&nbsp;            if ((inlineStyle == null) || inlineStyle.trim().isEmpty()) return null;</b>
+<i>2002</i>&nbsp;
+<b class="nc"><i>2003</i>&nbsp;            if (inlineStylesCache != null &amp;&amp; inlineStylesCache.containsKey(inlineStyle)) {</b>
+<i>2004</i>&nbsp;                // Value of Map entry may be null!
+<b class="nc"><i>2005</i>&nbsp;                return inlineStylesCache.get(inlineStyle);</b>
+<i>2006</i>&nbsp;            }
+<i>2007</i>&nbsp;
+<i>2008</i>&nbsp;            //
+<i>2009</i>&nbsp;            // inlineStyle wasn&#39;t in the inlineStylesCache, or inlineStylesCache was null
+<i>2010</i>&nbsp;            //
+<i>2011</i>&nbsp;
+<b class="nc"><i>2012</i>&nbsp;            if (inlineStylesCache == null) {</b>
+<b class="nc"><i>2013</i>&nbsp;                inlineStylesCache = new HashMap&lt;&gt;();</b>
+<i>2014</i>&nbsp;            }
+<i>2015</i>&nbsp;
+<b class="nc"><i>2016</i>&nbsp;            final Stylesheet inlineStylesheet =</b>
+<b class="nc"><i>2017</i>&nbsp;                    new CssParser().parse(&quot;*{&quot;+inlineStyle+&quot;}&quot;);</b>
+<i>2018</i>&nbsp;
+<b class="nc"><i>2019</i>&nbsp;            if (inlineStylesheet != null) {</b>
+<i>2020</i>&nbsp;
+<b class="nc"><i>2021</i>&nbsp;                inlineStylesheet.setOrigin(StyleOrigin.INLINE);</b>
+<i>2022</i>&nbsp;
+<b class="nc"><i>2023</i>&nbsp;                List&lt;Rule&gt; rules = inlineStylesheet.getRules();</b>
+<b class="nc"><i>2024</i>&nbsp;                Rule rule = rules != null &amp;&amp; !rules.isEmpty() ? rules.get(0) : null;</b>
+<i>2025</i>&nbsp;
+<i>2026</i>&nbsp;                //List&lt;Selector&gt; selectors = rule != null ? rule.getUnobservedSelectorList() : null;
+<b class="nc"><i>2027</i>&nbsp;                List&lt;Selector&gt; selectors = rule != null ? rule.getSelectors() : null;</b>
+<b class="nc"><i>2028</i>&nbsp;                Selector selector = selectors != null &amp;&amp; !selectors.isEmpty() ? selectors.get(0) : null;</b>
+<i>2029</i>&nbsp;
+<i>2030</i>&nbsp;                // selector might be null if parser throws some exception
+<b class="nc"><i>2031</i>&nbsp;                if (selector != null) {</b>
+<b class="nc"><i>2032</i>&nbsp;                    selector.setOrdinal(-1);</b>
+<i>2033</i>&nbsp;
+<b class="nc"><i>2034</i>&nbsp;                    inlineStylesCache.put(inlineStyle, selector);</b>
+<b class="nc"><i>2035</i>&nbsp;                    return selector;</b>
+<i>2036</i>&nbsp;                }
+<i>2037</i>&nbsp;                // if selector is null, fall through
+<i>2038</i>&nbsp;
+<i>2039</i>&nbsp;            }
+<i>2040</i>&nbsp;
+<i>2041</i>&nbsp;            // even if selector is null, put it in cache so we don&#39;t
+<i>2042</i>&nbsp;            // bother with trying to parse it again.
+<b class="nc"><i>2043</i>&nbsp;            inlineStylesCache.put(inlineStyle, null);</b>
+<b class="nc"><i>2044</i>&nbsp;            return null;</b>
+<i>2045</i>&nbsp;
+<i>2046</i>&nbsp;        }
+<i>2047</i>&nbsp;
+<i>2048</i>&nbsp;        private Map&lt;StyleCache.Key,StyleCache&gt; styleCache;
+<i>2049</i>&nbsp;
+<i>2050</i>&nbsp;        private Map&lt;List&lt;String&gt;, Map&lt;Key,Cache&gt;&gt; cacheMap;
+<i>2051</i>&nbsp;
+<i>2052</i>&nbsp;        private List&lt;StyleMap&gt; styleMapList;
+<i>2053</i>&nbsp;
+<i>2054</i>&nbsp;        /**
+<i>2055</i>&nbsp;         * Cache of parsed, inline styles. The key is Node.style.
+<i>2056</i>&nbsp;         * The value is the Selector from the inline stylesheet.
+<i>2057</i>&nbsp;         */
+<i>2058</i>&nbsp;        private Map&lt;String,Selector&gt; inlineStylesCache;
+<i>2059</i>&nbsp;
+<i>2060</i>&nbsp;        /*
+<i>2061</i>&nbsp;         * A simple counter used to generate a unique id for a StyleMap.
+<i>2062</i>&nbsp;         * This unique id is used by StyleHelper in figuring out which
+<i>2063</i>&nbsp;         * style cache to use.
+<i>2064</i>&nbsp;         */
+<b class="fc"><i>2065</i>&nbsp;        private int styleMapId = 0;</b>
+<i>2066</i>&nbsp;
+<i>2067</i>&nbsp;        // When the cache is cleared, styleMapId counting begins here.
+<i>2068</i>&nbsp;        // If a StyleHelper calls getStyleMap with an id less than the
+<i>2069</i>&nbsp;        // baseStyleMapId, then that StyleHelper is working with an old
+<i>2070</i>&nbsp;        // cache and is no longer valid.
+<b class="fc"><i>2071</i>&nbsp;        private int baseStyleMapId = 0;</b>
+<i>2072</i>&nbsp;
+<i>2073</i>&nbsp;    }
+<i>2074</i>&nbsp;
+<i>2075</i>&nbsp;    /**
+<i>2076</i>&nbsp;     * Creates and caches maps of styles, reusing them as often as practical.
+<i>2077</i>&nbsp;     */
+<b class="fc"><i>2078</i>&nbsp;    private static class Cache {</b>
+<i>2079</i>&nbsp;
+<i>2080</i>&nbsp;        private static class Key {
+<i>2081</i>&nbsp;            final long[] key;
+<i>2082</i>&nbsp;            final String inlineStyle;
+<i>2083</i>&nbsp;
+<b class="fc"><i>2084</i>&nbsp;            Key(long[] key, String inlineStyle) {</b>
+<b class="fc"><i>2085</i>&nbsp;                this.key = key;</b>
+<i>2086</i>&nbsp;                // let inlineStyle be null if it is empty
+<b class="fc"><i>2087</i>&nbsp;                this.inlineStyle =  (inlineStyle != null &amp;&amp; inlineStyle.trim().isEmpty() ? null : inlineStyle);</b>
+<b class="fc"><i>2088</i>&nbsp;            }</b>
+<i>2089</i>&nbsp;
+<i>2090</i>&nbsp;            @Override public String toString() {
+<b class="nc"><i>2091</i>&nbsp;                return Arrays.toString(key) + (inlineStyle != null ? &quot;* {&quot; + inlineStyle + &quot;}&quot; : &quot;&quot;);</b>
+<i>2092</i>&nbsp;            }
+<i>2093</i>&nbsp;
+<i>2094</i>&nbsp;            @Override
+<i>2095</i>&nbsp;            public int hashCode() {
+<b class="fc"><i>2096</i>&nbsp;                int hash = 3;</b>
+<b class="fc"><i>2097</i>&nbsp;                hash = 17 * hash + Arrays.hashCode(this.key);</b>
+<b class="fc"><i>2098</i>&nbsp;                if (inlineStyle != null) hash = 17 * hash + inlineStyle.hashCode();</b>
+<b class="fc"><i>2099</i>&nbsp;                return hash;</b>
+<i>2100</i>&nbsp;            }
+<i>2101</i>&nbsp;
+<i>2102</i>&nbsp;            @Override
+<i>2103</i>&nbsp;            public boolean equals(Object obj) {
+<b class="fc"><i>2104</i>&nbsp;                if (obj == null) {</b>
+<b class="nc"><i>2105</i>&nbsp;                    return false;</b>
+<i>2106</i>&nbsp;                }
+<b class="fc"><i>2107</i>&nbsp;                if (getClass() != obj.getClass()) {</b>
+<b class="nc"><i>2108</i>&nbsp;                    return false;</b>
+<i>2109</i>&nbsp;                }
+<b class="fc"><i>2110</i>&nbsp;                final Key other = (Key) obj;</b>
+<b class="fc"><i>2111</i>&nbsp;                if (inlineStyle == null ? other.inlineStyle != null : !inlineStyle.equals(other.inlineStyle)) {</b>
+<b class="nc"><i>2112</i>&nbsp;                    return false;</b>
+<i>2113</i>&nbsp;                }
+<b class="fc"><i>2114</i>&nbsp;                if (!Arrays.equals(this.key, other.key)) {</b>
+<b class="nc"><i>2115</i>&nbsp;                    return false;</b>
+<i>2116</i>&nbsp;                }
+<b class="fc"><i>2117</i>&nbsp;                return true;</b>
+<i>2118</i>&nbsp;            }
+<i>2119</i>&nbsp;
+<i>2120</i>&nbsp;        }
+<i>2121</i>&nbsp;
+<i>2122</i>&nbsp;        // this must be initialized to the appropriate possible selectors when
+<i>2123</i>&nbsp;        // the helper cache is created by the StylesheetContainer. Note that
+<i>2124</i>&nbsp;        // SelectorPartioning sorts the matched selectors by ordinal, so this
+<i>2125</i>&nbsp;        // list of selectors will be in the same order in which the selectors
+<i>2126</i>&nbsp;        // appear in the stylesheets.
+<i>2127</i>&nbsp;        private final List&lt;Selector&gt; selectors;
+<i>2128</i>&nbsp;        private final Map&lt;Key, Integer&gt; cache;
+<i>2129</i>&nbsp;
+<b class="fc"><i>2130</i>&nbsp;        Cache(List&lt;Selector&gt; selectors) {</b>
+<b class="fc"><i>2131</i>&nbsp;            this.selectors = selectors;</b>
+<b class="fc"><i>2132</i>&nbsp;            this.cache = new HashMap&lt;Key, Integer&gt;();</b>
+<b class="fc"><i>2133</i>&nbsp;        }</b>
+<i>2134</i>&nbsp;
+<i>2135</i>&nbsp;        private StyleMap getStyleMap(CacheContainer cacheContainer, Node node, Set&lt;PseudoClass&gt;[] triggerStates, boolean hasInlineStyle) {
+<i>2136</i>&nbsp;
+<b class="fc"><i>2137</i>&nbsp;            if ((selectors == null || selectors.isEmpty()) &amp;&amp; !hasInlineStyle) {</b>
+<b class="nc"><i>2138</i>&nbsp;                return StyleMap.EMPTY_MAP;</b>
+<i>2139</i>&nbsp;            }
+<i>2140</i>&nbsp;
+<b class="fc"><i>2141</i>&nbsp;            final int selectorDataSize = selectors.size();</b>
+<i>2142</i>&nbsp;
+<i>2143</i>&nbsp;            //
+<i>2144</i>&nbsp;            // Since the list of selectors is found by matching only the
+<i>2145</i>&nbsp;            // rightmost selector, the set of selectors may larger than those
+<i>2146</i>&nbsp;            // selectors that actually match the node. The following loop
+<i>2147</i>&nbsp;            // whittles the list down to those selectors that apply.
+<i>2148</i>&nbsp;            //
+<i>2149</i>&nbsp;            //
+<i>2150</i>&nbsp;            // To lookup from the cache, we construct a key from a Long
+<i>2151</i>&nbsp;            // where the selectors that match this particular node are
+<i>2152</i>&nbsp;            // represented by bits on the long[].
+<i>2153</i>&nbsp;            //
+<b class="fc"><i>2154</i>&nbsp;            long key[] = new long[selectorDataSize/Long.SIZE + 1];</b>
+<b class="fc"><i>2155</i>&nbsp;            boolean nothingMatched = true;</b>
+<i>2156</i>&nbsp;
+<b class="fc"><i>2157</i>&nbsp;            for (int s = 0; s &lt; selectorDataSize; s++) {</b>
+<i>2158</i>&nbsp;
+<b class="fc"><i>2159</i>&nbsp;                final Selector sel = selectors.get(s);</b>
+<i>2160</i>&nbsp;
+<i>2161</i>&nbsp;                //
+<i>2162</i>&nbsp;                // This particular flavor of applies takes a PseudoClassState[]
+<i>2163</i>&nbsp;                // fills in the pseudo-class states from the selectors where
+<i>2164</i>&nbsp;                // they apply to a node. This is an expedient to looking the
+<i>2165</i>&nbsp;                // applies loopa second time on the matching selectors. This has to
+<i>2166</i>&nbsp;                // be done ahead of the cache lookup since not all nodes that
+<i>2167</i>&nbsp;                // have the same set of selectors will have the same node hierarchy.
+<i>2168</i>&nbsp;                //
+<i>2169</i>&nbsp;                // For example, if I have .foo:hover:focused .bar:selected {...}
+<i>2170</i>&nbsp;                // and the &quot;bar&quot; node is 4 away from the root and the foo
+<i>2171</i>&nbsp;                // node is two away from the root, pseudoclassBits would be
+<i>2172</i>&nbsp;                // [selected, 0, hover:focused, 0]
+<i>2173</i>&nbsp;                // Note that the states run from leaf to root. This is how
+<i>2174</i>&nbsp;                // the code in StyleHelper expects things.
+<i>2175</i>&nbsp;                // Note also that, if the selector does not apply, the triggerStates
+<i>2176</i>&nbsp;                // is unchanged.
+<i>2177</i>&nbsp;                //
+<i>2178</i>&nbsp;
+<b class="fc"><i>2179</i>&nbsp;                if (sel.applies(node, triggerStates, 0)) {</b>
+<b class="fc"><i>2180</i>&nbsp;                    final int index = s / Long.SIZE;</b>
+<b class="fc"><i>2181</i>&nbsp;                    final long mask = key[index] | 1l &lt;&lt; s;</b>
+<b class="fc"><i>2182</i>&nbsp;                    key[index] = mask;</b>
+<b class="fc"><i>2183</i>&nbsp;                    nothingMatched = false;</b>
+<i>2184</i>&nbsp;                }
+<i>2185</i>&nbsp;            }
+<i>2186</i>&nbsp;
+<i>2187</i>&nbsp;            // nothing matched!
+<b class="fc"><i>2188</i>&nbsp;            if (nothingMatched &amp;&amp; hasInlineStyle == false) {</b>
+<b class="fc"><i>2189</i>&nbsp;                return StyleMap.EMPTY_MAP;</b>
+<i>2190</i>&nbsp;            }
+<i>2191</i>&nbsp;
+<b class="fc"><i>2192</i>&nbsp;            final String inlineStyle = node.getStyle();</b>
+<b class="fc"><i>2193</i>&nbsp;            final Key keyObj = new Key(key, inlineStyle);</b>
+<i>2194</i>&nbsp;
+<b class="fc"><i>2195</i>&nbsp;            if (cache.containsKey(keyObj)) {</b>
+<b class="fc"><i>2196</i>&nbsp;                Integer styleMapId = cache.get(keyObj);</b>
+<b class="fc"><i>2197</i>&nbsp;                final StyleMap styleMap = styleMapId != null</b>
+<b class="fc"><i>2198</i>&nbsp;                        ? cacheContainer.getStyleMap(styleMapId.intValue())</b>
+<b class="nc"><i>2199</i>&nbsp;                        : StyleMap.EMPTY_MAP;</b>
+<b class="fc"><i>2200</i>&nbsp;                return styleMap;</b>
+<i>2201</i>&nbsp;            }
+<i>2202</i>&nbsp;
+<b class="fc"><i>2203</i>&nbsp;            final List&lt;Selector&gt; selectors = new ArrayList&lt;&gt;();</b>
+<i>2204</i>&nbsp;
+<b class="fc"><i>2205</i>&nbsp;            if (hasInlineStyle) {</b>
+<b class="nc"><i>2206</i>&nbsp;                Selector selector = cacheContainer.getInlineStyleSelector(inlineStyle);</b>
+<b class="nc"><i>2207</i>&nbsp;                if (selector != null) selectors.add(selector);</b>
+<i>2208</i>&nbsp;            }
+<i>2209</i>&nbsp;
+<b class="fc"><i>2210</i>&nbsp;            for (int k = 0; k&lt;key.length; k++) {</b>
+<i>2211</i>&nbsp;
+<b class="fc"><i>2212</i>&nbsp;                if (key[k] == 0) continue;</b>
+<i>2213</i>&nbsp;
+<b class="fc"><i>2214</i>&nbsp;                final int offset = k * Long.SIZE;</b>
+<i>2215</i>&nbsp;
+<b class="fc"><i>2216</i>&nbsp;                for (int b = 0; b&lt;Long.SIZE; b++) {</b>
+<i>2217</i>&nbsp;
+<i>2218</i>&nbsp;                    // bit at b in key[k] set?
+<b class="fc"><i>2219</i>&nbsp;                    final long mask = 1l &lt;&lt; b;</b>
+<b class="fc"><i>2220</i>&nbsp;                    if ((mask &amp; key[k]) != mask) continue;</b>
+<i>2221</i>&nbsp;
+<b class="fc"><i>2222</i>&nbsp;                    final Selector pair = this.selectors.get(offset + b);</b>
+<b class="fc"><i>2223</i>&nbsp;                    selectors.add(pair);</b>
+<i>2224</i>&nbsp;                }
+<i>2225</i>&nbsp;            }
+<i>2226</i>&nbsp;
+<b class="fc"><i>2227</i>&nbsp;            int id = cacheContainer.nextSmapId();</b>
+<b class="fc"><i>2228</i>&nbsp;            cache.put(keyObj, Integer.valueOf(id));</b>
+<i>2229</i>&nbsp;
+<b class="fc"><i>2230</i>&nbsp;            final StyleMap styleMap = new StyleMap(id, selectors);</b>
+<b class="fc"><i>2231</i>&nbsp;            cacheContainer.addStyleMap(styleMap);</b>
+<b class="fc"><i>2232</i>&nbsp;            return styleMap;</b>
+<i>2233</i>&nbsp;        }
+<i>2234</i>&nbsp;
+<i>2235</i>&nbsp;    }
+<i>2236</i>&nbsp;
+<i>2237</i>&nbsp;    /**
+<i>2238</i>&nbsp;     * The key used in the cacheMap of the StylesheetContainer
+<i>2239</i>&nbsp;     */
+<b class="fc"><i>2240</i>&nbsp;    private static class Key {</b>
+<i>2241</i>&nbsp;        // note that the class name here is the *full* class name, such as
+<i>2242</i>&nbsp;        // javafx.scene.control.Button. We only bother parsing this down to the
+<i>2243</i>&nbsp;        // last part when doing matching against selectors, and so want to avoid
+<i>2244</i>&nbsp;        // having to do a bunch of preliminary parsing in places where it isn&#39;t
+<i>2245</i>&nbsp;        // necessary.
+<i>2246</i>&nbsp;        String className;
+<i>2247</i>&nbsp;        String id;
+<i>2248</i>&nbsp;        final StyleClassSet styleClasses;
+<i>2249</i>&nbsp;
+<b class="fc"><i>2250</i>&nbsp;        private Key() {</b>
+<b class="fc"><i>2251</i>&nbsp;            styleClasses = new StyleClassSet();</b>
+<b class="fc"><i>2252</i>&nbsp;        }</b>
+<i>2253</i>&nbsp;
+<i>2254</i>&nbsp;        @Override
+<i>2255</i>&nbsp;        public boolean equals(Object o) {
+<b class="fc"><i>2256</i>&nbsp;            if (this == o) {</b>
+<b class="nc"><i>2257</i>&nbsp;                return true;</b>
+<i>2258</i>&nbsp;            }
+<b class="fc"><i>2259</i>&nbsp;            if (o instanceof Key) {</b>
+<b class="fc"><i>2260</i>&nbsp;                Key other = (Key)o;</b>
+<i>2261</i>&nbsp;
+<b class="fc"><i>2262</i>&nbsp;                if (className == null ? other.className != null : (className.equals(other.className) == false)) {</b>
+<b class="nc"><i>2263</i>&nbsp;                    return false;</b>
+<i>2264</i>&nbsp;                }
+<i>2265</i>&nbsp;
+<b class="fc"><i>2266</i>&nbsp;                if (id == null ? other.id != null : (id.equals(other.id) == false)) {</b>
+<b class="nc"><i>2267</i>&nbsp;                    return false;</b>
+<i>2268</i>&nbsp;                }
+<i>2269</i>&nbsp;
+<b class="fc"><i>2270</i>&nbsp;                return this.styleClasses.equals(other.styleClasses);</b>
+<i>2271</i>&nbsp;            }
+<b class="nc"><i>2272</i>&nbsp;            return true;</b>
+<i>2273</i>&nbsp;        }
+<i>2274</i>&nbsp;
+<i>2275</i>&nbsp;        @Override
+<i>2276</i>&nbsp;        public int hashCode() {
+<b class="fc"><i>2277</i>&nbsp;            int hash = 7;</b>
+<b class="fc"><i>2278</i>&nbsp;            hash = 29 * hash + (this.className != null ? this.className.hashCode() : 0);</b>
+<b class="fc"><i>2279</i>&nbsp;            hash = 29 * hash + (this.id != null ? this.id.hashCode() : 0);</b>
+<b class="fc"><i>2280</i>&nbsp;            hash = 29 * hash + this.styleClasses.hashCode();</b>
+<b class="fc"><i>2281</i>&nbsp;            return hash;</b>
+<i>2282</i>&nbsp;        }
+<i>2283</i>&nbsp;
+<i>2284</i>&nbsp;    }
+<i>2285</i>&nbsp;
+<i>2286</i>&nbsp;
+<i>2287</i>&nbsp;        }
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2017-12-04 21:49</div>
+</div>
+</body>
+</html>

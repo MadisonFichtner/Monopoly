@@ -1,0 +1,553 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: SwipeGestureRecognizer</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.javafx.tk.quantum</a> ]
+</div>
+
+<h1>Coverage Summary for Class: SwipeGestureRecognizer (com.sun.javafx.tk.quantum)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">SwipeGestureRecognizer</td>
+<td class="coverageStat">
+  <span class="percent">
+    12.5%
+  </span>
+  <span class="absValue">
+    (1/ 8)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    8.2%
+  </span>
+  <span class="absValue">
+    (5/ 61)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">SwipeGestureRecognizer$CenterComputer</td>
+<td class="coverageStat">
+  <span class="percent">
+    14.3%
+  </span>
+  <span class="absValue">
+    (1/ 7)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    20%
+  </span>
+  <span class="absValue">
+    (4/ 20)
+  </span>
+</td>
+  </tr>
+  <tr>
+    <td class="name">SwipeGestureRecognizer$MultiTouchTracker</td>
+<td class="coverageStat">
+  <span class="percent">
+    16.7%
+  </span>
+  <span class="absValue">
+    (1/ 6)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    7.1%
+  </span>
+  <span class="absValue">
+    (4/ 56)
+  </span>
+</td>
+  </tr>
+  <tr>
+    <td class="name">SwipeGestureRecognizer$SwipeRecognitionState</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (2/ 2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (5/ 5)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    21.7%
+  </span>
+  <span class="absValue">
+    (5/ 23)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    12.7%
+  </span>
+  <span class="absValue">
+    (18/ 142)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright (c) 2011, 2014, Oracle and/or its affiliates. All rights reserved.
+<i>3</i>&nbsp; * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+<i>4</i>&nbsp; *
+<i>5</i>&nbsp; *
+<i>6</i>&nbsp; *
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; *
+<i>11</i>&nbsp; *
+<i>12</i>&nbsp; *
+<i>13</i>&nbsp; *
+<i>14</i>&nbsp; *
+<i>15</i>&nbsp; *
+<i>16</i>&nbsp; *
+<i>17</i>&nbsp; *
+<i>18</i>&nbsp; *
+<i>19</i>&nbsp; *
+<i>20</i>&nbsp; *
+<i>21</i>&nbsp; *
+<i>22</i>&nbsp; *
+<i>23</i>&nbsp; *
+<i>24</i>&nbsp; */
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;package com.sun.javafx.tk.quantum;
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;import com.sun.glass.events.KeyEvent;
+<i>29</i>&nbsp;import com.sun.glass.events.TouchEvent;
+<i>30</i>&nbsp;
+<i>31</i>&nbsp;import java.security.AccessController;
+<i>32</i>&nbsp;import java.security.PrivilegedAction;
+<i>33</i>&nbsp;import java.util.HashMap;
+<i>34</i>&nbsp;import java.util.Map;
+<i>35</i>&nbsp;import javafx.event.EventType;
+<i>36</i>&nbsp;import javafx.scene.input.SwipeEvent;
+<i>37</i>&nbsp;
+<b class="nc"><i>38</i>&nbsp;class SwipeGestureRecognizer implements GestureRecognizer {</b>
+<i>39</i>&nbsp;
+<i>40</i>&nbsp;    private static final double TANGENT_30_DEGREES = 0.577;
+<i>41</i>&nbsp;
+<i>42</i>&nbsp;    private static final double TANGENT_45_DEGREES = 1;
+<i>43</i>&nbsp;
+<i>44</i>&nbsp;    private static final boolean VERBOSE = false;
+<i>45</i>&nbsp;
+<i>46</i>&nbsp;    // Swipes must be longer than that
+<i>47</i>&nbsp;    private static final double DISTANCE_THRESHOLD = 10; // pixel
+<i>48</i>&nbsp;
+<i>49</i>&nbsp;    // Traveling this distance against the swipe direction at its end cancels it
+<i>50</i>&nbsp;    private static final double BACKWARD_DISTANCE_THRASHOLD = 5; // pixel
+<i>51</i>&nbsp;
+<b class="fc"><i>52</i>&nbsp;    private SwipeRecognitionState state = SwipeRecognitionState.IDLE;</b>
+<b class="fc"><i>53</i>&nbsp;    MultiTouchTracker tracker = new MultiTouchTracker();</b>
+<i>54</i>&nbsp;    private ViewScene scene;
+<i>55</i>&nbsp;
+<b class="fc"><i>56</i>&nbsp;    SwipeGestureRecognizer(final ViewScene scene) {</b>
+<b class="fc"><i>57</i>&nbsp;        this.scene = scene;</b>
+<b class="fc"><i>58</i>&nbsp;    }</b>
+<i>59</i>&nbsp;
+<i>60</i>&nbsp;    @Override
+<i>61</i>&nbsp;    public void notifyBeginTouchEvent(long time, int modifiers, boolean isDirect,
+<i>62</i>&nbsp;            int touchEventCount) {
+<b class="nc"><i>63</i>&nbsp;        tracker.params(modifiers, isDirect);</b>
+<b class="nc"><i>64</i>&nbsp;    }</b>
+<i>65</i>&nbsp;
+<i>66</i>&nbsp;    @Override
+<i>67</i>&nbsp;    public void notifyNextTouchEvent(long time, int type, long touchId,
+<i>68</i>&nbsp;                                     int x, int y, int xAbs, int yAbs) {
+<b class="nc"><i>69</i>&nbsp;        switch(type) {</b>
+<i>70</i>&nbsp;            case TouchEvent.TOUCH_PRESSED:
+<b class="nc"><i>71</i>&nbsp;                tracker.pressed(touchId, time, x, y, xAbs, yAbs);</b>
+<b class="nc"><i>72</i>&nbsp;                break;</b>
+<i>73</i>&nbsp;            case TouchEvent.TOUCH_STILL:
+<i>74</i>&nbsp;                /* NOBREAK */
+<i>75</i>&nbsp;            case TouchEvent.TOUCH_MOVED:
+<b class="nc"><i>76</i>&nbsp;                tracker.progress(touchId, time, xAbs, yAbs);</b>
+<b class="nc"><i>77</i>&nbsp;                break;</b>
+<i>78</i>&nbsp;            case TouchEvent.TOUCH_RELEASED:
+<b class="nc"><i>79</i>&nbsp;                tracker.released(touchId, time, x, y, xAbs, yAbs);</b>
+<b class="nc"><i>80</i>&nbsp;                break;</b>
+<i>81</i>&nbsp;            default:
+<b class="nc"><i>82</i>&nbsp;                throw new RuntimeException(&quot;Error in swipe gesture recognition: &quot;</b>
+<i>83</i>&nbsp;                        + &quot;unknown touch state: &quot; + state);
+<i>84</i>&nbsp;        }
+<b class="nc"><i>85</i>&nbsp;    }</b>
+<i>86</i>&nbsp;
+<i>87</i>&nbsp;    @Override
+<i>88</i>&nbsp;    public void notifyEndTouchEvent(long time) {
+<i>89</i>&nbsp;        // nothing to do
+<b class="nc"><i>90</i>&nbsp;    }</b>
+<i>91</i>&nbsp;
+<i>92</i>&nbsp;    private EventType&lt;SwipeEvent&gt; calcSwipeType(TouchPointTracker tracker) {
+<i>93</i>&nbsp;
+<b class="nc"><i>94</i>&nbsp;        final double distanceX = tracker.getDistanceX();</b>
+<b class="nc"><i>95</i>&nbsp;        final double distanceY = tracker.getDistanceY();</b>
+<b class="nc"><i>96</i>&nbsp;        final double absDistanceX = Math.abs(distanceX);</b>
+<b class="nc"><i>97</i>&nbsp;        final double absDistanceY = Math.abs(distanceY);</b>
+<i>98</i>&nbsp;
+<b class="nc"><i>99</i>&nbsp;        final boolean horizontal = absDistanceX &gt; absDistanceY;</b>
+<i>100</i>&nbsp;
+<b class="nc"><i>101</i>&nbsp;        final double primaryDistance = horizontal ? distanceX : distanceY;</b>
+<b class="nc"><i>102</i>&nbsp;        final double absPrimaryDistance = horizontal ? absDistanceX : absDistanceY;</b>
+<b class="nc"><i>103</i>&nbsp;        final double absSecondaryDistance = horizontal ? absDistanceY : absDistanceX;</b>
+<b class="nc"><i>104</i>&nbsp;        final double absPrimaryLength = horizontal ?</b>
+<b class="nc"><i>105</i>&nbsp;                tracker.lengthX : tracker.lengthY;</b>
+<b class="nc"><i>106</i>&nbsp;        final double maxSecondaryDeviation = horizontal ?</b>
+<b class="nc"><i>107</i>&nbsp;                tracker.maxDeviationY : tracker.maxDeviationX;</b>
+<b class="nc"><i>108</i>&nbsp;        final double lastPrimaryMovement = horizontal ?</b>
+<b class="nc"><i>109</i>&nbsp;                tracker.lastXMovement : tracker.lastYMovement;</b>
+<i>110</i>&nbsp;
+<b class="nc"><i>111</i>&nbsp;        if (absPrimaryDistance &lt;= DISTANCE_THRESHOLD) {</b>
+<i>112</i>&nbsp;            // too small movement
+<b class="nc"><i>113</i>&nbsp;            return null;</b>
+<i>114</i>&nbsp;        }
+<i>115</i>&nbsp;
+<b class="nc"><i>116</i>&nbsp;        if (absSecondaryDistance &gt; absPrimaryDistance * TANGENT_30_DEGREES) {</b>
+<i>117</i>&nbsp;            // too diagonal - in range of 60 degrees
+<b class="nc"><i>118</i>&nbsp;            return null;</b>
+<i>119</i>&nbsp;        }
+<i>120</i>&nbsp;
+<b class="nc"><i>121</i>&nbsp;        if (maxSecondaryDeviation &gt; absPrimaryDistance * TANGENT_45_DEGREES) {</b>
+<i>122</i>&nbsp;            // maximum deviation on the secondary axis, is too big
+<b class="nc"><i>123</i>&nbsp;            return null;</b>
+<i>124</i>&nbsp;        }
+<i>125</i>&nbsp;
+<b class="nc"><i>126</i>&nbsp;        int swipeMaxDuration = Integer.getInteger(&quot;com.sun.javafx.gestures.swipe.maxduration&quot;, 300);</b>
+<b class="nc"><i>127</i>&nbsp;        if (tracker.getDuration() &gt; swipeMaxDuration) {</b>
+<b class="nc"><i>128</i>&nbsp;            return null;</b>
+<i>129</i>&nbsp;        }
+<i>130</i>&nbsp;
+<b class="nc"><i>131</i>&nbsp;        if (absPrimaryLength &gt; absPrimaryDistance * 1.5) {</b>
+<i>132</i>&nbsp;            // too much back and forth
+<b class="nc"><i>133</i>&nbsp;            return null;</b>
+<i>134</i>&nbsp;        }
+<i>135</i>&nbsp;
+<b class="nc"><i>136</i>&nbsp;        if (Math.signum(primaryDistance) != Math.signum(lastPrimaryMovement) &amp;&amp;</b>
+<b class="nc"><i>137</i>&nbsp;                Math.abs(lastPrimaryMovement) &gt; BACKWARD_DISTANCE_THRASHOLD) {</b>
+<i>138</i>&nbsp;            // gesture finished in the oposite direction
+<b class="nc"><i>139</i>&nbsp;            return null;</b>
+<i>140</i>&nbsp;        }
+<i>141</i>&nbsp;
+<b class="nc"><i>142</i>&nbsp;        if (horizontal) {</b>
+<b class="nc"><i>143</i>&nbsp;            return tracker.getDistanceX() &lt; 0</b>
+<b class="nc"><i>144</i>&nbsp;                    ? SwipeEvent.SWIPE_LEFT : SwipeEvent.SWIPE_RIGHT;</b>
+<i>145</i>&nbsp;        } else {
+<b class="nc"><i>146</i>&nbsp;            return tracker.getDistanceY() &lt; 0</b>
+<b class="nc"><i>147</i>&nbsp;                    ? SwipeEvent.SWIPE_UP : SwipeEvent.SWIPE_DOWN;</b>
+<i>148</i>&nbsp;        }
+<i>149</i>&nbsp;    }
+<i>150</i>&nbsp;
+<i>151</i>&nbsp;    private void handleSwipeType(final EventType&lt;SwipeEvent&gt; swipeType,
+<i>152</i>&nbsp;            final CenterComputer cc, final int touchCount, final int modifiers, final boolean isDirect)
+<i>153</i>&nbsp;    {
+<b class="nc"><i>154</i>&nbsp;        if (swipeType == null) {</b>
+<b class="nc"><i>155</i>&nbsp;            return;</b>
+<i>156</i>&nbsp;        }
+<i>157</i>&nbsp;        if (VERBOSE) {
+<i>158</i>&nbsp;            System.err.println(&quot;handleSwipeType swipeType=&quot; + swipeType);
+<i>159</i>&nbsp;        }
+<i>160</i>&nbsp;
+<b class="nc"><i>161</i>&nbsp;        AccessController.doPrivileged((PrivilegedAction&lt;Void&gt;) () -&gt; {</b>
+<b class="nc"><i>162</i>&nbsp;            if (scene.sceneListener != null) {</b>
+<b class="nc"><i>163</i>&nbsp;                scene.sceneListener.swipeEvent(swipeType, touchCount,</b>
+<b class="nc"><i>164</i>&nbsp;                    cc.getX(), cc.getY(),</b>
+<b class="nc"><i>165</i>&nbsp;                    cc.getAbsX(), cc.getAbsY(),</b>
+<i>166</i>&nbsp;                    (modifiers &amp; KeyEvent.MODIFIER_SHIFT) != 0,
+<i>167</i>&nbsp;                    (modifiers &amp; KeyEvent.MODIFIER_CONTROL) != 0,
+<i>168</i>&nbsp;                    (modifiers &amp; KeyEvent.MODIFIER_ALT) != 0,
+<i>169</i>&nbsp;                    (modifiers &amp; KeyEvent.MODIFIER_WINDOWS) != 0,
+<i>170</i>&nbsp;                    isDirect);
+<i>171</i>&nbsp;            }
+<b class="nc"><i>172</i>&nbsp;            return null;</b>
+<b class="nc"><i>173</i>&nbsp;        }, scene.getAccessControlContext());</b>
+<b class="nc"><i>174</i>&nbsp;    }</b>
+<i>175</i>&nbsp;
+<b class="fc"><i>176</i>&nbsp;    private static class CenterComputer {</b>
+<b class="fc"><i>177</i>&nbsp;        double totalAbsX = 0, totalAbsY = 0;</b>
+<b class="fc"><i>178</i>&nbsp;        double totalX = 0, totalY = 0;</b>
+<b class="fc"><i>179</i>&nbsp;        int count = 0;</b>
+<i>180</i>&nbsp;
+<i>181</i>&nbsp;        public void add(double x, double y, double xAbs, double yAbs) {
+<b class="nc"><i>182</i>&nbsp;            totalAbsX += xAbs;</b>
+<b class="nc"><i>183</i>&nbsp;            totalAbsY += yAbs;</b>
+<b class="nc"><i>184</i>&nbsp;            totalX += x;</b>
+<b class="nc"><i>185</i>&nbsp;            totalY += y;</b>
+<i>186</i>&nbsp;
+<b class="nc"><i>187</i>&nbsp;            count++;</b>
+<b class="nc"><i>188</i>&nbsp;        }</b>
+<i>189</i>&nbsp;
+<i>190</i>&nbsp;        public double getX() {
+<b class="nc"><i>191</i>&nbsp;            return count == 0 ? 0 : totalX / count;</b>
+<i>192</i>&nbsp;        }
+<i>193</i>&nbsp;
+<i>194</i>&nbsp;        public double getY() {
+<b class="nc"><i>195</i>&nbsp;            return count == 0 ? 0 : totalY / count;</b>
+<i>196</i>&nbsp;        }
+<i>197</i>&nbsp;
+<i>198</i>&nbsp;        public double getAbsX() {
+<b class="nc"><i>199</i>&nbsp;            return count == 0 ? 0 : totalAbsX / count;</b>
+<i>200</i>&nbsp;        }
+<i>201</i>&nbsp;
+<i>202</i>&nbsp;        public double getAbsY() {
+<b class="nc"><i>203</i>&nbsp;            return count == 0 ? 0 : totalAbsY / count;</b>
+<i>204</i>&nbsp;        }
+<i>205</i>&nbsp;
+<i>206</i>&nbsp;        public void reset() {
+<b class="nc"><i>207</i>&nbsp;            totalX = 0;</b>
+<b class="nc"><i>208</i>&nbsp;            totalY = 0;</b>
+<b class="nc"><i>209</i>&nbsp;            totalAbsX = 0;</b>
+<b class="nc"><i>210</i>&nbsp;            totalAbsY = 0;</b>
+<b class="nc"><i>211</i>&nbsp;            count = 0;</b>
+<b class="nc"><i>212</i>&nbsp;        }</b>
+<i>213</i>&nbsp;    }
+<i>214</i>&nbsp;
+<b class="fc"><i>215</i>&nbsp;    private class MultiTouchTracker {</b>
+<b class="fc"><i>216</i>&nbsp;        SwipeRecognitionState state = SwipeRecognitionState.IDLE;</b>
+<b class="fc"><i>217</i>&nbsp;        Map&lt;Long, TouchPointTracker&gt; trackers =</b>
+<i>218</i>&nbsp;                new HashMap&lt;Long, TouchPointTracker&gt;();
+<b class="fc"><i>219</i>&nbsp;        CenterComputer cc = new CenterComputer();</b>
+<i>220</i>&nbsp;        int modifiers;
+<i>221</i>&nbsp;        boolean direct;
+<i>222</i>&nbsp;        private int touchCount;
+<i>223</i>&nbsp;        private int currentTouchCount;
+<i>224</i>&nbsp;        private EventType&lt;SwipeEvent&gt; type;
+<i>225</i>&nbsp;
+<i>226</i>&nbsp;        public void params(int modifiers, boolean direct) {
+<b class="nc"><i>227</i>&nbsp;            this.modifiers = modifiers;</b>
+<b class="nc"><i>228</i>&nbsp;            this.direct = direct;</b>
+<b class="nc"><i>229</i>&nbsp;        }</b>
+<i>230</i>&nbsp;
+<i>231</i>&nbsp;        public void pressed(long id, long nanos, int x, int y, int xAbs, int yAbs) {
+<b class="nc"><i>232</i>&nbsp;            currentTouchCount++;</b>
+<b class="nc"><i>233</i>&nbsp;            switch (state) {</b>
+<i>234</i>&nbsp;                case IDLE:
+<b class="nc"><i>235</i>&nbsp;                    currentTouchCount = 1;</b>
+<b class="nc"><i>236</i>&nbsp;                    state = SwipeRecognitionState.ADDING;</b>
+<i>237</i>&nbsp;                    /* NOBREAK */
+<i>238</i>&nbsp;                case ADDING:
+<b class="nc"><i>239</i>&nbsp;                    TouchPointTracker tracker = new TouchPointTracker();</b>
+<b class="nc"><i>240</i>&nbsp;                    tracker.start(nanos, x, y, xAbs, yAbs);</b>
+<b class="nc"><i>241</i>&nbsp;                    trackers.put(id, tracker);</b>
+<b class="nc"><i>242</i>&nbsp;                    break;</b>
+<i>243</i>&nbsp;                case REMOVING:
+<i>244</i>&nbsp;                    // we don&#39;t allow for swipes with varying touch count
+<b class="nc"><i>245</i>&nbsp;                    state = SwipeRecognitionState.FAILURE;</b>
+<b class="nc"><i>246</i>&nbsp;                    break;</b>
+<i>247</i>&nbsp;                default:
+<i>248</i>&nbsp;                    break;
+<i>249</i>&nbsp;            }
+<b class="nc"><i>250</i>&nbsp;        }</b>
+<i>251</i>&nbsp;
+<i>252</i>&nbsp;        public void released(long id, long nanos, int x, int y, int xAbs, int yAbs) {
+<b class="nc"><i>253</i>&nbsp;            if (state != SwipeRecognitionState.FAILURE) {</b>
+<b class="nc"><i>254</i>&nbsp;                TouchPointTracker tracker = trackers.get(id);</b>
+<i>255</i>&nbsp;
+<b class="nc"><i>256</i>&nbsp;                if (tracker == null) {</b>
+<i>257</i>&nbsp;                    // we don&#39;t know this ID, something went completely wrong
+<b class="nc"><i>258</i>&nbsp;                    state = SwipeRecognitionState.FAILURE;</b>
+<b class="nc"><i>259</i>&nbsp;                    throw new RuntimeException(&quot;Error in swipe gesture &quot;</b>
+<i>260</i>&nbsp;                            + &quot;recognition: released unknown touch point&quot;);
+<i>261</i>&nbsp;                }
+<i>262</i>&nbsp;
+<b class="nc"><i>263</i>&nbsp;                tracker.end(nanos, x, y, xAbs, yAbs);</b>
+<b class="nc"><i>264</i>&nbsp;                cc.add(tracker.beginX, tracker.beginY,</b>
+<i>265</i>&nbsp;                        tracker.beginAbsX, tracker.beginAbsY);
+<b class="nc"><i>266</i>&nbsp;                cc.add(tracker.endX, tracker.endY,</b>
+<i>267</i>&nbsp;                        tracker.endAbsX, tracker.endAbsY);
+<i>268</i>&nbsp;
+<b class="nc"><i>269</i>&nbsp;                final EventType&lt;SwipeEvent&gt; swipeType = calcSwipeType(tracker);</b>
+<i>270</i>&nbsp;
+<b class="nc"><i>271</i>&nbsp;                switch (state) {</b>
+<i>272</i>&nbsp;                    case IDLE:
+<b class="nc"><i>273</i>&nbsp;                        reset();</b>
+<b class="nc"><i>274</i>&nbsp;                        throw new RuntimeException(&quot;Error in swipe gesture &quot;</b>
+<i>275</i>&nbsp;                                + &quot;recognition: released touch point outside &quot;
+<i>276</i>&nbsp;                                + &quot;of gesture&quot;);
+<i>277</i>&nbsp;                    case ADDING:
+<b class="nc"><i>278</i>&nbsp;                        state = SwipeRecognitionState.REMOVING;</b>
+<b class="nc"><i>279</i>&nbsp;                        touchCount = currentTouchCount;</b>
+<b class="nc"><i>280</i>&nbsp;                        type = swipeType;</b>
+<b class="nc"><i>281</i>&nbsp;                        break;</b>
+<i>282</i>&nbsp;                    case REMOVING:
+<b class="nc"><i>283</i>&nbsp;                        if (type != swipeType) {</b>
+<i>284</i>&nbsp;                            // each finger does something else
+<b class="nc"><i>285</i>&nbsp;                            state = SwipeRecognitionState.FAILURE;</b>
+<i>286</i>&nbsp;                        }
+<i>287</i>&nbsp;                        break;
+<i>288</i>&nbsp;                    default:
+<i>289</i>&nbsp;                        break;
+<i>290</i>&nbsp;                }
+<b class="nc"><i>291</i>&nbsp;                trackers.remove(id);</b>
+<i>292</i>&nbsp;            }
+<i>293</i>&nbsp;
+<b class="nc"><i>294</i>&nbsp;            currentTouchCount--;</b>
+<i>295</i>&nbsp;
+<b class="nc"><i>296</i>&nbsp;            if (currentTouchCount == 0) {</b>
+<b class="nc"><i>297</i>&nbsp;                if (state == SwipeRecognitionState.REMOVING) {</b>
+<b class="nc"><i>298</i>&nbsp;                    handleSwipeType(type, cc, touchCount, modifiers, direct);</b>
+<i>299</i>&nbsp;                }
+<i>300</i>&nbsp;
+<b class="nc"><i>301</i>&nbsp;                state = SwipeRecognitionState.IDLE;</b>
+<b class="nc"><i>302</i>&nbsp;                reset();</b>
+<i>303</i>&nbsp;            }
+<b class="nc"><i>304</i>&nbsp;        }</b>
+<i>305</i>&nbsp;
+<i>306</i>&nbsp;        public void progress(long id, long nanos, int x, int y) {
+<i>307</i>&nbsp;
+<b class="nc"><i>308</i>&nbsp;            if (state == SwipeRecognitionState.FAILURE) {</b>
+<b class="nc"><i>309</i>&nbsp;                return;</b>
+<i>310</i>&nbsp;            }
+<i>311</i>&nbsp;
+<b class="nc"><i>312</i>&nbsp;            TouchPointTracker tracker = trackers.get(id);</b>
+<i>313</i>&nbsp;
+<b class="nc"><i>314</i>&nbsp;            if (tracker == null) {</b>
+<i>315</i>&nbsp;                // we don&#39;t know this ID, something went completely wrong
+<b class="nc"><i>316</i>&nbsp;                state = SwipeRecognitionState.FAILURE;</b>
+<b class="nc"><i>317</i>&nbsp;                throw new RuntimeException(&quot;Error in swipe gesture &quot;</b>
+<i>318</i>&nbsp;                        + &quot;recognition: reported unknown touch point&quot;);
+<i>319</i>&nbsp;            }
+<i>320</i>&nbsp;
+<b class="nc"><i>321</i>&nbsp;            tracker.progress(nanos, x, y);</b>
+<b class="nc"><i>322</i>&nbsp;        }</b>
+<i>323</i>&nbsp;
+<i>324</i>&nbsp;        void reset() {
+<b class="nc"><i>325</i>&nbsp;            trackers.clear();</b>
+<b class="nc"><i>326</i>&nbsp;            cc.reset();</b>
+<b class="nc"><i>327</i>&nbsp;            state = SwipeRecognitionState.IDLE;</b>
+<b class="nc"><i>328</i>&nbsp;        }</b>
+<i>329</i>&nbsp;    }
+<i>330</i>&nbsp;
+<i>331</i>&nbsp;    private static class TouchPointTracker {
+<i>332</i>&nbsp;        long beginTime, endTime;
+<i>333</i>&nbsp;        double beginX, beginY, endX, endY;
+<i>334</i>&nbsp;        double beginAbsX, beginAbsY, endAbsX, endAbsY;
+<i>335</i>&nbsp;        double lengthX, lengthY;
+<i>336</i>&nbsp;        double maxDeviationX, maxDeviationY;
+<i>337</i>&nbsp;        double lastXMovement, lastYMovement;
+<i>338</i>&nbsp;        double lastX, lastY;
+<i>339</i>&nbsp;
+<i>340</i>&nbsp;        public void start(long nanos, double x, double y, double absX, double absY) {
+<i>341</i>&nbsp;            beginX = x;
+<i>342</i>&nbsp;            beginY = y;
+<i>343</i>&nbsp;            beginAbsX = absX;
+<i>344</i>&nbsp;            beginAbsY = absY;
+<i>345</i>&nbsp;            lastX = absX;
+<i>346</i>&nbsp;            lastY = absY;
+<i>347</i>&nbsp;            beginTime = nanos / 1000000;
+<i>348</i>&nbsp;        }
+<i>349</i>&nbsp;
+<i>350</i>&nbsp;        public void end(long nanos, double x, double y, double absX, double absY) {
+<i>351</i>&nbsp;            progress(nanos, absX, absY);
+<i>352</i>&nbsp;            endX = x;
+<i>353</i>&nbsp;            endY = y;
+<i>354</i>&nbsp;            endAbsX = absX;
+<i>355</i>&nbsp;            endAbsY = absY;
+<i>356</i>&nbsp;            endTime = nanos / 1000000;
+<i>357</i>&nbsp;        }
+<i>358</i>&nbsp;
+<i>359</i>&nbsp;        public void progress(long nanos, double x, double y) {
+<i>360</i>&nbsp;            final double deltaX = x - lastX;
+<i>361</i>&nbsp;            final double deltaY = y - lastY;
+<i>362</i>&nbsp;
+<i>363</i>&nbsp;            lengthX += Math.abs(deltaX);
+<i>364</i>&nbsp;            lengthY += Math.abs(deltaY);
+<i>365</i>&nbsp;            lastX = x;
+<i>366</i>&nbsp;            lastY = y;
+<i>367</i>&nbsp;
+<i>368</i>&nbsp;            final double devX = Math.abs(x - beginAbsX);
+<i>369</i>&nbsp;            if (devX &gt; maxDeviationX) { maxDeviationX = devX; }
+<i>370</i>&nbsp;
+<i>371</i>&nbsp;            final double devY = Math.abs(y - beginAbsY);
+<i>372</i>&nbsp;            if (devY &gt; maxDeviationY) { maxDeviationY = devY; }
+<i>373</i>&nbsp;
+<i>374</i>&nbsp;            if (Math.signum(deltaX) == Math.signum(lastXMovement)) {
+<i>375</i>&nbsp;                lastXMovement += deltaX;
+<i>376</i>&nbsp;            } else {
+<i>377</i>&nbsp;                lastXMovement = deltaX;
+<i>378</i>&nbsp;            }
+<i>379</i>&nbsp;
+<i>380</i>&nbsp;            if (Math.signum(deltaY) == Math.signum(lastYMovement)) {
+<i>381</i>&nbsp;                lastYMovement += deltaY;
+<i>382</i>&nbsp;            } else {
+<i>383</i>&nbsp;                lastYMovement = deltaY;
+<i>384</i>&nbsp;            }
+<i>385</i>&nbsp;        }
+<i>386</i>&nbsp;
+<i>387</i>&nbsp;        public double getDistanceX() {
+<i>388</i>&nbsp;            return endX - beginX;
+<i>389</i>&nbsp;        }
+<i>390</i>&nbsp;
+<i>391</i>&nbsp;        public double getDistanceY() {
+<i>392</i>&nbsp;            return endY - beginY;
+<i>393</i>&nbsp;        }
+<i>394</i>&nbsp;
+<i>395</i>&nbsp;        public long getDuration() {
+<i>396</i>&nbsp;            return endTime - beginTime;
+<i>397</i>&nbsp;        }
+<i>398</i>&nbsp;    }
+<i>399</i>&nbsp;
+<b class="fc"><i>400</i>&nbsp;    private enum SwipeRecognitionState {</b>
+<b class="fc"><i>401</i>&nbsp;        IDLE,</b>
+<b class="fc"><i>402</i>&nbsp;        ADDING,</b>
+<b class="fc"><i>403</i>&nbsp;        REMOVING,</b>
+<b class="fc"><i>404</i>&nbsp;        FAILURE</b>
+<i>405</i>&nbsp;    }
+<i>406</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2017-12-04 21:49</div>
+</div>
+</body>
+</html>

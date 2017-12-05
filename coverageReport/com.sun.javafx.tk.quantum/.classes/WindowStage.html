@@ -1,0 +1,1051 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: WindowStage</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.javafx.tk.quantum</a> ]
+</div>
+
+<h1>Coverage Summary for Class: WindowStage (com.sun.javafx.tk.quantum)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">WindowStage</td>
+<td class="coverageStat">
+  <span class="percent">
+    65.7%
+  </span>
+  <span class="absValue">
+    (46/ 70)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    45.6%
+  </span>
+  <span class="absValue">
+    (208/ 456)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">WindowStage$1</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (2/ 2)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    66.2%
+  </span>
+  <span class="absValue">
+    (47/ 71)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    45.9%
+  </span>
+  <span class="absValue">
+    (210/ 458)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright (c) 2008, 2017, Oracle and/or its affiliates. All rights reserved.
+<i>3</i>&nbsp; * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+<i>4</i>&nbsp; *
+<i>5</i>&nbsp; *
+<i>6</i>&nbsp; *
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; *
+<i>11</i>&nbsp; *
+<i>12</i>&nbsp; *
+<i>13</i>&nbsp; *
+<i>14</i>&nbsp; *
+<i>15</i>&nbsp; *
+<i>16</i>&nbsp; *
+<i>17</i>&nbsp; *
+<i>18</i>&nbsp; *
+<i>19</i>&nbsp; *
+<i>20</i>&nbsp; *
+<i>21</i>&nbsp; *
+<i>22</i>&nbsp; *
+<i>23</i>&nbsp; *
+<i>24</i>&nbsp; */
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;package com.sun.javafx.tk.quantum;
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;import java.nio.ByteBuffer;
+<i>29</i>&nbsp;import java.security.AccessController;
+<i>30</i>&nbsp;import java.security.Permission;
+<i>31</i>&nbsp;import java.security.PrivilegedAction;
+<i>32</i>&nbsp;import java.security.AccessControlContext;
+<i>33</i>&nbsp;import java.util.HashMap;
+<i>34</i>&nbsp;import java.util.LinkedList;
+<i>35</i>&nbsp;import java.util.List;
+<i>36</i>&nbsp;import java.util.Map;
+<i>37</i>&nbsp;
+<i>38</i>&nbsp;import javafx.scene.input.KeyCombination;
+<i>39</i>&nbsp;import javafx.stage.Modality;
+<i>40</i>&nbsp;import javafx.stage.Stage;
+<i>41</i>&nbsp;import javafx.stage.StageStyle;
+<i>42</i>&nbsp;
+<i>43</i>&nbsp;import com.sun.glass.events.WindowEvent;
+<i>44</i>&nbsp;import com.sun.glass.ui.*;
+<i>45</i>&nbsp;import com.sun.glass.ui.Window.Level;
+<i>46</i>&nbsp;import com.sun.javafx.PlatformUtil;
+<i>47</i>&nbsp;import com.sun.javafx.iio.common.PushbroomScaler;
+<i>48</i>&nbsp;import com.sun.javafx.iio.common.ScalerFactory;
+<i>49</i>&nbsp;import com.sun.javafx.tk.FocusCause;
+<i>50</i>&nbsp;import com.sun.javafx.tk.TKScene;
+<i>51</i>&nbsp;import com.sun.javafx.tk.TKStage;
+<i>52</i>&nbsp;import com.sun.prism.Image;
+<i>53</i>&nbsp;import com.sun.prism.PixelFormat;
+<i>54</i>&nbsp;import java.util.Locale;
+<i>55</i>&nbsp;import java.util.ResourceBundle;
+<i>56</i>&nbsp;import static com.sun.javafx.FXPermissions.*;
+<i>57</i>&nbsp;
+<i>58</i>&nbsp;class WindowStage extends GlassStage {
+<i>59</i>&nbsp;
+<i>60</i>&nbsp;    protected Window platformWindow;
+<i>61</i>&nbsp;
+<i>62</i>&nbsp;    protected javafx.stage.Stage fxStage;
+<i>63</i>&nbsp;
+<i>64</i>&nbsp;    private StageStyle style;
+<b class="fc"><i>65</i>&nbsp;    private GlassStage owner = null;</b>
+<b class="fc"><i>66</i>&nbsp;    private Modality modality = Modality.NONE;</b>
+<i>67</i>&nbsp;    private final boolean securityDialog;
+<i>68</i>&nbsp;
+<b class="fc"><i>69</i>&nbsp;    private OverlayWarning warning = null;</b>
+<b class="fc"><i>70</i>&nbsp;    private boolean rtl = false;</b>
+<b class="fc"><i>71</i>&nbsp;    private boolean transparent = false;</b>
+<b class="fc"><i>72</i>&nbsp;    private boolean isPrimaryStage = false;</b>
+<b class="fc"><i>73</i>&nbsp;    private boolean isAppletStage = false; // true if this is an embedded applet window</b>
+<b class="fc"><i>74</i>&nbsp;    private boolean isPopupStage = false;</b>
+<b class="fc"><i>75</i>&nbsp;    private boolean isInFullScreen = false;</b>
+<b class="fc"><i>76</i>&nbsp;    private boolean isAlwaysOnTop = false;</b>
+<i>77</i>&nbsp;
+<i>78</i>&nbsp;    // A flag to indicate whether a call was generated from
+<i>79</i>&nbsp;    // an allowed input event handler.
+<b class="fc"><i>80</i>&nbsp;    private boolean inAllowedEventHandler = false;</b>
+<i>81</i>&nbsp;
+<i>82</i>&nbsp;    // An active window is visible &amp;&amp; enabled &amp;&amp; focusable.
+<i>83</i>&nbsp;    // The list is maintained in the z-order, so that the last element
+<i>84</i>&nbsp;    // represents the topmost window (or more accurately, the last
+<i>85</i>&nbsp;    // focused window, which we assume is very close to the last topmost one).
+<b class="fc"><i>86</i>&nbsp;    private static List&lt;WindowStage&gt; activeWindows = new LinkedList&lt;&gt;();</b>
+<i>87</i>&nbsp;
+<b class="fc"><i>88</i>&nbsp;    private static Map&lt;Window, WindowStage&gt; platformWindows = new HashMap&lt;&gt;();</b>
+<i>89</i>&nbsp;
+<b class="fc"><i>90</i>&nbsp;    private static GlassAppletWindow appletWindow = null;</b>
+<i>91</i>&nbsp;    static void setAppletWindow(GlassAppletWindow aw) {
+<b class="nc"><i>92</i>&nbsp;        appletWindow = aw;</b>
+<b class="nc"><i>93</i>&nbsp;    }</b>
+<i>94</i>&nbsp;    static GlassAppletWindow getAppletWindow() {
+<b class="nc"><i>95</i>&nbsp;        return appletWindow;</b>
+<i>96</i>&nbsp;    }
+<i>97</i>&nbsp;
+<b class="fc"><i>98</i>&nbsp;    private static final Locale LOCALE = Locale.getDefault();</b>
+<i>99</i>&nbsp;
+<b class="fc"><i>100</i>&nbsp;    private static final ResourceBundle RESOURCES =</b>
+<b class="fc"><i>101</i>&nbsp;        ResourceBundle.getBundle(WindowStage.class.getPackage().getName() +</b>
+<i>102</i>&nbsp;                                 &quot;.QuantumMessagesBundle&quot;, LOCALE);
+<i>103</i>&nbsp;
+<i>104</i>&nbsp;
+<b class="fc"><i>105</i>&nbsp;    public WindowStage(javafx.stage.Window peerWindow, boolean securityDialog, final StageStyle stageStyle, Modality modality, TKStage owner) {</b>
+<b class="fc"><i>106</i>&nbsp;        this.style = stageStyle;</b>
+<b class="fc"><i>107</i>&nbsp;        this.owner = (GlassStage)owner;</b>
+<b class="fc"><i>108</i>&nbsp;        this.modality = modality;</b>
+<b class="fc"><i>109</i>&nbsp;        this.securityDialog = securityDialog;</b>
+<i>110</i>&nbsp;
+<b class="fc"><i>111</i>&nbsp;        if (peerWindow instanceof javafx.stage.Stage) {</b>
+<b class="fc"><i>112</i>&nbsp;            fxStage = (Stage)peerWindow;</b>
+<i>113</i>&nbsp;        } else {
+<b class="fc"><i>114</i>&nbsp;            fxStage = null;</b>
+<i>115</i>&nbsp;        }
+<i>116</i>&nbsp;
+<b class="fc"><i>117</i>&nbsp;        transparent = stageStyle == StageStyle.TRANSPARENT;</b>
+<b class="fc"><i>118</i>&nbsp;        if (owner == null) {</b>
+<b class="fc"><i>119</i>&nbsp;            if (this.modality == Modality.WINDOW_MODAL) {</b>
+<b class="nc"><i>120</i>&nbsp;                this.modality = Modality.NONE;</b>
+<i>121</i>&nbsp;            }
+<i>122</i>&nbsp;        }
+<b class="fc"><i>123</i>&nbsp;    }</b>
+<i>124</i>&nbsp;
+<i>125</i>&nbsp;    final void setIsPrimary() {
+<b class="fc"><i>126</i>&nbsp;        isPrimaryStage = true;</b>
+<b class="fc"><i>127</i>&nbsp;        if (appletWindow != null) {</b>
+<i>128</i>&nbsp;            // this is an embedded applet stage
+<b class="nc"><i>129</i>&nbsp;            isAppletStage = true;</b>
+<i>130</i>&nbsp;        }
+<b class="fc"><i>131</i>&nbsp;    }</b>
+<i>132</i>&nbsp;
+<i>133</i>&nbsp;    final void setIsPopup() {
+<b class="fc"><i>134</i>&nbsp;        isPopupStage = true;</b>
+<b class="fc"><i>135</i>&nbsp;    }</b>
+<i>136</i>&nbsp;
+<i>137</i>&nbsp;    final boolean isSecurityDialog() {
+<b class="fc"><i>138</i>&nbsp;        return securityDialog;</b>
+<i>139</i>&nbsp;    }
+<i>140</i>&nbsp;
+<i>141</i>&nbsp;    // Called by QuantumToolkit, so we can override initPlatformWindow in subclasses
+<i>142</i>&nbsp;    public final WindowStage init(GlassSystemMenu sysmenu) {
+<b class="fc"><i>143</i>&nbsp;        initPlatformWindow();</b>
+<b class="fc"><i>144</i>&nbsp;        platformWindow.setEventHandler(new GlassWindowEventHandler(this));</b>
+<b class="fc"><i>145</i>&nbsp;        if (sysmenu.isSupported()) {</b>
+<b class="nc"><i>146</i>&nbsp;            sysmenu.createMenuBar();</b>
+<b class="nc"><i>147</i>&nbsp;            platformWindow.setMenuBar(sysmenu.getMenuBar());</b>
+<i>148</i>&nbsp;        }
+<b class="fc"><i>149</i>&nbsp;        return this;</b>
+<i>150</i>&nbsp;    }
+<i>151</i>&nbsp;
+<i>152</i>&nbsp;    private void initPlatformWindow() {
+<b class="fc"><i>153</i>&nbsp;        if (platformWindow == null) {</b>
+<b class="fc"><i>154</i>&nbsp;            Application app = Application.GetApplication();</b>
+<b class="fc"><i>155</i>&nbsp;            if (isPrimaryStage &amp;&amp; (null != appletWindow)) {</b>
+<b class="nc"><i>156</i>&nbsp;                platformWindow = app.createWindow(appletWindow.getGlassWindow().getNativeWindow());</b>
+<i>157</i>&nbsp;            } else {
+<b class="fc"><i>158</i>&nbsp;                Window ownerWindow = null;</b>
+<b class="fc"><i>159</i>&nbsp;                if (owner instanceof WindowStage) {</b>
+<b class="fc"><i>160</i>&nbsp;                    ownerWindow = ((WindowStage)owner).platformWindow;</b>
+<i>161</i>&nbsp;                }
+<b class="fc"><i>162</i>&nbsp;                boolean resizable = false;</b>
+<b class="fc"><i>163</i>&nbsp;                boolean focusable = true;</b>
+<b class="fc"><i>164</i>&nbsp;                int windowMask = rtl ? Window.RIGHT_TO_LEFT : 0;</b>
+<b class="fc"><i>165</i>&nbsp;                if (isPopupStage) { // TODO: make it a stage style?</b>
+<b class="fc"><i>166</i>&nbsp;                    windowMask |= Window.POPUP;</b>
+<b class="fc"><i>167</i>&nbsp;                    if (style == StageStyle.TRANSPARENT) {</b>
+<b class="fc"><i>168</i>&nbsp;                        windowMask |= Window.TRANSPARENT;</b>
+<i>169</i>&nbsp;                    }
+<b class="fc"><i>170</i>&nbsp;                    focusable = false;</b>
+<i>171</i>&nbsp;                } else {
+<b class="fc"><i>172</i>&nbsp;                    switch (style) {</b>
+<i>173</i>&nbsp;                        case UNIFIED:
+<b class="nc"><i>174</i>&nbsp;                            if (app.supportsUnifiedWindows()) {</b>
+<b class="nc"><i>175</i>&nbsp;                                windowMask |= Window.UNIFIED;</b>
+<i>176</i>&nbsp;                            }
+<i>177</i>&nbsp;                            // fall through
+<i>178</i>&nbsp;                        case DECORATED:
+<b class="fc"><i>179</i>&nbsp;                            windowMask |=</b>
+<i>180</i>&nbsp;                                Window.TITLED | Window.CLOSABLE |
+<i>181</i>&nbsp;                                Window.MINIMIZABLE | Window.MAXIMIZABLE;
+<b class="fc"><i>182</i>&nbsp;                            if (ownerWindow != null || modality != Modality.NONE) {</b>
+<b class="nc"><i>183</i>&nbsp;                                windowMask &amp;=</b>
+<i>184</i>&nbsp;                                    ~(Window.MINIMIZABLE | Window.MAXIMIZABLE);
+<i>185</i>&nbsp;                            }
+<b class="fc"><i>186</i>&nbsp;                            resizable = true;</b>
+<b class="fc"><i>187</i>&nbsp;                            break;</b>
+<i>188</i>&nbsp;                        case UTILITY:
+<b class="nc"><i>189</i>&nbsp;                            windowMask |=  Window.TITLED | Window.UTILITY | Window.CLOSABLE;</b>
+<b class="nc"><i>190</i>&nbsp;                            break;</b>
+<i>191</i>&nbsp;                        default:
+<b class="nc"><i>192</i>&nbsp;                            windowMask |=</b>
+<b class="nc"><i>193</i>&nbsp;                                    (transparent ? Window.TRANSPARENT : Window.UNTITLED) | Window.CLOSABLE;</b>
+<i>194</i>&nbsp;                            break;
+<i>195</i>&nbsp;                    }
+<i>196</i>&nbsp;                }
+<b class="fc"><i>197</i>&nbsp;                platformWindow =</b>
+<b class="fc"><i>198</i>&nbsp;                        app.createWindow(ownerWindow, Screen.getMainScreen(), windowMask);</b>
+<b class="fc"><i>199</i>&nbsp;                platformWindow.setResizable(resizable);</b>
+<b class="fc"><i>200</i>&nbsp;                platformWindow.setFocusable(focusable);</b>
+<b class="fc"><i>201</i>&nbsp;                if (securityDialog) {</b>
+<b class="nc"><i>202</i>&nbsp;                    platformWindow.setLevel(Window.Level.FLOATING);</b>
+<i>203</i>&nbsp;                }
+<b class="fc"><i>204</i>&nbsp;                if (fxStage != null &amp;&amp; fxStage.getScene() != null) {</b>
+<b class="fc"><i>205</i>&nbsp;                    javafx.scene.paint.Paint paint = fxStage.getScene().getFill();</b>
+<b class="fc"><i>206</i>&nbsp;                    if (paint instanceof javafx.scene.paint.Color) {</b>
+<b class="fc"><i>207</i>&nbsp;                        javafx.scene.paint.Color color = (javafx.scene.paint.Color) paint;</b>
+<b class="fc"><i>208</i>&nbsp;                        platformWindow.setBackground((float) color.getRed(), (float) color.getGreen(), (float) color.getBlue());</b>
+<b class="fc"><i>209</i>&nbsp;                    } else if (paint instanceof javafx.scene.paint.LinearGradient) {</b>
+<b class="nc"><i>210</i>&nbsp;                        javafx.scene.paint.LinearGradient lgradient = (javafx.scene.paint.LinearGradient) paint;</b>
+<b class="nc"><i>211</i>&nbsp;                        computeAndSetBackground(lgradient.getStops());</b>
+<b class="nc"><i>212</i>&nbsp;                    } else if (paint instanceof javafx.scene.paint.RadialGradient) {</b>
+<b class="nc"><i>213</i>&nbsp;                        javafx.scene.paint.RadialGradient rgradient = (javafx.scene.paint.RadialGradient) paint;</b>
+<b class="nc"><i>214</i>&nbsp;                        computeAndSetBackground(rgradient.getStops());</b>
+<i>215</i>&nbsp;                    }
+<i>216</i>&nbsp;                }
+<i>217</i>&nbsp;
+<i>218</i>&nbsp;            }
+<i>219</i>&nbsp;        }
+<b class="fc"><i>220</i>&nbsp;        platformWindows.put(platformWindow, this);</b>
+<b class="fc"><i>221</i>&nbsp;    }</b>
+<i>222</i>&nbsp;
+<i>223</i>&nbsp;    private void computeAndSetBackground(List&lt;javafx.scene.paint.Stop&gt; stops) {
+<b class="nc"><i>224</i>&nbsp;        if (stops.size() == 1) {</b>
+<b class="nc"><i>225</i>&nbsp;            javafx.scene.paint.Color color = stops.get(0).getColor();</b>
+<b class="nc"><i>226</i>&nbsp;            platformWindow.setBackground((float) color.getRed(),</b>
+<b class="nc"><i>227</i>&nbsp;                    (float) color.getGreen(), (float) color.getBlue());</b>
+<b class="nc"><i>228</i>&nbsp;        } else if (stops.size() &gt; 1) {</b>
+<i>229</i>&nbsp;            // A simple attempt to find a reasonable average color that is
+<i>230</i>&nbsp;            // within the stops arrange.
+<b class="nc"><i>231</i>&nbsp;            javafx.scene.paint.Color color = stops.get(0).getColor();</b>
+<b class="nc"><i>232</i>&nbsp;            javafx.scene.paint.Color color2 = stops.get(stops.size() - 1).getColor();</b>
+<b class="nc"><i>233</i>&nbsp;            platformWindow.setBackground((float) ((color.getRed() + color2.getRed()) / 2.0),</b>
+<b class="nc"><i>234</i>&nbsp;                    (float) ((color.getGreen() + color2.getGreen()) / 2.0),</b>
+<b class="nc"><i>235</i>&nbsp;                    (float) ((color.getBlue() + color2.getBlue()) / 2.0));</b>
+<i>236</i>&nbsp;        }
+<b class="nc"><i>237</i>&nbsp;    }</b>
+<i>238</i>&nbsp;
+<i>239</i>&nbsp;    final Window getPlatformWindow() {
+<b class="fc"><i>240</i>&nbsp;        return platformWindow;</b>
+<i>241</i>&nbsp;    }
+<i>242</i>&nbsp;
+<i>243</i>&nbsp;    static WindowStage findWindowStage(Window platformWindow) {
+<b class="nc"><i>244</i>&nbsp;        return platformWindows.get(platformWindow);</b>
+<i>245</i>&nbsp;    }
+<i>246</i>&nbsp;
+<i>247</i>&nbsp;    protected GlassStage getOwner() {
+<b class="nc"><i>248</i>&nbsp;        return owner;</b>
+<i>249</i>&nbsp;    }
+<i>250</i>&nbsp;
+<i>251</i>&nbsp;    protected ViewScene getViewScene() {
+<b class="fc"><i>252</i>&nbsp;        return (ViewScene)getScene();</b>
+<i>253</i>&nbsp;    }
+<i>254</i>&nbsp;
+<i>255</i>&nbsp;    StageStyle getStyle() {
+<b class="fc"><i>256</i>&nbsp;        return style;</b>
+<i>257</i>&nbsp;    }
+<i>258</i>&nbsp;
+<i>259</i>&nbsp;    @Override public TKScene createTKScene(boolean depthBuffer, boolean msaa, AccessControlContext acc) {
+<b class="fc"><i>260</i>&nbsp;        ViewScene scene = new ViewScene(depthBuffer, msaa);</b>
+<b class="fc"><i>261</i>&nbsp;        scene.setSecurityContext(acc);</b>
+<b class="fc"><i>262</i>&nbsp;        return scene;</b>
+<i>263</i>&nbsp;    }
+<i>264</i>&nbsp;
+<i>265</i>&nbsp;    /**
+<i>266</i>&nbsp;     * Set the scene to be displayed in this stage
+<i>267</i>&nbsp;     *
+<i>268</i>&nbsp;     * @param scene The peer of the scene to be displayed
+<i>269</i>&nbsp;     */
+<i>270</i>&nbsp;    @Override public void setScene(TKScene scene) {
+<b class="fc"><i>271</i>&nbsp;        GlassScene oldScene = getScene();</b>
+<b class="fc"><i>272</i>&nbsp;        if (oldScene == scene) {</b>
+<i>273</i>&nbsp;            // Nothing to do
+<b class="nc"><i>274</i>&nbsp;            return;</b>
+<i>275</i>&nbsp;        }
+<i>276</i>&nbsp;        // RT-21465, RT-28490
+<i>277</i>&nbsp;        // We don&#39;t support scene changes in full-screen mode.
+<b class="fc"><i>278</i>&nbsp;        exitFullScreen();</b>
+<b class="fc"><i>279</i>&nbsp;        super.setScene(scene);</b>
+<b class="fc"><i>280</i>&nbsp;        if (scene != null) {</b>
+<b class="fc"><i>281</i>&nbsp;            GlassScene newScene = getViewScene();</b>
+<b class="fc"><i>282</i>&nbsp;            View view = newScene.getPlatformView();</b>
+<b class="fc"><i>283</i>&nbsp;            QuantumToolkit.runWithRenderLock(() -&gt; {</b>
+<b class="fc"><i>284</i>&nbsp;                platformWindow.setView(view);</b>
+<b class="fc"><i>285</i>&nbsp;                if (oldScene != null) oldScene.updateSceneState();</b>
+<b class="fc"><i>286</i>&nbsp;                newScene.updateSceneState();</b>
+<b class="fc"><i>287</i>&nbsp;                return null;</b>
+<i>288</i>&nbsp;            });
+<b class="fc"><i>289</i>&nbsp;            requestFocus();</b>
+<b class="fc"><i>290</i>&nbsp;        } else {</b>
+<b class="fc"><i>291</i>&nbsp;            QuantumToolkit.runWithRenderLock(() -&gt; {</b>
+<i>292</i>&nbsp;                // platformWindow can be null here, if this window is owned,
+<i>293</i>&nbsp;                // and its owner is being closed.
+<b class="fc"><i>294</i>&nbsp;                if (platformWindow != null) {</b>
+<b class="fc"><i>295</i>&nbsp;                    platformWindow.setView(null);</b>
+<i>296</i>&nbsp;                }
+<b class="fc"><i>297</i>&nbsp;                if (oldScene != null) {</b>
+<b class="fc"><i>298</i>&nbsp;                    oldScene.updateSceneState();</b>
+<i>299</i>&nbsp;                }
+<b class="fc"><i>300</i>&nbsp;                return null;</b>
+<i>301</i>&nbsp;            });
+<i>302</i>&nbsp;        }
+<b class="fc"><i>303</i>&nbsp;        if (oldScene != null) {</b>
+<b class="fc"><i>304</i>&nbsp;            ViewPainter painter = ((ViewScene)oldScene).getPainter();</b>
+<b class="fc"><i>305</i>&nbsp;            QuantumRenderer.getInstance().disposePresentable(painter.presentable);   // latched on RT</b>
+<i>306</i>&nbsp;        }
+<b class="fc"><i>307</i>&nbsp;    }</b>
+<i>308</i>&nbsp;
+<i>309</i>&nbsp;    @Override public void setBounds(float x, float y, boolean xSet, boolean ySet,
+<i>310</i>&nbsp;                                    float w, float h, float cw, float ch,
+<i>311</i>&nbsp;                                    float xGravity, float yGravity,
+<i>312</i>&nbsp;                                    float renderScaleX, float renderScaleY)
+<i>313</i>&nbsp;    {
+<b class="fc"><i>314</i>&nbsp;        if (renderScaleX &gt; 0.0 || renderScaleY &gt; 0.0) {</b>
+<i>315</i>&nbsp;            // We set the render scale first since the call to setBounds()
+<i>316</i>&nbsp;            // below can induce a recursive update on the scales if it moves
+<i>317</i>&nbsp;            // the window to a new screen and we will then end up being called
+<i>318</i>&nbsp;            // back with a new scale.  We do not want to set these old scale
+<i>319</i>&nbsp;            // values after that recursion happens.
+<b class="fc"><i>320</i>&nbsp;            if (renderScaleX &gt; 0.0) {</b>
+<b class="fc"><i>321</i>&nbsp;                platformWindow.setRenderScaleX(renderScaleX);</b>
+<i>322</i>&nbsp;            }
+<b class="fc"><i>323</i>&nbsp;            if (renderScaleY &gt; 0.0) {</b>
+<b class="fc"><i>324</i>&nbsp;                platformWindow.setRenderScaleY(renderScaleY);</b>
+<i>325</i>&nbsp;            }
+<b class="fc"><i>326</i>&nbsp;            ViewScene vscene = getViewScene();</b>
+<b class="fc"><i>327</i>&nbsp;            if (vscene != null) {</b>
+<b class="fc"><i>328</i>&nbsp;                vscene.updateSceneState();</b>
+<b class="fc"><i>329</i>&nbsp;                vscene.entireSceneNeedsRepaint();</b>
+<i>330</i>&nbsp;            }
+<i>331</i>&nbsp;        }
+<b class="fc"><i>332</i>&nbsp;        if (isAppletStage) {</b>
+<b class="nc"><i>333</i>&nbsp;            xSet = ySet = false;</b>
+<i>334</i>&nbsp;        }
+<b class="fc"><i>335</i>&nbsp;        if (xSet || ySet || w &gt; 0 || h &gt; 0 || cw &gt; 0 || ch &gt; 0) {</b>
+<b class="fc"><i>336</i>&nbsp;            platformWindow.setBounds(x, y, xSet, ySet, w, h, cw, ch, xGravity, yGravity);</b>
+<i>337</i>&nbsp;        }
+<b class="fc"><i>338</i>&nbsp;    }</b>
+<i>339</i>&nbsp;
+<i>340</i>&nbsp;    @Override
+<i>341</i>&nbsp;    public float getPlatformScaleX() {
+<b class="fc"><i>342</i>&nbsp;        return platformWindow.getPlatformScaleX();</b>
+<i>343</i>&nbsp;    }
+<i>344</i>&nbsp;
+<i>345</i>&nbsp;    @Override
+<i>346</i>&nbsp;    public float getPlatformScaleY() {
+<b class="fc"><i>347</i>&nbsp;        return platformWindow.getPlatformScaleY();</b>
+<i>348</i>&nbsp;    }
+<i>349</i>&nbsp;
+<i>350</i>&nbsp;    @Override
+<i>351</i>&nbsp;    public float getOutputScaleX() {
+<b class="fc"><i>352</i>&nbsp;        return platformWindow.getOutputScaleX();</b>
+<i>353</i>&nbsp;    }
+<i>354</i>&nbsp;
+<i>355</i>&nbsp;    @Override
+<i>356</i>&nbsp;    public float getOutputScaleY() {
+<b class="fc"><i>357</i>&nbsp;        return platformWindow.getOutputScaleY();</b>
+<i>358</i>&nbsp;    }
+<i>359</i>&nbsp;
+<i>360</i>&nbsp;    @Override public void setMinimumSize(int minWidth, int minHeight) {
+<b class="fc"><i>361</i>&nbsp;        minWidth  = (int) Math.ceil(minWidth  * getPlatformScaleX());</b>
+<b class="fc"><i>362</i>&nbsp;        minHeight = (int) Math.ceil(minHeight * getPlatformScaleY());</b>
+<b class="fc"><i>363</i>&nbsp;        platformWindow.setMinimumSize(minWidth, minHeight);</b>
+<b class="fc"><i>364</i>&nbsp;    }</b>
+<i>365</i>&nbsp;
+<i>366</i>&nbsp;    @Override public void setMaximumSize(int maxWidth, int maxHeight) {
+<b class="fc"><i>367</i>&nbsp;        maxWidth  = (int) Math.ceil(maxWidth  * getPlatformScaleX());</b>
+<b class="fc"><i>368</i>&nbsp;        maxHeight = (int) Math.ceil(maxHeight * getPlatformScaleY());</b>
+<b class="fc"><i>369</i>&nbsp;        platformWindow.setMaximumSize(maxWidth, maxHeight);</b>
+<b class="fc"><i>370</i>&nbsp;    }</b>
+<i>371</i>&nbsp;
+<i>372</i>&nbsp;    static Image findBestImage(java.util.List icons, int width, int height) {
+<b class="nc"><i>373</i>&nbsp;        Image image = null;</b>
+<b class="nc"><i>374</i>&nbsp;        double bestSimilarity = 3; //Impossibly high value</b>
+<b class="nc"><i>375</i>&nbsp;        for (Object icon : icons) {</b>
+<i>376</i>&nbsp;            //Iterate imageList looking for best matching image.
+<i>377</i>&nbsp;            //&#39;Similarity&#39; measure is defined as good scale factor and small insets.
+<i>378</i>&nbsp;            //best possible similarity is 0 (no scale, no insets).
+<i>379</i>&nbsp;            //It&#39;s found by experimentation that good-looking results are achieved
+<i>380</i>&nbsp;            //with scale factors x1, x3/4, x2/3, xN, x1/N.
+<i>381</i>&nbsp;            //Check to make sure the image/image format is correct.
+<b class="nc"><i>382</i>&nbsp;            Image im = (Image)icon;</b>
+<b class="nc"><i>383</i>&nbsp;            if (im == null || !(im.getPixelFormat() == PixelFormat.BYTE_RGB ||</b>
+<b class="nc"><i>384</i>&nbsp;                im.getPixelFormat() == PixelFormat.BYTE_BGRA_PRE ||</b>
+<b class="nc"><i>385</i>&nbsp;                im.getPixelFormat() == PixelFormat.BYTE_GRAY))</b>
+<i>386</i>&nbsp;            {
+<b class="nc"><i>387</i>&nbsp;                continue;</b>
+<i>388</i>&nbsp;            }
+<i>389</i>&nbsp;
+<b class="nc"><i>390</i>&nbsp;            int iw = im.getWidth();</b>
+<b class="nc"><i>391</i>&nbsp;            int ih = im.getHeight();</b>
+<i>392</i>&nbsp;
+<b class="nc"><i>393</i>&nbsp;            if (iw &gt; 0 &amp;&amp; ih &gt; 0) {</b>
+<i>394</i>&nbsp;                //Calc scale factor
+<b class="nc"><i>395</i>&nbsp;                double scaleFactor = Math.min((double)width / (double)iw,</b>
+<i>396</i>&nbsp;                                              (double)height / (double)ih);
+<i>397</i>&nbsp;                //Calculate scaled image dimensions
+<i>398</i>&nbsp;                //adjusting scale factor to nearest &quot;good&quot; value
+<i>399</i>&nbsp;                int adjw;
+<i>400</i>&nbsp;                int adjh;
+<b class="nc"><i>401</i>&nbsp;                double scaleMeasure = 1; //0 - best (no) scale, 1 - impossibly bad</b>
+<b class="nc"><i>402</i>&nbsp;                if (scaleFactor &gt;= 2) {</b>
+<i>403</i>&nbsp;                    //Need to enlarge image more than twice
+<i>404</i>&nbsp;                    //Round down scale factor to multiply by integer value
+<b class="nc"><i>405</i>&nbsp;                    scaleFactor = Math.floor(scaleFactor);</b>
+<b class="nc"><i>406</i>&nbsp;                    adjw = iw * (int)scaleFactor;</b>
+<b class="nc"><i>407</i>&nbsp;                    adjh = ih * (int)scaleFactor;</b>
+<b class="nc"><i>408</i>&nbsp;                    scaleMeasure = 1.0 - 0.5 / scaleFactor;</b>
+<b class="nc"><i>409</i>&nbsp;                } else if (scaleFactor &gt;= 1) {</b>
+<i>410</i>&nbsp;                    //Don&#39;t scale
+<b class="nc"><i>411</i>&nbsp;                    scaleFactor = 1.0;</b>
+<b class="nc"><i>412</i>&nbsp;                    adjw = iw;</b>
+<b class="nc"><i>413</i>&nbsp;                    adjh = ih;</b>
+<b class="nc"><i>414</i>&nbsp;                    scaleMeasure = 0;</b>
+<b class="nc"><i>415</i>&nbsp;                } else if (scaleFactor &gt;= 0.75) {</b>
+<i>416</i>&nbsp;                    //Multiply by 3/4
+<b class="nc"><i>417</i>&nbsp;                    scaleFactor = 0.75;</b>
+<b class="nc"><i>418</i>&nbsp;                    adjw = iw * 3 / 4;</b>
+<b class="nc"><i>419</i>&nbsp;                    adjh = ih * 3 / 4;</b>
+<b class="nc"><i>420</i>&nbsp;                    scaleMeasure = 0.3;</b>
+<b class="nc"><i>421</i>&nbsp;                } else if (scaleFactor &gt;= 0.6666) {</b>
+<i>422</i>&nbsp;                    //Multiply by 2/3
+<b class="nc"><i>423</i>&nbsp;                    scaleFactor = 0.6666;</b>
+<b class="nc"><i>424</i>&nbsp;                    adjw = iw * 2 / 3;</b>
+<b class="nc"><i>425</i>&nbsp;                    adjh = ih * 2 / 3;</b>
+<b class="nc"><i>426</i>&nbsp;                    scaleMeasure = 0.33;</b>
+<i>427</i>&nbsp;                } else {
+<i>428</i>&nbsp;                    //Multiply size by 1/scaleDivider
+<i>429</i>&nbsp;                    //where scaleDivider is minimum possible integer
+<i>430</i>&nbsp;                    //larger than 1/scaleFactor
+<b class="nc"><i>431</i>&nbsp;                    double scaleDivider = Math.ceil(1.0 / scaleFactor);</b>
+<b class="nc"><i>432</i>&nbsp;                    scaleFactor = 1.0 / scaleDivider;</b>
+<b class="nc"><i>433</i>&nbsp;                    adjw = (int)Math.round((double)iw / scaleDivider);</b>
+<b class="nc"><i>434</i>&nbsp;                    adjh = (int)Math.round((double)ih / scaleDivider);</b>
+<b class="nc"><i>435</i>&nbsp;                    scaleMeasure = 1.0 - 1.0 / scaleDivider;</b>
+<i>436</i>&nbsp;                }
+<b class="nc"><i>437</i>&nbsp;                double similarity = ((double)width - (double)adjw) / (double)width +</b>
+<i>438</i>&nbsp;                    ((double)height - (double)adjh) / (double)height + //Large padding is bad
+<i>439</i>&nbsp;                    scaleMeasure; //Large rescale is bad
+<b class="nc"><i>440</i>&nbsp;                if (similarity &lt; bestSimilarity) {</b>
+<b class="nc"><i>441</i>&nbsp;                    bestSimilarity = similarity;</b>
+<b class="nc"><i>442</i>&nbsp;                    image = im;</b>
+<i>443</i>&nbsp;                }
+<b class="nc"><i>444</i>&nbsp;                if (similarity == 0) break;</b>
+<i>445</i>&nbsp;            }
+<b class="nc"><i>446</i>&nbsp;        }</b>
+<b class="nc"><i>447</i>&nbsp;        return image;</b>
+<i>448</i>&nbsp;    }
+<i>449</i>&nbsp;
+<i>450</i>&nbsp;    @Override public void setIcons(java.util.List icons) {
+<i>451</i>&nbsp;
+<b class="fc"><i>452</i>&nbsp;        int SMALL_ICON_HEIGHT = 32;</b>
+<b class="fc"><i>453</i>&nbsp;        int SMALL_ICON_WIDTH = 32;</b>
+<b class="fc"><i>454</i>&nbsp;        if (PlatformUtil.isMac()) { //Mac Sized Icons</b>
+<b class="nc"><i>455</i>&nbsp;            SMALL_ICON_HEIGHT = 128;</b>
+<b class="nc"><i>456</i>&nbsp;            SMALL_ICON_WIDTH = 128;</b>
+<b class="fc"><i>457</i>&nbsp;        } else if (PlatformUtil.isWindows()) { //Windows Sized Icons</b>
+<b class="fc"><i>458</i>&nbsp;            SMALL_ICON_HEIGHT = 32;</b>
+<b class="fc"><i>459</i>&nbsp;            SMALL_ICON_WIDTH = 32;</b>
+<b class="nc"><i>460</i>&nbsp;        } else if (PlatformUtil.isLinux()) { //Linux icons</b>
+<b class="nc"><i>461</i>&nbsp;            SMALL_ICON_HEIGHT = 128;</b>
+<b class="nc"><i>462</i>&nbsp;            SMALL_ICON_WIDTH = 128;</b>
+<i>463</i>&nbsp;        }
+<i>464</i>&nbsp;
+<b class="fc"><i>465</i>&nbsp;        if (icons == null || icons.size() &lt; 1) { //no icons passed in</b>
+<b class="fc"><i>466</i>&nbsp;            platformWindow.setIcon(null);</b>
+<b class="fc"><i>467</i>&nbsp;            return;</b>
+<i>468</i>&nbsp;        }
+<i>469</i>&nbsp;
+<b class="nc"><i>470</i>&nbsp;        Image image = findBestImage(icons, SMALL_ICON_WIDTH, SMALL_ICON_HEIGHT);</b>
+<b class="nc"><i>471</i>&nbsp;        if (image == null) {</b>
+<i>472</i>&nbsp;            //No images were found, possibly all are broken
+<b class="nc"><i>473</i>&nbsp;            return;</b>
+<i>474</i>&nbsp;        }
+<i>475</i>&nbsp;
+<b class="nc"><i>476</i>&nbsp;        PushbroomScaler scaler = ScalerFactory.createScaler(image.getWidth(), image.getHeight(),</b>
+<b class="nc"><i>477</i>&nbsp;                                                            image.getBytesPerPixelUnit(),</b>
+<i>478</i>&nbsp;                                                            SMALL_ICON_WIDTH, SMALL_ICON_HEIGHT, true);
+<i>479</i>&nbsp;
+<i>480</i>&nbsp;        //shrink the image and convert the format to INT_ARGB_PRE
+<b class="nc"><i>481</i>&nbsp;        ByteBuffer buf = (ByteBuffer) image.getPixelBuffer();</b>
+<b class="nc"><i>482</i>&nbsp;        byte bytes[] = new byte[buf.limit()];</b>
+<i>483</i>&nbsp;
+<b class="nc"><i>484</i>&nbsp;        int iheight = image.getHeight();</b>
+<i>485</i>&nbsp;
+<i>486</i>&nbsp;        //Iterate through each scanline of the image
+<i>487</i>&nbsp;        //and pass it one at a time to the scaling object
+<b class="nc"><i>488</i>&nbsp;        for (int z = 0; z &lt; iheight; z++) {</b>
+<b class="nc"><i>489</i>&nbsp;            buf.position(z*image.getScanlineStride());</b>
+<b class="nc"><i>490</i>&nbsp;            buf.get(bytes, 0, image.getScanlineStride());</b>
+<b class="nc"><i>491</i>&nbsp;            scaler.putSourceScanline(bytes, 0);</b>
+<i>492</i>&nbsp;        }
+<i>493</i>&nbsp;
+<b class="nc"><i>494</i>&nbsp;        buf.rewind();</b>
+<i>495</i>&nbsp;
+<b class="nc"><i>496</i>&nbsp;        final Image img = image.iconify(scaler.getDestination(), SMALL_ICON_WIDTH, SMALL_ICON_HEIGHT);</b>
+<b class="nc"><i>497</i>&nbsp;        platformWindow.setIcon(PixelUtils.imageToPixels(img));</b>
+<b class="nc"><i>498</i>&nbsp;    }</b>
+<i>499</i>&nbsp;
+<i>500</i>&nbsp;    @Override public void setTitle(String title) {
+<b class="fc"><i>501</i>&nbsp;        platformWindow.setTitle(title);</b>
+<b class="fc"><i>502</i>&nbsp;    }</b>
+<i>503</i>&nbsp;
+<i>504</i>&nbsp;    @Override public void setVisible(final boolean visible) {
+<i>505</i>&nbsp;        // Before setting visible to false on the native window, we unblock
+<i>506</i>&nbsp;        // other windows.
+<b class="fc"><i>507</i>&nbsp;        if (!visible) {</b>
+<b class="fc"><i>508</i>&nbsp;            removeActiveWindow(this);</b>
+<b class="fc"><i>509</i>&nbsp;            if (modality == Modality.WINDOW_MODAL) {</b>
+<b class="nc"><i>510</i>&nbsp;                if (owner != null &amp;&amp; owner instanceof WindowStage) {</b>
+<b class="nc"><i>511</i>&nbsp;                    ((WindowStage) owner).setEnabled(true);</b>
+<i>512</i>&nbsp;                }
+<b class="fc"><i>513</i>&nbsp;            } else if (modality == Modality.APPLICATION_MODAL) {</b>
+<b class="nc"><i>514</i>&nbsp;                windowsSetEnabled(true);</b>
+<i>515</i>&nbsp;            } else {
+<i>516</i>&nbsp;                // Note: This method is required to workaround a glass issue
+<i>517</i>&nbsp;                // mentioned in RT-12607
+<i>518</i>&nbsp;                // If the hiding stage is unfocusable (i.e. it&#39;s a PopupStage),
+<i>519</i>&nbsp;                // then we don&#39;t do this to avoid stealing the focus.
+<b class="fc"><i>520</i>&nbsp;                if (!isPopupStage &amp;&amp; owner != null &amp;&amp; owner instanceof WindowStage) {</b>
+<b class="nc"><i>521</i>&nbsp;                    WindowStage ownerStage = (WindowStage)owner;</b>
+<b class="nc"><i>522</i>&nbsp;                    ownerStage.requestToFront();</b>
+<i>523</i>&nbsp;                }
+<i>524</i>&nbsp;            }
+<i>525</i>&nbsp;        }
+<b class="fc"><i>526</i>&nbsp;        QuantumToolkit.runWithRenderLock(() -&gt; {</b>
+<i>527</i>&nbsp;            // platformWindow can be null here, if this window is owned,
+<i>528</i>&nbsp;            // and its owner is being closed.
+<b class="fc"><i>529</i>&nbsp;            if (platformWindow != null) {</b>
+<b class="fc"><i>530</i>&nbsp;                platformWindow.setVisible(visible);</b>
+<i>531</i>&nbsp;            }
+<b class="fc"><i>532</i>&nbsp;            super.setVisible(visible);</b>
+<b class="fc"><i>533</i>&nbsp;            return null;</b>
+<i>534</i>&nbsp;        });
+<i>535</i>&nbsp;        // After setting visible to true on the native window, we block
+<i>536</i>&nbsp;        // other windows.
+<b class="fc"><i>537</i>&nbsp;        if (visible) {</b>
+<b class="fc"><i>538</i>&nbsp;            if (modality == Modality.WINDOW_MODAL) {</b>
+<b class="nc"><i>539</i>&nbsp;                if (owner != null &amp;&amp; owner instanceof WindowStage) {</b>
+<b class="nc"><i>540</i>&nbsp;                    ((WindowStage) owner).setEnabled(false);</b>
+<i>541</i>&nbsp;                }
+<b class="fc"><i>542</i>&nbsp;            } else if (modality == Modality.APPLICATION_MODAL) {</b>
+<b class="nc"><i>543</i>&nbsp;                windowsSetEnabled(false);</b>
+<i>544</i>&nbsp;            }
+<b class="fc"><i>545</i>&nbsp;            if (isAppletStage &amp;&amp; null != appletWindow) {</b>
+<b class="nc"><i>546</i>&nbsp;                appletWindow.assertStageOrder();</b>
+<i>547</i>&nbsp;            }
+<i>548</i>&nbsp;        }
+<i>549</i>&nbsp;
+<b class="fc"><i>550</i>&nbsp;        applyFullScreen();</b>
+<b class="fc"><i>551</i>&nbsp;    }</b>
+<i>552</i>&nbsp;
+<i>553</i>&nbsp;    @Override boolean isVisible() {
+<b class="fc"><i>554</i>&nbsp;        return platformWindow.isVisible();</b>
+<i>555</i>&nbsp;    }
+<i>556</i>&nbsp;
+<i>557</i>&nbsp;    @Override public void setOpacity(float opacity) {
+<b class="fc"><i>558</i>&nbsp;        platformWindow.setAlpha(opacity);</b>
+<b class="fc"><i>559</i>&nbsp;        GlassScene gs = getScene();</b>
+<b class="fc"><i>560</i>&nbsp;        if (gs != null) {</b>
+<b class="fc"><i>561</i>&nbsp;            gs.entireSceneNeedsRepaint();</b>
+<i>562</i>&nbsp;        }
+<b class="fc"><i>563</i>&nbsp;    }</b>
+<i>564</i>&nbsp;
+<i>565</i>&nbsp;    public boolean needsUpdateWindow() {
+<b class="fc"><i>566</i>&nbsp;        return transparent &amp;&amp; (Application.GetApplication().shouldUpdateWindow());</b>
+<i>567</i>&nbsp;    }
+<i>568</i>&nbsp;
+<i>569</i>&nbsp;    @Override public void setIconified(boolean iconified) {
+<b class="fc"><i>570</i>&nbsp;        if (platformWindow.isMinimized() == iconified) {</b>
+<b class="fc"><i>571</i>&nbsp;            return;</b>
+<i>572</i>&nbsp;        }
+<b class="nc"><i>573</i>&nbsp;        platformWindow.minimize(iconified);</b>
+<b class="nc"><i>574</i>&nbsp;    }</b>
+<i>575</i>&nbsp;
+<i>576</i>&nbsp;    @Override public void setMaximized(boolean maximized) {
+<b class="fc"><i>577</i>&nbsp;        if (platformWindow.isMaximized() == maximized) {</b>
+<b class="fc"><i>578</i>&nbsp;            return;</b>
+<i>579</i>&nbsp;        }
+<b class="nc"><i>580</i>&nbsp;        platformWindow.maximize(maximized);</b>
+<b class="nc"><i>581</i>&nbsp;    }</b>
+<i>582</i>&nbsp;
+<i>583</i>&nbsp;    @Override
+<i>584</i>&nbsp;    public void setAlwaysOnTop(boolean alwaysOnTop) {
+<i>585</i>&nbsp;        // The securityDialog flag takes precedence over alwaysOnTop
+<b class="fc"><i>586</i>&nbsp;        if (securityDialog) return;</b>
+<i>587</i>&nbsp;
+<b class="fc"><i>588</i>&nbsp;        if (isAlwaysOnTop == alwaysOnTop) {</b>
+<b class="fc"><i>589</i>&nbsp;            return;</b>
+<i>590</i>&nbsp;        }
+<i>591</i>&nbsp;
+<b class="nc"><i>592</i>&nbsp;        if (alwaysOnTop) {</b>
+<b class="nc"><i>593</i>&nbsp;            if (hasPermission(SET_WINDOW_ALWAYS_ON_TOP_PERMISSION)) {</b>
+<b class="nc"><i>594</i>&nbsp;                platformWindow.setLevel(Level.FLOATING);</b>
+<i>595</i>&nbsp;            } else {
+<b class="nc"><i>596</i>&nbsp;                alwaysOnTop = false;</b>
+<b class="nc"><i>597</i>&nbsp;                if (stageListener != null) {</b>
+<b class="nc"><i>598</i>&nbsp;                    stageListener.changedAlwaysOnTop(alwaysOnTop);</b>
+<i>599</i>&nbsp;                }
+<i>600</i>&nbsp;            }
+<i>601</i>&nbsp;        } else {
+<b class="nc"><i>602</i>&nbsp;            platformWindow.setLevel(Level.NORMAL);</b>
+<i>603</i>&nbsp;        }
+<b class="nc"><i>604</i>&nbsp;        isAlwaysOnTop = alwaysOnTop;</b>
+<b class="nc"><i>605</i>&nbsp;    }</b>
+<i>606</i>&nbsp;
+<i>607</i>&nbsp;    @Override public void setResizable(boolean resizable) {
+<b class="fc"><i>608</i>&nbsp;        platformWindow.setResizable(resizable);</b>
+<i>609</i>&nbsp;        // note: for child windows this is ignored and we fail silently
+<b class="fc"><i>610</i>&nbsp;    }</b>
+<i>611</i>&nbsp;
+<i>612</i>&nbsp;    // Return true if this stage is trusted for full screen - doesn&#39;t have a
+<i>613</i>&nbsp;    // security manager, or a permission check doesn&#39;t result in a security
+<i>614</i>&nbsp;    // exeception.
+<i>615</i>&nbsp;    boolean isTrustedFullScreen() {
+<b class="nc"><i>616</i>&nbsp;        return hasPermission(UNRESTRICTED_FULL_SCREEN_PERMISSION);</b>
+<i>617</i>&nbsp;    }
+<i>618</i>&nbsp;
+<i>619</i>&nbsp;    // Safely exit full screen
+<i>620</i>&nbsp;    void exitFullScreen() {
+<b class="fc"><i>621</i>&nbsp;        setFullScreen(false);</b>
+<b class="fc"><i>622</i>&nbsp;    }</b>
+<i>623</i>&nbsp;
+<i>624</i>&nbsp;    boolean isApplet() {
+<b class="fc"><i>625</i>&nbsp;        return isPrimaryStage &amp;&amp; null != appletWindow;</b>
+<i>626</i>&nbsp;    }
+<i>627</i>&nbsp;
+<i>628</i>&nbsp;    private boolean hasPermission(Permission perm) {
+<i>629</i>&nbsp;        try {
+<b class="nc"><i>630</i>&nbsp;            final SecurityManager sm = System.getSecurityManager();</b>
+<b class="nc"><i>631</i>&nbsp;            if (sm != null) {</b>
+<b class="nc"><i>632</i>&nbsp;                sm.checkPermission(perm, getAccessControlContext());</b>
+<i>633</i>&nbsp;            }
+<b class="nc"><i>634</i>&nbsp;            return true;</b>
+<b class="nc"><i>635</i>&nbsp;        } catch (SecurityException se) {</b>
+<b class="nc"><i>636</i>&nbsp;            return false;</b>
+<i>637</i>&nbsp;        }
+<i>638</i>&nbsp;    }
+<i>639</i>&nbsp;
+<b class="fc"><i>640</i>&nbsp;    private boolean fullScreenFromUserEvent = false;</b>
+<i>641</i>&nbsp;
+<b class="fc"><i>642</i>&nbsp;    private KeyCombination savedFullScreenExitKey = null;</b>
+<i>643</i>&nbsp;
+<i>644</i>&nbsp;    public final KeyCombination getSavedFullScreenExitKey() {
+<b class="nc"><i>645</i>&nbsp;        return savedFullScreenExitKey;</b>
+<i>646</i>&nbsp;    }
+<i>647</i>&nbsp;
+<i>648</i>&nbsp;    private void applyFullScreen() {
+<b class="fc"><i>649</i>&nbsp;        if (platformWindow == null) {</b>
+<i>650</i>&nbsp;            // applyFullScreen() can be called from setVisible(false), while the
+<i>651</i>&nbsp;            // platformWindow has already been destroyed.
+<b class="nc"><i>652</i>&nbsp;            return;</b>
+<i>653</i>&nbsp;        }
+<b class="fc"><i>654</i>&nbsp;        View v = platformWindow.getView();</b>
+<b class="fc"><i>655</i>&nbsp;        if (isVisible() &amp;&amp; v != null &amp;&amp; v.isInFullscreen() != isInFullScreen) {</b>
+<b class="nc"><i>656</i>&nbsp;            if (isInFullScreen) {</b>
+<i>657</i>&nbsp;                // Check whether app is full screen trusted or flag is set
+<i>658</i>&nbsp;                // indicating that the fullscreen request came from an input
+<i>659</i>&nbsp;                // event handler.
+<i>660</i>&nbsp;                // If not notify the stageListener to reset fullscreen to false.
+<b class="nc"><i>661</i>&nbsp;                final boolean isTrusted = isTrustedFullScreen();</b>
+<b class="nc"><i>662</i>&nbsp;                if (!isTrusted &amp;&amp; !fullScreenFromUserEvent) {</b>
+<b class="nc"><i>663</i>&nbsp;                    exitFullScreen();</b>
+<b class="nc"><i>664</i>&nbsp;                    fullscreenChanged(false);</b>
+<i>665</i>&nbsp;                } else {
+<b class="nc"><i>666</i>&nbsp;                    v.enterFullscreen(false, false, false);</b>
+<b class="nc"><i>667</i>&nbsp;                    if (warning != null &amp;&amp; warning.inWarningTransition()) {</b>
+<b class="nc"><i>668</i>&nbsp;                        warning.setView(getViewScene());</b>
+<i>669</i>&nbsp;                    } else {
+<b class="nc"><i>670</i>&nbsp;                        boolean showWarning = true;</b>
+<i>671</i>&nbsp;
+<b class="nc"><i>672</i>&nbsp;                        KeyCombination key = null;</b>
+<b class="nc"><i>673</i>&nbsp;                        String exitMessage = null;</b>
+<i>674</i>&nbsp;
+<b class="nc"><i>675</i>&nbsp;                        if (isTrusted &amp;&amp; (fxStage != null)) {</b>
+<i>676</i>&nbsp;                            // copy the user set definitions for later use.
+<b class="nc"><i>677</i>&nbsp;                            key = fxStage.getFullScreenExitKeyCombination();</b>
+<i>678</i>&nbsp;
+<b class="nc"><i>679</i>&nbsp;                            exitMessage = fxStage.getFullScreenExitHint();</b>
+<i>680</i>&nbsp;                        }
+<i>681</i>&nbsp;
+<b class="nc"><i>682</i>&nbsp;                        savedFullScreenExitKey =</b>
+<b class="nc"><i>683</i>&nbsp;                                key == null</b>
+<b class="nc"><i>684</i>&nbsp;                                ? defaultFullScreenExitKeycombo</b>
+<b class="nc"><i>685</i>&nbsp;                                : key;</b>
+<i>686</i>&nbsp;
+<b class="nc"><i>687</i>&nbsp;                        if (</b>
+<i>688</i>&nbsp;                            // the hint is &quot;&quot;
+<b class="nc"><i>689</i>&nbsp;                            &quot;&quot;.equals(exitMessage) ||</b>
+<i>690</i>&nbsp;                            // if the key is NO_MATCH
+<b class="nc"><i>691</i>&nbsp;                            (savedFullScreenExitKey.equals(KeyCombination.NO_MATCH))</b>
+<i>692</i>&nbsp;                                ) {
+<b class="nc"><i>693</i>&nbsp;                            showWarning = false;</b>
+<i>694</i>&nbsp;                        }
+<i>695</i>&nbsp;
+<i>696</i>&nbsp;                        // the hint is not set, use the key for the message
+<b class="nc"><i>697</i>&nbsp;                        if (showWarning &amp;&amp; exitMessage == null) {</b>
+<b class="nc"><i>698</i>&nbsp;                            if (key == null) {</b>
+<b class="nc"><i>699</i>&nbsp;                                exitMessage = RESOURCES.getString(&quot;OverlayWarningESC&quot;);</b>
+<i>700</i>&nbsp;                            } else {
+<b class="nc"><i>701</i>&nbsp;                                String f = RESOURCES.getString(&quot;OverlayWarningKey&quot;);</b>
+<b class="nc"><i>702</i>&nbsp;                                exitMessage = f.format(f, savedFullScreenExitKey.toString());</b>
+<i>703</i>&nbsp;                            }
+<i>704</i>&nbsp;                        }
+<i>705</i>&nbsp;
+<b class="nc"><i>706</i>&nbsp;                        if (showWarning &amp;&amp; warning == null) {</b>
+<b class="nc"><i>707</i>&nbsp;                            setWarning(new OverlayWarning(getViewScene()));</b>
+<i>708</i>&nbsp;                        }
+<i>709</i>&nbsp;
+<b class="nc"><i>710</i>&nbsp;                        if (showWarning &amp;&amp; warning != null) {</b>
+<b class="nc"><i>711</i>&nbsp;                            warning.warn(exitMessage);</b>
+<i>712</i>&nbsp;                        }
+<i>713</i>&nbsp;                    }
+<i>714</i>&nbsp;                }
+<b class="nc"><i>715</i>&nbsp;            } else {</b>
+<b class="nc"><i>716</i>&nbsp;                if (warning != null) {</b>
+<b class="nc"><i>717</i>&nbsp;                    warning.cancel();</b>
+<b class="nc"><i>718</i>&nbsp;                    setWarning(null);</b>
+<i>719</i>&nbsp;                }
+<b class="nc"><i>720</i>&nbsp;                v.exitFullscreen(false);</b>
+<i>721</i>&nbsp;            }
+<i>722</i>&nbsp;            // Reset flag once we are done process fullscreen
+<b class="nc"><i>723</i>&nbsp;            fullScreenFromUserEvent = false;</b>
+<b class="fc"><i>724</i>&nbsp;        } else if (!isVisible() &amp;&amp; warning != null) {</b>
+<i>725</i>&nbsp;            // if the window is closed - re-open with fresh warning
+<b class="nc"><i>726</i>&nbsp;            warning.cancel();</b>
+<b class="nc"><i>727</i>&nbsp;            setWarning(null);</b>
+<i>728</i>&nbsp;        }
+<b class="fc"><i>729</i>&nbsp;    }</b>
+<i>730</i>&nbsp;
+<i>731</i>&nbsp;    void setWarning(OverlayWarning newWarning) {
+<b class="nc"><i>732</i>&nbsp;        this.warning = newWarning;</b>
+<b class="nc"><i>733</i>&nbsp;        getViewScene().synchroniseOverlayWarning();</b>
+<b class="nc"><i>734</i>&nbsp;    }</b>
+<i>735</i>&nbsp;
+<i>736</i>&nbsp;    OverlayWarning getWarning() {
+<b class="nc"><i>737</i>&nbsp;        return warning;</b>
+<i>738</i>&nbsp;    }
+<i>739</i>&nbsp;
+<i>740</i>&nbsp;    @Override public void setFullScreen(boolean fullScreen) {
+<b class="fc"><i>741</i>&nbsp;        if (isInFullScreen == fullScreen) {</b>
+<b class="fc"><i>742</i>&nbsp;            return;</b>
+<i>743</i>&nbsp;        }
+<i>744</i>&nbsp;
+<i>745</i>&nbsp;       // Set a flag indicating whether this method was called from
+<i>746</i>&nbsp;        // an allowed input event handler.
+<b class="nc"><i>747</i>&nbsp;        if (isInAllowedEventHandler()) {</b>
+<b class="nc"><i>748</i>&nbsp;            fullScreenFromUserEvent = true;</b>
+<i>749</i>&nbsp;        }
+<i>750</i>&nbsp;
+<b class="nc"><i>751</i>&nbsp;        GlassStage fsWindow = activeFSWindow.get();</b>
+<b class="nc"><i>752</i>&nbsp;        if (fullScreen &amp;&amp; (fsWindow != null)) {</b>
+<b class="nc"><i>753</i>&nbsp;            fsWindow.setFullScreen(false);</b>
+<i>754</i>&nbsp;        }
+<b class="nc"><i>755</i>&nbsp;        isInFullScreen = fullScreen;</b>
+<b class="nc"><i>756</i>&nbsp;        applyFullScreen();</b>
+<b class="nc"><i>757</i>&nbsp;        if (fullScreen) {</b>
+<b class="nc"><i>758</i>&nbsp;            activeFSWindow.set(this);</b>
+<i>759</i>&nbsp;        }
+<b class="nc"><i>760</i>&nbsp;    }</b>
+<i>761</i>&nbsp;
+<i>762</i>&nbsp;    void fullscreenChanged(final boolean fs) {
+<b class="nc"><i>763</i>&nbsp;        if (!fs) {</b>
+<b class="nc"><i>764</i>&nbsp;            if (activeFSWindow.compareAndSet(this, null)) {</b>
+<b class="nc"><i>765</i>&nbsp;                isInFullScreen = false;</b>
+<i>766</i>&nbsp;            }
+<i>767</i>&nbsp;        } else {
+<b class="nc"><i>768</i>&nbsp;            isInFullScreen = true;</b>
+<b class="nc"><i>769</i>&nbsp;            activeFSWindow.set(this);</b>
+<i>770</i>&nbsp;        }
+<b class="nc"><i>771</i>&nbsp;        AccessController.doPrivileged((PrivilegedAction&lt;Void&gt;) () -&gt; {</b>
+<b class="nc"><i>772</i>&nbsp;            if (stageListener != null) {</b>
+<b class="nc"><i>773</i>&nbsp;                stageListener.changedFullscreen(fs);</b>
+<i>774</i>&nbsp;            }
+<b class="nc"><i>775</i>&nbsp;            return null;</b>
+<b class="nc"><i>776</i>&nbsp;        }, getAccessControlContext());</b>
+<b class="nc"><i>777</i>&nbsp;    }</b>
+<i>778</i>&nbsp;
+<i>779</i>&nbsp;    @Override public void toBack() {
+<b class="fc"><i>780</i>&nbsp;        platformWindow.toBack();</b>
+<b class="fc"><i>781</i>&nbsp;        if (isAppletStage &amp;&amp; null != appletWindow) {</b>
+<b class="nc"><i>782</i>&nbsp;            appletWindow.assertStageOrder();</b>
+<i>783</i>&nbsp;        }
+<b class="fc"><i>784</i>&nbsp;    }</b>
+<i>785</i>&nbsp;
+<i>786</i>&nbsp;    @Override public void toFront() {
+<b class="nc"><i>787</i>&nbsp;        platformWindow.requestFocus(); // RT-17836</b>
+<b class="nc"><i>788</i>&nbsp;        platformWindow.toFront();</b>
+<b class="nc"><i>789</i>&nbsp;        if (isAppletStage &amp;&amp; null != appletWindow) {</b>
+<b class="nc"><i>790</i>&nbsp;            appletWindow.assertStageOrder();</b>
+<i>791</i>&nbsp;        }
+<b class="nc"><i>792</i>&nbsp;    }</b>
+<i>793</i>&nbsp;
+<i>794</i>&nbsp;    @Override public void close() {
+<b class="fc"><i>795</i>&nbsp;        super.close();</b>
+<b class="fc"><i>796</i>&nbsp;        QuantumToolkit.runWithRenderLock(() -&gt; {</b>
+<i>797</i>&nbsp;            // prevents closing a closed platform window
+<b class="fc"><i>798</i>&nbsp;            if (platformWindow != null) {</b>
+<b class="fc"><i>799</i>&nbsp;                platformWindows.remove(platformWindow);</b>
+<b class="fc"><i>800</i>&nbsp;                platformWindow.close();</b>
+<b class="fc"><i>801</i>&nbsp;                platformWindow = null;</b>
+<i>802</i>&nbsp;            }
+<b class="fc"><i>803</i>&nbsp;            GlassScene oldScene = getViewScene();</b>
+<b class="fc"><i>804</i>&nbsp;            if (oldScene != null) {</b>
+<b class="nc"><i>805</i>&nbsp;                oldScene.updateSceneState();</b>
+<i>806</i>&nbsp;            }
+<b class="fc"><i>807</i>&nbsp;            return null;</b>
+<i>808</i>&nbsp;        });
+<b class="fc"><i>809</i>&nbsp;    }</b>
+<i>810</i>&nbsp;
+<i>811</i>&nbsp;    // setPlatformWindowClosed is only set upon receiving platform window has
+<i>812</i>&nbsp;    // closed notification. This state is necessary to prevent the platform
+<i>813</i>&nbsp;    // window from being closed more than once.
+<i>814</i>&nbsp;    void setPlatformWindowClosed() {
+<b class="nc"><i>815</i>&nbsp;        platformWindow = null;</b>
+<b class="nc"><i>816</i>&nbsp;    }</b>
+<i>817</i>&nbsp;
+<i>818</i>&nbsp;    static void addActiveWindow(WindowStage window) {
+<b class="fc"><i>819</i>&nbsp;        activeWindows.remove(window);</b>
+<b class="fc"><i>820</i>&nbsp;        activeWindows.add(window);</b>
+<b class="fc"><i>821</i>&nbsp;    }</b>
+<i>822</i>&nbsp;
+<i>823</i>&nbsp;    static void removeActiveWindow(WindowStage window) {
+<b class="fc"><i>824</i>&nbsp;        activeWindows.remove(window);</b>
+<b class="fc"><i>825</i>&nbsp;    }</b>
+<i>826</i>&nbsp;
+<i>827</i>&nbsp;    final void handleFocusDisabled() {
+<b class="nc"><i>828</i>&nbsp;        if (activeWindows.isEmpty()) {</b>
+<b class="nc"><i>829</i>&nbsp;            return;</b>
+<i>830</i>&nbsp;        }
+<b class="nc"><i>831</i>&nbsp;        WindowStage window = activeWindows.get(activeWindows.size() - 1);</b>
+<b class="nc"><i>832</i>&nbsp;        window.setIconified(false);</b>
+<b class="nc"><i>833</i>&nbsp;        window.requestToFront();</b>
+<b class="nc"><i>834</i>&nbsp;        window.requestFocus();</b>
+<b class="nc"><i>835</i>&nbsp;    }</b>
+<i>836</i>&nbsp;
+<i>837</i>&nbsp;    @Override public boolean grabFocus() {
+<b class="fc"><i>838</i>&nbsp;        return platformWindow.grabFocus();</b>
+<i>839</i>&nbsp;    }
+<i>840</i>&nbsp;
+<i>841</i>&nbsp;    @Override public void ungrabFocus() {
+<b class="fc"><i>842</i>&nbsp;        platformWindow.ungrabFocus();</b>
+<b class="fc"><i>843</i>&nbsp;    }</b>
+<i>844</i>&nbsp;
+<i>845</i>&nbsp;    @Override public void requestFocus() {
+<b class="fc"><i>846</i>&nbsp;        platformWindow.requestFocus();</b>
+<b class="fc"><i>847</i>&nbsp;    }</b>
+<i>848</i>&nbsp;
+<i>849</i>&nbsp;    @Override public void requestFocus(FocusCause cause) {
+<b class="pc"><i>850</i>&nbsp;        switch (cause) {</b>
+<i>851</i>&nbsp;            case TRAVERSED_FORWARD:
+<b class="nc"><i>852</i>&nbsp;                platformWindow.requestFocus(WindowEvent.FOCUS_GAINED_FORWARD);</b>
+<b class="nc"><i>853</i>&nbsp;                break;</b>
+<i>854</i>&nbsp;            case TRAVERSED_BACKWARD:
+<b class="nc"><i>855</i>&nbsp;                platformWindow.requestFocus(WindowEvent.FOCUS_GAINED_BACKWARD);</b>
+<b class="nc"><i>856</i>&nbsp;                break;</b>
+<i>857</i>&nbsp;            case ACTIVATED:
+<b class="nc"><i>858</i>&nbsp;                platformWindow.requestFocus(WindowEvent.FOCUS_GAINED);</b>
+<b class="nc"><i>859</i>&nbsp;                break;</b>
+<i>860</i>&nbsp;            case DEACTIVATED:
+<b class="nc"><i>861</i>&nbsp;                platformWindow.requestFocus(WindowEvent.FOCUS_LOST);</b>
+<i>862</i>&nbsp;                break;
+<i>863</i>&nbsp;        }
+<b class="nc"><i>864</i>&nbsp;    }</b>
+<i>865</i>&nbsp;
+<i>866</i>&nbsp;    @Override
+<i>867</i>&nbsp;    protected void setPlatformEnabled(boolean enabled) {
+<b class="nc"><i>868</i>&nbsp;        super.setPlatformEnabled(enabled);</b>
+<b class="nc"><i>869</i>&nbsp;        platformWindow.setEnabled(enabled);</b>
+<b class="nc"><i>870</i>&nbsp;        if (enabled) {</b>
+<i>871</i>&nbsp;            // Check if window is really enabled - to handle nested case
+<b class="nc"><i>872</i>&nbsp;            if (platformWindow.isEnabled()) {</b>
+<b class="nc"><i>873</i>&nbsp;                requestToFront();</b>
+<i>874</i>&nbsp;            }
+<i>875</i>&nbsp;        } else {
+<b class="nc"><i>876</i>&nbsp;            removeActiveWindow(this);</b>
+<i>877</i>&nbsp;        }
+<b class="nc"><i>878</i>&nbsp;    }</b>
+<i>879</i>&nbsp;
+<i>880</i>&nbsp;    @Override
+<i>881</i>&nbsp;    public void setEnabled(boolean enabled) {
+<b class="nc"><i>882</i>&nbsp;        if ((owner != null) &amp;&amp; (owner instanceof WindowStage)) {</b>
+<b class="nc"><i>883</i>&nbsp;            ((WindowStage) owner).setEnabled(enabled);</b>
+<i>884</i>&nbsp;        }
+<i>885</i>&nbsp;        /*
+<i>886</i>&nbsp;         * RT-17588 - exit if stage is closed from under us as
+<i>887</i>&nbsp;         *            any further access to the Glass layer
+<i>888</i>&nbsp;         *            will throw an exception
+<i>889</i>&nbsp;         */
+<b class="nc"><i>890</i>&nbsp;        if (enabled &amp;&amp; (platformWindow == null || platformWindow.isClosed())) {</b>
+<b class="nc"><i>891</i>&nbsp;            return;</b>
+<i>892</i>&nbsp;        }
+<b class="nc"><i>893</i>&nbsp;        setPlatformEnabled(enabled);</b>
+<b class="nc"><i>894</i>&nbsp;        if (enabled) {</b>
+<b class="nc"><i>895</i>&nbsp;            if (isAppletStage &amp;&amp; null != appletWindow) {</b>
+<b class="nc"><i>896</i>&nbsp;                appletWindow.assertStageOrder();</b>
+<i>897</i>&nbsp;            }
+<i>898</i>&nbsp;        }
+<b class="nc"><i>899</i>&nbsp;    }</b>
+<i>900</i>&nbsp;
+<i>901</i>&nbsp;    @Override
+<i>902</i>&nbsp;    public long getRawHandle() {
+<b class="nc"><i>903</i>&nbsp;       return platformWindow.getRawHandle();</b>
+<i>904</i>&nbsp;    }
+<i>905</i>&nbsp;
+<i>906</i>&nbsp;    // Note: This method is required to workaround a glass issue mentioned in RT-12607
+<i>907</i>&nbsp;    protected void requestToFront() {
+<b class="nc"><i>908</i>&nbsp;        if (platformWindow != null) {</b>
+<b class="nc"><i>909</i>&nbsp;            platformWindow.toFront();</b>
+<b class="nc"><i>910</i>&nbsp;            platformWindow.requestFocus();</b>
+<i>911</i>&nbsp;        }
+<b class="nc"><i>912</i>&nbsp;    }</b>
+<i>913</i>&nbsp;
+<i>914</i>&nbsp;    public void setInAllowedEventHandler(boolean inAllowedEventHandler) {
+<b class="fc"><i>915</i>&nbsp;        this.inAllowedEventHandler = inAllowedEventHandler;</b>
+<b class="fc"><i>916</i>&nbsp;    }</b>
+<i>917</i>&nbsp;
+<i>918</i>&nbsp;    private boolean isInAllowedEventHandler() {
+<b class="nc"><i>919</i>&nbsp;        return inAllowedEventHandler;</b>
+<i>920</i>&nbsp;    }
+<i>921</i>&nbsp;
+<i>922</i>&nbsp;    @Override
+<i>923</i>&nbsp;    public void requestInput(String text, int type, double width, double height,
+<i>924</i>&nbsp;                        double Mxx, double Mxy, double Mxz, double Mxt,
+<i>925</i>&nbsp;                        double Myx, double Myy, double Myz, double Myt,
+<i>926</i>&nbsp;                        double Mzx, double Mzy, double Mzz, double Mzt) {
+<b class="nc"><i>927</i>&nbsp;        platformWindow.requestInput(text, type, width, height,</b>
+<i>928</i>&nbsp;                                    Mxx, Mxy, Mxz, Mxt,
+<i>929</i>&nbsp;                                    Myx, Myy, Myz, Myt,
+<i>930</i>&nbsp;                                    Mzx, Mzy, Mzz, Mzt);
+<b class="nc"><i>931</i>&nbsp;    }</b>
+<i>932</i>&nbsp;
+<i>933</i>&nbsp;    @Override
+<i>934</i>&nbsp;    public void releaseInput() {
+<b class="nc"><i>935</i>&nbsp;        platformWindow.releaseInput();</b>
+<b class="nc"><i>936</i>&nbsp;    }</b>
+<i>937</i>&nbsp;
+<i>938</i>&nbsp;    @Override public void setRTL(boolean b) {
+<b class="fc"><i>939</i>&nbsp;        rtl = b;</b>
+<b class="fc"><i>940</i>&nbsp;    }</b>
+<i>941</i>&nbsp;
+<i>942</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2017-12-04 21:49</div>
+</div>
+</body>
+</html>

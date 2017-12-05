@@ -1,0 +1,236 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: Paint</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">javafx.scene.paint</a> ]
+</div>
+
+<h1>Coverage Summary for Class: Paint (javafx.scene.paint)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">Paint</td>
+<td class="coverageStat">
+  <span class="percent">
+    50%
+  </span>
+  <span class="absValue">
+    (3/ 6)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    30.8%
+  </span>
+  <span class="absValue">
+    (4/ 13)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">Paint$1</td>
+<td class="coverageStat">
+  <span class="percent">
+    60%
+  </span>
+  <span class="absValue">
+    (3/ 5)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    42.9%
+  </span>
+  <span class="absValue">
+    (3/ 7)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    54.5%
+  </span>
+  <span class="absValue">
+    (6/ 11)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    35%
+  </span>
+  <span class="absValue">
+    (7/ 20)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright (c) 2010, 2016, Oracle and/or its affiliates. All rights reserved.
+<i>3</i>&nbsp; * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+<i>4</i>&nbsp; *
+<i>5</i>&nbsp; *
+<i>6</i>&nbsp; *
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; *
+<i>11</i>&nbsp; *
+<i>12</i>&nbsp; *
+<i>13</i>&nbsp; *
+<i>14</i>&nbsp; *
+<i>15</i>&nbsp; *
+<i>16</i>&nbsp; *
+<i>17</i>&nbsp; *
+<i>18</i>&nbsp; *
+<i>19</i>&nbsp; *
+<i>20</i>&nbsp; *
+<i>21</i>&nbsp; *
+<i>22</i>&nbsp; *
+<i>23</i>&nbsp; *
+<i>24</i>&nbsp; */
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;package javafx.scene.paint;
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;import com.sun.javafx.beans.event.AbstractNotifyListener;
+<i>29</i>&nbsp;import com.sun.javafx.tk.Toolkit;
+<i>30</i>&nbsp;
+<i>31</i>&nbsp;/**
+<i>32</i>&nbsp; * Base class for a color or gradients used to fill shapes and backgrounds when
+<i>33</i>&nbsp; * rendering the scene graph.
+<i>34</i>&nbsp; * @since JavaFX 2.0
+<i>35</i>&nbsp; */
+<i>36</i>&nbsp;public abstract class Paint {
+<i>37</i>&nbsp;
+<i>38</i>&nbsp;    static {
+<b class="fc"><i>39</i>&nbsp;        Toolkit.setPaintAccessor(new Toolkit.PaintAccessor() {</b>
+<i>40</i>&nbsp;
+<i>41</i>&nbsp;            @Override
+<i>42</i>&nbsp;            public boolean isMutable(Paint paint) {
+<b class="fc"><i>43</i>&nbsp;                return paint.acc_isMutable();</b>
+<i>44</i>&nbsp;            }
+<i>45</i>&nbsp;
+<i>46</i>&nbsp;            @Override
+<i>47</i>&nbsp;            public Object getPlatformPaint(Paint paint) {
+<b class="fc"><i>48</i>&nbsp;                return paint.acc_getPlatformPaint();</b>
+<i>49</i>&nbsp;            }
+<i>50</i>&nbsp;
+<i>51</i>&nbsp;            @Override
+<i>52</i>&nbsp;            public void addListener(Paint paint, AbstractNotifyListener platformChangeListener) {
+<b class="nc"><i>53</i>&nbsp;                paint.acc_addListener(platformChangeListener);</b>
+<b class="nc"><i>54</i>&nbsp;            }</b>
+<i>55</i>&nbsp;
+<i>56</i>&nbsp;            @Override
+<i>57</i>&nbsp;            public void removeListener(Paint paint, AbstractNotifyListener platformChangeListener) {
+<b class="nc"><i>58</i>&nbsp;                paint.acc_removeListener(platformChangeListener);</b>
+<b class="nc"><i>59</i>&nbsp;            }</b>
+<i>60</i>&nbsp;
+<i>61</i>&nbsp;
+<i>62</i>&nbsp;        });
+<b class="fc"><i>63</i>&nbsp;    }</b>
+<i>64</i>&nbsp;
+<i>65</i>&nbsp;    /**
+<i>66</i>&nbsp;     *  Only allow classes in this package to subclass Paint
+<i>67</i>&nbsp;     */
+<b class="fc"><i>68</i>&nbsp;    Paint() { }</b>
+<i>69</i>&nbsp;
+<i>70</i>&nbsp;    boolean acc_isMutable() {
+<b class="fc"><i>71</i>&nbsp;        return false;</b>
+<i>72</i>&nbsp;    }
+<i>73</i>&nbsp;
+<i>74</i>&nbsp;    abstract Object acc_getPlatformPaint();
+<i>75</i>&nbsp;
+<i>76</i>&nbsp;    void acc_addListener(AbstractNotifyListener platformChangeListener) {
+<b class="nc"><i>77</i>&nbsp;        throw new UnsupportedOperationException(&quot;Not Supported.&quot;);</b>
+<i>78</i>&nbsp;    }
+<i>79</i>&nbsp;
+<i>80</i>&nbsp;    void acc_removeListener(AbstractNotifyListener platformChangeListener) {
+<b class="nc"><i>81</i>&nbsp;        throw new UnsupportedOperationException(&quot;Not Supported.&quot;);</b>
+<i>82</i>&nbsp;    }
+<i>83</i>&nbsp;
+<i>84</i>&nbsp;    /**
+<i>85</i>&nbsp;     * Gets whether this Paint is completely opaque. An opaque paint is one that
+<i>86</i>&nbsp;     * has no alpha component in any of its colors. It may be possible for a Paint
+<i>87</i>&nbsp;     * to be opaque and yet return false, if it cannot be easily determined
+<i>88</i>&nbsp;     * whether the paint is actually opaque. For example, the ImagePattern may not
+<i>89</i>&nbsp;     * be able to cheaply determine its opacity.
+<i>90</i>&nbsp;     *
+<i>91</i>&nbsp;     * @return true if the Paint is opaque, false if it is not opaque or if
+<i>92</i>&nbsp;     *         it cannot be determined.
+<i>93</i>&nbsp;     * @since JavaFX 8.0
+<i>94</i>&nbsp;     */
+<i>95</i>&nbsp;    public abstract boolean isOpaque();
+<i>96</i>&nbsp;
+<i>97</i>&nbsp;    /**
+<i>98</i>&nbsp;     * Creates a paint value from a string representation. Recognizes strings
+<i>99</i>&nbsp;     * representing {@code Color}, {@code RadialGradient} or {@code LinearGradient}.
+<i>100</i>&nbsp;     * String specifying LinearGradient must begin with linear-gradient keyword
+<i>101</i>&nbsp;     * and string specifying RadialGradient must begin with radial-gradient.
+<i>102</i>&nbsp;     *
+<i>103</i>&nbsp;     * @param value the string to convert
+<i>104</i>&nbsp;     * @throws NullPointerException if {@code value} is {@code null}
+<i>105</i>&nbsp;     * @throws IllegalArgumentException if {@code value} cannot be parsed
+<i>106</i>&nbsp;     * @return a {@code Color}, {@code RadialGradient} or {@code LinearGradient}
+<i>107</i>&nbsp;     * object holding the value represented by the string argument.
+<i>108</i>&nbsp;     *
+<i>109</i>&nbsp;     * @see Color#valueOf(String)
+<i>110</i>&nbsp;     * @see LinearGradient#valueOf(String)
+<i>111</i>&nbsp;     * @see RadialGradient#valueOf(String)
+<i>112</i>&nbsp;     * @since JavaFX 2.1
+<i>113</i>&nbsp;     */
+<i>114</i>&nbsp;    public static Paint valueOf(String value) {
+<b class="nc"><i>115</i>&nbsp;        if (value == null) {</b>
+<b class="nc"><i>116</i>&nbsp;            throw new NullPointerException(&quot;paint must be specified&quot;);</b>
+<i>117</i>&nbsp;        }
+<i>118</i>&nbsp;
+<b class="nc"><i>119</i>&nbsp;        if (value.startsWith(&quot;linear-gradient(&quot;)) {</b>
+<b class="nc"><i>120</i>&nbsp;            return LinearGradient.valueOf(value);</b>
+<b class="nc"><i>121</i>&nbsp;        } else if (value.startsWith(&quot;radial-gradient(&quot;)) {</b>
+<b class="nc"><i>122</i>&nbsp;            return RadialGradient.valueOf(value);</b>
+<i>123</i>&nbsp;        } else {
+<b class="nc"><i>124</i>&nbsp;            return Color.valueOf(value);</b>
+<i>125</i>&nbsp;        }
+<i>126</i>&nbsp;    }
+<i>127</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2017-12-04 21:49</div>
+</div>
+</body>
+</html>

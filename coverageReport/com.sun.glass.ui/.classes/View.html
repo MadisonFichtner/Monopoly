@@ -1,0 +1,1291 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: View</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.glass.ui</a> ]
+</div>
+
+<h1>Coverage Summary for Class: View (com.sun.glass.ui)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">View</td>
+<td class="coverageStat">
+  <span class="percent">
+    46.7%
+  </span>
+  <span class="absValue">
+    (35/ 75)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    52.4%
+  </span>
+  <span class="absValue">
+    (154/ 294)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">View$1</td>
+<td class="coverageStat">
+  <span class="percent">
+    50%
+  </span>
+  <span class="absValue">
+    (1/ 2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    33.3%
+  </span>
+  <span class="absValue">
+    (1/ 3)
+  </span>
+</td>
+  </tr>
+  <tr>
+    <td class="name">View$2</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 2)
+  </span>
+</td>
+  </tr>
+  <tr>
+    <td class="name">View$Capability</td>
+<td class="coverageStat">
+  <span class="percent">
+    50%
+  </span>
+  <span class="absValue">
+    (1/ 2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    85.7%
+  </span>
+  <span class="absValue">
+    (6/ 7)
+  </span>
+</td>
+  </tr>
+  <tr>
+    <td class="name">View$EventHandler</td>
+<td class="coverageStat">
+  <span class="percent">
+    4.5%
+  </span>
+  <span class="absValue">
+    (1/ 22)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    4.5%
+  </span>
+  <span class="absValue">
+    (1/ 22)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    36.9%
+  </span>
+  <span class="absValue">
+    (38/ 103)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    49.4%
+  </span>
+  <span class="absValue">
+    (162/ 328)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright (c) 2010, 2016, Oracle and/or its affiliates. All rights reserved.
+<i>3</i>&nbsp; * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+<i>4</i>&nbsp; *
+<i>5</i>&nbsp; *
+<i>6</i>&nbsp; *
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; *
+<i>11</i>&nbsp; *
+<i>12</i>&nbsp; *
+<i>13</i>&nbsp; *
+<i>14</i>&nbsp; *
+<i>15</i>&nbsp; *
+<i>16</i>&nbsp; *
+<i>17</i>&nbsp; *
+<i>18</i>&nbsp; *
+<i>19</i>&nbsp; *
+<i>20</i>&nbsp; *
+<i>21</i>&nbsp; *
+<i>22</i>&nbsp; *
+<i>23</i>&nbsp; *
+<i>24</i>&nbsp; */
+<i>25</i>&nbsp;package com.sun.glass.ui;
+<i>26</i>&nbsp;
+<i>27</i>&nbsp;import com.sun.glass.events.MouseEvent;
+<i>28</i>&nbsp;import com.sun.glass.events.ViewEvent;
+<i>29</i>&nbsp;
+<i>30</i>&nbsp;import java.lang.annotation.Native;
+<i>31</i>&nbsp;import java.lang.ref.WeakReference;
+<i>32</i>&nbsp;import java.security.AccessController;
+<i>33</i>&nbsp;import java.security.PrivilegedAction;
+<i>34</i>&nbsp;import java.util.Map;
+<i>35</i>&nbsp;
+<i>36</i>&nbsp;public abstract class View {
+<i>37</i>&nbsp;
+<i>38</i>&nbsp;    @Native public final static int GESTURE_NO_VALUE = Integer.MAX_VALUE;
+<i>39</i>&nbsp;    @Native public final static double GESTURE_NO_DOUBLE_VALUE = Double.NaN;
+<i>40</i>&nbsp;
+<i>41</i>&nbsp;    @Native public final static byte IME_ATTR_INPUT                 = 0x00;
+<i>42</i>&nbsp;    @Native public final static byte IME_ATTR_TARGET_CONVERTED      = 0x01;
+<i>43</i>&nbsp;    @Native public final static byte IME_ATTR_CONVERTED             = 0x02;
+<i>44</i>&nbsp;    @Native public final static byte IME_ATTR_TARGET_NOTCONVERTED   = 0x03;
+<i>45</i>&nbsp;    @Native public final static byte IME_ATTR_INPUT_ERROR           = 0x04;
+<i>46</i>&nbsp;
+<b class="fc"><i>47</i>&nbsp;    final static boolean accessible = AccessController.doPrivileged((PrivilegedAction&lt;Boolean&gt;) () -&gt; {</b>
+<b class="fc"><i>48</i>&nbsp;        String force = System.getProperty(&quot;glass.accessible.force&quot;);</b>
+<b class="fc"><i>49</i>&nbsp;        if (force != null) return Boolean.parseBoolean(force);</b>
+<i>50</i>&nbsp;
+<i>51</i>&nbsp;        /* By default accessibility is enabled for Mac 10.9 or greater and Windows 7 or greater. */
+<i>52</i>&nbsp;        try {
+<b class="fc"><i>53</i>&nbsp;            String platform = Platform.determinePlatform();</b>
+<b class="fc"><i>54</i>&nbsp;            String major = System.getProperty(&quot;os.version&quot;).replaceFirst(&quot;(\\d+)\\.\\d+.*&quot;, &quot;$1&quot;);</b>
+<b class="fc"><i>55</i>&nbsp;            String minor = System.getProperty(&quot;os.version&quot;).replaceFirst(&quot;\\d+\\.(\\d+).*&quot;, &quot;$1&quot;);</b>
+<b class="fc"><i>56</i>&nbsp;            int v = Integer.parseInt(major) * 100 + Integer.parseInt(minor);</b>
+<b class="fc"><i>57</i>&nbsp;            return (platform.equals(Platform.MAC) &amp;&amp; v &gt;= 1009) ||</b>
+<b class="fc"><i>58</i>&nbsp;                   (platform.equals(Platform.WINDOWS) &amp;&amp; v &gt;= 601);</b>
+<b class="nc"><i>59</i>&nbsp;        } catch (Exception e) {</b>
+<b class="nc"><i>60</i>&nbsp;            return false;</b>
+<i>61</i>&nbsp;        }
+<i>62</i>&nbsp;    });
+<i>63</i>&nbsp;
+<b class="fc"><i>64</i>&nbsp;    public static class EventHandler {</b>
+<i>65</i>&nbsp;        public void handleViewEvent(View view, long time, int type) {
+<b class="nc"><i>66</i>&nbsp;        }</b>
+<i>67</i>&nbsp;        public void handleKeyEvent(View view, long time, int action,
+<i>68</i>&nbsp;                int keyCode, char[] keyChars, int modifiers) {
+<b class="nc"><i>69</i>&nbsp;        }</b>
+<i>70</i>&nbsp;        public void handleMenuEvent(View view, int x, int y, int xAbs,
+<i>71</i>&nbsp;                int yAbs, boolean isKeyboardTrigger) {
+<b class="nc"><i>72</i>&nbsp;        }</b>
+<i>73</i>&nbsp;        public void handleMouseEvent(View view, long time, int type, int button,
+<i>74</i>&nbsp;                                     int x, int y, int xAbs, int yAbs,
+<i>75</i>&nbsp;                                     int modifiers, boolean isPopupTrigger, boolean isSynthesized)
+<i>76</i>&nbsp;        {
+<b class="nc"><i>77</i>&nbsp;        }</b>
+<i>78</i>&nbsp;
+<i>79</i>&nbsp;        /**
+<i>80</i>&nbsp;         * A Scroll event handler.
+<i>81</i>&nbsp;         *
+<i>82</i>&nbsp;         * The lines argument:
+<i>83</i>&nbsp;         * &amp;gt; 0 - a number of lines to scroll per each 1.0 of deltaY scroll amount
+<i>84</i>&nbsp;         * == 0 - the scroll amount is in pixel units
+<i>85</i>&nbsp;         * &amp;lt; 0 - the scrolling should be performed by pages. Each 1.0 of scroll amount
+<i>86</i>&nbsp;         * corresponds to exactly one page of scrollable content.
+<i>87</i>&nbsp;         *
+<i>88</i>&nbsp;         * Similarly, the chars argument specifies the number of characters
+<i>89</i>&nbsp;         * to scroll per 1.0 of the deltaX scrolling amount.
+<i>90</i>&nbsp;         * If the parameter is zero, the deltaX represents the number of
+<i>91</i>&nbsp;         * pixels to scroll.
+<i>92</i>&nbsp;         *
+<i>93</i>&nbsp;         * The defaultLines and defaultChars arguments contain the system-default
+<i>94</i>&nbsp;         * values of lines and chars. This can be used by the app to compute
+<i>95</i>&nbsp;         * the ratio of current settings and default settings and adjust the
+<i>96</i>&nbsp;         * pixel values accordingly.
+<i>97</i>&nbsp;         *
+<i>98</i>&nbsp;         * Multiplers are used when an app receives a non-zero unit values (i.e.
+<i>99</i>&nbsp;         * either the lines or chars are not zeroes), but wants instead get delta
+<i>100</i>&nbsp;         * values in pixels. In this case the app needs to multiply the deltas
+<i>101</i>&nbsp;         * on the provided multiplier parameter.
+<i>102</i>&nbsp;         */
+<i>103</i>&nbsp;        public void handleScrollEvent(View view, long time,
+<i>104</i>&nbsp;                int x, int y, int xAbs, int yAbs,
+<i>105</i>&nbsp;                double deltaX, double deltaY, int modifiers, int lines, int chars,
+<i>106</i>&nbsp;                int defaultLines, int defaultChars,
+<i>107</i>&nbsp;                double xMultiplier, double yMultiplier)
+<i>108</i>&nbsp;        {
+<b class="nc"><i>109</i>&nbsp;        }</b>
+<i>110</i>&nbsp;
+<i>111</i>&nbsp;        public void handleInputMethodEvent(long time, String text,
+<i>112</i>&nbsp;                int[] clauseBoundary,
+<i>113</i>&nbsp;                int[] attrBoundary, byte[] attrValue,
+<i>114</i>&nbsp;                int commitCount, int cursorPos) {
+<b class="nc"><i>115</i>&nbsp;        }</b>
+<i>116</i>&nbsp;
+<i>117</i>&nbsp;        public double[] getInputMethodCandidatePos(int offset) {
+<b class="nc"><i>118</i>&nbsp;            return null;</b>
+<i>119</i>&nbsp;        }
+<i>120</i>&nbsp;
+<i>121</i>&nbsp;        public void handleDragStart(View view, int button, int x, int y, int xAbs, int yAbs,
+<i>122</i>&nbsp;                ClipboardAssistance dropSourceAssistant) {
+<b class="nc"><i>123</i>&nbsp;        }</b>
+<i>124</i>&nbsp;
+<i>125</i>&nbsp;        public void handleDragEnd(View view, int performedAction) {
+<b class="nc"><i>126</i>&nbsp;        }</b>
+<i>127</i>&nbsp;
+<i>128</i>&nbsp;        public int handleDragEnter(View view, int x, int y, int xAbs, int yAbs,
+<i>129</i>&nbsp;                int recommendedDropAction, ClipboardAssistance dropTargetAssistant) {
+<b class="nc"><i>130</i>&nbsp;            return recommendedDropAction;</b>
+<i>131</i>&nbsp;        }
+<i>132</i>&nbsp;
+<i>133</i>&nbsp;        public int handleDragOver(View view, int x, int y, int xAbs, int yAbs,
+<i>134</i>&nbsp;                int recommendedDropAction, ClipboardAssistance dropTargetAssistant) {
+<b class="nc"><i>135</i>&nbsp;            return recommendedDropAction;</b>
+<i>136</i>&nbsp;        }
+<i>137</i>&nbsp;
+<i>138</i>&nbsp;        public void handleDragLeave(View view, ClipboardAssistance dropTargetAssistant) {
+<b class="nc"><i>139</i>&nbsp;        }</b>
+<i>140</i>&nbsp;
+<i>141</i>&nbsp;        public int handleDragDrop(View view, int x, int y, int xAbs, int yAbs,
+<i>142</i>&nbsp;                int recommendedDropAction, ClipboardAssistance dropTargetAssistant) {
+<b class="nc"><i>143</i>&nbsp;            return Clipboard.ACTION_NONE;</b>
+<i>144</i>&nbsp;        }
+<i>145</i>&nbsp;
+<i>146</i>&nbsp;        /**
+<i>147</i>&nbsp;         * Touch event handler. Called when touch event occures.
+<i>148</i>&nbsp;         * Always followed with one ore more #handleNextTouchEvent() calls
+<i>149</i>&nbsp;         * and a single #handleEndTouchEvent() call.
+<i>150</i>&nbsp;         *
+<i>151</i>&nbsp;         * @param isDirect if event reported by direct or indirect touch device;
+<i>152</i>&nbsp;         *        touch screen is an example of direct touch device and
+<i>153</i>&nbsp;         *        touch pad is an example of indirect one
+<i>154</i>&nbsp;         * @param touchEventCount indicates number of #handleNextTouchEvent() calls
+<i>155</i>&nbsp;         *        that will follow this method call.
+<i>156</i>&nbsp;         */
+<i>157</i>&nbsp;        public void handleBeginTouchEvent(View view, long time, int modifiers,
+<i>158</i>&nbsp;                                          boolean isDirect, int touchEventCount) {
+<b class="nc"><i>159</i>&nbsp;        }</b>
+<i>160</i>&nbsp;
+<i>161</i>&nbsp;        /**
+<i>162</i>&nbsp;         * Touch event handler. Called for every touch point in some touch event.
+<i>163</i>&nbsp;         *
+<i>164</i>&nbsp;         * If the touch event has been emitted with direct touch device
+<i>165</i>&nbsp;         * (touch screen) then x and y arguments designate touch point position
+<i>166</i>&nbsp;         * relative to the top-left corner of the view and xAbs and yAbs
+<i>167</i>&nbsp;         * arguments designate position relative to the top-left corner of the
+<i>168</i>&nbsp;         * screen. Both positions are measured in pixels.
+<i>169</i>&nbsp;         *
+<i>170</i>&nbsp;         * If the touch event has been emitted with indirect touch device
+<i>171</i>&nbsp;         * (touch pad) then x and y arguments designate normalized touch point
+<i>172</i>&nbsp;         * position. It is measured between (0,0) and (10000,10000), where (0,0)
+<i>173</i>&nbsp;         * is the top-left and (10000,10000) is the bottom-right position on
+<i>174</i>&nbsp;         * the indirect touch input device (touch pad). xAbs and yAbs
+<i>175</i>&nbsp;         * arguments are equal values of x and y arguments respectively.
+<i>176</i>&nbsp;         *
+<i>177</i>&nbsp;         * @see #handleBeginTouchEvent(com.sun.glass.ui.View, long, int, boolean, int)
+<i>178</i>&nbsp;         *
+<i>179</i>&nbsp;         * @param type touch event type. One of constants declared in
+<i>180</i>&nbsp;         *        #com.sun.glass.events.TouchEvent class.
+<i>181</i>&nbsp;         * @param touchId touch point identifier;
+<i>182</i>&nbsp;         *        every touch point has its own unique identifier;
+<i>183</i>&nbsp;         *        the identifier remains the same across multiple calls of
+<i>184</i>&nbsp;         *        #handleNextTouchEvent method for the same touch point until
+<i>185</i>&nbsp;         *        it is not released.
+<i>186</i>&nbsp;         * @param x the X coordinate of the touch point;
+<i>187</i>&nbsp;         * @param y the Y coordinate of the touch point;
+<i>188</i>&nbsp;         * @param xAbs absolute X coordinate of the touch point;
+<i>189</i>&nbsp;         * @param yAbs absolute Y coordinate of the touch point;
+<i>190</i>&nbsp;         */
+<i>191</i>&nbsp;        public void handleNextTouchEvent(View view, long time, int type,
+<i>192</i>&nbsp;                                         long touchId, int x, int y, int xAbs,
+<i>193</i>&nbsp;                                         int yAbs) {
+<b class="nc"><i>194</i>&nbsp;        }</b>
+<i>195</i>&nbsp;
+<i>196</i>&nbsp;        /**
+<i>197</i>&nbsp;         * Touch event handler. Called to notify that all #handleNextTouchEvent
+<i>198</i>&nbsp;         * methods corresponding to some touch event have been called already.
+<i>199</i>&nbsp;         *
+<i>200</i>&nbsp;         * @see #handleBeginTouchEvent(com.sun.glass.ui.View, long, int, boolean, int)
+<i>201</i>&nbsp;         */
+<i>202</i>&nbsp;        public void handleEndTouchEvent(View view, long time) {
+<b class="nc"><i>203</i>&nbsp;        }</b>
+<i>204</i>&nbsp;
+<i>205</i>&nbsp;        /**
+<i>206</i>&nbsp;         * Scroll gesture handler.
+<i>207</i>&nbsp;         *
+<i>208</i>&nbsp;         * If underlying system supports coordinates for gestures then x and y
+<i>209</i>&nbsp;         * arguments designate gesture position relative to the top-left
+<i>210</i>&nbsp;         * corner of the view and xAbs and yAbs designate gesture position
+<i>211</i>&nbsp;         * relative to the top-left corner of the screen. For gestures emitted
+<i>212</i>&nbsp;         * from direct touch input device (touch screen) positions are measured
+<i>213</i>&nbsp;         * in pixels. For gestures emitted from indirect touch input device
+<i>214</i>&nbsp;         * (touch pad) positions are normalized. For details of normalized
+<i>215</i>&nbsp;         * touch input position see #handleBeginTouchEvent method.
+<i>216</i>&nbsp;         *
+<i>217</i>&nbsp;         * If underlying system doesn&#39;t support coordinates for gestures then
+<i>218</i>&nbsp;         * x and y arguments designate mouse position relative to the top-left
+<i>219</i>&nbsp;         * corner of the view and xAbs and yAbs designate mouse position
+<i>220</i>&nbsp;         * relative to the top-left corner of the screen. Positions are measured
+<i>221</i>&nbsp;         * in pixels.
+<i>222</i>&nbsp;         *
+<i>223</i>&nbsp;         * If gesture handler is called to notify end of gesture, i.e. value of
+<i>224</i>&nbsp;         * type argument is equal to
+<i>225</i>&nbsp;         * com.sun.glass.events.GestureEvent.GESTURE_FINISHED constant then
+<i>226</i>&nbsp;         * x, y, xAbs and yAbs arguments may be set to View.GESTURE_NO_VALUE
+<i>227</i>&nbsp;         * constant indicating no data is available. This is implementation
+<i>228</i>&nbsp;         * specific behavior.
+<i>229</i>&nbsp;         *
+<i>230</i>&nbsp;         * Values of dx and dy arguments are always 0.0 if type argument
+<i>231</i>&nbsp;         * is set to com.sun.glass.events.GestureEvent.GESTURE_FINISHED
+<i>232</i>&nbsp;         * constant.
+<i>233</i>&nbsp;         *
+<i>234</i>&nbsp;         * For description of isDirect argument see #handleBeginTouchEvent
+<i>235</i>&nbsp;         * method.
+<i>236</i>&nbsp;         *
+<i>237</i>&nbsp;         * @param type gesture state. One of constants declared in
+<i>238</i>&nbsp;         *        #com.sun.glass.events.GestureEvent class.
+<i>239</i>&nbsp;         * @param isInertia if gesture is caused by inertia.
+<i>240</i>&nbsp;         * @param touchCount number of touch points at
+<i>241</i>&nbsp;         *        the moment of gesture execution; it is always set to
+<i>242</i>&nbsp;         *        View.GESTURE_NO_VALUE constant if value of type argument is
+<i>243</i>&nbsp;         *        set to com.sun.glass.events.GestureEvent.GESTURE_FINISHED
+<i>244</i>&nbsp;         *        constant
+<i>245</i>&nbsp;         * @param x the X coordinate of the gesture;
+<i>246</i>&nbsp;         * @param y the Y coordinate of the gesture;
+<i>247</i>&nbsp;         * @param xAbs absolute X coordinate of the gesture;
+<i>248</i>&nbsp;         * @param yAbs absolute Y coordinate of the gesture;
+<i>249</i>&nbsp;         * @param dx horizontal scroll delta. Positive if scrolling from
+<i>250</i>&nbsp;         *        left to right, non-positive otherwise
+<i>251</i>&nbsp;         * @param dy vertical scroll delta. Positive if scrolling from
+<i>252</i>&nbsp;         *        up to down, non-positive otherwise
+<i>253</i>&nbsp;         * @param totaldx total horizontal scroll calculated from all
+<i>254</i>&nbsp;         *        sequential scroll gestures, i.e. sum of all &#39;dx&#39; values from
+<i>255</i>&nbsp;         *        previous sequential calls to this method
+<i>256</i>&nbsp;         * @param totaldy total vertical scroll calculated from all
+<i>257</i>&nbsp;         *        sequential scroll gestures, i.e. sum of all &#39;dy&#39; values from
+<i>258</i>&nbsp;         *        previous sequential calls to this method
+<i>259</i>&nbsp;         * @param multiplierX the X multiplier
+<i>260</i>&nbsp;         * @param multiplierY the Y multiplier
+<i>261</i>&nbsp;         *
+<i>262</i>&nbsp;         * Multiplers are used when an app receives a non-zero unit values (i.e.
+<i>263</i>&nbsp;         * either the lines or chars are not zeroes), but wants instead get delta
+<i>264</i>&nbsp;         * values in pixels. In this case the app needs to multiply the deltas
+<i>265</i>&nbsp;         * on the provided multiplier parameter.
+<i>266</i>&nbsp;         */
+<i>267</i>&nbsp;        public void handleScrollGestureEvent(View view, long time, int type,
+<i>268</i>&nbsp;                                             int modifiers, boolean isDirect,
+<i>269</i>&nbsp;                                             boolean isInertia, int touchCount,
+<i>270</i>&nbsp;                                             int x, int y, int xAbs, int yAbs,
+<i>271</i>&nbsp;                                             double dx, double dy,
+<i>272</i>&nbsp;                                             double totaldx, double totaldy,
+<i>273</i>&nbsp;                                             double multiplierX, double multiplierY) {
+<b class="nc"><i>274</i>&nbsp;        }</b>
+<i>275</i>&nbsp;
+<i>276</i>&nbsp;        /**
+<i>277</i>&nbsp;         * Zoom gesture handler.
+<i>278</i>&nbsp;         *
+<i>279</i>&nbsp;         * For description of isDirect argument see #handleBeginTouchEvent
+<i>280</i>&nbsp;         * method.
+<i>281</i>&nbsp;         *
+<i>282</i>&nbsp;         * For description of isInertia argument see #handleScrollGestureEvent
+<i>283</i>&nbsp;         * method.
+<i>284</i>&nbsp;         *
+<i>285</i>&nbsp;         * For description of type, x,y, xAbs and yAbs arguments
+<i>286</i>&nbsp;         * see #handleBeginTouchEvent method.
+<i>287</i>&nbsp;         *
+<i>288</i>&nbsp;         * If underlying system doesn&#39;t support measurement of expansion value
+<i>289</i>&nbsp;         * in zoom gestures then expansion and totalexpansion arguments are
+<i>290</i>&nbsp;         * always set to View.GESTURE_NO_DOUBLE_VALUE.
+<i>291</i>&nbsp;         *
+<i>292</i>&nbsp;         * If type argument is set to
+<i>293</i>&nbsp;         * com.sun.glass.events.GestureEvent.GESTURE_FINISHED constant value of
+<i>294</i>&nbsp;         * scale argument is always set to View.GESTURE_NO_DOUBLE_VALUE constant
+<i>295</i>&nbsp;         * and expansion argument is always 0.0.
+<i>296</i>&nbsp;         *
+<i>297</i>&nbsp;         * @param scale current zoom delta; the value is multiplicative
+<i>298</i>&nbsp;         *        and not additive.
+<i>299</i>&nbsp;         * @param expansion current expansion delta. Measured in pixels on
+<i>300</i>&nbsp;         *        direct touch input devices and normalized values on indirect
+<i>301</i>&nbsp;         *        touch input devices. See #handleBeginTouchEvent for
+<i>302</i>&nbsp;         *        description of units of indirect touch input devices.
+<i>303</i>&nbsp;         * @param totalscale total zoom calculated from all
+<i>304</i>&nbsp;         *        sequential zoom gestures, i.e. sum of all &#39;scale&#39; values from
+<i>305</i>&nbsp;         *        previous sequential calls to this method
+<i>306</i>&nbsp;         * @param totalexpansion total expansion calculated from all
+<i>307</i>&nbsp;         *        sequential zoom gestures, i.e. sum of all &#39;expansion&#39; values
+<i>308</i>&nbsp;         *        from previous sequential calls of this method
+<i>309</i>&nbsp;         */
+<i>310</i>&nbsp;        public void handleZoomGestureEvent(View view, long time, int type,
+<i>311</i>&nbsp;                                           int modifiers, boolean isDirect,
+<i>312</i>&nbsp;                                           boolean isInertia, int x, int y,
+<i>313</i>&nbsp;                                           int xAbs, int yAbs, double scale,
+<i>314</i>&nbsp;                                           double expansion, double totalscale,
+<i>315</i>&nbsp;                                           double totalexpansion) {
+<b class="nc"><i>316</i>&nbsp;        }</b>
+<i>317</i>&nbsp;
+<i>318</i>&nbsp;        /**
+<i>319</i>&nbsp;         * Rotation gesture handler.
+<i>320</i>&nbsp;         *
+<i>321</i>&nbsp;         * For description of isDirect argument see #handleBeginTouchEvent
+<i>322</i>&nbsp;         * method.
+<i>323</i>&nbsp;         *
+<i>324</i>&nbsp;         * For description of isInertia argument see #handleScrollGestureEvent
+<i>325</i>&nbsp;         * method.
+<i>326</i>&nbsp;         *
+<i>327</i>&nbsp;         * For description of type, x,y, xAbs and yAbs arguments
+<i>328</i>&nbsp;         * see #handleBeginTouchEvent method.
+<i>329</i>&nbsp;         *
+<i>330</i>&nbsp;         * @param dangle current angle delta in degrees. Positive for clockwise
+<i>331</i>&nbsp;         *        rotation
+<i>332</i>&nbsp;         * @param totalangle total angle calculated from all
+<i>333</i>&nbsp;         *        sequential rotation gestures, i.e. sum of all &#39;dangle&#39; values
+<i>334</i>&nbsp;         *        from previous sequential calls of this method
+<i>335</i>&nbsp;         */
+<i>336</i>&nbsp;        public void handleRotateGestureEvent(View view, long time, int type,
+<i>337</i>&nbsp;                                             int modifiers, boolean isDirect,
+<i>338</i>&nbsp;                                             boolean isInertia, int x, int y,
+<i>339</i>&nbsp;                                             int xAbs, int yAbs, double dangle,
+<i>340</i>&nbsp;                                             double totalangle) {
+<b class="nc"><i>341</i>&nbsp;        }</b>
+<i>342</i>&nbsp;
+<i>343</i>&nbsp;        /**
+<i>344</i>&nbsp;         * Swipe gesture handler.
+<i>345</i>&nbsp;         *
+<i>346</i>&nbsp;         * For description of isDirect argument see #handleBeginTouchEvent
+<i>347</i>&nbsp;         * method.
+<i>348</i>&nbsp;         *
+<i>349</i>&nbsp;         * For description of isInertia and touchCount arguments
+<i>350</i>&nbsp;         * see #handleScrollGestureEvent method.
+<i>351</i>&nbsp;         *
+<i>352</i>&nbsp;         * For description of type, x,y, xAbs and yAbs arguments
+<i>353</i>&nbsp;         * see #handleBeginTouchEvent method.
+<i>354</i>&nbsp;         *
+<i>355</i>&nbsp;         * @param dir gesture direction.
+<i>356</i>&nbsp;         *        One of constants defined in com.sun.glass.events.SwipeGesture
+<i>357</i>&nbsp;         *        class.
+<i>358</i>&nbsp;         */
+<i>359</i>&nbsp;        public void handleSwipeGestureEvent(View view, long time, int type,
+<i>360</i>&nbsp;                                            int modifiers, boolean isDirect,
+<i>361</i>&nbsp;                                            boolean isInertia, int touchCount,
+<i>362</i>&nbsp;                                            int dir, int x, int y, int xAbs,
+<i>363</i>&nbsp;                                            int yAbs) {
+<b class="nc"><i>364</i>&nbsp;        }</b>
+<i>365</i>&nbsp;
+<i>366</i>&nbsp;        public Accessible getSceneAccessible() {
+<b class="nc"><i>367</i>&nbsp;            return null;</b>
+<i>368</i>&nbsp;        }
+<i>369</i>&nbsp;    }
+<i>370</i>&nbsp;
+<i>371</i>&nbsp;    public static long getMultiClickTime() {
+<b class="fc"><i>372</i>&nbsp;        Application.checkEventThread();</b>
+<b class="fc"><i>373</i>&nbsp;        return Application.GetApplication().staticView_getMultiClickTime();</b>
+<i>374</i>&nbsp;    }
+<i>375</i>&nbsp;
+<i>376</i>&nbsp;    public static int getMultiClickMaxX() {
+<b class="fc"><i>377</i>&nbsp;        Application.checkEventThread();</b>
+<b class="fc"><i>378</i>&nbsp;        return Application.GetApplication().staticView_getMultiClickMaxX();</b>
+<i>379</i>&nbsp;    }
+<i>380</i>&nbsp;
+<i>381</i>&nbsp;    public static int getMultiClickMaxY() {
+<b class="fc"><i>382</i>&nbsp;        Application.checkEventThread();</b>
+<b class="fc"><i>383</i>&nbsp;        return Application.GetApplication().staticView_getMultiClickMaxY();</b>
+<i>384</i>&nbsp;    }
+<i>385</i>&nbsp;
+<i>386</i>&nbsp;    protected abstract void _enableInputMethodEvents(long ptr, boolean enable);
+<i>387</i>&nbsp;    protected void _finishInputMethodComposition(long ptr) {
+<i>388</i>&nbsp;        // Action needed only on Windows.
+<b class="nc"><i>389</i>&nbsp;    }</b>
+<i>390</i>&nbsp;
+<i>391</i>&nbsp;    /*
+<i>392</i>&nbsp;        Read by the checkNotClosed method which could be called from lock/unlock on render thread
+<i>393</i>&nbsp;     */
+<i>394</i>&nbsp;    private volatile long ptr; // Native handle (NSView*, or internal structure pointer)
+<i>395</i>&nbsp;    private Window window; // parent window
+<i>396</i>&nbsp;    private EventHandler eventHandler;
+<i>397</i>&nbsp;
+<b class="fc"><i>398</i>&nbsp;    private int width = -1;     // not set</b>
+<b class="fc"><i>399</i>&nbsp;    private int height = -1;    // not set</b>
+<i>400</i>&nbsp;
+<b class="fc"><i>401</i>&nbsp;    private boolean isValid = false; // true between ViewEvent.Add &amp; ViewEvent.REMOVE</b>
+<b class="fc"><i>402</i>&nbsp;    private boolean isVisible = false;</b>
+<b class="fc"><i>403</i>&nbsp;    private boolean inFullscreen = false;</b>
+<i>404</i>&nbsp;
+<b class="nc"><i>405</i>&nbsp;    static final public class Capability {</b>
+<i>406</i>&nbsp;        // we need these for native code
+<i>407</i>&nbsp;        @Native static final public int k3dKeyValue                     = 0;
+<i>408</i>&nbsp;        @Native static final public int kSyncKeyValue                   = 1;
+<i>409</i>&nbsp;        @Native static final public int k3dProjectionKeyValue           = 2;
+<i>410</i>&nbsp;        @Native static final public int k3dProjectionAngleKeyValue      = 3;
+<i>411</i>&nbsp;        @Native static final public int k3dDepthKeyValue                = 4;
+<i>412</i>&nbsp;        @Native static final public int kHiDPIAwareKeyValue             = 5;
+<i>413</i>&nbsp;
+<b class="fc"><i>414</i>&nbsp;        static final public Object k3dKey                       = Integer.valueOf(k3dKeyValue); // value must be Boolean</b>
+<b class="fc"><i>415</i>&nbsp;        static final public Object kSyncKey                     = Integer.valueOf(kSyncKeyValue); // value must be Boolean</b>
+<b class="fc"><i>416</i>&nbsp;        static final public Object k3dProjectionKey             = Integer.valueOf(k3dProjectionKeyValue); // value must be Boolean</b>
+<b class="fc"><i>417</i>&nbsp;        static final public Object k3dProjectionAngleKey        = Integer.valueOf(k3dProjectionAngleKeyValue); // value must be Float</b>
+<b class="fc"><i>418</i>&nbsp;        static final public Object k3dDepthKey                  = Integer.valueOf(k3dDepthKeyValue); // value must be Integer(depth), where depth = 0, 4, 8, 16, 32etc</b>
+<b class="fc"><i>419</i>&nbsp;        static final public Object kHiDPIAwareKey               = Integer.valueOf(kHiDPIAwareKeyValue); // value must be Boolean; default = false (i.e. NOT HiDPI-aware)</b>
+<i>420</i>&nbsp;    }
+<i>421</i>&nbsp;
+<i>422</i>&nbsp;
+<i>423</i>&nbsp;    protected abstract long _create(Map capabilities);
+<b class="fc"><i>424</i>&nbsp;    protected View() {</b>
+<b class="fc"><i>425</i>&nbsp;        Application.checkEventThread();</b>
+<b class="fc"><i>426</i>&nbsp;        this.ptr = _create(Application.GetApplication().getDeviceDetails());</b>
+<b class="fc"><i>427</i>&nbsp;        if (this.ptr == 0L) {</b>
+<b class="nc"><i>428</i>&nbsp;            throw new RuntimeException(&quot;could not create platform view&quot;);</b>
+<i>429</i>&nbsp;        }
+<b class="fc"><i>430</i>&nbsp;    }</b>
+<i>431</i>&nbsp;
+<i>432</i>&nbsp;    private void checkNotClosed() {
+<b class="fc"><i>433</i>&nbsp;        if (this.ptr == 0L) {</b>
+<b class="nc"><i>434</i>&nbsp;            throw new IllegalStateException(&quot;The view has already been closed&quot;);</b>
+<i>435</i>&nbsp;        }
+<b class="fc"><i>436</i>&nbsp;    }</b>
+<i>437</i>&nbsp;
+<i>438</i>&nbsp;    public boolean isClosed() {
+<b class="fc"><i>439</i>&nbsp;        Application.checkEventThread();</b>
+<b class="fc"><i>440</i>&nbsp;        return this.ptr == 0L;</b>
+<i>441</i>&nbsp;    }
+<i>442</i>&nbsp;
+<i>443</i>&nbsp;    protected abstract long _getNativeView(long ptr);
+<i>444</i>&nbsp;    /**
+<i>445</i>&nbsp;     * On Windows ptr is a pointer to a native structure.
+<i>446</i>&nbsp;     * However, for external clients of the API, a HWND has to be returned.
+<i>447</i>&nbsp;     * Hence the native method.
+<i>448</i>&nbsp;     */
+<i>449</i>&nbsp;    public long getNativeView() {
+<b class="fc"><i>450</i>&nbsp;        Application.checkEventThread();</b>
+<b class="fc"><i>451</i>&nbsp;        checkNotClosed();</b>
+<b class="fc"><i>452</i>&nbsp;        return _getNativeView(this.ptr);</b>
+<i>453</i>&nbsp;    }
+<i>454</i>&nbsp;
+<i>455</i>&nbsp;    /** Only used on Mac when run inside a plugin */
+<i>456</i>&nbsp;    public int getNativeRemoteLayerId(String serverName) {
+<b class="nc"><i>457</i>&nbsp;        Application.checkEventThread();</b>
+<b class="nc"><i>458</i>&nbsp;        throw new RuntimeException(&quot;This operation is not supported on this platform&quot;);</b>
+<i>459</i>&nbsp;    }
+<i>460</i>&nbsp;
+<i>461</i>&nbsp;    public Window getWindow() {
+<b class="fc"><i>462</i>&nbsp;        Application.checkEventThread();</b>
+<b class="fc"><i>463</i>&nbsp;        return this.window;</b>
+<i>464</i>&nbsp;    }
+<i>465</i>&nbsp;
+<i>466</i>&nbsp;    protected abstract int _getX(long ptr);
+<i>467</i>&nbsp;    /** X coordinate relative to the host (window or applet). */
+<i>468</i>&nbsp;    public int getX() {
+<b class="fc"><i>469</i>&nbsp;        Application.checkEventThread();</b>
+<b class="fc"><i>470</i>&nbsp;        checkNotClosed();</b>
+<b class="fc"><i>471</i>&nbsp;        return _getX(this.ptr);</b>
+<i>472</i>&nbsp;    }
+<i>473</i>&nbsp;
+<i>474</i>&nbsp;    protected abstract int _getY(long ptr);
+<i>475</i>&nbsp;    /** Y coordinate relative to the host (window or applet). */
+<i>476</i>&nbsp;    public int getY() {
+<b class="fc"><i>477</i>&nbsp;        Application.checkEventThread();</b>
+<b class="fc"><i>478</i>&nbsp;        checkNotClosed();</b>
+<b class="fc"><i>479</i>&nbsp;        return _getY(this.ptr);</b>
+<i>480</i>&nbsp;    }
+<i>481</i>&nbsp;
+<i>482</i>&nbsp;    public int getWidth() {
+<b class="fc"><i>483</i>&nbsp;        Application.checkEventThread();</b>
+<b class="fc"><i>484</i>&nbsp;        return this.width;</b>
+<i>485</i>&nbsp;    }
+<i>486</i>&nbsp;
+<i>487</i>&nbsp;    public int getHeight() {
+<b class="fc"><i>488</i>&nbsp;        Application.checkEventThread();</b>
+<b class="fc"><i>489</i>&nbsp;        return this.height;</b>
+<i>490</i>&nbsp;    }
+<i>491</i>&nbsp;
+<i>492</i>&nbsp;    protected abstract void _setParent(long ptr, long parentPtr);
+<i>493</i>&nbsp;    // Window calls the method from Window.setView()
+<i>494</i>&nbsp;    // package private
+<i>495</i>&nbsp;    void setWindow(Window window) {
+<b class="fc"><i>496</i>&nbsp;        Application.checkEventThread();</b>
+<b class="fc"><i>497</i>&nbsp;        checkNotClosed();</b>
+<b class="fc"><i>498</i>&nbsp;        this.window = window;</b>
+<b class="fc"><i>499</i>&nbsp;        _setParent(this.ptr, window == null ? 0L : window.getNativeHandle());</b>
+<b class="fc"><i>500</i>&nbsp;        this.isValid = this.ptr != 0 &amp;&amp; window != null;</b>
+<b class="fc"><i>501</i>&nbsp;    }</b>
+<i>502</i>&nbsp;
+<i>503</i>&nbsp;    // package private
+<i>504</i>&nbsp;    void setVisible(boolean visible) {
+<b class="fc"><i>505</i>&nbsp;        this.isVisible = visible;</b>
+<b class="fc"><i>506</i>&nbsp;    }</b>
+<i>507</i>&nbsp;
+<i>508</i>&nbsp;    protected abstract boolean _close(long ptr);
+<i>509</i>&nbsp;    public void close() {
+<b class="fc"><i>510</i>&nbsp;        Application.checkEventThread();</b>
+<b class="fc"><i>511</i>&nbsp;        if (this.ptr == 0) {</b>
+<b class="nc"><i>512</i>&nbsp;            return;</b>
+<i>513</i>&nbsp;        }
+<b class="fc"><i>514</i>&nbsp;        if (isInFullscreen()) {</b>
+<b class="nc"><i>515</i>&nbsp;            _exitFullscreen(this.ptr, false);</b>
+<i>516</i>&nbsp;        }
+<b class="fc"><i>517</i>&nbsp;        Window host = getWindow();</b>
+<b class="fc"><i>518</i>&nbsp;        if (host != null) {</b>
+<b class="nc"><i>519</i>&nbsp;            host.setView(null); // will call this.setWindow(null)</b>
+<i>520</i>&nbsp;        }
+<b class="fc"><i>521</i>&nbsp;        this.isValid = false;</b>
+<b class="fc"><i>522</i>&nbsp;        _close(this.ptr);</b>
+<b class="fc"><i>523</i>&nbsp;        this.ptr = 0;</b>
+<b class="fc"><i>524</i>&nbsp;    }</b>
+<i>525</i>&nbsp;
+<i>526</i>&nbsp;    public EventHandler getEventHandler() {
+<b class="nc"><i>527</i>&nbsp;        Application.checkEventThread();</b>
+<b class="nc"><i>528</i>&nbsp;        return this.eventHandler;</b>
+<i>529</i>&nbsp;    }
+<i>530</i>&nbsp;
+<i>531</i>&nbsp;    public void setEventHandler(EventHandler eventHandler) {
+<b class="fc"><i>532</i>&nbsp;        Application.checkEventThread();</b>
+<b class="fc"><i>533</i>&nbsp;        this.eventHandler = eventHandler;</b>
+<b class="fc"><i>534</i>&nbsp;    }</b>
+<i>535</i>&nbsp;
+<i>536</i>&nbsp;    //-------- EVENTS --------//
+<i>537</i>&nbsp;
+<i>538</i>&nbsp;    private void handleViewEvent(long time, int type) {
+<b class="fc"><i>539</i>&nbsp;        if (this.eventHandler != null) {</b>
+<b class="fc"><i>540</i>&nbsp;            this.eventHandler.handleViewEvent(this, time, type);</b>
+<i>541</i>&nbsp;        }
+<b class="fc"><i>542</i>&nbsp;    }</b>
+<i>543</i>&nbsp;
+<i>544</i>&nbsp;    private void handleKeyEvent(long time, int action,
+<i>545</i>&nbsp;            int keyCode, char[] keyChars, int modifiers) {
+<b class="fc"><i>546</i>&nbsp;        if (this.eventHandler != null) {</b>
+<b class="fc"><i>547</i>&nbsp;            this.eventHandler.handleKeyEvent(this, time, action, keyCode, keyChars, modifiers);</b>
+<i>548</i>&nbsp;        }
+<b class="fc"><i>549</i>&nbsp;    }</b>
+<i>550</i>&nbsp;
+<i>551</i>&nbsp;    private void handleMouseEvent(long time, int type, int button, int x, int y,
+<i>552</i>&nbsp;                                  int xAbs, int yAbs,
+<i>553</i>&nbsp;                                  int modifiers, boolean isPopupTrigger,
+<i>554</i>&nbsp;                                  boolean isSynthesized) {
+<b class="fc"><i>555</i>&nbsp;        if (eventHandler != null) {</b>
+<b class="fc"><i>556</i>&nbsp;            eventHandler.handleMouseEvent(this, time, type, button, x, y, xAbs,</b>
+<i>557</i>&nbsp;                                          yAbs, modifiers,
+<i>558</i>&nbsp;                                          isPopupTrigger, isSynthesized);
+<i>559</i>&nbsp;        }
+<b class="fc"><i>560</i>&nbsp;    }</b>
+<i>561</i>&nbsp;
+<i>562</i>&nbsp;    private void handleMenuEvent(int x, int y, int xAbs, int yAbs, boolean isKeyboardTrigger) {
+<b class="nc"><i>563</i>&nbsp;        if (this.eventHandler != null) {</b>
+<b class="nc"><i>564</i>&nbsp;            this.eventHandler.handleMenuEvent(this, x, y, xAbs, yAbs, isKeyboardTrigger);</b>
+<i>565</i>&nbsp;        }
+<b class="nc"><i>566</i>&nbsp;    }</b>
+<i>567</i>&nbsp;
+<i>568</i>&nbsp;    public void handleBeginTouchEvent(View view, long time, int modifiers,
+<i>569</i>&nbsp;                                      boolean isDirect, int touchEventCount) {
+<b class="nc"><i>570</i>&nbsp;        if (eventHandler != null) {</b>
+<b class="nc"><i>571</i>&nbsp;            eventHandler.handleBeginTouchEvent(view, time, modifiers, isDirect,</b>
+<i>572</i>&nbsp;                    touchEventCount);
+<i>573</i>&nbsp;        }
+<b class="nc"><i>574</i>&nbsp;    }</b>
+<i>575</i>&nbsp;
+<i>576</i>&nbsp;    public void handleNextTouchEvent(View view, long time, int type,
+<i>577</i>&nbsp;                                     long touchId, int x, int y, int xAbs,
+<i>578</i>&nbsp;                                     int yAbs) {
+<b class="nc"><i>579</i>&nbsp;        if (eventHandler != null) {</b>
+<b class="nc"><i>580</i>&nbsp;            eventHandler.handleNextTouchEvent(view, time, type, touchId, x, y, xAbs, yAbs);</b>
+<i>581</i>&nbsp;        }
+<b class="nc"><i>582</i>&nbsp;    }</b>
+<i>583</i>&nbsp;
+<i>584</i>&nbsp;    public void handleEndTouchEvent(View view, long time) {
+<b class="nc"><i>585</i>&nbsp;        if (eventHandler != null) {</b>
+<b class="nc"><i>586</i>&nbsp;            eventHandler.handleEndTouchEvent(view, time);</b>
+<i>587</i>&nbsp;        }
+<b class="nc"><i>588</i>&nbsp;    }</b>
+<i>589</i>&nbsp;
+<i>590</i>&nbsp;    public void handleScrollGestureEvent(View view, long time, int type,
+<i>591</i>&nbsp;                                         int modifiers, boolean isDirect,
+<i>592</i>&nbsp;                                         boolean isInertia, int touchCount,
+<i>593</i>&nbsp;                                         int x, int y, int xAbs, int yAbs,
+<i>594</i>&nbsp;                                         double dx, double dy, double totaldx,
+<i>595</i>&nbsp;                                         double totaldy, double multiplierX,
+<i>596</i>&nbsp;                                         double multiplierY) {
+<b class="nc"><i>597</i>&nbsp;        if (eventHandler != null) {</b>
+<b class="nc"><i>598</i>&nbsp;            eventHandler.handleScrollGestureEvent(view, time, type, modifiers, isDirect,</b>
+<i>599</i>&nbsp;                    isInertia, touchCount, x, y, xAbs, yAbs,
+<i>600</i>&nbsp;                    dx, dy, totaldx, totaldy, multiplierX, multiplierY);
+<i>601</i>&nbsp;        }
+<b class="nc"><i>602</i>&nbsp;    }</b>
+<i>603</i>&nbsp;
+<i>604</i>&nbsp;    public void handleZoomGestureEvent(View view, long time, int type,
+<i>605</i>&nbsp;                                       int modifiers, boolean isDirect,
+<i>606</i>&nbsp;                                       boolean isInertia, int originx,
+<i>607</i>&nbsp;                                       int originy, int originxAbs,
+<i>608</i>&nbsp;                                       int originyAbs, double scale,
+<i>609</i>&nbsp;                                       double expansion, double totalscale,
+<i>610</i>&nbsp;                                       double totalexpansion) {
+<b class="nc"><i>611</i>&nbsp;        if (eventHandler != null) {</b>
+<b class="nc"><i>612</i>&nbsp;            eventHandler.handleZoomGestureEvent(view, time, type, modifiers, isDirect,</b>
+<i>613</i>&nbsp;                                     isInertia, originx, originy, originxAbs,
+<i>614</i>&nbsp;                                     originyAbs, scale, expansion, totalscale,
+<i>615</i>&nbsp;                                     totalexpansion);
+<i>616</i>&nbsp;        }
+<b class="nc"><i>617</i>&nbsp;    }</b>
+<i>618</i>&nbsp;
+<i>619</i>&nbsp;    public void handleRotateGestureEvent(View view, long time, int type,
+<i>620</i>&nbsp;                                         int modifiers, boolean isDirect,
+<i>621</i>&nbsp;                                         boolean isInertia, int originx,
+<i>622</i>&nbsp;                                         int originy, int originxAbs,
+<i>623</i>&nbsp;                                         int originyAbs, double dangle,
+<i>624</i>&nbsp;                                         double totalangle) {
+<b class="nc"><i>625</i>&nbsp;        if (eventHandler != null) {</b>
+<b class="nc"><i>626</i>&nbsp;            eventHandler.handleRotateGestureEvent(view, time, type, modifiers, isDirect,</b>
+<i>627</i>&nbsp;                    isInertia, originx, originy, originxAbs,
+<i>628</i>&nbsp;                    originyAbs, dangle, totalangle);
+<i>629</i>&nbsp;        }
+<b class="nc"><i>630</i>&nbsp;    }</b>
+<i>631</i>&nbsp;
+<i>632</i>&nbsp;    public void handleSwipeGestureEvent(View view, long time, int type,
+<i>633</i>&nbsp;                                        int modifiers, boolean isDirect,
+<i>634</i>&nbsp;                                        boolean isInertia, int touchCount,
+<i>635</i>&nbsp;                                        int dir, int originx, int originy,
+<i>636</i>&nbsp;                                        int originxAbs, int originyAbs) {
+<b class="nc"><i>637</i>&nbsp;        if (eventHandler != null) {</b>
+<b class="nc"><i>638</i>&nbsp;            eventHandler.handleSwipeGestureEvent(view, time, type, modifiers, isDirect,</b>
+<i>639</i>&nbsp;                    isInertia, touchCount, dir, originx,
+<i>640</i>&nbsp;                    originy, originxAbs, originyAbs);
+<i>641</i>&nbsp;        }
+<b class="nc"><i>642</i>&nbsp;    }</b>
+<i>643</i>&nbsp;
+<i>644</i>&nbsp;    private void handleInputMethodEvent(long time, String text, int[] clauseBoundary,
+<i>645</i>&nbsp;                int[] attrBoundary, byte[] attrValue,
+<i>646</i>&nbsp;                int commitCount, int cursorPos) {
+<b class="nc"><i>647</i>&nbsp;        if (this.eventHandler != null) {</b>
+<b class="nc"><i>648</i>&nbsp;            this.eventHandler.handleInputMethodEvent(time, text, clauseBoundary,</b>
+<i>649</i>&nbsp;                attrBoundary, attrValue,
+<i>650</i>&nbsp;                commitCount, cursorPos);
+<i>651</i>&nbsp;        }
+<b class="nc"><i>652</i>&nbsp;    }</b>
+<i>653</i>&nbsp;
+<i>654</i>&nbsp;    public void enableInputMethodEvents(boolean enable) {
+<b class="fc"><i>655</i>&nbsp;        Application.checkEventThread();</b>
+<b class="fc"><i>656</i>&nbsp;        checkNotClosed();</b>
+<b class="fc"><i>657</i>&nbsp;        _enableInputMethodEvents(this.ptr, enable);</b>
+<b class="fc"><i>658</i>&nbsp;    }</b>
+<i>659</i>&nbsp;
+<i>660</i>&nbsp;    public void finishInputMethodComposition() {
+<b class="fc"><i>661</i>&nbsp;        Application.checkEventThread();</b>
+<b class="fc"><i>662</i>&nbsp;        checkNotClosed();</b>
+<b class="fc"><i>663</i>&nbsp;        _finishInputMethodComposition(this.ptr);</b>
+<b class="fc"><i>664</i>&nbsp;    }</b>
+<i>665</i>&nbsp;
+<i>666</i>&nbsp;    private double[] getInputMethodCandidatePos(int offset) {
+<b class="nc"><i>667</i>&nbsp;        if (this.eventHandler != null) {</b>
+<b class="nc"><i>668</i>&nbsp;            return this.eventHandler.getInputMethodCandidatePos(offset);</b>
+<i>669</i>&nbsp;        }
+<b class="nc"><i>670</i>&nbsp;        return null;</b>
+<i>671</i>&nbsp;    }
+<i>672</i>&nbsp;
+<i>673</i>&nbsp;    private void handleDragStart(int button, int x, int y, int xAbs, int yAbs,
+<i>674</i>&nbsp;            ClipboardAssistance dropSourceAssistant) {
+<b class="fc"><i>675</i>&nbsp;        if (this.eventHandler != null) {</b>
+<b class="fc"><i>676</i>&nbsp;            this.eventHandler.handleDragStart(this, button, x, y, xAbs, yAbs, dropSourceAssistant);</b>
+<i>677</i>&nbsp;        }
+<b class="fc"><i>678</i>&nbsp;    }</b>
+<i>679</i>&nbsp;
+<i>680</i>&nbsp;    private void handleDragEnd(int performedAction) {
+<b class="nc"><i>681</i>&nbsp;        if (this.eventHandler != null) {</b>
+<b class="nc"><i>682</i>&nbsp;            this.eventHandler.handleDragEnd(this, performedAction);</b>
+<i>683</i>&nbsp;        }
+<b class="nc"><i>684</i>&nbsp;    }</b>
+<i>685</i>&nbsp;
+<i>686</i>&nbsp;    private int handleDragEnter(int x, int y, int xAbs, int yAbs,
+<i>687</i>&nbsp;            int recommendedDropAction, ClipboardAssistance dropTargetAssistant) {
+<b class="nc"><i>688</i>&nbsp;        if (this.eventHandler != null) {</b>
+<b class="nc"><i>689</i>&nbsp;            return this.eventHandler.handleDragEnter(this, x, y, xAbs, yAbs, recommendedDropAction, dropTargetAssistant);</b>
+<i>690</i>&nbsp;        } else {
+<b class="nc"><i>691</i>&nbsp;            return recommendedDropAction;</b>
+<i>692</i>&nbsp;        }
+<i>693</i>&nbsp;    }
+<i>694</i>&nbsp;
+<i>695</i>&nbsp;    private int handleDragOver(int x, int y, int xAbs, int yAbs,
+<i>696</i>&nbsp;            int recommendedDropAction, ClipboardAssistance dropTargetAssistant) {
+<b class="nc"><i>697</i>&nbsp;        if (this.eventHandler != null) {</b>
+<b class="nc"><i>698</i>&nbsp;            return this.eventHandler.handleDragOver(this, x, y, xAbs, yAbs, recommendedDropAction, dropTargetAssistant);</b>
+<i>699</i>&nbsp;        } else {
+<b class="nc"><i>700</i>&nbsp;            return recommendedDropAction;</b>
+<i>701</i>&nbsp;        }
+<i>702</i>&nbsp;    }
+<i>703</i>&nbsp;
+<i>704</i>&nbsp;    private void handleDragLeave(ClipboardAssistance dropTargetAssistant) {
+<b class="nc"><i>705</i>&nbsp;        if (this.eventHandler != null) {</b>
+<b class="nc"><i>706</i>&nbsp;            this.eventHandler.handleDragLeave(this, dropTargetAssistant);</b>
+<i>707</i>&nbsp;        }
+<b class="nc"><i>708</i>&nbsp;    }</b>
+<i>709</i>&nbsp;
+<i>710</i>&nbsp;    private int handleDragDrop(int x, int y, int xAbs, int yAbs,
+<i>711</i>&nbsp;            int recommendedDropAction, ClipboardAssistance dropTargetAssistant) {
+<b class="nc"><i>712</i>&nbsp;        if (this.eventHandler != null) {</b>
+<b class="nc"><i>713</i>&nbsp;            return this.eventHandler.handleDragDrop(this, x, y, xAbs, yAbs, recommendedDropAction, dropTargetAssistant);</b>
+<i>714</i>&nbsp;        } else {
+<b class="nc"><i>715</i>&nbsp;            return Clipboard.ACTION_NONE;</b>
+<i>716</i>&nbsp;        }
+<i>717</i>&nbsp;    }
+<i>718</i>&nbsp;
+<i>719</i>&nbsp;    //-------- DRAWING --------//
+<i>720</i>&nbsp;    protected abstract void _scheduleRepaint(long ptr);
+<i>721</i>&nbsp;    /** marks native surface dirty, so the system itself will create repaint event
+<i>722</i>&nbsp;     * */
+<i>723</i>&nbsp;    public void scheduleRepaint() {
+<b class="nc"><i>724</i>&nbsp;        Application.checkEventThread();</b>
+<b class="nc"><i>725</i>&nbsp;        checkNotClosed();</b>
+<b class="nc"><i>726</i>&nbsp;        _scheduleRepaint(this.ptr);</b>
+<b class="nc"><i>727</i>&nbsp;    }</b>
+<i>728</i>&nbsp;
+<i>729</i>&nbsp;    protected abstract void _begin(long ptr);
+<i>730</i>&nbsp;    /** prepares to painting by locking native surface
+<i>731</i>&nbsp;     *
+<i>732</i>&nbsp;     * Called on the render thread
+<i>733</i>&nbsp;     */
+<i>734</i>&nbsp;    public void lock() {
+<b class="fc"><i>735</i>&nbsp;        checkNotClosed();</b>
+<b class="fc"><i>736</i>&nbsp;        _begin(this.ptr);</b>
+<b class="fc"><i>737</i>&nbsp;    }</b>
+<i>738</i>&nbsp;
+<i>739</i>&nbsp;    protected abstract void _end(long ptr);
+<i>740</i>&nbsp;    /** ends painting by unlocking native surface and flushing
+<i>741</i>&nbsp;     * flushes surface (if flush == true) or discard it (flush == false)
+<i>742</i>&nbsp;     *
+<i>743</i>&nbsp;     * Called on the render thread
+<i>744</i>&nbsp;     */
+<i>745</i>&nbsp;    public void unlock() {
+<b class="fc"><i>746</i>&nbsp;        checkNotClosed();</b>
+<b class="fc"><i>747</i>&nbsp;        _end(this.ptr);</b>
+<b class="fc"><i>748</i>&nbsp;    }</b>
+<i>749</i>&nbsp;
+<i>750</i>&nbsp;    protected abstract int _getNativeFrameBuffer(long ptr);
+<i>751</i>&nbsp;
+<i>752</i>&nbsp;    /**
+<i>753</i>&nbsp;     * Called on the renderer thread and must be between lock and unlock
+<i>754</i>&nbsp;     */
+<i>755</i>&nbsp;    public int getNativeFrameBuffer() {
+<b class="fc"><i>756</i>&nbsp;        return _getNativeFrameBuffer(this.ptr);</b>
+<i>757</i>&nbsp;    }
+<i>758</i>&nbsp;
+<i>759</i>&nbsp;
+<i>760</i>&nbsp;    protected abstract void _uploadPixels(long ptr, Pixels pixels);
+<i>761</i>&nbsp;    /**
+<i>762</i>&nbsp;     * This method dumps the pixels on to the view.
+<i>763</i>&nbsp;     *
+<i>764</i>&nbsp;     * NOTE: On MS Windows calling this method is REQUIRED for
+<i>765</i>&nbsp;     * transparent windows in order to update them.
+<i>766</i>&nbsp;     */
+<i>767</i>&nbsp;    public void uploadPixels(Pixels pixels) {
+<b class="fc"><i>768</i>&nbsp;        Application.checkEventThread();</b>
+<b class="fc"><i>769</i>&nbsp;        checkNotClosed();</b>
+<b class="fc"><i>770</i>&nbsp;        lock();</b>
+<i>771</i>&nbsp;        try {
+<b class="fc"><i>772</i>&nbsp;            _uploadPixels(this.ptr, pixels);</b>
+<i>773</i>&nbsp;        } finally {
+<b class="fc"><i>774</i>&nbsp;            unlock();</b>
+<b class="fc"><i>775</i>&nbsp;        }</b>
+<b class="fc"><i>776</i>&nbsp;    }</b>
+<i>777</i>&nbsp;
+<i>778</i>&nbsp;
+<i>779</i>&nbsp;    //-------- FULLSCREEN --------//
+<i>780</i>&nbsp;
+<i>781</i>&nbsp;    protected abstract boolean _enterFullscreen(long ptr, boolean animate, boolean keepRatio, boolean hideCursor);
+<i>782</i>&nbsp;    public boolean enterFullscreen(boolean animate, boolean keepRatio, boolean hideCursor) {
+<b class="nc"><i>783</i>&nbsp;        Application.checkEventThread();</b>
+<b class="nc"><i>784</i>&nbsp;        checkNotClosed();</b>
+<b class="nc"><i>785</i>&nbsp;        return _enterFullscreen(this.ptr, animate, keepRatio, hideCursor);</b>
+<i>786</i>&nbsp;    }
+<i>787</i>&nbsp;
+<i>788</i>&nbsp;    protected abstract void _exitFullscreen(long ptr, boolean animate);
+<i>789</i>&nbsp;    public void exitFullscreen(boolean animate) {
+<b class="nc"><i>790</i>&nbsp;        Application.checkEventThread();</b>
+<b class="nc"><i>791</i>&nbsp;        checkNotClosed();</b>
+<b class="nc"><i>792</i>&nbsp;        _exitFullscreen(this.ptr, animate);</b>
+<b class="nc"><i>793</i>&nbsp;    }</b>
+<i>794</i>&nbsp;
+<i>795</i>&nbsp;    public boolean isInFullscreen() {
+<b class="fc"><i>796</i>&nbsp;        Application.checkEventThread();</b>
+<b class="fc"><i>797</i>&nbsp;        return this.inFullscreen;</b>
+<i>798</i>&nbsp;    }
+<i>799</i>&nbsp;
+<i>800</i>&nbsp;    public boolean toggleFullscreen(boolean animate, boolean keepRatio, boolean hideCursor) {
+<b class="nc"><i>801</i>&nbsp;        Application.checkEventThread();</b>
+<b class="nc"><i>802</i>&nbsp;        checkNotClosed();</b>
+<b class="nc"><i>803</i>&nbsp;        if (!this.inFullscreen) {</b>
+<b class="nc"><i>804</i>&nbsp;            enterFullscreen(animate, keepRatio, hideCursor);</b>
+<i>805</i>&nbsp;        } else {
+<b class="nc"><i>806</i>&nbsp;            exitFullscreen(animate);</b>
+<i>807</i>&nbsp;        }
+<i>808</i>&nbsp;
+<b class="nc"><i>809</i>&nbsp;        _scheduleRepaint(this.ptr);</b>
+<i>810</i>&nbsp;
+<b class="nc"><i>811</i>&nbsp;        return this.inFullscreen;</b>
+<i>812</i>&nbsp;    }
+<i>813</i>&nbsp;
+<i>814</i>&nbsp;    public void updateLocation() {
+<b class="nc"><i>815</i>&nbsp;        notifyView(ViewEvent.MOVE);</b>
+<b class="nc"><i>816</i>&nbsp;    }</b>
+<i>817</i>&nbsp;
+<i>818</i>&nbsp;
+<i>819</i>&nbsp;    //-------- DELEGATE NOTIFICATIONS --------//
+<i>820</i>&nbsp;
+<i>821</i>&nbsp;    protected void notifyView(int type) {
+<i>822</i>&nbsp;        //System.err.println(&quot;    notifyView: &quot;+ViewEvent.getTypeString(type)+&quot; on thread&quot;+Thread.currentThread());
+<b class="fc"><i>823</i>&nbsp;        if (type == ViewEvent.REPAINT) {</b>
+<b class="fc"><i>824</i>&nbsp;            if (isValid) {</b>
+<b class="fc"><i>825</i>&nbsp;                handleViewEvent(System.nanoTime(), type);</b>
+<i>826</i>&nbsp;            }
+<i>827</i>&nbsp;        }
+<i>828</i>&nbsp;        else
+<i>829</i>&nbsp;        {
+<b class="fc"><i>830</i>&nbsp;            boolean synthesizeMOVE = false;</b>
+<i>831</i>&nbsp;
+<b class="fc"><i>832</i>&nbsp;            switch (type) {</b>
+<i>833</i>&nbsp;                case ViewEvent.REMOVE:
+<b class="fc"><i>834</i>&nbsp;                    isValid = false;</b>
+<b class="fc"><i>835</i>&nbsp;                    synthesizeMOVE = true;</b>
+<b class="fc"><i>836</i>&nbsp;                    break;</b>
+<i>837</i>&nbsp;                case ViewEvent.ADD:
+<b class="fc"><i>838</i>&nbsp;                    isValid = true;</b>
+<b class="fc"><i>839</i>&nbsp;                    synthesizeMOVE = true;</b>
+<b class="fc"><i>840</i>&nbsp;                    break;</b>
+<i>841</i>&nbsp;                case ViewEvent.FULLSCREEN_ENTER:
+<b class="nc"><i>842</i>&nbsp;                    this.inFullscreen = true;</b>
+<b class="nc"><i>843</i>&nbsp;                    synthesizeMOVE = true;</b>
+<b class="nc"><i>844</i>&nbsp;                    if (getWindow() != null) {</b>
+<b class="nc"><i>845</i>&nbsp;                        getWindow().notifyFullscreen(true);</b>
+<i>846</i>&nbsp;                    }
+<i>847</i>&nbsp;                    break;
+<i>848</i>&nbsp;                case ViewEvent.FULLSCREEN_EXIT:
+<b class="nc"><i>849</i>&nbsp;                    this.inFullscreen = false;</b>
+<b class="nc"><i>850</i>&nbsp;                    synthesizeMOVE = true;</b>
+<b class="nc"><i>851</i>&nbsp;                    if (getWindow() != null) {</b>
+<b class="nc"><i>852</i>&nbsp;                        getWindow().notifyFullscreen(false);</b>
+<i>853</i>&nbsp;                    }
+<i>854</i>&nbsp;                    break;
+<i>855</i>&nbsp;                case ViewEvent.MOVE:
+<i>856</i>&nbsp;                case ViewEvent.RESIZE:
+<b class="fc"><i>857</i>&nbsp;                    break;</b>
+<i>858</i>&nbsp;                default:
+<b class="nc"><i>859</i>&nbsp;                    System.err.println(&quot;Unknown view event type: &quot; + type);</b>
+<b class="nc"><i>860</i>&nbsp;                    return;</b>
+<i>861</i>&nbsp;            }
+<i>862</i>&nbsp;
+<b class="fc"><i>863</i>&nbsp;            handleViewEvent(System.nanoTime(), type);</b>
+<i>864</i>&nbsp;
+<b class="fc"><i>865</i>&nbsp;            if (synthesizeMOVE) {</b>
+<i>866</i>&nbsp;                // Generate MOVE event to update current insets. Native code may
+<i>867</i>&nbsp;                // send additional MOVE events when it detects insets change.
+<b class="fc"><i>868</i>&nbsp;                handleViewEvent(System.nanoTime(), ViewEvent.MOVE);</b>
+<i>869</i>&nbsp;            }
+<i>870</i>&nbsp;        }
+<b class="fc"><i>871</i>&nbsp;    }</b>
+<i>872</i>&nbsp;
+<i>873</i>&nbsp;    protected void notifyResize(int width, int height) {
+<b class="fc"><i>874</i>&nbsp;        if (this.width == width &amp;&amp; this.height == height) {</b>
+<b class="fc"><i>875</i>&nbsp;            return;</b>
+<i>876</i>&nbsp;        }
+<i>877</i>&nbsp;
+<b class="fc"><i>878</i>&nbsp;        this.width = width;</b>
+<b class="fc"><i>879</i>&nbsp;        this.height = height;</b>
+<b class="fc"><i>880</i>&nbsp;        handleViewEvent(System.nanoTime(), ViewEvent.RESIZE);</b>
+<b class="fc"><i>881</i>&nbsp;    }</b>
+<i>882</i>&nbsp;
+<i>883</i>&nbsp;    /*
+<i>884</i>&nbsp;     * x, y, width, heigth define the &quot;dirty&quot; rect
+<i>885</i>&nbsp;     */
+<i>886</i>&nbsp;    protected void notifyRepaint(int x, int y, int width, int height) {
+<b class="fc"><i>887</i>&nbsp;        notifyView(ViewEvent.REPAINT);</b>
+<b class="fc"><i>888</i>&nbsp;    }</b>
+<i>889</i>&nbsp;
+<i>890</i>&nbsp;
+<i>891</i>&nbsp;    // ------------ MENU EVENT HANDLING -----------------
+<i>892</i>&nbsp;//    protected void notifyMenu(int type, int button, int x, int y, int xAbs, int yAbs, int keyCode, char[] keyChars, int modifiers) {
+<i>893</i>&nbsp;        protected void notifyMenu(int x, int y, int xAbs, int yAbs, boolean isKeyboardTrigger) {
+<b class="nc"><i>894</i>&nbsp;        handleMenuEvent(x, y, xAbs, yAbs, isKeyboardTrigger);</b>
+<b class="nc"><i>895</i>&nbsp;    }</b>
+<i>896</i>&nbsp;
+<i>897</i>&nbsp;    // ------------ MOUSE EVENTS HANDLING -----------------
+<i>898</i>&nbsp;
+<i>899</i>&nbsp;    // Synchronized on the Main thread of the underlying native system
+<b class="fc"><i>900</i>&nbsp;    private static WeakReference&lt;View&gt; lastClickedView = null;</b>
+<i>901</i>&nbsp;    private static int lastClickedButton;
+<i>902</i>&nbsp;    private static long lastClickedTime;
+<i>903</i>&nbsp;    private static int lastClickedX, lastClickedY;
+<i>904</i>&nbsp;    private static int clickCount;
+<b class="fc"><i>905</i>&nbsp;    private static boolean dragProcessed = false;</b>
+<i>906</i>&nbsp;
+<i>907</i>&nbsp;    protected void notifyMouse(int type, int button, int x, int y, int xAbs,
+<i>908</i>&nbsp;                               int yAbs, int modifiers, boolean isPopupTrigger,
+<i>909</i>&nbsp;                               boolean isSynthesized) {
+<i>910</i>&nbsp;        // gznote: optimize - only call for undecorated Windows!
+<b class="fc"><i>911</i>&nbsp;        if (this.window != null) {</b>
+<i>912</i>&nbsp;            // handled by window (programmatical move/resize)
+<b class="fc"><i>913</i>&nbsp;            if (this.window.handleMouseEvent(type, button, x, y, xAbs, yAbs)) {</b>
+<i>914</i>&nbsp;                // The evnet has been processed by Glass
+<b class="nc"><i>915</i>&nbsp;                return;</b>
+<i>916</i>&nbsp;            }
+<i>917</i>&nbsp;        }
+<i>918</i>&nbsp;
+<b class="fc"><i>919</i>&nbsp;        long now = System.nanoTime();</b>
+<b class="fc"><i>920</i>&nbsp;        if (type == MouseEvent.DOWN) {</b>
+<b class="fc"><i>921</i>&nbsp;            View lastClickedView = View.lastClickedView == null ? null : View.lastClickedView.get();</b>
+<i>922</i>&nbsp;
+<b class="fc"><i>923</i>&nbsp;            if (lastClickedView == this &amp;&amp;</b>
+<i>924</i>&nbsp;                    lastClickedButton == button &amp;&amp;
+<b class="fc"><i>925</i>&nbsp;                    (now - lastClickedTime) &lt;= 1000000L*getMultiClickTime() &amp;&amp;</b>
+<b class="nc"><i>926</i>&nbsp;                    Math.abs(x - lastClickedX) &lt;= getMultiClickMaxX() &amp;&amp;</b>
+<b class="nc"><i>927</i>&nbsp;                    Math.abs(y - lastClickedY) &lt;= getMultiClickMaxY())</b>
+<i>928</i>&nbsp;            {
+<b class="nc"><i>929</i>&nbsp;                clickCount++;</b>
+<i>930</i>&nbsp;            } else {
+<b class="fc"><i>931</i>&nbsp;                clickCount = 1;</b>
+<i>932</i>&nbsp;
+<b class="fc"><i>933</i>&nbsp;                View.lastClickedView = new WeakReference&lt;View&gt;(this);</b>
+<b class="fc"><i>934</i>&nbsp;                lastClickedButton = button;</b>
+<b class="fc"><i>935</i>&nbsp;                lastClickedX = x;</b>
+<b class="fc"><i>936</i>&nbsp;                lastClickedY = y;</b>
+<i>937</i>&nbsp;            }
+<i>938</i>&nbsp;
+<b class="fc"><i>939</i>&nbsp;            lastClickedTime = now;</b>
+<i>940</i>&nbsp;        }
+<i>941</i>&nbsp;
+<b class="fc"><i>942</i>&nbsp;        handleMouseEvent(now, type, button, x, y, xAbs, yAbs,</b>
+<i>943</i>&nbsp;                         modifiers, isPopupTrigger, isSynthesized);
+<i>944</i>&nbsp;
+<b class="fc"><i>945</i>&nbsp;        if (type == MouseEvent.DRAG) {</b>
+<i>946</i>&nbsp;            // Send the handleDragStart() only once per a drag gesture
+<b class="fc"><i>947</i>&nbsp;            if (!dragProcessed) {</b>
+<b class="fc"><i>948</i>&nbsp;                notifyDragStart(button, x, y, xAbs, yAbs);</b>
+<b class="fc"><i>949</i>&nbsp;                dragProcessed = true;</b>
+<i>950</i>&nbsp;            }
+<i>951</i>&nbsp;        } else {
+<b class="fc"><i>952</i>&nbsp;            dragProcessed = false;</b>
+<i>953</i>&nbsp;        }
+<b class="fc"><i>954</i>&nbsp;    }</b>
+<i>955</i>&nbsp;
+<i>956</i>&nbsp;    // ------------- END OF MOUSE EVENTS -----------------
+<i>957</i>&nbsp;
+<i>958</i>&nbsp;    protected void notifyScroll(int x, int y, int xAbs, int yAbs,
+<i>959</i>&nbsp;            double deltaX, double deltaY, int modifiers, int lines, int chars,
+<i>960</i>&nbsp;            int defaultLines, int defaultChars,
+<i>961</i>&nbsp;            double xMultiplier, double yMultiplier)
+<i>962</i>&nbsp;    {
+<b class="nc"><i>963</i>&nbsp;        if (this.eventHandler != null) {</b>
+<b class="nc"><i>964</i>&nbsp;            this.eventHandler.handleScrollEvent(this, System.nanoTime(),</b>
+<i>965</i>&nbsp;                    x, y, xAbs, yAbs, deltaX, deltaY, modifiers, lines, chars,
+<i>966</i>&nbsp;                    defaultLines, defaultChars, xMultiplier, yMultiplier);
+<i>967</i>&nbsp;        }
+<b class="nc"><i>968</i>&nbsp;    }</b>
+<i>969</i>&nbsp;
+<i>970</i>&nbsp;    protected void notifyKey(int type, int keyCode, char[] keyChars, int modifiers) {
+<b class="fc"><i>971</i>&nbsp;        handleKeyEvent(System.nanoTime(), type, keyCode, keyChars, modifiers);</b>
+<b class="fc"><i>972</i>&nbsp;    }</b>
+<i>973</i>&nbsp;
+<i>974</i>&nbsp;    protected void notifyInputMethod(String text, int[] clauseBoundary,
+<i>975</i>&nbsp;        int[] attrBoundary, byte[] attrValue,
+<i>976</i>&nbsp;        int committedTextLength, int caretPos, int visiblePos) {
+<b class="nc"><i>977</i>&nbsp;        handleInputMethodEvent(System.nanoTime(), text, clauseBoundary,</b>
+<i>978</i>&nbsp;                attrBoundary, attrValue, committedTextLength, caretPos);
+<b class="nc"><i>979</i>&nbsp;    }</b>
+<i>980</i>&nbsp;
+<i>981</i>&nbsp;    protected double[] notifyInputMethodCandidatePosRequest(int offset) {
+<b class="nc"><i>982</i>&nbsp;        double[] ret = getInputMethodCandidatePos(offset);</b>
+<b class="nc"><i>983</i>&nbsp;        if (ret == null) {</b>
+<b class="nc"><i>984</i>&nbsp;            ret = new double[2];</b>
+<b class="nc"><i>985</i>&nbsp;            ret[0] = 0.0;</b>
+<b class="nc"><i>986</i>&nbsp;            ret[1] = 0.0;</b>
+<i>987</i>&nbsp;        }
+<b class="nc"><i>988</i>&nbsp;        return ret;</b>
+<i>989</i>&nbsp;    }
+<i>990</i>&nbsp;
+<i>991</i>&nbsp;    private ClipboardAssistance dropSourceAssistant;
+<i>992</i>&nbsp;    protected void notifyDragStart(int button, int x, int y, int xAbs, int yAbs) {
+<b class="fc"><i>993</i>&nbsp;        dropSourceAssistant = new ClipboardAssistance(Clipboard.DND) {</b>
+<i>994</i>&nbsp;            @Override public void actionPerformed(int performedAction) {
+<i>995</i>&nbsp;                // on Windows called from DnD modal loop
+<i>996</i>&nbsp;                // on Mac the View is the drag delegate and calls notifyDragEnd directly
+<b class="nc"><i>997</i>&nbsp;                notifyDragEnd(performedAction);</b>
+<b class="nc"><i>998</i>&nbsp;            }</b>
+<i>999</i>&nbsp;        };
+<i>1000</i>&nbsp;        //DnD loop is inside dropSourceAssistant.flush()
+<b class="fc"><i>1001</i>&nbsp;        handleDragStart(button, x, y, xAbs, yAbs, dropSourceAssistant);</b>
+<i>1002</i>&nbsp;        //utilize dropSourceAssistant if DnD was not started.
+<b class="fc"><i>1003</i>&nbsp;        if (dropSourceAssistant != null) {</b>
+<b class="fc"><i>1004</i>&nbsp;            dropSourceAssistant.close();</b>
+<b class="fc"><i>1005</i>&nbsp;            dropSourceAssistant = null;</b>
+<i>1006</i>&nbsp;        }
+<b class="fc"><i>1007</i>&nbsp;    }</b>
+<i>1008</i>&nbsp;
+<i>1009</i>&nbsp;    protected void notifyDragEnd(int performedAction) {
+<b class="nc"><i>1010</i>&nbsp;        handleDragEnd(performedAction);</b>
+<b class="nc"><i>1011</i>&nbsp;        if (dropSourceAssistant != null) {</b>
+<b class="nc"><i>1012</i>&nbsp;            dropSourceAssistant.close();</b>
+<b class="nc"><i>1013</i>&nbsp;            dropSourceAssistant = null;</b>
+<i>1014</i>&nbsp;        }
+<b class="nc"><i>1015</i>&nbsp;    }</b>
+<i>1016</i>&nbsp;
+<i>1017</i>&nbsp;    ClipboardAssistance  dropTargetAssistant;
+<i>1018</i>&nbsp;    // callback for native code
+<i>1019</i>&nbsp;    protected int notifyDragEnter(int x, int y, int xAbs, int yAbs, int recommendedDropAction) {
+<b class="nc"><i>1020</i>&nbsp;        dropTargetAssistant = new ClipboardAssistance(Clipboard.DND) {</b>
+<i>1021</i>&nbsp;            @Override public void flush() {
+<b class="nc"><i>1022</i>&nbsp;                throw new UnsupportedOperationException(&quot;Flush is forbidden from target!&quot;);</b>
+<i>1023</i>&nbsp;            }
+<i>1024</i>&nbsp;        };
+<b class="nc"><i>1025</i>&nbsp;        return handleDragEnter(x, y, xAbs, yAbs, recommendedDropAction, dropTargetAssistant);</b>
+<i>1026</i>&nbsp;    }
+<i>1027</i>&nbsp;
+<i>1028</i>&nbsp;    // callback for native code
+<i>1029</i>&nbsp;    protected int notifyDragOver(int x, int y, int xAbs, int yAbs, int recommendedDropAction) {
+<b class="nc"><i>1030</i>&nbsp;        return handleDragOver(x, y, xAbs, yAbs, recommendedDropAction, dropTargetAssistant);</b>
+<i>1031</i>&nbsp;    }
+<i>1032</i>&nbsp;
+<i>1033</i>&nbsp;    // callback for native code
+<i>1034</i>&nbsp;    protected void notifyDragLeave() {
+<b class="nc"><i>1035</i>&nbsp;        handleDragLeave(dropTargetAssistant);</b>
+<b class="nc"><i>1036</i>&nbsp;        dropTargetAssistant.close();</b>
+<b class="nc"><i>1037</i>&nbsp;    }</b>
+<i>1038</i>&nbsp;
+<i>1039</i>&nbsp;    // callback for native code
+<i>1040</i>&nbsp;    // gznote: should be renamed to notifyDragDrop/notifyDragPerformed to be consistent
+<i>1041</i>&nbsp;    protected int notifyDragDrop(int x, int y, int xAbs, int yAbs, int recommendedDropAction) {
+<b class="nc"><i>1042</i>&nbsp;        int performedAction = handleDragDrop(x, y, xAbs, yAbs, recommendedDropAction, dropTargetAssistant);</b>
+<b class="nc"><i>1043</i>&nbsp;        dropTargetAssistant.close();</b>
+<b class="nc"><i>1044</i>&nbsp;        return performedAction;</b>
+<i>1045</i>&nbsp;    }
+<i>1046</i>&nbsp;
+<i>1047</i>&nbsp;    public void notifyBeginTouchEvent(int modifiers, boolean isDirect,
+<i>1048</i>&nbsp;                                      int touchEventCount) {
+<b class="nc"><i>1049</i>&nbsp;        handleBeginTouchEvent(this, System.nanoTime(), modifiers, isDirect,</b>
+<i>1050</i>&nbsp;                              touchEventCount);
+<b class="nc"><i>1051</i>&nbsp;    }</b>
+<i>1052</i>&nbsp;
+<i>1053</i>&nbsp;    public void notifyNextTouchEvent(int type, long touchId, int x, int y,
+<i>1054</i>&nbsp;                                     int xAbs, int yAbs) {
+<b class="nc"><i>1055</i>&nbsp;        handleNextTouchEvent(this, System.nanoTime(), type, touchId, x, y, xAbs,</b>
+<i>1056</i>&nbsp;                             yAbs);
+<b class="nc"><i>1057</i>&nbsp;    }</b>
+<i>1058</i>&nbsp;
+<i>1059</i>&nbsp;    public void notifyEndTouchEvent() {
+<b class="nc"><i>1060</i>&nbsp;        handleEndTouchEvent(this, System.nanoTime());</b>
+<b class="nc"><i>1061</i>&nbsp;    }</b>
+<i>1062</i>&nbsp;
+<i>1063</i>&nbsp;    public void notifyScrollGestureEvent(int type, int modifiers,
+<i>1064</i>&nbsp;                                         boolean isDirect, boolean isInertia,
+<i>1065</i>&nbsp;                                         int touchCount, int x, int y, int xAbs,
+<i>1066</i>&nbsp;                                         int yAbs, double dx, double dy,
+<i>1067</i>&nbsp;                                         double totaldx, double totaldy,
+<i>1068</i>&nbsp;                                         double multiplierX, double multiplierY) {
+<b class="nc"><i>1069</i>&nbsp;        handleScrollGestureEvent(this, System.nanoTime(), type, modifiers,</b>
+<i>1070</i>&nbsp;                                 isDirect, isInertia, touchCount, x, y, xAbs,
+<i>1071</i>&nbsp;                                 yAbs, dx, dy, totaldx, totaldy, multiplierX, multiplierY);
+<b class="nc"><i>1072</i>&nbsp;    }</b>
+<i>1073</i>&nbsp;
+<i>1074</i>&nbsp;    public void notifyZoomGestureEvent(int type, int modifiers, boolean isDirect,
+<i>1075</i>&nbsp;                                       boolean isInertia, int originx,
+<i>1076</i>&nbsp;                                       int originy, int originxAbs,
+<i>1077</i>&nbsp;                                       int originyAbs, double scale,
+<i>1078</i>&nbsp;                                       double expansion, double totalscale,
+<i>1079</i>&nbsp;                                       double totalexpansion) {
+<b class="nc"><i>1080</i>&nbsp;        handleZoomGestureEvent(this, System.nanoTime(), type, modifiers,</b>
+<i>1081</i>&nbsp;                               isDirect, isInertia, originx, originy, originxAbs,
+<i>1082</i>&nbsp;                               originyAbs, scale, expansion, totalscale,
+<i>1083</i>&nbsp;                               totalexpansion);
+<b class="nc"><i>1084</i>&nbsp;    }</b>
+<i>1085</i>&nbsp;
+<i>1086</i>&nbsp;    public void notifyRotateGestureEvent(int type, int modifiers,
+<i>1087</i>&nbsp;                                         boolean isDirect, boolean isInertia,
+<i>1088</i>&nbsp;                                         int originx, int originy,
+<i>1089</i>&nbsp;                                         int originxAbs, int originyAbs,
+<i>1090</i>&nbsp;                                         double dangle, double totalangle) {
+<b class="nc"><i>1091</i>&nbsp;        handleRotateGestureEvent(this, System.nanoTime(), type, modifiers,</b>
+<i>1092</i>&nbsp;                                 isDirect, isInertia, originx, originy,
+<i>1093</i>&nbsp;                                 originxAbs, originyAbs, dangle, totalangle);
+<b class="nc"><i>1094</i>&nbsp;    }</b>
+<i>1095</i>&nbsp;
+<i>1096</i>&nbsp;    public void notifySwipeGestureEvent(int type, int modifiers,
+<i>1097</i>&nbsp;                                        boolean isDirect, boolean isInertia,
+<i>1098</i>&nbsp;                                        int touchCount, int dir, int originx,
+<i>1099</i>&nbsp;                                        int originy, int originxAbs,
+<i>1100</i>&nbsp;                                        int originyAbs) {
+<b class="nc"><i>1101</i>&nbsp;        handleSwipeGestureEvent(this, System.nanoTime(), type, modifiers,</b>
+<i>1102</i>&nbsp;                                isDirect, isInertia, touchCount, dir, originx,
+<i>1103</i>&nbsp;                                originy, originxAbs, originyAbs);
+<b class="nc"><i>1104</i>&nbsp;    }</b>
+<i>1105</i>&nbsp;
+<i>1106</i>&nbsp;    /**
+<i>1107</i>&nbsp;     * Returns the accessible object for the view.
+<i>1108</i>&nbsp;     * This method is called by JNI code when the
+<i>1109</i>&nbsp;     * platform requested the accessible peer for the view.
+<i>1110</i>&nbsp;     * On Windows it happens on WM_GETOBJECT.
+<i>1111</i>&nbsp;     * On Mac it happens on NSView#accessibilityAttributeNames.
+<i>1112</i>&nbsp;     */
+<i>1113</i>&nbsp;    long getAccessible() {
+<b class="nc"><i>1114</i>&nbsp;        Application.checkEventThread();</b>
+<b class="nc"><i>1115</i>&nbsp;        checkNotClosed();</b>
+<b class="nc"><i>1116</i>&nbsp;        if (accessible) {</b>
+<b class="nc"><i>1117</i>&nbsp;            Accessible acc = eventHandler.getSceneAccessible();</b>
+<b class="nc"><i>1118</i>&nbsp;            if (acc != null) {</b>
+<b class="nc"><i>1119</i>&nbsp;                acc.setView(this);</b>
+<b class="nc"><i>1120</i>&nbsp;                return acc.getNativeAccessible();</b>
+<i>1121</i>&nbsp;            }
+<i>1122</i>&nbsp;        }
+<b class="nc"><i>1123</i>&nbsp;        return 0L;</b>
+<i>1124</i>&nbsp;    }
+<i>1125</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2017-12-04 21:49</div>
+</div>
+</body>
+</html>

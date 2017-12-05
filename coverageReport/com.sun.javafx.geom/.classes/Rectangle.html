@@ -1,0 +1,771 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: Rectangle</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.javafx.geom</a> ]
+</div>
+
+<h1>Coverage Summary for Class: Rectangle (com.sun.javafx.geom)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">Rectangle</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    47.8%
+  </span>
+  <span class="absValue">
+    (11/ 23)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    36%
+  </span>
+  <span class="absValue">
+    (73/ 203)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright (c) 1995, 2013, Oracle and/or its affiliates. All rights reserved.
+<i>3</i>&nbsp; * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+<i>4</i>&nbsp; *
+<i>5</i>&nbsp; *
+<i>6</i>&nbsp; *
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; *
+<i>11</i>&nbsp; *
+<i>12</i>&nbsp; *
+<i>13</i>&nbsp; *
+<i>14</i>&nbsp; *
+<i>15</i>&nbsp; *
+<i>16</i>&nbsp; *
+<i>17</i>&nbsp; *
+<i>18</i>&nbsp; *
+<i>19</i>&nbsp; *
+<i>20</i>&nbsp; *
+<i>21</i>&nbsp; *
+<i>22</i>&nbsp; *
+<i>23</i>&nbsp; *
+<i>24</i>&nbsp; */
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;package com.sun.javafx.geom;
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;/**
+<i>29</i>&nbsp; * A &lt;code&gt;Rectangle&lt;/code&gt; specifies an area in a coordinate space that is
+<i>30</i>&nbsp; * enclosed by the &lt;code&gt;Rectangle&lt;/code&gt; object&#39;s upper-left point
+<i>31</i>&nbsp; * {@code (x,y)}
+<i>32</i>&nbsp; * in the coordinate space, its width, and its height.
+<i>33</i>&nbsp; * &lt;p&gt;
+<i>34</i>&nbsp; * A &lt;code&gt;Rectangle&lt;/code&gt; object&#39;s &lt;code&gt;width&lt;/code&gt; and
+<i>35</i>&nbsp; * &lt;code&gt;height&lt;/code&gt; are &lt;code&gt;public&lt;/code&gt; fields. The constructors
+<i>36</i>&nbsp; * that create a &lt;code&gt;Rectangle&lt;/code&gt;, and the methods that can modify
+<i>37</i>&nbsp; * one, do not prevent setting a negative value for width or height.
+<i>38</i>&nbsp; * &lt;p&gt;
+<i>39</i>&nbsp; * &lt;a name=&quot;Empty&quot;&gt;
+<i>40</i>&nbsp; * A {@code Rectangle} whose width or height is exactly zero has location
+<i>41</i>&nbsp; * along those axes with zero dimension, but is otherwise considered empty.
+<i>42</i>&nbsp; * The {@link #isEmpty} method will return true for such a {@code Rectangle}.
+<i>43</i>&nbsp; * Methods which test if an empty {@code Rectangle} contains or intersects
+<i>44</i>&nbsp; * a point or rectangle will always return false if either dimension is zero.
+<i>45</i>&nbsp; * Methods which combine such a {@code Rectangle} with a point or rectangle
+<i>46</i>&nbsp; * will include the location of the {@code Rectangle} on that axis in the
+<i>47</i>&nbsp; * result as if the {@link #add(Point)} method were being called.
+<i>48</i>&nbsp; * &lt;/a&gt;
+<i>49</i>&nbsp; * &lt;p&gt;
+<i>50</i>&nbsp; * &lt;a name=&quot;NonExistant&quot;&gt;
+<i>51</i>&nbsp; * A {@code Rectangle} whose width or height is negative has neither
+<i>52</i>&nbsp; * location nor dimension along those axes with negative dimensions.
+<i>53</i>&nbsp; * Such a {@code Rectangle} is treated as non-existant along those axes.
+<i>54</i>&nbsp; * Such a {@code Rectangle} is also empty with respect to containment
+<i>55</i>&nbsp; * calculations and methods which test if it contains or intersects a
+<i>56</i>&nbsp; * point or rectangle will always return false.
+<i>57</i>&nbsp; * Methods which combine such a {@code Rectangle} with a point or rectangle
+<i>58</i>&nbsp; * will ignore the {@code Rectangle} entirely in generating the result.
+<i>59</i>&nbsp; * If two {@code Rectangle} objects are combined and each has a negative
+<i>60</i>&nbsp; * dimension, the result will have at least one negative dimension.
+<i>61</i>&nbsp; * &lt;/a&gt;
+<i>62</i>&nbsp; * &lt;p&gt;
+<i>63</i>&nbsp; * Methods which affect only the location of a {@code Rectangle} will
+<i>64</i>&nbsp; * operate on its location regardless of whether or not it has a negative
+<i>65</i>&nbsp; * or zero dimension along either axis.
+<i>66</i>&nbsp; * &lt;p&gt;
+<i>67</i>&nbsp; * Note that a {@code Rectangle} constructed with the default no-argument
+<i>68</i>&nbsp; * constructor will have dimensions of {@code 0x0} and therefore be empty.
+<i>69</i>&nbsp; * That {@code Rectangle} will still have a location of {@code (0,0)} and
+<i>70</i>&nbsp; * will contribute that location to the union and add operations.
+<i>71</i>&nbsp; * Code attempting to accumulate the bounds of a set of points should
+<i>72</i>&nbsp; * therefore initially construct the {@code Rectangle} with a specifically
+<i>73</i>&nbsp; * negative width and height or it should use the first point in the set
+<i>74</i>&nbsp; * to construct the {@code Rectangle}.
+<i>75</i>&nbsp; * For example:
+<i>76</i>&nbsp; * &lt;pre&gt;
+<i>77</i>&nbsp; *     Rectangle bounds = new Rectangle(0, 0, -1, -1);
+<i>78</i>&nbsp; *     for (int i = 0; i &lt; points.length; i++) {
+<i>79</i>&nbsp; *         bounds.add(points[i]);
+<i>80</i>&nbsp; *     }
+<i>81</i>&nbsp; * &lt;/pre&gt;
+<i>82</i>&nbsp; * or if we know that the points array contains at least one point:
+<i>83</i>&nbsp; * &lt;pre&gt;
+<i>84</i>&nbsp; *     Rectangle bounds = new Rectangle(points[0]);
+<i>85</i>&nbsp; *     for (int i = 1; i &lt; points.length; i++) {
+<i>86</i>&nbsp; *         bounds.add(points[i]);
+<i>87</i>&nbsp; *     }
+<i>88</i>&nbsp; * &lt;/pre&gt;
+<i>89</i>&nbsp; * &lt;p&gt;
+<i>90</i>&nbsp; * This class uses 32-bit integers to store its location and dimensions.
+<i>91</i>&nbsp; * Frequently operations may produce a result that exceeds the range of
+<i>92</i>&nbsp; * a 32-bit integer.
+<i>93</i>&nbsp; * The methods will calculate their results in a way that avoids any
+<i>94</i>&nbsp; * 32-bit overflow for intermediate results and then choose the best
+<i>95</i>&nbsp; * representation to store the final results back into the 32-bit fields
+<i>96</i>&nbsp; * which hold the location and dimensions.
+<i>97</i>&nbsp; * The location of the result will be stored into the {@link #x} and
+<i>98</i>&nbsp; * {@link #y} fields by clipping the true result to the nearest 32-bit value.
+<i>99</i>&nbsp; * The values stored into the {@link #width} and {@link #height} dimension
+<i>100</i>&nbsp; * fields will be chosen as the 32-bit values that encompass the largest
+<i>101</i>&nbsp; * part of the true result as possible.
+<i>102</i>&nbsp; * Generally this means that the dimension will be clipped independently
+<i>103</i>&nbsp; * to the range of 32-bit integers except that if the location had to be
+<i>104</i>&nbsp; * moved to store it into its pair of 32-bit fields then the dimensions
+<i>105</i>&nbsp; * will be adjusted relative to the &quot;best representation&quot; of the location.
+<i>106</i>&nbsp; * If the true result had a negative dimension and was therefore
+<i>107</i>&nbsp; * non-existant along one or both axes, the stored dimensions will be
+<i>108</i>&nbsp; * negative numbers in those axes.
+<i>109</i>&nbsp; * If the true result had a location that could be represented within
+<i>110</i>&nbsp; * the range of 32-bit integers, but zero dimension along one or both
+<i>111</i>&nbsp; * axes, then the stored dimensions will be zero in those axes.
+<i>112</i>&nbsp; */
+<i>113</i>&nbsp;public class Rectangle {
+<i>114</i>&nbsp;
+<i>115</i>&nbsp;    /**
+<i>116</i>&nbsp;     * The X coordinate of the upper-left corner of the &lt;code&gt;Rectangle&lt;/code&gt;.
+<i>117</i>&nbsp;     */
+<i>118</i>&nbsp;    public int x;
+<i>119</i>&nbsp;
+<i>120</i>&nbsp;    /**
+<i>121</i>&nbsp;     * The Y coordinate of the upper-left corner of the &lt;code&gt;Rectangle&lt;/code&gt;.
+<i>122</i>&nbsp;     */
+<i>123</i>&nbsp;    public int y;
+<i>124</i>&nbsp;
+<i>125</i>&nbsp;    /**
+<i>126</i>&nbsp;     * The width of the &lt;code&gt;Rectangle&lt;/code&gt;.
+<i>127</i>&nbsp;     */
+<i>128</i>&nbsp;    public int width;
+<i>129</i>&nbsp;
+<i>130</i>&nbsp;    /**
+<i>131</i>&nbsp;     * The height of the &lt;code&gt;Rectangle&lt;/code&gt;.
+<i>132</i>&nbsp;     */
+<i>133</i>&nbsp;    public int height;
+<i>134</i>&nbsp;
+<i>135</i>&nbsp;    /**
+<i>136</i>&nbsp;     * Constructs a new &lt;code&gt;Rectangle&lt;/code&gt; whose upper-left corner
+<i>137</i>&nbsp;     * is at (0,&amp;nbsp;0) in the coordinate space, and whose width and
+<i>138</i>&nbsp;     * height are both zero.
+<i>139</i>&nbsp;     */
+<i>140</i>&nbsp;    public Rectangle() {
+<b class="fc"><i>141</i>&nbsp;        this(0, 0, 0, 0);</b>
+<b class="fc"><i>142</i>&nbsp;    }</b>
+<i>143</i>&nbsp;
+<i>144</i>&nbsp;    /**
+<i>145</i>&nbsp;     * Constructs a new &lt;code&gt;Rectangle&lt;/code&gt;, initialized to match
+<i>146</i>&nbsp;     * the values of the specified &lt;code&gt;Rectangle&lt;/code&gt;.
+<i>147</i>&nbsp;     * @param r  the &lt;code&gt;Rectangle&lt;/code&gt; from which to copy initial values
+<i>148</i>&nbsp;     *           to a newly constructed &lt;code&gt;Rectangle&lt;/code&gt;
+<i>149</i>&nbsp;     */
+<b class="fc"><i>150</i>&nbsp;    public Rectangle(BaseBounds b) {</b>
+<b class="fc"><i>151</i>&nbsp;        setBounds(b);</b>
+<b class="fc"><i>152</i>&nbsp;    }</b>
+<i>153</i>&nbsp;
+<i>154</i>&nbsp;    /**
+<i>155</i>&nbsp;     * Constructs a new &lt;code&gt;Rectangle&lt;/code&gt;, initialized to match
+<i>156</i>&nbsp;     * the values of the specified &lt;code&gt;BaseBounds&lt;/code&gt;. Since BaseBounds has
+<i>157</i>&nbsp;     * float values, the Rectangle will be created such that the bounding rectangle
+<i>158</i>&nbsp;     * of the specified BaseBounds would always lie within the bounding box
+<i>159</i>&nbsp;     * specified by this Rectangle.
+<i>160</i>&nbsp;     * @param r  the &lt;code&gt;BaseBounds&lt;/code&gt; from which to copy initial values
+<i>161</i>&nbsp;     *           to a newly constructed &lt;code&gt;Rectangle&lt;/code&gt;
+<i>162</i>&nbsp;     */
+<i>163</i>&nbsp;    public Rectangle(Rectangle r) {
+<b class="fc"><i>164</i>&nbsp;        this(r.x, r.y, r.width, r.height);</b>
+<b class="fc"><i>165</i>&nbsp;    }</b>
+<i>166</i>&nbsp;
+<i>167</i>&nbsp;    /**
+<i>168</i>&nbsp;     * Constructs a new &lt;code&gt;Rectangle&lt;/code&gt; whose upper-left corner is
+<i>169</i>&nbsp;     * specified as
+<i>170</i>&nbsp;     * {@code (x,y)} and whose width and height
+<i>171</i>&nbsp;     * are specified by the arguments of the same name.
+<i>172</i>&nbsp;     * @param     x the specified X coordinate
+<i>173</i>&nbsp;     * @param     y the specified Y coordinate
+<i>174</i>&nbsp;     * @param     width    the width of the &lt;code&gt;Rectangle&lt;/code&gt;
+<i>175</i>&nbsp;     * @param     height   the height of the &lt;code&gt;Rectangle&lt;/code&gt;
+<i>176</i>&nbsp;     */
+<b class="fc"><i>177</i>&nbsp;    public Rectangle(int x, int y, int width, int height) {</b>
+<b class="fc"><i>178</i>&nbsp;        this.x = x;</b>
+<b class="fc"><i>179</i>&nbsp;        this.y = y;</b>
+<b class="fc"><i>180</i>&nbsp;        this.width = width;</b>
+<b class="fc"><i>181</i>&nbsp;        this.height = height;</b>
+<b class="fc"><i>182</i>&nbsp;    }</b>
+<i>183</i>&nbsp;
+<i>184</i>&nbsp;    /**
+<i>185</i>&nbsp;     * Constructs a new &lt;code&gt;Rectangle&lt;/code&gt; whose upper-left corner
+<i>186</i>&nbsp;     * is at (0,&amp;nbsp;0) in the coordinate space, and whose width and
+<i>187</i>&nbsp;     * height are specified by the arguments of the same name.
+<i>188</i>&nbsp;     * @param width the width of the &lt;code&gt;Rectangle&lt;/code&gt;
+<i>189</i>&nbsp;     * @param height the height of the &lt;code&gt;Rectangle&lt;/code&gt;
+<i>190</i>&nbsp;     */
+<i>191</i>&nbsp;    public Rectangle(int width, int height) {
+<b class="fc"><i>192</i>&nbsp;        this(0, 0, width, height);</b>
+<b class="fc"><i>193</i>&nbsp;    }</b>
+<i>194</i>&nbsp;
+<i>195</i>&nbsp;    /**
+<i>196</i>&nbsp;     * Sets the bounding &lt;code&gt;Rectangle&lt;/code&gt; of this &lt;code&gt;Rectangle&lt;/code&gt;
+<i>197</i>&nbsp;     * to match the specified &lt;code&gt;Rectangle&lt;/code&gt;.
+<i>198</i>&nbsp;     * &lt;p&gt;
+<i>199</i>&nbsp;     * This method is included for completeness, to parallel the
+<i>200</i>&nbsp;     * &lt;code&gt;setBounds&lt;/code&gt; method of &lt;code&gt;Component&lt;/code&gt;.
+<i>201</i>&nbsp;     * @param r the specified &lt;code&gt;Rectangle&lt;/code&gt;
+<i>202</i>&nbsp;     * @see       #getBounds
+<i>203</i>&nbsp;     * @see       java.awt.Component#setBounds(java.awt.Rectangle)
+<i>204</i>&nbsp;     */
+<i>205</i>&nbsp;    public void setBounds(Rectangle r) {
+<b class="nc"><i>206</i>&nbsp;        setBounds(r.x, r.y, r.width, r.height);</b>
+<b class="nc"><i>207</i>&nbsp;    }</b>
+<i>208</i>&nbsp;
+<i>209</i>&nbsp;    /**
+<i>210</i>&nbsp;     * Sets the bounding &lt;code&gt;Rectangle&lt;/code&gt; of this
+<i>211</i>&nbsp;     * &lt;code&gt;Rectangle&lt;/code&gt; to the specified
+<i>212</i>&nbsp;     * &lt;code&gt;x&lt;/code&gt;, &lt;code&gt;y&lt;/code&gt;, &lt;code&gt;width&lt;/code&gt;,
+<i>213</i>&nbsp;     * and &lt;code&gt;height&lt;/code&gt;.
+<i>214</i>&nbsp;     * &lt;p&gt;
+<i>215</i>&nbsp;     * This method is included for completeness, to parallel the
+<i>216</i>&nbsp;     * &lt;code&gt;setBounds&lt;/code&gt; method of &lt;code&gt;Component&lt;/code&gt;.
+<i>217</i>&nbsp;     * @param x the new X coordinate for the upper-left
+<i>218</i>&nbsp;     *                    corner of this &lt;code&gt;Rectangle&lt;/code&gt;
+<i>219</i>&nbsp;     * @param y the new Y coordinate for the upper-left
+<i>220</i>&nbsp;     *                    corner of this &lt;code&gt;Rectangle&lt;/code&gt;
+<i>221</i>&nbsp;     * @param width the new width for this &lt;code&gt;Rectangle&lt;/code&gt;
+<i>222</i>&nbsp;     * @param height the new height for this &lt;code&gt;Rectangle&lt;/code&gt;
+<i>223</i>&nbsp;     * @see       #getBounds
+<i>224</i>&nbsp;     * @see       java.awt.Component#setBounds(int, int, int, int)
+<i>225</i>&nbsp;     */
+<i>226</i>&nbsp;    public void setBounds(int x, int y, int width, int height) {
+<b class="fc"><i>227</i>&nbsp;        reshape(x, y, width, height);</b>
+<b class="fc"><i>228</i>&nbsp;    }</b>
+<i>229</i>&nbsp;
+<i>230</i>&nbsp;    public void setBounds(BaseBounds b) {
+<b class="fc"><i>231</i>&nbsp;        x = (int) Math.floor(b.getMinX());</b>
+<b class="fc"><i>232</i>&nbsp;        y = (int) Math.floor(b.getMinY());</b>
+<b class="fc"><i>233</i>&nbsp;        int x2 = (int) Math.ceil(b.getMaxX());</b>
+<b class="fc"><i>234</i>&nbsp;        int y2 = (int) Math.ceil(b.getMaxY());</b>
+<b class="fc"><i>235</i>&nbsp;        width = x2 - x;</b>
+<b class="fc"><i>236</i>&nbsp;        height = y2 - y;</b>
+<b class="fc"><i>237</i>&nbsp;    }</b>
+<i>238</i>&nbsp;
+<i>239</i>&nbsp;    /**
+<i>240</i>&nbsp;     * Checks whether or not this &lt;code&gt;Rectangle&lt;/code&gt; contains the
+<i>241</i>&nbsp;     * point at the specified location {@code (cx,cy)}.
+<i>242</i>&nbsp;     *
+<i>243</i>&nbsp;     * @param cx the specified X coordinate
+<i>244</i>&nbsp;     * @param cy the specified Y coordinate
+<i>245</i>&nbsp;     * @return    &lt;code&gt;true&lt;/code&gt; if the point
+<i>246</i>&nbsp;     *            {@code (cx,cy)} is inside this
+<i>247</i>&nbsp;     *            &lt;code&gt;Rectangle&lt;/code&gt;;
+<i>248</i>&nbsp;     *            &lt;code&gt;false&lt;/code&gt; otherwise.
+<i>249</i>&nbsp;     */
+<i>250</i>&nbsp;    public boolean contains(int cx, int cy) {
+<b class="nc"><i>251</i>&nbsp;        int tw = this.width;</b>
+<b class="nc"><i>252</i>&nbsp;        int th = this.height;</b>
+<b class="nc"><i>253</i>&nbsp;        if ((tw | th) &lt; 0) {</b>
+<i>254</i>&nbsp;            // At least one of the dimensions is negative...
+<b class="nc"><i>255</i>&nbsp;            return false;</b>
+<i>256</i>&nbsp;        }
+<i>257</i>&nbsp;        // Note: if either dimension is zero, tests below must return false...
+<b class="nc"><i>258</i>&nbsp;        int tx = this.x;</b>
+<b class="nc"><i>259</i>&nbsp;        int ty = this.y;</b>
+<b class="nc"><i>260</i>&nbsp;        if (cx &lt; tx || cy &lt; ty) {</b>
+<b class="nc"><i>261</i>&nbsp;            return false;</b>
+<i>262</i>&nbsp;        }
+<b class="nc"><i>263</i>&nbsp;        tw += tx;</b>
+<b class="nc"><i>264</i>&nbsp;        th += ty;</b>
+<i>265</i>&nbsp;        //    overflow || intersect
+<b class="nc"><i>266</i>&nbsp;        return ((tw &lt; tx || tw &gt; cx) &amp;&amp;</b>
+<i>267</i>&nbsp;                (th &lt; ty || th &gt; cy));
+<i>268</i>&nbsp;     }
+<i>269</i>&nbsp;
+<i>270</i>&nbsp;    /**
+<i>271</i>&nbsp;     * Checks whether or not this &lt;code&gt;Rectangle&lt;/code&gt; entirely contains
+<i>272</i>&nbsp;     * the specified &lt;code&gt;Rectangle&lt;/code&gt;.
+<i>273</i>&nbsp;     *
+<i>274</i>&nbsp;     * @param     r   the specified &lt;code&gt;Rectangle&lt;/code&gt;
+<i>275</i>&nbsp;     * @return    &lt;code&gt;true&lt;/code&gt; if the &lt;code&gt;Rectangle&lt;/code&gt;
+<i>276</i>&nbsp;     *            is contained entirely inside this &lt;code&gt;Rectangle&lt;/code&gt;;
+<i>277</i>&nbsp;     *            &lt;code&gt;false&lt;/code&gt; otherwise
+<i>278</i>&nbsp;     */
+<i>279</i>&nbsp;    public boolean contains(Rectangle r) {
+<b class="nc"><i>280</i>&nbsp;        return contains(r.x, r.y, r.width, r.height);</b>
+<i>281</i>&nbsp;    }
+<i>282</i>&nbsp;
+<i>283</i>&nbsp;    /**
+<i>284</i>&nbsp;     * Checks whether this &lt;code&gt;Rectangle&lt;/code&gt; entirely contains
+<i>285</i>&nbsp;     * the &lt;code&gt;Rectangle&lt;/code&gt;
+<i>286</i>&nbsp;     * at the specified location {@code (cx,cy)} with the
+<i>287</i>&nbsp;     * specified dimensions {@code (cw,ch)}.
+<i>288</i>&nbsp;     * @param     cx the specified X coordinate
+<i>289</i>&nbsp;     * @param     cy the specified Y coordinate
+<i>290</i>&nbsp;     * @param     cw   the width of the &lt;code&gt;Rectangle&lt;/code&gt;
+<i>291</i>&nbsp;     * @param     ch   the height of the &lt;code&gt;Rectangle&lt;/code&gt;
+<i>292</i>&nbsp;     * @return    &lt;code&gt;true&lt;/code&gt; if the &lt;code&gt;Rectangle&lt;/code&gt; specified by
+<i>293</i>&nbsp;     *            {@code (cx, cy, cw, ch)}
+<i>294</i>&nbsp;     *            is entirely enclosed inside this &lt;code&gt;Rectangle&lt;/code&gt;;
+<i>295</i>&nbsp;     *            &lt;code&gt;false&lt;/code&gt; otherwise.
+<i>296</i>&nbsp;     */
+<i>297</i>&nbsp;    public boolean contains(int cx, int cy, int cw, int ch) {
+<b class="nc"><i>298</i>&nbsp;        int tw = this.width;</b>
+<b class="nc"><i>299</i>&nbsp;        int th = this.height;</b>
+<b class="nc"><i>300</i>&nbsp;        if ((tw | th | cw | ch) &lt; 0) {</b>
+<i>301</i>&nbsp;            // At least one of the dimensions is negative...
+<b class="nc"><i>302</i>&nbsp;            return false;</b>
+<i>303</i>&nbsp;        }
+<i>304</i>&nbsp;        // Note: if any dimension is zero, tests below must return false...
+<b class="nc"><i>305</i>&nbsp;        int tx = this.x;</b>
+<b class="nc"><i>306</i>&nbsp;        int ty = this.y;</b>
+<b class="nc"><i>307</i>&nbsp;        if (cx &lt; tx || cy &lt; ty) {</b>
+<b class="nc"><i>308</i>&nbsp;            return false;</b>
+<i>309</i>&nbsp;        }
+<b class="nc"><i>310</i>&nbsp;        tw += tx;</b>
+<b class="nc"><i>311</i>&nbsp;        cw += cx;</b>
+<b class="nc"><i>312</i>&nbsp;        if (cw &lt;= cx) {</b>
+<i>313</i>&nbsp;            // cx+cw overflowed or cw was zero, return false if...
+<i>314</i>&nbsp;            // either original tw or cw was zero or
+<i>315</i>&nbsp;            // tx+tw did not overflow or
+<i>316</i>&nbsp;            // the overflowed cx+cw is smaller than the overflowed tx+tw
+<b class="nc"><i>317</i>&nbsp;            if (tw &gt;= tx || cw &gt; tw) return false;</b>
+<i>318</i>&nbsp;        } else {
+<i>319</i>&nbsp;            // cx+cw did not overflow and cw was not zero, return false if...
+<i>320</i>&nbsp;            // original tw was zero or
+<i>321</i>&nbsp;            // tx+tw did not overflow and tx+tw is smaller than cx+cw
+<b class="nc"><i>322</i>&nbsp;            if (tw &gt;= tx &amp;&amp; cw &gt; tw) return false;</b>
+<i>323</i>&nbsp;        }
+<b class="nc"><i>324</i>&nbsp;        th += ty;</b>
+<b class="nc"><i>325</i>&nbsp;        ch += cy;</b>
+<b class="nc"><i>326</i>&nbsp;        if (ch &lt;= cy) {</b>
+<b class="nc"><i>327</i>&nbsp;            if (th &gt;= ty || ch &gt; th) return false;</b>
+<i>328</i>&nbsp;        } else {
+<b class="nc"><i>329</i>&nbsp;            if (th &gt;= ty &amp;&amp; ch &gt; th) return false;</b>
+<i>330</i>&nbsp;        }
+<b class="nc"><i>331</i>&nbsp;        return true;</b>
+<i>332</i>&nbsp;    }
+<i>333</i>&nbsp;
+<i>334</i>&nbsp;    public Rectangle intersection(Rectangle r) {
+<b class="nc"><i>335</i>&nbsp;        Rectangle ret = new Rectangle(this);</b>
+<b class="nc"><i>336</i>&nbsp;        ret.intersectWith(r);</b>
+<b class="nc"><i>337</i>&nbsp;        return ret;</b>
+<i>338</i>&nbsp;    }
+<i>339</i>&nbsp;
+<i>340</i>&nbsp;    public void intersectWith(Rectangle r) {
+<b class="fc"><i>341</i>&nbsp;        if (r == null) {</b>
+<b class="nc"><i>342</i>&nbsp;            return;</b>
+<i>343</i>&nbsp;        }
+<b class="fc"><i>344</i>&nbsp;        int tx1 = this.x;</b>
+<b class="fc"><i>345</i>&nbsp;        int ty1 = this.y;</b>
+<b class="fc"><i>346</i>&nbsp;        int rx1 = r.x;</b>
+<b class="fc"><i>347</i>&nbsp;        int ry1 = r.y;</b>
+<b class="fc"><i>348</i>&nbsp;        long tx2 = tx1; tx2 += this.width;</b>
+<b class="fc"><i>349</i>&nbsp;        long ty2 = ty1; ty2 += this.height;</b>
+<b class="fc"><i>350</i>&nbsp;        long rx2 = rx1; rx2 += r.width;</b>
+<b class="fc"><i>351</i>&nbsp;        long ry2 = ry1; ry2 += r.height;</b>
+<b class="fc"><i>352</i>&nbsp;        if (tx1 &lt; rx1) tx1 = rx1;</b>
+<b class="fc"><i>353</i>&nbsp;        if (ty1 &lt; ry1) ty1 = ry1;</b>
+<b class="fc"><i>354</i>&nbsp;        if (tx2 &gt; rx2) tx2 = rx2;</b>
+<b class="fc"><i>355</i>&nbsp;        if (ty2 &gt; ry2) ty2 = ry2;</b>
+<b class="fc"><i>356</i>&nbsp;        tx2 -= tx1;</b>
+<b class="fc"><i>357</i>&nbsp;        ty2 -= ty1;</b>
+<i>358</i>&nbsp;        // tx2,ty2 will never overflow (they will never be
+<i>359</i>&nbsp;        // larger than the smallest of the two source w,h)
+<i>360</i>&nbsp;        // they might underflow, though...
+<b class="fc"><i>361</i>&nbsp;        if (tx2 &lt; Integer.MIN_VALUE) tx2 = Integer.MIN_VALUE;</b>
+<b class="fc"><i>362</i>&nbsp;        if (ty2 &lt; Integer.MIN_VALUE) ty2 = Integer.MIN_VALUE;</b>
+<b class="fc"><i>363</i>&nbsp;        setBounds(tx1, ty1, (int) tx2, (int) ty2);</b>
+<b class="fc"><i>364</i>&nbsp;    }</b>
+<i>365</i>&nbsp;
+<i>366</i>&nbsp;    /**
+<i>367</i>&nbsp;     * Translates this &lt;code&gt;Rectangle&lt;/code&gt; the indicated distance,
+<i>368</i>&nbsp;     * to the right along the X coordinate axis, and
+<i>369</i>&nbsp;     * downward along the Y coordinate axis.
+<i>370</i>&nbsp;     * @param dx the distance to move this &lt;code&gt;Rectangle&lt;/code&gt;
+<i>371</i>&nbsp;     *                 along the X axis
+<i>372</i>&nbsp;     * @param dy the distance to move this &lt;code&gt;Rectangle&lt;/code&gt;
+<i>373</i>&nbsp;     *                 along the Y axis
+<i>374</i>&nbsp;     * @see       java.awt.Rectangle#setLocation(int, int)
+<i>375</i>&nbsp;     * @see       java.awt.Rectangle#setLocation(java.awt.Point)
+<i>376</i>&nbsp;     */
+<i>377</i>&nbsp;    public void translate(int dx, int dy) {
+<b class="nc"><i>378</i>&nbsp;        int oldv = this.x;</b>
+<b class="nc"><i>379</i>&nbsp;        int newv = oldv + dx;</b>
+<b class="nc"><i>380</i>&nbsp;        if (dx &lt; 0) {</b>
+<i>381</i>&nbsp;            // moving leftward
+<b class="nc"><i>382</i>&nbsp;            if (newv &gt; oldv) {</b>
+<i>383</i>&nbsp;                // negative overflow
+<i>384</i>&nbsp;                // Only adjust width if it was valid (&gt;= 0).
+<b class="nc"><i>385</i>&nbsp;                if (width &gt;= 0) {</b>
+<i>386</i>&nbsp;                    // The right edge is now conceptually at
+<i>387</i>&nbsp;                    // newv+width, but we may move newv to prevent
+<i>388</i>&nbsp;                    // overflow.  But we want the right edge to
+<i>389</i>&nbsp;                    // remain at its new location in spite of the
+<i>390</i>&nbsp;                    // clipping.  Think of the following adjustment
+<i>391</i>&nbsp;                    // conceptually the same as:
+<i>392</i>&nbsp;                    // width += newv; newv = MIN_VALUE; width -= newv;
+<b class="nc"><i>393</i>&nbsp;                    width += newv - Integer.MIN_VALUE;</b>
+<i>394</i>&nbsp;                    // width may go negative if the right edge went past
+<i>395</i>&nbsp;                    // MIN_VALUE, but it cannot overflow since it cannot
+<i>396</i>&nbsp;                    // have moved more than MIN_VALUE and any non-negative
+<i>397</i>&nbsp;                    // number + MIN_VALUE does not overflow.
+<i>398</i>&nbsp;                }
+<b class="nc"><i>399</i>&nbsp;                newv = Integer.MIN_VALUE;</b>
+<i>400</i>&nbsp;            }
+<i>401</i>&nbsp;        } else {
+<i>402</i>&nbsp;            // moving rightward (or staying still)
+<b class="nc"><i>403</i>&nbsp;            if (newv &lt; oldv) {</b>
+<i>404</i>&nbsp;                // positive overflow
+<b class="nc"><i>405</i>&nbsp;                if (width &gt;= 0) {</b>
+<i>406</i>&nbsp;                    // Conceptually the same as:
+<i>407</i>&nbsp;                    // width += newv; newv = MAX_VALUE; width -= newv;
+<b class="nc"><i>408</i>&nbsp;                    width += newv - Integer.MAX_VALUE;</b>
+<i>409</i>&nbsp;                    // With large widths and large displacements
+<i>410</i>&nbsp;                    // we may overflow so we need to check it.
+<b class="nc"><i>411</i>&nbsp;                    if (width &lt; 0) width = Integer.MAX_VALUE;</b>
+<i>412</i>&nbsp;                }
+<b class="nc"><i>413</i>&nbsp;                newv = Integer.MAX_VALUE;</b>
+<i>414</i>&nbsp;            }
+<i>415</i>&nbsp;        }
+<b class="nc"><i>416</i>&nbsp;        this.x = newv;</b>
+<i>417</i>&nbsp;
+<b class="nc"><i>418</i>&nbsp;        oldv = this.y;</b>
+<b class="nc"><i>419</i>&nbsp;        newv = oldv + dy;</b>
+<b class="nc"><i>420</i>&nbsp;        if (dy &lt; 0) {</b>
+<i>421</i>&nbsp;            // moving upward
+<b class="nc"><i>422</i>&nbsp;            if (newv &gt; oldv) {</b>
+<i>423</i>&nbsp;                // negative overflow
+<b class="nc"><i>424</i>&nbsp;                if (height &gt;= 0) {</b>
+<b class="nc"><i>425</i>&nbsp;                    height += newv - Integer.MIN_VALUE;</b>
+<i>426</i>&nbsp;                    // See above comment about no overflow in this case
+<i>427</i>&nbsp;                }
+<b class="nc"><i>428</i>&nbsp;                newv = Integer.MIN_VALUE;</b>
+<i>429</i>&nbsp;            }
+<i>430</i>&nbsp;        } else {
+<i>431</i>&nbsp;            // moving downward (or staying still)
+<b class="nc"><i>432</i>&nbsp;            if (newv &lt; oldv) {</b>
+<i>433</i>&nbsp;                // positive overflow
+<b class="nc"><i>434</i>&nbsp;                if (height &gt;= 0) {</b>
+<b class="nc"><i>435</i>&nbsp;                    height += newv - Integer.MAX_VALUE;</b>
+<b class="nc"><i>436</i>&nbsp;                    if (height &lt; 0) height = Integer.MAX_VALUE;</b>
+<i>437</i>&nbsp;                }
+<b class="nc"><i>438</i>&nbsp;                newv = Integer.MAX_VALUE;</b>
+<i>439</i>&nbsp;            }
+<i>440</i>&nbsp;        }
+<b class="nc"><i>441</i>&nbsp;        this.y = newv;</b>
+<b class="nc"><i>442</i>&nbsp;    }</b>
+<i>443</i>&nbsp;
+<i>444</i>&nbsp;    public RectBounds toRectBounds() {
+<b class="nc"><i>445</i>&nbsp;        return new RectBounds(x, y, x+width, y+height);</b>
+<i>446</i>&nbsp;    }
+<i>447</i>&nbsp;
+<i>448</i>&nbsp;    /**
+<i>449</i>&nbsp;     * Adds a point, specified by the integer arguments {@code newx,newy}
+<i>450</i>&nbsp;     * to the bounds of this {@code Rectangle}.
+<i>451</i>&nbsp;     * &lt;p&gt;
+<i>452</i>&nbsp;     * If this {@code Rectangle} has any dimension less than zero,
+<i>453</i>&nbsp;     * the rules for &lt;a href=#NonExistant&gt;non-existant&lt;/a&gt;
+<i>454</i>&nbsp;     * rectangles apply.
+<i>455</i>&nbsp;     * In that case, the new bounds of this {@code Rectangle} will
+<i>456</i>&nbsp;     * have a location equal to the specified coordinates and
+<i>457</i>&nbsp;     * width and height equal to zero.
+<i>458</i>&nbsp;     * &lt;p&gt;
+<i>459</i>&nbsp;     * After adding a point, a call to &lt;code&gt;contains&lt;/code&gt; with the
+<i>460</i>&nbsp;     * added point as an argument does not necessarily return
+<i>461</i>&nbsp;     * &lt;code&gt;true&lt;/code&gt;. The &lt;code&gt;contains&lt;/code&gt; method does not
+<i>462</i>&nbsp;     * return &lt;code&gt;true&lt;/code&gt; for points on the right or bottom
+<i>463</i>&nbsp;     * edges of a &lt;code&gt;Rectangle&lt;/code&gt;. Therefore, if the added point
+<i>464</i>&nbsp;     * falls on the right or bottom edge of the enlarged
+<i>465</i>&nbsp;     * &lt;code&gt;Rectangle&lt;/code&gt;, &lt;code&gt;contains&lt;/code&gt; returns
+<i>466</i>&nbsp;     * &lt;code&gt;false&lt;/code&gt; for that point.
+<i>467</i>&nbsp;     * If the specified point must be contained within the new
+<i>468</i>&nbsp;     * {@code Rectangle}, a 1x1 rectangle should be added instead:
+<i>469</i>&nbsp;     * &lt;pre&gt;
+<i>470</i>&nbsp;     *     r.add(newx, newy, 1, 1);
+<i>471</i>&nbsp;     * &lt;/pre&gt;
+<i>472</i>&nbsp;     * @param newx the X coordinate of the new point
+<i>473</i>&nbsp;     * @param newy the Y coordinate of the new point
+<i>474</i>&nbsp;     */
+<i>475</i>&nbsp;    public void add(int newx, int newy) {
+<b class="nc"><i>476</i>&nbsp;        if ((width | height) &lt; 0) {</b>
+<b class="nc"><i>477</i>&nbsp;            this.x = newx;</b>
+<b class="nc"><i>478</i>&nbsp;            this.y = newy;</b>
+<b class="nc"><i>479</i>&nbsp;            this.width = this.height = 0;</b>
+<b class="nc"><i>480</i>&nbsp;            return;</b>
+<i>481</i>&nbsp;        }
+<b class="nc"><i>482</i>&nbsp;        int x1 = this.x;</b>
+<b class="nc"><i>483</i>&nbsp;        int y1 = this.y;</b>
+<b class="nc"><i>484</i>&nbsp;        long x2 = this.width;</b>
+<b class="nc"><i>485</i>&nbsp;        long y2 = this.height;</b>
+<b class="nc"><i>486</i>&nbsp;        x2 += x1;</b>
+<b class="nc"><i>487</i>&nbsp;        y2 += y1;</b>
+<b class="nc"><i>488</i>&nbsp;        if (x1 &gt; newx) x1 = newx;</b>
+<b class="nc"><i>489</i>&nbsp;        if (y1 &gt; newy) y1 = newy;</b>
+<b class="nc"><i>490</i>&nbsp;        if (x2 &lt; newx) x2 = newx;</b>
+<b class="nc"><i>491</i>&nbsp;        if (y2 &lt; newy) y2 = newy;</b>
+<b class="nc"><i>492</i>&nbsp;        x2 -= x1;</b>
+<b class="nc"><i>493</i>&nbsp;        y2 -= y1;</b>
+<b class="nc"><i>494</i>&nbsp;        if (x2 &gt; Integer.MAX_VALUE) x2 = Integer.MAX_VALUE;</b>
+<b class="nc"><i>495</i>&nbsp;        if (y2 &gt; Integer.MAX_VALUE) y2 = Integer.MAX_VALUE;</b>
+<b class="nc"><i>496</i>&nbsp;        reshape(x1, y1, (int) x2, (int) y2);</b>
+<b class="nc"><i>497</i>&nbsp;    }</b>
+<i>498</i>&nbsp;
+<i>499</i>&nbsp;    /**
+<i>500</i>&nbsp;     * Adds a &lt;code&gt;Rectangle&lt;/code&gt; to this &lt;code&gt;Rectangle&lt;/code&gt;.
+<i>501</i>&nbsp;     * The resulting &lt;code&gt;Rectangle&lt;/code&gt; is the union of the two
+<i>502</i>&nbsp;     * rectangles.
+<i>503</i>&nbsp;     * &lt;p&gt;
+<i>504</i>&nbsp;     * If either {@code Rectangle} has any dimension less than 0, the
+<i>505</i>&nbsp;     * result will have the dimensions of the other {@code Rectangle}.
+<i>506</i>&nbsp;     * If both {@code Rectangle}s have at least one dimension less
+<i>507</i>&nbsp;     * than 0, the result will have at least one dimension less than 0.
+<i>508</i>&nbsp;     * &lt;p&gt;
+<i>509</i>&nbsp;     * If either {@code Rectangle} has one or both dimensions equal
+<i>510</i>&nbsp;     * to 0, the result along those axes with 0 dimensions will be
+<i>511</i>&nbsp;     * equivalent to the results obtained by adding the corresponding
+<i>512</i>&nbsp;     * origin coordinate to the result rectangle along that axis,
+<i>513</i>&nbsp;     * similar to the operation of the {@link #add(Point)} method,
+<i>514</i>&nbsp;     * but contribute no further dimension beyond that.
+<i>515</i>&nbsp;     * &lt;p&gt;
+<i>516</i>&nbsp;     * If the resulting {@code Rectangle} would have a dimension
+<i>517</i>&nbsp;     * too large to be expressed as an {@code int}, the result
+<i>518</i>&nbsp;     * will have a dimension of {@code Integer.MAX_VALUE} along
+<i>519</i>&nbsp;     * that dimension.
+<i>520</i>&nbsp;     * @param  r the specified &lt;code&gt;Rectangle&lt;/code&gt;
+<i>521</i>&nbsp;     */
+<i>522</i>&nbsp;    public void add(Rectangle r) {
+<b class="nc"><i>523</i>&nbsp;        long tx2 = this.width;</b>
+<b class="nc"><i>524</i>&nbsp;        long ty2 = this.height;</b>
+<b class="nc"><i>525</i>&nbsp;        if ((tx2 | ty2) &lt; 0) {</b>
+<b class="nc"><i>526</i>&nbsp;            reshape(r.x, r.y, r.width, r.height);</b>
+<i>527</i>&nbsp;        }
+<b class="nc"><i>528</i>&nbsp;        long rx2 = r.width;</b>
+<b class="nc"><i>529</i>&nbsp;        long ry2 = r.height;</b>
+<b class="nc"><i>530</i>&nbsp;        if ((rx2 | ry2) &lt; 0) {</b>
+<b class="nc"><i>531</i>&nbsp;            return;</b>
+<i>532</i>&nbsp;        }
+<b class="nc"><i>533</i>&nbsp;        int tx1 = this.x;</b>
+<b class="nc"><i>534</i>&nbsp;        int ty1 = this.y;</b>
+<b class="nc"><i>535</i>&nbsp;        tx2 += tx1;</b>
+<b class="nc"><i>536</i>&nbsp;        ty2 += ty1;</b>
+<b class="nc"><i>537</i>&nbsp;        int rx1 = r.x;</b>
+<b class="nc"><i>538</i>&nbsp;        int ry1 = r.y;</b>
+<b class="nc"><i>539</i>&nbsp;        rx2 += rx1;</b>
+<b class="nc"><i>540</i>&nbsp;        ry2 += ry1;</b>
+<b class="nc"><i>541</i>&nbsp;        if (tx1 &gt; rx1) tx1 = rx1;</b>
+<b class="nc"><i>542</i>&nbsp;        if (ty1 &gt; ry1) ty1 = ry1;</b>
+<b class="nc"><i>543</i>&nbsp;        if (tx2 &lt; rx2) tx2 = rx2;</b>
+<b class="nc"><i>544</i>&nbsp;        if (ty2 &lt; ry2) ty2 = ry2;</b>
+<b class="nc"><i>545</i>&nbsp;        tx2 -= tx1;</b>
+<b class="nc"><i>546</i>&nbsp;        ty2 -= ty1;</b>
+<i>547</i>&nbsp;        // tx2,ty2 will never underflow since both original
+<i>548</i>&nbsp;        // rectangles were non-empty
+<i>549</i>&nbsp;        // they might overflow, though...
+<b class="nc"><i>550</i>&nbsp;        if (tx2 &gt; Integer.MAX_VALUE) tx2 = Integer.MAX_VALUE;</b>
+<b class="nc"><i>551</i>&nbsp;        if (ty2 &gt; Integer.MAX_VALUE) ty2 = Integer.MAX_VALUE;</b>
+<b class="nc"><i>552</i>&nbsp;        reshape(tx1, ty1, (int) tx2, (int) ty2);</b>
+<b class="nc"><i>553</i>&nbsp;    }</b>
+<i>554</i>&nbsp;
+<i>555</i>&nbsp;    /**
+<i>556</i>&nbsp;     * Resizes the &lt;code&gt;Rectangle&lt;/code&gt; both horizontally and vertically.
+<i>557</i>&nbsp;     * &lt;p&gt;
+<i>558</i>&nbsp;     * This method modifies the &lt;code&gt;Rectangle&lt;/code&gt; so that it is
+<i>559</i>&nbsp;     * &lt;code&gt;h&lt;/code&gt; units larger on both the left and right side,
+<i>560</i>&nbsp;     * and &lt;code&gt;v&lt;/code&gt; units larger at both the top and bottom.
+<i>561</i>&nbsp;     * &lt;p&gt;
+<i>562</i>&nbsp;     * The new &lt;code&gt;Rectangle&lt;/code&gt; has {@code (x - h, y - v)}
+<i>563</i>&nbsp;     * as its upper-left corner,
+<i>564</i>&nbsp;     * width of {@code (width + 2h)},
+<i>565</i>&nbsp;     * and a height of {@code (height + 2v)}.
+<i>566</i>&nbsp;     * &lt;p&gt;
+<i>567</i>&nbsp;     * If negative values are supplied for &lt;code&gt;h&lt;/code&gt; and
+<i>568</i>&nbsp;     * &lt;code&gt;v&lt;/code&gt;, the size of the &lt;code&gt;Rectangle&lt;/code&gt;
+<i>569</i>&nbsp;     * decreases accordingly.
+<i>570</i>&nbsp;     * The {@code grow} method will check for integer overflow
+<i>571</i>&nbsp;     * and underflow, but does not check whether the resulting
+<i>572</i>&nbsp;     * values of {@code width} and {@code height} grow
+<i>573</i>&nbsp;     * from negative to non-negative or shrink from non-negative
+<i>574</i>&nbsp;     * to negative.
+<i>575</i>&nbsp;     * @param h the horizontal expansion
+<i>576</i>&nbsp;     * @param v the vertical expansion
+<i>577</i>&nbsp;     */
+<i>578</i>&nbsp;    public void grow(int h, int v) {
+<b class="fc"><i>579</i>&nbsp;        long x0 = this.x;</b>
+<b class="fc"><i>580</i>&nbsp;        long y0 = this.y;</b>
+<b class="fc"><i>581</i>&nbsp;        long x1 = this.width;</b>
+<b class="fc"><i>582</i>&nbsp;        long y1 = this.height;</b>
+<b class="fc"><i>583</i>&nbsp;        x1 += x0;</b>
+<b class="fc"><i>584</i>&nbsp;        y1 += y0;</b>
+<i>585</i>&nbsp;
+<b class="fc"><i>586</i>&nbsp;        x0 -= h;</b>
+<b class="fc"><i>587</i>&nbsp;        y0 -= v;</b>
+<b class="fc"><i>588</i>&nbsp;        x1 += h;</b>
+<b class="fc"><i>589</i>&nbsp;        y1 += v;</b>
+<i>590</i>&nbsp;
+<b class="fc"><i>591</i>&nbsp;        if (x1 &lt; x0) {</b>
+<i>592</i>&nbsp;            // Non-existant in X direction
+<i>593</i>&nbsp;            // Final width must remain negative so subtract x0 before
+<i>594</i>&nbsp;            // it is clipped so that we avoid the risk that the clipping
+<i>595</i>&nbsp;            // of x0 will reverse the ordering of x0 and x1.
+<b class="nc"><i>596</i>&nbsp;            x1 -= x0;</b>
+<b class="nc"><i>597</i>&nbsp;            if (x1 &lt; Integer.MIN_VALUE) x1 = Integer.MIN_VALUE;</b>
+<b class="nc"><i>598</i>&nbsp;            if (x0 &lt; Integer.MIN_VALUE) x0 = Integer.MIN_VALUE;</b>
+<b class="nc"><i>599</i>&nbsp;            else if (x0 &gt; Integer.MAX_VALUE) x0 = Integer.MAX_VALUE;</b>
+<i>600</i>&nbsp;        } else { // (x1 &gt;= x0)
+<i>601</i>&nbsp;            // Clip x0 before we subtract it from x1 in case the clipping
+<i>602</i>&nbsp;            // affects the representable area of the rectangle.
+<b class="fc"><i>603</i>&nbsp;            if (x0 &lt; Integer.MIN_VALUE) x0 = Integer.MIN_VALUE;</b>
+<b class="fc"><i>604</i>&nbsp;            else if (x0 &gt; Integer.MAX_VALUE) x0 = Integer.MAX_VALUE;</b>
+<b class="fc"><i>605</i>&nbsp;            x1 -= x0;</b>
+<i>606</i>&nbsp;            // The only way x1 can be negative now is if we clipped
+<i>607</i>&nbsp;            // x0 against MIN and x1 is less than MIN - in which case
+<i>608</i>&nbsp;            // we want to leave the width negative since the result
+<i>609</i>&nbsp;            // did not intersect the representable area.
+<b class="fc"><i>610</i>&nbsp;            if (x1 &lt; Integer.MIN_VALUE) x1 = Integer.MIN_VALUE;</b>
+<b class="fc"><i>611</i>&nbsp;            else if (x1 &gt; Integer.MAX_VALUE) x1 = Integer.MAX_VALUE;</b>
+<i>612</i>&nbsp;        }
+<i>613</i>&nbsp;
+<b class="fc"><i>614</i>&nbsp;        if (y1 &lt; y0) {</b>
+<i>615</i>&nbsp;            // Non-existant in Y direction
+<b class="nc"><i>616</i>&nbsp;            y1 -= y0;</b>
+<b class="nc"><i>617</i>&nbsp;            if (y1 &lt; Integer.MIN_VALUE) y1 = Integer.MIN_VALUE;</b>
+<b class="nc"><i>618</i>&nbsp;            if (y0 &lt; Integer.MIN_VALUE) y0 = Integer.MIN_VALUE;</b>
+<b class="nc"><i>619</i>&nbsp;            else if (y0 &gt; Integer.MAX_VALUE) y0 = Integer.MAX_VALUE;</b>
+<i>620</i>&nbsp;        } else { // (y1 &gt;= y0)
+<b class="fc"><i>621</i>&nbsp;            if (y0 &lt; Integer.MIN_VALUE) y0 = Integer.MIN_VALUE;</b>
+<b class="fc"><i>622</i>&nbsp;            else if (y0 &gt; Integer.MAX_VALUE) y0 = Integer.MAX_VALUE;</b>
+<b class="fc"><i>623</i>&nbsp;            y1 -= y0;</b>
+<b class="fc"><i>624</i>&nbsp;            if (y1 &lt; Integer.MIN_VALUE) y1 = Integer.MIN_VALUE;</b>
+<b class="fc"><i>625</i>&nbsp;            else if (y1 &gt; Integer.MAX_VALUE) y1 = Integer.MAX_VALUE;</b>
+<i>626</i>&nbsp;        }
+<i>627</i>&nbsp;
+<b class="fc"><i>628</i>&nbsp;        reshape((int) x0, (int) y0, (int) x1, (int) y1);</b>
+<b class="fc"><i>629</i>&nbsp;    }</b>
+<i>630</i>&nbsp;
+<i>631</i>&nbsp;    private void reshape(int x, int y, int width, int height) {
+<b class="fc"><i>632</i>&nbsp;        this.x = x;</b>
+<b class="fc"><i>633</i>&nbsp;        this.y = y;</b>
+<b class="fc"><i>634</i>&nbsp;        this.width = width;</b>
+<b class="fc"><i>635</i>&nbsp;        this.height = height;</b>
+<b class="fc"><i>636</i>&nbsp;    }</b>
+<i>637</i>&nbsp;
+<i>638</i>&nbsp;    /**
+<i>639</i>&nbsp;     * {@inheritDoc}
+<i>640</i>&nbsp;     */
+<i>641</i>&nbsp;    public boolean isEmpty() {
+<b class="fc"><i>642</i>&nbsp;        return (width &lt;= 0) || (height &lt;= 0);</b>
+<i>643</i>&nbsp;    }
+<i>644</i>&nbsp;
+<i>645</i>&nbsp;    /**
+<i>646</i>&nbsp;     * Checks whether two rectangles are equal.
+<i>647</i>&nbsp;     * &lt;p&gt;
+<i>648</i>&nbsp;     * The result is &lt;code&gt;true&lt;/code&gt; if and only if the argument is not
+<i>649</i>&nbsp;     * &lt;code&gt;null&lt;/code&gt; and is a &lt;code&gt;Rectangle&lt;/code&gt; object that has the
+<i>650</i>&nbsp;     * same upper-left corner, width, and height as
+<i>651</i>&nbsp;     * this &lt;code&gt;Rectangle&lt;/code&gt;.
+<i>652</i>&nbsp;     * @param obj the &lt;code&gt;Object&lt;/code&gt; to compare with
+<i>653</i>&nbsp;     *                this &lt;code&gt;Rectangle&lt;/code&gt;
+<i>654</i>&nbsp;     * @return    &lt;code&gt;true&lt;/code&gt; if the objects are equal;
+<i>655</i>&nbsp;     *            &lt;code&gt;false&lt;/code&gt; otherwise.
+<i>656</i>&nbsp;     */
+<i>657</i>&nbsp;    @Override
+<i>658</i>&nbsp;    public boolean equals(Object obj) {
+<b class="nc"><i>659</i>&nbsp;        if (obj instanceof Rectangle) {</b>
+<b class="nc"><i>660</i>&nbsp;            Rectangle r = (Rectangle)obj;</b>
+<b class="nc"><i>661</i>&nbsp;            return ((x == r.x) &amp;&amp;</b>
+<i>662</i>&nbsp;                    (y == r.y) &amp;&amp;
+<i>663</i>&nbsp;                    (width == r.width) &amp;&amp;
+<i>664</i>&nbsp;                    (height == r.height));
+<i>665</i>&nbsp;        }
+<b class="nc"><i>666</i>&nbsp;        return super.equals(obj);</b>
+<i>667</i>&nbsp;    }
+<i>668</i>&nbsp;
+<i>669</i>&nbsp;    @Override
+<i>670</i>&nbsp;    public int hashCode() {
+<b class="nc"><i>671</i>&nbsp;        int bits = java.lang.Float.floatToIntBits(x);</b>
+<b class="nc"><i>672</i>&nbsp;        bits += java.lang.Float.floatToIntBits(y) * 37;</b>
+<b class="nc"><i>673</i>&nbsp;        bits += java.lang.Float.floatToIntBits(width) * 43;</b>
+<b class="nc"><i>674</i>&nbsp;        bits += java.lang.Float.floatToIntBits(height) * 47;</b>
+<b class="nc"><i>675</i>&nbsp;        return bits;</b>
+<i>676</i>&nbsp;    }
+<i>677</i>&nbsp;
+<i>678</i>&nbsp;    /**
+<i>679</i>&nbsp;     * Returns a &lt;code&gt;String&lt;/code&gt; representing this
+<i>680</i>&nbsp;     * &lt;code&gt;Rectangle&lt;/code&gt; and its values.
+<i>681</i>&nbsp;     * @return a &lt;code&gt;String&lt;/code&gt; representing this
+<i>682</i>&nbsp;     *               &lt;code&gt;Rectangle&lt;/code&gt; object&#39;s coordinate and size values.
+<i>683</i>&nbsp;     */
+<i>684</i>&nbsp;    @Override
+<i>685</i>&nbsp;    public String toString() {
+<b class="nc"><i>686</i>&nbsp;        return getClass().getName() + &quot;[x=&quot; + x + &quot;,y=&quot; + y + &quot;,width=&quot; + width + &quot;,height=&quot; + height + &quot;]&quot;;</b>
+<i>687</i>&nbsp;    }
+<i>688</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2017-12-04 21:49</div>
+</div>
+</body>
+</html>

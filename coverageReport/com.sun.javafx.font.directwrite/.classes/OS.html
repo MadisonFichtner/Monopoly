@@ -1,0 +1,447 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: OS</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.javafx.font.directwrite</a> ]
+</div>
+
+<h1>Coverage Summary for Class: OS (com.sun.javafx.font.directwrite)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">OS</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    62.5%
+  </span>
+  <span class="absValue">
+    (5/ 8)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    62.5%
+  </span>
+  <span class="absValue">
+    (10/ 16)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright (c) 2013, 2014, Oracle and/or its affiliates. All rights reserved.
+<i>3</i>&nbsp; * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+<i>4</i>&nbsp; *
+<i>5</i>&nbsp; *
+<i>6</i>&nbsp; *
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; *
+<i>11</i>&nbsp; *
+<i>12</i>&nbsp; *
+<i>13</i>&nbsp; *
+<i>14</i>&nbsp; *
+<i>15</i>&nbsp; *
+<i>16</i>&nbsp; *
+<i>17</i>&nbsp; *
+<i>18</i>&nbsp; *
+<i>19</i>&nbsp; *
+<i>20</i>&nbsp; *
+<i>21</i>&nbsp; *
+<i>22</i>&nbsp; *
+<i>23</i>&nbsp; *
+<i>24</i>&nbsp; */
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;package com.sun.javafx.font.directwrite;
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;import java.security.AccessController;
+<i>29</i>&nbsp;import java.security.PrivilegedAction;
+<i>30</i>&nbsp;
+<i>31</i>&nbsp;import com.sun.glass.utils.NativeLibLoader;
+<i>32</i>&nbsp;import com.sun.javafx.geom.Path2D;
+<i>33</i>&nbsp;
+<b class="nc"><i>34</i>&nbsp;class OS {</b>
+<i>35</i>&nbsp;    static {
+<b class="fc"><i>36</i>&nbsp;        AccessController.doPrivileged((PrivilegedAction&lt;Void&gt;) () -&gt; {</b>
+<b class="fc"><i>37</i>&nbsp;            NativeLibLoader.loadLibrary(&quot;javafx_font&quot;);</b>
+<b class="fc"><i>38</i>&nbsp;            return null;</b>
+<i>39</i>&nbsp;        });
+<b class="fc"><i>40</i>&nbsp;    }</b>
+<i>41</i>&nbsp;
+<i>42</i>&nbsp;    static final int S_OK = 0x0;
+<i>43</i>&nbsp;    static final int E_NOT_SUFFICIENT_BUFFER = 0x8007007A;
+<i>44</i>&nbsp;
+<i>45</i>&nbsp;    /* Direct2D constants */
+<i>46</i>&nbsp;    static final int D2D1_FACTORY_TYPE_SINGLE_THREADED = 0;
+<i>47</i>&nbsp;    static final int D2D1_RENDER_TARGET_TYPE_DEFAULT    = 0;
+<i>48</i>&nbsp;    static final int D2D1_RENDER_TARGET_TYPE_SOFTWARE   = 1;
+<i>49</i>&nbsp;    static final int D2D1_RENDER_TARGET_TYPE_HARDWARE   = 2;
+<i>50</i>&nbsp;    static final int D2D1_RENDER_TARGET_USAGE_NONE                   = 0x00000000;
+<i>51</i>&nbsp;    static final int D2D1_RENDER_TARGET_USAGE_FORCE_BITMAP_REMOTING  = 0x00000001;
+<i>52</i>&nbsp;    static final int D2D1_RENDER_TARGET_USAGE_GDI_COMPATIBLE         = 0x00000002;
+<i>53</i>&nbsp;    static final int D2D1_FEATURE_LEVEL_DEFAULT  = 0;
+<i>54</i>&nbsp;    static final int D2D1_ALPHA_MODE_UNKNOWN        = 0;
+<i>55</i>&nbsp;    static final int D2D1_ALPHA_MODE_PREMULTIPLIED  = 1;
+<i>56</i>&nbsp;    static final int D2D1_ALPHA_MODE_STRAIGHT       = 2;
+<i>57</i>&nbsp;    static final int D2D1_ALPHA_MODE_IGNORE         = 3;
+<i>58</i>&nbsp;    static final int DXGI_FORMAT_UNKNOWN = 0;
+<i>59</i>&nbsp;    static final int DXGI_FORMAT_A8_UNORM  = 65;
+<i>60</i>&nbsp;    static final int DXGI_FORMAT_B8G8R8A8_UNORM  = 87;
+<i>61</i>&nbsp;    static final int D2D1_TEXT_ANTIALIAS_MODE_DEFAULT    = 0;
+<i>62</i>&nbsp;    static final int D2D1_TEXT_ANTIALIAS_MODE_CLEARTYPE  = 1;
+<i>63</i>&nbsp;    static final int D2D1_TEXT_ANTIALIAS_MODE_GRAYSCALE  = 2;
+<i>64</i>&nbsp;    static final int D2D1_TEXT_ANTIALIAS_MODE_ALIASED    = 3;
+<i>65</i>&nbsp;
+<i>66</i>&nbsp;    /* WICImagining constants */
+<i>67</i>&nbsp;    static final int GUID_WICPixelFormat8bppGray = 1;
+<i>68</i>&nbsp;    static final int GUID_WICPixelFormat8bppAlpha = 2;
+<i>69</i>&nbsp;    static final int GUID_WICPixelFormat16bppGray = 3;
+<i>70</i>&nbsp;    static final int GUID_WICPixelFormat24bppRGB = 4;
+<i>71</i>&nbsp;    static final int GUID_WICPixelFormat24bppBGR = 5;
+<i>72</i>&nbsp;    static final int GUID_WICPixelFormat32bppBGR = 6;
+<i>73</i>&nbsp;    static final int GUID_WICPixelFormat32bppBGRA = 7;
+<i>74</i>&nbsp;    static final int GUID_WICPixelFormat32bppPBGRA = 8;
+<i>75</i>&nbsp;    static final int GUID_WICPixelFormat32bppGrayFloat = 9;
+<i>76</i>&nbsp;    static final int GUID_WICPixelFormat32bppRGBA = 10;
+<i>77</i>&nbsp;    static final int GUID_WICPixelFormat32bppPRGBA = 11;
+<i>78</i>&nbsp;    static final int WICBitmapNoCache       = 0;
+<i>79</i>&nbsp;    static final int WICBitmapCacheOnDemand = 0x1;
+<i>80</i>&nbsp;    static final int WICBitmapCacheOnLoad   = 0x2;
+<i>81</i>&nbsp;    static final int WICBitmapLockRead   = 0x00000001;
+<i>82</i>&nbsp;    static final int WICBitmapLockWrite  = 0x00000002;
+<i>83</i>&nbsp;
+<i>84</i>&nbsp;    /* DirectWrite constants */
+<i>85</i>&nbsp;    static final int DWRITE_FONT_WEIGHT_THIN         = 100;
+<i>86</i>&nbsp;    static final int DWRITE_FONT_WEIGHT_EXTRA_LIGHT  = 200;
+<i>87</i>&nbsp;    static final int DWRITE_FONT_WEIGHT_ULTRA_LIGHT  = 200;
+<i>88</i>&nbsp;    static final int DWRITE_FONT_WEIGHT_LIGHT        = 300;
+<i>89</i>&nbsp;    static final int DWRITE_FONT_WEIGHT_SEMI_LIGHT   = 350;
+<i>90</i>&nbsp;    static final int DWRITE_FONT_WEIGHT_NORMAL       = 400;
+<i>91</i>&nbsp;    static final int DWRITE_FONT_WEIGHT_REGULAR      = 400;
+<i>92</i>&nbsp;    static final int DWRITE_FONT_WEIGHT_MEDIUM       = 500;
+<i>93</i>&nbsp;    static final int DWRITE_FONT_WEIGHT_DEMI_BOLD    = 600;
+<i>94</i>&nbsp;    static final int DWRITE_FONT_WEIGHT_SEMI_BOLD    = 600;
+<i>95</i>&nbsp;    static final int DWRITE_FONT_WEIGHT_BOLD         = 700;
+<i>96</i>&nbsp;    static final int DWRITE_FONT_WEIGHT_EXTRA_BOLD   = 800;
+<i>97</i>&nbsp;    static final int DWRITE_FONT_WEIGHT_ULTRA_BOLD   = 800;
+<i>98</i>&nbsp;    static final int DWRITE_FONT_WEIGHT_BLACK        = 900;
+<i>99</i>&nbsp;    static final int DWRITE_FONT_WEIGHT_HEAVY        = 900;
+<i>100</i>&nbsp;    static final int DWRITE_FONT_WEIGHT_EXTRA_BLACK  = 950;
+<i>101</i>&nbsp;    static final int DWRITE_FONT_WEIGHT_ULTRA_BLACK  = 950;
+<i>102</i>&nbsp;    static final int DWRITE_FONT_STRETCH_UNDEFINED        = 0;
+<i>103</i>&nbsp;    static final int DWRITE_FONT_STRETCH_ULTRA_CONDENSED  = 1;
+<i>104</i>&nbsp;    static final int DWRITE_FONT_STRETCH_EXTRA_CONDENSED  = 2;
+<i>105</i>&nbsp;    static final int DWRITE_FONT_STRETCH_CONDENSED        = 3;
+<i>106</i>&nbsp;    static final int DWRITE_FONT_STRETCH_SEMI_CONDENSED   = 4;
+<i>107</i>&nbsp;    static final int DWRITE_FONT_STRETCH_NORMAL           = 5;
+<i>108</i>&nbsp;    static final int DWRITE_FONT_STRETCH_MEDIUM           = 5;
+<i>109</i>&nbsp;    static final int DWRITE_FONT_STRETCH_SEMI_EXPANDED    = 6;
+<i>110</i>&nbsp;    static final int DWRITE_FONT_STRETCH_EXPANDED         = 7;
+<i>111</i>&nbsp;    static final int DWRITE_FONT_STRETCH_EXTRA_EXPANDED   = 8;
+<i>112</i>&nbsp;    static final int DWRITE_FONT_STRETCH_ULTRA_EXPANDED   = 9;
+<i>113</i>&nbsp;    static final int DWRITE_FONT_STYLE_NORMAL       = 0;
+<i>114</i>&nbsp;    static final int DWRITE_FONT_STYLE_OBLIQUE      = 1;
+<i>115</i>&nbsp;    static final int DWRITE_FONT_STYLE_ITALIC       = 2;
+<i>116</i>&nbsp;    static final int DWRITE_TEXTURE_ALIASED_1x1 = 0;
+<i>117</i>&nbsp;    static final int DWRITE_TEXTURE_CLEARTYPE_3x1 = 1;
+<i>118</i>&nbsp;    static final int DWRITE_RENDERING_MODE_DEFAULT                      = 0;
+<i>119</i>&nbsp;    static final int DWRITE_RENDERING_MODE_ALIASED                      = 1;
+<i>120</i>&nbsp;    static final int DWRITE_RENDERING_MODE_GDI_CLASSIC                  = 2;
+<i>121</i>&nbsp;    static final int DWRITE_RENDERING_MODE_GDI_NATURAL                  = 3;
+<i>122</i>&nbsp;    static final int DWRITE_RENDERING_MODE_NATURAL                      = 4;
+<i>123</i>&nbsp;    static final int DWRITE_RENDERING_MODE_NATURAL_SYMMETRIC            = 5;
+<i>124</i>&nbsp;    static final int DWRITE_RENDERING_MODE_OUTLINE                      = 6;
+<i>125</i>&nbsp;    static final int DWRITE_RENDERING_MODE_CLEARTYPE_GDI_CLASSIC        = DWRITE_RENDERING_MODE_GDI_CLASSIC;
+<i>126</i>&nbsp;    static final int DWRITE_RENDERING_MODE_CLEARTYPE_GDI_NATURAL        = DWRITE_RENDERING_MODE_GDI_NATURAL;
+<i>127</i>&nbsp;    static final int DWRITE_RENDERING_MODE_CLEARTYPE_NATURAL            = DWRITE_RENDERING_MODE_NATURAL;
+<i>128</i>&nbsp;    static final int DWRITE_RENDERING_MODE_CLEARTYPE_NATURAL_SYMMETRIC  = DWRITE_RENDERING_MODE_NATURAL_SYMMETRIC;
+<i>129</i>&nbsp;    static final int DWRITE_MEASURING_MODE_NATURAL = 0;
+<i>130</i>&nbsp;    static final int DWRITE_MEASURING_MODE_GDI_CLASSIC = 1;
+<i>131</i>&nbsp;    static final int DWRITE_MEASURING_MODE_GDI_NATURAL = 2;
+<i>132</i>&nbsp;    static final int DWRITE_FACTORY_TYPE_SHARED = 0;
+<i>133</i>&nbsp;    static final int DWRITE_READING_DIRECTION_LEFT_TO_RIGHT = 0;
+<i>134</i>&nbsp;    static final int DWRITE_READING_DIRECTION_RIGHT_TO_LEFT = 1;
+<i>135</i>&nbsp;    static final int DWRITE_FONT_SIMULATIONS_NONE     = 0x0000;
+<i>136</i>&nbsp;    static final int DWRITE_FONT_SIMULATIONS_BOLD     = 0x0001;
+<i>137</i>&nbsp;    static final int DWRITE_FONT_SIMULATIONS_OBLIQUE  = 0x0002;
+<i>138</i>&nbsp;    static final int DWRITE_INFORMATIONAL_STRING_NONE = 0;
+<i>139</i>&nbsp;    static final int DWRITE_INFORMATIONAL_STRING_COPYRIGHT_NOTICE = 1;
+<i>140</i>&nbsp;    static final int DWRITE_INFORMATIONAL_STRING_VERSION_STRINGS = 2;
+<i>141</i>&nbsp;    static final int DWRITE_INFORMATIONAL_STRING_TRADEMARK = 3;
+<i>142</i>&nbsp;    static final int DWRITE_INFORMATIONAL_STRING_MANUFACTURER = 4;
+<i>143</i>&nbsp;    static final int DWRITE_INFORMATIONAL_STRING_DESIGNER = 5;
+<i>144</i>&nbsp;    static final int DWRITE_INFORMATIONAL_STRING_DESIGNER_URL = 6;
+<i>145</i>&nbsp;    static final int DWRITE_INFORMATIONAL_STRING_DESCRIPTION = 7;
+<i>146</i>&nbsp;    static final int DWRITE_INFORMATIONAL_STRING_FONT_VENDOR_URL = 8;
+<i>147</i>&nbsp;    static final int DWRITE_INFORMATIONAL_STRING_LICENSE_DESCRIPTION = 9;
+<i>148</i>&nbsp;    static final int DWRITE_INFORMATIONAL_STRING_LICENSE_INFO_URL = 10;
+<i>149</i>&nbsp;    static final int DWRITE_INFORMATIONAL_STRING_WIN32_FAMILY_NAMES = 11;
+<i>150</i>&nbsp;    static final int DWRITE_INFORMATIONAL_STRING_WIN32_SUBFAMILY_NAMES = 12;
+<i>151</i>&nbsp;    static final int DWRITE_INFORMATIONAL_STRING_PREFERRED_FAMILY_NAMES = 13;
+<i>152</i>&nbsp;    static final int DWRITE_INFORMATIONAL_STRING_PREFERRED_SUBFAMILY_NAMES = 14;
+<i>153</i>&nbsp;    static final int DWRITE_INFORMATIONAL_STRING_SAMPLE_TEXT = 15;
+<i>154</i>&nbsp;    /* Only on newer versions of Dwrite */
+<i>155</i>&nbsp;    static final int DWRITE_INFORMATIONAL_STRING_FULL_NAME = 16;
+<i>156</i>&nbsp;    static final int DWRITE_INFORMATIONAL_STRING_POSTSCRIPT_NAME = 17;
+<i>157</i>&nbsp;    static final int DWRITE_INFORMATIONAL_STRING_POSTSCRIPT_CID_NAME = 18;
+<i>158</i>&nbsp;
+<i>159</i>&nbsp;    /* Constructors */
+<i>160</i>&nbsp;    private static final native long _DWriteCreateFactory(int factoryType);
+<i>161</i>&nbsp;    static final IDWriteFactory DWriteCreateFactory(int factoryType) {
+<b class="fc"><i>162</i>&nbsp;        long ptr = _DWriteCreateFactory(factoryType);</b>
+<b class="fc"><i>163</i>&nbsp;        return ptr != 0 ? new IDWriteFactory(ptr) : null;</b>
+<i>164</i>&nbsp;    }
+<i>165</i>&nbsp;
+<i>166</i>&nbsp;    private static final native long _D2D1CreateFactory(int factoryType);
+<i>167</i>&nbsp;    static final ID2D1Factory D2D1CreateFactory(int factoryType) {
+<b class="fc"><i>168</i>&nbsp;        long ptr = _D2D1CreateFactory(factoryType);</b>
+<b class="fc"><i>169</i>&nbsp;        return ptr != 0 ? new ID2D1Factory(ptr) : null;</b>
+<i>170</i>&nbsp;    }
+<i>171</i>&nbsp;
+<i>172</i>&nbsp;    private static final native long _WICCreateImagingFactory();
+<i>173</i>&nbsp;    static final IWICImagingFactory WICCreateImagingFactory() {
+<b class="fc"><i>174</i>&nbsp;        long ptr = _WICCreateImagingFactory();</b>
+<b class="fc"><i>175</i>&nbsp;        return ptr != 0 ? new IWICImagingFactory(ptr) : null;</b>
+<i>176</i>&nbsp;    }
+<i>177</i>&nbsp;
+<i>178</i>&nbsp;    private static final native long _NewJFXTextAnalysisSink(char[] text,
+<i>179</i>&nbsp;                                                             int start,
+<i>180</i>&nbsp;                                                             int length,
+<i>181</i>&nbsp;                                                             char[] locale,
+<i>182</i>&nbsp;                                                             int direction,
+<i>183</i>&nbsp;                                                             long numberSubstitution);
+<i>184</i>&nbsp;
+<i>185</i>&nbsp;    static final JFXTextAnalysisSink NewJFXTextAnalysisSink(char[] text,
+<i>186</i>&nbsp;                                                            int start,
+<i>187</i>&nbsp;                                                            int length,
+<i>188</i>&nbsp;                                                            String locale,
+<i>189</i>&nbsp;                                                            int direction) {
+<b class="nc"><i>190</i>&nbsp;        long ptr = _NewJFXTextAnalysisSink(text, //NOT NULL terminator</b>
+<i>191</i>&nbsp;                                           start, length,
+<b class="nc"><i>192</i>&nbsp;                                           (locale+&#39;\0&#39;).toCharArray(),//NULL terminator</b>
+<i>193</i>&nbsp;                                           direction, 0);
+<b class="nc"><i>194</i>&nbsp;        return ptr != 0 ? new JFXTextAnalysisSink(ptr) : null;</b>
+<i>195</i>&nbsp;    }
+<i>196</i>&nbsp;
+<i>197</i>&nbsp;    private static final native long _NewJFXTextRenderer();
+<i>198</i>&nbsp;    static final JFXTextRenderer NewJFXTextRenderer() {
+<b class="nc"><i>199</i>&nbsp;        long ptr = _NewJFXTextRenderer();</b>
+<b class="nc"><i>200</i>&nbsp;        return ptr != 0 ? new JFXTextRenderer(ptr) : null;</b>
+<i>201</i>&nbsp;    }
+<i>202</i>&nbsp;
+<i>203</i>&nbsp;    //JFXTextAnalysisSink
+<i>204</i>&nbsp;    static final native boolean Next(long ptr);
+<i>205</i>&nbsp;    static final native int GetStart(long ptr);
+<i>206</i>&nbsp;    static final native int GetLength(long ptr);
+<i>207</i>&nbsp;    static final native DWRITE_SCRIPT_ANALYSIS GetAnalysis(long ptr);
+<i>208</i>&nbsp;
+<i>209</i>&nbsp;    //JFXTextRenderer
+<i>210</i>&nbsp;    static final native boolean JFXTextRendererNext(long ptr);
+<i>211</i>&nbsp;    static final native int JFXTextRendererGetStart(long ptr);
+<i>212</i>&nbsp;    static final native int JFXTextRendererGetLength(long ptr);
+<i>213</i>&nbsp;    static final native int JFXTextRendererGetGlyphCount(long ptr);
+<i>214</i>&nbsp;    static final native int JFXTextRendererGetTotalGlyphCount(long ptr);
+<i>215</i>&nbsp;    static final native long JFXTextRendererGetFontFace(long ptr);
+<i>216</i>&nbsp;    static final native int JFXTextRendererGetGlyphIndices(long ptr, int[] glyphs, int start, int slot);
+<i>217</i>&nbsp;    static final native int JFXTextRendererGetGlyphAdvances(long ptr, float[] advances, int start);
+<i>218</i>&nbsp;    static final native int JFXTextRendererGetGlyphOffsets(long ptr, float[] offsets, int start);
+<i>219</i>&nbsp;    static final native int JFXTextRendererGetClusterMap(long ptr, short[] clusterMap, int textStart, int glyphStart);
+<i>220</i>&nbsp;
+<i>221</i>&nbsp;    //IDWriteFontFace
+<i>222</i>&nbsp;    static final native DWRITE_GLYPH_METRICS GetDesignGlyphMetrics(long ptr, short glyphIndex, boolean isSideways);
+<i>223</i>&nbsp;    static final native Path2D GetGlyphRunOutline(long ptr, float emSize, short glyphIndex, boolean isSideways);
+<i>224</i>&nbsp;
+<i>225</i>&nbsp;    //IDWriteFont
+<i>226</i>&nbsp;    static final native long CreateFontFace(long ptr);
+<i>227</i>&nbsp;    static final native long GetFaceNames(long ptr);
+<i>228</i>&nbsp;    static final native long GetFontFamily(long ptr);
+<i>229</i>&nbsp;    static final native int GetStretch(long ptr);
+<i>230</i>&nbsp;    static final native int GetStyle(long ptr);
+<i>231</i>&nbsp;    static final native int GetWeight(long ptr);
+<i>232</i>&nbsp;    static final native long GetInformationalStrings(long ptr, int informationalStringID);
+<i>233</i>&nbsp;    static final native int GetSimulations(long ptr);
+<i>234</i>&nbsp;
+<i>235</i>&nbsp;    //IDWriteFontList
+<i>236</i>&nbsp;    static final native int GetFontCount(long ptr);
+<i>237</i>&nbsp;    static final native long GetFont(long ptr, int index);
+<i>238</i>&nbsp;
+<i>239</i>&nbsp;    //IDWriteFontFile
+<i>240</i>&nbsp;    static final native int Analyze(long ptr, boolean[] isSupportedFontType, int[] fontFileType, int[] fontFaceType, int[] numberOfFaces);
+<i>241</i>&nbsp;
+<i>242</i>&nbsp;    //IDWriteLocalizedStrings
+<i>243</i>&nbsp;    static final native char[] GetString(long ptr, int index, int size);
+<i>244</i>&nbsp;    static final native int GetStringLength(long ptr, int index);
+<i>245</i>&nbsp;    static final native int FindLocaleName(long ptr, char[] locale);
+<i>246</i>&nbsp;
+<i>247</i>&nbsp;    //IDWriteFontFamily
+<i>248</i>&nbsp;    static final native long GetFamilyNames(long ptr);
+<i>249</i>&nbsp;    static final native long GetFirstMatchingFont(long ptr, int weight, int stretch, int style);
+<i>250</i>&nbsp;
+<i>251</i>&nbsp;    //IDWriteFontCollection
+<i>252</i>&nbsp;    static final native int GetFontFamilyCount(long ptr);
+<i>253</i>&nbsp;    static final native long GetFontFamily(long ptr, int index);
+<i>254</i>&nbsp;    static final native int FindFamilyName(long ptr, char[] familyName);
+<i>255</i>&nbsp;    static final native long GetFontFromFontFace (long ptr, long fontface);
+<i>256</i>&nbsp;
+<i>257</i>&nbsp;    //IDWriteGlyphRunAnalysis
+<i>258</i>&nbsp;    static final native byte[] CreateAlphaTexture(long ptr, int textureType, RECT textureBounds);
+<i>259</i>&nbsp;    static final native RECT GetAlphaTextureBounds(long ptr, int textureType);
+<i>260</i>&nbsp;
+<i>261</i>&nbsp;    //IDWriteFactory
+<i>262</i>&nbsp;    static final native long GetSystemFontCollection(long ptr, boolean checkforupdates);
+<i>263</i>&nbsp;    static final native long CreateGlyphRunAnalysis(long ptr,
+<i>264</i>&nbsp;                                                    DWRITE_GLYPH_RUN glyphRun,
+<i>265</i>&nbsp;                                                    float pixelsPerDip,
+<i>266</i>&nbsp;                                                    DWRITE_MATRIX transform,
+<i>267</i>&nbsp;                                                    int renderingMode,
+<i>268</i>&nbsp;                                                    int measuringMode,
+<i>269</i>&nbsp;                                                    float baselineOriginX,
+<i>270</i>&nbsp;                                                    float baselineOriginY);
+<i>271</i>&nbsp;    static final native long CreateTextAnalyzer(long ptr);
+<i>272</i>&nbsp;    static final native long CreateTextFormat(long ptr,
+<i>273</i>&nbsp;                                              char[] fontFamily,
+<i>274</i>&nbsp;                                              long fontCollection,
+<i>275</i>&nbsp;                                              int fontWeight,
+<i>276</i>&nbsp;                                              int fontStyle,
+<i>277</i>&nbsp;                                              int fontStretch,
+<i>278</i>&nbsp;                                              float fontSize,
+<i>279</i>&nbsp;                                              char[] localeName);
+<i>280</i>&nbsp;    static final native long CreateTextLayout(long ptr,
+<i>281</i>&nbsp;                                              char[] text,
+<i>282</i>&nbsp;                                              int stringStart,
+<i>283</i>&nbsp;                                              int stringLength,
+<i>284</i>&nbsp;                                              long textFormat,
+<i>285</i>&nbsp;                                              float maxWidth,
+<i>286</i>&nbsp;                                              float maxHeight);
+<i>287</i>&nbsp;    static final native long CreateFontFileReference(long ptr, char[] filePath);
+<i>288</i>&nbsp;    static final native long CreateFontFace(long ptr,
+<i>289</i>&nbsp;                                            int fontFaceType,
+<i>290</i>&nbsp;                                            long fontFiles,
+<i>291</i>&nbsp;                                            int faceIndex,
+<i>292</i>&nbsp;                                            int fontFaceSimulationFlags);
+<i>293</i>&nbsp;
+<i>294</i>&nbsp;    //IUnknown
+<i>295</i>&nbsp;    static final native int AddRef(long ptr);
+<i>296</i>&nbsp;    static final native int Release(long ptr);
+<i>297</i>&nbsp;
+<i>298</i>&nbsp;    //IDWriteTextAnalyzer
+<i>299</i>&nbsp;    static final native int AnalyzeScript(long ptr, long source, int start, int length, long sink);
+<i>300</i>&nbsp;    static final native int GetGlyphs(long ptr,
+<i>301</i>&nbsp;                                      char[] textString,
+<i>302</i>&nbsp;                                      int textStart,
+<i>303</i>&nbsp;                                      int textLength,
+<i>304</i>&nbsp;                                      long fontFace,
+<i>305</i>&nbsp;                                      boolean isSideways,
+<i>306</i>&nbsp;                                      boolean isRightToLeft,
+<i>307</i>&nbsp;                                      DWRITE_SCRIPT_ANALYSIS scriptAnalysis,
+<i>308</i>&nbsp;                                      char[] localeName,
+<i>309</i>&nbsp;                                      long numberSubstitution,
+<i>310</i>&nbsp;                                      long[] features,
+<i>311</i>&nbsp;                                      int[] featureRangeLengths,
+<i>312</i>&nbsp;                                      int featureRanges,
+<i>313</i>&nbsp;                                      int maxGlyphCount,
+<i>314</i>&nbsp;                                      short[] clusterMap,
+<i>315</i>&nbsp;                                      short[] textProps,
+<i>316</i>&nbsp;                                      short[] glyphIndices,
+<i>317</i>&nbsp;                                      short[] glyphProps,
+<i>318</i>&nbsp;                                      int[] actualGlyphCount);
+<i>319</i>&nbsp;    static final native int GetGlyphPlacements(long ptr,
+<i>320</i>&nbsp;                                               char[] textString,
+<i>321</i>&nbsp;                                               short[] clusterMap,
+<i>322</i>&nbsp;                                               short[] textProps,
+<i>323</i>&nbsp;                                               int textStart,
+<i>324</i>&nbsp;                                               int textLength,
+<i>325</i>&nbsp;                                               short[] glyphIndices,
+<i>326</i>&nbsp;                                               short[] glyphProps,
+<i>327</i>&nbsp;                                               int glyphCount,
+<i>328</i>&nbsp;                                               long fontFace,
+<i>329</i>&nbsp;                                               float fontEmSize,
+<i>330</i>&nbsp;                                               boolean isSideways,
+<i>331</i>&nbsp;                                               boolean isRightToLeft,
+<i>332</i>&nbsp;                                               DWRITE_SCRIPT_ANALYSIS scriptAnalysis,
+<i>333</i>&nbsp;                                               char[] localeName,
+<i>334</i>&nbsp;                                               long[] features,
+<i>335</i>&nbsp;                                               int[] featureRangeLengths,
+<i>336</i>&nbsp;                                               int featureRanges,
+<i>337</i>&nbsp;                                               float[] glyphAdvances,
+<i>338</i>&nbsp;                                               float[] glyphOffsets);
+<i>339</i>&nbsp;
+<i>340</i>&nbsp;    //IDWriteTextLayout
+<i>341</i>&nbsp;    static final native int Draw(long ptr, long clientData, long renderer, float x , float y);
+<i>342</i>&nbsp;
+<i>343</i>&nbsp;    //IWICImagingFactory
+<i>344</i>&nbsp;    static final native long CreateBitmap(long ptr, int uiWidth, int uiHeight, int pixelFormat, int options);
+<i>345</i>&nbsp;
+<i>346</i>&nbsp;    //IWICBitmap
+<i>347</i>&nbsp;    static final native long Lock(long ptr, int x, int y, int width, int height, int flags);
+<i>348</i>&nbsp;
+<i>349</i>&nbsp;    //IWICBitmapLock
+<i>350</i>&nbsp;    static final native byte[] GetDataPointer(long ptr);
+<i>351</i>&nbsp;    static final native int GetStride(long ptr);
+<i>352</i>&nbsp;
+<i>353</i>&nbsp;    //ID2D1Factory
+<i>354</i>&nbsp;    static final native long CreateWicBitmapRenderTarget(long ptr, long target, D2D1_RENDER_TARGET_PROPERTIES renderTargetProperties);
+<i>355</i>&nbsp;
+<i>356</i>&nbsp;    //ID2D1RenderTarget
+<i>357</i>&nbsp;    static final native void BeginDraw(long ptr);
+<i>358</i>&nbsp;    static final native int EndDraw(long ptr);
+<i>359</i>&nbsp;    static final native void Clear(long ptr, D2D1_COLOR_F clearColor);
+<i>360</i>&nbsp;    static final native void SetTextAntialiasMode(long ptr, int textAntialiasMode);
+<i>361</i>&nbsp;    static final native void SetTransform(long ptr, D2D1_MATRIX_3X2_F transform);
+<i>362</i>&nbsp;    static final native void DrawGlyphRun(long ptr, D2D1_POINT_2F baselineOrigin, DWRITE_GLYPH_RUN glyphRun, long foregroundBrush, int measuringMode);
+<i>363</i>&nbsp;    static final native long CreateSolidColorBrush(long ptr, D2D1_COLOR_F color);
+<i>364</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2017-12-04 21:49</div>
+</div>
+</body>
+</html>

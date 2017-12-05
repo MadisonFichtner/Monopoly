@@ -1,0 +1,281 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: RegionImageCache</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.javafx.sg.prism</a> ]
+</div>
+
+<h1>Coverage Summary for Class: RegionImageCache (com.sun.javafx.sg.prism)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">RegionImageCache</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (4/ 4)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    67.6%
+  </span>
+  <span class="absValue">
+    (25/ 37)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">RegionImageCache$CachedImage</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (2/ 2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (11/ 11)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (6/ 6)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    75%
+  </span>
+  <span class="absValue">
+    (36/ 48)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright (c) 2012, 2014, Oracle and/or its affiliates. All rights reserved.
+<i>3</i>&nbsp; * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+<i>4</i>&nbsp; *
+<i>5</i>&nbsp; *
+<i>6</i>&nbsp; *
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; *
+<i>11</i>&nbsp; *
+<i>12</i>&nbsp; *
+<i>13</i>&nbsp; *
+<i>14</i>&nbsp; *
+<i>15</i>&nbsp; *
+<i>16</i>&nbsp; *
+<i>17</i>&nbsp; *
+<i>18</i>&nbsp; *
+<i>19</i>&nbsp; *
+<i>20</i>&nbsp; *
+<i>21</i>&nbsp; *
+<i>22</i>&nbsp; *
+<i>23</i>&nbsp; *
+<i>24</i>&nbsp; */
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;package com.sun.javafx.sg.prism;
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;import javafx.scene.layout.Background;
+<i>29</i>&nbsp;import java.util.HashMap;
+<i>30</i>&nbsp;import com.sun.javafx.geom.Rectangle;
+<i>31</i>&nbsp;import com.sun.javafx.geom.Shape;
+<i>32</i>&nbsp;import com.sun.javafx.logging.PulseLogger;
+<i>33</i>&nbsp;import static com.sun.javafx.logging.PulseLogger.PULSE_LOGGING_ENABLED;
+<i>34</i>&nbsp;import com.sun.prism.Graphics;
+<i>35</i>&nbsp;import com.sun.prism.RTTexture;
+<i>36</i>&nbsp;import com.sun.prism.ResourceFactory;
+<i>37</i>&nbsp;import com.sun.prism.Texture.WrapMode;
+<i>38</i>&nbsp;import com.sun.prism.impl.packrect.RectanglePacker;
+<i>39</i>&nbsp;
+<i>40</i>&nbsp;/**
+<i>41</i>&nbsp; * RegionImageCache - A fixed pixel count sized cache of Images keyed by arbitrary set of arguments. All images are held with
+<i>42</i>&nbsp; * SoftReferences so they will be dropped by the GC if heap memory gets tight. When our size hits max pixel count least
+<i>43</i>&nbsp; * recently requested images are removed first.
+<i>44</i>&nbsp; *
+<i>45</i>&nbsp; */
+<i>46</i>&nbsp;class RegionImageCache {
+<i>47</i>&nbsp;
+<i>48</i>&nbsp;    // Maximum cached image size in pixels
+<i>49</i>&nbsp;    private final static int MAX_SIZE = 300 * 300;
+<i>50</i>&nbsp;    private static final int WIDTH = 1024;
+<i>51</i>&nbsp;    private static final int HEIGHT = 1024;
+<i>52</i>&nbsp;
+<i>53</i>&nbsp;    private HashMap&lt;Integer, CachedImage&gt; imageMap;
+<i>54</i>&nbsp;    private RTTexture backingStore;
+<i>55</i>&nbsp;    private RectanglePacker hPacker;
+<i>56</i>&nbsp;    private RectanglePacker vPacker;
+<i>57</i>&nbsp;
+<i>58</i>&nbsp;
+<b class="fc"><i>59</i>&nbsp;    RegionImageCache(final ResourceFactory factory) {</b>
+<b class="fc"><i>60</i>&nbsp;        imageMap = new HashMap&lt;&gt;();</b>
+<i>61</i>&nbsp;        WrapMode mode;
+<i>62</i>&nbsp;        int pad;
+<b class="fc"><i>63</i>&nbsp;        if (factory.isWrapModeSupported(WrapMode.CLAMP_TO_ZERO)) {</b>
+<b class="fc"><i>64</i>&nbsp;            mode = WrapMode.CLAMP_TO_ZERO;</b>
+<b class="fc"><i>65</i>&nbsp;            pad = 0;</b>
+<i>66</i>&nbsp;        } else {
+<b class="nc"><i>67</i>&nbsp;            mode = WrapMode.CLAMP_NOT_NEEDED;</b>
+<b class="nc"><i>68</i>&nbsp;            pad = 1;</b>
+<i>69</i>&nbsp;        }
+<b class="fc"><i>70</i>&nbsp;        backingStore = factory.createRTTexture(WIDTH + WIDTH, HEIGHT, mode);</b>
+<b class="fc"><i>71</i>&nbsp;        backingStore.contentsUseful();</b>
+<b class="fc"><i>72</i>&nbsp;        backingStore.makePermanent();</b>
+<b class="fc"><i>73</i>&nbsp;        factory.setRegionTexture(backingStore);</b>
+<i>74</i>&nbsp;        // Subdivide the texture in two halves where on half is used to store
+<i>75</i>&nbsp;        // horizontal regions and the other vertical regions. Otherwise, mixing
+<i>76</i>&nbsp;        // horizontal and vertical regions on the same area, would result in
+<i>77</i>&nbsp;        // a lot of waste texture space.
+<i>78</i>&nbsp;        // Note that requests are already padded on the right and bottom edges
+<i>79</i>&nbsp;        // (and that includes the gap between the caches) so we only have to
+<i>80</i>&nbsp;        // pad top and left edges if CLAMP_TO_ZERO needs to be simulated.
+<b class="fc"><i>81</i>&nbsp;        hPacker = new RectanglePacker(backingStore, pad, pad, WIDTH-pad, HEIGHT-pad, false);</b>
+<b class="fc"><i>82</i>&nbsp;        vPacker = new RectanglePacker(backingStore, WIDTH, pad, WIDTH, HEIGHT-pad, true);</b>
+<b class="fc"><i>83</i>&nbsp;    }</b>
+<i>84</i>&nbsp;
+<i>85</i>&nbsp;    /**
+<i>86</i>&nbsp;     * Check if the image size is to big to be stored in the cache
+<i>87</i>&nbsp;     *
+<i>88</i>&nbsp;     * @param w The image width
+<i>89</i>&nbsp;     * @param h The image height
+<i>90</i>&nbsp;     * @return True if the image size is less than max
+<i>91</i>&nbsp;     */
+<i>92</i>&nbsp;    boolean isImageCachable(int w, int h) {
+<b class="fc"><i>93</i>&nbsp;        return 0 &lt; w &amp;&amp; w &lt; WIDTH &amp;&amp;</b>
+<i>94</i>&nbsp;               0 &lt; h &amp;&amp; h &lt; HEIGHT &amp;&amp;
+<i>95</i>&nbsp;               (w * h) &lt; MAX_SIZE;
+<i>96</i>&nbsp;    }
+<i>97</i>&nbsp;
+<i>98</i>&nbsp;    RTTexture getBackingStore() {
+<b class="fc"><i>99</i>&nbsp;        return backingStore;</b>
+<i>100</i>&nbsp;    }
+<i>101</i>&nbsp;
+<i>102</i>&nbsp;    /**
+<i>103</i>&nbsp;     * Search the cache for a background image representing the arguments.
+<i>104</i>&nbsp;     * When this method succeeds the x and y coordinates in rect are adjust
+<i>105</i>&nbsp;     * to the location in the backing store when the image is stored.
+<i>106</i>&nbsp;     * If a failure occurred the rect is set to empty to indicate the caller
+<i>107</i>&nbsp;     * to disable caching.
+<i>108</i>&nbsp;     *
+<i>109</i>&nbsp;     * @param key the hash key for the image
+<i>110</i>&nbsp;     * @param rect the rect image. On input, width and height determine the requested
+<i>111</i>&nbsp;     *        texture space. On ouput, the x and y the location in the texture
+<i>112</i>&nbsp;     * @param background the background used to validated if the correct image was found
+<i>113</i>&nbsp;     * @param shape the shape used to validated if the correct image was found
+<i>114</i>&nbsp;     * @param g the graphics to flush if the texture needs to be restarted
+<i>115</i>&nbsp;     * @return true means to caller needs to render to rect to initialize the content.
+<i>116</i>&nbsp;     */
+<i>117</i>&nbsp;    boolean getImageLocation(Integer key, Rectangle rect, Background background,
+<i>118</i>&nbsp;                             Shape shape, Graphics g) {
+<b class="fc"><i>119</i>&nbsp;        CachedImage cache = imageMap.get(key);</b>
+<b class="fc"><i>120</i>&nbsp;        if (cache != null) {</b>
+<b class="fc"><i>121</i>&nbsp;            if (cache.equals(rect.width, rect.height, background, shape)) {</b>
+<b class="fc"><i>122</i>&nbsp;                rect.x = cache.x;</b>
+<b class="fc"><i>123</i>&nbsp;                rect.y = cache.y;</b>
+<b class="fc"><i>124</i>&nbsp;                return false;</b>
+<i>125</i>&nbsp;            }
+<i>126</i>&nbsp;            // hash collision, mark rectangle empty indicates the caller to
+<i>127</i>&nbsp;            // disable caching
+<b class="nc"><i>128</i>&nbsp;            rect.width = rect.height = -1;</b>
+<b class="nc"><i>129</i>&nbsp;            return false;</b>
+<i>130</i>&nbsp;        }
+<b class="fc"><i>131</i>&nbsp;        boolean vertical = rect.height &gt; 64;</b>
+<b class="fc"><i>132</i>&nbsp;        RectanglePacker packer = vertical ? vPacker : hPacker;</b>
+<i>133</i>&nbsp;
+<b class="fc"><i>134</i>&nbsp;        if (!packer.add(rect)) {</b>
+<b class="nc"><i>135</i>&nbsp;            g.sync();</b>
+<i>136</i>&nbsp;
+<b class="nc"><i>137</i>&nbsp;            vPacker.clear();</b>
+<b class="nc"><i>138</i>&nbsp;            hPacker.clear();</b>
+<b class="nc"><i>139</i>&nbsp;            imageMap.clear();</b>
+<b class="nc"><i>140</i>&nbsp;            packer.add(rect);</b>
+<b class="nc"><i>141</i>&nbsp;            backingStore.createGraphics().clear();</b>
+<b class="nc"><i>142</i>&nbsp;            if (PULSE_LOGGING_ENABLED) {</b>
+<b class="nc"><i>143</i>&nbsp;                PulseLogger.incrementCounter(&quot;Region image cache flushed&quot;);</b>
+<i>144</i>&nbsp;            }
+<i>145</i>&nbsp;        }
+<b class="fc"><i>146</i>&nbsp;        imageMap.put(key, new CachedImage(rect, background, shape));</b>
+<b class="fc"><i>147</i>&nbsp;        return true;</b>
+<i>148</i>&nbsp;    }
+<i>149</i>&nbsp;
+<i>150</i>&nbsp;    static class CachedImage {
+<i>151</i>&nbsp;        Background background;
+<i>152</i>&nbsp;        Shape shape;
+<i>153</i>&nbsp;        int x, y, width, height;
+<i>154</i>&nbsp;
+<b class="fc"><i>155</i>&nbsp;        CachedImage(Rectangle rect, Background background, Shape shape) {</b>
+<b class="fc"><i>156</i>&nbsp;            this.x = rect.x;</b>
+<b class="fc"><i>157</i>&nbsp;            this.y = rect.y;</b>
+<b class="fc"><i>158</i>&nbsp;            this.width = rect.width;</b>
+<b class="fc"><i>159</i>&nbsp;            this.height = rect.height;</b>
+<b class="fc"><i>160</i>&nbsp;            this.background = background;</b>
+<b class="fc"><i>161</i>&nbsp;            this.shape = shape;</b>
+<b class="fc"><i>162</i>&nbsp;        }</b>
+<i>163</i>&nbsp;
+<i>164</i>&nbsp;        public boolean equals(int width, int height, Background background, Shape shape) {
+<b class="fc"><i>165</i>&nbsp;            return this.width == width &amp;&amp;</b>
+<i>166</i>&nbsp;                   this.height == height &amp;&amp;
+<b class="fc"><i>167</i>&nbsp;                   (this.background == null ? background == null : this.background.equals(background)) &amp;&amp;</b>
+<b class="fc"><i>168</i>&nbsp;                   (this.shape == null ? shape == null : this.shape.equals(shape));</b>
+<i>169</i>&nbsp;        }
+<i>170</i>&nbsp;    }
+<i>171</i>&nbsp;
+<i>172</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2017-12-04 21:49</div>
+</div>
+</body>
+</html>

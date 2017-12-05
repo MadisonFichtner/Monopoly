@@ -1,0 +1,283 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: WeakReferenceQueue</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.javafx.util</a> ]
+</div>
+
+<h1>Coverage Summary for Class: WeakReferenceQueue (com.sun.javafx.util)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">WeakReferenceQueue</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (5/ 5)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    80%
+  </span>
+  <span class="absValue">
+    (20/ 25)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">WeakReferenceQueue$1</td>
+<td class="coverageStat">
+  <span class="percent">
+    50%
+  </span>
+  <span class="absValue">
+    (2/ 4)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    39.1%
+  </span>
+  <span class="absValue">
+    (9/ 23)
+  </span>
+</td>
+  </tr>
+  <tr>
+    <td class="name">WeakReferenceQueue$ListEntry</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (3/ 3)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (14/ 14)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    83.3%
+  </span>
+  <span class="absValue">
+    (10/ 12)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    69.4%
+  </span>
+  <span class="absValue">
+    (43/ 62)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright (c) 2011, 2015, Oracle and/or its affiliates. All rights reserved.
+<i>3</i>&nbsp; * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+<i>4</i>&nbsp; *
+<i>5</i>&nbsp; *
+<i>6</i>&nbsp; *
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; *
+<i>11</i>&nbsp; *
+<i>12</i>&nbsp; *
+<i>13</i>&nbsp; *
+<i>14</i>&nbsp; *
+<i>15</i>&nbsp; *
+<i>16</i>&nbsp; *
+<i>17</i>&nbsp; *
+<i>18</i>&nbsp; *
+<i>19</i>&nbsp; *
+<i>20</i>&nbsp; *
+<i>21</i>&nbsp; *
+<i>22</i>&nbsp; *
+<i>23</i>&nbsp; *
+<i>24</i>&nbsp; */
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;package com.sun.javafx.util;
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;import java.lang.ref.ReferenceQueue;
+<i>29</i>&nbsp;import java.lang.ref.WeakReference;
+<i>30</i>&nbsp;import java.util.Iterator;
+<i>31</i>&nbsp;
+<i>32</i>&nbsp;/**
+<i>33</i>&nbsp; * This is a helper class for handling weak references across all devices.
+<i>34</i>&nbsp; * We tried to use WeakHashMap, but it isn&#39;t available on mobile. We tried to
+<i>35</i>&nbsp; * add it to mobile, but it requires ReferenceQueue and it appears that
+<i>36</i>&nbsp; * ReferenceQueue requires support from the VM which we don&#39;t know that we
+<i>37</i>&nbsp; * have on mobile. So this class attempts to lesson the likelyhood of
+<i>38</i>&nbsp; * memory leaks.
+<i>39</i>&nbsp; *
+<i>40</i>&nbsp; * As we abandoned mobile, we considered removal of this class. But replacement
+<i>41</i>&nbsp; * by WeakHashMap is not always possible as we use mutable elements. At least
+<i>42</i>&nbsp; * it was now possible to optimize this class using the ReferenceQueue.
+<i>43</i>&nbsp; */
+<b class="fc"><i>44</i>&nbsp;public class WeakReferenceQueue&lt;E&gt; {</b>
+<i>45</i>&nbsp;    /**
+<i>46</i>&nbsp;     * Reference queue for cleared weak references
+<i>47</i>&nbsp;     */
+<b class="fc"><i>48</i>&nbsp;    private final ReferenceQueue garbage = new ReferenceQueue();</b>
+<i>49</i>&nbsp;
+<i>50</i>&nbsp;    /**
+<i>51</i>&nbsp;     * Strongly referenced list head
+<i>52</i>&nbsp;     */
+<b class="fc"><i>53</i>&nbsp;    private Object strongRef = new Object();</b>
+<b class="fc"><i>54</i>&nbsp;    private ListEntry head = new ListEntry(strongRef, garbage);</b>
+<i>55</i>&nbsp;
+<i>56</i>&nbsp;    /**
+<i>57</i>&nbsp;     * Size of the queue
+<i>58</i>&nbsp;     */
+<b class="fc"><i>59</i>&nbsp;    int size = 0;</b>
+<i>60</i>&nbsp;
+<i>61</i>&nbsp;    @SuppressWarnings(&quot;unchecked&quot;)
+<i>62</i>&nbsp;    public void add(E obj) {
+<b class="fc"><i>63</i>&nbsp;        cleanup();</b>
+<b class="fc"><i>64</i>&nbsp;        size++;</b>
+<b class="fc"><i>65</i>&nbsp;        new ListEntry(obj, garbage).insert(head.prev);</b>
+<b class="fc"><i>66</i>&nbsp;    }</b>
+<i>67</i>&nbsp;
+<i>68</i>&nbsp;    public void remove(E obj) {
+<b class="fc"><i>69</i>&nbsp;        cleanup();</b>
+<i>70</i>&nbsp;
+<b class="fc"><i>71</i>&nbsp;        ListEntry entry = head.next;</b>
+<b class="fc"><i>72</i>&nbsp;        while (entry != head) {</b>
+<b class="fc"><i>73</i>&nbsp;            Object other = entry.get();</b>
+<b class="fc"><i>74</i>&nbsp;            if (other == obj) {</b>
+<b class="fc"><i>75</i>&nbsp;                size--;</b>
+<b class="fc"><i>76</i>&nbsp;                entry.remove();</b>
+<b class="fc"><i>77</i>&nbsp;                return;</b>
+<i>78</i>&nbsp;            }
+<b class="nc"><i>79</i>&nbsp;            entry = entry.next;</b>
+<b class="nc"><i>80</i>&nbsp;        }</b>
+<b class="nc"><i>81</i>&nbsp;    }</b>
+<i>82</i>&nbsp;
+<i>83</i>&nbsp;    public void cleanup() {
+<i>84</i>&nbsp;        ListEntry entry;
+<b class="fc"><i>85</i>&nbsp;        while ((entry = (ListEntry) garbage.poll()) != null) {</b>
+<b class="nc"><i>86</i>&nbsp;            size--;</b>
+<b class="nc"><i>87</i>&nbsp;            entry.remove();</b>
+<i>88</i>&nbsp;        }
+<b class="fc"><i>89</i>&nbsp;    }</b>
+<i>90</i>&nbsp;
+<i>91</i>&nbsp;    public Iterator&lt;? super E&gt; iterator() {
+<b class="fc"><i>92</i>&nbsp;        return new Iterator() {</b>
+<b class="fc"><i>93</i>&nbsp;            private ListEntry index = head;</b>
+<b class="fc"><i>94</i>&nbsp;            private Object next = null;</b>
+<i>95</i>&nbsp;
+<i>96</i>&nbsp;            public boolean hasNext() {
+<b class="fc"><i>97</i>&nbsp;                next = null;</b>
+<b class="fc"><i>98</i>&nbsp;                while (next == null) {</b>
+<b class="fc"><i>99</i>&nbsp;                    ListEntry nextIndex = index.prev;</b>
+<b class="fc"><i>100</i>&nbsp;                    if (nextIndex == head) {</b>
+<b class="fc"><i>101</i>&nbsp;                        break;</b>
+<i>102</i>&nbsp;                    }
+<b class="nc"><i>103</i>&nbsp;                    next = nextIndex.get();</b>
+<b class="nc"><i>104</i>&nbsp;                    if (next == null) {</b>
+<b class="nc"><i>105</i>&nbsp;                        size--;</b>
+<b class="nc"><i>106</i>&nbsp;                        nextIndex.remove();</b>
+<i>107</i>&nbsp;                    }
+<b class="nc"><i>108</i>&nbsp;                }</b>
+<i>109</i>&nbsp;
+<b class="fc"><i>110</i>&nbsp;                return next != null;</b>
+<i>111</i>&nbsp;            }
+<i>112</i>&nbsp;
+<i>113</i>&nbsp;            public Object next() {
+<b class="nc"><i>114</i>&nbsp;                hasNext(); // forces us to clear out crap up to the next</b>
+<i>115</i>&nbsp;                           // valid spot
+<b class="nc"><i>116</i>&nbsp;                index = index.prev;</b>
+<b class="nc"><i>117</i>&nbsp;                return next;</b>
+<i>118</i>&nbsp;            }
+<i>119</i>&nbsp;
+<i>120</i>&nbsp;            public void remove() {
+<b class="nc"><i>121</i>&nbsp;                if (index != head) {</b>
+<b class="nc"><i>122</i>&nbsp;                    ListEntry nextIndex = index.next;</b>
+<b class="nc"><i>123</i>&nbsp;                    size--;</b>
+<b class="nc"><i>124</i>&nbsp;                    index.remove();</b>
+<b class="nc"><i>125</i>&nbsp;                    index = nextIndex;</b>
+<i>126</i>&nbsp;                }
+<b class="nc"><i>127</i>&nbsp;            }</b>
+<i>128</i>&nbsp;        };
+<i>129</i>&nbsp;    }
+<i>130</i>&nbsp;
+<i>131</i>&nbsp;    private static class ListEntry extends WeakReference {
+<i>132</i>&nbsp;        ListEntry prev, next;
+<i>133</i>&nbsp;
+<i>134</i>&nbsp;        public ListEntry(Object o, ReferenceQueue queue) {
+<b class="fc"><i>135</i>&nbsp;            super(o, queue);</b>
+<b class="fc"><i>136</i>&nbsp;            prev = this;</b>
+<b class="fc"><i>137</i>&nbsp;            next = this;</b>
+<b class="fc"><i>138</i>&nbsp;        }</b>
+<i>139</i>&nbsp;
+<i>140</i>&nbsp;        public void insert(ListEntry where) {
+<b class="fc"><i>141</i>&nbsp;            prev = where;</b>
+<b class="fc"><i>142</i>&nbsp;            next = where.next;</b>
+<b class="fc"><i>143</i>&nbsp;            where.next = this;</b>
+<b class="fc"><i>144</i>&nbsp;            next.prev = this;</b>
+<b class="fc"><i>145</i>&nbsp;        }</b>
+<i>146</i>&nbsp;
+<i>147</i>&nbsp;        public void remove() {
+<b class="fc"><i>148</i>&nbsp;            prev.next = next;</b>
+<b class="fc"><i>149</i>&nbsp;            next.prev = prev;</b>
+<b class="fc"><i>150</i>&nbsp;            next = this;</b>
+<b class="fc"><i>151</i>&nbsp;            prev = this;</b>
+<b class="fc"><i>152</i>&nbsp;        }</b>
+<i>153</i>&nbsp;    }
+<i>154</i>&nbsp;
+<i>155</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2017-12-04 21:49</div>
+</div>
+</body>
+</html>

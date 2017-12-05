@@ -1,0 +1,183 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: Style</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">javafx.css</a> ]
+</div>
+
+<h1>Coverage Summary for Class: Style (javafx.css)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">Style</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    50%
+  </span>
+  <span class="absValue">
+    (3/ 6)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    21.4%
+  </span>
+  <span class="absValue">
+    (6/ 28)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright (c) 2008, 2017, Oracle and/or its affiliates. All rights reserved.
+<i>3</i>&nbsp; * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+<i>4</i>&nbsp; *
+<i>5</i>&nbsp; *
+<i>6</i>&nbsp; *
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; *
+<i>11</i>&nbsp; *
+<i>12</i>&nbsp; *
+<i>13</i>&nbsp; *
+<i>14</i>&nbsp; *
+<i>15</i>&nbsp; *
+<i>16</i>&nbsp; *
+<i>17</i>&nbsp; *
+<i>18</i>&nbsp; *
+<i>19</i>&nbsp; *
+<i>20</i>&nbsp; *
+<i>21</i>&nbsp; *
+<i>22</i>&nbsp; *
+<i>23</i>&nbsp; *
+<i>24</i>&nbsp; */
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;package javafx.css;
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;
+<i>29</i>&nbsp;/**
+<i>30</i>&nbsp; * A Style is just the selector and declaration from a Rule.
+<i>31</i>&nbsp; *
+<i>32</i>&nbsp; * @since 9
+<i>33</i>&nbsp; */
+<i>34</i>&nbsp;final public class Style {
+<i>35</i>&nbsp;
+<i>36</i>&nbsp;    /**
+<i>37</i>&nbsp;     * A selector might have more than one selector. This is the one that was
+<i>38</i>&nbsp;     * matched.
+<i>39</i>&nbsp;     * @return the matched selector
+<i>40</i>&nbsp;     */
+<i>41</i>&nbsp;    public Selector getSelector() {
+<b class="fc"><i>42</i>&nbsp;        return selector;</b>
+<i>43</i>&nbsp;    }
+<i>44</i>&nbsp;
+<i>45</i>&nbsp;    /**
+<i>46</i>&nbsp;     * The Declaration that is the source of the style that is about
+<i>47</i>&nbsp;     * to be applied or has just been applied. May be null if the
+<i>48</i>&nbsp;     * value comes from the CSSProperty&#39;s initial (default) value.
+<i>49</i>&nbsp;     * @return the declaration
+<i>50</i>&nbsp;     */
+<i>51</i>&nbsp;    public Declaration getDeclaration() {
+<b class="fc"><i>52</i>&nbsp;        return declaration;</b>
+<i>53</i>&nbsp;    }
+<i>54</i>&nbsp;
+<b class="fc"><i>55</i>&nbsp;    public Style(Selector selector, Declaration declaration) {</b>
+<b class="fc"><i>56</i>&nbsp;        this.selector = selector;</b>
+<b class="fc"><i>57</i>&nbsp;        this.declaration = declaration;</b>
+<b class="fc"><i>58</i>&nbsp;    }</b>
+<i>59</i>&nbsp;
+<i>60</i>&nbsp;    @Override public boolean equals(Object obj) {
+<b class="nc"><i>61</i>&nbsp;        if (obj == this) {</b>
+<b class="nc"><i>62</i>&nbsp;            return true;</b>
+<i>63</i>&nbsp;        }
+<b class="nc"><i>64</i>&nbsp;        if (obj == null) {</b>
+<b class="nc"><i>65</i>&nbsp;            return false;</b>
+<i>66</i>&nbsp;        }
+<b class="nc"><i>67</i>&nbsp;        if (getClass() != obj.getClass()) {</b>
+<b class="nc"><i>68</i>&nbsp;            return false;</b>
+<i>69</i>&nbsp;        }
+<b class="nc"><i>70</i>&nbsp;        final Style other = (Style) obj;</b>
+<b class="nc"><i>71</i>&nbsp;        if (this.selector != other.selector &amp;&amp; (this.selector == null || !this.selector.equals(other.selector))) {</b>
+<b class="nc"><i>72</i>&nbsp;            return false;</b>
+<i>73</i>&nbsp;        }
+<b class="nc"><i>74</i>&nbsp;        if (this.declaration != other.declaration &amp;&amp; (this.declaration == null || !this.declaration.equals(other.declaration))) {</b>
+<b class="nc"><i>75</i>&nbsp;            return false;</b>
+<i>76</i>&nbsp;        }
+<b class="nc"><i>77</i>&nbsp;        return true;</b>
+<i>78</i>&nbsp;    }
+<i>79</i>&nbsp;
+<i>80</i>&nbsp;    @Override public int hashCode() {
+<b class="nc"><i>81</i>&nbsp;        int hash = 3;</b>
+<b class="nc"><i>82</i>&nbsp;        hash = 83 * hash + (this.selector != null ? this.selector.hashCode() : 0);</b>
+<b class="nc"><i>83</i>&nbsp;        hash = 83 * hash + (this.declaration != null ? this.declaration.hashCode() : 0);</b>
+<b class="nc"><i>84</i>&nbsp;        return hash;</b>
+<i>85</i>&nbsp;    }
+<i>86</i>&nbsp;
+<i>87</i>&nbsp;    @Override public String toString() {
+<b class="nc"><i>88</i>&nbsp;        final StringBuilder sb = new StringBuilder()</b>
+<b class="nc"><i>89</i>&nbsp;                .append(String.valueOf(selector))</b>
+<b class="nc"><i>90</i>&nbsp;                .append(&quot; { &quot;)</b>
+<b class="nc"><i>91</i>&nbsp;                .append(String.valueOf(declaration))</b>
+<b class="nc"><i>92</i>&nbsp;                .append( &quot; } &quot;);</b>
+<b class="nc"><i>93</i>&nbsp;        return sb.toString();</b>
+<i>94</i>&nbsp;
+<i>95</i>&nbsp;    }
+<i>96</i>&nbsp;
+<i>97</i>&nbsp;    private final Selector selector;
+<i>98</i>&nbsp;    private final Declaration declaration;
+<i>99</i>&nbsp;}
+<i>100</i>&nbsp;
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2017-12-04 21:49</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,206 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: Cursor</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.glass.ui</a> ]
+</div>
+
+<h1>Coverage Summary for Class: Cursor (com.sun.glass.ui)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">Cursor</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    33.3%
+  </span>
+  <span class="absValue">
+    (2/ 6)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    37.5%
+  </span>
+  <span class="absValue">
+    (6/ 16)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright (c) 2010, 2016, Oracle and/or its affiliates. All rights reserved.
+<i>3</i>&nbsp; * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+<i>4</i>&nbsp; *
+<i>5</i>&nbsp; *
+<i>6</i>&nbsp; *
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; *
+<i>11</i>&nbsp; *
+<i>12</i>&nbsp; *
+<i>13</i>&nbsp; *
+<i>14</i>&nbsp; *
+<i>15</i>&nbsp; *
+<i>16</i>&nbsp; *
+<i>17</i>&nbsp; *
+<i>18</i>&nbsp; *
+<i>19</i>&nbsp; *
+<i>20</i>&nbsp; *
+<i>21</i>&nbsp; *
+<i>22</i>&nbsp; *
+<i>23</i>&nbsp; *
+<i>24</i>&nbsp; */
+<i>25</i>&nbsp;package com.sun.glass.ui;
+<i>26</i>&nbsp;
+<i>27</i>&nbsp;import java.lang.annotation.Native;
+<i>28</i>&nbsp;
+<i>29</i>&nbsp;public abstract class Cursor {
+<i>30</i>&nbsp;
+<i>31</i>&nbsp;    @Native public final static int CURSOR_NONE = -1;
+<i>32</i>&nbsp;    @Native public final static int CURSOR_CUSTOM = 0;
+<i>33</i>&nbsp;    @Native public final static int CURSOR_DEFAULT = 1;
+<i>34</i>&nbsp;    @Native public final static int CURSOR_TEXT = 2;
+<i>35</i>&nbsp;    @Native public final static int CURSOR_CROSSHAIR = 3;
+<i>36</i>&nbsp;    @Native public final static int CURSOR_CLOSED_HAND = 4;
+<i>37</i>&nbsp;    @Native public final static int CURSOR_OPEN_HAND = 5;
+<i>38</i>&nbsp;    @Native public final static int CURSOR_POINTING_HAND = 6;
+<i>39</i>&nbsp;    @Native public final static int CURSOR_RESIZE_LEFT = 7;
+<i>40</i>&nbsp;    @Native public final static int CURSOR_RESIZE_RIGHT = 8;
+<i>41</i>&nbsp;    @Native public final static int CURSOR_RESIZE_UP = 9;
+<i>42</i>&nbsp;    @Native public final static int CURSOR_RESIZE_DOWN = 10;
+<i>43</i>&nbsp;    @Native public final static int CURSOR_RESIZE_LEFTRIGHT = 11;
+<i>44</i>&nbsp;    @Native public final static int CURSOR_RESIZE_UPDOWN = 12;
+<i>45</i>&nbsp;    @Native public final static int CURSOR_DISAPPEAR = 13;
+<i>46</i>&nbsp;    @Native public final static int CURSOR_WAIT = 14;
+<i>47</i>&nbsp;    @Native public final static int CURSOR_RESIZE_SOUTHWEST = 15;
+<i>48</i>&nbsp;    @Native public final static int CURSOR_RESIZE_SOUTHEAST = 16;
+<i>49</i>&nbsp;    @Native public final static int CURSOR_RESIZE_NORTHWEST = 17;
+<i>50</i>&nbsp;    @Native public final static int CURSOR_RESIZE_NORTHEAST = 18;
+<i>51</i>&nbsp;    @Native public final static int CURSOR_MOVE = 19;
+<i>52</i>&nbsp;    private final static int CURSOR_MAX = 19;
+<i>53</i>&nbsp;
+<i>54</i>&nbsp;    private final int type;
+<i>55</i>&nbsp;
+<i>56</i>&nbsp;    // Native cursor ptr, for custom cursors
+<i>57</i>&nbsp;    private long ptr;
+<i>58</i>&nbsp;
+<b class="fc"><i>59</i>&nbsp;    protected Cursor(final int type) {</b>
+<b class="fc"><i>60</i>&nbsp;        Application.checkEventThread();</b>
+<b class="fc"><i>61</i>&nbsp;        this.type = type;</b>
+<b class="fc"><i>62</i>&nbsp;    }</b>
+<i>63</i>&nbsp;
+<i>64</i>&nbsp;    protected Cursor(final int x, final int y, final Pixels pixels) {
+<b class="nc"><i>65</i>&nbsp;        this(CURSOR_CUSTOM);</b>
+<b class="nc"><i>66</i>&nbsp;        ptr = _createCursor(x, y, pixels);</b>
+<b class="nc"><i>67</i>&nbsp;    }</b>
+<i>68</i>&nbsp;
+<i>69</i>&nbsp;    public final int getType() {
+<b class="fc"><i>70</i>&nbsp;        Application.checkEventThread();</b>
+<b class="fc"><i>71</i>&nbsp;        return type;</b>
+<i>72</i>&nbsp;    }
+<i>73</i>&nbsp;
+<i>74</i>&nbsp;    protected final long getNativeCursor() {
+<b class="nc"><i>75</i>&nbsp;        Application.checkEventThread();</b>
+<b class="nc"><i>76</i>&nbsp;        return ptr;</b>
+<i>77</i>&nbsp;    }
+<i>78</i>&nbsp;
+<i>79</i>&nbsp;    /**
+<i>80</i>&nbsp;     * Shows or hides the cursor.
+<i>81</i>&nbsp;     * &lt;p&gt;
+<i>82</i>&nbsp;     * If the cursor is currently hidden with a previous call to {@code
+<i>83</i>&nbsp;     * setVisible(false)}, setting a new cursor shape (e.g. by means of calling
+<i>84</i>&nbsp;     * {@code Window.setCursor()}) does not automatically display the cursor on
+<i>85</i>&nbsp;     * the screen until the client code calls {@code setVisible(true)} to show
+<i>86</i>&nbsp;     * the cursor again.
+<i>87</i>&nbsp;     * &lt;p&gt;
+<i>88</i>&nbsp;     * If the mouse cursor is located over a non-Glass window at the time of
+<i>89</i>&nbsp;     * calling this method, the call may or may not affect the native cursor&#39;s
+<i>90</i>&nbsp;     * visibility. This behavior is platform-dependent.
+<i>91</i>&nbsp;     * &lt;p&gt;
+<i>92</i>&nbsp;     * When the mouse pointer is moved over a non-Glass window, depending on
+<i>93</i>&nbsp;     * the native platform behavior, the cursor may or may not become visible
+<i>94</i>&nbsp;     * on the screen, even if it was previously hidden by calling {@code
+<i>95</i>&nbsp;     * setVisible(false)}. After this occurs, on some platforms the cursor may
+<i>96</i>&nbsp;     * even remain visible permanently. For example, Mac OS X makes the cursor
+<i>97</i>&nbsp;     * visible unconditionally when the mouse is moved over the Dock or Menu
+<i>98</i>&nbsp;     * Bar areas. There&#39;s no way to detect that the native cursor became
+<i>99</i>&nbsp;     * visible, however, from Glass perspective it is still considered hidden,
+<i>100</i>&nbsp;     * and thus, when the mouse cursor is needed again, the app should call
+<i>101</i>&nbsp;     * {@code setVisible(true)} in order to continue to operate properly.
+<i>102</i>&nbsp;     * &lt;p&gt;
+<i>103</i>&nbsp;     * Calling this method multiple times with the same argument may not have
+<i>104</i>&nbsp;     * any effect. For example, if the cursor was hidden and the native OS
+<i>105</i>&nbsp;     * restored its visibility, calling {@code setVisible(false)} again may not
+<i>106</i>&nbsp;     * hide the cursor. If the app needs to ultimately hide the cursor, it
+<i>107</i>&nbsp;     * should first show the cursor again, and then proceed with hiding it.
+<i>108</i>&nbsp;     */
+<i>109</i>&nbsp;    public static void setVisible(boolean visible) {
+<b class="nc"><i>110</i>&nbsp;        Application.checkEventThread();</b>
+<b class="nc"><i>111</i>&nbsp;        Application.GetApplication().staticCursor_setVisible(visible);</b>
+<b class="nc"><i>112</i>&nbsp;    }</b>
+<i>113</i>&nbsp;
+<i>114</i>&nbsp;    /**
+<i>115</i>&nbsp;     * Returns the &#39;best&#39; cursor size based on the given preferred size.
+<i>116</i>&nbsp;     */
+<i>117</i>&nbsp;    public static Size getBestSize(int width, int height) {
+<b class="nc"><i>118</i>&nbsp;        Application.checkEventThread();</b>
+<b class="nc"><i>119</i>&nbsp;        return Application.GetApplication().staticCursor_getBestSize(width, height);</b>
+<i>120</i>&nbsp;    }
+<i>121</i>&nbsp;
+<i>122</i>&nbsp;    protected abstract long _createCursor(int x, int y, Pixels pixels);
+<i>123</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2017-12-04 21:49</div>
+</div>
+</body>
+</html>

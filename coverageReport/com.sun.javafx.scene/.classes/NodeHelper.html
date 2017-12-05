@@ -1,0 +1,477 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: NodeHelper</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.javafx.scene</a> ]
+</div>
+
+<h1>Coverage Summary for Class: NodeHelper (com.sun.javafx.scene)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">NodeHelper</td>
+<td class="coverageStat">
+  <span class="percent">
+    74.5%
+  </span>
+  <span class="absValue">
+    (41/ 55)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    73.6%
+  </span>
+  <span class="absValue">
+    (67/ 91)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">NodeHelper$NodeAccessor</td>
+  </tr>
+<tr>
+  <td class="name"><strong>total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    74.5%
+  </span>
+  <span class="absValue">
+    (41/ 55)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    73.6%
+  </span>
+  <span class="absValue">
+    (67/ 91)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright (c) 2013, 2016, Oracle and/or its affiliates. All rights reserved.
+<i>3</i>&nbsp; * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+<i>4</i>&nbsp; *
+<i>5</i>&nbsp; *
+<i>6</i>&nbsp; *
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; *
+<i>11</i>&nbsp; *
+<i>12</i>&nbsp; *
+<i>13</i>&nbsp; *
+<i>14</i>&nbsp; *
+<i>15</i>&nbsp; *
+<i>16</i>&nbsp; *
+<i>17</i>&nbsp; *
+<i>18</i>&nbsp; *
+<i>19</i>&nbsp; *
+<i>20</i>&nbsp; *
+<i>21</i>&nbsp; *
+<i>22</i>&nbsp; *
+<i>23</i>&nbsp; *
+<i>24</i>&nbsp; */
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;package com.sun.javafx.scene;
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;import com.sun.glass.ui.Accessible;
+<i>29</i>&nbsp;import com.sun.javafx.geom.BaseBounds;
+<i>30</i>&nbsp;import com.sun.javafx.geom.PickRay;
+<i>31</i>&nbsp;import com.sun.javafx.geom.transform.BaseTransform;
+<i>32</i>&nbsp;import com.sun.javafx.jmx.MXNodeAlgorithm;
+<i>33</i>&nbsp;import com.sun.javafx.jmx.MXNodeAlgorithmContext;
+<i>34</i>&nbsp;import com.sun.javafx.scene.input.PickResultChooser;
+<i>35</i>&nbsp;import com.sun.javafx.scene.traversal.Direction;
+<i>36</i>&nbsp;import com.sun.javafx.sg.prism.NGNode;
+<i>37</i>&nbsp;import com.sun.javafx.util.Utils;
+<i>38</i>&nbsp;import java.util.List;
+<i>39</i>&nbsp;import java.util.Map;
+<i>40</i>&nbsp;import javafx.beans.binding.BooleanExpression;
+<i>41</i>&nbsp;import javafx.beans.property.BooleanProperty;
+<i>42</i>&nbsp;import javafx.css.CssMetaData;
+<i>43</i>&nbsp;import javafx.css.Style;
+<i>44</i>&nbsp;import javafx.css.Styleable;
+<i>45</i>&nbsp;import javafx.css.StyleableProperty;
+<i>46</i>&nbsp;import javafx.geometry.Bounds;
+<i>47</i>&nbsp;import javafx.scene.Node;
+<i>48</i>&nbsp;import javafx.scene.SubScene;
+<i>49</i>&nbsp;import javafx.scene.shape.Shape;
+<i>50</i>&nbsp;import javafx.scene.shape.Shape3D;
+<i>51</i>&nbsp;
+<i>52</i>&nbsp;/**
+<i>53</i>&nbsp; * Used to access internal methods of Node.
+<i>54</i>&nbsp; */
+<i>55</i>&nbsp;public abstract class NodeHelper {
+<i>56</i>&nbsp;    private static NodeAccessor nodeAccessor;
+<i>57</i>&nbsp;
+<i>58</i>&nbsp;    static {
+<b class="fc"><i>59</i>&nbsp;        Utils.forceInit(Node.class);</b>
+<b class="fc"><i>60</i>&nbsp;    }</b>
+<i>61</i>&nbsp;
+<b class="fc"><i>62</i>&nbsp;    protected NodeHelper() {</b>
+<b class="fc"><i>63</i>&nbsp;    }</b>
+<i>64</i>&nbsp;
+<i>65</i>&nbsp;    protected static NodeHelper getHelper(Node node) {
+<i>66</i>&nbsp;
+<b class="fc"><i>67</i>&nbsp;        NodeHelper helper = nodeAccessor.getHelper(node);</b>
+<b class="fc"><i>68</i>&nbsp;        if (helper == null) {</b>
+<i>69</i>&nbsp;            String nodeType;
+<b class="nc"><i>70</i>&nbsp;            if (node instanceof Shape) {</b>
+<b class="nc"><i>71</i>&nbsp;                nodeType = &quot;Shape&quot;;</b>
+<b class="nc"><i>72</i>&nbsp;            } else if (node instanceof Shape3D) {</b>
+<b class="nc"><i>73</i>&nbsp;                nodeType = &quot;Shape3D&quot;;</b>
+<i>74</i>&nbsp;            } else {
+<b class="nc"><i>75</i>&nbsp;                nodeType = &quot;Node&quot;;</b>
+<i>76</i>&nbsp;            }
+<i>77</i>&nbsp;
+<b class="nc"><i>78</i>&nbsp;            throw new UnsupportedOperationException(</b>
+<i>79</i>&nbsp;                    &quot;Applications should not extend the &quot;
+<i>80</i>&nbsp;                    + nodeType + &quot; class directly.&quot;);
+<i>81</i>&nbsp;        }
+<b class="fc"><i>82</i>&nbsp;        return helper;</b>
+<i>83</i>&nbsp;    }
+<i>84</i>&nbsp;
+<i>85</i>&nbsp;    protected static void setHelper(Node node, NodeHelper nodeHelper) {
+<b class="fc"><i>86</i>&nbsp;        nodeAccessor.setHelper(node, nodeHelper);</b>
+<b class="fc"><i>87</i>&nbsp;    }</b>
+<i>88</i>&nbsp;
+<i>89</i>&nbsp;    /*
+<i>90</i>&nbsp;     * Static helper methods for cases where the implementation is done in an
+<i>91</i>&nbsp;     * instance method that is overridden by subclasses.
+<i>92</i>&nbsp;     * These methods exist in the base class only.
+<i>93</i>&nbsp;     */
+<i>94</i>&nbsp;
+<i>95</i>&nbsp;    public static NGNode createPeer(Node node) {
+<b class="fc"><i>96</i>&nbsp;        return getHelper(node).createPeerImpl(node);</b>
+<i>97</i>&nbsp;    }
+<i>98</i>&nbsp;
+<i>99</i>&nbsp;    public static void markDirty(Node node, DirtyBits dirtyBit) {
+<b class="fc"><i>100</i>&nbsp;        getHelper(node).markDirtyImpl(node, dirtyBit);</b>
+<b class="fc"><i>101</i>&nbsp;    }</b>
+<i>102</i>&nbsp;
+<i>103</i>&nbsp;    public static void updatePeer(Node node) {
+<b class="fc"><i>104</i>&nbsp;        getHelper(node).updatePeerImpl(node);</b>
+<b class="fc"><i>105</i>&nbsp;    }</b>
+<i>106</i>&nbsp;
+<i>107</i>&nbsp;    public static Bounds computeLayoutBounds(Node node) {
+<b class="fc"><i>108</i>&nbsp;        return getHelper(node).computeLayoutBoundsImpl(node);</b>
+<i>109</i>&nbsp;    }
+<i>110</i>&nbsp;
+<i>111</i>&nbsp;    /*
+<i>112</i>&nbsp;     * Computes the geometric bounds for this Node. This method is abstract
+<i>113</i>&nbsp;     * and must be implemented by each Node subclass.
+<i>114</i>&nbsp;     */
+<i>115</i>&nbsp;    public static BaseBounds computeGeomBounds(Node node,
+<i>116</i>&nbsp;            BaseBounds bounds, BaseTransform tx) {
+<b class="fc"><i>117</i>&nbsp;        return getHelper(node).computeGeomBoundsImpl(node, bounds, tx);</b>
+<i>118</i>&nbsp;    }
+<i>119</i>&nbsp;
+<i>120</i>&nbsp;    public static void transformsChanged(Node node) {
+<b class="fc"><i>121</i>&nbsp;        getHelper(node).transformsChangedImpl(node);</b>
+<b class="fc"><i>122</i>&nbsp;    }</b>
+<i>123</i>&nbsp;
+<i>124</i>&nbsp;    public static boolean computeContains(Node node, double localX, double localY) {
+<b class="fc"><i>125</i>&nbsp;        return getHelper(node).computeContainsImpl(node, localX, localY);</b>
+<i>126</i>&nbsp;    }
+<i>127</i>&nbsp;
+<i>128</i>&nbsp;    public static void pickNodeLocal(Node node, PickRay localPickRay,
+<i>129</i>&nbsp;            PickResultChooser result) {
+<b class="fc"><i>130</i>&nbsp;        getHelper(node).pickNodeLocalImpl(node, localPickRay, result);</b>
+<b class="fc"><i>131</i>&nbsp;    }</b>
+<i>132</i>&nbsp;
+<i>133</i>&nbsp;    public static boolean computeIntersects(Node node, PickRay pickRay,
+<i>134</i>&nbsp;            PickResultChooser pickResult) {
+<b class="fc"><i>135</i>&nbsp;        return getHelper(node).computeIntersectsImpl(node, pickRay, pickResult);</b>
+<i>136</i>&nbsp;    }
+<i>137</i>&nbsp;
+<i>138</i>&nbsp;    public static void geomChanged(Node node) {
+<b class="fc"><i>139</i>&nbsp;        getHelper(node).geomChangedImpl(node);</b>
+<b class="fc"><i>140</i>&nbsp;    }</b>
+<i>141</i>&nbsp;
+<i>142</i>&nbsp;    public static void notifyLayoutBoundsChanged(Node node) {
+<b class="fc"><i>143</i>&nbsp;        getHelper(node).notifyLayoutBoundsChangedImpl(node);</b>
+<b class="fc"><i>144</i>&nbsp;    }</b>
+<i>145</i>&nbsp;
+<i>146</i>&nbsp;    public static void processCSS(Node node) {
+<b class="fc"><i>147</i>&nbsp;        getHelper(node).processCSSImpl(node);</b>
+<b class="fc"><i>148</i>&nbsp;    }</b>
+<i>149</i>&nbsp;
+<i>150</i>&nbsp;    /*
+<i>151</i>&nbsp;     * This method is used by Scene-graph JMX bean to obtain the Scene-graph structure.
+<i>152</i>&nbsp;     *
+<i>153</i>&nbsp;     * @param alg current algorithm to process this node
+<i>154</i>&nbsp;     * @param ctx current context
+<i>155</i>&nbsp;     * @return the algorithm specific result for this node
+<i>156</i>&nbsp;     */
+<i>157</i>&nbsp;    public static Object processMXNode(Node node, MXNodeAlgorithm alg, MXNodeAlgorithmContext ctx) {
+<b class="nc"><i>158</i>&nbsp;        return getHelper(node).processMXNodeImpl(node, alg, ctx);</b>
+<i>159</i>&nbsp;    }
+<i>160</i>&nbsp;
+<i>161</i>&nbsp;    /*
+<i>162</i>&nbsp;     * Methods that will be overridden by subclasses
+<i>163</i>&nbsp;     */
+<i>164</i>&nbsp;
+<i>165</i>&nbsp;    protected abstract NGNode createPeerImpl(Node node);
+<i>166</i>&nbsp;    protected abstract boolean computeContainsImpl(Node node, double localX, double localY);
+<i>167</i>&nbsp;    protected abstract BaseBounds computeGeomBoundsImpl(Node node,
+<i>168</i>&nbsp;            BaseBounds bounds, BaseTransform tx);
+<i>169</i>&nbsp;    protected abstract Object processMXNodeImpl(Node node, MXNodeAlgorithm alg, MXNodeAlgorithmContext ctx);
+<i>170</i>&nbsp;
+<i>171</i>&nbsp;    protected void markDirtyImpl(Node node, DirtyBits dirtyBit) {
+<b class="fc"><i>172</i>&nbsp;        nodeAccessor.doMarkDirty(node, dirtyBit);</b>
+<b class="fc"><i>173</i>&nbsp;    }</b>
+<i>174</i>&nbsp;
+<i>175</i>&nbsp;    protected void updatePeerImpl(Node node) {
+<b class="fc"><i>176</i>&nbsp;        nodeAccessor.doUpdatePeer(node);</b>
+<b class="fc"><i>177</i>&nbsp;    }</b>
+<i>178</i>&nbsp;
+<i>179</i>&nbsp;    protected Bounds computeLayoutBoundsImpl(Node node) {
+<b class="fc"><i>180</i>&nbsp;        return nodeAccessor.doComputeLayoutBounds(node);</b>
+<i>181</i>&nbsp;    }
+<i>182</i>&nbsp;
+<i>183</i>&nbsp;    protected void transformsChangedImpl(Node node) {
+<b class="fc"><i>184</i>&nbsp;        nodeAccessor.doTransformsChanged(node);</b>
+<b class="fc"><i>185</i>&nbsp;    }</b>
+<i>186</i>&nbsp;
+<i>187</i>&nbsp;    protected void pickNodeLocalImpl(Node node, PickRay localPickRay,
+<i>188</i>&nbsp;            PickResultChooser result) {
+<b class="fc"><i>189</i>&nbsp;        nodeAccessor.doPickNodeLocal(node, localPickRay, result);</b>
+<b class="fc"><i>190</i>&nbsp;    }</b>
+<i>191</i>&nbsp;
+<i>192</i>&nbsp;    protected boolean computeIntersectsImpl(Node node, PickRay pickRay,
+<i>193</i>&nbsp;            PickResultChooser pickResult) {
+<b class="fc"><i>194</i>&nbsp;        return nodeAccessor.doComputeIntersects(node, pickRay, pickResult);</b>
+<i>195</i>&nbsp;    }
+<i>196</i>&nbsp;
+<i>197</i>&nbsp;    protected void geomChangedImpl(Node node) {
+<b class="fc"><i>198</i>&nbsp;        nodeAccessor.doGeomChanged(node);</b>
+<b class="fc"><i>199</i>&nbsp;    }</b>
+<i>200</i>&nbsp;
+<i>201</i>&nbsp;    protected void notifyLayoutBoundsChangedImpl(Node node) {
+<b class="fc"><i>202</i>&nbsp;        nodeAccessor.doNotifyLayoutBoundsChanged(node);</b>
+<b class="fc"><i>203</i>&nbsp;    }</b>
+<i>204</i>&nbsp;
+<i>205</i>&nbsp;    protected void processCSSImpl(Node node) {
+<b class="fc"><i>206</i>&nbsp;        nodeAccessor.doProcessCSS(node);</b>
+<b class="fc"><i>207</i>&nbsp;    }</b>
+<i>208</i>&nbsp;
+<i>209</i>&nbsp;    /*
+<i>210</i>&nbsp;     * Methods used by Node (base) class only
+<i>211</i>&nbsp;     */
+<i>212</i>&nbsp;
+<i>213</i>&nbsp;    public static boolean isDirty(Node node, DirtyBits dirtyBit) {
+<b class="fc"><i>214</i>&nbsp;        return nodeAccessor.isDirty(node, dirtyBit);</b>
+<i>215</i>&nbsp;    }
+<i>216</i>&nbsp;
+<i>217</i>&nbsp;    public static boolean isDirtyEmpty(Node node) {
+<b class="fc"><i>218</i>&nbsp;        return nodeAccessor.isDirtyEmpty(node);</b>
+<i>219</i>&nbsp;    }
+<i>220</i>&nbsp;
+<i>221</i>&nbsp;    public static void syncPeer(Node node) {
+<b class="fc"><i>222</i>&nbsp;        nodeAccessor.syncPeer(node);</b>
+<b class="fc"><i>223</i>&nbsp;    }</b>
+<i>224</i>&nbsp;
+<i>225</i>&nbsp;    public static &lt;P extends NGNode&gt; P getPeer(Node node) {
+<b class="fc"><i>226</i>&nbsp;        return nodeAccessor.getPeer(node);</b>
+<i>227</i>&nbsp;    }
+<i>228</i>&nbsp;
+<i>229</i>&nbsp;    public static BaseTransform getLeafTransform(Node node) {
+<b class="nc"><i>230</i>&nbsp;        return nodeAccessor.getLeafTransform(node);</b>
+<i>231</i>&nbsp;    }
+<i>232</i>&nbsp;
+<i>233</i>&nbsp;    public static void layoutBoundsChanged(Node node) {
+<b class="fc"><i>234</i>&nbsp;        nodeAccessor.layoutBoundsChanged(node);</b>
+<b class="fc"><i>235</i>&nbsp;    }</b>
+<i>236</i>&nbsp;
+<i>237</i>&nbsp;    public static void setShowMnemonics(Node node, boolean value) {
+<b class="fc"><i>238</i>&nbsp;        nodeAccessor.setShowMnemonics(node, value);</b>
+<b class="fc"><i>239</i>&nbsp;    }</b>
+<i>240</i>&nbsp;
+<i>241</i>&nbsp;    public static boolean isShowMnemonics(Node node) {
+<b class="fc"><i>242</i>&nbsp;        return nodeAccessor.isShowMnemonics(node);</b>
+<i>243</i>&nbsp;    }
+<i>244</i>&nbsp;
+<i>245</i>&nbsp;    public static BooleanProperty showMnemonicsProperty(Node node) {
+<b class="fc"><i>246</i>&nbsp;        return nodeAccessor.showMnemonicsProperty(node);</b>
+<i>247</i>&nbsp;    }
+<i>248</i>&nbsp;
+<i>249</i>&nbsp;    public static boolean traverse(Node node, Direction direction) {
+<b class="nc"><i>250</i>&nbsp;        return nodeAccessor.traverse(node, direction);</b>
+<i>251</i>&nbsp;    }
+<i>252</i>&nbsp;
+<i>253</i>&nbsp;    public static double getPivotX(Node node) {
+<b class="nc"><i>254</i>&nbsp;        return nodeAccessor.getPivotX(node);</b>
+<i>255</i>&nbsp;    }
+<i>256</i>&nbsp;
+<i>257</i>&nbsp;    public static double getPivotY(Node node) {
+<b class="nc"><i>258</i>&nbsp;        return nodeAccessor.getPivotY(node);</b>
+<i>259</i>&nbsp;    }
+<i>260</i>&nbsp;
+<i>261</i>&nbsp;    public static double getPivotZ(Node node) {
+<b class="nc"><i>262</i>&nbsp;        return nodeAccessor.getPivotZ(node);</b>
+<i>263</i>&nbsp;    }
+<i>264</i>&nbsp;
+<i>265</i>&nbsp;    public static void pickNode(Node node, PickRay pickRay,
+<i>266</i>&nbsp;            PickResultChooser result) {
+<b class="nc"><i>267</i>&nbsp;        nodeAccessor.pickNode(node, pickRay, result);</b>
+<b class="nc"><i>268</i>&nbsp;    }</b>
+<i>269</i>&nbsp;
+<i>270</i>&nbsp;    public static boolean intersects(Node node, PickRay pickRay,
+<i>271</i>&nbsp;            PickResultChooser pickResult) {
+<b class="fc"><i>272</i>&nbsp;        return nodeAccessor.intersects(node, pickRay, pickResult);</b>
+<i>273</i>&nbsp;    }
+<i>274</i>&nbsp;
+<i>275</i>&nbsp;    public static double intersectsBounds(Node node, PickRay pickRay) {
+<b class="fc"><i>276</i>&nbsp;        return nodeAccessor.intersectsBounds(node, pickRay);</b>
+<i>277</i>&nbsp;    }
+<i>278</i>&nbsp;
+<i>279</i>&nbsp;    public static void layoutNodeForPrinting(Node node) {
+<b class="nc"><i>280</i>&nbsp;        nodeAccessor.layoutNodeForPrinting(node);</b>
+<b class="nc"><i>281</i>&nbsp;    }</b>
+<i>282</i>&nbsp;
+<i>283</i>&nbsp;    public static boolean isDerivedDepthTest(Node node) {
+<b class="nc"><i>284</i>&nbsp;        return nodeAccessor.isDerivedDepthTest(node);</b>
+<i>285</i>&nbsp;    }
+<i>286</i>&nbsp;
+<i>287</i>&nbsp;    public static SubScene getSubScene(Node node) {
+<b class="fc"><i>288</i>&nbsp;        return nodeAccessor.getSubScene(node);</b>
+<i>289</i>&nbsp;    }
+<i>290</i>&nbsp;
+<i>291</i>&nbsp;    public static Accessible getAccessible(Node node) {
+<b class="nc"><i>292</i>&nbsp;        return nodeAccessor.getAccessible(node);</b>
+<i>293</i>&nbsp;    }
+<i>294</i>&nbsp;
+<i>295</i>&nbsp;    public static void reapplyCSS(Node node) {
+<b class="fc"><i>296</i>&nbsp;        nodeAccessor.reapplyCSS(node);</b>
+<b class="fc"><i>297</i>&nbsp;    }</b>
+<i>298</i>&nbsp;
+<i>299</i>&nbsp;    public static boolean isTreeVisible(Node node) {
+<b class="fc"><i>300</i>&nbsp;        return nodeAccessor.isTreeVisible(node);</b>
+<i>301</i>&nbsp;    }
+<i>302</i>&nbsp;
+<i>303</i>&nbsp;    public static BooleanExpression treeVisibleProperty(Node node) {
+<b class="nc"><i>304</i>&nbsp;        return nodeAccessor.treeVisibleProperty(node);</b>
+<i>305</i>&nbsp;    }
+<i>306</i>&nbsp;
+<i>307</i>&nbsp;    public static boolean isTreeShowing(Node node) {
+<b class="nc"><i>308</i>&nbsp;        return nodeAccessor.isTreeShowing(node);</b>
+<i>309</i>&nbsp;    }
+<i>310</i>&nbsp;
+<i>311</i>&nbsp;    public static BooleanExpression treeShowingProperty(Node node) {
+<b class="fc"><i>312</i>&nbsp;        return nodeAccessor.treeShowingProperty(node);</b>
+<i>313</i>&nbsp;    }
+<i>314</i>&nbsp;
+<i>315</i>&nbsp;    public static List&lt;Style&gt; getMatchingStyles(CssMetaData cssMetaData, Styleable styleable) {
+<b class="nc"><i>316</i>&nbsp;        return nodeAccessor.getMatchingStyles(cssMetaData, styleable);</b>
+<i>317</i>&nbsp;    }
+<i>318</i>&nbsp;
+<i>319</i>&nbsp;    public static Map&lt;StyleableProperty&lt;?&gt;,List&lt;Style&gt;&gt; findStyles(Node node, Map&lt;StyleableProperty&lt;?&gt;,List&lt;Style&gt;&gt; styleMap) {
+<b class="nc"><i>320</i>&nbsp;        return nodeAccessor.findStyles(node, styleMap);</b>
+<i>321</i>&nbsp;    }
+<i>322</i>&nbsp;
+<i>323</i>&nbsp;    public static void setNodeAccessor(final NodeAccessor newAccessor) {
+<b class="fc"><i>324</i>&nbsp;        if (nodeAccessor != null) {</b>
+<b class="nc"><i>325</i>&nbsp;            throw new IllegalStateException();</b>
+<i>326</i>&nbsp;        }
+<i>327</i>&nbsp;
+<b class="fc"><i>328</i>&nbsp;        nodeAccessor = newAccessor;</b>
+<b class="fc"><i>329</i>&nbsp;    }</b>
+<i>330</i>&nbsp;
+<i>331</i>&nbsp;    public static NodeAccessor getNodeAccessor() {
+<b class="fc"><i>332</i>&nbsp;        if (nodeAccessor == null) {</b>
+<b class="nc"><i>333</i>&nbsp;            throw new IllegalStateException();</b>
+<i>334</i>&nbsp;        }
+<i>335</i>&nbsp;
+<b class="fc"><i>336</i>&nbsp;        return nodeAccessor;</b>
+<i>337</i>&nbsp;    }
+<i>338</i>&nbsp;
+<i>339</i>&nbsp;    public interface NodeAccessor {
+<i>340</i>&nbsp;        NodeHelper getHelper(Node node);
+<i>341</i>&nbsp;        void setHelper(Node node, NodeHelper nodeHelper);
+<i>342</i>&nbsp;        void doMarkDirty(Node node, DirtyBits dirtyBit);
+<i>343</i>&nbsp;        void doUpdatePeer(Node node);
+<i>344</i>&nbsp;        BaseTransform getLeafTransform(Node node);
+<i>345</i>&nbsp;        Bounds doComputeLayoutBounds(Node node);
+<i>346</i>&nbsp;        void doTransformsChanged(Node node);
+<i>347</i>&nbsp;        void doPickNodeLocal(Node node, PickRay localPickRay,
+<i>348</i>&nbsp;                PickResultChooser result);
+<i>349</i>&nbsp;        boolean doComputeIntersects(Node node, PickRay pickRay,
+<i>350</i>&nbsp;                PickResultChooser pickResult);
+<i>351</i>&nbsp;        void doGeomChanged(Node node);
+<i>352</i>&nbsp;        void doNotifyLayoutBoundsChanged(Node node);
+<i>353</i>&nbsp;        void doProcessCSS(Node node);
+<i>354</i>&nbsp;        boolean isDirty(Node node, DirtyBits dirtyBit);
+<i>355</i>&nbsp;        boolean isDirtyEmpty(Node node);
+<i>356</i>&nbsp;        void syncPeer(Node node);
+<i>357</i>&nbsp;        &lt;P extends NGNode&gt; P getPeer(Node node);
+<i>358</i>&nbsp;        void layoutBoundsChanged(Node node);
+<i>359</i>&nbsp;        void setShowMnemonics(Node node, boolean value);
+<i>360</i>&nbsp;        boolean isShowMnemonics(Node node);
+<i>361</i>&nbsp;        BooleanProperty showMnemonicsProperty(Node node);
+<i>362</i>&nbsp;        boolean traverse(Node node, Direction direction);
+<i>363</i>&nbsp;        double getPivotX(Node node);
+<i>364</i>&nbsp;        double getPivotY(Node node);
+<i>365</i>&nbsp;        double getPivotZ(Node node);
+<i>366</i>&nbsp;        void pickNode(Node node, PickRay pickRay, PickResultChooser result);
+<i>367</i>&nbsp;        boolean intersects(Node node, PickRay pickRay, PickResultChooser pickResult);
+<i>368</i>&nbsp;        double intersectsBounds(Node node, PickRay pickRay);
+<i>369</i>&nbsp;        void layoutNodeForPrinting(Node node);
+<i>370</i>&nbsp;        boolean isDerivedDepthTest(Node node);
+<i>371</i>&nbsp;        SubScene getSubScene(Node node);
+<i>372</i>&nbsp;        void setLabeledBy(Node node, Node labeledBy);
+<i>373</i>&nbsp;        Accessible getAccessible(Node node);
+<i>374</i>&nbsp;        void reapplyCSS(Node node);
+<i>375</i>&nbsp;        boolean isTreeVisible(Node node);
+<i>376</i>&nbsp;        BooleanExpression treeVisibleProperty(Node node);
+<i>377</i>&nbsp;        boolean isTreeShowing(Node node);
+<i>378</i>&nbsp;        BooleanExpression treeShowingProperty(Node node);
+<i>379</i>&nbsp;        List&lt;Style&gt; getMatchingStyles(CssMetaData cssMetaData, Styleable styleable);
+<i>380</i>&nbsp;        Map&lt;StyleableProperty&lt;?&gt;,List&lt;Style&gt;&gt; findStyles(Node node,
+<i>381</i>&nbsp;                Map&lt;StyleableProperty&lt;?&gt;,List&lt;Style&gt;&gt; styleMap);
+<i>382</i>&nbsp;    }
+<i>383</i>&nbsp;
+<i>384</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2017-12-04 21:49</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,400 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: JPEGImageLoader</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.javafx.iio.jpeg</a> ]
+</div>
+
+<h1>Coverage Summary for Class: JPEGImageLoader (com.sun.javafx.iio.jpeg)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">JPEGImageLoader</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (9/ 9)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    74.4%
+  </span>
+  <span class="absValue">
+    (58/ 78)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">JPEGImageLoader$Lock</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (4/ 4)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    83.3%
+  </span>
+  <span class="absValue">
+    (10/ 12)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (13/ 13)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    75.6%
+  </span>
+  <span class="absValue">
+    (68/ 90)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright (c) 2009, 2015, Oracle and/or its affiliates. All rights reserved.
+<i>3</i>&nbsp; * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+<i>4</i>&nbsp; *
+<i>5</i>&nbsp; *
+<i>6</i>&nbsp; *
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; *
+<i>11</i>&nbsp; *
+<i>12</i>&nbsp; *
+<i>13</i>&nbsp; *
+<i>14</i>&nbsp; *
+<i>15</i>&nbsp; *
+<i>16</i>&nbsp; *
+<i>17</i>&nbsp; *
+<i>18</i>&nbsp; *
+<i>19</i>&nbsp; *
+<i>20</i>&nbsp; *
+<i>21</i>&nbsp; *
+<i>22</i>&nbsp; *
+<i>23</i>&nbsp; *
+<i>24</i>&nbsp; */
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;package com.sun.javafx.iio.jpeg;
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;import com.sun.javafx.iio.ImageFrame;
+<i>29</i>&nbsp;import com.sun.javafx.iio.ImageMetadata;
+<i>30</i>&nbsp;import com.sun.javafx.iio.ImageStorage.ImageType;
+<i>31</i>&nbsp;import com.sun.glass.utils.NativeLibLoader;
+<i>32</i>&nbsp;import com.sun.javafx.iio.common.ImageLoaderImpl;
+<i>33</i>&nbsp;import com.sun.javafx.iio.common.ImageTools;
+<i>34</i>&nbsp;import java.io.IOException;
+<i>35</i>&nbsp;import java.io.InputStream;
+<i>36</i>&nbsp;import java.nio.ByteBuffer;
+<i>37</i>&nbsp;import java.security.AccessController;
+<i>38</i>&nbsp;import java.security.PrivilegedAction;
+<i>39</i>&nbsp;
+<b class="fc"><i>40</i>&nbsp;public class JPEGImageLoader extends ImageLoaderImpl {</b>
+<i>41</i>&nbsp;
+<i>42</i>&nbsp;    // IJG Color codes.
+<i>43</i>&nbsp;    public static final int JCS_UNKNOWN = 0;       // error/unspecified
+<i>44</i>&nbsp;    public static final int JCS_GRAYSCALE = 1;     // monochrome
+<i>45</i>&nbsp;    public static final int JCS_RGB = 2;           // red/green/blue
+<i>46</i>&nbsp;    public static final int JCS_YCbCr = 3;         // Y/Cb/Cr (also known as YUV)
+<i>47</i>&nbsp;    public static final int JCS_CMYK = 4;          // C/M/Y/K
+<i>48</i>&nbsp;    public static final int JCS_YCC = 5;           // PhotoYCC
+<i>49</i>&nbsp;    public static final int JCS_RGBA = 6;          // RGB-Alpha
+<i>50</i>&nbsp;    public static final int JCS_YCbCrA = 7;        // Y/Cb/Cr/Alpha
+<i>51</i>&nbsp;    // 8 and 9 were old &quot;Legacy&quot; codes which the old code never identified
+<i>52</i>&nbsp;    // on reading anyway.  Support for writing them is being dropped, too.
+<i>53</i>&nbsp;    public static final int JCS_YCCA = 10;         // PhotoYCC-Alpha
+<i>54</i>&nbsp;    public static final int JCS_YCCK = 11;         // Y/Cb/Cr/K
+<i>55</i>&nbsp;    /**
+<i>56</i>&nbsp;     * The following variable contains a pointer to the IJG library
+<i>57</i>&nbsp;     * structure for this reader.  It is assigned in the constructor
+<i>58</i>&nbsp;     * and then is passed in to every native call.  It is set to 0
+<i>59</i>&nbsp;     * by dispose to avoid disposing twice.
+<i>60</i>&nbsp;     */
+<b class="fc"><i>61</i>&nbsp;    private long structPointer = 0L;</b>
+<i>62</i>&nbsp;    /** Set by setInputAttributes native code callback */
+<i>63</i>&nbsp;    private int inWidth;
+<i>64</i>&nbsp;    /** Set by setInputAttributes native code callback */
+<i>65</i>&nbsp;    private int inHeight;
+<i>66</i>&nbsp;    /**
+<i>67</i>&nbsp;     * Set by setInputAttributes native code callback.  A modified
+<i>68</i>&nbsp;     * IJG+NIFTY colorspace code.
+<i>69</i>&nbsp;     */
+<i>70</i>&nbsp;    private int inColorSpaceCode;
+<i>71</i>&nbsp;    /**
+<i>72</i>&nbsp;     * Set by setInputAttributes native code callback.  A modified
+<i>73</i>&nbsp;     * IJG+NIFTY colorspace code.
+<i>74</i>&nbsp;     */
+<i>75</i>&nbsp;    private int outColorSpaceCode;
+<i>76</i>&nbsp;    /** Set by setInputAttributes native code callback */
+<i>77</i>&nbsp;    private byte[] iccData;
+<i>78</i>&nbsp;    /** Set by setOutputAttributes native code callback. */
+<i>79</i>&nbsp;    private int outWidth;
+<i>80</i>&nbsp;    /** Set by setOutputAttributes native code callback. */
+<i>81</i>&nbsp;    private int outHeight;
+<i>82</i>&nbsp;    private ImageType outImageType;
+<i>83</i>&nbsp;
+<b class="fc"><i>84</i>&nbsp;    private boolean isDisposed = false;</b>
+<i>85</i>&nbsp;
+<b class="fc"><i>86</i>&nbsp;    private Lock accessLock = new Lock();</b>
+<i>87</i>&nbsp;
+<i>88</i>&nbsp;    /** Sets up static C structures. */
+<i>89</i>&nbsp;    private static native void initJPEGMethodIDs(Class inputStreamClass);
+<i>90</i>&nbsp;
+<i>91</i>&nbsp;    private static native void disposeNative(long structPointer);
+<i>92</i>&nbsp;
+<i>93</i>&nbsp;    /** Sets up per-reader C structure and returns a pointer to it. */
+<i>94</i>&nbsp;    private native long initDecompressor(InputStream stream) throws IOException;
+<i>95</i>&nbsp;
+<i>96</i>&nbsp;    /** Sets output color space and scale factor.
+<i>97</i>&nbsp;     *  Returns number of components which native decoder
+<i>98</i>&nbsp;     *  will produce for requested output color space.
+<i>99</i>&nbsp;     */
+<i>100</i>&nbsp;    private native int startDecompression(long structPointer,
+<i>101</i>&nbsp;            int outColorSpaceCode, int scaleNum, int scaleDenom);
+<i>102</i>&nbsp;
+<i>103</i>&nbsp;    private native boolean decompressIndirect(long structPointer, boolean reportProgress, byte[] array) throws IOException;
+<i>104</i>&nbsp;    // Uncomment next line for direct ByteBuffers.
+<i>105</i>&nbsp;    //private native ByteBuffer decompressDirect(long structPointer, boolean reportProgress) throws IOException;
+<i>106</i>&nbsp;
+<i>107</i>&nbsp;    static {
+<b class="fc"><i>108</i>&nbsp;        AccessController.doPrivileged((PrivilegedAction&lt;Object&gt;) () -&gt; {</b>
+<b class="fc"><i>109</i>&nbsp;            NativeLibLoader.loadLibrary(&quot;javafx_iio&quot;);</b>
+<b class="fc"><i>110</i>&nbsp;            return null;</b>
+<i>111</i>&nbsp;        });
+<b class="fc"><i>112</i>&nbsp;        initJPEGMethodIDs(InputStream.class);</b>
+<b class="fc"><i>113</i>&nbsp;    }</b>
+<i>114</i>&nbsp;
+<i>115</i>&nbsp;    /*
+<i>116</i>&nbsp;     * Called by the native code when the image header has been read.
+<i>117</i>&nbsp;     */
+<i>118</i>&nbsp;    private void setInputAttributes(int width,
+<i>119</i>&nbsp;            int height,
+<i>120</i>&nbsp;            int colorSpaceCode,
+<i>121</i>&nbsp;            int outColorSpaceCode,
+<i>122</i>&nbsp;            int numComponents,
+<i>123</i>&nbsp;            byte[] iccData) {
+<b class="fc"><i>124</i>&nbsp;        this.inWidth = width;</b>
+<b class="fc"><i>125</i>&nbsp;        this.inHeight = height;</b>
+<b class="fc"><i>126</i>&nbsp;        this.inColorSpaceCode = colorSpaceCode;</b>
+<b class="fc"><i>127</i>&nbsp;        this.outColorSpaceCode = outColorSpaceCode;</b>
+<b class="fc"><i>128</i>&nbsp;        this.iccData = iccData;</b>
+<i>129</i>&nbsp;
+<i>130</i>&nbsp;        // Set outImageType.
+<b class="fc"><i>131</i>&nbsp;        switch (outColorSpaceCode) {</b>
+<i>132</i>&nbsp;            case JCS_GRAYSCALE:
+<b class="fc"><i>133</i>&nbsp;                this.outImageType = ImageType.GRAY;</b>
+<b class="fc"><i>134</i>&nbsp;                break;</b>
+<i>135</i>&nbsp;            case JCS_YCbCr:
+<i>136</i>&nbsp;            case JCS_YCC:
+<i>137</i>&nbsp;            case JCS_RGB:
+<b class="fc"><i>138</i>&nbsp;                this.outImageType = ImageType.RGB;</b>
+<b class="fc"><i>139</i>&nbsp;                break;</b>
+<i>140</i>&nbsp;            case JCS_CMYK:
+<i>141</i>&nbsp;            case JCS_YCbCrA:
+<i>142</i>&nbsp;            case JCS_YCCA:
+<i>143</i>&nbsp;            case JCS_YCCK:
+<i>144</i>&nbsp;            case JCS_RGBA:
+<b class="nc"><i>145</i>&nbsp;                this.outImageType = ImageType.RGBA_PRE;</b>
+<b class="nc"><i>146</i>&nbsp;                break;</b>
+<i>147</i>&nbsp;            case JCS_UNKNOWN:
+<b class="nc"><i>148</i>&nbsp;                switch (numComponents) {</b>
+<i>149</i>&nbsp;                    case 1:
+<b class="nc"><i>150</i>&nbsp;                        this.outImageType = ImageType.GRAY;</b>
+<b class="nc"><i>151</i>&nbsp;                        break;</b>
+<i>152</i>&nbsp;                    case 3:
+<b class="nc"><i>153</i>&nbsp;                        this.outImageType = ImageType.RGB;</b>
+<b class="nc"><i>154</i>&nbsp;                        break;</b>
+<i>155</i>&nbsp;                    case 4:
+<b class="nc"><i>156</i>&nbsp;                        this.outImageType = ImageType.RGBA_PRE;</b>
+<b class="nc"><i>157</i>&nbsp;                        break;</b>
+<i>158</i>&nbsp;                    default:
+<b class="nc"><i>159</i>&nbsp;                        assert false;</b>
+<i>160</i>&nbsp;                }
+<i>161</i>&nbsp;                break;
+<i>162</i>&nbsp;            default:
+<b class="nc"><i>163</i>&nbsp;                assert false;</b>
+<i>164</i>&nbsp;                break;
+<i>165</i>&nbsp;        }
+<b class="fc"><i>166</i>&nbsp;    }</b>
+<i>167</i>&nbsp;
+<i>168</i>&nbsp;    /*
+<i>169</i>&nbsp;     * Called by the native code after starting decompression.
+<i>170</i>&nbsp;     */
+<i>171</i>&nbsp;    private void setOutputAttributes(int width, int height) {
+<b class="fc"><i>172</i>&nbsp;        this.outWidth = width;</b>
+<b class="fc"><i>173</i>&nbsp;        this.outHeight = height;</b>
+<b class="fc"><i>174</i>&nbsp;    }</b>
+<i>175</i>&nbsp;
+<i>176</i>&nbsp;    private void updateImageProgress(int outLinesDecoded) {
+<b class="fc"><i>177</i>&nbsp;        updateImageProgress(100.0F * outLinesDecoded / outHeight);</b>
+<b class="fc"><i>178</i>&nbsp;    }</b>
+<i>179</i>&nbsp;
+<i>180</i>&nbsp;    JPEGImageLoader(InputStream input) throws IOException {
+<b class="fc"><i>181</i>&nbsp;        super(JPEGDescriptor.getInstance());</b>
+<b class="fc"><i>182</i>&nbsp;        if (input == null) {</b>
+<b class="nc"><i>183</i>&nbsp;            throw new IllegalArgumentException(&quot;input == null!&quot;);</b>
+<i>184</i>&nbsp;        }
+<i>185</i>&nbsp;
+<i>186</i>&nbsp;        try {
+<b class="fc"><i>187</i>&nbsp;            this.structPointer = initDecompressor(input);</b>
+<b class="nc"><i>188</i>&nbsp;        } catch (IOException e) {</b>
+<b class="nc"><i>189</i>&nbsp;            dispose();</b>
+<b class="nc"><i>190</i>&nbsp;            throw e;</b>
+<b class="fc"><i>191</i>&nbsp;        }</b>
+<i>192</i>&nbsp;
+<b class="fc"><i>193</i>&nbsp;        if (this.structPointer == 0L) {</b>
+<b class="nc"><i>194</i>&nbsp;            throw new IOException(&quot;Unable to initialize JPEG decompressor&quot;);</b>
+<i>195</i>&nbsp;        }
+<b class="fc"><i>196</i>&nbsp;    }</b>
+<i>197</i>&nbsp;
+<i>198</i>&nbsp;    public synchronized void dispose() {
+<b class="fc"><i>199</i>&nbsp;        if(!accessLock.isLocked() &amp;&amp; !isDisposed &amp;&amp; structPointer != 0L) {</b>
+<b class="fc"><i>200</i>&nbsp;            isDisposed = true;</b>
+<b class="fc"><i>201</i>&nbsp;            disposeNative(structPointer);</b>
+<b class="fc"><i>202</i>&nbsp;            structPointer = 0L;</b>
+<i>203</i>&nbsp;        }
+<b class="fc"><i>204</i>&nbsp;    }</b>
+<i>205</i>&nbsp;
+<i>206</i>&nbsp;    protected void finalize() {
+<b class="fc"><i>207</i>&nbsp;        dispose();</b>
+<b class="fc"><i>208</i>&nbsp;    }</b>
+<i>209</i>&nbsp;
+<i>210</i>&nbsp;    public ImageFrame load(int imageIndex, int width, int height, boolean preserveAspectRatio, boolean smooth) throws IOException {
+<b class="fc"><i>211</i>&nbsp;        if (imageIndex != 0) {</b>
+<b class="fc"><i>212</i>&nbsp;            return null;</b>
+<i>213</i>&nbsp;        }
+<i>214</i>&nbsp;
+<b class="fc"><i>215</i>&nbsp;        accessLock.lock();</b>
+<i>216</i>&nbsp;
+<i>217</i>&nbsp;        // Determine output image dimensions.
+<b class="fc"><i>218</i>&nbsp;        int[] widthHeight = ImageTools.computeDimensions(inWidth, inHeight, width, height, preserveAspectRatio);</b>
+<b class="fc"><i>219</i>&nbsp;        width = widthHeight[0];</b>
+<b class="fc"><i>220</i>&nbsp;        height = widthHeight[1];</b>
+<i>221</i>&nbsp;
+<b class="fc"><i>222</i>&nbsp;        ImageMetadata md = new ImageMetadata(null, true,</b>
+<i>223</i>&nbsp;                null, null, null, null, null,
+<b class="fc"><i>224</i>&nbsp;                width, height, null, null, null);</b>
+<i>225</i>&nbsp;
+<b class="fc"><i>226</i>&nbsp;        updateImageMetadata(md);</b>
+<i>227</i>&nbsp;
+<b class="fc"><i>228</i>&nbsp;        ByteBuffer buffer = null;</b>
+<i>229</i>&nbsp;
+<i>230</i>&nbsp;        int outNumComponents;
+<i>231</i>&nbsp;        try {
+<b class="fc"><i>232</i>&nbsp;            outNumComponents = startDecompression(structPointer,</b>
+<i>233</i>&nbsp;                    outColorSpaceCode, width, height);
+<i>234</i>&nbsp;
+<i>235</i>&nbsp;            // Uncomment next line for direct ByteBuffer.
+<i>236</i>&nbsp;            //buffer = decompressDirect(structPointer, listeners != null &amp;&amp; !listeners.isEmpty());
+<i>237</i>&nbsp;            // Comment out next three lines to suppress indirect ByteBuffers.
+<b class="fc"><i>238</i>&nbsp;            byte[] array = new byte[outWidth*outHeight*outNumComponents];</b>
+<b class="fc"><i>239</i>&nbsp;            buffer = ByteBuffer.wrap(array);</b>
+<b class="fc"><i>240</i>&nbsp;            decompressIndirect(structPointer, listeners != null &amp;&amp; !listeners.isEmpty(), buffer.array());</b>
+<b class="nc"><i>241</i>&nbsp;        } catch (IOException e) {</b>
+<b class="nc"><i>242</i>&nbsp;            throw e;</b>
+<i>243</i>&nbsp;        } finally {
+<b class="fc"><i>244</i>&nbsp;            accessLock.unlock();</b>
+<b class="fc"><i>245</i>&nbsp;            dispose();</b>
+<b class="fc"><i>246</i>&nbsp;        }</b>
+<i>247</i>&nbsp;
+<b class="fc"><i>248</i>&nbsp;        if (buffer == null) {</b>
+<b class="nc"><i>249</i>&nbsp;            throw new IOException(&quot;Error decompressing JPEG stream!&quot;);</b>
+<i>250</i>&nbsp;        }
+<i>251</i>&nbsp;
+<i>252</i>&nbsp;        // Check whether the decompressed image has been scaled to the correct
+<i>253</i>&nbsp;        // dimensions. If not, downscale it here. Note outData, outHeight, and
+<i>254</i>&nbsp;        // outWidth refer to the image as returned by the decompressor. This
+<i>255</i>&nbsp;        // image might have been downscaled from the original source by a factor
+<i>256</i>&nbsp;        // of N/8 where 1 &lt;= N &lt;=8.
+<b class="fc"><i>257</i>&nbsp;        if (outWidth != width || outHeight != height) {</b>
+<b class="nc"><i>258</i>&nbsp;            buffer = ImageTools.scaleImage(buffer,</b>
+<i>259</i>&nbsp;                    outWidth, outHeight, outNumComponents, width, height, smooth);
+<i>260</i>&nbsp;        }
+<i>261</i>&nbsp;
+<b class="fc"><i>262</i>&nbsp;        return new ImageFrame(outImageType, buffer,</b>
+<i>263</i>&nbsp;                width, height, width * outNumComponents, null, md);
+<i>264</i>&nbsp;    }
+<i>265</i>&nbsp;
+<i>266</i>&nbsp;    private static class Lock {
+<i>267</i>&nbsp;        private boolean locked;
+<i>268</i>&nbsp;
+<b class="fc"><i>269</i>&nbsp;        public Lock() {</b>
+<b class="fc"><i>270</i>&nbsp;            locked = false;</b>
+<b class="fc"><i>271</i>&nbsp;        }</b>
+<i>272</i>&nbsp;
+<i>273</i>&nbsp;        public synchronized boolean isLocked() {
+<b class="fc"><i>274</i>&nbsp;            return locked;</b>
+<i>275</i>&nbsp;        }
+<i>276</i>&nbsp;
+<i>277</i>&nbsp;        public synchronized void lock() {
+<b class="fc"><i>278</i>&nbsp;            if (locked) {</b>
+<b class="nc"><i>279</i>&nbsp;                throw new IllegalStateException(&quot;Recursive loading is not allowed.&quot;);</b>
+<i>280</i>&nbsp;            }
+<b class="fc"><i>281</i>&nbsp;            locked = true;</b>
+<b class="fc"><i>282</i>&nbsp;        }</b>
+<i>283</i>&nbsp;
+<i>284</i>&nbsp;        public synchronized void unlock() {
+<b class="fc"><i>285</i>&nbsp;            if (!locked) {</b>
+<b class="nc"><i>286</i>&nbsp;                throw new IllegalStateException(&quot;Invalid loader state.&quot;);</b>
+<i>287</i>&nbsp;            }
+<b class="fc"><i>288</i>&nbsp;            locked = false;</b>
+<b class="fc"><i>289</i>&nbsp;        }</b>
+<i>290</i>&nbsp;    }
+<i>291</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2017-12-04 21:49</div>
+</div>
+</body>
+</html>

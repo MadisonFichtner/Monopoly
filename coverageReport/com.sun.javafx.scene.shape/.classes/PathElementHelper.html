@@ -1,0 +1,180 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: PathElementHelper</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.javafx.scene.shape</a> ]
+</div>
+
+<h1>Coverage Summary for Class: PathElementHelper (com.sun.javafx.scene.shape)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">PathElementHelper</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (6/ 6)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    92.3%
+  </span>
+  <span class="absValue">
+    (12/ 13)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">PathElementHelper$PathElementAccessor</td>
+  </tr>
+<tr>
+  <td class="name"><strong>total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (6/ 6)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    92.3%
+  </span>
+  <span class="absValue">
+    (12/ 13)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright (c) 2016, Oracle and/or its affiliates. All rights reserved.
+<i>3</i>&nbsp; * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+<i>4</i>&nbsp; *
+<i>5</i>&nbsp; *
+<i>6</i>&nbsp; *
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; *
+<i>11</i>&nbsp; *
+<i>12</i>&nbsp; *
+<i>13</i>&nbsp; *
+<i>14</i>&nbsp; *
+<i>15</i>&nbsp; *
+<i>16</i>&nbsp; *
+<i>17</i>&nbsp; *
+<i>18</i>&nbsp; *
+<i>19</i>&nbsp; *
+<i>20</i>&nbsp; *
+<i>21</i>&nbsp; *
+<i>22</i>&nbsp; *
+<i>23</i>&nbsp; *
+<i>24</i>&nbsp; */
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;package com.sun.javafx.scene.shape;
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;import com.sun.javafx.geom.Path2D;
+<i>29</i>&nbsp;import com.sun.javafx.util.Utils;
+<i>30</i>&nbsp;import javafx.scene.shape.PathElement;
+<i>31</i>&nbsp;
+<i>32</i>&nbsp;/**
+<i>33</i>&nbsp; * Used to access internal methods of PathElement.
+<i>34</i>&nbsp; */
+<i>35</i>&nbsp;public abstract class PathElementHelper {
+<i>36</i>&nbsp;    private static PathElementAccessor pathElementAccessor;
+<i>37</i>&nbsp;
+<i>38</i>&nbsp;    static {
+<b class="fc"><i>39</i>&nbsp;        Utils.forceInit(PathElement.class);</b>
+<b class="fc"><i>40</i>&nbsp;    }</b>
+<i>41</i>&nbsp;
+<b class="fc"><i>42</i>&nbsp;    protected PathElementHelper() {</b>
+<b class="fc"><i>43</i>&nbsp;    }</b>
+<i>44</i>&nbsp;
+<i>45</i>&nbsp;    private static PathElementHelper getHelper(PathElement pathElement) {
+<b class="fc"><i>46</i>&nbsp;        return pathElementAccessor.getHelper(pathElement);</b>
+<i>47</i>&nbsp;    }
+<i>48</i>&nbsp;
+<i>49</i>&nbsp;    protected static void setHelper(PathElement pathElement, PathElementHelper pathElementHelper) {
+<b class="fc"><i>50</i>&nbsp;        pathElementAccessor.setHelper(pathElement, pathElementHelper);</b>
+<b class="fc"><i>51</i>&nbsp;    }</b>
+<i>52</i>&nbsp;
+<i>53</i>&nbsp;    /*
+<i>54</i>&nbsp;     * Static helper methods for cases where the implementation is done in an
+<i>55</i>&nbsp;     * instance method that is overridden by subclasses.
+<i>56</i>&nbsp;     * These methods exist in the base class only.
+<i>57</i>&nbsp;     */
+<i>58</i>&nbsp;
+<i>59</i>&nbsp;    public static void addTo(PathElement pathElement, Path2D path) {
+<b class="fc"><i>60</i>&nbsp;        getHelper(pathElement).addToImpl(pathElement, path);</b>
+<b class="fc"><i>61</i>&nbsp;    }</b>
+<i>62</i>&nbsp;
+<i>63</i>&nbsp;    /*
+<i>64</i>&nbsp;     * Methods that will be overridden by subclasses
+<i>65</i>&nbsp;     */
+<i>66</i>&nbsp;
+<i>67</i>&nbsp;    protected abstract void addToImpl(PathElement pathElement, Path2D path);
+<i>68</i>&nbsp;
+<i>69</i>&nbsp;    /*
+<i>70</i>&nbsp;     * Methods used by PathElement (base) class only
+<i>71</i>&nbsp;     */
+<i>72</i>&nbsp;
+<i>73</i>&nbsp;    public static void setPathElementAccessor(final PathElementAccessor newAccessor) {
+<b class="fc"><i>74</i>&nbsp;        if (pathElementAccessor != null) {</b>
+<b class="nc"><i>75</i>&nbsp;            throw new IllegalStateException();</b>
+<i>76</i>&nbsp;        }
+<i>77</i>&nbsp;
+<b class="fc"><i>78</i>&nbsp;        pathElementAccessor = newAccessor;</b>
+<b class="fc"><i>79</i>&nbsp;    }</b>
+<i>80</i>&nbsp;
+<i>81</i>&nbsp;    public interface PathElementAccessor {
+<i>82</i>&nbsp;        PathElementHelper getHelper(PathElement pathElement);
+<i>83</i>&nbsp;        void setHelper(PathElement pathElement, PathElementHelper pathElementHelper);
+<i>84</i>&nbsp;    }
+<i>85</i>&nbsp;
+<i>86</i>&nbsp;}
+<i>87</i>&nbsp;
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2017-12-04 21:49</div>
+</div>
+</body>
+</html>

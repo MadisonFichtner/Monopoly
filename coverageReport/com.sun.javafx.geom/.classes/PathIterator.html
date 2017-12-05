@@ -1,0 +1,239 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: PathIterator</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.javafx.geom</a> ]
+</div>
+
+<h1>Coverage Summary for Class: PathIterator (com.sun.javafx.geom)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+</tr>
+<tr>
+  <td class="name">PathIterator</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright (c) 1997, 2013, Oracle and/or its affiliates. All rights reserved.
+<i>3</i>&nbsp; * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+<i>4</i>&nbsp; *
+<i>5</i>&nbsp; *
+<i>6</i>&nbsp; *
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; *
+<i>11</i>&nbsp; *
+<i>12</i>&nbsp; *
+<i>13</i>&nbsp; *
+<i>14</i>&nbsp; *
+<i>15</i>&nbsp; *
+<i>16</i>&nbsp; *
+<i>17</i>&nbsp; *
+<i>18</i>&nbsp; *
+<i>19</i>&nbsp; *
+<i>20</i>&nbsp; *
+<i>21</i>&nbsp; *
+<i>22</i>&nbsp; *
+<i>23</i>&nbsp; *
+<i>24</i>&nbsp; */
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;package com.sun.javafx.geom;
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;/**
+<i>29</i>&nbsp; * The &lt;code&gt;PathIterator&lt;/code&gt; interface provides the mechanism
+<i>30</i>&nbsp; * for objects that implement the {@link java.awt.Shape Shape}
+<i>31</i>&nbsp; * interface to return the geometry of their boundary by allowing
+<i>32</i>&nbsp; * a caller to retrieve the path of that boundary a segment at a
+<i>33</i>&nbsp; * time.  This interface allows these objects to retrieve the path of
+<i>34</i>&nbsp; * their boundary a segment at a time by using 1st through 3rd order
+<i>35</i>&nbsp; * B&amp;eacute;zier curves, which are lines and quadratic or cubic
+<i>36</i>&nbsp; * B&amp;eacute;zier splines.
+<i>37</i>&nbsp; * &lt;p&gt;
+<i>38</i>&nbsp; * Multiple subpaths can be expressed by using a &quot;MOVETO&quot; segment to
+<i>39</i>&nbsp; * create a discontinuity in the geometry to move from the end of
+<i>40</i>&nbsp; * one subpath to the beginning of the next.
+<i>41</i>&nbsp; * &lt;p&gt;
+<i>42</i>&nbsp; * Each subpath can be closed manually by ending the last segment in
+<i>43</i>&nbsp; * the subpath on the same coordinate as the beginning &quot;MOVETO&quot; segment
+<i>44</i>&nbsp; * for that subpath or by using a &quot;CLOSE&quot; segment to append a line
+<i>45</i>&nbsp; * segment from the last point back to the first.
+<i>46</i>&nbsp; * Be aware that manually closing an outline as opposed to using a
+<i>47</i>&nbsp; * &quot;CLOSE&quot; segment to close the path might result in different line
+<i>48</i>&nbsp; * style decorations being used at the end points of the subpath.
+<i>49</i>&nbsp; * For example, the {@link java.awt.BasicStroke BasicStroke} object
+<i>50</i>&nbsp; * uses a line &quot;JOIN&quot; decoration to connect the first and last points
+<i>51</i>&nbsp; * if a &quot;CLOSE&quot; segment is encountered, whereas simply ending the path
+<i>52</i>&nbsp; * on the same coordinate as the beginning coordinate results in line
+<i>53</i>&nbsp; * &quot;CAP&quot; decorations being used at the ends.
+<i>54</i>&nbsp; *
+<i>55</i>&nbsp; * @see java.awt.Shape
+<i>56</i>&nbsp; * @see java.awt.BasicStroke
+<i>57</i>&nbsp; *
+<i>58</i>&nbsp; * @version 1.23, 05/05/07
+<i>59</i>&nbsp; */
+<i>60</i>&nbsp;public interface PathIterator {
+<i>61</i>&nbsp;    /**
+<i>62</i>&nbsp;     * The winding rule constant for specifying an even-odd rule
+<i>63</i>&nbsp;     * for determining the interior of a path.
+<i>64</i>&nbsp;     * The even-odd rule specifies that a point lies inside the
+<i>65</i>&nbsp;     * path if a ray drawn in any direction from that point to
+<i>66</i>&nbsp;     * infinity is crossed by path segments an odd number of times.
+<i>67</i>&nbsp;     */
+<i>68</i>&nbsp;    public static final int WIND_EVEN_ODD   = 0;
+<i>69</i>&nbsp;
+<i>70</i>&nbsp;    /**
+<i>71</i>&nbsp;     * The winding rule constant for specifying a non-zero rule
+<i>72</i>&nbsp;     * for determining the interior of a path.
+<i>73</i>&nbsp;     * The non-zero rule specifies that a point lies inside the
+<i>74</i>&nbsp;     * path if a ray drawn in any direction from that point to
+<i>75</i>&nbsp;     * infinity is crossed by path segments a different number
+<i>76</i>&nbsp;     * of times in the counter-clockwise direction than the
+<i>77</i>&nbsp;     * clockwise direction.
+<i>78</i>&nbsp;     */
+<i>79</i>&nbsp;    public static final int WIND_NON_ZERO   = 1;
+<i>80</i>&nbsp;
+<i>81</i>&nbsp;    /**
+<i>82</i>&nbsp;     * The segment type constant for a point that specifies the
+<i>83</i>&nbsp;     * starting location for a new subpath.
+<i>84</i>&nbsp;     */
+<i>85</i>&nbsp;    public static final int SEG_MOVETO      = 0;
+<i>86</i>&nbsp;
+<i>87</i>&nbsp;    /**
+<i>88</i>&nbsp;     * The segment type constant for a point that specifies the
+<i>89</i>&nbsp;     * end point of a line to be drawn from the most recently
+<i>90</i>&nbsp;     * specified point.
+<i>91</i>&nbsp;     */
+<i>92</i>&nbsp;    public static final int SEG_LINETO      = 1;
+<i>93</i>&nbsp;
+<i>94</i>&nbsp;    /**
+<i>95</i>&nbsp;     * The segment type constant for the pair of points that specify
+<i>96</i>&nbsp;     * a quadratic parametric curve to be drawn from the most recently
+<i>97</i>&nbsp;     * specified point.
+<i>98</i>&nbsp;     * The curve is interpolated by solving the parametric control
+<i>99</i>&nbsp;     * equation in the range &lt;code&gt;(t=[0..1])&lt;/code&gt; using
+<i>100</i>&nbsp;     * the most recently specified (current) point (CP),
+<i>101</i>&nbsp;     * the first control point (P1),
+<i>102</i>&nbsp;     * and the final interpolated control point (P2).
+<i>103</i>&nbsp;     * The parametric control equation for this curve is:
+<i>104</i>&nbsp;     * &lt;pre&gt;
+<i>105</i>&nbsp;     *          P(t) = B(2,0)*CP + B(2,1)*P1 + B(2,2)*P2
+<i>106</i>&nbsp;     *          0 &amp;lt;= t &amp;lt;= 1
+<i>107</i>&nbsp;     *
+<i>108</i>&nbsp;     *        B(n,m) = mth coefficient of nth degree Bernstein polynomial
+<i>109</i>&nbsp;     *               = C(n,m) * t^(m) * (1 - t)^(n-m)
+<i>110</i>&nbsp;     *        C(n,m) = Combinations of n things, taken m at a time
+<i>111</i>&nbsp;     *               = n! / (m! * (n-m)!)
+<i>112</i>&nbsp;     * &lt;/pre&gt;
+<i>113</i>&nbsp;     */
+<i>114</i>&nbsp;    public static final int SEG_QUADTO      = 2;
+<i>115</i>&nbsp;
+<i>116</i>&nbsp;    /**
+<i>117</i>&nbsp;     * The segment type constant for the set of 3 points that specify
+<i>118</i>&nbsp;     * a cubic parametric curve to be drawn from the most recently
+<i>119</i>&nbsp;     * specified point.
+<i>120</i>&nbsp;     * The curve is interpolated by solving the parametric control
+<i>121</i>&nbsp;     * equation in the range &lt;code&gt;(t=[0..1])&lt;/code&gt; using
+<i>122</i>&nbsp;     * the most recently specified (current) point (CP),
+<i>123</i>&nbsp;     * the first control point (P1),
+<i>124</i>&nbsp;     * the second control point (P2),
+<i>125</i>&nbsp;     * and the final interpolated control point (P3).
+<i>126</i>&nbsp;     * The parametric control equation for this curve is:
+<i>127</i>&nbsp;     * &lt;pre&gt;
+<i>128</i>&nbsp;     *          P(t) = B(3,0)*CP + B(3,1)*P1 + B(3,2)*P2 + B(3,3)*P3
+<i>129</i>&nbsp;     *          0 &amp;lt;= t &amp;lt;= 1
+<i>130</i>&nbsp;     *
+<i>131</i>&nbsp;     *        B(n,m) = mth coefficient of nth degree Bernstein polynomial
+<i>132</i>&nbsp;     *               = C(n,m) * t^(m) * (1 - t)^(n-m)
+<i>133</i>&nbsp;     *        C(n,m) = Combinations of n things, taken m at a time
+<i>134</i>&nbsp;     *               = n! / (m! * (n-m)!)
+<i>135</i>&nbsp;     * &lt;/pre&gt;
+<i>136</i>&nbsp;     * This form of curve is commonly known as a B&amp;eacute;zier curve.
+<i>137</i>&nbsp;     */
+<i>138</i>&nbsp;    public static final int SEG_CUBICTO     = 3;
+<i>139</i>&nbsp;
+<i>140</i>&nbsp;    /**
+<i>141</i>&nbsp;     * The segment type constant that specifies that
+<i>142</i>&nbsp;     * the preceding subpath should be closed by appending a line segment
+<i>143</i>&nbsp;     * back to the point corresponding to the most recent SEG_MOVETO.
+<i>144</i>&nbsp;     */
+<i>145</i>&nbsp;    public static final int SEG_CLOSE       = 4;
+<i>146</i>&nbsp;
+<i>147</i>&nbsp;    /**
+<i>148</i>&nbsp;     * Returns the winding rule for determining the interior of the
+<i>149</i>&nbsp;     * path.
+<i>150</i>&nbsp;     * @return the winding rule.
+<i>151</i>&nbsp;     * @see #WIND_EVEN_ODD
+<i>152</i>&nbsp;     * @see #WIND_NON_ZERO
+<i>153</i>&nbsp;     */
+<i>154</i>&nbsp;    public int getWindingRule();
+<i>155</i>&nbsp;
+<i>156</i>&nbsp;    /**
+<i>157</i>&nbsp;     * Tests if the iteration is complete.
+<i>158</i>&nbsp;     * @return &lt;code&gt;true&lt;/code&gt; if all the segments have
+<i>159</i>&nbsp;     * been read; &lt;code&gt;false&lt;/code&gt; otherwise.
+<i>160</i>&nbsp;     */
+<i>161</i>&nbsp;    public boolean isDone();
+<i>162</i>&nbsp;
+<i>163</i>&nbsp;    /**
+<i>164</i>&nbsp;     * Moves the iterator to the next segment of the path forwards
+<i>165</i>&nbsp;     * along the primary direction of traversal as long as there are
+<i>166</i>&nbsp;     * more points in that direction.
+<i>167</i>&nbsp;     */
+<i>168</i>&nbsp;    public void next();
+<i>169</i>&nbsp;
+<i>170</i>&nbsp;    /**
+<i>171</i>&nbsp;     * Returns the coordinates and type of the current path segment in
+<i>172</i>&nbsp;     * the iteration.
+<i>173</i>&nbsp;     * The return value is the path-segment type:
+<i>174</i>&nbsp;     * SEG_MOVETO, SEG_LINETO, SEG_QUADTO, SEG_CUBICTO, or SEG_CLOSE.
+<i>175</i>&nbsp;     * A float array of length 6 must be passed in and can be used to
+<i>176</i>&nbsp;     * store the coordinates of the point(s).
+<i>177</i>&nbsp;     * Each point is stored as a pair of float x,y coordinates.
+<i>178</i>&nbsp;     * SEG_MOVETO and SEG_LINETO types returns one point,
+<i>179</i>&nbsp;     * SEG_QUADTO returns two points,
+<i>180</i>&nbsp;     * SEG_CUBICTO returns 3 points
+<i>181</i>&nbsp;     * and SEG_CLOSE does not return any points.
+<i>182</i>&nbsp;     * @param coords an array that holds the data returned from
+<i>183</i>&nbsp;     * this method
+<i>184</i>&nbsp;     * @return the path-segment type of the current path segment.
+<i>185</i>&nbsp;     * @see #SEG_MOVETO
+<i>186</i>&nbsp;     * @see #SEG_LINETO
+<i>187</i>&nbsp;     * @see #SEG_QUADTO
+<i>188</i>&nbsp;     * @see #SEG_CUBICTO
+<i>189</i>&nbsp;     * @see #SEG_CLOSE
+<i>190</i>&nbsp;     */
+<i>191</i>&nbsp;    public int currentSegment(float[] coords);
+<i>192</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2017-12-04 21:49</div>
+</div>
+</body>
+</html>

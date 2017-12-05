@@ -1,0 +1,420 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: TextBinding</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.javafx.scene.control.behavior</a> ]
+</div>
+
+<h1>Coverage Summary for Class: TextBinding (com.sun.javafx.scene.control.behavior)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">TextBinding</td>
+<td class="coverageStat">
+  <span class="percent">
+    28.6%
+  </span>
+  <span class="absValue">
+    (2/ 7)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    32.6%
+  </span>
+  <span class="absValue">
+    (15/ 46)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">TextBinding$MnemonicKeyCombination</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 6)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 25)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    15.4%
+  </span>
+  <span class="absValue">
+    (2/ 13)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    21.1%
+  </span>
+  <span class="absValue">
+    (15/ 71)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright (c) 2010, 2014, Oracle and/or its affiliates. All rights reserved.
+<i>3</i>&nbsp; * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+<i>4</i>&nbsp; *
+<i>5</i>&nbsp; *
+<i>6</i>&nbsp; *
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; *
+<i>11</i>&nbsp; *
+<i>12</i>&nbsp; *
+<i>13</i>&nbsp; *
+<i>14</i>&nbsp; *
+<i>15</i>&nbsp; *
+<i>16</i>&nbsp; *
+<i>17</i>&nbsp; *
+<i>18</i>&nbsp; *
+<i>19</i>&nbsp; *
+<i>20</i>&nbsp; *
+<i>21</i>&nbsp; *
+<i>22</i>&nbsp; *
+<i>23</i>&nbsp; *
+<i>24</i>&nbsp; */
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;package com.sun.javafx.scene.control.behavior;
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;import javafx.scene.input.KeyEvent;
+<i>29</i>&nbsp;import javafx.scene.input.KeyCombination;
+<i>30</i>&nbsp;
+<i>31</i>&nbsp;/**
+<i>32</i>&nbsp; * &lt;p&gt;
+<i>33</i>&nbsp; * The syntax of the string content is as follows:
+<i>34</i>&nbsp; * &lt;/p&gt;
+<i>35</i>&nbsp; *
+<i>36</i>&nbsp; * &lt;ul&gt;
+<i>37</i>&nbsp; * &lt;li&gt;
+<i>38</i>&nbsp; * &lt;p&gt;
+<i>39</i>&nbsp; * &lt;b&gt;Simple mnemonic&lt;/b&gt;: the first character preceded by the first {@code _}
+<i>40</i>&nbsp; * character will be treated as the mnemonic. For example, &quot;E_xit&quot; will cause
+<i>41</i>&nbsp; * the text to become &quot;Exit&quot; and the mnemonic will be &quot;x&quot;. This is the most
+<i>42</i>&nbsp; * common designation of a mnemonic, and the skin for a control will present the
+<i>43</i>&nbsp; * mnemonic in the string with an underline. To prevent {@code _} from being
+<i>44</i>&nbsp; * treated as the mnemonic prefix character, repeat it twice in a row. A
+<i>45</i>&nbsp; * mnemonic is not required.
+<i>46</i>&nbsp; * &lt;/p&gt;
+<i>47</i>&nbsp; * &lt;/li&gt;
+<i>48</i>&nbsp; * &lt;li&gt;
+<i>49</i>&nbsp; * &lt;p&gt;
+<i>50</i>&nbsp; * &lt;b&gt;Extended mnemonic&lt;/b&gt;: an optional representation of a mnemonic is
+<i>51</i>&nbsp; * {@code _(c)}, where {@code c} is the mnemonic character. For example,
+<i>52</i>&nbsp; * &quot;Exit_(q)&quot; will cause the text to become &quot;Exit&quot; and the
+<i>53</i>&nbsp; * {@link #extendedMnemonicText} to become &quot;(q)&quot;. This is typically provided in
+<i>54</i>&nbsp; * translated strings to support mnemonics where the main text does not have any
+<i>55</i>&nbsp; * characters that map to keyboard keys. In these cases, the skin for the
+<i>56</i>&nbsp; * control will typically present the mnemonic surrounded by parentheses. The
+<i>57</i>&nbsp; * skin will also honor the hiding and presentation of the extended mnemonic
+<i>58</i>&nbsp; * string on platforms where the mnemonic is only displayed when the mnemonic
+<i>59</i>&nbsp; * modifier key is pressed.
+<i>60</i>&nbsp; * &lt;/ul&gt;
+<i>61</i>&nbsp; */
+<i>62</i>&nbsp;public class TextBinding {
+<i>63</i>&nbsp;
+<i>64</i>&nbsp;    /**
+<i>65</i>&nbsp;     * the marker symbol used when parsing for mnemonics
+<i>66</i>&nbsp;     */
+<b class="fc"><i>67</i>&nbsp;    private String MNEMONIC_SYMBOL = &quot;_&quot;;</b>
+<i>68</i>&nbsp;
+<i>69</i>&nbsp;    /**
+<i>70</i>&nbsp;     * The text with any markup for the mnemonic and accelerator removed.
+<i>71</i>&nbsp;     */
+<b class="fc"><i>72</i>&nbsp;    private String text = null;</b>
+<i>73</i>&nbsp;
+<i>74</i>&nbsp;    /**
+<i>75</i>&nbsp;     * Returns the text with any markup for the mnemonic and accelerator removed
+<i>76</i>&nbsp;     *
+<i>77</i>&nbsp;     * @return the text with any markup for the mnemonic and accelerator removed
+<i>78</i>&nbsp;     */
+<i>79</i>&nbsp;    public String getText() {
+<b class="nc"><i>80</i>&nbsp;        return text;</b>
+<i>81</i>&nbsp;    }
+<i>82</i>&nbsp;
+<i>83</i>&nbsp;    /**
+<i>84</i>&nbsp;     * The mnemonic or {@code null} if there is no mnemonic.
+<i>85</i>&nbsp;     */
+<b class="fc"><i>86</i>&nbsp;    private String mnemonic = null;</b>
+<b class="fc"><i>87</i>&nbsp;    private KeyCombination mnemonicKeyCombination = null;</b>
+<i>88</i>&nbsp;
+<i>89</i>&nbsp;    /**
+<i>90</i>&nbsp;     * Returns the mnemonic or {@code null} if there is no
+<i>91</i>&nbsp;     * mnemonic.
+<i>92</i>&nbsp;     *
+<i>93</i>&nbsp;     * @return the mnemonic or {@code null} if there is no
+<i>94</i>&nbsp;     *         mnemonic
+<i>95</i>&nbsp;     */
+<i>96</i>&nbsp;    public String getMnemonic() {
+<b class="nc"><i>97</i>&nbsp;        return mnemonic;</b>
+<i>98</i>&nbsp;    }
+<i>99</i>&nbsp;
+<i>100</i>&nbsp;
+<i>101</i>&nbsp;    /**
+<i>102</i>&nbsp;     * Returns the mnemonic KeyCombination or {@code null} if there is no
+<i>103</i>&nbsp;     * mnemonic.
+<i>104</i>&nbsp;     *
+<i>105</i>&nbsp;     * @return the mnemonic KeyCombination or {@code null} if there is no
+<i>106</i>&nbsp;     *         mnemonic
+<i>107</i>&nbsp;     */
+<i>108</i>&nbsp;    public KeyCombination getMnemonicKeyCombination() {
+<b class="nc"><i>109</i>&nbsp;        if (mnemonic != null &amp;&amp; mnemonicKeyCombination == null) {</b>
+<b class="nc"><i>110</i>&nbsp;            mnemonicKeyCombination = new MnemonicKeyCombination(mnemonic);</b>
+<i>111</i>&nbsp;        }
+<b class="nc"><i>112</i>&nbsp;        return mnemonicKeyCombination;</b>
+<i>113</i>&nbsp;    }
+<i>114</i>&nbsp;
+<i>115</i>&nbsp;    /**
+<i>116</i>&nbsp;     * The index of the mnemonic character in the text property or -1 if there
+<i>117</i>&nbsp;     * is no mnemonic character in the text. This is only non-negative if the
+<i>118</i>&nbsp;     * simple {@code _c} syntax was used to specify the mnemonic.
+<i>119</i>&nbsp;     */
+<b class="fc"><i>120</i>&nbsp;    private int mnemonicIndex = -1;</b>
+<i>121</i>&nbsp;
+<i>122</i>&nbsp;    /**
+<i>123</i>&nbsp;     * Returns the index of the mnemonic character in the text property or -1 if
+<i>124</i>&nbsp;     * there is no mnemonic character in the text. This is only non-negative if
+<i>125</i>&nbsp;     * the simple {@code _c} syntax was used to specify the mnemonic.
+<i>126</i>&nbsp;     *
+<i>127</i>&nbsp;     * @return the index of the mnemonic character in the text property or -1 if
+<i>128</i>&nbsp;     *         there is no mnemonic character in the text
+<i>129</i>&nbsp;     */
+<i>130</i>&nbsp;    public int getMnemonicIndex() {
+<b class="nc"><i>131</i>&nbsp;        return mnemonicIndex;</b>
+<i>132</i>&nbsp;    }
+<i>133</i>&nbsp;
+<i>134</i>&nbsp;    /**
+<i>135</i>&nbsp;     * The extended mnemonic text (if it exists). This is only non-null if the
+<i>136</i>&nbsp;     * extended mnemonic syntax was used to specify the mnemonic.
+<i>137</i>&nbsp;     */
+<b class="fc"><i>138</i>&nbsp;    private String extendedMnemonicText = null;</b>
+<i>139</i>&nbsp;
+<i>140</i>&nbsp;    /**
+<i>141</i>&nbsp;     * Returns the extended mnemonic text (if it exists). This is only non-null
+<i>142</i>&nbsp;     * if the extended mnemonic syntax was used to specify the mnemonic.
+<i>143</i>&nbsp;     *
+<i>144</i>&nbsp;     * @return the extended mnemonic text (if it exists) or null
+<i>145</i>&nbsp;     */
+<i>146</i>&nbsp;    public String getExtendedMnemonicText() {
+<b class="nc"><i>147</i>&nbsp;        return extendedMnemonicText;</b>
+<i>148</i>&nbsp;    }
+<i>149</i>&nbsp;
+<i>150</i>&nbsp;    /**
+<i>151</i>&nbsp;     * Creates a new TextBinding instance from the given string.
+<i>152</i>&nbsp;     *
+<i>153</i>&nbsp;     * @param s the action text string
+<i>154</i>&nbsp;     */
+<b class="fc"><i>155</i>&nbsp;    public TextBinding(String s) {</b>
+<b class="fc"><i>156</i>&nbsp;        parseAndSplit(s);</b>
+<b class="fc"><i>157</i>&nbsp;    }</b>
+<i>158</i>&nbsp;
+<i>159</i>&nbsp;    /**
+<i>160</i>&nbsp;     * Parse and split the given string into the appropriate segments.
+<i>161</i>&nbsp;     */
+<i>162</i>&nbsp;    private void parseAndSplit(String s) {
+<b class="fc"><i>163</i>&nbsp;        if (s == null || s.length() == 0) {</b>
+<b class="nc"><i>164</i>&nbsp;            text = s;</b>
+<b class="nc"><i>165</i>&nbsp;            return;</b>
+<i>166</i>&nbsp;        }
+<i>167</i>&nbsp;
+<i>168</i>&nbsp;        // We will use temp as a working copy of the string and will pull
+<i>169</i>&nbsp;        // mnemonic and accelerator text out of it as we find those things.
+<i>170</i>&nbsp;        //
+<b class="fc"><i>171</i>&nbsp;        StringBuffer temp = new StringBuffer(s);</b>
+<i>172</i>&nbsp;
+<i>173</i>&nbsp;        // Find the mnemonic if it exists.
+<i>174</i>&nbsp;        //
+<b class="fc"><i>175</i>&nbsp;        int index = temp.indexOf(MNEMONIC_SYMBOL);</b>
+<b class="fc"><i>176</i>&nbsp;        while (index &gt;= 0 &amp;&amp; index &lt; (temp.length() - 1)) {</b>
+<i>177</i>&nbsp;            // Skip two _&#39;s in a row
+<b class="nc"><i>178</i>&nbsp;            if (MNEMONIC_SYMBOL.equals(temp.substring(index + 1, index + 2))) {</b>
+<b class="nc"><i>179</i>&nbsp;                temp.delete(index, index + 1); // delete the extra MNEMONIC_SYMBOL</b>
+<b class="nc"><i>180</i>&nbsp;            } else if (temp.charAt(index + 1) != &#39;(&#39;</b>
+<b class="nc"><i>181</i>&nbsp;                       || index == temp.length() - 2) {</b>
+<b class="nc"><i>182</i>&nbsp;                mnemonic = temp.substring(index + 1, index + 2);</b>
+<b class="nc"><i>183</i>&nbsp;                if (mnemonic != null) {</b>
+<b class="nc"><i>184</i>&nbsp;                    mnemonicIndex = index;</b>
+<i>185</i>&nbsp;                }
+<b class="nc"><i>186</i>&nbsp;                temp.delete(index, index + 1);</b>
+<b class="nc"><i>187</i>&nbsp;                break;</b>
+<i>188</i>&nbsp;            } else {
+<b class="nc"><i>189</i>&nbsp;                int endIndex = temp.indexOf(&quot;)&quot;, index + 3);</b>
+<b class="nc"><i>190</i>&nbsp;                if (endIndex == -1) { // &quot;(&quot; is actually the mnemonic</b>
+<b class="nc"><i>191</i>&nbsp;                    mnemonic = temp.substring(index + 1, index + 2);</b>
+<b class="nc"><i>192</i>&nbsp;                    if (mnemonic != null) {</b>
+<b class="nc"><i>193</i>&nbsp;                        mnemonicIndex = index;</b>
+<i>194</i>&nbsp;                    }
+<b class="nc"><i>195</i>&nbsp;                    temp.delete(index, index + 1);</b>
+<b class="nc"><i>196</i>&nbsp;                    break;</b>
+<b class="nc"><i>197</i>&nbsp;                } else if (endIndex == index + 3) {</b>
+<b class="nc"><i>198</i>&nbsp;                    mnemonic = temp.substring(index + 2, index + 3);</b>
+<b class="nc"><i>199</i>&nbsp;                    extendedMnemonicText = temp.substring(index + 1, index + 4);</b>
+<b class="nc"><i>200</i>&nbsp;                    temp.delete(index, endIndex + 3);</b>
+<b class="nc"><i>201</i>&nbsp;                    break;</b>
+<i>202</i>&nbsp;                }
+<i>203</i>&nbsp;            }
+<b class="nc"><i>204</i>&nbsp;            index = temp.indexOf(MNEMONIC_SYMBOL, index + 1);</b>
+<i>205</i>&nbsp;        }
+<b class="fc"><i>206</i>&nbsp;        text = temp.toString();</b>
+<b class="fc"><i>207</i>&nbsp;    }</b>
+<i>208</i>&nbsp;
+<i>209</i>&nbsp;    /**
+<i>210</i>&nbsp;     * A modified version of KeyCharacterCombination, which matches
+<i>211</i>&nbsp;     * on the text property of a KeyEvent instead of on the KeyCode.
+<i>212</i>&nbsp;     */
+<i>213</i>&nbsp;    public static class MnemonicKeyCombination extends KeyCombination {
+<b class="nc"><i>214</i>&nbsp;        private String character = &quot;&quot;;</b>
+<i>215</i>&nbsp;
+<i>216</i>&nbsp;        /**
+<i>217</i>&nbsp;         * Constructs a {@code MnemonicKeyCombination} for the specified main key
+<i>218</i>&nbsp;         * character.
+<i>219</i>&nbsp;         *
+<i>220</i>&nbsp;         * @param character the main key character
+<i>221</i>&nbsp;         */
+<i>222</i>&nbsp;        public MnemonicKeyCombination(String character) {
+<b class="nc"><i>223</i>&nbsp;            super(com.sun.javafx.PlatformUtil.isMac()</b>
+<b class="nc"><i>224</i>&nbsp;                                  ? KeyCombination.META_DOWN</b>
+<b class="nc"><i>225</i>&nbsp;                                  : KeyCombination.ALT_DOWN);</b>
+<b class="nc"><i>226</i>&nbsp;            this.character = character;</b>
+<b class="nc"><i>227</i>&nbsp;        }</b>
+<i>228</i>&nbsp;
+<i>229</i>&nbsp;        /**
+<i>230</i>&nbsp;         * Gets the key character associated with this key combination.
+<i>231</i>&nbsp;         * @return The key character associated with this key combination
+<i>232</i>&nbsp;         */
+<i>233</i>&nbsp;        public final String getCharacter() {
+<b class="nc"><i>234</i>&nbsp;            return character;</b>
+<i>235</i>&nbsp;        }
+<i>236</i>&nbsp;
+<i>237</i>&nbsp;        /**
+<i>238</i>&nbsp;         * Tests whether this key combination matches the key combination in the
+<i>239</i>&nbsp;         * given {@code KeyEvent}.
+<i>240</i>&nbsp;         *
+<i>241</i>&nbsp;         * @param event the key event
+<i>242</i>&nbsp;         * @return {@code true} if the key combinations match, {@code false}
+<i>243</i>&nbsp;         *      otherwise
+<i>244</i>&nbsp;         */
+<i>245</i>&nbsp;        @Override public boolean match(final KeyEvent event) {
+<b class="nc"><i>246</i>&nbsp;            String text = event.getText();</b>
+<b class="nc"><i>247</i>&nbsp;            return (text != null</b>
+<b class="nc"><i>248</i>&nbsp;                    &amp;&amp; !text.isEmpty()</b>
+<b class="nc"><i>249</i>&nbsp;                    &amp;&amp; text.equalsIgnoreCase(getCharacter())</b>
+<b class="nc"><i>250</i>&nbsp;                    &amp;&amp; super.match(event));</b>
+<i>251</i>&nbsp;        }
+<i>252</i>&nbsp;
+<i>253</i>&nbsp;        /**
+<i>254</i>&nbsp;         * Returns a string representation of this {@code MnemonicKeyCombination}.
+<i>255</i>&nbsp;         * &lt;p&gt;
+<i>256</i>&nbsp;         * The string representation consists of sections separated by plus
+<i>257</i>&nbsp;         * characters. Each section specifies either a modifier key or the main key.
+<i>258</i>&nbsp;         * &lt;p&gt;
+<i>259</i>&nbsp;         * A modifier key section contains the {@code KeyCode} name of a modifier
+<i>260</i>&nbsp;         * key. It can be prefixed with the {@code Ignored} keyword. A non-prefixed
+<i>261</i>&nbsp;         * modifier key implies its {@code PRESSED} value while the prefixed version
+<i>262</i>&nbsp;         * implies the {@code IGNORED} value. If some modifier key is not specified
+<i>263</i>&nbsp;         * in the string at all, it means it has the default {@code RELEASED} value.
+<i>264</i>&nbsp;         * &lt;p&gt;
+<i>265</i>&nbsp;         * The main key section contains the main key character enclosed in single
+<i>266</i>&nbsp;         * quotes and is the last section in the returned string.
+<i>267</i>&nbsp;         *
+<i>268</i>&nbsp;         * @return the string representation of this {@code MnemonicKeyCombination}
+<i>269</i>&nbsp;         */
+<i>270</i>&nbsp;        @Override public String getName() {
+<b class="nc"><i>271</i>&nbsp;            StringBuilder sb = new StringBuilder();</b>
+<i>272</i>&nbsp;
+<b class="nc"><i>273</i>&nbsp;            sb.append(super.getName());</b>
+<b class="nc"><i>274</i>&nbsp;            if (sb.length() &gt; 0) {</b>
+<b class="nc"><i>275</i>&nbsp;                sb.append(&quot;+&quot;);</b>
+<i>276</i>&nbsp;            }
+<i>277</i>&nbsp;
+<b class="nc"><i>278</i>&nbsp;            return sb.append(&#39;\&#39;&#39;).append(character.replace(&quot;&#39;&quot;, &quot;\\&#39;&quot;))</b>
+<b class="nc"><i>279</i>&nbsp;                    .append(&#39;\&#39;&#39;).toString();</b>
+<i>280</i>&nbsp;        }
+<i>281</i>&nbsp;
+<i>282</i>&nbsp;        /**
+<i>283</i>&nbsp;         * Tests whether this {@code MnemonicKeyCombination} equals to the
+<i>284</i>&nbsp;         * specified object.
+<i>285</i>&nbsp;         *
+<i>286</i>&nbsp;         * @param obj the object to compare to
+<i>287</i>&nbsp;         * @return {@code true} if the objects are equal, {@code false} otherwise
+<i>288</i>&nbsp;         */
+<i>289</i>&nbsp;        @Override public boolean equals(final Object obj) {
+<b class="nc"><i>290</i>&nbsp;            if (this == obj) {</b>
+<b class="nc"><i>291</i>&nbsp;                return true;</b>
+<i>292</i>&nbsp;            }
+<i>293</i>&nbsp;
+<b class="nc"><i>294</i>&nbsp;            if (!(obj instanceof MnemonicKeyCombination)) {</b>
+<b class="nc"><i>295</i>&nbsp;                return false;</b>
+<i>296</i>&nbsp;            }
+<i>297</i>&nbsp;
+<b class="nc"><i>298</i>&nbsp;            return (this.character.equals(((MnemonicKeyCombination)obj).getCharacter())</b>
+<b class="nc"><i>299</i>&nbsp;                    &amp;&amp; super.equals(obj));</b>
+<i>300</i>&nbsp;        }
+<i>301</i>&nbsp;
+<i>302</i>&nbsp;        /**
+<i>303</i>&nbsp;         * Returns a hash code value for this {@code MnemonicKeyCombination}.
+<i>304</i>&nbsp;         *
+<i>305</i>&nbsp;         * @return the hash code value
+<i>306</i>&nbsp;         */
+<i>307</i>&nbsp;        @Override public int hashCode() {
+<b class="nc"><i>308</i>&nbsp;            return 23 * super.hashCode() + character.hashCode();</b>
+<i>309</i>&nbsp;        }
+<i>310</i>&nbsp;    }
+<i>311</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2017-12-04 21:49</div>
+</div>
+</body>
+</html>

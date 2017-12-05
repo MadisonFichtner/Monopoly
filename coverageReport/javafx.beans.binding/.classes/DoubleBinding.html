@@ -1,0 +1,331 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: DoubleBinding</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">javafx.beans.binding</a> ]
+</div>
+
+<h1>Coverage Summary for Class: DoubleBinding (javafx.beans.binding)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">DoubleBinding</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    42.9%
+  </span>
+  <span class="absValue">
+    (6/ 14)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    55.6%
+  </span>
+  <span class="absValue">
+    (20/ 36)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright (c) 2010, 2016, Oracle and/or its affiliates. All rights reserved.
+<i>3</i>&nbsp; * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+<i>4</i>&nbsp; *
+<i>5</i>&nbsp; *
+<i>6</i>&nbsp; *
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; *
+<i>11</i>&nbsp; *
+<i>12</i>&nbsp; *
+<i>13</i>&nbsp; *
+<i>14</i>&nbsp; *
+<i>15</i>&nbsp; *
+<i>16</i>&nbsp; *
+<i>17</i>&nbsp; *
+<i>18</i>&nbsp; *
+<i>19</i>&nbsp; *
+<i>20</i>&nbsp; *
+<i>21</i>&nbsp; *
+<i>22</i>&nbsp; *
+<i>23</i>&nbsp; *
+<i>24</i>&nbsp; */
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;package javafx.beans.binding;
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;import javafx.beans.InvalidationListener;
+<i>29</i>&nbsp;import javafx.beans.Observable;
+<i>30</i>&nbsp;import javafx.beans.value.ChangeListener;
+<i>31</i>&nbsp;import javafx.collections.FXCollections;
+<i>32</i>&nbsp;import javafx.collections.ObservableList;
+<i>33</i>&nbsp;
+<i>34</i>&nbsp;import com.sun.javafx.binding.BindingHelperObserver;
+<i>35</i>&nbsp;import com.sun.javafx.binding.ExpressionHelper;
+<i>36</i>&nbsp;
+<i>37</i>&nbsp;/**
+<i>38</i>&nbsp; * Base class that provides most of the functionality needed to implement a
+<i>39</i>&nbsp; * {@link Binding} of a {@code double} value.
+<i>40</i>&nbsp; * &lt;p&gt;
+<i>41</i>&nbsp; * {@code DoubleBinding} provides a simple invalidation-scheme. An extending
+<i>42</i>&nbsp; * class can register dependencies by calling {@link #bind(Observable...)}.
+<i>43</i>&nbsp; * If One of the registered dependencies becomes invalid, this
+<i>44</i>&nbsp; * {@code DoubleBinding} is marked as invalid. With
+<i>45</i>&nbsp; * {@link #unbind(Observable...)} listening to dependencies can be stopped.
+<i>46</i>&nbsp; * &lt;p&gt;
+<i>47</i>&nbsp; * To provide a concrete implementation of this class, the method
+<i>48</i>&nbsp; * {@link #computeValue()} has to be implemented to calculate the value of this
+<i>49</i>&nbsp; * binding based on the current state of the dependencies. It is called when
+<i>50</i>&nbsp; * {@link #get()} is called for an invalid binding.
+<i>51</i>&nbsp; * &lt;p&gt;
+<i>52</i>&nbsp; * Below is a simple example of a {@code DoubleBinding} calculating the square-
+<i>53</i>&nbsp; * root of a {@link javafx.beans.value.ObservableNumberValue} {@code moo}.
+<i>54</i>&nbsp; *
+<i>55</i>&nbsp; * &lt;pre&gt;
+<i>56</i>&nbsp; * &lt;code&gt;
+<i>57</i>&nbsp; * final ObservableDoubleValue moo = ...;
+<i>58</i>&nbsp; *
+<i>59</i>&nbsp; * DoubleBinding foo = new DoubleBinding() {
+<i>60</i>&nbsp; *
+<i>61</i>&nbsp; *     {
+<i>62</i>&nbsp; *         super.bind(moo);
+<i>63</i>&nbsp; *     }
+<i>64</i>&nbsp; *
+<i>65</i>&nbsp; *     &amp;#x40;Override
+<i>66</i>&nbsp; *     protected double computeValue() {
+<i>67</i>&nbsp; *         return Math.sqrt(moo.getValue());
+<i>68</i>&nbsp; *     }
+<i>69</i>&nbsp; * };
+<i>70</i>&nbsp; * &lt;/code&gt;
+<i>71</i>&nbsp; * &lt;/pre&gt;
+<i>72</i>&nbsp; *
+<i>73</i>&nbsp; * Following is the same example with implementations for the optional methods
+<i>74</i>&nbsp; * {@link Binding#getDependencies()} and {@link Binding#dispose()}.
+<i>75</i>&nbsp; *
+<i>76</i>&nbsp; * &lt;pre&gt;
+<i>77</i>&nbsp; * &lt;code&gt;
+<i>78</i>&nbsp; * final ObservableDoubleValue moo = ...;
+<i>79</i>&nbsp; *
+<i>80</i>&nbsp; * DoubleBinding foo = new DoubleBinding() {
+<i>81</i>&nbsp; *
+<i>82</i>&nbsp; *     {
+<i>83</i>&nbsp; *         super.bind(moo);
+<i>84</i>&nbsp; *     }
+<i>85</i>&nbsp; *
+<i>86</i>&nbsp; *     &amp;#x40;Override
+<i>87</i>&nbsp; *     protected double computeValue() {
+<i>88</i>&nbsp; *         return Math.sqrt(moo.getValue());
+<i>89</i>&nbsp; *     }
+<i>90</i>&nbsp; *
+<i>91</i>&nbsp; *     &amp;#x40;Override
+<i>92</i>&nbsp; *     public ObservableList&amp;lt;?&amp;gt; getDependencies() {
+<i>93</i>&nbsp; *         return FXCollections.singletonObservableList(moo);
+<i>94</i>&nbsp; *     }
+<i>95</i>&nbsp; *
+<i>96</i>&nbsp; *     &amp;#x40;Override
+<i>97</i>&nbsp; *     public void dispose() {
+<i>98</i>&nbsp; *         super.unbind(moo);
+<i>99</i>&nbsp; *     }
+<i>100</i>&nbsp; * };
+<i>101</i>&nbsp; * &lt;/code&gt;
+<i>102</i>&nbsp; * &lt;/pre&gt;
+<i>103</i>&nbsp; *
+<i>104</i>&nbsp; * @see Binding
+<i>105</i>&nbsp; * @see NumberBinding
+<i>106</i>&nbsp; * @see javafx.beans.binding.DoubleExpression
+<i>107</i>&nbsp; *
+<i>108</i>&nbsp; *
+<i>109</i>&nbsp; * @since JavaFX 2.0
+<i>110</i>&nbsp; */
+<b class="fc"><i>111</i>&nbsp;public abstract class DoubleBinding extends DoubleExpression implements</b>
+<i>112</i>&nbsp;        NumberBinding {
+<i>113</i>&nbsp;
+<i>114</i>&nbsp;    private double value;
+<i>115</i>&nbsp;    private boolean valid;
+<i>116</i>&nbsp;    private BindingHelperObserver observer;
+<b class="fc"><i>117</i>&nbsp;    private ExpressionHelper&lt;Number&gt; helper = null;</b>
+<i>118</i>&nbsp;
+<i>119</i>&nbsp;    @Override
+<i>120</i>&nbsp;    public void addListener(InvalidationListener listener) {
+<b class="fc"><i>121</i>&nbsp;        helper = ExpressionHelper.addListener(helper, this, listener);</b>
+<b class="fc"><i>122</i>&nbsp;    }</b>
+<i>123</i>&nbsp;
+<i>124</i>&nbsp;    @Override
+<i>125</i>&nbsp;    public void removeListener(InvalidationListener listener) {
+<b class="nc"><i>126</i>&nbsp;        helper = ExpressionHelper.removeListener(helper, listener);</b>
+<b class="nc"><i>127</i>&nbsp;    }</b>
+<i>128</i>&nbsp;
+<i>129</i>&nbsp;    @Override
+<i>130</i>&nbsp;    public void addListener(ChangeListener&lt;? super Number&gt; listener) {
+<b class="nc"><i>131</i>&nbsp;        helper = ExpressionHelper.addListener(helper, this, listener);</b>
+<b class="nc"><i>132</i>&nbsp;    }</b>
+<i>133</i>&nbsp;
+<i>134</i>&nbsp;    @Override
+<i>135</i>&nbsp;    public void removeListener(ChangeListener&lt;? super Number&gt; listener) {
+<b class="nc"><i>136</i>&nbsp;        helper = ExpressionHelper.removeListener(helper, listener);</b>
+<b class="nc"><i>137</i>&nbsp;    }</b>
+<i>138</i>&nbsp;
+<i>139</i>&nbsp;    /**
+<i>140</i>&nbsp;     * Start observing the dependencies for changes. If the value of one of the
+<i>141</i>&nbsp;     * dependencies changes, the binding is marked as invalid.
+<i>142</i>&nbsp;     *
+<i>143</i>&nbsp;     * @param dependencies
+<i>144</i>&nbsp;     *            the dependencies to observe
+<i>145</i>&nbsp;     */
+<i>146</i>&nbsp;    protected final void bind(Observable... dependencies) {
+<b class="fc"><i>147</i>&nbsp;        if ((dependencies != null) &amp;&amp; (dependencies.length &gt; 0)) {</b>
+<b class="fc"><i>148</i>&nbsp;            if (observer == null) {</b>
+<b class="fc"><i>149</i>&nbsp;                observer = new BindingHelperObserver(this);</b>
+<i>150</i>&nbsp;            }
+<b class="fc"><i>151</i>&nbsp;            for (final Observable dep : dependencies) {</b>
+<b class="fc"><i>152</i>&nbsp;                dep.addListener(observer);</b>
+<i>153</i>&nbsp;            }
+<i>154</i>&nbsp;        }
+<b class="fc"><i>155</i>&nbsp;    }</b>
+<i>156</i>&nbsp;
+<i>157</i>&nbsp;    /**
+<i>158</i>&nbsp;     * Stop observing the dependencies for changes.
+<i>159</i>&nbsp;     *
+<i>160</i>&nbsp;     * @param dependencies
+<i>161</i>&nbsp;     *            the dependencies to stop observing
+<i>162</i>&nbsp;     */
+<i>163</i>&nbsp;    protected final void unbind(Observable... dependencies) {
+<b class="nc"><i>164</i>&nbsp;        if (observer != null) {</b>
+<b class="nc"><i>165</i>&nbsp;            for (final Observable dep : dependencies) {</b>
+<b class="nc"><i>166</i>&nbsp;                dep.removeListener(observer);</b>
+<i>167</i>&nbsp;            }
+<b class="nc"><i>168</i>&nbsp;            observer = null;</b>
+<i>169</i>&nbsp;        }
+<b class="nc"><i>170</i>&nbsp;    }</b>
+<i>171</i>&nbsp;
+<i>172</i>&nbsp;    /**
+<i>173</i>&nbsp;     * A default implementation of {@code dispose()} that is empty.
+<i>174</i>&nbsp;     */
+<i>175</i>&nbsp;    @Override
+<i>176</i>&nbsp;    public void dispose() {
+<b class="nc"><i>177</i>&nbsp;    }</b>
+<i>178</i>&nbsp;
+<i>179</i>&nbsp;    /**
+<i>180</i>&nbsp;     * A default implementation of {@code getDependencies()} that returns an
+<i>181</i>&nbsp;     * empty {@link javafx.collections.ObservableList}.
+<i>182</i>&nbsp;     *
+<i>183</i>&nbsp;     * @return an empty {@code ObservableList}
+<i>184</i>&nbsp;     */
+<i>185</i>&nbsp;    @Override
+<i>186</i>&nbsp;    public ObservableList&lt;?&gt; getDependencies() {
+<b class="nc"><i>187</i>&nbsp;        return FXCollections.emptyObservableList();</b>
+<i>188</i>&nbsp;    }
+<i>189</i>&nbsp;
+<i>190</i>&nbsp;    /**
+<i>191</i>&nbsp;     * Returns the result of {@link #computeValue()}. The method
+<i>192</i>&nbsp;     * {@code computeValue()} is only called if the binding is invalid. The
+<i>193</i>&nbsp;     * result is cached and returned if the binding did not become invalid since
+<i>194</i>&nbsp;     * the last call of {@code get()}.
+<i>195</i>&nbsp;     *
+<i>196</i>&nbsp;     * @return the current value
+<i>197</i>&nbsp;     */
+<i>198</i>&nbsp;    @Override
+<i>199</i>&nbsp;    public final double get() {
+<b class="fc"><i>200</i>&nbsp;        if (!valid) {</b>
+<b class="fc"><i>201</i>&nbsp;            value = computeValue();</b>
+<b class="fc"><i>202</i>&nbsp;            valid = true;</b>
+<i>203</i>&nbsp;        }
+<b class="fc"><i>204</i>&nbsp;        return value;</b>
+<i>205</i>&nbsp;    }
+<i>206</i>&nbsp;
+<i>207</i>&nbsp;    /**
+<i>208</i>&nbsp;     * The method onInvalidating() can be overridden by extending classes to
+<i>209</i>&nbsp;     * react, if this binding becomes invalid. The default implementation is
+<i>210</i>&nbsp;     * empty.
+<i>211</i>&nbsp;     */
+<i>212</i>&nbsp;    protected void onInvalidating() {
+<b class="fc"><i>213</i>&nbsp;    }</b>
+<i>214</i>&nbsp;
+<i>215</i>&nbsp;    @Override
+<i>216</i>&nbsp;    public final void invalidate() {
+<b class="fc"><i>217</i>&nbsp;        if (valid) {</b>
+<b class="fc"><i>218</i>&nbsp;            valid = false;</b>
+<b class="fc"><i>219</i>&nbsp;            onInvalidating();</b>
+<b class="fc"><i>220</i>&nbsp;            ExpressionHelper.fireValueChangedEvent(helper);</b>
+<i>221</i>&nbsp;        }
+<b class="fc"><i>222</i>&nbsp;    }</b>
+<i>223</i>&nbsp;
+<i>224</i>&nbsp;    @Override
+<i>225</i>&nbsp;    public final boolean isValid() {
+<b class="nc"><i>226</i>&nbsp;        return valid;</b>
+<i>227</i>&nbsp;    }
+<i>228</i>&nbsp;
+<i>229</i>&nbsp;    /**
+<i>230</i>&nbsp;     * Calculates the current value of this binding.
+<i>231</i>&nbsp;     * &lt;p&gt;
+<i>232</i>&nbsp;     * Classes extending {@code DoubleBinding} have to provide an implementation
+<i>233</i>&nbsp;     * of {@code computeValue}.
+<i>234</i>&nbsp;     *
+<i>235</i>&nbsp;     * @return the current value
+<i>236</i>&nbsp;     */
+<i>237</i>&nbsp;    protected abstract double computeValue();
+<i>238</i>&nbsp;
+<i>239</i>&nbsp;    /**
+<i>240</i>&nbsp;     * Returns a string representation of this {@code DoubleBinding} object.
+<i>241</i>&nbsp;     * @return a string representation of this {@code DoubleBinding} object.
+<i>242</i>&nbsp;     */
+<i>243</i>&nbsp;    @Override
+<i>244</i>&nbsp;    public String toString() {
+<b class="nc"><i>245</i>&nbsp;        return valid ? &quot;DoubleBinding [value: &quot; + get() + &quot;]&quot;</b>
+<b class="nc"><i>246</i>&nbsp;                : &quot;DoubleBinding [invalid]&quot;;</b>
+<i>247</i>&nbsp;    }
+<i>248</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2017-12-04 21:49</div>
+</div>
+</body>
+</html>

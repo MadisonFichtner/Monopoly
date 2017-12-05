@@ -1,0 +1,143 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: Observable</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">javafx.beans</a> ]
+</div>
+
+<h1>Coverage Summary for Class: Observable (javafx.beans)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+</tr>
+<tr>
+  <td class="name">Observable</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright (c) 2011, 2013, Oracle and/or its affiliates. All rights reserved.
+<i>3</i>&nbsp; * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+<i>4</i>&nbsp; *
+<i>5</i>&nbsp; *
+<i>6</i>&nbsp; *
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; *
+<i>11</i>&nbsp; *
+<i>12</i>&nbsp; *
+<i>13</i>&nbsp; *
+<i>14</i>&nbsp; *
+<i>15</i>&nbsp; *
+<i>16</i>&nbsp; *
+<i>17</i>&nbsp; *
+<i>18</i>&nbsp; *
+<i>19</i>&nbsp; *
+<i>20</i>&nbsp; *
+<i>21</i>&nbsp; *
+<i>22</i>&nbsp; *
+<i>23</i>&nbsp; *
+<i>24</i>&nbsp; */
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;package javafx.beans;
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;
+<i>29</i>&nbsp;/**
+<i>30</i>&nbsp; * An {@code Observable} is an entity that wraps content and allows to
+<i>31</i>&nbsp; * observe the content for invalidations.
+<i>32</i>&nbsp; * &lt;p&gt;
+<i>33</i>&nbsp; * An implementation of {@code Observable} may support lazy evaluation,
+<i>34</i>&nbsp; * which means that the content is not immediately recomputed after changes, but
+<i>35</i>&nbsp; * lazily the next time it is requested. All bindings and properties in
+<i>36</i>&nbsp; * this library support lazy evaluation.
+<i>37</i>&nbsp; * &lt;p&gt;
+<i>38</i>&nbsp; * Implementations of this class should strive to generate as few events as
+<i>39</i>&nbsp; * possible to avoid wasting too much time in event handlers. Implementations in
+<i>40</i>&nbsp; * this library mark themselves as invalid when the first invalidation event
+<i>41</i>&nbsp; * occurs. They do not generate anymore invalidation events until their value is
+<i>42</i>&nbsp; * recomputed and valid again.
+<i>43</i>&nbsp; *
+<i>44</i>&nbsp; * @see javafx.beans.value.ObservableValue
+<i>45</i>&nbsp; * @see javafx.collections.ObservableList
+<i>46</i>&nbsp; * @see javafx.collections.ObservableMap
+<i>47</i>&nbsp; *
+<i>48</i>&nbsp; *
+<i>49</i>&nbsp; * @since JavaFX 2.0
+<i>50</i>&nbsp; */
+<i>51</i>&nbsp;public interface Observable {
+<i>52</i>&nbsp;
+<i>53</i>&nbsp;    /**
+<i>54</i>&nbsp;     * Adds an {@link InvalidationListener} which will be notified whenever the
+<i>55</i>&nbsp;     * {@code Observable} becomes invalid. If the same
+<i>56</i>&nbsp;     * listener is added more than once, then it will be notified more than
+<i>57</i>&nbsp;     * once. That is, no check is made to ensure uniqueness.
+<i>58</i>&nbsp;     * &lt;p&gt;
+<i>59</i>&nbsp;     * Note that the same actual {@code InvalidationListener} instance may be
+<i>60</i>&nbsp;     * safely registered for different {@code Observables}.
+<i>61</i>&nbsp;     * &lt;p&gt;
+<i>62</i>&nbsp;     * The {@code Observable} stores a strong reference to the listener
+<i>63</i>&nbsp;     * which will prevent the listener from being garbage collected and may
+<i>64</i>&nbsp;     * result in a memory leak. It is recommended to either unregister a
+<i>65</i>&nbsp;     * listener by calling {@link #removeListener(InvalidationListener)
+<i>66</i>&nbsp;     * removeListener} after use or to use an instance of
+<i>67</i>&nbsp;     * {@link WeakInvalidationListener} avoid this situation.
+<i>68</i>&nbsp;     *
+<i>69</i>&nbsp;     * @see #removeListener(InvalidationListener)
+<i>70</i>&nbsp;     *
+<i>71</i>&nbsp;     * @param listener
+<i>72</i>&nbsp;     *            The listener to register
+<i>73</i>&nbsp;     * @throws NullPointerException
+<i>74</i>&nbsp;     *             if the listener is null
+<i>75</i>&nbsp;     */
+<i>76</i>&nbsp;    void addListener(InvalidationListener listener);
+<i>77</i>&nbsp;
+<i>78</i>&nbsp;    /**
+<i>79</i>&nbsp;     * Removes the given listener from the list of listeners, that are notified
+<i>80</i>&nbsp;     * whenever the value of the {@code Observable} becomes invalid.
+<i>81</i>&nbsp;     * &lt;p&gt;
+<i>82</i>&nbsp;     * If the given listener has not been previously registered (i.e. it was
+<i>83</i>&nbsp;     * never added) then this method call is a no-op. If it had been previously
+<i>84</i>&nbsp;     * added then it will be removed. If it had been added more than once, then
+<i>85</i>&nbsp;     * only the first occurrence will be removed.
+<i>86</i>&nbsp;     *
+<i>87</i>&nbsp;     * @see #addListener(InvalidationListener)
+<i>88</i>&nbsp;     *
+<i>89</i>&nbsp;     * @param listener
+<i>90</i>&nbsp;     *            The listener to remove
+<i>91</i>&nbsp;     * @throws NullPointerException
+<i>92</i>&nbsp;     *             if the listener is null
+<i>93</i>&nbsp;     */
+<i>94</i>&nbsp;    void removeListener(InvalidationListener listener);
+<i>95</i>&nbsp;
+<i>96</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2017-12-04 21:49</div>
+</div>
+</body>
+</html>

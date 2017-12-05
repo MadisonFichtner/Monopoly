@@ -1,0 +1,179 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: CharToGlyphMapper</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.javafx.font</a> ]
+</div>
+
+<h1>Coverage Summary for Class: CharToGlyphMapper (com.sun.javafx.font)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">CharToGlyphMapper</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    62.5%
+  </span>
+  <span class="absValue">
+    (5/ 8)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    43.5%
+  </span>
+  <span class="absValue">
+    (10/ 23)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright (c) 2011, 2013, Oracle and/or its affiliates. All rights reserved.
+<i>3</i>&nbsp; * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+<i>4</i>&nbsp; *
+<i>5</i>&nbsp; *
+<i>6</i>&nbsp; *
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; *
+<i>11</i>&nbsp; *
+<i>12</i>&nbsp; *
+<i>13</i>&nbsp; *
+<i>14</i>&nbsp; *
+<i>15</i>&nbsp; *
+<i>16</i>&nbsp; *
+<i>17</i>&nbsp; *
+<i>18</i>&nbsp; *
+<i>19</i>&nbsp; *
+<i>20</i>&nbsp; *
+<i>21</i>&nbsp; *
+<i>22</i>&nbsp; *
+<i>23</i>&nbsp; *
+<i>24</i>&nbsp; */
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;package com.sun.javafx.font;
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;/*
+<i>29</i>&nbsp; * NB the versions that take a char as an int are used by the opentype
+<i>30</i>&nbsp; * layout engine. If that remains in native these methods may not be
+<i>31</i>&nbsp; * needed in the Java class.
+<i>32</i>&nbsp; */
+<b class="fc"><i>33</i>&nbsp;public abstract class CharToGlyphMapper {</b>
+<i>34</i>&nbsp;
+<i>35</i>&nbsp;    public static final int HI_SURROGATE_SHIFT = 10;
+<i>36</i>&nbsp;    public static final int HI_SURROGATE_START = 0xD800;
+<i>37</i>&nbsp;    public static final int HI_SURROGATE_END = 0xDBFF;
+<i>38</i>&nbsp;    public static final int LO_SURROGATE_START = 0xDC00;
+<i>39</i>&nbsp;    public static final int LO_SURROGATE_END = 0xDFFF;
+<i>40</i>&nbsp;    public static final int SURROGATES_START = 0x10000;
+<i>41</i>&nbsp;
+<i>42</i>&nbsp;    public static final int MISSING_GLYPH = 0;
+<i>43</i>&nbsp;    public static final int INVISIBLE_GLYPH_ID = 0xffff;
+<i>44</i>&nbsp;
+<b class="fc"><i>45</i>&nbsp;    protected int missingGlyph = MISSING_GLYPH;</b>
+<i>46</i>&nbsp;
+<i>47</i>&nbsp;    public boolean canDisplay(char cp) {
+<b class="nc"><i>48</i>&nbsp;        int glyph = charToGlyph(cp);</b>
+<b class="nc"><i>49</i>&nbsp;        return glyph != missingGlyph;</b>
+<i>50</i>&nbsp;    }
+<i>51</i>&nbsp;
+<i>52</i>&nbsp;    public int getMissingGlyphCode() {
+<b class="fc"><i>53</i>&nbsp;        return missingGlyph;</b>
+<i>54</i>&nbsp;    }
+<i>55</i>&nbsp;
+<i>56</i>&nbsp;    public abstract int getGlyphCode(int charCode);
+<i>57</i>&nbsp;
+<i>58</i>&nbsp;    public int charToGlyph(char unicode) {
+<b class="fc"><i>59</i>&nbsp;        return getGlyphCode(unicode);</b>
+<i>60</i>&nbsp;    }
+<i>61</i>&nbsp;
+<i>62</i>&nbsp;    public int charToGlyph(int unicode) {
+<b class="fc"><i>63</i>&nbsp;        return getGlyphCode(unicode);</b>
+<i>64</i>&nbsp;    }
+<i>65</i>&nbsp;
+<i>66</i>&nbsp;    public void charsToGlyphs(int start, int count, char[] unicodes,
+<i>67</i>&nbsp;                              int[] glyphs, int glyphStart) {
+<b class="fc"><i>68</i>&nbsp;        for (int i=0; i&lt;count; i++) {</b>
+<b class="fc"><i>69</i>&nbsp;            int code = unicodes[start + i]; // char is unsigned.</b>
+<b class="fc"><i>70</i>&nbsp;            if (code &gt;= HI_SURROGATE_START &amp;&amp;</b>
+<i>71</i>&nbsp;                code &lt;= HI_SURROGATE_END &amp;&amp; i + 1 &lt; count) {
+<b class="nc"><i>72</i>&nbsp;                char low = unicodes[start + i + 1];</b>
+<i>73</i>&nbsp;
+<b class="nc"><i>74</i>&nbsp;                if (low &gt;= LO_SURROGATE_START &amp;&amp;</b>
+<i>75</i>&nbsp;                    low &lt;= LO_SURROGATE_END) {
+<b class="nc"><i>76</i>&nbsp;                    code = ((code - HI_SURROGATE_START) &lt;&lt; HI_SURROGATE_SHIFT) +</b>
+<i>77</i>&nbsp;                        low - LO_SURROGATE_START + SURROGATES_START;
+<b class="nc"><i>78</i>&nbsp;                    glyphs[glyphStart + i] = getGlyphCode(code);</b>
+<b class="nc"><i>79</i>&nbsp;                    i += 1; // Empty glyph slot after surrogate</b>
+<b class="nc"><i>80</i>&nbsp;                    glyphs[glyphStart + i] = INVISIBLE_GLYPH_ID;</b>
+<b class="nc"><i>81</i>&nbsp;                    continue;</b>
+<i>82</i>&nbsp;                }
+<i>83</i>&nbsp;            }
+<b class="fc"><i>84</i>&nbsp;            glyphs[glyphStart + i] = getGlyphCode(code);</b>
+<i>85</i>&nbsp;        }
+<b class="fc"><i>86</i>&nbsp;    }</b>
+<i>87</i>&nbsp;
+<i>88</i>&nbsp;    public void charsToGlyphs(int start, int count, char[] unicodes, int[] glyphs) {
+<b class="nc"><i>89</i>&nbsp;        charsToGlyphs(start, count, unicodes, glyphs, 0);</b>
+<b class="nc"><i>90</i>&nbsp;    }</b>
+<i>91</i>&nbsp;
+<i>92</i>&nbsp;    public void charsToGlyphs(int count, char[] unicodes, int[] glyphs) {
+<b class="nc"><i>93</i>&nbsp;        charsToGlyphs(0, count, unicodes, glyphs, 0);</b>
+<b class="nc"><i>94</i>&nbsp;    }</b>
+<i>95</i>&nbsp;
+<i>96</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2017-12-04 21:49</div>
+</div>
+</body>
+</html>

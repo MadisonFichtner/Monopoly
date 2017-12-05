@@ -1,0 +1,173 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: Bindings</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">javax.script</a> ]
+</div>
+
+<h1>Coverage Summary for Class: Bindings (javax.script)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+</tr>
+<tr>
+  <td class="name">Bindings</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright (c) 2005, 2006, Oracle and/or its affiliates. All rights reserved.
+<i>3</i>&nbsp; * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+<i>4</i>&nbsp; *
+<i>5</i>&nbsp; *
+<i>6</i>&nbsp; *
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; *
+<i>11</i>&nbsp; *
+<i>12</i>&nbsp; *
+<i>13</i>&nbsp; *
+<i>14</i>&nbsp; *
+<i>15</i>&nbsp; *
+<i>16</i>&nbsp; *
+<i>17</i>&nbsp; *
+<i>18</i>&nbsp; *
+<i>19</i>&nbsp; *
+<i>20</i>&nbsp; *
+<i>21</i>&nbsp; *
+<i>22</i>&nbsp; *
+<i>23</i>&nbsp; *
+<i>24</i>&nbsp; */
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;package javax.script;
+<i>27</i>&nbsp;import java.util.Map;
+<i>28</i>&nbsp;
+<i>29</i>&nbsp;/**
+<i>30</i>&nbsp; * A mapping of key/value pairs, all of whose keys are
+<i>31</i>&nbsp; * {@code Strings}.
+<i>32</i>&nbsp; *
+<i>33</i>&nbsp; * @author Mike Grogan
+<i>34</i>&nbsp; * @since 1.6
+<i>35</i>&nbsp; */
+<i>36</i>&nbsp;public interface Bindings extends Map&lt;String, Object&gt; {
+<i>37</i>&nbsp;    /**
+<i>38</i>&nbsp;     * Set a named value.
+<i>39</i>&nbsp;     *
+<i>40</i>&nbsp;     * @param name The name associated with the value.
+<i>41</i>&nbsp;     * @param value The value associated with the name.
+<i>42</i>&nbsp;     *
+<i>43</i>&nbsp;     * @return The value previously associated with the given name.
+<i>44</i>&nbsp;     * Returns null if no value was previously associated with the name.
+<i>45</i>&nbsp;     *
+<i>46</i>&nbsp;     * @throws NullPointerException if the name is null.
+<i>47</i>&nbsp;     * @throws IllegalArgumentException if the name is empty String.
+<i>48</i>&nbsp;     */
+<i>49</i>&nbsp;    public Object put(String name, Object value);
+<i>50</i>&nbsp;
+<i>51</i>&nbsp;    /**
+<i>52</i>&nbsp;     * Adds all the mappings in a given {@code Map} to this {@code Bindings}.
+<i>53</i>&nbsp;     * @param toMerge The {@code Map} to merge with this one.
+<i>54</i>&nbsp;     *
+<i>55</i>&nbsp;     * @throws NullPointerException
+<i>56</i>&nbsp;     *         if toMerge map is null or if some key in the map is null.
+<i>57</i>&nbsp;     * @throws IllegalArgumentException
+<i>58</i>&nbsp;     *         if some key in the map is an empty String.
+<i>59</i>&nbsp;     */
+<i>60</i>&nbsp;    public void putAll(Map&lt;? extends String, ? extends Object&gt; toMerge);
+<i>61</i>&nbsp;
+<i>62</i>&nbsp;    /**
+<i>63</i>&nbsp;     * Returns {@code true} if this map contains a mapping for the specified
+<i>64</i>&nbsp;     * key.  More formally, returns {@code true} if and only if
+<i>65</i>&nbsp;     * this map contains a mapping for a key {@code k} such that
+<i>66</i>&nbsp;     * {@code (key==null ? k==null : key.equals(k))}.  (There can be
+<i>67</i>&nbsp;     * at most one such mapping.)
+<i>68</i>&nbsp;     *
+<i>69</i>&nbsp;     * @param key key whose presence in this map is to be tested.
+<i>70</i>&nbsp;     * @return {@code true} if this map contains a mapping for the specified
+<i>71</i>&nbsp;     *         key.
+<i>72</i>&nbsp;     *
+<i>73</i>&nbsp;     * @throws NullPointerException if key is null
+<i>74</i>&nbsp;     * @throws ClassCastException if key is not String
+<i>75</i>&nbsp;     * @throws IllegalArgumentException if key is empty String
+<i>76</i>&nbsp;     */
+<i>77</i>&nbsp;    public boolean containsKey(Object key);
+<i>78</i>&nbsp;
+<i>79</i>&nbsp;    /**
+<i>80</i>&nbsp;     * Returns the value to which this map maps the specified key.  Returns
+<i>81</i>&nbsp;     * {@code null} if the map contains no mapping for this key.  A return
+<i>82</i>&nbsp;     * value of {@code null} does not &lt;i&gt;necessarily&lt;/i&gt; indicate that the
+<i>83</i>&nbsp;     * map contains no mapping for the key; it&#39;s also possible that the map
+<i>84</i>&nbsp;     * explicitly maps the key to {@code null}.  The {@code containsKey}
+<i>85</i>&nbsp;     * operation may be used to distinguish these two cases.
+<i>86</i>&nbsp;     *
+<i>87</i>&nbsp;     * &lt;p&gt;More formally, if this map contains a mapping from a key
+<i>88</i>&nbsp;     * {@code k} to a value {@code v} such that
+<i>89</i>&nbsp;     * {@code (key==null ? k==null : key.equals(k))},
+<i>90</i>&nbsp;     * then this method returns {@code v}; otherwise
+<i>91</i>&nbsp;     * it returns {@code null}.  (There can be at most one such mapping.)
+<i>92</i>&nbsp;     *
+<i>93</i>&nbsp;     * @param key key whose associated value is to be returned.
+<i>94</i>&nbsp;     * @return the value to which this map maps the specified key, or
+<i>95</i>&nbsp;     *         {@code null} if the map contains no mapping for this key.
+<i>96</i>&nbsp;     *
+<i>97</i>&nbsp;     * @throws NullPointerException if key is null
+<i>98</i>&nbsp;     * @throws ClassCastException if key is not String
+<i>99</i>&nbsp;     * @throws IllegalArgumentException if key is empty String
+<i>100</i>&nbsp;     */
+<i>101</i>&nbsp;    public Object get(Object key);
+<i>102</i>&nbsp;
+<i>103</i>&nbsp;    /**
+<i>104</i>&nbsp;     * Removes the mapping for this key from this map if it is present
+<i>105</i>&nbsp;     * (optional operation).   More formally, if this map contains a mapping
+<i>106</i>&nbsp;     * from key {@code k} to value {@code v} such that
+<i>107</i>&nbsp;     * {@code (key==null ?  k==null : key.equals(k))}, that mapping
+<i>108</i>&nbsp;     * is removed.  (The map can contain at most one such mapping.)
+<i>109</i>&nbsp;     *
+<i>110</i>&nbsp;     * &lt;p&gt;Returns the value to which the map previously associated the key, or
+<i>111</i>&nbsp;     * {@code null} if the map contained no mapping for this key.  (A
+<i>112</i>&nbsp;     * {@code null} return can also indicate that the map previously
+<i>113</i>&nbsp;     * associated {@code null} with the specified key if the implementation
+<i>114</i>&nbsp;     * supports {@code null} values.)  The map will not contain a mapping for
+<i>115</i>&nbsp;     * the specified  key once the call returns.
+<i>116</i>&nbsp;     *
+<i>117</i>&nbsp;     * @param key key whose mapping is to be removed from the map.
+<i>118</i>&nbsp;     * @return previous value associated with specified key, or {@code null}
+<i>119</i>&nbsp;     *         if there was no mapping for key.
+<i>120</i>&nbsp;     *
+<i>121</i>&nbsp;     * @throws NullPointerException if key is null
+<i>122</i>&nbsp;     * @throws ClassCastException if key is not String
+<i>123</i>&nbsp;     * @throws IllegalArgumentException if key is empty String
+<i>124</i>&nbsp;     */
+<i>125</i>&nbsp;    public Object remove(Object key);
+<i>126</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2017-12-04 21:49</div>
+</div>
+</body>
+</html>

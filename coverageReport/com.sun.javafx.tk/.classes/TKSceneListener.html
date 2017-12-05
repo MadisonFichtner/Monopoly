@@ -1,0 +1,169 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: TKSceneListener</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.javafx.tk</a> ]
+</div>
+
+<h1>Coverage Summary for Class: TKSceneListener (com.sun.javafx.tk)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+</tr>
+<tr>
+  <td class="name">TKSceneListener</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright (c) 2009, 2015, Oracle and/or its affiliates. All rights reserved.
+<i>3</i>&nbsp; * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+<i>4</i>&nbsp; *
+<i>5</i>&nbsp; *
+<i>6</i>&nbsp; *
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; *
+<i>11</i>&nbsp; *
+<i>12</i>&nbsp; *
+<i>13</i>&nbsp; *
+<i>14</i>&nbsp; *
+<i>15</i>&nbsp; *
+<i>16</i>&nbsp; *
+<i>17</i>&nbsp; *
+<i>18</i>&nbsp; *
+<i>19</i>&nbsp; *
+<i>20</i>&nbsp; *
+<i>21</i>&nbsp; *
+<i>22</i>&nbsp; *
+<i>23</i>&nbsp; *
+<i>24</i>&nbsp; */
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;package com.sun.javafx.tk;
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;import com.sun.glass.ui.Accessible;
+<i>29</i>&nbsp;import javafx.collections.ObservableList;
+<i>30</i>&nbsp;import javafx.event.EventType;
+<i>31</i>&nbsp;import javafx.scene.input.*;
+<i>32</i>&nbsp;
+<i>33</i>&nbsp;/**
+<i>34</i>&nbsp; * TKSceneListener - Listener for the Scene Peer TKScene to pass updates and events back to the scene
+<i>35</i>&nbsp; *
+<i>36</i>&nbsp; */
+<i>37</i>&nbsp;public interface TKSceneListener {
+<i>38</i>&nbsp;
+<i>39</i>&nbsp;    /**
+<i>40</i>&nbsp;     * The scenes peer&#39;s location have changed so we need to update the scene
+<i>41</i>&nbsp;     *
+<i>42</i>&nbsp;     * @param x the new X
+<i>43</i>&nbsp;     * @param y The new Y
+<i>44</i>&nbsp;     */
+<i>45</i>&nbsp;    public void changedLocation(float x, float y);
+<i>46</i>&nbsp;
+<i>47</i>&nbsp;    /**
+<i>48</i>&nbsp;     * The scenes peer&#39;s size have changed so we need to update the scene
+<i>49</i>&nbsp;     *
+<i>50</i>&nbsp;     * @param width The new Width
+<i>51</i>&nbsp;     * @param height The new Height
+<i>52</i>&nbsp;     */
+<i>53</i>&nbsp;    public void changedSize(float width, float height);
+<i>54</i>&nbsp;
+<i>55</i>&nbsp;    /**
+<i>56</i>&nbsp;     * Pass a mouse event to the scene to handle
+<i>57</i>&nbsp;     */
+<i>58</i>&nbsp;    public void mouseEvent(EventType&lt;MouseEvent&gt; type, double x, double y, double screenX, double screenY,
+<i>59</i>&nbsp;                           MouseButton button, boolean popupTrigger, boolean synthesized,
+<i>60</i>&nbsp;                           boolean shiftDown, boolean controlDown, boolean altDown, boolean metaDown,
+<i>61</i>&nbsp;                           boolean primaryDown, boolean middleDown, boolean secondaryDown);
+<i>62</i>&nbsp;
+<i>63</i>&nbsp;    /**
+<i>64</i>&nbsp;     * Pass a key event to the scene to handle
+<i>65</i>&nbsp;     */
+<i>66</i>&nbsp;    public void keyEvent(KeyEvent keyEvent);
+<i>67</i>&nbsp;
+<i>68</i>&nbsp;    /**
+<i>69</i>&nbsp;     * Pass an input method event to the scene to handle
+<i>70</i>&nbsp;     */
+<i>71</i>&nbsp;    public void inputMethodEvent(EventType&lt;InputMethodEvent&gt; type,
+<i>72</i>&nbsp;                                 ObservableList&lt;InputMethodTextRun&gt; composed, String committed,
+<i>73</i>&nbsp;                                 int caretPosition);
+<i>74</i>&nbsp;
+<i>75</i>&nbsp;    public void scrollEvent(
+<i>76</i>&nbsp;            EventType&lt;ScrollEvent&gt; eventType, double scrollX, double scrollY,
+<i>77</i>&nbsp;            double totalScrollX, double totalScrollY,
+<i>78</i>&nbsp;            double xMultiplier, double yMultiplier, int touchCount,
+<i>79</i>&nbsp;            int scrollTextX, int scrollTextY,
+<i>80</i>&nbsp;            int defaultTextX, int defaultTextY,
+<i>81</i>&nbsp;            double x, double y, double screenX, double screenY,
+<i>82</i>&nbsp;            boolean _shiftDown, boolean _controlDown,
+<i>83</i>&nbsp;            boolean _altDown, boolean _metaDown,
+<i>84</i>&nbsp;            boolean _direct, boolean _inertia);
+<i>85</i>&nbsp;
+<i>86</i>&nbsp;    public void menuEvent(double x, double y, double xAbs, double yAbs,
+<i>87</i>&nbsp;            boolean isKeyboardTrigger);
+<i>88</i>&nbsp;
+<i>89</i>&nbsp;    public void zoomEvent(
+<i>90</i>&nbsp;            EventType&lt;ZoomEvent&gt; eventType,
+<i>91</i>&nbsp;            double zoomFactor, double totalZoomFactor,
+<i>92</i>&nbsp;            double x, double y, double screenX, double screenY,
+<i>93</i>&nbsp;            boolean _shiftDown, boolean _controlDown,
+<i>94</i>&nbsp;            boolean _altDown, boolean _metaDown,
+<i>95</i>&nbsp;            boolean _direct, boolean _inertia);
+<i>96</i>&nbsp;
+<i>97</i>&nbsp;    public void rotateEvent(
+<i>98</i>&nbsp;            EventType&lt;RotateEvent&gt; eventType, double angle, double totalAngle,
+<i>99</i>&nbsp;            double x, double y, double screenX, double screenY,
+<i>100</i>&nbsp;            boolean _shiftDown, boolean _controlDown,
+<i>101</i>&nbsp;            boolean _altDown, boolean _metaDown,
+<i>102</i>&nbsp;            boolean _direct, boolean _inertia);
+<i>103</i>&nbsp;
+<i>104</i>&nbsp;    public void swipeEvent(
+<i>105</i>&nbsp;            EventType&lt;SwipeEvent&gt; eventType, int touchCount,
+<i>106</i>&nbsp;            double x, double y, double screenX, double screenY,
+<i>107</i>&nbsp;            boolean _shiftDown, boolean _controlDown,
+<i>108</i>&nbsp;            boolean _altDown, boolean _metaDown, boolean _direct);
+<i>109</i>&nbsp;
+<i>110</i>&nbsp;    public void touchEventBegin(
+<i>111</i>&nbsp;            long time, int touchCount, boolean isDirect,
+<i>112</i>&nbsp;            boolean _shiftDown, boolean _controlDown,
+<i>113</i>&nbsp;            boolean _altDown, boolean _metaDown);
+<i>114</i>&nbsp;
+<i>115</i>&nbsp;    public void touchEventNext(
+<i>116</i>&nbsp;            TouchPoint.State state, long touchId,
+<i>117</i>&nbsp;            double x, double y, double xAbs, double yAbs);
+<i>118</i>&nbsp;
+<i>119</i>&nbsp;    public void touchEventEnd();
+<i>120</i>&nbsp;
+<i>121</i>&nbsp;    public Accessible getSceneAccessible();
+<i>122</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2017-12-04 21:49</div>
+</div>
+</body>
+</html>

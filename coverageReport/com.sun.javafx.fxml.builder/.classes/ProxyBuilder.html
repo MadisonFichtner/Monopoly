@@ -1,0 +1,786 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: ProxyBuilder</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.javafx.fxml.builder</a> ]
+</div>
+
+<h1>Coverage Summary for Class: ProxyBuilder (com.sun.javafx.fxml.builder)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">ProxyBuilder</td>
+<td class="coverageStat">
+  <span class="percent">
+    54.2%
+  </span>
+  <span class="absValue">
+    (13/ 24)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    61.6%
+  </span>
+  <span class="absValue">
+    (165/ 268)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">ProxyBuilder$AnnotationValue</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (4/ 4)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (8/ 8)
+  </span>
+</td>
+  </tr>
+  <tr>
+    <td class="name">ProxyBuilder$ArrayListWrapper</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    58.6%
+  </span>
+  <span class="absValue">
+    (17/ 29)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    62.5%
+  </span>
+  <span class="absValue">
+    (173/ 277)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright (c) 2010, 2016, Oracle and/or its affiliates. All rights reserved.
+<i>3</i>&nbsp; * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+<i>4</i>&nbsp; *
+<i>5</i>&nbsp; *
+<i>6</i>&nbsp; *
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; *
+<i>11</i>&nbsp; *
+<i>12</i>&nbsp; *
+<i>13</i>&nbsp; *
+<i>14</i>&nbsp; *
+<i>15</i>&nbsp; *
+<i>16</i>&nbsp; *
+<i>17</i>&nbsp; *
+<i>18</i>&nbsp; *
+<i>19</i>&nbsp; *
+<i>20</i>&nbsp; *
+<i>21</i>&nbsp; *
+<i>22</i>&nbsp; *
+<i>23</i>&nbsp; *
+<i>24</i>&nbsp; */
+<i>25</i>&nbsp;package com.sun.javafx.fxml.builder;
+<i>26</i>&nbsp;
+<i>27</i>&nbsp;import com.sun.javafx.fxml.BeanAdapter;
+<i>28</i>&nbsp;import com.sun.javafx.fxml.ModuleHelper;
+<i>29</i>&nbsp;import java.lang.annotation.Annotation;
+<i>30</i>&nbsp;import java.lang.reflect.Array;
+<i>31</i>&nbsp;import java.lang.reflect.Constructor;
+<i>32</i>&nbsp;import java.lang.reflect.Method;
+<i>33</i>&nbsp;import java.lang.reflect.Modifier;
+<i>34</i>&nbsp;import java.util.AbstractMap;
+<i>35</i>&nbsp;import java.util.ArrayList;
+<i>36</i>&nbsp;import java.util.Collection;
+<i>37</i>&nbsp;import java.util.Comparator;
+<i>38</i>&nbsp;import java.util.HashMap;
+<i>39</i>&nbsp;import java.util.HashSet;
+<i>40</i>&nbsp;import java.util.LinkedHashMap;
+<i>41</i>&nbsp;import java.util.LinkedList;
+<i>42</i>&nbsp;import java.util.List;
+<i>43</i>&nbsp;import java.util.Map;
+<i>44</i>&nbsp;import java.util.Set;
+<i>45</i>&nbsp;import java.util.TreeSet;
+<i>46</i>&nbsp;import javafx.beans.NamedArg;
+<i>47</i>&nbsp;import javafx.util.Builder;
+<i>48</i>&nbsp;import sun.reflect.misc.ConstructorUtil;
+<i>49</i>&nbsp;import sun.reflect.misc.ReflectUtil;
+<i>50</i>&nbsp;
+<i>51</i>&nbsp;/**
+<i>52</i>&nbsp; * Using this builder assumes that some of the constructors of desired class
+<i>53</i>&nbsp; * with arguments are annotated with NamedArg annotation.
+<i>54</i>&nbsp; */
+<i>55</i>&nbsp;public class ProxyBuilder&lt;T&gt; extends AbstractMap&lt;String, Object&gt; implements Builder&lt;T&gt; {
+<i>56</i>&nbsp;
+<i>57</i>&nbsp;    private Class&lt;?&gt; type;
+<i>58</i>&nbsp;
+<i>59</i>&nbsp;    private final Map&lt;Constructor, Map&lt;String, AnnotationValue&gt;&gt; constructorsMap;
+<i>60</i>&nbsp;    private final Map&lt;String, Property&gt; propertiesMap;
+<i>61</i>&nbsp;    private final Set&lt;Constructor&gt; constructors;
+<i>62</i>&nbsp;    private Set&lt;String&gt; propertyNames;
+<i>63</i>&nbsp;
+<b class="fc"><i>64</i>&nbsp;    private boolean hasDefaultConstructor = false;</b>
+<i>65</i>&nbsp;    private Constructor defaultConstructor;
+<i>66</i>&nbsp;
+<i>67</i>&nbsp;    private static final String SETTER_PREFIX = &quot;set&quot;;
+<i>68</i>&nbsp;    private static final String GETTER_PREFIX = &quot;get&quot;;
+<i>69</i>&nbsp;
+<b class="fc"><i>70</i>&nbsp;    public ProxyBuilder(Class&lt;?&gt; tp) {</b>
+<b class="fc"><i>71</i>&nbsp;        this.type = tp;</b>
+<i>72</i>&nbsp;
+<b class="fc"><i>73</i>&nbsp;        constructorsMap = new HashMap&lt;&gt;();</b>
+<b class="fc"><i>74</i>&nbsp;        Constructor ctors[] = ConstructorUtil.getConstructors(type);</b>
+<i>75</i>&nbsp;
+<b class="fc"><i>76</i>&nbsp;        for (Constructor c : ctors) {</b>
+<i>77</i>&nbsp;            Map&lt;String, AnnotationValue&gt; args;
+<b class="fc"><i>78</i>&nbsp;            Class&lt;?&gt; paramTypes[] = c.getParameterTypes();</b>
+<b class="fc"><i>79</i>&nbsp;            Annotation[][] paramAnnotations = c.getParameterAnnotations();</b>
+<i>80</i>&nbsp;
+<i>81</i>&nbsp;            // probably default constructor
+<b class="fc"><i>82</i>&nbsp;            if (paramTypes.length == 0) {</b>
+<b class="nc"><i>83</i>&nbsp;                hasDefaultConstructor = true;</b>
+<b class="nc"><i>84</i>&nbsp;                defaultConstructor = c;</b>
+<i>85</i>&nbsp;            } else { // constructor with parameters
+<b class="fc"><i>86</i>&nbsp;                int i = 0;</b>
+<b class="fc"><i>87</i>&nbsp;                boolean properlyAnnotated = true;</b>
+<b class="fc"><i>88</i>&nbsp;                args = new LinkedHashMap&lt;&gt;();</b>
+<b class="fc"><i>89</i>&nbsp;                for (Class&lt;?&gt; clazz : paramTypes) {</b>
+<b class="fc"><i>90</i>&nbsp;                    NamedArg argAnnotation = null;</b>
+<b class="fc"><i>91</i>&nbsp;                    for (Annotation annotation : paramAnnotations[i]) {</b>
+<b class="fc"><i>92</i>&nbsp;                        if (annotation instanceof NamedArg) {</b>
+<b class="fc"><i>93</i>&nbsp;                            argAnnotation = (NamedArg) annotation;</b>
+<b class="fc"><i>94</i>&nbsp;                            break;</b>
+<i>95</i>&nbsp;                        }
+<i>96</i>&nbsp;                    }
+<i>97</i>&nbsp;
+<b class="fc"><i>98</i>&nbsp;                    if (argAnnotation != null) {</b>
+<b class="fc"><i>99</i>&nbsp;                        AnnotationValue av = new AnnotationValue(</b>
+<b class="fc"><i>100</i>&nbsp;                                argAnnotation.value(),</b>
+<b class="fc"><i>101</i>&nbsp;                                argAnnotation.defaultValue(),</b>
+<i>102</i>&nbsp;                                clazz);
+<b class="fc"><i>103</i>&nbsp;                        args.put(argAnnotation.value(), av);</b>
+<b class="fc"><i>104</i>&nbsp;                    } else {</b>
+<b class="nc"><i>105</i>&nbsp;                        properlyAnnotated = false;</b>
+<b class="nc"><i>106</i>&nbsp;                        break;</b>
+<i>107</i>&nbsp;                    }
+<b class="fc"><i>108</i>&nbsp;                    i++;</b>
+<i>109</i>&nbsp;                }
+<b class="fc"><i>110</i>&nbsp;                if (properlyAnnotated) {</b>
+<b class="fc"><i>111</i>&nbsp;                    constructorsMap.put(c, args);</b>
+<i>112</i>&nbsp;                }
+<i>113</i>&nbsp;            }
+<i>114</i>&nbsp;        }
+<i>115</i>&nbsp;
+<b class="fc"><i>116</i>&nbsp;        if (!hasDefaultConstructor &amp;&amp; constructorsMap.isEmpty()) {</b>
+<b class="nc"><i>117</i>&nbsp;            throw new RuntimeException(&quot;Cannot create instance of &quot;</b>
+<b class="nc"><i>118</i>&nbsp;                    + type.getCanonicalName()</b>
+<i>119</i>&nbsp;                    + &quot; the constructor is not properly annotated.&quot;);
+<i>120</i>&nbsp;        }
+<i>121</i>&nbsp;
+<b class="fc"><i>122</i>&nbsp;        constructors = new TreeSet&lt;&gt;(constructorComparator);</b>
+<b class="fc"><i>123</i>&nbsp;        constructors.addAll(constructorsMap.keySet());</b>
+<b class="fc"><i>124</i>&nbsp;        propertiesMap = scanForSetters();</b>
+<b class="fc"><i>125</i>&nbsp;    }</b>
+<i>126</i>&nbsp;
+<i>127</i>&nbsp;    //make sure int goes before float
+<b class="fc"><i>128</i>&nbsp;    private final Comparator&lt;Constructor&gt; constructorComparator</b>
+<i>129</i>&nbsp;            = (Constructor o1, Constructor o2) -&gt; {
+<b class="fc"><i>130</i>&nbsp;                int len1 = o1.getParameterCount();</b>
+<b class="fc"><i>131</i>&nbsp;                int len2 = o2.getParameterCount();</b>
+<b class="fc"><i>132</i>&nbsp;                int lim = Math.min(len1, len2);</b>
+<b class="fc"><i>133</i>&nbsp;                for (int i = 0; i &lt; lim; i++) {</b>
+<b class="fc"><i>134</i>&nbsp;                    Class c1 = o1.getParameterTypes()[i];</b>
+<b class="fc"><i>135</i>&nbsp;                    Class c2 = o2.getParameterTypes()[i];</b>
+<b class="fc"><i>136</i>&nbsp;                    if (c1.equals(c2)) {</b>
+<b class="fc"><i>137</i>&nbsp;                        continue;</b>
+<i>138</i>&nbsp;                    }
+<b class="nc"><i>139</i>&nbsp;                    if (c1.equals(Integer.TYPE) &amp;&amp; c2.equals(Double.TYPE)) {</b>
+<b class="nc"><i>140</i>&nbsp;                        return -1;</b>
+<i>141</i>&nbsp;                    }
+<b class="nc"><i>142</i>&nbsp;                    if (c1.equals(Double.TYPE) &amp;&amp; c2.equals(Integer.TYPE)) {</b>
+<b class="nc"><i>143</i>&nbsp;                        return 1;</b>
+<i>144</i>&nbsp;                    }
+<b class="nc"><i>145</i>&nbsp;                    return c1.getCanonicalName().compareTo(c2.getCanonicalName());</b>
+<i>146</i>&nbsp;                }
+<b class="fc"><i>147</i>&nbsp;                return len1 - len2;</b>
+<i>148</i>&nbsp;            };
+<b class="fc"><i>149</i>&nbsp;    private final Map&lt;String, Object&gt; userValues = new HashMap&lt;&gt;();</b>
+<i>150</i>&nbsp;
+<i>151</i>&nbsp;    @Override
+<i>152</i>&nbsp;    public Object put(String key, Object value) {
+<b class="fc"><i>153</i>&nbsp;        userValues.put(key, value);</b>
+<b class="fc"><i>154</i>&nbsp;        return null; // to behave the same way as ObjectBuilder does</b>
+<i>155</i>&nbsp;    }
+<i>156</i>&nbsp;
+<b class="fc"><i>157</i>&nbsp;    private final Map&lt;String, Object&gt; containers = new HashMap&lt;&gt;();</b>
+<i>158</i>&nbsp;
+<i>159</i>&nbsp;    /**
+<i>160</i>&nbsp;     * This is used to support read-only collection property. This method must
+<i>161</i>&nbsp;     * return a Collection of the appropriate type if 1. the property is
+<i>162</i>&nbsp;     * read-only, and 2. the property is a collection. It must return null
+<i>163</i>&nbsp;     * otherwise.
+<i>164</i>&nbsp;     *
+<i>165</i>&nbsp;     */
+<i>166</i>&nbsp;    private Object getTemporaryContainer(String propName) {
+<b class="nc"><i>167</i>&nbsp;        Object o = containers.get(propName);</b>
+<b class="nc"><i>168</i>&nbsp;        if (o == null) {</b>
+<b class="nc"><i>169</i>&nbsp;            o = getReadOnlyProperty(propName);</b>
+<b class="nc"><i>170</i>&nbsp;            if (o != null) {</b>
+<b class="nc"><i>171</i>&nbsp;                containers.put(propName, o);</b>
+<i>172</i>&nbsp;            }
+<i>173</i>&nbsp;        }
+<b class="nc"><i>174</i>&nbsp;        return o;</b>
+<i>175</i>&nbsp;    }
+<i>176</i>&nbsp;
+<i>177</i>&nbsp;    // Wrapper for ArrayList which we use to store read-only collection
+<i>178</i>&nbsp;    // properties in
+<b class="nc"><i>179</i>&nbsp;    private static class ArrayListWrapper&lt;T&gt; extends ArrayList&lt;T&gt; {</b>
+<i>180</i>&nbsp;
+<i>181</i>&nbsp;    }
+<i>182</i>&nbsp;
+<i>183</i>&nbsp;    // This is used to support read-only collection property.
+<i>184</i>&nbsp;    private Object getReadOnlyProperty(String propName) {
+<i>185</i>&nbsp;        // return ArrayListWrapper now and convert it to proper type later
+<i>186</i>&nbsp;        // during the build - once we know which constructor we will use
+<i>187</i>&nbsp;        // and what types it accepts
+<b class="nc"><i>188</i>&nbsp;        return new ArrayListWrapper&lt;&gt;();</b>
+<i>189</i>&nbsp;    }
+<i>190</i>&nbsp;
+<i>191</i>&nbsp;    @Override
+<i>192</i>&nbsp;    public int size() {
+<b class="nc"><i>193</i>&nbsp;        throw new UnsupportedOperationException();</b>
+<i>194</i>&nbsp;    }
+<i>195</i>&nbsp;
+<i>196</i>&nbsp;    @Override
+<i>197</i>&nbsp;    public Set&lt;Entry&lt;String, Object&gt;&gt; entrySet() {
+<b class="nc"><i>198</i>&nbsp;        throw new UnsupportedOperationException();</b>
+<i>199</i>&nbsp;    }
+<i>200</i>&nbsp;
+<i>201</i>&nbsp;    @Override
+<i>202</i>&nbsp;    public boolean isEmpty() {
+<b class="nc"><i>203</i>&nbsp;        throw new UnsupportedOperationException();</b>
+<i>204</i>&nbsp;    }
+<i>205</i>&nbsp;
+<i>206</i>&nbsp;    @Override
+<i>207</i>&nbsp;    public boolean containsKey(Object key) {
+<b class="nc"><i>208</i>&nbsp;        return (getTemporaryContainer(key.toString()) != null);</b>
+<i>209</i>&nbsp;    }
+<i>210</i>&nbsp;
+<i>211</i>&nbsp;    @Override
+<i>212</i>&nbsp;    public boolean containsValue(Object value) {
+<b class="nc"><i>213</i>&nbsp;        throw new UnsupportedOperationException();</b>
+<i>214</i>&nbsp;    }
+<i>215</i>&nbsp;
+<i>216</i>&nbsp;    @Override
+<i>217</i>&nbsp;    public Object get(Object key) {
+<b class="nc"><i>218</i>&nbsp;        return getTemporaryContainer(key.toString());</b>
+<i>219</i>&nbsp;    }
+<i>220</i>&nbsp;
+<i>221</i>&nbsp;    @Override
+<i>222</i>&nbsp;    public T build() {
+<b class="fc"><i>223</i>&nbsp;        Object retObj = null;</b>
+<i>224</i>&nbsp;        // adding collection properties to userValues
+<b class="fc"><i>225</i>&nbsp;        for (Entry&lt;String, Object&gt; entry : containers.entrySet()) {</b>
+<b class="nc"><i>226</i>&nbsp;            put(entry.getKey(), entry.getValue());</b>
+<b class="nc"><i>227</i>&nbsp;        }</b>
+<i>228</i>&nbsp;
+<b class="fc"><i>229</i>&nbsp;        propertyNames = userValues.keySet();</b>
+<i>230</i>&nbsp;
+<b class="fc"><i>231</i>&nbsp;        for (Constructor c : constructors) {</b>
+<b class="fc"><i>232</i>&nbsp;            Set&lt;String&gt; argumentNames = getArgumentNames(c);</b>
+<i>233</i>&nbsp;
+<i>234</i>&nbsp;            // the object is created only if attributes from fxml exactly match constructor arguments
+<b class="fc"><i>235</i>&nbsp;            if (propertyNames.equals(argumentNames)) {</b>
+<b class="nc"><i>236</i>&nbsp;                retObj = createObjectWithExactArguments(c, argumentNames);</b>
+<b class="nc"><i>237</i>&nbsp;                if (retObj != null) {</b>
+<b class="nc"><i>238</i>&nbsp;                    return (T) retObj;</b>
+<i>239</i>&nbsp;                }
+<i>240</i>&nbsp;            }
+<b class="fc"><i>241</i>&nbsp;        }</b>
+<i>242</i>&nbsp;
+<i>243</i>&nbsp;        // constructor with exact match doesn&#39;t exist
+<b class="fc"><i>244</i>&nbsp;        Set&lt;String&gt; settersArgs = propertiesMap.keySet();</b>
+<i>245</i>&nbsp;
+<i>246</i>&nbsp;        // check if all properties can be set by setters and class has default constructor
+<b class="fc"><i>247</i>&nbsp;        if (settersArgs.containsAll(propertyNames) &amp;&amp; hasDefaultConstructor) {</b>
+<b class="nc"><i>248</i>&nbsp;            retObj = createObjectFromDefaultConstructor();</b>
+<b class="nc"><i>249</i>&nbsp;            if (retObj != null) {</b>
+<b class="nc"><i>250</i>&nbsp;                return (T) retObj;</b>
+<i>251</i>&nbsp;            }
+<i>252</i>&nbsp;        }
+<i>253</i>&nbsp;
+<i>254</i>&nbsp;        // set of mutable properties which are given by the user in fxml
+<b class="fc"><i>255</i>&nbsp;        Set&lt;String&gt; propertiesToSet = new HashSet&lt;&gt;(propertyNames);</b>
+<b class="fc"><i>256</i>&nbsp;        propertiesToSet.retainAll(settersArgs);</b>
+<i>257</i>&nbsp;
+<i>258</i>&nbsp;        // will search for combination of constructor and setters
+<b class="fc"><i>259</i>&nbsp;        Set&lt;Constructor&gt; chosenConstructors = chooseBestConstructors(settersArgs);</b>
+<i>260</i>&nbsp;
+<i>261</i>&nbsp;        // we have chosen the best constructors, let&#39;s try to find one we can use
+<b class="fc"><i>262</i>&nbsp;        for (Constructor constructor : chosenConstructors) {</b>
+<b class="fc"><i>263</i>&nbsp;            retObj = createObjectFromConstructor(constructor, propertiesToSet);</b>
+<b class="fc"><i>264</i>&nbsp;            if (retObj != null) {</b>
+<b class="fc"><i>265</i>&nbsp;                return (T) retObj;</b>
+<i>266</i>&nbsp;            }
+<b class="nc"><i>267</i>&nbsp;        }</b>
+<i>268</i>&nbsp;
+<b class="nc"><i>269</i>&nbsp;        if (retObj == null) {</b>
+<b class="nc"><i>270</i>&nbsp;            throw new RuntimeException(&quot;Cannot create instance of &quot;</b>
+<b class="nc"><i>271</i>&nbsp;                    + type.getCanonicalName() + &quot; with given set of properties: &quot;</b>
+<b class="nc"><i>272</i>&nbsp;                    + userValues.keySet().toString());</b>
+<i>273</i>&nbsp;        }
+<i>274</i>&nbsp;
+<b class="nc"><i>275</i>&nbsp;        return (T) retObj;</b>
+<i>276</i>&nbsp;    }
+<i>277</i>&nbsp;
+<i>278</i>&nbsp;    private Set&lt;Constructor&gt; chooseBestConstructors(Set&lt;String&gt; settersArgs) {
+<i>279</i>&nbsp;        // set of immutable properties which are given by the user in fxml
+<b class="fc"><i>280</i>&nbsp;        Set&lt;String&gt; immutablesToSet = new HashSet&lt;&gt;(propertyNames);</b>
+<b class="fc"><i>281</i>&nbsp;        immutablesToSet.removeAll(settersArgs);</b>
+<i>282</i>&nbsp;
+<i>283</i>&nbsp;        // set of mutable properties which are given by the user in fxml
+<b class="fc"><i>284</i>&nbsp;        Set&lt;String&gt; propertiesToSet = new HashSet&lt;&gt;(propertyNames);</b>
+<b class="fc"><i>285</i>&nbsp;        propertiesToSet.retainAll(settersArgs);</b>
+<i>286</i>&nbsp;
+<b class="fc"><i>287</i>&nbsp;        int propertiesToSetCount = Integer.MAX_VALUE;</b>
+<b class="fc"><i>288</i>&nbsp;        int mutablesToSetCount = Integer.MAX_VALUE;</b>
+<i>289</i>&nbsp;
+<i>290</i>&nbsp;        // there may be more constructor with the same argument names
+<i>291</i>&nbsp;        // (this often happens in case of List&lt;T&gt; and T... etc.
+<b class="fc"><i>292</i>&nbsp;        Set&lt;Constructor&gt; chosenConstructors = new TreeSet&lt;&gt;(constructorComparator);</b>
+<b class="fc"><i>293</i>&nbsp;        Set&lt;String&gt; argsNotSet = null;</b>
+<b class="fc"><i>294</i>&nbsp;        for (Constructor c : constructors) {</b>
+<b class="fc"><i>295</i>&nbsp;            Set&lt;String&gt; argumentNames = getArgumentNames(c);</b>
+<i>296</i>&nbsp;
+<i>297</i>&nbsp;            // check whether this constructor takes all immutable properties
+<i>298</i>&nbsp;            // given by the user; if not, skip it
+<b class="fc"><i>299</i>&nbsp;            if (!argumentNames.containsAll(immutablesToSet)) {</b>
+<b class="fc"><i>300</i>&nbsp;                continue;</b>
+<i>301</i>&nbsp;            }
+<i>302</i>&nbsp;
+<i>303</i>&nbsp;            // all properties of this constructor which the user didn&#39;t
+<i>304</i>&nbsp;            // specify in FXML
+<i>305</i>&nbsp;            // we try to minimize this set
+<b class="fc"><i>306</i>&nbsp;            Set&lt;String&gt; propertiesToSetInConstructor = new HashSet&lt;&gt;(argumentNames);</b>
+<b class="fc"><i>307</i>&nbsp;            propertiesToSetInConstructor.removeAll(propertyNames);</b>
+<i>308</i>&nbsp;
+<i>309</i>&nbsp;            // all mutable properties which the user did specify in FXML
+<i>310</i>&nbsp;            // but are not settable with this constructor
+<i>311</i>&nbsp;            // we try to minimize this too (but only if we have more constructors with
+<i>312</i>&nbsp;            // the same propertiesToSetCount)
+<b class="fc"><i>313</i>&nbsp;            Set&lt;String&gt; mutablesNotSet = new HashSet&lt;&gt;(propertiesToSet);</b>
+<b class="fc"><i>314</i>&nbsp;            mutablesNotSet.removeAll(argumentNames);</b>
+<i>315</i>&nbsp;
+<b class="fc"><i>316</i>&nbsp;            int currentPropSize = propertiesToSetInConstructor.size();</b>
+<b class="fc"><i>317</i>&nbsp;            if (propertiesToSetCount == currentPropSize</b>
+<b class="nc"><i>318</i>&nbsp;                    &amp;&amp; mutablesToSetCount == mutablesNotSet.size()) {</b>
+<i>319</i>&nbsp;                // we found constructor which is as good as the ones we already have
+<b class="nc"><i>320</i>&nbsp;                chosenConstructors.add(c);</b>
+<i>321</i>&nbsp;            }
+<i>322</i>&nbsp;
+<b class="fc"><i>323</i>&nbsp;            if (propertiesToSetCount &gt; currentPropSize</b>
+<b class="nc"><i>324</i>&nbsp;                    || (propertiesToSetCount == currentPropSize &amp;&amp; mutablesToSetCount &gt; mutablesNotSet.size())) {</b>
+<b class="fc"><i>325</i>&nbsp;                propertiesToSetCount = currentPropSize;</b>
+<b class="fc"><i>326</i>&nbsp;                mutablesToSetCount = mutablesNotSet.size();</b>
+<b class="fc"><i>327</i>&nbsp;                chosenConstructors.clear();</b>
+<b class="fc"><i>328</i>&nbsp;                chosenConstructors.add(c);</b>
+<i>329</i>&nbsp;            }
+<b class="fc"><i>330</i>&nbsp;        }</b>
+<i>331</i>&nbsp;
+<b class="fc"><i>332</i>&nbsp;        if (argsNotSet != null &amp;&amp; !argsNotSet.isEmpty()) {</b>
+<b class="nc"><i>333</i>&nbsp;            throw new RuntimeException(&quot;Cannot create instance of &quot;</b>
+<b class="nc"><i>334</i>&nbsp;                    + type.getCanonicalName()</b>
+<i>335</i>&nbsp;                    + &quot; no constructor contains all properties specified in FXML.&quot;);
+<i>336</i>&nbsp;        }
+<i>337</i>&nbsp;
+<b class="fc"><i>338</i>&nbsp;        return chosenConstructors;</b>
+<i>339</i>&nbsp;    }
+<i>340</i>&nbsp;
+<i>341</i>&nbsp;    // Returns argument names for given constructor
+<i>342</i>&nbsp;    private Set&lt;String&gt; getArgumentNames(Constructor c) {
+<b class="fc"><i>343</i>&nbsp;        Map&lt;String, AnnotationValue&gt; constructorArgsMap = constructorsMap.get(c);</b>
+<b class="fc"><i>344</i>&nbsp;        Set&lt;String&gt; argumentNames = null;</b>
+<b class="fc"><i>345</i>&nbsp;        if (constructorArgsMap != null) {</b>
+<b class="fc"><i>346</i>&nbsp;            argumentNames = constructorArgsMap.keySet();</b>
+<i>347</i>&nbsp;        }
+<b class="fc"><i>348</i>&nbsp;        return argumentNames;</b>
+<i>349</i>&nbsp;    }
+<i>350</i>&nbsp;
+<i>351</i>&nbsp;    private Object createObjectFromDefaultConstructor() throws RuntimeException {
+<b class="nc"><i>352</i>&nbsp;        Object retObj = null;</b>
+<i>353</i>&nbsp;
+<i>354</i>&nbsp;        // create class with default constructor and iterate over all required setters
+<i>355</i>&nbsp;        try {
+<b class="nc"><i>356</i>&nbsp;            retObj = createInstance(defaultConstructor, new Object[]{});</b>
+<b class="nc"><i>357</i>&nbsp;        } catch (Exception ex) {</b>
+<b class="nc"><i>358</i>&nbsp;            throw new RuntimeException(ex);</b>
+<b class="nc"><i>359</i>&nbsp;        }</b>
+<b class="nc"><i>360</i>&nbsp;        for (String propName : propertyNames) {</b>
+<i>361</i>&nbsp;            try {
+<b class="nc"><i>362</i>&nbsp;                Property property = propertiesMap.get(propName);</b>
+<b class="nc"><i>363</i>&nbsp;                property.invoke(retObj, getUserValue(propName, property.getType()));</b>
+<b class="nc"><i>364</i>&nbsp;            } catch (Exception ex) {</b>
+<b class="nc"><i>365</i>&nbsp;                throw new RuntimeException(ex);</b>
+<b class="nc"><i>366</i>&nbsp;            }</b>
+<b class="nc"><i>367</i>&nbsp;        }</b>
+<i>368</i>&nbsp;
+<b class="nc"><i>369</i>&nbsp;        return retObj;</b>
+<i>370</i>&nbsp;    }
+<i>371</i>&nbsp;
+<i>372</i>&nbsp;    private Object createObjectFromConstructor(Constructor constructor, Set&lt;String&gt; propertiesToSet) {
+<b class="fc"><i>373</i>&nbsp;        Object retObj = null;</b>
+<b class="fc"><i>374</i>&nbsp;        Map&lt;String, AnnotationValue&gt; constructorArgsMap = constructorsMap.get(constructor);</b>
+<b class="fc"><i>375</i>&nbsp;        Object argsForConstruction[] = new Object[constructorArgsMap.size()];</b>
+<b class="fc"><i>376</i>&nbsp;        int i = 0;</b>
+<i>377</i>&nbsp;
+<i>378</i>&nbsp;        // set of properties which need to be set by setters if we use current
+<i>379</i>&nbsp;        // constructor
+<b class="fc"><i>380</i>&nbsp;        Set&lt;String&gt; currentPropertiesToSet = new HashSet&lt;&gt;(propertiesToSet);</b>
+<b class="fc"><i>381</i>&nbsp;        for (AnnotationValue value : constructorArgsMap.values()) {</b>
+<i>382</i>&nbsp;            // first try to coerce user give value
+<b class="fc"><i>383</i>&nbsp;            Object userValue = getUserValue(value.getName(), value.getType());</b>
+<b class="fc"><i>384</i>&nbsp;            if (userValue != null) {</b>
+<i>385</i>&nbsp;                try {
+<b class="fc"><i>386</i>&nbsp;                    argsForConstruction[i] = BeanAdapter.coerce(userValue, value.getType());</b>
+<b class="nc"><i>387</i>&nbsp;                } catch (Exception ex) {</b>
+<b class="nc"><i>388</i>&nbsp;                    return null;</b>
+<b class="fc"><i>389</i>&nbsp;                }</b>
+<i>390</i>&nbsp;            } else {
+<i>391</i>&nbsp;                // trying to coerce default value
+<b class="fc"><i>392</i>&nbsp;                if (!value.getDefaultValue().isEmpty()) {</b>
+<i>393</i>&nbsp;                    try {
+<b class="nc"><i>394</i>&nbsp;                        argsForConstruction[i] = BeanAdapter.coerce(value.getDefaultValue(), value.getType());</b>
+<b class="nc"><i>395</i>&nbsp;                    } catch (Exception ex) {</b>
+<b class="nc"><i>396</i>&nbsp;                        return null;</b>
+<b class="nc"><i>397</i>&nbsp;                    }</b>
+<i>398</i>&nbsp;                } else {
+<b class="fc"><i>399</i>&nbsp;                    argsForConstruction[i] = getDefaultValue(value.getType());</b>
+<i>400</i>&nbsp;                }
+<i>401</i>&nbsp;            }
+<b class="fc"><i>402</i>&nbsp;            currentPropertiesToSet.remove(value.getName());</b>
+<b class="fc"><i>403</i>&nbsp;            i++;</b>
+<b class="fc"><i>404</i>&nbsp;        }</b>
+<i>405</i>&nbsp;
+<i>406</i>&nbsp;        try {
+<b class="fc"><i>407</i>&nbsp;            retObj = createInstance(constructor, argsForConstruction);</b>
+<b class="nc"><i>408</i>&nbsp;        } catch (Exception ex) {</b>
+<i>409</i>&nbsp;            // try next constructor
+<b class="fc"><i>410</i>&nbsp;        }</b>
+<i>411</i>&nbsp;
+<b class="fc"><i>412</i>&nbsp;        if (retObj != null) {</b>
+<b class="fc"><i>413</i>&nbsp;            for (String propName : currentPropertiesToSet) {</b>
+<i>414</i>&nbsp;                try {
+<b class="nc"><i>415</i>&nbsp;                    Property property = propertiesMap.get(propName);</b>
+<b class="nc"><i>416</i>&nbsp;                    property.invoke(retObj, getUserValue(propName, property.getType()));</b>
+<b class="nc"><i>417</i>&nbsp;                } catch (Exception ex) {</b>
+<i>418</i>&nbsp;                    // try next constructor
+<b class="nc"><i>419</i>&nbsp;                    return null;</b>
+<b class="nc"><i>420</i>&nbsp;                }</b>
+<b class="nc"><i>421</i>&nbsp;            }</b>
+<i>422</i>&nbsp;        }
+<i>423</i>&nbsp;
+<b class="fc"><i>424</i>&nbsp;        return retObj;</b>
+<i>425</i>&nbsp;    }
+<i>426</i>&nbsp;
+<i>427</i>&nbsp;    private Object getUserValue(String key, Class&lt;?&gt; type) {
+<b class="fc"><i>428</i>&nbsp;        Object val = userValues.get(key);</b>
+<b class="fc"><i>429</i>&nbsp;        if (val == null) {</b>
+<b class="fc"><i>430</i>&nbsp;            return null;</b>
+<i>431</i>&nbsp;        }
+<i>432</i>&nbsp;
+<b class="fc"><i>433</i>&nbsp;        if (type.isAssignableFrom(val.getClass())) {</b>
+<b class="nc"><i>434</i>&nbsp;            return val;</b>
+<i>435</i>&nbsp;        }
+<i>436</i>&nbsp;
+<i>437</i>&nbsp;        // we currently don&#39;t have proper support support for arrays
+<i>438</i>&nbsp;        // in FXML so we use lists instead
+<i>439</i>&nbsp;        // the user provides us with a list and here we convert it to
+<i>440</i>&nbsp;        // array to pass to the constructor
+<b class="fc"><i>441</i>&nbsp;        if (type.isArray()) {</b>
+<i>442</i>&nbsp;            try {
+<b class="nc"><i>443</i>&nbsp;                return convertListToArray(val, type);</b>
+<b class="nc"><i>444</i>&nbsp;            } catch (RuntimeException ex) {</b>
+<i>445</i>&nbsp;                // conversion failed, maybe the ArrayListWrapper is
+<i>446</i>&nbsp;                // used for storing single value
+<i>447</i>&nbsp;            }
+<i>448</i>&nbsp;        }
+<i>449</i>&nbsp;
+<b class="fc"><i>450</i>&nbsp;        if (ArrayListWrapper.class.equals(val.getClass())) {</b>
+<i>451</i>&nbsp;            // user given value is an ArrayList but the constructor doesn&#39;t
+<i>452</i>&nbsp;            // accept an ArrayList so the ArrayList comes from
+<i>453</i>&nbsp;            // the getTemporaryContainer method
+<i>454</i>&nbsp;            // we take the first argument
+<b class="nc"><i>455</i>&nbsp;            List l = (List) val;</b>
+<b class="nc"><i>456</i>&nbsp;            return l.get(0);</b>
+<i>457</i>&nbsp;        }
+<i>458</i>&nbsp;
+<b class="fc"><i>459</i>&nbsp;        return val;</b>
+<i>460</i>&nbsp;    }
+<i>461</i>&nbsp;
+<i>462</i>&nbsp;    private Object createObjectWithExactArguments(Constructor c, Set&lt;String&gt; argumentNames) {
+<b class="nc"><i>463</i>&nbsp;        Object retObj = null;</b>
+<b class="nc"><i>464</i>&nbsp;        Object argsForConstruction[] = new Object[argumentNames.size()];</b>
+<b class="nc"><i>465</i>&nbsp;        Map&lt;String, AnnotationValue&gt; constructorArgsMap = constructorsMap.get(c);</b>
+<i>466</i>&nbsp;
+<b class="nc"><i>467</i>&nbsp;        int i = 0;</b>
+<i>468</i>&nbsp;
+<b class="nc"><i>469</i>&nbsp;        for (String arg : argumentNames) {</b>
+<b class="nc"><i>470</i>&nbsp;            Class&lt;?&gt; tp = constructorArgsMap.get(arg).getType();</b>
+<b class="nc"><i>471</i>&nbsp;            Object value = getUserValue(arg, tp);</b>
+<i>472</i>&nbsp;            try {
+<b class="nc"><i>473</i>&nbsp;                argsForConstruction[i++] = BeanAdapter.coerce(value, tp);</b>
+<b class="nc"><i>474</i>&nbsp;            } catch (Exception ex) {</b>
+<b class="nc"><i>475</i>&nbsp;                return null;</b>
+<b class="nc"><i>476</i>&nbsp;            }</b>
+<b class="nc"><i>477</i>&nbsp;        }</b>
+<i>478</i>&nbsp;
+<i>479</i>&nbsp;        try {
+<b class="nc"><i>480</i>&nbsp;            retObj = createInstance(c, argsForConstruction);</b>
+<b class="nc"><i>481</i>&nbsp;        } catch (Exception ex) {</b>
+<i>482</i>&nbsp;            // will try to fall back to different constructor
+<b class="nc"><i>483</i>&nbsp;        }</b>
+<i>484</i>&nbsp;
+<b class="nc"><i>485</i>&nbsp;        return retObj;</b>
+<i>486</i>&nbsp;    }
+<i>487</i>&nbsp;
+<i>488</i>&nbsp;    private Object createInstance(Constructor c, Object args[]) throws Exception {
+<b class="fc"><i>489</i>&nbsp;        Object retObj = null;</b>
+<i>490</i>&nbsp;
+<b class="fc"><i>491</i>&nbsp;        ReflectUtil.checkPackageAccess(type);</b>
+<b class="fc"><i>492</i>&nbsp;        retObj = c.newInstance(args);</b>
+<i>493</i>&nbsp;
+<b class="fc"><i>494</i>&nbsp;        return retObj;</b>
+<i>495</i>&nbsp;    }
+<i>496</i>&nbsp;
+<i>497</i>&nbsp;    private Map&lt;String, Property&gt; scanForSetters() {
+<b class="fc"><i>498</i>&nbsp;        Map&lt;String, Property&gt; strsMap = new HashMap&lt;&gt;();</b>
+<b class="fc"><i>499</i>&nbsp;        Map&lt;String, LinkedList&lt;Method&gt;&gt; methods = getClassMethodCache(type);</b>
+<i>500</i>&nbsp;
+<b class="fc"><i>501</i>&nbsp;        for (String methodName : methods.keySet()) {</b>
+<b class="fc"><i>502</i>&nbsp;            if (methodName.startsWith(SETTER_PREFIX) &amp;&amp; methodName.length() &gt; SETTER_PREFIX.length()) {</b>
+<b class="nc"><i>503</i>&nbsp;                String propName = methodName.substring(SETTER_PREFIX.length());</b>
+<b class="nc"><i>504</i>&nbsp;                propName = Character.toLowerCase(propName.charAt(0)) + propName.substring(1);</b>
+<b class="nc"><i>505</i>&nbsp;                List&lt;Method&gt; methodsList = methods.get(methodName);</b>
+<b class="nc"><i>506</i>&nbsp;                for (Method m : methodsList) {</b>
+<b class="nc"><i>507</i>&nbsp;                    Class&lt;?&gt; retType = m.getReturnType();</b>
+<b class="nc"><i>508</i>&nbsp;                    Class&lt;?&gt; argType[] = m.getParameterTypes();</b>
+<b class="nc"><i>509</i>&nbsp;                    if (retType.equals(Void.TYPE) &amp;&amp; argType.length == 1) {</b>
+<b class="nc"><i>510</i>&nbsp;                        strsMap.put(propName, new Setter(m, argType[0]));</b>
+<i>511</i>&nbsp;                    }
+<b class="nc"><i>512</i>&nbsp;                }</b>
+<i>513</i>&nbsp;            }
+<b class="fc"><i>514</i>&nbsp;            if (methodName.startsWith(GETTER_PREFIX) &amp;&amp; methodName.length() &gt; GETTER_PREFIX.length()) {</b>
+<b class="fc"><i>515</i>&nbsp;                String propName = methodName.substring(GETTER_PREFIX.length());</b>
+<b class="fc"><i>516</i>&nbsp;                propName = Character.toLowerCase(propName.charAt(0)) + propName.substring(1);</b>
+<b class="fc"><i>517</i>&nbsp;                List&lt;Method&gt; methodsList = methods.get(methodName);</b>
+<b class="fc"><i>518</i>&nbsp;                for (Method m : methodsList) {</b>
+<b class="fc"><i>519</i>&nbsp;                    Class&lt;?&gt; retType = m.getReturnType();</b>
+<b class="fc"><i>520</i>&nbsp;                    Class&lt;?&gt; argType[] = m.getParameterTypes();</b>
+<b class="fc"><i>521</i>&nbsp;                    if (Collection.class.isAssignableFrom(retType) &amp;&amp; argType.length == 0) {</b>
+<b class="nc"><i>522</i>&nbsp;                        strsMap.put(propName, new Getter(m, retType));</b>
+<i>523</i>&nbsp;                    }
+<b class="fc"><i>524</i>&nbsp;                }</b>
+<i>525</i>&nbsp;            }
+<b class="fc"><i>526</i>&nbsp;        }</b>
+<i>527</i>&nbsp;
+<b class="fc"><i>528</i>&nbsp;        return strsMap;</b>
+<i>529</i>&nbsp;    }
+<i>530</i>&nbsp;
+<i>531</i>&nbsp;    private static abstract class Property {
+<i>532</i>&nbsp;        protected final Method method;
+<i>533</i>&nbsp;        protected final Class&lt;?&gt; type;
+<i>534</i>&nbsp;
+<i>535</i>&nbsp;        public Property(Method m, Class&lt;?&gt; t) {
+<i>536</i>&nbsp;            method = m;
+<i>537</i>&nbsp;            type = t;
+<i>538</i>&nbsp;        }
+<i>539</i>&nbsp;
+<i>540</i>&nbsp;        public Class&lt;?&gt; getType() {
+<i>541</i>&nbsp;            return type;
+<i>542</i>&nbsp;        }
+<i>543</i>&nbsp;
+<i>544</i>&nbsp;        public abstract void invoke(Object obj, Object argStr) throws Exception;
+<i>545</i>&nbsp;    }
+<i>546</i>&nbsp;
+<i>547</i>&nbsp;    private static class Setter extends Property {
+<i>548</i>&nbsp;
+<i>549</i>&nbsp;        public Setter(Method m, Class&lt;?&gt; t) {
+<i>550</i>&nbsp;            super(m, t);
+<i>551</i>&nbsp;        }
+<i>552</i>&nbsp;
+<i>553</i>&nbsp;        public void invoke(Object obj, Object argStr) throws Exception {
+<i>554</i>&nbsp;            Object arg[] = new Object[]{BeanAdapter.coerce(argStr, type)};
+<i>555</i>&nbsp;            ModuleHelper.invoke(method, obj, arg);
+<i>556</i>&nbsp;        }
+<i>557</i>&nbsp;    }
+<i>558</i>&nbsp;
+<i>559</i>&nbsp;    private static class Getter extends Property {
+<i>560</i>&nbsp;
+<i>561</i>&nbsp;        public Getter(Method m, Class&lt;?&gt; t) {
+<i>562</i>&nbsp;            super(m, t);
+<i>563</i>&nbsp;        }
+<i>564</i>&nbsp;
+<i>565</i>&nbsp;        @Override
+<i>566</i>&nbsp;        public void invoke(Object obj, Object argStr) throws Exception {
+<i>567</i>&nbsp;            // we know that this.method returns collection otherwise it wouldn&#39;t be here
+<i>568</i>&nbsp;            Collection to = (Collection) ModuleHelper.invoke(method, obj, new Object[]{});
+<i>569</i>&nbsp;            if (argStr instanceof Collection) {
+<i>570</i>&nbsp;                Collection from = (Collection) argStr;
+<i>571</i>&nbsp;                to.addAll(from);
+<i>572</i>&nbsp;            } else {
+<i>573</i>&nbsp;                to.add(argStr);
+<i>574</i>&nbsp;            }
+<i>575</i>&nbsp;        }
+<i>576</i>&nbsp;    }
+<i>577</i>&nbsp;
+<i>578</i>&nbsp;    // This class holds information for one argument of the constructor
+<i>579</i>&nbsp;    // which we got from the NamedArg annotation
+<i>580</i>&nbsp;    private static class AnnotationValue {
+<i>581</i>&nbsp;
+<i>582</i>&nbsp;        private final String name;
+<i>583</i>&nbsp;        private final String defaultValue;
+<i>584</i>&nbsp;        private final Class&lt;?&gt; type;
+<i>585</i>&nbsp;
+<b class="fc"><i>586</i>&nbsp;        public AnnotationValue(String name, String defaultValue, Class&lt;?&gt; type) {</b>
+<b class="fc"><i>587</i>&nbsp;            this.name = name;</b>
+<b class="fc"><i>588</i>&nbsp;            this.defaultValue = defaultValue;</b>
+<b class="fc"><i>589</i>&nbsp;            this.type = type;</b>
+<b class="fc"><i>590</i>&nbsp;        }</b>
+<i>591</i>&nbsp;
+<i>592</i>&nbsp;        public String getName() {
+<b class="fc"><i>593</i>&nbsp;            return name;</b>
+<i>594</i>&nbsp;        }
+<i>595</i>&nbsp;
+<i>596</i>&nbsp;        public String getDefaultValue() {
+<b class="fc"><i>597</i>&nbsp;            return defaultValue;</b>
+<i>598</i>&nbsp;        }
+<i>599</i>&nbsp;
+<i>600</i>&nbsp;        public Class&lt;?&gt; getType() {
+<b class="fc"><i>601</i>&nbsp;            return type;</b>
+<i>602</i>&nbsp;        }
+<i>603</i>&nbsp;    }
+<i>604</i>&nbsp;
+<i>605</i>&nbsp;    private static HashMap&lt;String, LinkedList&lt;Method&gt;&gt; getClassMethodCache(Class&lt;?&gt; type) {
+<b class="fc"><i>606</i>&nbsp;        HashMap&lt;String, LinkedList&lt;Method&gt;&gt; classMethodCache = new HashMap&lt;&gt;();</b>
+<i>607</i>&nbsp;
+<b class="fc"><i>608</i>&nbsp;        ReflectUtil.checkPackageAccess(type);</b>
+<i>609</i>&nbsp;
+<b class="fc"><i>610</i>&nbsp;        Method[] declaredMethods = type.getMethods();</b>
+<b class="fc"><i>611</i>&nbsp;        for (Method method : declaredMethods) {</b>
+<b class="fc"><i>612</i>&nbsp;            int modifiers = method.getModifiers();</b>
+<i>613</i>&nbsp;
+<b class="fc"><i>614</i>&nbsp;            if (Modifier.isPublic(modifiers) &amp;&amp; !Modifier.isStatic(modifiers)) {</b>
+<b class="fc"><i>615</i>&nbsp;                String name = method.getName();</b>
+<b class="fc"><i>616</i>&nbsp;                LinkedList&lt;Method&gt; namedMethods = classMethodCache.get(name);</b>
+<i>617</i>&nbsp;
+<b class="fc"><i>618</i>&nbsp;                if (namedMethods == null) {</b>
+<b class="fc"><i>619</i>&nbsp;                    namedMethods = new LinkedList&lt;&gt;();</b>
+<b class="fc"><i>620</i>&nbsp;                    classMethodCache.put(name, namedMethods);</b>
+<i>621</i>&nbsp;                }
+<i>622</i>&nbsp;
+<b class="fc"><i>623</i>&nbsp;                namedMethods.add(method);</b>
+<i>624</i>&nbsp;            }
+<i>625</i>&nbsp;        }
+<i>626</i>&nbsp;
+<b class="fc"><i>627</i>&nbsp;        return classMethodCache;</b>
+<i>628</i>&nbsp;    }
+<i>629</i>&nbsp;
+<i>630</i>&nbsp;    // Utility method for converting list to array via reflection
+<i>631</i>&nbsp;    // it assumes that localType is array
+<i>632</i>&nbsp;    private static Object[] convertListToArray(Object userValue, Class&lt;?&gt; localType) {
+<b class="nc"><i>633</i>&nbsp;        Class&lt;?&gt; arrayType = localType.getComponentType();</b>
+<b class="nc"><i>634</i>&nbsp;        List l = (List) BeanAdapter.coerce(userValue, List.class);</b>
+<i>635</i>&nbsp;
+<b class="nc"><i>636</i>&nbsp;        return l.toArray((Object[]) Array.newInstance(arrayType, 0));</b>
+<i>637</i>&nbsp;    }
+<i>638</i>&nbsp;
+<i>639</i>&nbsp;    private static Object getDefaultValue(Class clazz) {
+<b class="fc"><i>640</i>&nbsp;        return defaultsMap.get(clazz);</b>
+<i>641</i>&nbsp;    }
+<i>642</i>&nbsp;
+<i>643</i>&nbsp;    private static final Map&lt;Class&lt;?&gt;, Object&gt; defaultsMap;
+<i>644</i>&nbsp;
+<i>645</i>&nbsp;    static {
+<b class="fc"><i>646</i>&nbsp;        defaultsMap = new HashMap&lt;&gt;();</b>
+<b class="fc"><i>647</i>&nbsp;        defaultsMap.put(byte.class, (byte) 0);</b>
+<b class="fc"><i>648</i>&nbsp;        defaultsMap.put(short.class, (short) 0);</b>
+<b class="fc"><i>649</i>&nbsp;        defaultsMap.put(int.class, 0);</b>
+<b class="fc"><i>650</i>&nbsp;        defaultsMap.put(long.class, 0L);</b>
+<b class="fc"><i>651</i>&nbsp;        defaultsMap.put(int.class, 0);</b>
+<b class="fc"><i>652</i>&nbsp;        defaultsMap.put(float.class, 0.0f);</b>
+<b class="fc"><i>653</i>&nbsp;        defaultsMap.put(double.class, 0.0d);</b>
+<b class="fc"><i>654</i>&nbsp;        defaultsMap.put(char.class, &#39;\u0000&#39;);</b>
+<b class="fc"><i>655</i>&nbsp;        defaultsMap.put(boolean.class, false);</b>
+<b class="fc"><i>656</i>&nbsp;        defaultsMap.put(Object.class, null);</b>
+<b class="fc"><i>657</i>&nbsp;    }</b>
+<i>658</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2017-12-04 21:49</div>
+</div>
+</body>
+</html>

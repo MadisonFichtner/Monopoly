@@ -1,0 +1,179 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: SVGPathHelper</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.javafx.scene.shape</a> ]
+</div>
+
+<h1>Coverage Summary for Class: SVGPathHelper (com.sun.javafx.scene.shape)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">SVGPathHelper</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (8/ 8)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    93.8%
+  </span>
+  <span class="absValue">
+    (15/ 16)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">SVGPathHelper$SVGPathAccessor</td>
+  </tr>
+<tr>
+  <td class="name"><strong>total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (8/ 8)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    93.8%
+  </span>
+  <span class="absValue">
+    (15/ 16)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright (c) 2016, Oracle and/or its affiliates. All rights reserved.
+<i>3</i>&nbsp; * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+<i>4</i>&nbsp; *
+<i>5</i>&nbsp; *
+<i>6</i>&nbsp; *
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; *
+<i>11</i>&nbsp; *
+<i>12</i>&nbsp; *
+<i>13</i>&nbsp; *
+<i>14</i>&nbsp; *
+<i>15</i>&nbsp; *
+<i>16</i>&nbsp; *
+<i>17</i>&nbsp; *
+<i>18</i>&nbsp; *
+<i>19</i>&nbsp; *
+<i>20</i>&nbsp; *
+<i>21</i>&nbsp; *
+<i>22</i>&nbsp; *
+<i>23</i>&nbsp; *
+<i>24</i>&nbsp; */
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;package com.sun.javafx.scene.shape;
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;import com.sun.javafx.sg.prism.NGNode;
+<i>29</i>&nbsp;import com.sun.javafx.util.Utils;
+<i>30</i>&nbsp;import javafx.scene.Node;
+<i>31</i>&nbsp;import javafx.scene.shape.SVGPath;
+<i>32</i>&nbsp;import javafx.scene.shape.Shape;
+<i>33</i>&nbsp;
+<i>34</i>&nbsp;/**
+<i>35</i>&nbsp; * Used to access internal methods of SVGPath.
+<i>36</i>&nbsp; */
+<b class="fc"><i>37</i>&nbsp;public class SVGPathHelper extends ShapeHelper {</b>
+<i>38</i>&nbsp;
+<i>39</i>&nbsp;    private static final SVGPathHelper theInstance;
+<i>40</i>&nbsp;    private static SVGPathAccessor svgPathAccessor;
+<i>41</i>&nbsp;
+<i>42</i>&nbsp;    static {
+<b class="fc"><i>43</i>&nbsp;        theInstance = new SVGPathHelper();</b>
+<b class="fc"><i>44</i>&nbsp;        Utils.forceInit(SVGPath.class);</b>
+<b class="fc"><i>45</i>&nbsp;    }</b>
+<i>46</i>&nbsp;
+<i>47</i>&nbsp;    private static SVGPathHelper getInstance() {
+<b class="fc"><i>48</i>&nbsp;        return theInstance;</b>
+<i>49</i>&nbsp;    }
+<i>50</i>&nbsp;
+<i>51</i>&nbsp;    public static void initHelper(SVGPath svgPath) {
+<b class="fc"><i>52</i>&nbsp;        setHelper(svgPath, getInstance());</b>
+<b class="fc"><i>53</i>&nbsp;    }</b>
+<i>54</i>&nbsp;
+<i>55</i>&nbsp;    @Override
+<i>56</i>&nbsp;    protected NGNode createPeerImpl(Node node) {
+<b class="fc"><i>57</i>&nbsp;        return svgPathAccessor.doCreatePeer(node);</b>
+<i>58</i>&nbsp;    }
+<i>59</i>&nbsp;
+<i>60</i>&nbsp;    @Override
+<i>61</i>&nbsp;    protected void updatePeerImpl(Node node) {
+<b class="fc"><i>62</i>&nbsp;        super.updatePeerImpl(node);</b>
+<b class="fc"><i>63</i>&nbsp;        svgPathAccessor.doUpdatePeer(node);</b>
+<b class="fc"><i>64</i>&nbsp;    }</b>
+<i>65</i>&nbsp;
+<i>66</i>&nbsp;    @Override
+<i>67</i>&nbsp;    protected  com.sun.javafx.geom.Shape configShapeImpl(Shape shape) {
+<b class="fc"><i>68</i>&nbsp;        return svgPathAccessor.doConfigShape(shape);</b>
+<i>69</i>&nbsp;    }
+<i>70</i>&nbsp;
+<i>71</i>&nbsp;    public static void setSVGPathAccessor(final SVGPathAccessor newAccessor) {
+<b class="fc"><i>72</i>&nbsp;        if (svgPathAccessor != null) {</b>
+<b class="nc"><i>73</i>&nbsp;            throw new IllegalStateException();</b>
+<i>74</i>&nbsp;        }
+<i>75</i>&nbsp;
+<b class="fc"><i>76</i>&nbsp;        svgPathAccessor = newAccessor;</b>
+<b class="fc"><i>77</i>&nbsp;    }</b>
+<i>78</i>&nbsp;
+<i>79</i>&nbsp;    public interface SVGPathAccessor {
+<i>80</i>&nbsp;        NGNode doCreatePeer(Node node);
+<i>81</i>&nbsp;        void doUpdatePeer(Node node);
+<i>82</i>&nbsp;        com.sun.javafx.geom.Shape doConfigShape(Shape shape);
+<i>83</i>&nbsp;    }
+<i>84</i>&nbsp;
+<i>85</i>&nbsp;}
+<i>86</i>&nbsp;
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2017-12-04 21:49</div>
+</div>
+</body>
+</html>

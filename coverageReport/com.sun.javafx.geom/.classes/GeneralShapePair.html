@@ -1,0 +1,199 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: GeneralShapePair</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.javafx.geom</a> ]
+</div>
+
+<h1>Coverage Summary for Class: GeneralShapePair (com.sun.javafx.geom)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">GeneralShapePair</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 11)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 24)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright (c) 2009, 2013, Oracle and/or its affiliates. All rights reserved.
+<i>3</i>&nbsp; * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+<i>4</i>&nbsp; *
+<i>5</i>&nbsp; *
+<i>6</i>&nbsp; *
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; *
+<i>11</i>&nbsp; *
+<i>12</i>&nbsp; *
+<i>13</i>&nbsp; *
+<i>14</i>&nbsp; *
+<i>15</i>&nbsp; *
+<i>16</i>&nbsp; *
+<i>17</i>&nbsp; *
+<i>18</i>&nbsp; *
+<i>19</i>&nbsp; *
+<i>20</i>&nbsp; *
+<i>21</i>&nbsp; *
+<i>22</i>&nbsp; *
+<i>23</i>&nbsp; *
+<i>24</i>&nbsp; */
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;package com.sun.javafx.geom;
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;import com.sun.javafx.geom.transform.BaseTransform;
+<i>29</i>&nbsp;
+<i>30</i>&nbsp;/**
+<i>31</i>&nbsp; * A concrete implementation of {@link ShapePair} for general shapes
+<i>32</i>&nbsp; * and combination types.  This class can represent the combination and
+<i>33</i>&nbsp; * perform basic operations like bounds, intersects and contains, but
+<i>34</i>&nbsp; * it cannot supply a PathIterator for the result of the combination.
+<i>35</i>&nbsp; * As a result the renderer will either have to be able to render the
+<i>36</i>&nbsp; * combination of two shapes directly or perform some other geometry
+<i>37</i>&nbsp; * computation of its own to achieve the subtraction or intersection.
+<i>38</i>&nbsp; *
+<i>39</i>&nbsp; */
+<i>40</i>&nbsp;public class GeneralShapePair extends ShapePair {
+<i>41</i>&nbsp;    private final Shape outer;
+<i>42</i>&nbsp;    private final Shape inner;
+<i>43</i>&nbsp;    private final int combinationType;
+<i>44</i>&nbsp;
+<b class="nc"><i>45</i>&nbsp;    public GeneralShapePair(Shape outer, Shape inner, int combinationType) {</b>
+<b class="nc"><i>46</i>&nbsp;        this.outer = outer;</b>
+<b class="nc"><i>47</i>&nbsp;        this.inner = inner;</b>
+<b class="nc"><i>48</i>&nbsp;        this.combinationType = combinationType;</b>
+<b class="nc"><i>49</i>&nbsp;    }</b>
+<i>50</i>&nbsp;
+<i>51</i>&nbsp;    @Override
+<i>52</i>&nbsp;    public final int getCombinationType() {
+<b class="nc"><i>53</i>&nbsp;        return combinationType;</b>
+<i>54</i>&nbsp;    }
+<i>55</i>&nbsp;
+<i>56</i>&nbsp;    @Override
+<i>57</i>&nbsp;    public final Shape getOuterShape() {
+<b class="nc"><i>58</i>&nbsp;        return outer;</b>
+<i>59</i>&nbsp;    }
+<i>60</i>&nbsp;
+<i>61</i>&nbsp;    @Override
+<i>62</i>&nbsp;    public final Shape getInnerShape() {
+<b class="nc"><i>63</i>&nbsp;        return inner;</b>
+<i>64</i>&nbsp;    }
+<i>65</i>&nbsp;
+<i>66</i>&nbsp;    @Override
+<i>67</i>&nbsp;    public Shape copy() {
+<b class="nc"><i>68</i>&nbsp;        return new GeneralShapePair(outer.copy(), inner.copy(), combinationType);</b>
+<i>69</i>&nbsp;    }
+<i>70</i>&nbsp;
+<i>71</i>&nbsp;    @Override
+<i>72</i>&nbsp;    public boolean contains(float x, float y) {
+<b class="nc"><i>73</i>&nbsp;        if (combinationType == TYPE_INTERSECT) {</b>
+<b class="nc"><i>74</i>&nbsp;            return outer.contains(x, y) &amp;&amp; inner.contains(x, y);</b>
+<i>75</i>&nbsp;        } else {
+<b class="nc"><i>76</i>&nbsp;            return outer.contains(x, y) &amp;&amp; !inner.contains(x, y);</b>
+<i>77</i>&nbsp;        }
+<i>78</i>&nbsp;    }
+<i>79</i>&nbsp;
+<i>80</i>&nbsp;    @Override
+<i>81</i>&nbsp;    public boolean intersects(float x, float y, float w, float h) {
+<b class="nc"><i>82</i>&nbsp;        if (combinationType == TYPE_INTERSECT) {</b>
+<b class="nc"><i>83</i>&nbsp;            return outer.intersects(x, y, w, h) &amp;&amp; inner.intersects(x, y, w, h);</b>
+<i>84</i>&nbsp;        } else {
+<b class="nc"><i>85</i>&nbsp;            return outer.intersects(x, y, w, h) &amp;&amp; !inner.contains(x, y, w, h);</b>
+<i>86</i>&nbsp;        }
+<i>87</i>&nbsp;    }
+<i>88</i>&nbsp;
+<i>89</i>&nbsp;    @Override
+<i>90</i>&nbsp;    public boolean contains(float x, float y, float w, float h) {
+<b class="nc"><i>91</i>&nbsp;        if (combinationType == TYPE_INTERSECT) {</b>
+<b class="nc"><i>92</i>&nbsp;            return outer.contains(x, y, w, h) &amp;&amp; inner.contains(x, y, w, h);</b>
+<i>93</i>&nbsp;        } else {
+<b class="nc"><i>94</i>&nbsp;            return outer.contains(x, y, w, h) &amp;&amp; !inner.intersects(x, y, w, h);</b>
+<i>95</i>&nbsp;        }
+<i>96</i>&nbsp;    }
+<i>97</i>&nbsp;
+<i>98</i>&nbsp;    @Override
+<i>99</i>&nbsp;    public RectBounds getBounds() {
+<b class="nc"><i>100</i>&nbsp;        RectBounds b = outer.getBounds();</b>
+<b class="nc"><i>101</i>&nbsp;        if (combinationType == TYPE_INTERSECT) {</b>
+<b class="nc"><i>102</i>&nbsp;            b.intersectWith(inner.getBounds());</b>
+<i>103</i>&nbsp;        }
+<b class="nc"><i>104</i>&nbsp;        return b;</b>
+<i>105</i>&nbsp;    }
+<i>106</i>&nbsp;
+<i>107</i>&nbsp;    @Override
+<i>108</i>&nbsp;    public PathIterator getPathIterator(BaseTransform tx) {
+<b class="nc"><i>109</i>&nbsp;        throw new UnsupportedOperationException(&quot;Not supported yet.&quot;);</b>
+<i>110</i>&nbsp;    }
+<i>111</i>&nbsp;
+<i>112</i>&nbsp;    @Override
+<i>113</i>&nbsp;    public PathIterator getPathIterator(BaseTransform tx, float flatness) {
+<b class="nc"><i>114</i>&nbsp;        return new FlatteningPathIterator(getPathIterator(tx), flatness);</b>
+<i>115</i>&nbsp;    }
+<i>116</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2017-12-04 21:49</div>
+</div>
+</body>
+</html>

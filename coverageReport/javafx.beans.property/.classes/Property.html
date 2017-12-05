@@ -1,0 +1,163 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: Property</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">javafx.beans.property</a> ]
+</div>
+
+<h1>Coverage Summary for Class: Property (javafx.beans.property)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+</tr>
+<tr>
+  <td class="name">Property</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright (c) 2011, 2014, Oracle and/or its affiliates. All rights reserved.
+<i>3</i>&nbsp; * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+<i>4</i>&nbsp; *
+<i>5</i>&nbsp; *
+<i>6</i>&nbsp; *
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; *
+<i>11</i>&nbsp; *
+<i>12</i>&nbsp; *
+<i>13</i>&nbsp; *
+<i>14</i>&nbsp; *
+<i>15</i>&nbsp; *
+<i>16</i>&nbsp; *
+<i>17</i>&nbsp; *
+<i>18</i>&nbsp; *
+<i>19</i>&nbsp; *
+<i>20</i>&nbsp; *
+<i>21</i>&nbsp; *
+<i>22</i>&nbsp; *
+<i>23</i>&nbsp; *
+<i>24</i>&nbsp; */
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;package javafx.beans.property;
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;import javafx.beans.value.ObservableValue;
+<i>29</i>&nbsp;import javafx.beans.value.WritableValue;
+<i>30</i>&nbsp;
+<i>31</i>&nbsp;/**
+<i>32</i>&nbsp; * Generic interface that defines the methods common to all (writable)
+<i>33</i>&nbsp; * properties independent of their type.
+<i>34</i>&nbsp; *
+<i>35</i>&nbsp; *
+<i>36</i>&nbsp; * @param &lt;T&gt;
+<i>37</i>&nbsp; *            the type of the wrapped value
+<i>38</i>&nbsp; * @since JavaFX 2.0
+<i>39</i>&nbsp; */
+<i>40</i>&nbsp;public interface Property&lt;T&gt; extends ReadOnlyProperty&lt;T&gt;, WritableValue&lt;T&gt; {
+<i>41</i>&nbsp;
+<i>42</i>&nbsp;    /**
+<i>43</i>&nbsp;     * Create a unidirection binding for this {@code Property}.
+<i>44</i>&nbsp;     * &lt;p&gt;
+<i>45</i>&nbsp;     * Note that JavaFX has all the bind calls implemented through weak listeners. This means the bound property
+<i>46</i>&nbsp;     * can be garbage collected and stopped from being updated.
+<i>47</i>&nbsp;     *
+<i>48</i>&nbsp;     * @param observable
+<i>49</i>&nbsp;     *            The observable this {@code Property} should be bound to.
+<i>50</i>&nbsp;     * @throws NullPointerException
+<i>51</i>&nbsp;     *             if {@code observable} is {@code null}
+<i>52</i>&nbsp;     */
+<i>53</i>&nbsp;    void bind(ObservableValue&lt;? extends T&gt; observable);
+<i>54</i>&nbsp;
+<i>55</i>&nbsp;    /**
+<i>56</i>&nbsp;     * Remove the unidirectional binding for this {@code Property}.
+<i>57</i>&nbsp;     *
+<i>58</i>&nbsp;     * If the {@code Property} is not bound, calling this method has no effect.
+<i>59</i>&nbsp;     * @see #bind(javafx.beans.value.ObservableValue)
+<i>60</i>&nbsp;     */
+<i>61</i>&nbsp;    void unbind();
+<i>62</i>&nbsp;
+<i>63</i>&nbsp;    /**
+<i>64</i>&nbsp;     * Can be used to check, if a {@code Property} is bound.
+<i>65</i>&nbsp;     * @see #bind(javafx.beans.value.ObservableValue)
+<i>66</i>&nbsp;     *
+<i>67</i>&nbsp;     * @return {@code true} if the {@code Property} is bound, {@code false}
+<i>68</i>&nbsp;     *         otherwise
+<i>69</i>&nbsp;     */
+<i>70</i>&nbsp;    boolean isBound();
+<i>71</i>&nbsp;
+<i>72</i>&nbsp;    /**
+<i>73</i>&nbsp;     * Create a bidirectional binding between this {@code Property} and another
+<i>74</i>&nbsp;     * one.
+<i>75</i>&nbsp;     * Bidirectional bindings exists independently of unidirectional bindings. So it is possible to
+<i>76</i>&nbsp;     * add unidirectional binding to a property with bidirectional binding and vice-versa. However, this practice is
+<i>77</i>&nbsp;     * discouraged.
+<i>78</i>&nbsp;     * &lt;p&gt;
+<i>79</i>&nbsp;     * It is possible to have multiple bidirectional bindings of one Property.
+<i>80</i>&nbsp;     * &lt;p&gt;
+<i>81</i>&nbsp;     * JavaFX bidirectional binding implementation use weak listeners. This means bidirectional binding does not prevent
+<i>82</i>&nbsp;     * properties from being garbage collected.
+<i>83</i>&nbsp;     *
+<i>84</i>&nbsp;     * @param other
+<i>85</i>&nbsp;     *            the other {@code Property}
+<i>86</i>&nbsp;     * @throws NullPointerException
+<i>87</i>&nbsp;     *             if {@code other} is {@code null}
+<i>88</i>&nbsp;     * @throws IllegalArgumentException
+<i>89</i>&nbsp;     *             if {@code other} is {@code this}
+<i>90</i>&nbsp;     */
+<i>91</i>&nbsp;    void bindBidirectional(Property&lt;T&gt; other);
+<i>92</i>&nbsp;
+<i>93</i>&nbsp;    /**
+<i>94</i>&nbsp;     * Remove a bidirectional binding between this {@code Property} and another
+<i>95</i>&nbsp;     * one.
+<i>96</i>&nbsp;     *
+<i>97</i>&nbsp;     * If no bidirectional binding between the properties exists, calling this
+<i>98</i>&nbsp;     * method has no effect.
+<i>99</i>&nbsp;     *
+<i>100</i>&nbsp;     * It is possible to unbind by a call on the second property. This code will work:
+<i>101</i>&nbsp;     *
+<i>102</i>&nbsp;     * &lt;blockquote&gt;&lt;pre&gt;
+<i>103</i>&nbsp;     *     property1.bindBirectional(property2);
+<i>104</i>&nbsp;     *     property2.unbindBidirectional(property1);
+<i>105</i>&nbsp;     * &lt;/pre&gt;&lt;/blockquote&gt;
+<i>106</i>&nbsp;     *
+<i>107</i>&nbsp;     * @param other
+<i>108</i>&nbsp;     *            the other {@code Property}
+<i>109</i>&nbsp;     * @throws NullPointerException
+<i>110</i>&nbsp;     *             if {@code other} is {@code null}
+<i>111</i>&nbsp;     * @throws IllegalArgumentException
+<i>112</i>&nbsp;     *             if {@code other} is {@code this}
+<i>113</i>&nbsp;     */
+<i>114</i>&nbsp;    void unbindBidirectional(Property&lt;T&gt; other);
+<i>115</i>&nbsp;
+<i>116</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2017-12-04 21:49</div>
+</div>
+</body>
+</html>

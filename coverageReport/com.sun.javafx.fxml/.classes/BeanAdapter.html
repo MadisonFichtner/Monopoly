@@ -1,0 +1,1099 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: BeanAdapter</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.javafx.fxml</a> ]
+</div>
+
+<h1>Coverage Summary for Class: BeanAdapter (com.sun.javafx.fxml)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">BeanAdapter</td>
+<td class="coverageStat">
+  <span class="percent">
+    53.1%
+  </span>
+  <span class="absValue">
+    (17/ 32)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    38.3%
+  </span>
+  <span class="absValue">
+    (130/ 339)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">BeanAdapter$1</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (2/ 2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (2/ 2)
+  </span>
+</td>
+  </tr>
+  <tr>
+    <td class="name">BeanAdapter$MethodCache</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (3/ 3)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (13/ 13)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    59.5%
+  </span>
+  <span class="absValue">
+    (22/ 37)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    41%
+  </span>
+  <span class="absValue">
+    (145/ 354)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright (c) 2010, 2016, Oracle and/or its affiliates. All rights reserved.
+<i>3</i>&nbsp; * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+<i>4</i>&nbsp; *
+<i>5</i>&nbsp; *
+<i>6</i>&nbsp; *
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; *
+<i>11</i>&nbsp; *
+<i>12</i>&nbsp; *
+<i>13</i>&nbsp; *
+<i>14</i>&nbsp; *
+<i>15</i>&nbsp; *
+<i>16</i>&nbsp; *
+<i>17</i>&nbsp; *
+<i>18</i>&nbsp; *
+<i>19</i>&nbsp; *
+<i>20</i>&nbsp; *
+<i>21</i>&nbsp; *
+<i>22</i>&nbsp; *
+<i>23</i>&nbsp; *
+<i>24</i>&nbsp; */
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;package com.sun.javafx.fxml;
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;import java.lang.reflect.InvocationTargetException;
+<i>29</i>&nbsp;import java.lang.reflect.Method;
+<i>30</i>&nbsp;import java.lang.reflect.Modifier;
+<i>31</i>&nbsp;import java.lang.reflect.ParameterizedType;
+<i>32</i>&nbsp;import java.lang.reflect.Type;
+<i>33</i>&nbsp;import java.lang.reflect.TypeVariable;
+<i>34</i>&nbsp;import java.math.BigDecimal;
+<i>35</i>&nbsp;import java.math.BigInteger;
+<i>36</i>&nbsp;import java.util.*;
+<i>37</i>&nbsp;
+<i>38</i>&nbsp;import java.lang.reflect.*;
+<i>39</i>&nbsp;import java.security.AccessController;
+<i>40</i>&nbsp;import java.security.PrivilegedAction;
+<i>41</i>&nbsp;
+<i>42</i>&nbsp;import javafx.beans.value.ObservableValue;
+<i>43</i>&nbsp;import sun.reflect.misc.FieldUtil;
+<i>44</i>&nbsp;import sun.reflect.misc.MethodUtil;
+<i>45</i>&nbsp;import sun.reflect.misc.ReflectUtil;
+<i>46</i>&nbsp;
+<i>47</i>&nbsp;/**
+<i>48</i>&nbsp; * Exposes Java Bean properties of an object via the {@link Map} interface.
+<i>49</i>&nbsp; * A call to {@link Map#get(Object)} invokes the getter for the corresponding
+<i>50</i>&nbsp; * property, and a call to {@link Map#put(Object, Object)} invokes the
+<i>51</i>&nbsp; * property&#39;s setter. Appending a &quot;Property&quot; suffix to the key returns the
+<i>52</i>&nbsp; * corresponding property model.
+<i>53</i>&nbsp; */
+<i>54</i>&nbsp;public class BeanAdapter extends AbstractMap&lt;String, Object&gt; {
+<i>55</i>&nbsp;    private final Object bean;
+<i>56</i>&nbsp;
+<b class="fc"><i>57</i>&nbsp;    private static class MethodCache {</b>
+<i>58</i>&nbsp;        private final Map&lt;String, List&lt;Method&gt;&gt; methods;
+<i>59</i>&nbsp;        private final MethodCache nextClassCache;
+<i>60</i>&nbsp;
+<b class="fc"><i>61</i>&nbsp;        private MethodCache(Map&lt;String, List&lt;Method&gt;&gt; methods, MethodCache nextClassCache) {</b>
+<b class="fc"><i>62</i>&nbsp;            this.methods = methods;</b>
+<b class="fc"><i>63</i>&nbsp;            this.nextClassCache = nextClassCache;</b>
+<b class="fc"><i>64</i>&nbsp;        }</b>
+<i>65</i>&nbsp;
+<i>66</i>&nbsp;        private Method getMethod(String name, Class&lt;?&gt;... parameterTypes) {
+<b class="fc"><i>67</i>&nbsp;            List&lt;Method&gt; namedMethods = methods.get(name);</b>
+<b class="fc"><i>68</i>&nbsp;            if (namedMethods != null) {</b>
+<b class="fc"><i>69</i>&nbsp;                for (int i = 0; i &lt; namedMethods.size(); i++) {</b>
+<b class="fc"><i>70</i>&nbsp;                    Method namedMethod = namedMethods.get(i);</b>
+<b class="fc"><i>71</i>&nbsp;                    if (namedMethod.getName().equals(name)</b>
+<b class="fc"><i>72</i>&nbsp;                            &amp;&amp; Arrays.equals(namedMethod.getParameterTypes(), parameterTypes)) {</b>
+<b class="fc"><i>73</i>&nbsp;                        return namedMethod;</b>
+<i>74</i>&nbsp;                    }
+<i>75</i>&nbsp;                }
+<i>76</i>&nbsp;            }
+<i>77</i>&nbsp;
+<b class="fc"><i>78</i>&nbsp;            return nextClassCache != null ? nextClassCache.getMethod(name, parameterTypes) : null;</b>
+<i>79</i>&nbsp;        }
+<i>80</i>&nbsp;
+<i>81</i>&nbsp;    }
+<i>82</i>&nbsp;
+<b class="fc"><i>83</i>&nbsp;    private static final HashMap&lt;Class&lt;?&gt;, MethodCache&gt; globalMethodCache =</b>
+<i>84</i>&nbsp;        new HashMap&lt;&gt;();
+<i>85</i>&nbsp;
+<i>86</i>&nbsp;    private final MethodCache localCache;
+<i>87</i>&nbsp;
+<i>88</i>&nbsp;    public static final String GET_PREFIX = &quot;get&quot;;
+<i>89</i>&nbsp;    public static final String IS_PREFIX = &quot;is&quot;;
+<i>90</i>&nbsp;    public static final String SET_PREFIX = &quot;set&quot;;
+<i>91</i>&nbsp;    public static final String PROPERTY_SUFFIX = &quot;Property&quot;;
+<i>92</i>&nbsp;
+<i>93</i>&nbsp;    public static final String VALUE_OF_METHOD_NAME = &quot;valueOf&quot;;
+<i>94</i>&nbsp;
+<i>95</i>&nbsp;    /**
+<i>96</i>&nbsp;     * Creates a new Bean adapter.
+<i>97</i>&nbsp;     *
+<i>98</i>&nbsp;     * @param bean
+<i>99</i>&nbsp;     * The Bean object to wrap.
+<i>100</i>&nbsp;     */
+<b class="fc"><i>101</i>&nbsp;    public BeanAdapter(Object bean) {</b>
+<b class="fc"><i>102</i>&nbsp;        this.bean = bean;</b>
+<i>103</i>&nbsp;
+<b class="fc"><i>104</i>&nbsp;        localCache = getClassMethodCache(bean.getClass());</b>
+<b class="fc"><i>105</i>&nbsp;    }</b>
+<i>106</i>&nbsp;
+<i>107</i>&nbsp;    private static MethodCache getClassMethodCache(final Class&lt;?&gt; type) {
+<b class="fc"><i>108</i>&nbsp;        if (type == Object.class) {</b>
+<b class="fc"><i>109</i>&nbsp;            return null;</b>
+<i>110</i>&nbsp;        }
+<i>111</i>&nbsp;        MethodCache classMethodCache;
+<b class="fc"><i>112</i>&nbsp;        synchronized (globalMethodCache) {</b>
+<b class="fc"><i>113</i>&nbsp;            if ((classMethodCache = globalMethodCache.get(type)) != null) {</b>
+<b class="fc"><i>114</i>&nbsp;                return classMethodCache;</b>
+<i>115</i>&nbsp;            }
+<b class="fc"><i>116</i>&nbsp;            Map&lt;String, List&lt;Method&gt;&gt; classMethods = new HashMap&lt;&gt;();</b>
+<i>117</i>&nbsp;
+<b class="fc"><i>118</i>&nbsp;            ReflectUtil.checkPackageAccess(type);</b>
+<b class="fc"><i>119</i>&nbsp;            if (Modifier.isPublic(type.getModifiers())) {</b>
+<i>120</i>&nbsp;                // only interested in public methods in public classes in
+<i>121</i>&nbsp;                // non-restricted packages
+<b class="fc"><i>122</i>&nbsp;                final Method[] declaredMethods =</b>
+<b class="fc"><i>123</i>&nbsp;                        AccessController.doPrivileged(</b>
+<b class="fc"><i>124</i>&nbsp;                                new PrivilegedAction&lt;Method[]&gt;() {</b>
+<i>125</i>&nbsp;                                    @Override
+<i>126</i>&nbsp;                                    public Method[] run() {
+<b class="fc"><i>127</i>&nbsp;                                        return type.getDeclaredMethods();</b>
+<i>128</i>&nbsp;                                    }
+<i>129</i>&nbsp;                                });
+<b class="fc"><i>130</i>&nbsp;                for (int i = 0; i &lt; declaredMethods.length; i++) {</b>
+<b class="fc"><i>131</i>&nbsp;                    Method method = declaredMethods[i];</b>
+<b class="fc"><i>132</i>&nbsp;                    int modifiers = method.getModifiers();</b>
+<i>133</i>&nbsp;
+<b class="fc"><i>134</i>&nbsp;                    if (Modifier.isPublic(modifiers) &amp;&amp; !Modifier.isStatic(modifiers)) {</b>
+<b class="fc"><i>135</i>&nbsp;                        String name = method.getName();</b>
+<b class="fc"><i>136</i>&nbsp;                        List&lt;Method&gt; namedMethods = classMethods.get(name);</b>
+<i>137</i>&nbsp;
+<b class="fc"><i>138</i>&nbsp;                        if (namedMethods == null) {</b>
+<b class="fc"><i>139</i>&nbsp;                            namedMethods = new ArrayList&lt;&gt;();</b>
+<b class="fc"><i>140</i>&nbsp;                            classMethods.put(name, namedMethods);</b>
+<i>141</i>&nbsp;                        }
+<i>142</i>&nbsp;
+<b class="fc"><i>143</i>&nbsp;                        namedMethods.add(method);</b>
+<i>144</i>&nbsp;                    }
+<i>145</i>&nbsp;                }
+<i>146</i>&nbsp;            }
+<b class="fc"><i>147</i>&nbsp;            MethodCache cache = new MethodCache(classMethods, getClassMethodCache(type.getSuperclass()));</b>
+<b class="fc"><i>148</i>&nbsp;            globalMethodCache.put(type, cache);</b>
+<b class="fc"><i>149</i>&nbsp;            return cache;</b>
+<b class="nc"><i>150</i>&nbsp;        }</b>
+<i>151</i>&nbsp;    }
+<i>152</i>&nbsp;
+<i>153</i>&nbsp;    /**
+<i>154</i>&nbsp;     * Returns the Bean object this adapter wraps.
+<i>155</i>&nbsp;     *
+<i>156</i>&nbsp;     * @return
+<i>157</i>&nbsp;     * The Bean object, or &lt;tt&gt;null&lt;/tt&gt; if no Bean has been set.
+<i>158</i>&nbsp;     */
+<i>159</i>&nbsp;    public Object getBean() {
+<b class="nc"><i>160</i>&nbsp;        return bean;</b>
+<i>161</i>&nbsp;    }
+<i>162</i>&nbsp;
+<i>163</i>&nbsp;    private Method getGetterMethod(String key) {
+<b class="fc"><i>164</i>&nbsp;        Method getterMethod = localCache.getMethod(getMethodName(GET_PREFIX, key));</b>
+<i>165</i>&nbsp;
+<b class="fc"><i>166</i>&nbsp;        if (getterMethod == null) {</b>
+<b class="fc"><i>167</i>&nbsp;            getterMethod = localCache.getMethod(getMethodName(IS_PREFIX, key));</b>
+<i>168</i>&nbsp;        }
+<i>169</i>&nbsp;
+<b class="fc"><i>170</i>&nbsp;        return getterMethod;</b>
+<i>171</i>&nbsp;    }
+<i>172</i>&nbsp;
+<i>173</i>&nbsp;    private Method getSetterMethod(String key) {
+<b class="fc"><i>174</i>&nbsp;        Class&lt;?&gt; type = getType(key);</b>
+<i>175</i>&nbsp;
+<b class="fc"><i>176</i>&nbsp;        if (type == null) {</b>
+<b class="nc"><i>177</i>&nbsp;            throw new UnsupportedOperationException(&quot;Cannot determine type for property.&quot;);</b>
+<i>178</i>&nbsp;        }
+<i>179</i>&nbsp;
+<b class="fc"><i>180</i>&nbsp;        return localCache.getMethod(getMethodName(SET_PREFIX, key), type);</b>
+<i>181</i>&nbsp;    }
+<i>182</i>&nbsp;
+<i>183</i>&nbsp;    private static String getMethodName(String prefix, String key) {
+<b class="fc"><i>184</i>&nbsp;        return prefix + Character.toUpperCase(key.charAt(0)) + key.substring(1);</b>
+<i>185</i>&nbsp;    }
+<i>186</i>&nbsp;
+<i>187</i>&nbsp;    /**
+<i>188</i>&nbsp;     * Invokes the getter method for the given property.
+<i>189</i>&nbsp;     *
+<i>190</i>&nbsp;     * @param key
+<i>191</i>&nbsp;     * The property name.
+<i>192</i>&nbsp;     *
+<i>193</i>&nbsp;     * @return
+<i>194</i>&nbsp;     * The value returned by the method, or &lt;tt&gt;null&lt;/tt&gt; if no such method
+<i>195</i>&nbsp;     * exists.
+<i>196</i>&nbsp;     */
+<i>197</i>&nbsp;    @Override
+<i>198</i>&nbsp;    public Object get(Object key) {
+<b class="fc"><i>199</i>&nbsp;        if (key == null) {</b>
+<b class="nc"><i>200</i>&nbsp;            throw new NullPointerException();</b>
+<i>201</i>&nbsp;        }
+<i>202</i>&nbsp;
+<b class="fc"><i>203</i>&nbsp;        return get(key.toString());</b>
+<i>204</i>&nbsp;    }
+<i>205</i>&nbsp;
+<i>206</i>&nbsp;    private Object get(String key) {
+<b class="fc"><i>207</i>&nbsp;        Method getterMethod = key.endsWith(PROPERTY_SUFFIX) ? localCache.getMethod(key) : getGetterMethod(key);</b>
+<i>208</i>&nbsp;
+<i>209</i>&nbsp;        Object value;
+<b class="fc"><i>210</i>&nbsp;        if (getterMethod != null) {</b>
+<i>211</i>&nbsp;            try {
+<b class="fc"><i>212</i>&nbsp;                value = ModuleHelper.invoke(getterMethod, bean, (Object[]) null);</b>
+<b class="nc"><i>213</i>&nbsp;            } catch (IllegalAccessException exception) {</b>
+<b class="nc"><i>214</i>&nbsp;                throw new RuntimeException(exception);</b>
+<b class="nc"><i>215</i>&nbsp;            } catch (InvocationTargetException exception) {</b>
+<b class="nc"><i>216</i>&nbsp;                throw new RuntimeException(exception);</b>
+<b class="fc"><i>217</i>&nbsp;            }</b>
+<i>218</i>&nbsp;        } else {
+<b class="nc"><i>219</i>&nbsp;            value = null;</b>
+<i>220</i>&nbsp;        }
+<i>221</i>&nbsp;
+<b class="fc"><i>222</i>&nbsp;        return value;</b>
+<i>223</i>&nbsp;    }
+<i>224</i>&nbsp;
+<i>225</i>&nbsp;    /**
+<i>226</i>&nbsp;     * Invokes a setter method for the given property. The
+<i>227</i>&nbsp;     * {@link #coerce(Object, Class)} method is used as needed to attempt to
+<i>228</i>&nbsp;     * convert a given value to the property type, as defined by the return
+<i>229</i>&nbsp;     * value of the getter method.
+<i>230</i>&nbsp;     *
+<i>231</i>&nbsp;     * @param key
+<i>232</i>&nbsp;     * The property name.
+<i>233</i>&nbsp;     *
+<i>234</i>&nbsp;     * @param value
+<i>235</i>&nbsp;     * The new property value.
+<i>236</i>&nbsp;     *
+<i>237</i>&nbsp;     * @return
+<i>238</i>&nbsp;     * Returns &lt;tt&gt;null&lt;/tt&gt;, since returning the previous value would require
+<i>239</i>&nbsp;     * an unnecessary call to the getter method.
+<i>240</i>&nbsp;     *
+<i>241</i>&nbsp;     * @throws PropertyNotFoundException
+<i>242</i>&nbsp;     * If the given property does not exist or is read-only.
+<i>243</i>&nbsp;     */
+<i>244</i>&nbsp;    @Override
+<i>245</i>&nbsp;    public Object put(String key, Object value) {
+<b class="fc"><i>246</i>&nbsp;        if (key == null) {</b>
+<b class="nc"><i>247</i>&nbsp;            throw new NullPointerException();</b>
+<i>248</i>&nbsp;        }
+<i>249</i>&nbsp;
+<b class="fc"><i>250</i>&nbsp;        Method setterMethod = getSetterMethod(key);</b>
+<i>251</i>&nbsp;
+<b class="fc"><i>252</i>&nbsp;        if (setterMethod == null) {</b>
+<b class="nc"><i>253</i>&nbsp;            throw new PropertyNotFoundException(&quot;Property \&quot;&quot; + key + &quot;\&quot; does not exist&quot;</b>
+<i>254</i>&nbsp;                + &quot; or is read-only.&quot;);
+<i>255</i>&nbsp;        }
+<i>256</i>&nbsp;
+<i>257</i>&nbsp;        try {
+<b class="fc"><i>258</i>&nbsp;            ModuleHelper.invoke(setterMethod, bean, new Object[] { coerce(value, getType(key)) });</b>
+<b class="nc"><i>259</i>&nbsp;        } catch (IllegalAccessException exception) {</b>
+<b class="nc"><i>260</i>&nbsp;            throw new RuntimeException(exception);</b>
+<b class="nc"><i>261</i>&nbsp;        } catch (InvocationTargetException exception) {</b>
+<b class="nc"><i>262</i>&nbsp;            throw new RuntimeException(exception);</b>
+<b class="fc"><i>263</i>&nbsp;        }</b>
+<i>264</i>&nbsp;
+<b class="fc"><i>265</i>&nbsp;        return null;</b>
+<i>266</i>&nbsp;    }
+<i>267</i>&nbsp;
+<i>268</i>&nbsp;    /**
+<i>269</i>&nbsp;     * Verifies the existence of a property.
+<i>270</i>&nbsp;     *
+<i>271</i>&nbsp;     * @param key
+<i>272</i>&nbsp;     * The property name.
+<i>273</i>&nbsp;     *
+<i>274</i>&nbsp;     * @return
+<i>275</i>&nbsp;     * &lt;tt&gt;true&lt;/tt&gt; if the property exists; &lt;tt&gt;false&lt;/tt&gt;, otherwise.
+<i>276</i>&nbsp;     */
+<i>277</i>&nbsp;    @Override
+<i>278</i>&nbsp;    public boolean containsKey(Object key) {
+<b class="nc"><i>279</i>&nbsp;        if (key == null) {</b>
+<b class="nc"><i>280</i>&nbsp;            throw new NullPointerException();</b>
+<i>281</i>&nbsp;        }
+<i>282</i>&nbsp;
+<b class="nc"><i>283</i>&nbsp;        return getType(key.toString()) != null;</b>
+<i>284</i>&nbsp;    }
+<i>285</i>&nbsp;
+<i>286</i>&nbsp;    @Override
+<i>287</i>&nbsp;    public Set&lt;Entry&lt;String, Object&gt;&gt; entrySet() {
+<b class="nc"><i>288</i>&nbsp;        throw new UnsupportedOperationException();</b>
+<i>289</i>&nbsp;    }
+<i>290</i>&nbsp;
+<i>291</i>&nbsp;    /**
+<i>292</i>&nbsp;     * Tests the mutability of a property.
+<i>293</i>&nbsp;     *
+<i>294</i>&nbsp;     * @param key
+<i>295</i>&nbsp;     * The property name.
+<i>296</i>&nbsp;     *
+<i>297</i>&nbsp;     * @return
+<i>298</i>&nbsp;     * &lt;tt&gt;true&lt;/tt&gt; if the property is read-only; &lt;tt&gt;false&lt;/tt&gt;, otherwise.
+<i>299</i>&nbsp;     */
+<i>300</i>&nbsp;    public boolean isReadOnly(String key) {
+<b class="fc"><i>301</i>&nbsp;        if (key == null) {</b>
+<b class="nc"><i>302</i>&nbsp;            throw new NullPointerException();</b>
+<i>303</i>&nbsp;        }
+<i>304</i>&nbsp;
+<b class="fc"><i>305</i>&nbsp;        return getSetterMethod(key) == null;</b>
+<i>306</i>&nbsp;    }
+<i>307</i>&nbsp;
+<i>308</i>&nbsp;    /**
+<i>309</i>&nbsp;     * Returns the property model for the given property.
+<i>310</i>&nbsp;     *
+<i>311</i>&nbsp;     * @param key
+<i>312</i>&nbsp;     * The property name.
+<i>313</i>&nbsp;     *
+<i>314</i>&nbsp;     * @return
+<i>315</i>&nbsp;     * The named property model, or &lt;tt&gt;null&lt;/tt&gt; if no such property exists.
+<i>316</i>&nbsp;     */
+<i>317</i>&nbsp;    @SuppressWarnings(&quot;unchecked&quot;)
+<i>318</i>&nbsp;    public &lt;T&gt; ObservableValue&lt;T&gt; getPropertyModel(String key) {
+<b class="nc"><i>319</i>&nbsp;        if (key == null) {</b>
+<b class="nc"><i>320</i>&nbsp;            throw new NullPointerException();</b>
+<i>321</i>&nbsp;        }
+<i>322</i>&nbsp;
+<b class="nc"><i>323</i>&nbsp;        return (ObservableValue&lt;T&gt;)get(key + BeanAdapter.PROPERTY_SUFFIX);</b>
+<i>324</i>&nbsp;    }
+<i>325</i>&nbsp;
+<i>326</i>&nbsp;    /**
+<i>327</i>&nbsp;     * Returns the type of a property.
+<i>328</i>&nbsp;     *
+<i>329</i>&nbsp;     * @param key
+<i>330</i>&nbsp;     * The property name.
+<i>331</i>&nbsp;     */
+<i>332</i>&nbsp;    public Class&lt;?&gt; getType(String key) {
+<b class="fc"><i>333</i>&nbsp;        if (key == null) {</b>
+<b class="nc"><i>334</i>&nbsp;            throw new NullPointerException();</b>
+<i>335</i>&nbsp;        }
+<i>336</i>&nbsp;
+<b class="fc"><i>337</i>&nbsp;        Method getterMethod = getGetterMethod(key);</b>
+<i>338</i>&nbsp;
+<b class="fc"><i>339</i>&nbsp;        return (getterMethod == null) ? null : getterMethod.getReturnType();</b>
+<i>340</i>&nbsp;    }
+<i>341</i>&nbsp;
+<i>342</i>&nbsp;    /**
+<i>343</i>&nbsp;     * Returns the generic type of a property.
+<i>344</i>&nbsp;     *
+<i>345</i>&nbsp;     * @param key
+<i>346</i>&nbsp;     * The property name.
+<i>347</i>&nbsp;     */
+<i>348</i>&nbsp;    public Type getGenericType(String key) {
+<b class="fc"><i>349</i>&nbsp;        if (key == null) {</b>
+<b class="nc"><i>350</i>&nbsp;            throw new NullPointerException();</b>
+<i>351</i>&nbsp;        }
+<i>352</i>&nbsp;
+<b class="fc"><i>353</i>&nbsp;        Method getterMethod = getGetterMethod(key);</b>
+<i>354</i>&nbsp;
+<b class="fc"><i>355</i>&nbsp;        return (getterMethod == null) ? null : getterMethod.getGenericReturnType();</b>
+<i>356</i>&nbsp;    }
+<i>357</i>&nbsp;
+<i>358</i>&nbsp;    @Override
+<i>359</i>&nbsp;    public boolean equals(Object object) {
+<b class="nc"><i>360</i>&nbsp;        boolean equals = false;</b>
+<i>361</i>&nbsp;
+<b class="nc"><i>362</i>&nbsp;        if (object instanceof BeanAdapter) {</b>
+<b class="nc"><i>363</i>&nbsp;            BeanAdapter beanAdapter = (BeanAdapter)object;</b>
+<b class="nc"><i>364</i>&nbsp;            equals = (bean == beanAdapter.bean);</b>
+<i>365</i>&nbsp;        }
+<i>366</i>&nbsp;
+<b class="nc"><i>367</i>&nbsp;        return equals;</b>
+<i>368</i>&nbsp;    }
+<i>369</i>&nbsp;
+<i>370</i>&nbsp;    @Override
+<i>371</i>&nbsp;    public int hashCode() {
+<b class="nc"><i>372</i>&nbsp;        return (bean == null) ? -1 : bean.hashCode();</b>
+<i>373</i>&nbsp;    }
+<i>374</i>&nbsp;
+<i>375</i>&nbsp;    /**
+<i>376</i>&nbsp;     * Coerces a value to a given type.
+<i>377</i>&nbsp;     *
+<i>378</i>&nbsp;     * @param value
+<i>379</i>&nbsp;     * @param type
+<i>380</i>&nbsp;     *
+<i>381</i>&nbsp;     * @return
+<i>382</i>&nbsp;     * The coerced value.
+<i>383</i>&nbsp;     */
+<i>384</i>&nbsp;    @SuppressWarnings(&quot;unchecked&quot;)
+<i>385</i>&nbsp;    public static &lt;T&gt; T coerce(Object value, Class&lt;? extends T&gt; type) {
+<b class="fc"><i>386</i>&nbsp;        if (type == null) {</b>
+<b class="nc"><i>387</i>&nbsp;            throw new NullPointerException();</b>
+<i>388</i>&nbsp;        }
+<i>389</i>&nbsp;
+<b class="fc"><i>390</i>&nbsp;        Object coercedValue = null;</b>
+<i>391</i>&nbsp;
+<b class="fc"><i>392</i>&nbsp;        if (value == null) {</b>
+<i>393</i>&nbsp;            // Null values can only be coerced to null
+<b class="nc"><i>394</i>&nbsp;            coercedValue = null;</b>
+<b class="fc"><i>395</i>&nbsp;        } else if (type.isAssignableFrom(value.getClass())) {</b>
+<i>396</i>&nbsp;            // Value doesn&#39;t require coercion
+<b class="fc"><i>397</i>&nbsp;            coercedValue = value;</b>
+<b class="fc"><i>398</i>&nbsp;        } else if (type == Boolean.class</b>
+<i>399</i>&nbsp;            || type == Boolean.TYPE) {
+<b class="fc"><i>400</i>&nbsp;            coercedValue = Boolean.valueOf(value.toString());</b>
+<b class="fc"><i>401</i>&nbsp;        } else if (type == Character.class</b>
+<i>402</i>&nbsp;            || type == Character.TYPE) {
+<b class="nc"><i>403</i>&nbsp;            coercedValue = value.toString().charAt(0);</b>
+<b class="fc"><i>404</i>&nbsp;        } else if (type == Byte.class</b>
+<i>405</i>&nbsp;            || type == Byte.TYPE) {
+<b class="nc"><i>406</i>&nbsp;            if (value instanceof Number) {</b>
+<b class="nc"><i>407</i>&nbsp;                coercedValue = ((Number)value).byteValue();</b>
+<i>408</i>&nbsp;            } else {
+<b class="nc"><i>409</i>&nbsp;                coercedValue = Byte.valueOf(value.toString());</b>
+<i>410</i>&nbsp;            }
+<b class="fc"><i>411</i>&nbsp;        } else if (type == Short.class</b>
+<i>412</i>&nbsp;            || type == Short.TYPE) {
+<b class="nc"><i>413</i>&nbsp;            if (value instanceof Number) {</b>
+<b class="nc"><i>414</i>&nbsp;                coercedValue = ((Number)value).shortValue();</b>
+<i>415</i>&nbsp;            } else {
+<b class="nc"><i>416</i>&nbsp;                coercedValue = Short.valueOf(value.toString());</b>
+<i>417</i>&nbsp;            }
+<b class="fc"><i>418</i>&nbsp;        } else if (type == Integer.class</b>
+<i>419</i>&nbsp;            || type == Integer.TYPE) {
+<b class="nc"><i>420</i>&nbsp;            if (value instanceof Number) {</b>
+<b class="nc"><i>421</i>&nbsp;                coercedValue = ((Number)value).intValue();</b>
+<i>422</i>&nbsp;            } else {
+<b class="nc"><i>423</i>&nbsp;                coercedValue = Integer.valueOf(value.toString());</b>
+<i>424</i>&nbsp;            }
+<b class="fc"><i>425</i>&nbsp;        } else if (type == Long.class</b>
+<i>426</i>&nbsp;            || type == Long.TYPE) {
+<b class="nc"><i>427</i>&nbsp;            if (value instanceof Number) {</b>
+<b class="nc"><i>428</i>&nbsp;                coercedValue = ((Number)value).longValue();</b>
+<i>429</i>&nbsp;            } else {
+<b class="nc"><i>430</i>&nbsp;                coercedValue = Long.valueOf(value.toString());</b>
+<i>431</i>&nbsp;            }
+<b class="fc"><i>432</i>&nbsp;        } else if (type == BigInteger.class) {</b>
+<b class="nc"><i>433</i>&nbsp;            if (value instanceof Number) {</b>
+<b class="nc"><i>434</i>&nbsp;                coercedValue = BigInteger.valueOf(((Number)value).longValue());</b>
+<i>435</i>&nbsp;            } else {
+<b class="nc"><i>436</i>&nbsp;                coercedValue = new BigInteger(value.toString());</b>
+<i>437</i>&nbsp;            }
+<b class="fc"><i>438</i>&nbsp;        } else if (type == Float.class</b>
+<i>439</i>&nbsp;            || type == Float.TYPE) {
+<b class="nc"><i>440</i>&nbsp;            if (value instanceof Number) {</b>
+<b class="nc"><i>441</i>&nbsp;                coercedValue = ((Number)value).floatValue();</b>
+<i>442</i>&nbsp;            } else {
+<b class="nc"><i>443</i>&nbsp;                coercedValue = Float.valueOf(value.toString());</b>
+<i>444</i>&nbsp;            }
+<b class="fc"><i>445</i>&nbsp;        } else if (type == Double.class</b>
+<i>446</i>&nbsp;            || type == Double.TYPE) {
+<b class="fc"><i>447</i>&nbsp;            if (value instanceof Number) {</b>
+<b class="nc"><i>448</i>&nbsp;                coercedValue = ((Number)value).doubleValue();</b>
+<i>449</i>&nbsp;            } else {
+<b class="fc"><i>450</i>&nbsp;                coercedValue = Double.valueOf(value.toString());</b>
+<i>451</i>&nbsp;            }
+<b class="fc"><i>452</i>&nbsp;        } else if (type == Number.class) {</b>
+<b class="nc"><i>453</i>&nbsp;            String number = value.toString();</b>
+<b class="nc"><i>454</i>&nbsp;            if (number.contains(&quot;.&quot;)) {</b>
+<b class="nc"><i>455</i>&nbsp;                coercedValue = Double.valueOf(number);</b>
+<i>456</i>&nbsp;            } else {
+<b class="nc"><i>457</i>&nbsp;                coercedValue = Long.valueOf(number);</b>
+<i>458</i>&nbsp;            }
+<b class="nc"><i>459</i>&nbsp;        } else if (type == BigDecimal.class) {</b>
+<b class="nc"><i>460</i>&nbsp;            if (value instanceof Number) {</b>
+<b class="nc"><i>461</i>&nbsp;                coercedValue = BigDecimal.valueOf(((Number)value).doubleValue());</b>
+<i>462</i>&nbsp;            } else {
+<b class="nc"><i>463</i>&nbsp;                coercedValue = new BigDecimal(value.toString());</b>
+<i>464</i>&nbsp;            }
+<b class="fc"><i>465</i>&nbsp;        } else if (type == Class.class) {</b>
+<i>466</i>&nbsp;            try {
+<b class="nc"><i>467</i>&nbsp;                final String className = value.toString();</b>
+<b class="nc"><i>468</i>&nbsp;                ReflectUtil.checkPackageAccess(className);</b>
+<b class="nc"><i>469</i>&nbsp;                final ClassLoader cl = Thread.currentThread().getContextClassLoader();</b>
+<b class="nc"><i>470</i>&nbsp;                coercedValue = Class.forName(</b>
+<i>471</i>&nbsp;                        className,
+<i>472</i>&nbsp;                        false,
+<i>473</i>&nbsp;                        cl);
+<b class="nc"><i>474</i>&nbsp;            } catch (ClassNotFoundException exception) {</b>
+<b class="nc"><i>475</i>&nbsp;                throw new IllegalArgumentException(exception);</b>
+<b class="nc"><i>476</i>&nbsp;            }</b>
+<i>477</i>&nbsp;        } else {
+<b class="fc"><i>478</i>&nbsp;            Class&lt;?&gt; valueType = value.getClass();</b>
+<b class="fc"><i>479</i>&nbsp;            Method valueOfMethod = null;</b>
+<i>480</i>&nbsp;
+<b class="fc"><i>481</i>&nbsp;            while (valueOfMethod == null</b>
+<i>482</i>&nbsp;                &amp;&amp; valueType != null) {
+<i>483</i>&nbsp;                try {
+<b class="fc"><i>484</i>&nbsp;                    ReflectUtil.checkPackageAccess(type);</b>
+<b class="fc"><i>485</i>&nbsp;                    valueOfMethod = type.getDeclaredMethod(VALUE_OF_METHOD_NAME, valueType);</b>
+<b class="nc"><i>486</i>&nbsp;                } catch (NoSuchMethodException exception) {</b>
+<i>487</i>&nbsp;                    // No-op
+<b class="fc"><i>488</i>&nbsp;                }</b>
+<i>489</i>&nbsp;
+<b class="fc"><i>490</i>&nbsp;                if (valueOfMethod == null) {</b>
+<b class="nc"><i>491</i>&nbsp;                    valueType = valueType.getSuperclass();</b>
+<i>492</i>&nbsp;                }
+<i>493</i>&nbsp;            }
+<i>494</i>&nbsp;
+<b class="fc"><i>495</i>&nbsp;            if (valueOfMethod == null) {</b>
+<b class="nc"><i>496</i>&nbsp;                throw new IllegalArgumentException(&quot;Unable to coerce &quot; + value + &quot; to &quot; + type + &quot;.&quot;);</b>
+<i>497</i>&nbsp;            }
+<i>498</i>&nbsp;
+<b class="fc"><i>499</i>&nbsp;            if (type.isEnum()</b>
+<i>500</i>&nbsp;                &amp;&amp; value instanceof String
+<b class="fc"><i>501</i>&nbsp;                &amp;&amp; Character.isLowerCase(((String)value).charAt(0))) {</b>
+<b class="nc"><i>502</i>&nbsp;                value = toAllCaps((String)value);</b>
+<i>503</i>&nbsp;            }
+<i>504</i>&nbsp;
+<i>505</i>&nbsp;            try {
+<b class="fc"><i>506</i>&nbsp;                coercedValue = ModuleHelper.invoke(valueOfMethod, null, new Object[] { value });</b>
+<b class="nc"><i>507</i>&nbsp;            } catch (IllegalAccessException exception) {</b>
+<b class="nc"><i>508</i>&nbsp;                throw new RuntimeException(exception);</b>
+<b class="nc"><i>509</i>&nbsp;            } catch (InvocationTargetException exception) {</b>
+<b class="nc"><i>510</i>&nbsp;                throw new RuntimeException(exception);</b>
+<b class="nc"><i>511</i>&nbsp;            } catch (SecurityException exception) {</b>
+<b class="nc"><i>512</i>&nbsp;                throw new RuntimeException(exception);</b>
+<b class="fc"><i>513</i>&nbsp;            }</b>
+<i>514</i>&nbsp;        }
+<i>515</i>&nbsp;
+<b class="fc"><i>516</i>&nbsp;        return (T)coercedValue;</b>
+<i>517</i>&nbsp;    }
+<i>518</i>&nbsp;
+<i>519</i>&nbsp;    /**
+<i>520</i>&nbsp;     * Invokes the static getter method for the given property.
+<i>521</i>&nbsp;     *
+<i>522</i>&nbsp;     * @param target
+<i>523</i>&nbsp;     * The object to which the property is attached.
+<i>524</i>&nbsp;     *
+<i>525</i>&nbsp;     * @param sourceType
+<i>526</i>&nbsp;     * The class that defines the property.
+<i>527</i>&nbsp;     *
+<i>528</i>&nbsp;     * @param key
+<i>529</i>&nbsp;     * The property name.
+<i>530</i>&nbsp;     *
+<i>531</i>&nbsp;     * @return
+<i>532</i>&nbsp;     * The value returned by the method, or &lt;tt&gt;null&lt;/tt&gt; if no such method
+<i>533</i>&nbsp;     * exists.
+<i>534</i>&nbsp;     */
+<i>535</i>&nbsp;    @SuppressWarnings(&quot;unchecked&quot;)
+<i>536</i>&nbsp;    public static &lt;T&gt; T get(Object target, Class&lt;?&gt; sourceType, String key) {
+<b class="nc"><i>537</i>&nbsp;        T value = null;</b>
+<i>538</i>&nbsp;
+<b class="nc"><i>539</i>&nbsp;        Class&lt;?&gt; targetType = target.getClass();</b>
+<b class="nc"><i>540</i>&nbsp;        Method getterMethod = getStaticGetterMethod(sourceType, key, targetType);</b>
+<i>541</i>&nbsp;
+<b class="nc"><i>542</i>&nbsp;        if (getterMethod != null) {</b>
+<i>543</i>&nbsp;            try {
+<b class="nc"><i>544</i>&nbsp;                value = (T) ModuleHelper.invoke(getterMethod, null, new Object[] { target } );</b>
+<b class="nc"><i>545</i>&nbsp;            } catch (InvocationTargetException exception) {</b>
+<b class="nc"><i>546</i>&nbsp;                throw new RuntimeException(exception);</b>
+<b class="nc"><i>547</i>&nbsp;            } catch (IllegalAccessException exception) {</b>
+<b class="nc"><i>548</i>&nbsp;                throw new RuntimeException(exception);</b>
+<b class="nc"><i>549</i>&nbsp;            }</b>
+<i>550</i>&nbsp;        }
+<i>551</i>&nbsp;
+<b class="nc"><i>552</i>&nbsp;        return value;</b>
+<i>553</i>&nbsp;    }
+<i>554</i>&nbsp;
+<i>555</i>&nbsp;    /**
+<i>556</i>&nbsp;     * Invokes a static setter method for the given property. If the value is
+<i>557</i>&nbsp;     * &lt;tt&gt;null&lt;/tt&gt; or there is no explicit setter for a given type, the
+<i>558</i>&nbsp;     * {@link #coerce(Object, Class)} method is used to attempt to convert the
+<i>559</i>&nbsp;     * value to the actual property type (defined by the return value of the
+<i>560</i>&nbsp;     * getter method).
+<i>561</i>&nbsp;     *
+<i>562</i>&nbsp;     * @param target
+<i>563</i>&nbsp;     * The object to which the property is or will be attached.
+<i>564</i>&nbsp;     *
+<i>565</i>&nbsp;     * @param sourceType
+<i>566</i>&nbsp;     * The class that defines the property.
+<i>567</i>&nbsp;     *
+<i>568</i>&nbsp;     * @param key
+<i>569</i>&nbsp;     * The property name.
+<i>570</i>&nbsp;     *
+<i>571</i>&nbsp;     * @param value
+<i>572</i>&nbsp;     * The new property value.
+<i>573</i>&nbsp;     *
+<i>574</i>&nbsp;     * @throws PropertyNotFoundException
+<i>575</i>&nbsp;     * If the given static property does not exist or is read-only.
+<i>576</i>&nbsp;     */
+<i>577</i>&nbsp;    public static void put(Object target, Class&lt;?&gt; sourceType, String key, Object value) {
+<b class="fc"><i>578</i>&nbsp;        Class&lt;?&gt; targetType = target.getClass();</b>
+<i>579</i>&nbsp;
+<b class="fc"><i>580</i>&nbsp;        Method setterMethod = null;</b>
+<b class="fc"><i>581</i>&nbsp;        if (value != null) {</b>
+<b class="fc"><i>582</i>&nbsp;            setterMethod = getStaticSetterMethod(sourceType, key, value.getClass(), targetType);</b>
+<i>583</i>&nbsp;        }
+<i>584</i>&nbsp;
+<b class="fc"><i>585</i>&nbsp;        if (setterMethod == null) {</b>
+<i>586</i>&nbsp;            // Get the property type and attempt to coerce the value to it
+<b class="nc"><i>587</i>&nbsp;            Class&lt;?&gt; propertyType = getType(sourceType, key, targetType);</b>
+<i>588</i>&nbsp;
+<b class="nc"><i>589</i>&nbsp;            if (propertyType != null) {</b>
+<b class="nc"><i>590</i>&nbsp;                setterMethod = getStaticSetterMethod(sourceType, key, propertyType, targetType);</b>
+<b class="nc"><i>591</i>&nbsp;                value = coerce(value, propertyType);</b>
+<i>592</i>&nbsp;            }
+<i>593</i>&nbsp;        }
+<i>594</i>&nbsp;
+<b class="fc"><i>595</i>&nbsp;        if (setterMethod == null) {</b>
+<b class="nc"><i>596</i>&nbsp;            throw new PropertyNotFoundException(&quot;Static property \&quot;&quot; + key + &quot;\&quot; does not exist&quot;</b>
+<i>597</i>&nbsp;                + &quot; or is read-only.&quot;);
+<i>598</i>&nbsp;        }
+<i>599</i>&nbsp;
+<i>600</i>&nbsp;        // Invoke the setter
+<i>601</i>&nbsp;        try {
+<b class="fc"><i>602</i>&nbsp;            ModuleHelper.invoke(setterMethod, null, new Object[] { target, value });</b>
+<b class="nc"><i>603</i>&nbsp;        } catch (InvocationTargetException exception) {</b>
+<b class="nc"><i>604</i>&nbsp;            throw new RuntimeException(exception);</b>
+<b class="nc"><i>605</i>&nbsp;        } catch (IllegalAccessException exception) {</b>
+<b class="nc"><i>606</i>&nbsp;            throw new RuntimeException(exception);</b>
+<b class="fc"><i>607</i>&nbsp;        }</b>
+<b class="fc"><i>608</i>&nbsp;    }</b>
+<i>609</i>&nbsp;
+<i>610</i>&nbsp;    /**
+<i>611</i>&nbsp;     * Tests the existence of a static property.
+<i>612</i>&nbsp;     *
+<i>613</i>&nbsp;     * @param sourceType
+<i>614</i>&nbsp;     * The class that defines the property.
+<i>615</i>&nbsp;     *
+<i>616</i>&nbsp;     * @param key
+<i>617</i>&nbsp;     * The property name.
+<i>618</i>&nbsp;     *
+<i>619</i>&nbsp;     * @param targetType
+<i>620</i>&nbsp;     * The type of the object to which the property applies.
+<i>621</i>&nbsp;     *
+<i>622</i>&nbsp;     * @return
+<i>623</i>&nbsp;     * &lt;tt&gt;true&lt;/tt&gt; if the property exists; &lt;tt&gt;false&lt;/tt&gt;, otherwise.
+<i>624</i>&nbsp;     */
+<i>625</i>&nbsp;    public static boolean isDefined(Class&lt;?&gt; sourceType, String key, Class&lt;?&gt; targetType) {
+<b class="nc"><i>626</i>&nbsp;        return (getStaticGetterMethod(sourceType, key, targetType) != null);</b>
+<i>627</i>&nbsp;    }
+<i>628</i>&nbsp;
+<i>629</i>&nbsp;    /**
+<i>630</i>&nbsp;     * Returns the type of a static property.
+<i>631</i>&nbsp;     *
+<i>632</i>&nbsp;     * @param sourceType
+<i>633</i>&nbsp;     * The class that defines the property.
+<i>634</i>&nbsp;     *
+<i>635</i>&nbsp;     * @param key
+<i>636</i>&nbsp;     * The property name.
+<i>637</i>&nbsp;     *
+<i>638</i>&nbsp;     * @param targetType
+<i>639</i>&nbsp;     * The type of the object to which the property applies.
+<i>640</i>&nbsp;     */
+<i>641</i>&nbsp;    public static Class&lt;?&gt; getType(Class&lt;?&gt; sourceType, String key, Class&lt;?&gt; targetType) {
+<b class="nc"><i>642</i>&nbsp;        Method getterMethod = getStaticGetterMethod(sourceType, key, targetType);</b>
+<b class="nc"><i>643</i>&nbsp;        return (getterMethod == null) ? null : getterMethod.getReturnType();</b>
+<i>644</i>&nbsp;    }
+<i>645</i>&nbsp;
+<i>646</i>&nbsp;    /**
+<i>647</i>&nbsp;     * Returns the generic type of a static property.
+<i>648</i>&nbsp;     *
+<i>649</i>&nbsp;     * @param sourceType
+<i>650</i>&nbsp;     * The class that defines the property.
+<i>651</i>&nbsp;     *
+<i>652</i>&nbsp;     * @param key
+<i>653</i>&nbsp;     * The property name.
+<i>654</i>&nbsp;     *
+<i>655</i>&nbsp;     * @param targetType
+<i>656</i>&nbsp;     * The type of the object to which the property applies.
+<i>657</i>&nbsp;     */
+<i>658</i>&nbsp;    public static Type getGenericType(Class&lt;?&gt; sourceType, String key, Class&lt;?&gt; targetType) {
+<b class="nc"><i>659</i>&nbsp;        Method getterMethod = getStaticGetterMethod(sourceType, key, targetType);</b>
+<b class="nc"><i>660</i>&nbsp;        return (getterMethod == null) ? null : getterMethod.getGenericReturnType();</b>
+<i>661</i>&nbsp;    }
+<i>662</i>&nbsp;
+<i>663</i>&nbsp;    /**
+<i>664</i>&nbsp;     * Determines the type of a list item.
+<i>665</i>&nbsp;     *
+<i>666</i>&nbsp;     * @param listType
+<i>667</i>&nbsp;     */
+<i>668</i>&nbsp;    public static Class&lt;?&gt; getListItemType(Type listType) {
+<b class="fc"><i>669</i>&nbsp;        Type itemType = getGenericListItemType(listType);</b>
+<i>670</i>&nbsp;
+<b class="fc"><i>671</i>&nbsp;        if (itemType instanceof ParameterizedType) {</b>
+<b class="nc"><i>672</i>&nbsp;            itemType = ((ParameterizedType)itemType).getRawType();</b>
+<i>673</i>&nbsp;        }
+<i>674</i>&nbsp;
+<b class="fc"><i>675</i>&nbsp;        return (Class&lt;?&gt;)itemType;</b>
+<i>676</i>&nbsp;    }
+<i>677</i>&nbsp;
+<i>678</i>&nbsp;    /**
+<i>679</i>&nbsp;     * Determines the type of a map value.
+<i>680</i>&nbsp;     *
+<i>681</i>&nbsp;     * @param mapType
+<i>682</i>&nbsp;     */
+<i>683</i>&nbsp;    public static Class&lt;?&gt; getMapValueType(Type mapType) {
+<b class="nc"><i>684</i>&nbsp;        Type valueType = getGenericMapValueType(mapType);</b>
+<i>685</i>&nbsp;
+<b class="nc"><i>686</i>&nbsp;        if (valueType instanceof ParameterizedType) {</b>
+<b class="nc"><i>687</i>&nbsp;            valueType = ((ParameterizedType)valueType).getRawType();</b>
+<i>688</i>&nbsp;        }
+<i>689</i>&nbsp;
+<b class="nc"><i>690</i>&nbsp;        return (Class&lt;?&gt;)valueType;</b>
+<i>691</i>&nbsp;    }
+<i>692</i>&nbsp;
+<i>693</i>&nbsp;    /**
+<i>694</i>&nbsp;     * Determines the type of a list item.
+<i>695</i>&nbsp;     *
+<i>696</i>&nbsp;     * @param listType
+<i>697</i>&nbsp;     */
+<i>698</i>&nbsp;    public static Type getGenericListItemType(Type listType) {
+<b class="fc"><i>699</i>&nbsp;        Type itemType = null;</b>
+<i>700</i>&nbsp;
+<b class="fc"><i>701</i>&nbsp;        Type parentType = listType;</b>
+<b class="fc"><i>702</i>&nbsp;        while (parentType != null) {</b>
+<b class="fc"><i>703</i>&nbsp;            if (parentType instanceof ParameterizedType) {</b>
+<b class="fc"><i>704</i>&nbsp;                ParameterizedType parameterizedType = (ParameterizedType)parentType;</b>
+<b class="fc"><i>705</i>&nbsp;                Class&lt;?&gt; rawType = (Class&lt;?&gt;)parameterizedType.getRawType();</b>
+<i>706</i>&nbsp;
+<b class="fc"><i>707</i>&nbsp;                if (List.class.isAssignableFrom(rawType)) {</b>
+<b class="fc"><i>708</i>&nbsp;                    itemType = parameterizedType.getActualTypeArguments()[0];</b>
+<i>709</i>&nbsp;                }
+<i>710</i>&nbsp;
+<i>711</i>&nbsp;                break;
+<i>712</i>&nbsp;            }
+<i>713</i>&nbsp;
+<b class="nc"><i>714</i>&nbsp;            Class&lt;?&gt; classType = (Class&lt;?&gt;)parentType;</b>
+<b class="nc"><i>715</i>&nbsp;            Type[] genericInterfaces = classType.getGenericInterfaces();</b>
+<i>716</i>&nbsp;
+<b class="nc"><i>717</i>&nbsp;            for (int i = 0; i &lt; genericInterfaces.length; i++) {</b>
+<b class="nc"><i>718</i>&nbsp;                Type genericInterface = genericInterfaces[i];</b>
+<i>719</i>&nbsp;
+<b class="nc"><i>720</i>&nbsp;                if (genericInterface instanceof ParameterizedType) {</b>
+<b class="nc"><i>721</i>&nbsp;                    ParameterizedType parameterizedType = (ParameterizedType)genericInterface;</b>
+<b class="nc"><i>722</i>&nbsp;                    Class&lt;?&gt; interfaceType = (Class&lt;?&gt;)parameterizedType.getRawType();</b>
+<i>723</i>&nbsp;
+<b class="nc"><i>724</i>&nbsp;                    if (List.class.isAssignableFrom(interfaceType)) {</b>
+<b class="nc"><i>725</i>&nbsp;                        itemType = parameterizedType.getActualTypeArguments()[0];</b>
+<b class="nc"><i>726</i>&nbsp;                        break;</b>
+<i>727</i>&nbsp;                    }
+<i>728</i>&nbsp;                }
+<i>729</i>&nbsp;            }
+<i>730</i>&nbsp;
+<b class="nc"><i>731</i>&nbsp;            if (itemType != null) {</b>
+<b class="nc"><i>732</i>&nbsp;                break;</b>
+<i>733</i>&nbsp;            }
+<i>734</i>&nbsp;
+<b class="nc"><i>735</i>&nbsp;            parentType = classType.getGenericSuperclass();</b>
+<b class="nc"><i>736</i>&nbsp;        }</b>
+<i>737</i>&nbsp;
+<b class="fc"><i>738</i>&nbsp;        if (itemType != null &amp;&amp; itemType instanceof TypeVariable&lt;?&gt;) {</b>
+<b class="nc"><i>739</i>&nbsp;            itemType = Object.class;</b>
+<i>740</i>&nbsp;        }
+<i>741</i>&nbsp;
+<b class="fc"><i>742</i>&nbsp;        return itemType;</b>
+<i>743</i>&nbsp;    }
+<i>744</i>&nbsp;
+<i>745</i>&nbsp;    /**
+<i>746</i>&nbsp;     * Determines the type of a map value.
+<i>747</i>&nbsp;     *
+<i>748</i>&nbsp;     * @param mapType
+<i>749</i>&nbsp;     */
+<i>750</i>&nbsp;    public static Type getGenericMapValueType(Type mapType) {
+<b class="nc"><i>751</i>&nbsp;        Type valueType = null;</b>
+<i>752</i>&nbsp;
+<b class="nc"><i>753</i>&nbsp;        Type parentType = mapType;</b>
+<b class="nc"><i>754</i>&nbsp;        while (parentType != null) {</b>
+<b class="nc"><i>755</i>&nbsp;            if (parentType instanceof ParameterizedType) {</b>
+<b class="nc"><i>756</i>&nbsp;                ParameterizedType parameterizedType = (ParameterizedType)parentType;</b>
+<b class="nc"><i>757</i>&nbsp;                Class&lt;?&gt; rawType = (Class&lt;?&gt;)parameterizedType.getRawType();</b>
+<i>758</i>&nbsp;
+<b class="nc"><i>759</i>&nbsp;                if (Map.class.isAssignableFrom(rawType)) {</b>
+<b class="nc"><i>760</i>&nbsp;                    valueType = parameterizedType.getActualTypeArguments()[1];</b>
+<i>761</i>&nbsp;                }
+<i>762</i>&nbsp;
+<i>763</i>&nbsp;                break;
+<i>764</i>&nbsp;            }
+<i>765</i>&nbsp;
+<b class="nc"><i>766</i>&nbsp;            Class&lt;?&gt; classType = (Class&lt;?&gt;)parentType;</b>
+<b class="nc"><i>767</i>&nbsp;            Type[] genericInterfaces = classType.getGenericInterfaces();</b>
+<i>768</i>&nbsp;
+<b class="nc"><i>769</i>&nbsp;            for (int i = 0; i &lt; genericInterfaces.length; i++) {</b>
+<b class="nc"><i>770</i>&nbsp;                Type genericInterface = genericInterfaces[i];</b>
+<i>771</i>&nbsp;
+<b class="nc"><i>772</i>&nbsp;                if (genericInterface instanceof ParameterizedType) {</b>
+<b class="nc"><i>773</i>&nbsp;                    ParameterizedType parameterizedType = (ParameterizedType)genericInterface;</b>
+<b class="nc"><i>774</i>&nbsp;                    Class&lt;?&gt; interfaceType = (Class&lt;?&gt;)parameterizedType.getRawType();</b>
+<i>775</i>&nbsp;
+<b class="nc"><i>776</i>&nbsp;                    if (Map.class.isAssignableFrom(interfaceType)) {</b>
+<b class="nc"><i>777</i>&nbsp;                        valueType = parameterizedType.getActualTypeArguments()[1];</b>
+<b class="nc"><i>778</i>&nbsp;                        break;</b>
+<i>779</i>&nbsp;                    }
+<i>780</i>&nbsp;                }
+<i>781</i>&nbsp;            }
+<i>782</i>&nbsp;
+<b class="nc"><i>783</i>&nbsp;            if (valueType != null) {</b>
+<b class="nc"><i>784</i>&nbsp;                break;</b>
+<i>785</i>&nbsp;            }
+<i>786</i>&nbsp;
+<b class="nc"><i>787</i>&nbsp;            parentType = classType.getGenericSuperclass();</b>
+<b class="nc"><i>788</i>&nbsp;        }</b>
+<i>789</i>&nbsp;
+<b class="nc"><i>790</i>&nbsp;        if (valueType != null &amp;&amp; valueType instanceof TypeVariable&lt;?&gt;) {</b>
+<b class="nc"><i>791</i>&nbsp;            valueType = Object.class;</b>
+<i>792</i>&nbsp;        }
+<i>793</i>&nbsp;
+<b class="nc"><i>794</i>&nbsp;        return valueType;</b>
+<i>795</i>&nbsp;    }
+<i>796</i>&nbsp;
+<i>797</i>&nbsp;    /**
+<i>798</i>&nbsp;     * Returns the value of a named constant.
+<i>799</i>&nbsp;     *
+<i>800</i>&nbsp;     * @param type
+<i>801</i>&nbsp;     * The type that defines the constant.
+<i>802</i>&nbsp;     *
+<i>803</i>&nbsp;     * @param name
+<i>804</i>&nbsp;     * The name of the constant.
+<i>805</i>&nbsp;     */
+<i>806</i>&nbsp;    public static Object getConstantValue(Class&lt;?&gt; type, String name) {
+<b class="nc"><i>807</i>&nbsp;        if (type == null) {</b>
+<b class="nc"><i>808</i>&nbsp;            throw new IllegalArgumentException();</b>
+<i>809</i>&nbsp;        }
+<i>810</i>&nbsp;
+<b class="nc"><i>811</i>&nbsp;        if (name == null) {</b>
+<b class="nc"><i>812</i>&nbsp;            throw new IllegalArgumentException();</b>
+<i>813</i>&nbsp;        }
+<i>814</i>&nbsp;
+<i>815</i>&nbsp;        Field field;
+<i>816</i>&nbsp;        try {
+<b class="nc"><i>817</i>&nbsp;            field = FieldUtil.getField(type, name);</b>
+<b class="nc"><i>818</i>&nbsp;        } catch (NoSuchFieldException exception) {</b>
+<b class="nc"><i>819</i>&nbsp;            throw new IllegalArgumentException(exception);</b>
+<b class="nc"><i>820</i>&nbsp;        }</b>
+<i>821</i>&nbsp;
+<b class="nc"><i>822</i>&nbsp;        int fieldModifiers = field.getModifiers();</b>
+<b class="nc"><i>823</i>&nbsp;        if ((fieldModifiers &amp; Modifier.STATIC) == 0</b>
+<i>824</i>&nbsp;            || (fieldModifiers &amp; Modifier.FINAL) == 0) {
+<b class="nc"><i>825</i>&nbsp;            throw new IllegalArgumentException(&quot;Field is not a constant.&quot;);</b>
+<i>826</i>&nbsp;        }
+<i>827</i>&nbsp;
+<i>828</i>&nbsp;        Object value;
+<i>829</i>&nbsp;        try {
+<b class="nc"><i>830</i>&nbsp;            value = field.get(null);</b>
+<b class="nc"><i>831</i>&nbsp;        } catch (IllegalAccessException exception) {</b>
+<b class="nc"><i>832</i>&nbsp;            throw new IllegalArgumentException(exception);</b>
+<b class="nc"><i>833</i>&nbsp;        }</b>
+<i>834</i>&nbsp;
+<b class="nc"><i>835</i>&nbsp;        return value;</b>
+<i>836</i>&nbsp;    }
+<i>837</i>&nbsp;
+<i>838</i>&nbsp;    private static Method getStaticGetterMethod(Class&lt;?&gt; sourceType, String key,
+<i>839</i>&nbsp;        Class&lt;?&gt; targetType) {
+<b class="nc"><i>840</i>&nbsp;        if (sourceType == null) {</b>
+<b class="nc"><i>841</i>&nbsp;            throw new NullPointerException();</b>
+<i>842</i>&nbsp;        }
+<i>843</i>&nbsp;
+<b class="nc"><i>844</i>&nbsp;        if (key == null) {</b>
+<b class="nc"><i>845</i>&nbsp;            throw new NullPointerException();</b>
+<i>846</i>&nbsp;        }
+<i>847</i>&nbsp;
+<b class="nc"><i>848</i>&nbsp;        Method method = null;</b>
+<i>849</i>&nbsp;
+<b class="nc"><i>850</i>&nbsp;        if (targetType != null) {</b>
+<b class="nc"><i>851</i>&nbsp;            key = Character.toUpperCase(key.charAt(0)) + key.substring(1);</b>
+<i>852</i>&nbsp;
+<b class="nc"><i>853</i>&nbsp;            String getMethodName = GET_PREFIX + key;</b>
+<b class="nc"><i>854</i>&nbsp;            String isMethodName = IS_PREFIX + key;</b>
+<i>855</i>&nbsp;
+<i>856</i>&nbsp;            try {
+<b class="nc"><i>857</i>&nbsp;                method = MethodUtil.getMethod(sourceType, getMethodName, new Class[] { targetType });</b>
+<b class="nc"><i>858</i>&nbsp;            } catch (NoSuchMethodException exception) {</b>
+<i>859</i>&nbsp;                // No-op
+<b class="nc"><i>860</i>&nbsp;            }</b>
+<i>861</i>&nbsp;
+<b class="nc"><i>862</i>&nbsp;            if (method == null) {</b>
+<i>863</i>&nbsp;                try {
+<b class="nc"><i>864</i>&nbsp;                    method = MethodUtil.getMethod(sourceType, isMethodName, new Class[] { targetType });</b>
+<b class="nc"><i>865</i>&nbsp;                } catch (NoSuchMethodException exception) {</b>
+<i>866</i>&nbsp;                    // No-op
+<b class="nc"><i>867</i>&nbsp;                }</b>
+<i>868</i>&nbsp;            }
+<i>869</i>&nbsp;
+<i>870</i>&nbsp;            // Check for interfaces
+<b class="nc"><i>871</i>&nbsp;            if (method == null) {</b>
+<b class="nc"><i>872</i>&nbsp;                Class&lt;?&gt;[] interfaces = targetType.getInterfaces();</b>
+<b class="nc"><i>873</i>&nbsp;                for (int i = 0; i &lt; interfaces.length; i++) {</b>
+<i>874</i>&nbsp;                    try {
+<b class="nc"><i>875</i>&nbsp;                        method = MethodUtil.getMethod(sourceType, getMethodName, new Class[] { interfaces[i] });</b>
+<b class="nc"><i>876</i>&nbsp;                    } catch (NoSuchMethodException exception) {</b>
+<i>877</i>&nbsp;                        // No-op
+<b class="nc"><i>878</i>&nbsp;                    }</b>
+<i>879</i>&nbsp;
+<b class="nc"><i>880</i>&nbsp;                    if (method == null) {</b>
+<i>881</i>&nbsp;                        try {
+<b class="nc"><i>882</i>&nbsp;                            method = MethodUtil.getMethod(sourceType, isMethodName, new Class[] { interfaces[i] });</b>
+<b class="nc"><i>883</i>&nbsp;                        } catch (NoSuchMethodException exception) {</b>
+<i>884</i>&nbsp;                            // No-op
+<b class="nc"><i>885</i>&nbsp;                        }</b>
+<i>886</i>&nbsp;                    }
+<i>887</i>&nbsp;
+<b class="nc"><i>888</i>&nbsp;                    if (method != null) {</b>
+<b class="nc"><i>889</i>&nbsp;                        break;</b>
+<i>890</i>&nbsp;                    }
+<i>891</i>&nbsp;                }
+<i>892</i>&nbsp;            }
+<i>893</i>&nbsp;
+<b class="nc"><i>894</i>&nbsp;            if (method == null) {</b>
+<b class="nc"><i>895</i>&nbsp;                method = getStaticGetterMethod(sourceType, key, targetType.getSuperclass());</b>
+<i>896</i>&nbsp;            }
+<i>897</i>&nbsp;        }
+<i>898</i>&nbsp;
+<b class="nc"><i>899</i>&nbsp;        return method;</b>
+<i>900</i>&nbsp;    }
+<i>901</i>&nbsp;
+<i>902</i>&nbsp;    private static Method getStaticSetterMethod(Class&lt;?&gt; sourceType, String key,
+<i>903</i>&nbsp;        Class&lt;?&gt; valueType, Class&lt;?&gt; targetType) {
+<b class="fc"><i>904</i>&nbsp;        if (sourceType == null) {</b>
+<b class="nc"><i>905</i>&nbsp;            throw new NullPointerException();</b>
+<i>906</i>&nbsp;        }
+<i>907</i>&nbsp;
+<b class="fc"><i>908</i>&nbsp;        if (key == null) {</b>
+<b class="nc"><i>909</i>&nbsp;            throw new NullPointerException();</b>
+<i>910</i>&nbsp;        }
+<i>911</i>&nbsp;
+<b class="fc"><i>912</i>&nbsp;        if (valueType == null) {</b>
+<b class="nc"><i>913</i>&nbsp;            throw new NullPointerException();</b>
+<i>914</i>&nbsp;        }
+<i>915</i>&nbsp;
+<b class="fc"><i>916</i>&nbsp;        Method method = null;</b>
+<i>917</i>&nbsp;
+<b class="fc"><i>918</i>&nbsp;        if (targetType != null) {</b>
+<b class="fc"><i>919</i>&nbsp;            key = Character.toUpperCase(key.charAt(0)) + key.substring(1);</b>
+<i>920</i>&nbsp;
+<b class="fc"><i>921</i>&nbsp;            String setMethodName = SET_PREFIX + key;</b>
+<i>922</i>&nbsp;            try {
+<b class="fc"><i>923</i>&nbsp;                method = MethodUtil.getMethod(sourceType, setMethodName, new Class[] { targetType, valueType });</b>
+<b class="fc"><i>924</i>&nbsp;            } catch (NoSuchMethodException exception) {</b>
+<i>925</i>&nbsp;                // No-op
+<b class="fc"><i>926</i>&nbsp;            }</b>
+<i>927</i>&nbsp;
+<i>928</i>&nbsp;            // Check for interfaces
+<b class="fc"><i>929</i>&nbsp;            if (method == null) {</b>
+<b class="fc"><i>930</i>&nbsp;                Class&lt;?&gt;[] interfaces = targetType.getInterfaces();</b>
+<b class="fc"><i>931</i>&nbsp;                for (int i = 0; i &lt; interfaces.length; i++) {</b>
+<i>932</i>&nbsp;                    try {
+<b class="fc"><i>933</i>&nbsp;                        method = MethodUtil.getMethod(sourceType, setMethodName, new Class[] { interfaces[i], valueType });</b>
+<b class="fc"><i>934</i>&nbsp;                    } catch (NoSuchMethodException exception) {</b>
+<i>935</i>&nbsp;                        // No-op
+<b class="nc"><i>936</i>&nbsp;                    }</b>
+<i>937</i>&nbsp;
+<b class="fc"><i>938</i>&nbsp;                    if (method != null) {</b>
+<b class="nc"><i>939</i>&nbsp;                        break;</b>
+<i>940</i>&nbsp;                    }
+<i>941</i>&nbsp;                }
+<i>942</i>&nbsp;            }
+<i>943</i>&nbsp;
+<b class="fc"><i>944</i>&nbsp;            if (method == null) {</b>
+<b class="fc"><i>945</i>&nbsp;                method = getStaticSetterMethod(sourceType, key, valueType, targetType.getSuperclass());</b>
+<i>946</i>&nbsp;            }
+<i>947</i>&nbsp;        }
+<i>948</i>&nbsp;
+<b class="fc"><i>949</i>&nbsp;        return method;</b>
+<i>950</i>&nbsp;    }
+<i>951</i>&nbsp;
+<i>952</i>&nbsp;    private static String toAllCaps(String value) {
+<b class="nc"><i>953</i>&nbsp;        if (value == null) {</b>
+<b class="nc"><i>954</i>&nbsp;            throw new NullPointerException();</b>
+<i>955</i>&nbsp;        }
+<i>956</i>&nbsp;
+<b class="nc"><i>957</i>&nbsp;        StringBuilder allCapsBuilder = new StringBuilder();</b>
+<i>958</i>&nbsp;
+<b class="nc"><i>959</i>&nbsp;        for (int i = 0, n = value.length(); i &lt; n; i++) {</b>
+<b class="nc"><i>960</i>&nbsp;            char c = value.charAt(i);</b>
+<i>961</i>&nbsp;
+<b class="nc"><i>962</i>&nbsp;            if (Character.isUpperCase(c)) {</b>
+<b class="nc"><i>963</i>&nbsp;                allCapsBuilder.append(&#39;_&#39;);</b>
+<i>964</i>&nbsp;            }
+<i>965</i>&nbsp;
+<b class="nc"><i>966</i>&nbsp;            allCapsBuilder.append(Character.toUpperCase(c));</b>
+<i>967</i>&nbsp;        }
+<i>968</i>&nbsp;
+<b class="nc"><i>969</i>&nbsp;        return allCapsBuilder.toString();</b>
+<i>970</i>&nbsp;    }
+<i>971</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2017-12-04 21:49</div>
+</div>
+</body>
+</html>

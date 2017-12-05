@@ -1,0 +1,882 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: ImageTools</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.javafx.iio.common</a> ]
+</div>
+
+<h1>Coverage Summary for Class: ImageTools (com.sun.javafx.iio.common)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">ImageTools</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    33.3%
+  </span>
+  <span class="absValue">
+    (5/ 15)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    9.9%
+  </span>
+  <span class="absValue">
+    (31/ 314)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright (c) 2009, 2015, Oracle and/or its affiliates. All rights reserved.
+<i>3</i>&nbsp; * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+<i>4</i>&nbsp; *
+<i>5</i>&nbsp; *
+<i>6</i>&nbsp; *
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; *
+<i>11</i>&nbsp; *
+<i>12</i>&nbsp; *
+<i>13</i>&nbsp; *
+<i>14</i>&nbsp; *
+<i>15</i>&nbsp; *
+<i>16</i>&nbsp; *
+<i>17</i>&nbsp; *
+<i>18</i>&nbsp; *
+<i>19</i>&nbsp; *
+<i>20</i>&nbsp; *
+<i>21</i>&nbsp; *
+<i>22</i>&nbsp; *
+<i>23</i>&nbsp; *
+<i>24</i>&nbsp; */
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;package com.sun.javafx.iio.common;
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;import com.sun.javafx.geom.Point2D;
+<i>29</i>&nbsp;import com.sun.javafx.geom.Rectangle;
+<i>30</i>&nbsp;import com.sun.javafx.iio.ImageFrame;
+<i>31</i>&nbsp;import com.sun.javafx.iio.ImageMetadata;
+<i>32</i>&nbsp;import com.sun.javafx.iio.ImageStorage;
+<i>33</i>&nbsp;import com.sun.javafx.iio.ImageStorage.ImageType;
+<i>34</i>&nbsp;import java.io.EOFException;
+<i>35</i>&nbsp;import java.io.File;
+<i>36</i>&nbsp;import java.io.FileInputStream;
+<i>37</i>&nbsp;import java.io.IOException;
+<i>38</i>&nbsp;import java.io.InputStream;
+<i>39</i>&nbsp;import java.net.URL;
+<i>40</i>&nbsp;import java.nio.Buffer;
+<i>41</i>&nbsp;import java.nio.ByteBuffer;
+<i>42</i>&nbsp;
+<i>43</i>&nbsp;/**
+<i>44</i>&nbsp; * A set of format-independent convenience methods useful in image loading
+<i>45</i>&nbsp; * and saving.
+<i>46</i>&nbsp; */
+<b class="nc"><i>47</i>&nbsp;public class ImageTools {</b>
+<i>48</i>&nbsp;
+<i>49</i>&nbsp;    /**
+<i>50</i>&nbsp;     * The percentage increment between progress report updates.
+<i>51</i>&nbsp;     */
+<i>52</i>&nbsp;    public static final int PROGRESS_INTERVAL = 5;
+<i>53</i>&nbsp;
+<i>54</i>&nbsp;    /**
+<i>55</i>&nbsp;     * See the general contract of the &lt;code&gt;readFully&lt;/code&gt;
+<i>56</i>&nbsp;     * method of &lt;code&gt;DataInput&lt;/code&gt;.
+<i>57</i>&nbsp;     * &lt;p&gt;
+<i>58</i>&nbsp;     * Bytes
+<i>59</i>&nbsp;     * for this operation are read from the specified
+<i>60</i>&nbsp;     * input stream.
+<i>61</i>&nbsp;     *
+<i>62</i>&nbsp;     * @param      stream the stream from which to read the data.
+<i>63</i>&nbsp;     * @param      b     the buffer into which the data is read.
+<i>64</i>&nbsp;     * @param      off   the start offset of the data.
+<i>65</i>&nbsp;     * @param      len   the number of bytes to read.
+<i>66</i>&nbsp;     * @exception  EOFException  if this input stream reaches the end before
+<i>67</i>&nbsp;     *               reading all the bytes.
+<i>68</i>&nbsp;     * @exception  IOException   if another I/O error occurs.
+<i>69</i>&nbsp;     */
+<i>70</i>&nbsp;    public static int readFully(InputStream stream,
+<i>71</i>&nbsp;            byte[] b, int off, int len) throws IOException {
+<b class="fc"><i>72</i>&nbsp;        if (len &lt; 0) {</b>
+<b class="nc"><i>73</i>&nbsp;            throw new IndexOutOfBoundsException();</b>
+<i>74</i>&nbsp;        }
+<b class="fc"><i>75</i>&nbsp;        int requestedLength = len;</b>
+<i>76</i>&nbsp;        // Fix 4430357 - if off + len &lt; 0, overflow occurred
+<b class="fc"><i>77</i>&nbsp;        if (off &lt; 0 || len &lt; 0 || off + len &gt; b.length || off + len &lt; 0) {</b>
+<b class="nc"><i>78</i>&nbsp;            throw new IndexOutOfBoundsException(&quot;off &lt; 0 || len &lt; 0 || off + len &gt; b.length!&quot;);</b>
+<i>79</i>&nbsp;        }
+<i>80</i>&nbsp;
+<b class="fc"><i>81</i>&nbsp;        while (len &gt; 0) {</b>
+<b class="fc"><i>82</i>&nbsp;            int nbytes = stream.read(b, off, len);</b>
+<b class="fc"><i>83</i>&nbsp;            if (nbytes == -1) {</b>
+<b class="nc"><i>84</i>&nbsp;                throw new EOFException();</b>
+<i>85</i>&nbsp;            }
+<b class="fc"><i>86</i>&nbsp;            off += nbytes;</b>
+<b class="fc"><i>87</i>&nbsp;            len -= nbytes;</b>
+<b class="fc"><i>88</i>&nbsp;        }</b>
+<i>89</i>&nbsp;
+<b class="fc"><i>90</i>&nbsp;        return requestedLength;</b>
+<i>91</i>&nbsp;    }
+<i>92</i>&nbsp;
+<i>93</i>&nbsp;    /**
+<i>94</i>&nbsp;     * See the general contract of the &lt;code&gt;readFully&lt;/code&gt;
+<i>95</i>&nbsp;     * method of &lt;code&gt;DataInput&lt;/code&gt;.
+<i>96</i>&nbsp;     * &lt;p&gt;
+<i>97</i>&nbsp;     * Bytes
+<i>98</i>&nbsp;     * for this operation are read from the contained
+<i>99</i>&nbsp;     * input stream.
+<i>100</i>&nbsp;     *
+<i>101</i>&nbsp;     * @param      stream the stream from which to read the data.
+<i>102</i>&nbsp;     * @param      b   the buffer into which the data is read.
+<i>103</i>&nbsp;     * @exception  EOFException  if this input stream reaches the end before
+<i>104</i>&nbsp;     *             reading all the bytes.
+<i>105</i>&nbsp;     * @exception  IOException   if another I/O error occurs.
+<i>106</i>&nbsp;     */
+<i>107</i>&nbsp;    public static int readFully(InputStream stream, byte[] b) throws IOException {
+<b class="fc"><i>108</i>&nbsp;        return readFully(stream, b, 0, b.length);</b>
+<i>109</i>&nbsp;    }
+<i>110</i>&nbsp;
+<i>111</i>&nbsp;    /**
+<i>112</i>&nbsp;     * Skips over &lt;code&gt;n&lt;/code&gt; bytes of data from the input stream.
+<i>113</i>&nbsp;     * @param      stream the stream to skip.
+<i>114</i>&nbsp;     * @param      n the number of bytes to be skipped.
+<i>115</i>&nbsp;     * @exception  EOFException if this input stream reaches the end before
+<i>116</i>&nbsp;     *             skipping all the bytes.
+<i>117</i>&nbsp;     * @exception  IOException if another I/O error occurs.
+<i>118</i>&nbsp;     */
+<i>119</i>&nbsp;    public static void skipFully(InputStream stream, long n) throws IOException {
+<b class="fc"><i>120</i>&nbsp;        while (n &gt; 0) {</b>
+<b class="fc"><i>121</i>&nbsp;            long skipped = stream.skip(n);</b>
+<b class="fc"><i>122</i>&nbsp;            if (skipped &lt;= 0) {</b>
+<i>123</i>&nbsp;                // check if the EOF is reached
+<b class="nc"><i>124</i>&nbsp;                if (stream.read() == -1) {</b>
+<b class="nc"><i>125</i>&nbsp;                    throw new EOFException();</b>
+<i>126</i>&nbsp;                }
+<b class="nc"><i>127</i>&nbsp;                n--;</b>
+<i>128</i>&nbsp;            } else {
+<b class="fc"><i>129</i>&nbsp;                n -= skipped;</b>
+<i>130</i>&nbsp;            }
+<b class="fc"><i>131</i>&nbsp;        }</b>
+<b class="fc"><i>132</i>&nbsp;    }</b>
+<i>133</i>&nbsp;//    public static PixelFormat getPixelFormat(ImageType type) {
+<i>134</i>&nbsp;//        PixelFormat format;
+<i>135</i>&nbsp;//        switch (type) {
+<i>136</i>&nbsp;//            case GRAY:
+<i>137</i>&nbsp;//                format = PixelFormat.BYTE_GRAY;
+<i>138</i>&nbsp;//                break;
+<i>139</i>&nbsp;//            case GRAY_ALPHA:
+<i>140</i>&nbsp;//            case GRAY_ALPHA_PRE:
+<i>141</i>&nbsp;//                format = PixelFormat.BYTE_RGBA_PRE;
+<i>142</i>&nbsp;//                break;
+<i>143</i>&nbsp;//            case PALETTE:
+<i>144</i>&nbsp;//                format = PixelFormat.BYTE_RGB;
+<i>145</i>&nbsp;//                break;
+<i>146</i>&nbsp;//            case PALETTE_ALPHA:
+<i>147</i>&nbsp;//            case PALETTE_ALPHA_PRE:
+<i>148</i>&nbsp;//                format = PixelFormat.BYTE_RGBA_PRE;
+<i>149</i>&nbsp;//                break;
+<i>150</i>&nbsp;//            case RGB:
+<i>151</i>&nbsp;//                format = PixelFormat.BYTE_RGB;
+<i>152</i>&nbsp;//                break;
+<i>153</i>&nbsp;//            case RGBA:
+<i>154</i>&nbsp;//            case RGBA_PRE:
+<i>155</i>&nbsp;//                format = PixelFormat.BYTE_RGBA_PRE;
+<i>156</i>&nbsp;//                break;
+<i>157</i>&nbsp;//            default:
+<i>158</i>&nbsp;//                // This should not be possible ...
+<i>159</i>&nbsp;//                throw new IllegalArgumentException(&quot;Unknown ImageType &quot; + type);
+<i>160</i>&nbsp;//        }
+<i>161</i>&nbsp;//
+<i>162</i>&nbsp;//        return format;
+<i>163</i>&nbsp;//    }
+<i>164</i>&nbsp;//    public static boolean isConversionACopy(ImageType type, PixelFormat format) {
+<i>165</i>&nbsp;//        return (type == ImageType.GRAY &amp;&amp; format == PixelFormat.BYTE_GRAY) ||
+<i>166</i>&nbsp;//                (type == ImageType.RGB &amp;&amp; format == PixelFormat.BYTE_RGB) ||
+<i>167</i>&nbsp;//                (type == ImageType.RGBA_PRE &amp;&amp; format == PixelFormat.BYTE_RGBA_PRE);
+<i>168</i>&nbsp;//    }
+<i>169</i>&nbsp;    public static ImageType getConvertedType(ImageType type) {
+<b class="nc"><i>170</i>&nbsp;        ImageType retType = type;</b>
+<b class="nc"><i>171</i>&nbsp;        switch (type) {</b>
+<i>172</i>&nbsp;            case GRAY:
+<b class="nc"><i>173</i>&nbsp;                retType = ImageType.GRAY;</b>
+<b class="nc"><i>174</i>&nbsp;                break;</b>
+<i>175</i>&nbsp;            case GRAY_ALPHA:
+<i>176</i>&nbsp;            case GRAY_ALPHA_PRE:
+<i>177</i>&nbsp;            case PALETTE_ALPHA:
+<i>178</i>&nbsp;            case PALETTE_ALPHA_PRE:
+<i>179</i>&nbsp;            case PALETTE_TRANS:
+<i>180</i>&nbsp;            case RGBA:
+<b class="nc"><i>181</i>&nbsp;                retType = ImageType.RGBA_PRE;</b>
+<b class="nc"><i>182</i>&nbsp;                break;</b>
+<i>183</i>&nbsp;            case PALETTE:
+<i>184</i>&nbsp;            case RGB:
+<b class="nc"><i>185</i>&nbsp;                retType = ImageType.RGB;</b>
+<b class="nc"><i>186</i>&nbsp;                break;</b>
+<i>187</i>&nbsp;            case RGBA_PRE:
+<b class="nc"><i>188</i>&nbsp;                retType = ImageType.RGBA_PRE;</b>
+<b class="nc"><i>189</i>&nbsp;                break;</b>
+<i>190</i>&nbsp;            default:
+<b class="nc"><i>191</i>&nbsp;                throw new IllegalArgumentException(&quot;Unsupported ImageType &quot; + type);</b>
+<i>192</i>&nbsp;        }
+<b class="nc"><i>193</i>&nbsp;        return retType;</b>
+<i>194</i>&nbsp;    }
+<i>195</i>&nbsp;
+<i>196</i>&nbsp;    public static byte[] createImageArray(ImageType type, int width, int height) {
+<b class="nc"><i>197</i>&nbsp;        int numBands = 0;</b>
+<b class="nc"><i>198</i>&nbsp;        switch (type) {</b>
+<i>199</i>&nbsp;            case GRAY:
+<i>200</i>&nbsp;            case PALETTE:
+<i>201</i>&nbsp;            case PALETTE_ALPHA:
+<i>202</i>&nbsp;            case PALETTE_ALPHA_PRE:
+<b class="nc"><i>203</i>&nbsp;                numBands = 1;</b>
+<b class="nc"><i>204</i>&nbsp;                break;</b>
+<i>205</i>&nbsp;            case GRAY_ALPHA:
+<i>206</i>&nbsp;            case GRAY_ALPHA_PRE:
+<b class="nc"><i>207</i>&nbsp;                numBands = 2;</b>
+<b class="nc"><i>208</i>&nbsp;                break;</b>
+<i>209</i>&nbsp;            case RGB:
+<b class="nc"><i>210</i>&nbsp;                numBands = 3;</b>
+<b class="nc"><i>211</i>&nbsp;                break;</b>
+<i>212</i>&nbsp;            case RGBA:
+<i>213</i>&nbsp;            case RGBA_PRE:
+<b class="nc"><i>214</i>&nbsp;                numBands = 4;</b>
+<b class="nc"><i>215</i>&nbsp;                break;</b>
+<i>216</i>&nbsp;            default:
+<b class="nc"><i>217</i>&nbsp;                throw new IllegalArgumentException(&quot;Unsupported ImageType &quot; + type);</b>
+<i>218</i>&nbsp;        }
+<b class="nc"><i>219</i>&nbsp;        return new byte[width * height * numBands];</b>
+<i>220</i>&nbsp;    }
+<i>221</i>&nbsp;
+<i>222</i>&nbsp;    public static ImageFrame convertImageFrame(ImageFrame frame) {
+<i>223</i>&nbsp;        ImageFrame retFrame;
+<b class="nc"><i>224</i>&nbsp;        ImageType type = frame.getImageType();</b>
+<b class="nc"><i>225</i>&nbsp;        ImageType convertedType = getConvertedType(type);</b>
+<b class="nc"><i>226</i>&nbsp;        if (convertedType == type) {</b>
+<b class="nc"><i>227</i>&nbsp;            retFrame = frame;</b>
+<i>228</i>&nbsp;        } else {
+<b class="nc"><i>229</i>&nbsp;            byte[] inArray = null;</b>
+<b class="nc"><i>230</i>&nbsp;            Buffer buf = frame.getImageData();</b>
+<b class="nc"><i>231</i>&nbsp;            if (!(buf instanceof ByteBuffer)) {</b>
+<b class="nc"><i>232</i>&nbsp;                throw new IllegalArgumentException(&quot;!(frame.getImageData() instanceof ByteBuffer)&quot;);</b>
+<i>233</i>&nbsp;            }
+<b class="nc"><i>234</i>&nbsp;            ByteBuffer bbuf = (ByteBuffer) buf;</b>
+<b class="nc"><i>235</i>&nbsp;            if (bbuf.hasArray()) {</b>
+<b class="nc"><i>236</i>&nbsp;                inArray = bbuf.array();</b>
+<i>237</i>&nbsp;            } else {
+<b class="nc"><i>238</i>&nbsp;                inArray = new byte[bbuf.capacity()];</b>
+<b class="nc"><i>239</i>&nbsp;                bbuf.get(inArray);</b>
+<i>240</i>&nbsp;            }
+<b class="nc"><i>241</i>&nbsp;            int width = frame.getWidth();</b>
+<b class="nc"><i>242</i>&nbsp;            int height = frame.getHeight();</b>
+<b class="nc"><i>243</i>&nbsp;            int inStride = frame.getStride();</b>
+<b class="nc"><i>244</i>&nbsp;            byte[] outArray = createImageArray(convertedType, width, height);</b>
+<b class="nc"><i>245</i>&nbsp;            ByteBuffer newBuf = ByteBuffer.wrap(outArray);</b>
+<b class="nc"><i>246</i>&nbsp;            int outStride = outArray.length / height;</b>
+<b class="nc"><i>247</i>&nbsp;            byte[][] palette = frame.getPalette();</b>
+<b class="nc"><i>248</i>&nbsp;            ImageMetadata metadata = frame.getMetadata();</b>
+<b class="nc"><i>249</i>&nbsp;            int transparentIndex = metadata.transparentIndex != null ? metadata.transparentIndex : 0;</b>
+<b class="nc"><i>250</i>&nbsp;            convert(width, height, type,</b>
+<i>251</i>&nbsp;                    inArray, 0, inStride, outArray, 0, outStride,
+<i>252</i>&nbsp;                    palette, transparentIndex, false);
+<b class="nc"><i>253</i>&nbsp;            ImageMetadata imd = new ImageMetadata(metadata.gamma,</b>
+<i>254</i>&nbsp;                    metadata.blackIsZero, null,
+<i>255</i>&nbsp;                    metadata.backgroundColor, null,
+<i>256</i>&nbsp;                    metadata.delayTime, metadata.loopCount,
+<i>257</i>&nbsp;                    metadata.imageWidth, metadata.imageHeight,
+<i>258</i>&nbsp;                    metadata.imageLeftPosition, metadata.imageTopPosition,
+<i>259</i>&nbsp;                    metadata.disposalMethod);
+<b class="nc"><i>260</i>&nbsp;            retFrame = new ImageFrame(convertedType, newBuf, width, height,</b>
+<i>261</i>&nbsp;                    outStride, null, imd);
+<i>262</i>&nbsp;        }
+<b class="nc"><i>263</i>&nbsp;        return retFrame;</b>
+<i>264</i>&nbsp;    }
+<i>265</i>&nbsp;
+<i>266</i>&nbsp;    public static byte[] convert(int width, int height, ImageType inputType,
+<i>267</i>&nbsp;            byte[] input, int inputOffset, int inRowStride,
+<i>268</i>&nbsp;            byte[] output, int outputOffset, int outRowStride,
+<i>269</i>&nbsp;            byte[][] palette, int transparentIndex, boolean skipTransparent) {
+<i>270</i>&nbsp;        //
+<i>271</i>&nbsp;        // Take care of the layouts that are a direct copy.
+<i>272</i>&nbsp;        //
+<b class="nc"><i>273</i>&nbsp;        if (inputType == ImageType.GRAY ||</b>
+<i>274</i>&nbsp;                inputType == ImageType.RGB ||
+<i>275</i>&nbsp;                inputType == ImageType.RGBA_PRE) {
+<b class="nc"><i>276</i>&nbsp;            if (input != output) {</b>
+<b class="nc"><i>277</i>&nbsp;                int bytesPerRow = width;</b>
+<b class="nc"><i>278</i>&nbsp;                if (inputType == ImageType.RGB) {</b>
+<b class="nc"><i>279</i>&nbsp;                    bytesPerRow *= 3;</b>
+<b class="nc"><i>280</i>&nbsp;                } else if (inputType == ImageType.RGBA_PRE) {</b>
+<b class="nc"><i>281</i>&nbsp;                    bytesPerRow *= 4;</b>
+<i>282</i>&nbsp;                }
+<b class="nc"><i>283</i>&nbsp;                if (height == 1) {</b>
+<b class="nc"><i>284</i>&nbsp;                    System.arraycopy(input, inputOffset, output, outputOffset, bytesPerRow);</b>
+<i>285</i>&nbsp;                } else {
+<b class="nc"><i>286</i>&nbsp;                    int inRowOffset = inputOffset;</b>
+<b class="nc"><i>287</i>&nbsp;                    int outRowOffset = outputOffset;</b>
+<b class="nc"><i>288</i>&nbsp;                    for (int row = 0; row &lt; height; row++) {</b>
+<b class="nc"><i>289</i>&nbsp;                        System.arraycopy(input, inRowOffset, output, outRowOffset, bytesPerRow);</b>
+<b class="nc"><i>290</i>&nbsp;                        inRowOffset += inRowStride;</b>
+<b class="nc"><i>291</i>&nbsp;                        outRowOffset += outRowStride;</b>
+<i>292</i>&nbsp;                    }
+<i>293</i>&nbsp;                }
+<b class="nc"><i>294</i>&nbsp;            }</b>
+<b class="nc"><i>295</i>&nbsp;        } else if (inputType == ImageType.GRAY_ALPHA || inputType == ImageType.GRAY_ALPHA_PRE) {</b>
+<b class="nc"><i>296</i>&nbsp;            int inOffset = inputOffset;</b>
+<b class="nc"><i>297</i>&nbsp;            int outOffset = outputOffset;</b>
+<b class="nc"><i>298</i>&nbsp;            if (inputType == ImageType.GRAY_ALPHA) {</b>
+<b class="nc"><i>299</i>&nbsp;                for (int y = 0; y &lt; height; y++) {</b>
+<b class="nc"><i>300</i>&nbsp;                    int inOff = inOffset;</b>
+<b class="nc"><i>301</i>&nbsp;                    int outOff = outOffset;</b>
+<b class="nc"><i>302</i>&nbsp;                    for (int x = 0; x &lt; width; x++) {</b>
+<i>303</i>&nbsp;                        // copy input to local variables in case operating in place
+<b class="nc"><i>304</i>&nbsp;                        byte gray = input[inOff++];</b>
+<b class="nc"><i>305</i>&nbsp;                        int alpha = input[inOff++] &amp; 0xff;</b>
+<b class="nc"><i>306</i>&nbsp;                        float f = alpha / 255.0F;</b>
+<b class="nc"><i>307</i>&nbsp;                        gray = (byte) (f * (gray &amp; 0xff));</b>
+<b class="nc"><i>308</i>&nbsp;                        output[outOff++] = gray;</b>
+<b class="nc"><i>309</i>&nbsp;                        output[outOff++] = gray;</b>
+<b class="nc"><i>310</i>&nbsp;                        output[outOff++] = gray;</b>
+<b class="nc"><i>311</i>&nbsp;                        output[outOff++] = (byte) alpha;</b>
+<i>312</i>&nbsp;                    }
+<b class="nc"><i>313</i>&nbsp;                    inOffset += inRowStride;</b>
+<b class="nc"><i>314</i>&nbsp;                    outOffset += outRowStride;</b>
+<i>315</i>&nbsp;                }
+<i>316</i>&nbsp;            } else {
+<b class="nc"><i>317</i>&nbsp;                for (int y = 0; y &lt; height; y++) {</b>
+<b class="nc"><i>318</i>&nbsp;                    int inOff = inOffset;</b>
+<b class="nc"><i>319</i>&nbsp;                    int outOff = outOffset;</b>
+<b class="nc"><i>320</i>&nbsp;                    for (int x = 0; x &lt; width; x++) {</b>
+<i>321</i>&nbsp;                        // copy input to local variables in case operating in place
+<b class="nc"><i>322</i>&nbsp;                        byte gray = input[inOff++];</b>
+<b class="nc"><i>323</i>&nbsp;                        output[outOff++] = gray;</b>
+<b class="nc"><i>324</i>&nbsp;                        output[outOff++] = gray;</b>
+<b class="nc"><i>325</i>&nbsp;                        output[outOff++] = gray;</b>
+<b class="nc"><i>326</i>&nbsp;                        output[outOff++] = input[inOff++];</b>
+<i>327</i>&nbsp;                    }
+<b class="nc"><i>328</i>&nbsp;                    inOffset += inRowStride;</b>
+<b class="nc"><i>329</i>&nbsp;                    outOffset += outRowStride;</b>
+<i>330</i>&nbsp;                }
+<i>331</i>&nbsp;            }
+<b class="nc"><i>332</i>&nbsp;        } else if (inputType == ImageType.PALETTE) {</b>
+<b class="nc"><i>333</i>&nbsp;            int inOffset = inputOffset;</b>
+<b class="nc"><i>334</i>&nbsp;            int outOffset = outputOffset;</b>
+<b class="nc"><i>335</i>&nbsp;            byte[] red = palette[0];</b>
+<b class="nc"><i>336</i>&nbsp;            byte[] green = palette[1];</b>
+<b class="nc"><i>337</i>&nbsp;            byte[] blue = palette[2];</b>
+<b class="nc"><i>338</i>&nbsp;            int inOff = inOffset;</b>
+<b class="nc"><i>339</i>&nbsp;            int outOff = outOffset;</b>
+<i>340</i>&nbsp;            //loop through the scanline and mask for the value if each byte.
+<i>341</i>&nbsp;            //the byte is an index into the palette array for that pixel.
+<b class="nc"><i>342</i>&nbsp;            for (int x = 0; x &lt; width; x++) {</b>
+<b class="nc"><i>343</i>&nbsp;                int index = (input[inOff++] &amp; 0xff);</b>
+<i>344</i>&nbsp;
+<b class="nc"><i>345</i>&nbsp;                output[outOff++] = red[index];</b>
+<b class="nc"><i>346</i>&nbsp;                output[outOff++] = green[index];</b>
+<b class="nc"><i>347</i>&nbsp;                output[outOff++] = blue[index];</b>
+<i>348</i>&nbsp;
+<b class="nc"><i>349</i>&nbsp;                outOffset += outRowStride;</b>
+<i>350</i>&nbsp;            }
+<b class="nc"><i>351</i>&nbsp;        } else if (inputType == ImageType.PALETTE_ALPHA) {</b>
+<b class="nc"><i>352</i>&nbsp;            int inOffset = inputOffset;</b>
+<b class="nc"><i>353</i>&nbsp;            int outOffset = outputOffset;</b>
+<b class="nc"><i>354</i>&nbsp;            byte[] red = palette[0];</b>
+<b class="nc"><i>355</i>&nbsp;            byte[] green = palette[1];</b>
+<b class="nc"><i>356</i>&nbsp;            byte[] blue = palette[2];</b>
+<b class="nc"><i>357</i>&nbsp;            byte[] alpha = palette[3];</b>
+<b class="nc"><i>358</i>&nbsp;                int inOff = inOffset;</b>
+<b class="nc"><i>359</i>&nbsp;                int outOff = outOffset;</b>
+<b class="nc"><i>360</i>&nbsp;                for (int x = 0; x &lt; width; x++) {</b>
+<b class="nc"><i>361</i>&nbsp;                    int index = input[inOff++] &amp; 0xff;</b>
+<b class="nc"><i>362</i>&nbsp;                    byte r = red[index];</b>
+<b class="nc"><i>363</i>&nbsp;                    byte g = green[index];</b>
+<b class="nc"><i>364</i>&nbsp;                    byte b = blue[index];</b>
+<b class="nc"><i>365</i>&nbsp;                    int a = alpha[index] &amp; 0xff;</b>
+<b class="nc"><i>366</i>&nbsp;                    float f = a / 255.0F;</b>
+<b class="nc"><i>367</i>&nbsp;                    output[outOff++] = (byte) (f * (r &amp; 0xff));</b>
+<b class="nc"><i>368</i>&nbsp;                    output[outOff++] = (byte) (f * (g &amp; 0xff));</b>
+<b class="nc"><i>369</i>&nbsp;                    output[outOff++] = (byte) (f * (b &amp; 0xff));</b>
+<b class="nc"><i>370</i>&nbsp;                    output[outOff++] = (byte) a;</b>
+<i>371</i>&nbsp;                }
+<b class="nc"><i>372</i>&nbsp;                inOffset += inRowStride;</b>
+<b class="nc"><i>373</i>&nbsp;                outOffset += outRowStride;</b>
+<b class="nc"><i>374</i>&nbsp;        } else if (inputType == ImageType.PALETTE_ALPHA_PRE) {</b>
+<b class="nc"><i>375</i>&nbsp;            int inOffset = inputOffset;</b>
+<b class="nc"><i>376</i>&nbsp;            int outOffset = outputOffset;</b>
+<b class="nc"><i>377</i>&nbsp;            byte[] red = palette[0];</b>
+<b class="nc"><i>378</i>&nbsp;            byte[] green = palette[1];</b>
+<b class="nc"><i>379</i>&nbsp;            byte[] blue = palette[2];</b>
+<b class="nc"><i>380</i>&nbsp;            byte[] alpha = palette[3];</b>
+<b class="nc"><i>381</i>&nbsp;            for (int y = 0; y &lt; height; y++) {</b>
+<b class="nc"><i>382</i>&nbsp;                int inOff = inOffset;</b>
+<b class="nc"><i>383</i>&nbsp;                int outOff = outOffset;</b>
+<b class="nc"><i>384</i>&nbsp;                for (int x = 0; x &lt; width; x++) {</b>
+<b class="nc"><i>385</i>&nbsp;                    int index = input[inOff++] &amp; 0xff;</b>
+<b class="nc"><i>386</i>&nbsp;                    output[outOff++] = red[index];</b>
+<b class="nc"><i>387</i>&nbsp;                    output[outOff++] = green[index];</b>
+<b class="nc"><i>388</i>&nbsp;                    output[outOff++] = blue[index];</b>
+<b class="nc"><i>389</i>&nbsp;                    output[outOff++] = alpha[index];</b>
+<i>390</i>&nbsp;                }
+<b class="nc"><i>391</i>&nbsp;                inOffset += inRowStride;</b>
+<b class="nc"><i>392</i>&nbsp;                outOffset += outRowStride;</b>
+<i>393</i>&nbsp;            }
+<b class="nc"><i>394</i>&nbsp;        } else if (inputType == ImageType.PALETTE_TRANS) {</b>
+<b class="nc"><i>395</i>&nbsp;            int inOffset = inputOffset;</b>
+<b class="nc"><i>396</i>&nbsp;            int outOffset = outputOffset;</b>
+<b class="nc"><i>397</i>&nbsp;            for (int y = 0; y &lt; height; y++) {</b>
+<b class="nc"><i>398</i>&nbsp;                int inOff = inOffset;</b>
+<b class="nc"><i>399</i>&nbsp;                int outOff = outOffset;</b>
+<b class="nc"><i>400</i>&nbsp;                byte[] red = palette[0];</b>
+<b class="nc"><i>401</i>&nbsp;                byte[] green = palette[1];</b>
+<b class="nc"><i>402</i>&nbsp;                byte[] blue = palette[2];</b>
+<b class="nc"><i>403</i>&nbsp;                for (int x = 0; x &lt; width; x++) {</b>
+<b class="nc"><i>404</i>&nbsp;                    int index = input[inOff++] &amp; 0xff;</b>
+<b class="nc"><i>405</i>&nbsp;                    if (index == transparentIndex) {</b>
+<b class="nc"><i>406</i>&nbsp;                        if (skipTransparent) {</b>
+<b class="nc"><i>407</i>&nbsp;                            outOff+=4;</b>
+<i>408</i>&nbsp;                        } else {
+<b class="nc"><i>409</i>&nbsp;                            output[outOff++] = (byte) 0;</b>
+<b class="nc"><i>410</i>&nbsp;                            output[outOff++] = (byte) 0;</b>
+<b class="nc"><i>411</i>&nbsp;                            output[outOff++] = (byte) 0;</b>
+<b class="nc"><i>412</i>&nbsp;                            output[outOff++] = (byte) 0;</b>
+<i>413</i>&nbsp;                        }
+<i>414</i>&nbsp;                    } else {
+<b class="nc"><i>415</i>&nbsp;                        output[outOff++] = red[index];</b>
+<b class="nc"><i>416</i>&nbsp;                        output[outOff++] = green[index];</b>
+<b class="nc"><i>417</i>&nbsp;                        output[outOff++] = blue[index];</b>
+<b class="nc"><i>418</i>&nbsp;                        output[outOff++] = (byte) 255;</b>
+<i>419</i>&nbsp;                    }
+<i>420</i>&nbsp;                }
+<b class="nc"><i>421</i>&nbsp;                inOffset += inRowStride;</b>
+<b class="nc"><i>422</i>&nbsp;                outOffset += outRowStride;</b>
+<i>423</i>&nbsp;            }
+<b class="nc"><i>424</i>&nbsp;        } else if (inputType == ImageType.RGBA) {</b>
+<b class="nc"><i>425</i>&nbsp;            int inOffset = inputOffset;</b>
+<b class="nc"><i>426</i>&nbsp;            int outOffset = outputOffset;</b>
+<b class="nc"><i>427</i>&nbsp;            for (int y = 0; y &lt; height; y++) {</b>
+<b class="nc"><i>428</i>&nbsp;                int inOff = inOffset;</b>
+<b class="nc"><i>429</i>&nbsp;                int outOff = outOffset;</b>
+<b class="nc"><i>430</i>&nbsp;                for (int x = 0; x &lt; width; x++) {</b>
+<i>431</i>&nbsp;                    // copy input to local variables in case operating in place
+<b class="nc"><i>432</i>&nbsp;                    byte red = input[inOff++];</b>
+<b class="nc"><i>433</i>&nbsp;                    byte green = input[inOff++];</b>
+<b class="nc"><i>434</i>&nbsp;                    byte blue = input[inOff++];</b>
+<b class="nc"><i>435</i>&nbsp;                    int alpha = input[inOff++] &amp; 0xff;</b>
+<b class="nc"><i>436</i>&nbsp;                    float f = alpha / 255.0F;</b>
+<b class="nc"><i>437</i>&nbsp;                    output[outOff++] = (byte) (f * (red &amp; 0xff));</b>
+<b class="nc"><i>438</i>&nbsp;                    output[outOff++] = (byte) (f * (green &amp; 0xff));</b>
+<b class="nc"><i>439</i>&nbsp;                    output[outOff++] = (byte) (f * (blue &amp; 0xff));</b>
+<b class="nc"><i>440</i>&nbsp;                    output[outOff++] = (byte) alpha;</b>
+<i>441</i>&nbsp;                }
+<i>442</i>&nbsp;//                System.arraycopy(input, inOffset, output, outOffset, width*4);
+<b class="nc"><i>443</i>&nbsp;                inOffset += inRowStride;</b>
+<b class="nc"><i>444</i>&nbsp;                outOffset += outRowStride;</b>
+<i>445</i>&nbsp;            }
+<b class="nc"><i>446</i>&nbsp;        } else {</b>
+<b class="nc"><i>447</i>&nbsp;            throw new UnsupportedOperationException(&quot;Unsupported ImageType &quot; +</b>
+<i>448</i>&nbsp;                    inputType);
+<i>449</i>&nbsp;        }
+<i>450</i>&nbsp;
+<b class="nc"><i>451</i>&nbsp;        return output;</b>
+<i>452</i>&nbsp;    }
+<i>453</i>&nbsp;
+<i>454</i>&nbsp;    public static String getScaledImageName(String path) {
+<b class="nc"><i>455</i>&nbsp;        StringBuilder result = new StringBuilder();</b>
+<b class="nc"><i>456</i>&nbsp;        int slash = path.lastIndexOf(&#39;/&#39;);</b>
+<b class="nc"><i>457</i>&nbsp;        String name = (slash &lt; 0) ? path : path.substring(slash + 1);</b>
+<b class="nc"><i>458</i>&nbsp;        int dot = name.lastIndexOf(&quot;.&quot;);</b>
+<b class="nc"><i>459</i>&nbsp;        if (dot &lt; 0) {</b>
+<b class="nc"><i>460</i>&nbsp;            dot = name.length();</b>
+<i>461</i>&nbsp;        }
+<b class="nc"><i>462</i>&nbsp;        if (slash &gt;= 0) {</b>
+<b class="nc"><i>463</i>&nbsp;            result.append(path.substring(0, slash + 1));</b>
+<i>464</i>&nbsp;        }
+<b class="nc"><i>465</i>&nbsp;        result.append(name.substring(0, dot));</b>
+<b class="nc"><i>466</i>&nbsp;        result.append(&quot;@2x&quot;);</b>
+<b class="nc"><i>467</i>&nbsp;        result.append(name.substring(dot));</b>
+<b class="nc"><i>468</i>&nbsp;        return result.toString();</b>
+<i>469</i>&nbsp;    }
+<i>470</i>&nbsp;
+<i>471</i>&nbsp;    public static InputStream createInputStream(String input) throws IOException {
+<b class="fc"><i>472</i>&nbsp;        InputStream stream = null;</b>
+<i>473</i>&nbsp;
+<i>474</i>&nbsp;        // there should be a central utility  for mapping these Strings to their
+<i>475</i>&nbsp;        // inputStreams
+<i>476</i>&nbsp;        try {
+<b class="fc"><i>477</i>&nbsp;            File file = new File(input);</b>
+<b class="fc"><i>478</i>&nbsp;            if (file.exists()) {</b>
+<b class="nc"><i>479</i>&nbsp;                stream = new FileInputStream(file);</b>
+<i>480</i>&nbsp;            }
+<b class="nc"><i>481</i>&nbsp;        } catch (Exception e) {</b>
+<i>482</i>&nbsp;            // ignore exception and try as url.
+<b class="fc"><i>483</i>&nbsp;        }</b>
+<b class="fc"><i>484</i>&nbsp;        if (stream == null) {</b>
+<b class="fc"><i>485</i>&nbsp;            URL url = new URL(input);</b>
+<b class="fc"><i>486</i>&nbsp;            stream = url.openStream();</b>
+<i>487</i>&nbsp;        }
+<b class="fc"><i>488</i>&nbsp;        return stream;</b>
+<i>489</i>&nbsp;    }
+<i>490</i>&nbsp;
+<i>491</i>&nbsp;    // Helper for computeUpdatedPixels method
+<i>492</i>&nbsp;    private static void computeUpdatedPixels(int sourceOffset,
+<i>493</i>&nbsp;            int sourceExtent,
+<i>494</i>&nbsp;            int destinationOffset,
+<i>495</i>&nbsp;            int dstMin,
+<i>496</i>&nbsp;            int dstMax,
+<i>497</i>&nbsp;            int sourceSubsampling,
+<i>498</i>&nbsp;            int passStart,
+<i>499</i>&nbsp;            int passExtent,
+<i>500</i>&nbsp;            int passPeriod,
+<i>501</i>&nbsp;            int[] vals,
+<i>502</i>&nbsp;            int offset) {
+<i>503</i>&nbsp;        // We need to satisfy the congruences:
+<i>504</i>&nbsp;        // dst = destinationOffset + (src - sourceOffset)/sourceSubsampling
+<i>505</i>&nbsp;        //
+<i>506</i>&nbsp;        // src - passStart == 0 (mod passPeriod)
+<i>507</i>&nbsp;        // src - sourceOffset == 0 (mod sourceSubsampling)
+<i>508</i>&nbsp;        //
+<i>509</i>&nbsp;        // subject to the inequalities:
+<i>510</i>&nbsp;        //
+<i>511</i>&nbsp;        // src &gt;= passStart
+<i>512</i>&nbsp;        // src &lt; passStart + passExtent
+<i>513</i>&nbsp;        // src &gt;= sourceOffset
+<i>514</i>&nbsp;        // src &lt; sourceOffset + sourceExtent
+<i>515</i>&nbsp;        // dst &gt;= dstMin
+<i>516</i>&nbsp;        // dst &lt;= dstmax
+<i>517</i>&nbsp;        //
+<i>518</i>&nbsp;        // where
+<i>519</i>&nbsp;        //
+<i>520</i>&nbsp;        // dst = destinationOffset + (src - sourceOffset)/sourceSubsampling
+<i>521</i>&nbsp;        //
+<i>522</i>&nbsp;        // For now we use a brute-force approach although we could
+<i>523</i>&nbsp;        // attempt to analyze the congruences.  If passPeriod and
+<i>524</i>&nbsp;        // sourceSubsamling are relatively prime, the period will be
+<i>525</i>&nbsp;        // their product.  If they share a common factor, either the
+<i>526</i>&nbsp;        // period will be equal to the larger value, or the sequences
+<i>527</i>&nbsp;        // will be completely disjoint, depending on the relationship
+<i>528</i>&nbsp;        // between passStart and sourceOffset.  Since we only have to do this
+<i>529</i>&nbsp;        // twice per image (once each for X and Y), it seems cheap enough
+<i>530</i>&nbsp;        // to do it the straightforward way.
+<i>531</i>&nbsp;
+<b class="nc"><i>532</i>&nbsp;        boolean gotPixel = false;</b>
+<b class="nc"><i>533</i>&nbsp;        int firstDst = -1;</b>
+<b class="nc"><i>534</i>&nbsp;        int secondDst = -1;</b>
+<b class="nc"><i>535</i>&nbsp;        int lastDst = -1;</b>
+<i>536</i>&nbsp;
+<b class="nc"><i>537</i>&nbsp;        for (int i = 0; i &lt; passExtent; i++) {</b>
+<b class="nc"><i>538</i>&nbsp;            int src = passStart + i * passPeriod;</b>
+<b class="nc"><i>539</i>&nbsp;            if (src &lt; sourceOffset) {</b>
+<b class="nc"><i>540</i>&nbsp;                continue;</b>
+<i>541</i>&nbsp;            }
+<b class="nc"><i>542</i>&nbsp;            if ((src - sourceOffset) % sourceSubsampling != 0) {</b>
+<b class="nc"><i>543</i>&nbsp;                continue;</b>
+<i>544</i>&nbsp;            }
+<b class="nc"><i>545</i>&nbsp;            if (src &gt;= sourceOffset + sourceExtent) {</b>
+<b class="nc"><i>546</i>&nbsp;                break;</b>
+<i>547</i>&nbsp;            }
+<i>548</i>&nbsp;
+<b class="nc"><i>549</i>&nbsp;            int dst = destinationOffset +</b>
+<i>550</i>&nbsp;                    (src - sourceOffset) / sourceSubsampling;
+<b class="nc"><i>551</i>&nbsp;            if (dst &lt; dstMin) {</b>
+<b class="nc"><i>552</i>&nbsp;                continue;</b>
+<i>553</i>&nbsp;            }
+<b class="nc"><i>554</i>&nbsp;            if (dst &gt; dstMax) {</b>
+<b class="nc"><i>555</i>&nbsp;                break;</b>
+<i>556</i>&nbsp;            }
+<i>557</i>&nbsp;
+<b class="nc"><i>558</i>&nbsp;            if (!gotPixel) {</b>
+<b class="nc"><i>559</i>&nbsp;                firstDst = dst; // Record smallest valid pixel</b>
+<b class="nc"><i>560</i>&nbsp;                gotPixel = true;</b>
+<b class="nc"><i>561</i>&nbsp;            } else if (secondDst == -1) {</b>
+<b class="nc"><i>562</i>&nbsp;                secondDst = dst; // Record second smallest valid pixel</b>
+<i>563</i>&nbsp;            }
+<b class="nc"><i>564</i>&nbsp;            lastDst = dst; // Record largest valid pixel</b>
+<i>565</i>&nbsp;        }
+<i>566</i>&nbsp;
+<b class="nc"><i>567</i>&nbsp;        vals[offset] = firstDst;</b>
+<i>568</i>&nbsp;
+<i>569</i>&nbsp;        // If we never saw a valid pixel, set width to 0
+<b class="nc"><i>570</i>&nbsp;        if (!gotPixel) {</b>
+<b class="nc"><i>571</i>&nbsp;            vals[offset + 2] = 0;</b>
+<i>572</i>&nbsp;        } else {
+<b class="nc"><i>573</i>&nbsp;            vals[offset + 2] = lastDst - firstDst + 1;</b>
+<i>574</i>&nbsp;        }
+<i>575</i>&nbsp;
+<i>576</i>&nbsp;        // The period is given by the difference of any two adjacent pixels
+<b class="nc"><i>577</i>&nbsp;        vals[offset + 4] = Math.max(secondDst - firstDst, 1);</b>
+<b class="nc"><i>578</i>&nbsp;    }</b>
+<i>579</i>&nbsp;
+<i>580</i>&nbsp;    /**
+<i>581</i>&nbsp;     * A utility method that computes the exact set of destination
+<i>582</i>&nbsp;     * pixels that will be written during a particular decoding pass.
+<i>583</i>&nbsp;     * The intent is to simplify the work done by readers in combining
+<i>584</i>&nbsp;     * the source region, source subsampling, and destination offset
+<i>585</i>&nbsp;     * information obtained from the &lt;code&gt;ImageReadParam&lt;/code&gt; with
+<i>586</i>&nbsp;     * the offsets and periods of a progressive or interlaced decoding
+<i>587</i>&nbsp;     * pass.
+<i>588</i>&nbsp;     *
+<i>589</i>&nbsp;     * @param sourceRegion a &lt;code&gt;Rectangle&lt;/code&gt; containing the
+<i>590</i>&nbsp;     * source region being read, offset by the source subsampling
+<i>591</i>&nbsp;     * offsets, and clipped against the source bounds, as returned by
+<i>592</i>&nbsp;     * the &lt;code&gt;getSourceRegion&lt;/code&gt; method.
+<i>593</i>&nbsp;     * @param destinationOffset a &lt;code&gt;Point&lt;/code&gt; containing the
+<i>594</i>&nbsp;     * coordinates of the upper-left pixel to be written in the
+<i>595</i>&nbsp;     * destination.
+<i>596</i>&nbsp;     * @param dstMinX the smallest X coordinate (inclusive) of the
+<i>597</i>&nbsp;     * destination &lt;code&gt;Raster&lt;/code&gt;.
+<i>598</i>&nbsp;     * @param dstMinY the smallest Y coordinate (inclusive) of the
+<i>599</i>&nbsp;     * destination &lt;code&gt;Raster&lt;/code&gt;.
+<i>600</i>&nbsp;     * @param dstMaxX the largest X coordinate (inclusive) of the destination
+<i>601</i>&nbsp;     * &lt;code&gt;Raster&lt;/code&gt;.
+<i>602</i>&nbsp;     * @param dstMaxY the largest Y coordinate (inclusive) of the destination
+<i>603</i>&nbsp;     * &lt;code&gt;Raster&lt;/code&gt;.
+<i>604</i>&nbsp;     * @param sourceXSubsampling the X subsampling factor.
+<i>605</i>&nbsp;     * @param sourceYSubsampling the Y subsampling factor.
+<i>606</i>&nbsp;     * @param passXStart the smallest source X coordinate (inclusive)
+<i>607</i>&nbsp;     * of the current progressive pass.
+<i>608</i>&nbsp;     * @param passYStart the smallest source Y coordinate (inclusive)
+<i>609</i>&nbsp;     * of the current progressive pass.
+<i>610</i>&nbsp;     * @param passWidth the width in pixels of the current progressive
+<i>611</i>&nbsp;     * pass.
+<i>612</i>&nbsp;     * @param passHeight the height in pixels of the current progressive
+<i>613</i>&nbsp;     * pass.
+<i>614</i>&nbsp;     * @param passPeriodX the X period (horizontal spacing between
+<i>615</i>&nbsp;     * pixels) of the current progressive pass.
+<i>616</i>&nbsp;     * @param passPeriodY the Y period (vertical spacing between
+<i>617</i>&nbsp;     * pixels) of the current progressive pass.
+<i>618</i>&nbsp;     *
+<i>619</i>&nbsp;     * @return an array of 6 &lt;code&gt;int&lt;/code&gt;s containing the
+<i>620</i>&nbsp;     * destination min X, min Y, width, height, X period and Y period
+<i>621</i>&nbsp;     * of the region that will be updated.
+<i>622</i>&nbsp;     */
+<i>623</i>&nbsp;    public static int[] computeUpdatedPixels(Rectangle sourceRegion,
+<i>624</i>&nbsp;            Point2D destinationOffset,
+<i>625</i>&nbsp;            int dstMinX,
+<i>626</i>&nbsp;            int dstMinY,
+<i>627</i>&nbsp;            int dstMaxX,
+<i>628</i>&nbsp;            int dstMaxY,
+<i>629</i>&nbsp;            int sourceXSubsampling,
+<i>630</i>&nbsp;            int sourceYSubsampling,
+<i>631</i>&nbsp;            int passXStart,
+<i>632</i>&nbsp;            int passYStart,
+<i>633</i>&nbsp;            int passWidth,
+<i>634</i>&nbsp;            int passHeight,
+<i>635</i>&nbsp;            int passPeriodX,
+<i>636</i>&nbsp;            int passPeriodY) {
+<b class="nc"><i>637</i>&nbsp;        int[] vals = new int[6];</b>
+<b class="nc"><i>638</i>&nbsp;        computeUpdatedPixels(sourceRegion.x, sourceRegion.width,</b>
+<i>639</i>&nbsp;                (int) (destinationOffset.x + 0.5F),
+<i>640</i>&nbsp;                dstMinX, dstMaxX, sourceXSubsampling,
+<i>641</i>&nbsp;                passXStart, passWidth, passPeriodX,
+<i>642</i>&nbsp;                vals, 0);
+<b class="nc"><i>643</i>&nbsp;        computeUpdatedPixels(sourceRegion.y, sourceRegion.height,</b>
+<i>644</i>&nbsp;                (int) (destinationOffset.y + 0.5F),
+<i>645</i>&nbsp;                dstMinY, dstMaxY, sourceYSubsampling,
+<i>646</i>&nbsp;                passYStart, passHeight, passPeriodY,
+<i>647</i>&nbsp;                vals, 1);
+<b class="nc"><i>648</i>&nbsp;        return vals;</b>
+<i>649</i>&nbsp;    }
+<i>650</i>&nbsp;
+<i>651</i>&nbsp;    public static int[] computeDimensions(int sourceWidth, int sourceHeight,
+<i>652</i>&nbsp;            int maxWidth, int maxHeight, boolean preserveAspectRatio) {
+<i>653</i>&nbsp;        // ensure non-negative dimensions (0 implies default)
+<b class="fc"><i>654</i>&nbsp;        int finalWidth = maxWidth &lt; 0 ? 0 : maxWidth;</b>
+<b class="fc"><i>655</i>&nbsp;        int finalHeight = maxHeight &lt; 0 ? 0 : maxHeight;</b>
+<i>656</i>&nbsp;
+<b class="fc"><i>657</i>&nbsp;        if(finalWidth == 0 &amp;&amp; finalHeight == 0) {</b>
+<i>658</i>&nbsp;            // default to source dimensions
+<b class="fc"><i>659</i>&nbsp;            finalWidth = sourceWidth;</b>
+<b class="fc"><i>660</i>&nbsp;            finalHeight = sourceHeight;</b>
+<b class="nc"><i>661</i>&nbsp;        } else if (finalWidth != sourceWidth || finalHeight != sourceHeight) {</b>
+<b class="nc"><i>662</i>&nbsp;            if (preserveAspectRatio) {</b>
+<i>663</i>&nbsp;                // compute the final dimensions
+<b class="nc"><i>664</i>&nbsp;                if (finalWidth == 0) {</b>
+<b class="nc"><i>665</i>&nbsp;                    finalWidth = (int) ((float) sourceWidth * finalHeight / sourceHeight);</b>
+<b class="nc"><i>666</i>&nbsp;                } else if (finalHeight == 0) {</b>
+<b class="nc"><i>667</i>&nbsp;                    finalHeight = (int) ((float) sourceHeight * finalWidth / sourceWidth);</b>
+<i>668</i>&nbsp;                } else {
+<b class="nc"><i>669</i>&nbsp;                    float scale = Math.min((float) finalWidth / sourceWidth, (float) finalHeight / sourceHeight);</b>
+<b class="nc"><i>670</i>&nbsp;                    finalWidth = (int) (sourceWidth * scale);</b>
+<b class="nc"><i>671</i>&nbsp;                    finalHeight = (int) (sourceHeight * scale);</b>
+<b class="nc"><i>672</i>&nbsp;                }</b>
+<i>673</i>&nbsp;            } else {
+<i>674</i>&nbsp;                // set final dimensions to default if zero
+<b class="nc"><i>675</i>&nbsp;                if (finalHeight == 0) {</b>
+<b class="nc"><i>676</i>&nbsp;                    finalHeight = sourceHeight;</b>
+<i>677</i>&nbsp;                }
+<b class="nc"><i>678</i>&nbsp;                if (finalWidth == 0) {</b>
+<b class="nc"><i>679</i>&nbsp;                    finalWidth = sourceWidth;</b>
+<i>680</i>&nbsp;                }
+<i>681</i>&nbsp;            }
+<i>682</i>&nbsp;
+<i>683</i>&nbsp;
+<i>684</i>&nbsp;            // clamp dimensions to positive values
+<b class="nc"><i>685</i>&nbsp;            if (finalWidth == 0) {</b>
+<b class="nc"><i>686</i>&nbsp;                finalWidth = 1;</b>
+<i>687</i>&nbsp;            }
+<b class="nc"><i>688</i>&nbsp;            if (finalHeight == 0) {</b>
+<b class="nc"><i>689</i>&nbsp;                finalHeight = 1;</b>
+<i>690</i>&nbsp;            }
+<i>691</i>&nbsp;        }
+<i>692</i>&nbsp;
+<i>693</i>&nbsp;
+<b class="fc"><i>694</i>&nbsp;        return new int[]{finalWidth, finalHeight};</b>
+<i>695</i>&nbsp;    }
+<i>696</i>&nbsp;
+<i>697</i>&nbsp;    public static ImageFrame scaleImageFrame(ImageFrame src,
+<i>698</i>&nbsp;            int destWidth, int destHeight, boolean isSmooth)
+<i>699</i>&nbsp;    {
+<b class="nc"><i>700</i>&nbsp;        int numBands = ImageStorage.getNumBands(src.getImageType());</b>
+<b class="nc"><i>701</i>&nbsp;        ByteBuffer dst = scaleImage((ByteBuffer) src.getImageData(),</b>
+<b class="nc"><i>702</i>&nbsp;                src.getWidth(), src.getHeight(), numBands,</b>
+<i>703</i>&nbsp;                destWidth, destHeight, isSmooth);
+<b class="nc"><i>704</i>&nbsp;        return new ImageFrame(src.getImageType(), dst,</b>
+<b class="nc"><i>705</i>&nbsp;                destWidth, destHeight, destWidth * numBands, null, src.getMetadata());</b>
+<i>706</i>&nbsp;    }
+<i>707</i>&nbsp;
+<i>708</i>&nbsp;    public static ByteBuffer scaleImage(ByteBuffer src,
+<i>709</i>&nbsp;            int sourceWidth, int sourceHeight, int numBands,
+<i>710</i>&nbsp;            int destWidth, int destHeight, boolean isSmooth)
+<i>711</i>&nbsp;    {
+<b class="nc"><i>712</i>&nbsp;        PushbroomScaler scaler = ScalerFactory.createScaler(</b>
+<i>713</i>&nbsp;                sourceWidth, sourceHeight, numBands,
+<i>714</i>&nbsp;                destWidth, destHeight, isSmooth);
+<i>715</i>&nbsp;
+<b class="nc"><i>716</i>&nbsp;        int stride = sourceWidth * numBands;</b>
+<b class="nc"><i>717</i>&nbsp;        if (src.hasArray()) {</b>
+<b class="nc"><i>718</i>&nbsp;            byte image[] = src.array();</b>
+<b class="nc"><i>719</i>&nbsp;            for (int y = 0; y != sourceHeight; ++y) {</b>
+<b class="nc"><i>720</i>&nbsp;                scaler.putSourceScanline(image, y * stride);</b>
+<i>721</i>&nbsp;            }
+<b class="nc"><i>722</i>&nbsp;        } else {</b>
+<b class="nc"><i>723</i>&nbsp;            byte scanline[] = new byte[stride];</b>
+<b class="nc"><i>724</i>&nbsp;            for (int y = 0; y != sourceHeight; ++y) {</b>
+<b class="nc"><i>725</i>&nbsp;                src.get(scanline);</b>
+<b class="nc"><i>726</i>&nbsp;                scaler.putSourceScanline(scanline, 0);</b>
+<i>727</i>&nbsp;            }
+<i>728</i>&nbsp;        }
+<i>729</i>&nbsp;
+<b class="nc"><i>730</i>&nbsp;        return scaler.getDestination();</b>
+<i>731</i>&nbsp;    }
+<i>732</i>&nbsp;//    public static final java.awt.image.BufferedImage getAsBufferedImage(Image prismImage) {
+<i>733</i>&nbsp;//        java.awt.image.BufferedImage image = null;
+<i>734</i>&nbsp;//
+<i>735</i>&nbsp;//        int width = prismImage.getWidth();
+<i>736</i>&nbsp;//        int height = prismImage.getHeight();
+<i>737</i>&nbsp;//        int scanlineStride = prismImage.getScanlineStride();
+<i>738</i>&nbsp;//        byte[] pixels = ((java.nio.ByteBuffer) prismImage.getPixelBuffer()).array();
+<i>739</i>&nbsp;//        switch (prismImage.getPixelFormat()) {
+<i>740</i>&nbsp;//            case BYTE_GRAY: {
+<i>741</i>&nbsp;//                image = new java.awt.image.BufferedImage(width, height,
+<i>742</i>&nbsp;//                        java.awt.image.BufferedImage.TYPE_BYTE_GRAY);
+<i>743</i>&nbsp;//                java.awt.image.DataBufferByte db =
+<i>744</i>&nbsp;//                        (java.awt.image.DataBufferByte) image.getRaster().getDataBuffer();
+<i>745</i>&nbsp;//                byte[] data = db.getData();
+<i>746</i>&nbsp;//                System.arraycopy(pixels, 0, data, 0, width * height);
+<i>747</i>&nbsp;//            }
+<i>748</i>&nbsp;//            break;
+<i>749</i>&nbsp;//            case BYTE_RGB: {
+<i>750</i>&nbsp;//                image = new java.awt.image.BufferedImage(width, height,
+<i>751</i>&nbsp;//                        java.awt.image.BufferedImage.TYPE_3BYTE_BGR);
+<i>752</i>&nbsp;//                for (int y = 0; y &lt; height; y++) {
+<i>753</i>&nbsp;//                    int off = y * scanlineStride;
+<i>754</i>&nbsp;//                    for (int x = 0; x &lt; width; x++) {
+<i>755</i>&nbsp;//                        int rgb = ((pixels[off++] &amp; 0xff) &lt;&lt; 16) |
+<i>756</i>&nbsp;//                                ((pixels[off++] &amp; 0xff) &lt;&lt; 8) |
+<i>757</i>&nbsp;//                                (pixels[off++] &amp; 0xff);
+<i>758</i>&nbsp;//                        image.setRGB(x, y, rgb);
+<i>759</i>&nbsp;//                    }
+<i>760</i>&nbsp;//                }
+<i>761</i>&nbsp;//            }
+<i>762</i>&nbsp;//            break;
+<i>763</i>&nbsp;//            case BYTE_RGBA_PRE: {
+<i>764</i>&nbsp;//                image = new java.awt.image.BufferedImage(width, height,
+<i>765</i>&nbsp;//                        java.awt.image.BufferedImage.TYPE_4BYTE_ABGR_PRE);
+<i>766</i>&nbsp;////                for (int y = 0; y &lt; height; y++) {
+<i>767</i>&nbsp;////                    int off = y * scanlineStride;
+<i>768</i>&nbsp;////                    for (int x = 0; x &lt; width; x++) {
+<i>769</i>&nbsp;////                        int rgb = ((pixels[off++] &amp; 0xff) &lt;&lt; 16) |
+<i>770</i>&nbsp;////                                ((pixels[off++] &amp; 0xff) &lt;&lt; 8) |
+<i>771</i>&nbsp;////                                (pixels[off++] &amp; 0xff) |
+<i>772</i>&nbsp;////                                ((pixels[off++] &amp; 0xff) &lt;&lt; 24);
+<i>773</i>&nbsp;////                        image.setRGB(x, y, rgb);
+<i>774</i>&nbsp;////                    }
+<i>775</i>&nbsp;////                }
+<i>776</i>&nbsp;//                java.awt.image.DataBufferByte db =
+<i>777</i>&nbsp;//                        (java.awt.image.DataBufferByte) image.getRaster().getDataBuffer();
+<i>778</i>&nbsp;//                byte[] data = db.getData();
+<i>779</i>&nbsp;//                for (int y = 0; y &lt; height; y++) {
+<i>780</i>&nbsp;//                    int offPrism = y * scanlineStride;
+<i>781</i>&nbsp;//                    int offImage = y * width * 4;
+<i>782</i>&nbsp;//                    for (int x = 0; x &lt; width; x++) {
+<i>783</i>&nbsp;//                        data[offImage++] = pixels[offPrism + 3]; // A
+<i>784</i>&nbsp;//                        data[offImage++] = pixels[offPrism + 2]; // B
+<i>785</i>&nbsp;//                        data[offImage++] = pixels[offPrism + 1]; // G
+<i>786</i>&nbsp;//                        data[offImage++] = pixels[offPrism];     // R
+<i>787</i>&nbsp;//                        offPrism += 4;
+<i>788</i>&nbsp;//                    }
+<i>789</i>&nbsp;//                }
+<i>790</i>&nbsp;//            }
+<i>791</i>&nbsp;//            break;
+<i>792</i>&nbsp;//            default:
+<i>793</i>&nbsp;//                throw new UnsupportedOperationException(&quot;Unsupported test case &quot; +
+<i>794</i>&nbsp;//                        prismImage.getPixelFormat());
+<i>795</i>&nbsp;//        }
+<i>796</i>&nbsp;//
+<i>797</i>&nbsp;//        return image;
+<i>798</i>&nbsp;//    }
+<i>799</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2017-12-04 21:49</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,547 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: ChoiceBoxSkin</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">javafx.scene.control.skin</a> ]
+</div>
+
+<h1>Coverage Summary for Class: ChoiceBoxSkin (javafx.scene.control.skin)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">ChoiceBoxSkin</td>
+<td class="coverageStat">
+  <span class="percent">
+    75%
+  </span>
+  <span class="absValue">
+    (18/ 24)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    79.5%
+  </span>
+  <span class="absValue">
+    (128/ 161)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">ChoiceBoxSkin$1</td>
+<td class="coverageStat">
+  <span class="percent">
+    50%
+  </span>
+  <span class="absValue">
+    (1/ 2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    5.9%
+  </span>
+  <span class="absValue">
+    (1/ 17)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    73.1%
+  </span>
+  <span class="absValue">
+    (19/ 26)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    72.5%
+  </span>
+  <span class="absValue">
+    (129/ 178)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright (c) 2010, 2016, Oracle and/or its affiliates. All rights reserved.
+<i>3</i>&nbsp; * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+<i>4</i>&nbsp; *
+<i>5</i>&nbsp; *
+<i>6</i>&nbsp; *
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; *
+<i>11</i>&nbsp; *
+<i>12</i>&nbsp; *
+<i>13</i>&nbsp; *
+<i>14</i>&nbsp; *
+<i>15</i>&nbsp; *
+<i>16</i>&nbsp; *
+<i>17</i>&nbsp; *
+<i>18</i>&nbsp; *
+<i>19</i>&nbsp; *
+<i>20</i>&nbsp; *
+<i>21</i>&nbsp; *
+<i>22</i>&nbsp; *
+<i>23</i>&nbsp; *
+<i>24</i>&nbsp; */
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;package javafx.scene.control.skin;
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;import com.sun.javafx.scene.control.ContextMenuContent;
+<i>29</i>&nbsp;import com.sun.javafx.scene.control.behavior.BehaviorBase;
+<i>30</i>&nbsp;import javafx.beans.WeakInvalidationListener;
+<i>31</i>&nbsp;import javafx.scene.Node;
+<i>32</i>&nbsp;import javafx.scene.control.Accordion;
+<i>33</i>&nbsp;import javafx.scene.control.Button;
+<i>34</i>&nbsp;import javafx.scene.control.Control;
+<i>35</i>&nbsp;import javafx.scene.control.SkinBase;
+<i>36</i>&nbsp;import javafx.util.StringConverter;
+<i>37</i>&nbsp;import javafx.beans.InvalidationListener;
+<i>38</i>&nbsp;import javafx.collections.ListChangeListener;
+<i>39</i>&nbsp;import javafx.collections.ObservableList;
+<i>40</i>&nbsp;import javafx.geometry.HPos;
+<i>41</i>&nbsp;import javafx.geometry.Side;
+<i>42</i>&nbsp;import javafx.geometry.VPos;
+<i>43</i>&nbsp;import javafx.scene.control.ChoiceBox;
+<i>44</i>&nbsp;import javafx.scene.control.ContextMenu;
+<i>45</i>&nbsp;import javafx.scene.control.Label;
+<i>46</i>&nbsp;import javafx.scene.control.MenuItem;
+<i>47</i>&nbsp;import javafx.scene.control.RadioMenuItem;
+<i>48</i>&nbsp;import javafx.scene.control.SelectionModel;
+<i>49</i>&nbsp;import javafx.scene.control.Separator;
+<i>50</i>&nbsp;import javafx.scene.control.SeparatorMenuItem;
+<i>51</i>&nbsp;import javafx.scene.control.ToggleGroup;
+<i>52</i>&nbsp;import javafx.scene.layout.StackPane;
+<i>53</i>&nbsp;import javafx.scene.text.Text;
+<i>54</i>&nbsp;
+<i>55</i>&nbsp;import com.sun.javafx.scene.control.behavior.ChoiceBoxBehavior;
+<i>56</i>&nbsp;import javafx.collections.WeakListChangeListener;
+<i>57</i>&nbsp;
+<i>58</i>&nbsp;
+<i>59</i>&nbsp;/**
+<i>60</i>&nbsp; * Default skin implementation for the {@link ChoiceBox} control.
+<i>61</i>&nbsp; *
+<i>62</i>&nbsp; * @see ChoiceBox
+<i>63</i>&nbsp; * @since 9
+<i>64</i>&nbsp; */
+<b class="nc"><i>65</i>&nbsp;public class ChoiceBoxSkin&lt;T&gt; extends SkinBase&lt;ChoiceBox&lt;T&gt;&gt; {</b>
+<i>66</i>&nbsp;
+<i>67</i>&nbsp;    /***************************************************************************
+<i>68</i>&nbsp;     *                                                                         *
+<i>69</i>&nbsp;     * Private fields                                                          *
+<i>70</i>&nbsp;     *                                                                         *
+<i>71</i>&nbsp;     **************************************************************************/
+<i>72</i>&nbsp;
+<i>73</i>&nbsp;    private ObservableList&lt;T&gt; choiceBoxItems;
+<i>74</i>&nbsp;
+<i>75</i>&nbsp;    private ContextMenu popup;
+<i>76</i>&nbsp;
+<i>77</i>&nbsp;    // The region that shows the &quot;arrow&quot; box portion
+<i>78</i>&nbsp;    private StackPane openButton;
+<i>79</i>&nbsp;
+<b class="fc"><i>80</i>&nbsp;    private final ToggleGroup toggleGroup = new ToggleGroup();</b>
+<i>81</i>&nbsp;
+<i>82</i>&nbsp;    /*
+<i>83</i>&nbsp;     * Watch for if the user changes the selected index, and if so, we toggle
+<i>84</i>&nbsp;     * the selection in the toggle group (so the check shows in the right place)
+<i>85</i>&nbsp;     */
+<i>86</i>&nbsp;    private SelectionModel&lt;T&gt; selectionModel;
+<i>87</i>&nbsp;
+<i>88</i>&nbsp;    private Label label;
+<i>89</i>&nbsp;
+<i>90</i>&nbsp;    private final BehaviorBase&lt;ChoiceBox&lt;T&gt;&gt; behavior;
+<i>91</i>&nbsp;
+<i>92</i>&nbsp;
+<i>93</i>&nbsp;
+<i>94</i>&nbsp;    /***************************************************************************
+<i>95</i>&nbsp;     *                                                                         *
+<i>96</i>&nbsp;     * Listeners                                                               *
+<i>97</i>&nbsp;     *                                                                         *
+<i>98</i>&nbsp;     **************************************************************************/
+<i>99</i>&nbsp;
+<b class="fc"><i>100</i>&nbsp;    private final ListChangeListener&lt;T&gt; choiceBoxItemsListener = new ListChangeListener&lt;T&gt;() {</b>
+<i>101</i>&nbsp;        @Override public void onChanged(Change&lt;? extends T&gt; c) {
+<b class="nc"><i>102</i>&nbsp;            while (c.next()) {</b>
+<b class="nc"><i>103</i>&nbsp;                if (c.getRemovedSize() &gt; 0 || c.wasPermutated()) {</b>
+<b class="nc"><i>104</i>&nbsp;                    toggleGroup.getToggles().clear();</b>
+<b class="nc"><i>105</i>&nbsp;                    popup.getItems().clear();</b>
+<b class="nc"><i>106</i>&nbsp;                    int i = 0;</b>
+<b class="nc"><i>107</i>&nbsp;                    for (T obj : c.getList()) {</b>
+<b class="nc"><i>108</i>&nbsp;                        addPopupItem(obj, i);</b>
+<b class="nc"><i>109</i>&nbsp;                        i++;</b>
+<b class="nc"><i>110</i>&nbsp;                    }</b>
+<b class="nc"><i>111</i>&nbsp;                } else {</b>
+<b class="nc"><i>112</i>&nbsp;                    for (int i = c.getFrom(); i &lt; c.getTo(); i++) {</b>
+<b class="nc"><i>113</i>&nbsp;                        final T obj = c.getList().get(i);</b>
+<b class="nc"><i>114</i>&nbsp;                        addPopupItem(obj, i);</b>
+<i>115</i>&nbsp;                    }
+<i>116</i>&nbsp;                }
+<i>117</i>&nbsp;            }
+<b class="nc"><i>118</i>&nbsp;            updateSelection();</b>
+<b class="nc"><i>119</i>&nbsp;            getSkinnable().requestLayout(); // RT-18052 resize of choicebox should happen immediately.</b>
+<b class="nc"><i>120</i>&nbsp;        }</b>
+<i>121</i>&nbsp;    };
+<i>122</i>&nbsp;
+<b class="fc"><i>123</i>&nbsp;    private final WeakListChangeListener&lt;T&gt; weakChoiceBoxItemsListener =</b>
+<i>124</i>&nbsp;            new WeakListChangeListener&lt;T&gt;(choiceBoxItemsListener);
+<i>125</i>&nbsp;
+<i>126</i>&nbsp;    private final InvalidationListener itemsObserver;
+<i>127</i>&nbsp;
+<i>128</i>&nbsp;
+<i>129</i>&nbsp;
+<i>130</i>&nbsp;    /***************************************************************************
+<i>131</i>&nbsp;     *                                                                         *
+<i>132</i>&nbsp;     * Constructors                                                            *
+<i>133</i>&nbsp;     *                                                                         *
+<i>134</i>&nbsp;     **************************************************************************/
+<i>135</i>&nbsp;
+<i>136</i>&nbsp;    /**
+<i>137</i>&nbsp;     * Creates a new ChoiceBoxSkin instance, installing the necessary child
+<i>138</i>&nbsp;     * nodes into the Control {@link Control#getChildren() children} list, as
+<i>139</i>&nbsp;     * well as the necessary input mappings for handling key, mouse, etc events.
+<i>140</i>&nbsp;     *
+<i>141</i>&nbsp;     * @param control The control that this skin should be installed onto.
+<i>142</i>&nbsp;     */
+<i>143</i>&nbsp;    public ChoiceBoxSkin(ChoiceBox&lt;T&gt; control) {
+<b class="fc"><i>144</i>&nbsp;        super(control);</b>
+<i>145</i>&nbsp;
+<i>146</i>&nbsp;        // install default input map for the ChoiceBox control
+<b class="fc"><i>147</i>&nbsp;        behavior = new ChoiceBoxBehavior&lt;&gt;(control);</b>
+<i>148</i>&nbsp;//        control.setInputMap(behavior.getInputMap());
+<i>149</i>&nbsp;
+<b class="fc"><i>150</i>&nbsp;        initialize();</b>
+<i>151</i>&nbsp;
+<b class="fc"><i>152</i>&nbsp;        itemsObserver = observable -&gt; updateChoiceBoxItems();</b>
+<b class="fc"><i>153</i>&nbsp;        control.itemsProperty().addListener(new WeakInvalidationListener(itemsObserver));</b>
+<i>154</i>&nbsp;
+<b class="fc"><i>155</i>&nbsp;        control.requestLayout();</b>
+<b class="fc"><i>156</i>&nbsp;        registerChangeListener(control.selectionModelProperty(), e -&gt; updateSelectionModel());</b>
+<b class="fc"><i>157</i>&nbsp;        registerChangeListener(control.showingProperty(), e -&gt; {</b>
+<b class="fc"><i>158</i>&nbsp;            if (getSkinnable().isShowing()) {</b>
+<b class="fc"><i>159</i>&nbsp;                MenuItem item = null;</b>
+<i>160</i>&nbsp;
+<b class="fc"><i>161</i>&nbsp;                SelectionModel sm = getSkinnable().getSelectionModel();</b>
+<b class="fc"><i>162</i>&nbsp;                if (sm == null) return;</b>
+<i>163</i>&nbsp;
+<b class="fc"><i>164</i>&nbsp;                long currentSelectedIndex = sm.getSelectedIndex();</b>
+<b class="fc"><i>165</i>&nbsp;                int itemInControlCount = choiceBoxItems.size();</b>
+<b class="fc"><i>166</i>&nbsp;                boolean hasSelection = currentSelectedIndex &gt;= 0 &amp;&amp; currentSelectedIndex &lt; itemInControlCount;</b>
+<b class="fc"><i>167</i>&nbsp;                if (hasSelection) {</b>
+<b class="nc"><i>168</i>&nbsp;                    item = popup.getItems().get((int) currentSelectedIndex);</b>
+<b class="nc"><i>169</i>&nbsp;                    if (item != null &amp;&amp; item instanceof RadioMenuItem) ((RadioMenuItem)item).setSelected(true);</b>
+<i>170</i>&nbsp;                } else {
+<b class="fc"><i>171</i>&nbsp;                    if (itemInControlCount &gt; 0) item = popup.getItems().get(0);</b>
+<i>172</i>&nbsp;                }
+<i>173</i>&nbsp;
+<i>174</i>&nbsp;                // This is a fix for RT-9071. Ideally this won&#39;t be necessary in
+<i>175</i>&nbsp;                // the long-run, but for now at least this resolves the
+<i>176</i>&nbsp;                // positioning
+<i>177</i>&nbsp;                // problem of ChoiceBox inside a Cell.
+<b class="fc"><i>178</i>&nbsp;                getSkinnable().autosize();</b>
+<i>179</i>&nbsp;                // -- End of RT-9071 fix
+<i>180</i>&nbsp;
+<b class="fc"><i>181</i>&nbsp;                double y = 0;</b>
+<i>182</i>&nbsp;
+<b class="fc"><i>183</i>&nbsp;                if (popup.getSkin() != null) {</b>
+<b class="fc"><i>184</i>&nbsp;                    ContextMenuContent cmContent = (ContextMenuContent)popup.getSkin().getNode();</b>
+<b class="fc"><i>185</i>&nbsp;                    if (cmContent != null &amp;&amp; currentSelectedIndex != -1) {</b>
+<b class="nc"><i>186</i>&nbsp;                        y = -(cmContent.getMenuYOffset((int)currentSelectedIndex));</b>
+<i>187</i>&nbsp;                    }
+<i>188</i>&nbsp;                }
+<i>189</i>&nbsp;
+<b class="fc"><i>190</i>&nbsp;                popup.show(getSkinnable(), Side.BOTTOM, 2, y);</b>
+<b class="fc"><i>191</i>&nbsp;            } else {</b>
+<b class="fc"><i>192</i>&nbsp;                popup.hide();</b>
+<i>193</i>&nbsp;            }
+<b class="fc"><i>194</i>&nbsp;        });</b>
+<b class="fc"><i>195</i>&nbsp;        registerChangeListener(control.itemsProperty(), e -&gt; {</b>
+<b class="nc"><i>196</i>&nbsp;            updateChoiceBoxItems();</b>
+<b class="nc"><i>197</i>&nbsp;            updatePopupItems();</b>
+<b class="nc"><i>198</i>&nbsp;            updateSelectionModel();</b>
+<b class="nc"><i>199</i>&nbsp;            updateSelection();</b>
+<b class="nc"><i>200</i>&nbsp;            if(selectionModel != null &amp;&amp; selectionModel.getSelectedIndex() == -1) {</b>
+<b class="nc"><i>201</i>&nbsp;                label.setText(&quot;&quot;); // clear label text when selectedIndex is -1</b>
+<i>202</i>&nbsp;            }
+<b class="nc"><i>203</i>&nbsp;        });</b>
+<b class="fc"><i>204</i>&nbsp;        registerChangeListener(control.getSelectionModel().selectedItemProperty(), e -&gt; {</b>
+<b class="fc"><i>205</i>&nbsp;            if (getSkinnable().getSelectionModel() != null) {</b>
+<b class="fc"><i>206</i>&nbsp;                int index = getSkinnable().getSelectionModel().getSelectedIndex();</b>
+<b class="fc"><i>207</i>&nbsp;                if (index != -1) {</b>
+<b class="fc"><i>208</i>&nbsp;                    MenuItem item = popup.getItems().get(index);</b>
+<b class="fc"><i>209</i>&nbsp;                    if (item instanceof RadioMenuItem) ((RadioMenuItem)item).setSelected(true);</b>
+<i>210</i>&nbsp;                }
+<i>211</i>&nbsp;            }
+<b class="fc"><i>212</i>&nbsp;        });</b>
+<b class="fc"><i>213</i>&nbsp;        registerChangeListener(control.converterProperty(), e -&gt; {</b>
+<b class="nc"><i>214</i>&nbsp;            updateChoiceBoxItems();</b>
+<b class="nc"><i>215</i>&nbsp;            updatePopupItems();</b>
+<b class="nc"><i>216</i>&nbsp;        });</b>
+<b class="fc"><i>217</i>&nbsp;    }</b>
+<i>218</i>&nbsp;
+<i>219</i>&nbsp;
+<i>220</i>&nbsp;
+<i>221</i>&nbsp;    /***************************************************************************
+<i>222</i>&nbsp;     *                                                                         *
+<i>223</i>&nbsp;     * Public API                                                              *
+<i>224</i>&nbsp;     *                                                                         *
+<i>225</i>&nbsp;     **************************************************************************/
+<i>226</i>&nbsp;
+<i>227</i>&nbsp;    /** {@inheritDoc} */
+<i>228</i>&nbsp;    @Override public void dispose() {
+<b class="nc"><i>229</i>&nbsp;        super.dispose();</b>
+<i>230</i>&nbsp;
+<b class="nc"><i>231</i>&nbsp;        if (behavior != null) {</b>
+<b class="nc"><i>232</i>&nbsp;            behavior.dispose();</b>
+<i>233</i>&nbsp;        }
+<b class="nc"><i>234</i>&nbsp;    }</b>
+<i>235</i>&nbsp;
+<i>236</i>&nbsp;    /** {@inheritDoc} */
+<i>237</i>&nbsp;    @Override protected void layoutChildren(final double x, final double y,
+<i>238</i>&nbsp;                                            final double w, final double h) {
+<i>239</i>&nbsp;        // open button width/height
+<b class="fc"><i>240</i>&nbsp;        double obw = openButton.prefWidth(-1);</b>
+<i>241</i>&nbsp;
+<b class="fc"><i>242</i>&nbsp;        label.resizeRelocate(x, y, w, h);</b>
+<b class="fc"><i>243</i>&nbsp;        openButton.resize(obw, openButton.prefHeight(-1));</b>
+<b class="fc"><i>244</i>&nbsp;        positionInArea(openButton, (x+w) - obw,</b>
+<i>245</i>&nbsp;                y, obw, h, /*baseline ignored*/0, HPos.CENTER, VPos.CENTER);
+<b class="fc"><i>246</i>&nbsp;    }</b>
+<i>247</i>&nbsp;
+<i>248</i>&nbsp;    /** {@inheritDoc} */
+<i>249</i>&nbsp;    @Override protected double computeMinWidth(double height, double topInset, double rightInset, double bottomInset, double leftInset) {
+<b class="fc"><i>250</i>&nbsp;        final double boxWidth = label.minWidth(-1) + openButton.minWidth(-1);</b>
+<b class="fc"><i>251</i>&nbsp;        final double popupWidth = popup.minWidth(-1);</b>
+<b class="fc"><i>252</i>&nbsp;        return leftInset + Math.max(boxWidth, popupWidth) + rightInset;</b>
+<i>253</i>&nbsp;    }
+<i>254</i>&nbsp;
+<i>255</i>&nbsp;    /** {@inheritDoc} */
+<i>256</i>&nbsp;    @Override protected double computeMinHeight(double width, double topInset, double rightInset, double bottomInset, double leftInset) {
+<b class="fc"><i>257</i>&nbsp;        final double displayHeight = label.minHeight(-1);</b>
+<b class="fc"><i>258</i>&nbsp;        final double openButtonHeight = openButton.minHeight(-1);</b>
+<b class="fc"><i>259</i>&nbsp;        return topInset + Math.max(displayHeight, openButtonHeight) + bottomInset;</b>
+<i>260</i>&nbsp;    }
+<i>261</i>&nbsp;
+<i>262</i>&nbsp;    /** {@inheritDoc} */
+<i>263</i>&nbsp;    @Override protected double computePrefWidth(double height, double topInset, double rightInset, double bottomInset, double leftInset) {
+<b class="nc"><i>264</i>&nbsp;        final double boxWidth = label.prefWidth(-1)</b>
+<b class="nc"><i>265</i>&nbsp;                + openButton.prefWidth(-1);</b>
+<b class="nc"><i>266</i>&nbsp;        double popupWidth = popup.prefWidth(-1);</b>
+<b class="nc"><i>267</i>&nbsp;        if (popupWidth &lt;= 0) { // first time: when the popup has not shown yet</b>
+<b class="nc"><i>268</i>&nbsp;            if (popup.getItems().size() &gt; 0){</b>
+<b class="nc"><i>269</i>&nbsp;                popupWidth = (new Text(((MenuItem)popup.getItems().get(0)).getText())).prefWidth(-1);</b>
+<i>270</i>&nbsp;            }
+<i>271</i>&nbsp;        }
+<b class="nc"><i>272</i>&nbsp;        return (popup.getItems().size() == 0) ? 50 : leftInset + Math.max(boxWidth, popupWidth)</b>
+<b class="nc"><i>273</i>&nbsp;                + rightInset;</b>
+<i>274</i>&nbsp;    }
+<i>275</i>&nbsp;
+<i>276</i>&nbsp;    /** {@inheritDoc} */
+<i>277</i>&nbsp;    @Override protected double computePrefHeight(double width, double topInset, double rightInset, double bottomInset, double leftInset) {
+<b class="fc"><i>278</i>&nbsp;        final double displayHeight = label.prefHeight(-1);</b>
+<b class="fc"><i>279</i>&nbsp;        final double openButtonHeight = openButton.prefHeight(-1);</b>
+<b class="fc"><i>280</i>&nbsp;        return topInset</b>
+<b class="fc"><i>281</i>&nbsp;                + Math.max(displayHeight, openButtonHeight)</b>
+<i>282</i>&nbsp;                + bottomInset;
+<i>283</i>&nbsp;    }
+<i>284</i>&nbsp;
+<i>285</i>&nbsp;    /** {@inheritDoc} */
+<i>286</i>&nbsp;    @Override protected double computeMaxHeight(double width, double topInset, double rightInset, double bottomInset, double leftInset) {
+<b class="fc"><i>287</i>&nbsp;        return getSkinnable().prefHeight(width);</b>
+<i>288</i>&nbsp;    }
+<i>289</i>&nbsp;
+<i>290</i>&nbsp;    /** {@inheritDoc} */
+<i>291</i>&nbsp;    @Override protected double computeMaxWidth(double height, double topInset, double rightInset, double bottomInset, double leftInset) {
+<b class="fc"><i>292</i>&nbsp;        return getSkinnable().prefWidth(height);</b>
+<i>293</i>&nbsp;    }
+<i>294</i>&nbsp;
+<i>295</i>&nbsp;
+<i>296</i>&nbsp;
+<i>297</i>&nbsp;    /***************************************************************************
+<i>298</i>&nbsp;     *                                                                         *
+<i>299</i>&nbsp;     * Private implementation                                                  *
+<i>300</i>&nbsp;     *                                                                         *
+<i>301</i>&nbsp;     **************************************************************************/
+<i>302</i>&nbsp;
+<i>303</i>&nbsp;    private void initialize() {
+<b class="fc"><i>304</i>&nbsp;        updateChoiceBoxItems();</b>
+<i>305</i>&nbsp;
+<b class="fc"><i>306</i>&nbsp;        label = new Label();</b>
+<b class="fc"><i>307</i>&nbsp;        label.setMnemonicParsing(false);  // ChoiceBox doesn&#39;t do Mnemonics</b>
+<i>308</i>&nbsp;
+<b class="fc"><i>309</i>&nbsp;        openButton = new StackPane();</b>
+<b class="fc"><i>310</i>&nbsp;        openButton.getStyleClass().setAll(&quot;open-button&quot;);</b>
+<i>311</i>&nbsp;
+<b class="fc"><i>312</i>&nbsp;        StackPane region = new StackPane();</b>
+<b class="fc"><i>313</i>&nbsp;        region.getStyleClass().setAll(&quot;arrow&quot;);</b>
+<b class="fc"><i>314</i>&nbsp;        openButton.getChildren().clear();</b>
+<b class="fc"><i>315</i>&nbsp;        openButton.getChildren().addAll(region);</b>
+<i>316</i>&nbsp;
+<b class="fc"><i>317</i>&nbsp;        popup = new ContextMenu();</b>
+<i>318</i>&nbsp;        // When popup is hidden by autohide - the ChoiceBox Showing property needs
+<i>319</i>&nbsp;        // to be updated. So we listen to when autohide happens. Calling hide()
+<i>320</i>&nbsp;        // there after causes Showing to be set to false
+<b class="fc"><i>321</i>&nbsp;        popup.showingProperty().addListener((o, ov, nv) -&gt; {</b>
+<b class="fc"><i>322</i>&nbsp;            if (!nv) {</b>
+<b class="fc"><i>323</i>&nbsp;                getSkinnable().hide();</b>
+<i>324</i>&nbsp;            }
+<b class="fc"><i>325</i>&nbsp;        });</b>
+<i>326</i>&nbsp;        // This is used as a way of accessing the context menu within the ChoiceBox.
+<b class="fc"><i>327</i>&nbsp;        popup.setId(&quot;choice-box-popup-menu&quot;);</b>
+<i>328</i>&nbsp;//        popup.getItems().clear();
+<i>329</i>&nbsp;//        popup.getItems().addAll(popupItems);
+<i>330</i>&nbsp;//        popup.setManaged(false);
+<i>331</i>&nbsp;//        popup.visibleProperty().addListener(new InvalidationListener() {
+<i>332</i>&nbsp;//            @Override public void invalidated(ObservableValue valueModel) {
+<i>333</i>&nbsp;//                if (popup.isVisible() {
+<i>334</i>&nbsp;////                    RadioMenuItem selected = (RadioMenuItem) toggleGroup.getSelectedToggle();
+<i>335</i>&nbsp;////                    if (selected != null) selected.requestFocus();
+<i>336</i>&nbsp;//                } else {
+<i>337</i>&nbsp;//                    getBehavior().close();
+<i>338</i>&nbsp;//                }
+<i>339</i>&nbsp;//            }
+<i>340</i>&nbsp;//        });
+<b class="fc"><i>341</i>&nbsp;        getChildren().setAll(label, openButton);</b>
+<i>342</i>&nbsp;
+<b class="fc"><i>343</i>&nbsp;        updatePopupItems();</b>
+<i>344</i>&nbsp;
+<b class="fc"><i>345</i>&nbsp;        updateSelectionModel();</b>
+<b class="fc"><i>346</i>&nbsp;        updateSelection();</b>
+<b class="fc"><i>347</i>&nbsp;        if(selectionModel != null &amp;&amp; selectionModel.getSelectedIndex() == -1) {</b>
+<b class="fc"><i>348</i>&nbsp;            label.setText(&quot;&quot;); // clear label text when selectedIndex is -1</b>
+<i>349</i>&nbsp;        }
+<b class="fc"><i>350</i>&nbsp;    }</b>
+<i>351</i>&nbsp;
+<i>352</i>&nbsp;    private void updateChoiceBoxItems() {
+<b class="fc"><i>353</i>&nbsp;        if (choiceBoxItems != null) {</b>
+<b class="nc"><i>354</i>&nbsp;            choiceBoxItems.removeListener(weakChoiceBoxItemsListener);</b>
+<i>355</i>&nbsp;        }
+<b class="fc"><i>356</i>&nbsp;        choiceBoxItems = getSkinnable().getItems();</b>
+<b class="fc"><i>357</i>&nbsp;        if (choiceBoxItems != null) {</b>
+<b class="fc"><i>358</i>&nbsp;            choiceBoxItems.addListener(weakChoiceBoxItemsListener);</b>
+<i>359</i>&nbsp;        }
+<b class="fc"><i>360</i>&nbsp;    }</b>
+<i>361</i>&nbsp;
+<i>362</i>&nbsp;    // Test only purpose
+<i>363</i>&nbsp;    String getChoiceBoxSelectedText() {
+<b class="nc"><i>364</i>&nbsp;        return label.getText();</b>
+<i>365</i>&nbsp;    }
+<i>366</i>&nbsp;
+<i>367</i>&nbsp;    private void addPopupItem(final T o, int i) {
+<b class="fc"><i>368</i>&nbsp;        MenuItem popupItem = null;</b>
+<b class="fc"><i>369</i>&nbsp;        if (o instanceof Separator) {</b>
+<i>370</i>&nbsp;            // We translate the Separator into a SeparatorMenuItem...
+<b class="nc"><i>371</i>&nbsp;            popupItem = new SeparatorMenuItem();</b>
+<b class="fc"><i>372</i>&nbsp;        } else if (o instanceof SeparatorMenuItem) {</b>
+<b class="nc"><i>373</i>&nbsp;            popupItem = (SeparatorMenuItem) o;</b>
+<i>374</i>&nbsp;        } else {
+<b class="fc"><i>375</i>&nbsp;            StringConverter&lt;T&gt; c = getSkinnable().getConverter();</b>
+<b class="fc"><i>376</i>&nbsp;            String displayString = (c == null) ? ((o == null) ? &quot;&quot; : o.toString()) :  c.toString(o);</b>
+<b class="fc"><i>377</i>&nbsp;            final RadioMenuItem item = new RadioMenuItem(displayString);</b>
+<b class="fc"><i>378</i>&nbsp;            item.setId(&quot;choice-box-menu-item&quot;);</b>
+<b class="fc"><i>379</i>&nbsp;            item.setToggleGroup(toggleGroup);</b>
+<b class="fc"><i>380</i>&nbsp;            item.setOnAction(e -&gt; {</b>
+<b class="fc"><i>381</i>&nbsp;                if (selectionModel == null) return;</b>
+<b class="fc"><i>382</i>&nbsp;                int index = getSkinnable().getItems().indexOf(o);</b>
+<b class="fc"><i>383</i>&nbsp;                selectionModel.select(index);</b>
+<b class="fc"><i>384</i>&nbsp;                item.setSelected(true);</b>
+<b class="fc"><i>385</i>&nbsp;            });</b>
+<b class="fc"><i>386</i>&nbsp;            popupItem = item;</b>
+<i>387</i>&nbsp;        }
+<b class="fc"><i>388</i>&nbsp;        popupItem.setMnemonicParsing(false);   // ChoiceBox doesn&#39;t do Mnemonics</b>
+<b class="fc"><i>389</i>&nbsp;        popup.getItems().add(i, popupItem);</b>
+<b class="fc"><i>390</i>&nbsp;    }</b>
+<i>391</i>&nbsp;
+<i>392</i>&nbsp;    private void updatePopupItems() {
+<b class="fc"><i>393</i>&nbsp;        toggleGroup.getToggles().clear();</b>
+<b class="fc"><i>394</i>&nbsp;        popup.getItems().clear();</b>
+<b class="fc"><i>395</i>&nbsp;        toggleGroup.selectToggle(null);</b>
+<i>396</i>&nbsp;
+<b class="fc"><i>397</i>&nbsp;        for (int i = 0; i &lt; choiceBoxItems.size(); i++) {</b>
+<b class="fc"><i>398</i>&nbsp;            T o = choiceBoxItems.get(i);</b>
+<b class="fc"><i>399</i>&nbsp;            addPopupItem(o, i);</b>
+<i>400</i>&nbsp;        }
+<b class="fc"><i>401</i>&nbsp;    }</b>
+<i>402</i>&nbsp;
+<i>403</i>&nbsp;    private void updateSelectionModel() {
+<b class="fc"><i>404</i>&nbsp;        if (selectionModel != null) {</b>
+<b class="nc"><i>405</i>&nbsp;            selectionModel.selectedIndexProperty().removeListener(selectionChangeListener);</b>
+<i>406</i>&nbsp;        }
+<b class="fc"><i>407</i>&nbsp;        this.selectionModel = getSkinnable().getSelectionModel();</b>
+<b class="fc"><i>408</i>&nbsp;        if (selectionModel != null) {</b>
+<b class="fc"><i>409</i>&nbsp;            selectionModel.selectedIndexProperty().addListener(selectionChangeListener);</b>
+<i>410</i>&nbsp;        }
+<b class="fc"><i>411</i>&nbsp;    }</b>
+<i>412</i>&nbsp;
+<b class="fc"><i>413</i>&nbsp;    private InvalidationListener selectionChangeListener = observable -&gt; {</b>
+<b class="fc"><i>414</i>&nbsp;        updateSelection();</b>
+<b class="fc"><i>415</i>&nbsp;    };</b>
+<i>416</i>&nbsp;
+<i>417</i>&nbsp;    private void updateSelection() {
+<b class="fc"><i>418</i>&nbsp;        if (selectionModel == null || selectionModel.isEmpty()) {</b>
+<b class="fc"><i>419</i>&nbsp;            toggleGroup.selectToggle(null);</b>
+<b class="fc"><i>420</i>&nbsp;            label.setText(&quot;&quot;);</b>
+<i>421</i>&nbsp;        } else {
+<b class="fc"><i>422</i>&nbsp;            int selectedIndex = selectionModel.getSelectedIndex();</b>
+<b class="fc"><i>423</i>&nbsp;            if (selectedIndex == -1 || selectedIndex &gt; popup.getItems().size()) {</b>
+<b class="nc"><i>424</i>&nbsp;                label.setText(&quot;&quot;); // clear label text</b>
+<b class="nc"><i>425</i>&nbsp;                return;</b>
+<i>426</i>&nbsp;            }
+<b class="fc"><i>427</i>&nbsp;            if (selectedIndex &lt; popup.getItems().size()) {</b>
+<b class="fc"><i>428</i>&nbsp;                MenuItem selectedItem = popup.getItems().get(selectedIndex);</b>
+<b class="fc"><i>429</i>&nbsp;                if (selectedItem instanceof RadioMenuItem) {</b>
+<b class="fc"><i>430</i>&nbsp;                    ((RadioMenuItem) selectedItem).setSelected(true);</b>
+<b class="fc"><i>431</i>&nbsp;                    toggleGroup.selectToggle(null);</b>
+<i>432</i>&nbsp;                }
+<i>433</i>&nbsp;                // update the label
+<b class="fc"><i>434</i>&nbsp;                label.setText(popup.getItems().get(selectedIndex).getText());</b>
+<i>435</i>&nbsp;            }
+<i>436</i>&nbsp;        }
+<b class="fc"><i>437</i>&nbsp;    }</b>
+<i>438</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2017-12-04 21:49</div>
+</div>
+</body>
+</html>

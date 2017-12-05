@@ -1,0 +1,495 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: Border</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">javafx.scene.layout</a> ]
+</div>
+
+<h1>Coverage Summary for Class: Border (javafx.scene.layout)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">Border</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    38.5%
+  </span>
+  <span class="absValue">
+    (5/ 13)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    38.5%
+  </span>
+  <span class="absValue">
+    (40/ 104)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright (c) 2012, 2017, Oracle and/or its affiliates. All rights reserved.
+<i>3</i>&nbsp; * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+<i>4</i>&nbsp; *
+<i>5</i>&nbsp; *
+<i>6</i>&nbsp; *
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; *
+<i>11</i>&nbsp; *
+<i>12</i>&nbsp; *
+<i>13</i>&nbsp; *
+<i>14</i>&nbsp; *
+<i>15</i>&nbsp; *
+<i>16</i>&nbsp; *
+<i>17</i>&nbsp; *
+<i>18</i>&nbsp; *
+<i>19</i>&nbsp; *
+<i>20</i>&nbsp; *
+<i>21</i>&nbsp; *
+<i>22</i>&nbsp; *
+<i>23</i>&nbsp; *
+<i>24</i>&nbsp; */
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;package javafx.scene.layout;
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;import java.util.Arrays;
+<i>29</i>&nbsp;import java.util.Collections;
+<i>30</i>&nbsp;import java.util.List;
+<i>31</i>&nbsp;
+<i>32</i>&nbsp;import javafx.beans.NamedArg;
+<i>33</i>&nbsp;import javafx.geometry.Insets;
+<i>34</i>&nbsp;import javafx.scene.Node;
+<i>35</i>&nbsp;import javafx.scene.paint.Paint;
+<i>36</i>&nbsp;import com.sun.javafx.UnmodifiableArrayList;
+<i>37</i>&nbsp;import javafx.css.CssMetaData;
+<i>38</i>&nbsp;import com.sun.javafx.css.SubCssMetaData;
+<i>39</i>&nbsp;import javafx.css.converter.InsetsConverter;
+<i>40</i>&nbsp;import javafx.css.converter.URLConverter;
+<i>41</i>&nbsp;import com.sun.javafx.scene.layout.region.BorderImageSlices;
+<i>42</i>&nbsp;import com.sun.javafx.scene.layout.region.BorderImageWidthConverter;
+<i>43</i>&nbsp;import com.sun.javafx.scene.layout.region.CornerRadiiConverter;
+<i>44</i>&nbsp;import com.sun.javafx.scene.layout.region.LayeredBorderPaintConverter;
+<i>45</i>&nbsp;import com.sun.javafx.scene.layout.region.LayeredBorderStyleConverter;
+<i>46</i>&nbsp;import com.sun.javafx.scene.layout.region.Margins;
+<i>47</i>&nbsp;import com.sun.javafx.scene.layout.region.RepeatStruct;
+<i>48</i>&nbsp;import com.sun.javafx.scene.layout.region.RepeatStructConverter;
+<i>49</i>&nbsp;import com.sun.javafx.scene.layout.region.SliceSequenceConverter;
+<i>50</i>&nbsp;import javafx.css.Styleable;
+<i>51</i>&nbsp;
+<i>52</i>&nbsp;/**
+<i>53</i>&nbsp; * The Border of a {@link Region}. A Border is an immutable object which
+<i>54</i>&nbsp; * encapsulates the entire set of data required to render the border
+<i>55</i>&nbsp; * of a Region. Because this class is immutable, you can freely reuse the same
+<i>56</i>&nbsp; * Border on many different Regions. Please refer to
+<i>57</i>&nbsp; * &lt;a href=&quot;../doc-files/cssref.html&quot;&gt;JavaFX CSS Reference Guide&lt;/a&gt; for a
+<i>58</i>&nbsp; * complete description of the CSS rules for styling the border of a Region.
+<i>59</i>&nbsp; * &lt;p&gt;
+<i>60</i>&nbsp; * Every Border is comprised of {@link #getStrokes() strokes} and / or
+<i>61</i>&nbsp; * {@link #getImages() images}. Neither list will ever be null, but either or
+<i>62</i>&nbsp; * both may be empty. When rendering, if no images are specified or no
+<i>63</i>&nbsp; * image succeeds in loading, then all strokes will be rendered in order.
+<i>64</i>&nbsp; * If any image is specified and succeeds in loading, then no strokes will
+<i>65</i>&nbsp; * be drawn, although they will still contribute to the {@link #getInsets() insets}
+<i>66</i>&nbsp; * and {@link #getOutsets() outsets} of the Border.
+<i>67</i>&nbsp; * &lt;p&gt;
+<i>68</i>&nbsp; * The Border&#39;s {@link #getOutsets() outsets} define any extension of the drawing area of a Region
+<i>69</i>&nbsp; * which is necessary to account for all border drawing and positioning. These outsets are defined
+<i>70</i>&nbsp; * by both the {@link BorderStroke}s and {@link BorderImage}s specified on this Border.
+<i>71</i>&nbsp; * Outsets are strictly non-negative.
+<i>72</i>&nbsp; * &lt;p&gt;
+<i>73</i>&nbsp; * {@link #getInsets()} are used to define the inner-most edge of all of the borders. It also is
+<i>74</i>&nbsp; * always strictly non-negative. The Region uses the insets of the {@link Background} and Border
+<i>75</i>&nbsp; * and the {@link javafx.scene.layout.Region#getPadding() Region&#39;s padding} to determine the
+<i>76</i>&nbsp; * Region {@link javafx.scene.layout.Region#getInsets() insets}, which define the content area
+<i>77</i>&nbsp; * for any children of the Region. The outsets of a Border together with the outsets of a Background
+<i>78</i>&nbsp; * and the width and height of the Region define the geometric bounds of the Region (which in
+<i>79</i>&nbsp; * turn contribute to the {@code layoutBounds}, {@code boundsInLocal}, and {@code boundsInParent}).
+<i>80</i>&nbsp; * &lt;p&gt;
+<i>81</i>&nbsp; * A Border is most often used in cases where you want to skin the Region with an image,
+<i>82</i>&nbsp; * often used in conjunction with 9-patch scaling techniques. In such cases, you may
+<i>83</i>&nbsp; * also specify a stroked border which is only used when the image fails to load for some
+<i>84</i>&nbsp; * reason.
+<i>85</i>&nbsp; *
+<i>86</i>&nbsp; * @since JavaFX 8.0
+<i>87</i>&nbsp; */
+<i>88</i>&nbsp;@SuppressWarnings(&quot;unchecked&quot;)
+<i>89</i>&nbsp;public final class Border {
+<b class="fc"><i>90</i>&nbsp;    static final CssMetaData&lt;Node,Paint[]&gt; BORDER_COLOR =</b>
+<i>91</i>&nbsp;            new SubCssMetaData&lt;Paint[]&gt;(&quot;-fx-border-color&quot;,
+<b class="fc"><i>92</i>&nbsp;                    LayeredBorderPaintConverter.getInstance());</b>
+<i>93</i>&nbsp;
+<b class="fc"><i>94</i>&nbsp;    static final CssMetaData&lt;Node,BorderStrokeStyle[][]&gt; BORDER_STYLE =</b>
+<i>95</i>&nbsp;            new SubCssMetaData&lt;BorderStrokeStyle[][]&gt;(&quot;-fx-border-style&quot;,
+<b class="fc"><i>96</i>&nbsp;                    LayeredBorderStyleConverter.getInstance());</b>
+<i>97</i>&nbsp;
+<b class="fc"><i>98</i>&nbsp;    static final CssMetaData&lt;Node,Margins[]&gt; BORDER_WIDTH =</b>
+<i>99</i>&nbsp;            new SubCssMetaData&lt;Margins[]&gt; (&quot;-fx-border-width&quot;,
+<b class="fc"><i>100</i>&nbsp;                    Margins.SequenceConverter.getInstance());</b>
+<i>101</i>&nbsp;
+<b class="fc"><i>102</i>&nbsp;    static final CssMetaData&lt;Node,CornerRadii[]&gt; BORDER_RADIUS =</b>
+<i>103</i>&nbsp;            new SubCssMetaData&lt;CornerRadii[]&gt;(&quot;-fx-border-radius&quot;,
+<b class="fc"><i>104</i>&nbsp;                    CornerRadiiConverter.getInstance());</b>
+<i>105</i>&nbsp;
+<b class="fc"><i>106</i>&nbsp;    static final CssMetaData&lt;Node,Insets[]&gt; BORDER_INSETS =</b>
+<i>107</i>&nbsp;            new SubCssMetaData&lt;Insets[]&gt;(&quot;-fx-border-insets&quot;,
+<b class="fc"><i>108</i>&nbsp;                    InsetsConverter.SequenceConverter.getInstance());</b>
+<i>109</i>&nbsp;
+<b class="fc"><i>110</i>&nbsp;    static final CssMetaData&lt;Node,String[]&gt; BORDER_IMAGE_SOURCE =</b>
+<i>111</i>&nbsp;            new SubCssMetaData&lt;String[]&gt;(&quot;-fx-border-image-source&quot;,
+<b class="fc"><i>112</i>&nbsp;                    URLConverter.SequenceConverter.getInstance());</b>
+<i>113</i>&nbsp;
+<b class="fc"><i>114</i>&nbsp;    static final CssMetaData&lt;Node,RepeatStruct[]&gt; BORDER_IMAGE_REPEAT =</b>
+<i>115</i>&nbsp;            new SubCssMetaData&lt;RepeatStruct[]&gt;(&quot;-fx-border-image-repeat&quot;,
+<b class="fc"><i>116</i>&nbsp;                    RepeatStructConverter.getInstance(),</b>
+<i>117</i>&nbsp;                    new RepeatStruct[] { new RepeatStruct(BackgroundRepeat.REPEAT, BackgroundRepeat.REPEAT) });
+<i>118</i>&nbsp;
+<b class="fc"><i>119</i>&nbsp;    static final CssMetaData&lt;Node,BorderImageSlices[]&gt; BORDER_IMAGE_SLICE =</b>
+<i>120</i>&nbsp;            new SubCssMetaData&lt;BorderImageSlices[]&gt; (&quot;-fx-border-image-slice&quot;,
+<b class="fc"><i>121</i>&nbsp;                    SliceSequenceConverter.getInstance(),</b>
+<i>122</i>&nbsp;                    new BorderImageSlices[] { BorderImageSlices.DEFAULT});
+<i>123</i>&nbsp;
+<b class="fc"><i>124</i>&nbsp;    static final CssMetaData&lt;Node,BorderWidths[]&gt; BORDER_IMAGE_WIDTH =</b>
+<i>125</i>&nbsp;            new SubCssMetaData&lt;BorderWidths[]&gt;(&quot;-fx-border-image-width&quot;,
+<b class="fc"><i>126</i>&nbsp;                    BorderImageWidthConverter.getInstance(),</b>
+<i>127</i>&nbsp;                    new BorderWidths[] { BorderWidths.DEFAULT });
+<i>128</i>&nbsp;
+<b class="fc"><i>129</i>&nbsp;    static final CssMetaData&lt;Node,Insets[]&gt; BORDER_IMAGE_INSETS =</b>
+<i>130</i>&nbsp;            new SubCssMetaData&lt;Insets[]&gt;(&quot;-fx-border-image-insets&quot;,
+<b class="fc"><i>131</i>&nbsp;                    InsetsConverter.SequenceConverter.getInstance(),</b>
+<i>132</i>&nbsp;                    new Insets[] {Insets.EMPTY});
+<i>133</i>&nbsp;
+<b class="fc"><i>134</i>&nbsp;    private static final List&lt;CssMetaData&lt;? extends Styleable, ?&gt;&gt; STYLEABLES =</b>
+<b class="fc"><i>135</i>&nbsp;            (List&lt;CssMetaData&lt;? extends Styleable, ?&gt;&gt;) (List) Collections.unmodifiableList(</b>
+<i>136</i>&nbsp;                    // Unchecked!
+<b class="fc"><i>137</i>&nbsp;                    Arrays.asList(BORDER_COLOR,</b>
+<i>138</i>&nbsp;                            BORDER_STYLE,
+<i>139</i>&nbsp;                            BORDER_WIDTH,
+<i>140</i>&nbsp;                            BORDER_RADIUS,
+<i>141</i>&nbsp;                            BORDER_INSETS,
+<i>142</i>&nbsp;                            BORDER_IMAGE_SOURCE,
+<i>143</i>&nbsp;                            BORDER_IMAGE_REPEAT,
+<i>144</i>&nbsp;                            BORDER_IMAGE_SLICE,
+<i>145</i>&nbsp;                            BORDER_IMAGE_WIDTH,
+<i>146</i>&nbsp;                            BORDER_IMAGE_INSETS));
+<i>147</i>&nbsp;
+<i>148</i>&nbsp;    /**
+<i>149</i>&nbsp;     * @return The CssMetaData associated with this class, which may include the
+<i>150</i>&nbsp;     * CssMetaData of its superclasses.
+<i>151</i>&nbsp;     */
+<i>152</i>&nbsp;    public static List&lt;CssMetaData&lt;? extends Styleable, ?&gt;&gt; getClassCssMetaData() {
+<b class="fc"><i>153</i>&nbsp;        return STYLEABLES;</b>
+<i>154</i>&nbsp;    }
+<i>155</i>&nbsp;
+<i>156</i>&nbsp;    /**
+<i>157</i>&nbsp;     * An empty Border, useful to use instead of null.
+<i>158</i>&nbsp;     */
+<b class="fc"><i>159</i>&nbsp;    public static final Border EMPTY = new Border((BorderStroke[])null, null);</b>
+<i>160</i>&nbsp;
+<i>161</i>&nbsp;    /**
+<i>162</i>&nbsp;     * The list of BorderStrokes which together define the stroked portion
+<i>163</i>&nbsp;     * of this Border. This List is unmodifiable and immutable. It
+<i>164</i>&nbsp;     * will never be null. It will never contain any null elements.
+<i>165</i>&nbsp;     * @return the list of BorderStrokes which together define the stroked
+<i>166</i>&nbsp;     * portion of this Border
+<i>167</i>&nbsp;     */
+<b class="nc"><i>168</i>&nbsp;    public final List&lt;BorderStroke&gt; getStrokes() { return strokes; }</b>
+<i>169</i>&nbsp;    final List&lt;BorderStroke&gt; strokes;
+<i>170</i>&nbsp;
+<i>171</i>&nbsp;    /**
+<i>172</i>&nbsp;     * The list of BorderImages which together define the images to use
+<i>173</i>&nbsp;     * instead of stroke for this Border. If this list is specified and
+<i>174</i>&nbsp;     * at least one image within it succeeds in loading, then any specified
+<i>175</i>&nbsp;     * {@link #getStrokes strokes} are not drawn. If this list is null or no images
+<i>176</i>&nbsp;     * succeeded in loading, then any specified {@code strokes} are drawn.
+<i>177</i>&nbsp;     * &lt;p&gt;
+<i>178</i>&nbsp;     * This List is unmodifiable and immutable. It will never be null.
+<i>179</i>&nbsp;     * It will never contain any null elements.
+<i>180</i>&nbsp;     * @return the list of BorderImages which together define the images to use
+<i>181</i>&nbsp;     * instead of stroke for this Border
+<i>182</i>&nbsp;     */
+<b class="nc"><i>183</i>&nbsp;    public final List&lt;BorderImage&gt; getImages() { return images; }</b>
+<i>184</i>&nbsp;    final List&lt;BorderImage&gt; images;
+<i>185</i>&nbsp;
+<i>186</i>&nbsp;    /**
+<i>187</i>&nbsp;     * The outsets of the border define the outer-most edge of the border to be drawn.
+<i>188</i>&nbsp;     * The values in these outsets are strictly non-negative.
+<i>189</i>&nbsp;     * @return the outsets of the border define the outer-most edge of the
+<i>190</i>&nbsp;     * border to be drawn
+<i>191</i>&nbsp;     */
+<b class="fc"><i>192</i>&nbsp;    public final Insets getOutsets() { return outsets; }</b>
+<i>193</i>&nbsp;    final Insets outsets;
+<i>194</i>&nbsp;
+<i>195</i>&nbsp;    /**
+<i>196</i>&nbsp;     * The insets define the distance from the edge of the Region to the inner-most edge
+<i>197</i>&nbsp;     * of the border, if that distance is non-negative. The values in these outsets
+<i>198</i>&nbsp;     * are strictly non-negative.
+<i>199</i>&nbsp;     * @return the insets define the distance from the edge of the Region to the
+<i>200</i>&nbsp;     * inner-most edge of the border
+<i>201</i>&nbsp;     */
+<b class="nc"><i>202</i>&nbsp;    public final Insets getInsets() { return insets; }</b>
+<i>203</i>&nbsp;    final Insets insets;
+<i>204</i>&nbsp;
+<i>205</i>&nbsp;    /**
+<i>206</i>&nbsp;     * Gets whether the Border is empty. It is empty if there are no strokes or images.
+<i>207</i>&nbsp;     * @return true if the Border is empty, false otherwise.
+<i>208</i>&nbsp;     */
+<i>209</i>&nbsp;    public final boolean isEmpty() {
+<b class="fc"><i>210</i>&nbsp;        return strokes.isEmpty() &amp;&amp; images.isEmpty();</b>
+<i>211</i>&nbsp;    }
+<i>212</i>&nbsp;
+<i>213</i>&nbsp;    /**
+<i>214</i>&nbsp;     * The cached hash code computation for the Border. One very big
+<i>215</i>&nbsp;     * reason for making Border immutable was to make it possible to
+<i>216</i>&nbsp;     * cache and reuse the same Border instance for multiple
+<i>217</i>&nbsp;     * Regions. To enable efficient caching, we cache the hash.
+<i>218</i>&nbsp;     */
+<i>219</i>&nbsp;    private final int hash;
+<i>220</i>&nbsp;
+<i>221</i>&nbsp;    /**
+<i>222</i>&nbsp;     * Creates a new Border by supplying an array of BorderStrokes.
+<i>223</i>&nbsp;     * This array may be null, or may contain null values. Any null values
+<i>224</i>&nbsp;     * will be ignored and will not contribute to the {@link #getStrokes() strokes}
+<i>225</i>&nbsp;     * or {@link #getOutsets() outsets} or {@link #getInsets() insets}.
+<i>226</i>&nbsp;     *
+<i>227</i>&nbsp;     * @param strokes   The strokes. This may be null, and may contain nulls. Any
+<i>228</i>&nbsp;     *                  contained nulls are filtered out and not included in the
+<i>229</i>&nbsp;     *                  final List of strokes. A null array becomes an empty List.
+<i>230</i>&nbsp;     *                  If both strokes and images are specified, and if any one
+<i>231</i>&nbsp;     *                  of the images specified succeeds in loading, then no
+<i>232</i>&nbsp;     *                  strokes are shown. In this way, strokes can be defined as
+<i>233</i>&nbsp;     *                  a fallback in the case that an image failed to load.
+<i>234</i>&nbsp;     */
+<i>235</i>&nbsp;    public Border(@NamedArg(&quot;strokes&quot;) BorderStroke... strokes) {
+<b class="nc"><i>236</i>&nbsp;        this(strokes, null);</b>
+<b class="nc"><i>237</i>&nbsp;    }</b>
+<i>238</i>&nbsp;
+<i>239</i>&nbsp;    /**
+<i>240</i>&nbsp;     * Creates a new Border by supplying an array of BorderImages.
+<i>241</i>&nbsp;     * This array may be null, or may contain null values. Any null values
+<i>242</i>&nbsp;     * will be ignored and will not contribute to the {@link #getImages() images}
+<i>243</i>&nbsp;     * or {@link #getOutsets() outsets} or {@link #getInsets() insets}.
+<i>244</i>&nbsp;     *
+<i>245</i>&nbsp;     * @param images    The images. This may be null, and may contain nulls. Any
+<i>246</i>&nbsp;     *                  contained nulls are filtered out and not included in the
+<i>247</i>&nbsp;     *                  final List of images. A null array becomes an empty List.
+<i>248</i>&nbsp;     */
+<i>249</i>&nbsp;    public Border(@NamedArg(&quot;images&quot;) BorderImage... images) {
+<b class="nc"><i>250</i>&nbsp;        this(null, images);</b>
+<b class="nc"><i>251</i>&nbsp;    }</b>
+<i>252</i>&nbsp;
+<i>253</i>&nbsp;    /**
+<i>254</i>&nbsp;     * Creates a new Border by supplying a List of BorderStrokes and BorderImages.
+<i>255</i>&nbsp;     * These Lists may be null, or may contain null values. Any null values
+<i>256</i>&nbsp;     * will be ignored and will not contribute to the {@link #getStrokes() strokes}
+<i>257</i>&nbsp;     * or {@link #getImages() images}, {@link #getOutsets() outsets}, or
+<i>258</i>&nbsp;     * {@link #getInsets() insets}.
+<i>259</i>&nbsp;     *
+<i>260</i>&nbsp;     * @param strokes   The strokes. This may be null, and may contain nulls. Any
+<i>261</i>&nbsp;     *                  contained nulls are filtered out and not included in the
+<i>262</i>&nbsp;     *                  final List of strokes. A null array becomes an empty List.
+<i>263</i>&nbsp;     *                  If both strokes and images are specified, and if any one
+<i>264</i>&nbsp;     *                  of the images specified succeeds in loading, then no
+<i>265</i>&nbsp;     *                  strokes are shown. In this way, strokes can be defined as
+<i>266</i>&nbsp;     *                  a fallback in the case that an image failed to load.
+<i>267</i>&nbsp;     * @param images    The images. This may be null, and may contain nulls. Any
+<i>268</i>&nbsp;     *                  contained nulls are filtered out and not included in the
+<i>269</i>&nbsp;     *                  final List of images. A null array becomes an empty List.
+<i>270</i>&nbsp;     */
+<i>271</i>&nbsp;    public Border(@NamedArg(&quot;strokes&quot;) List&lt;BorderStroke&gt; strokes, @NamedArg(&quot;images&quot;) List&lt;BorderImage&gt; images) {
+<i>272</i>&nbsp;        // NOTE: This constructor had to be supplied in order to cause a Builder
+<i>273</i>&nbsp;        // to be auto-generated, because otherwise the types of the strokes and images
+<i>274</i>&nbsp;        // properties didn&#39;t match the types of the array based constructor parameters.
+<i>275</i>&nbsp;        // So a Builder will use this constructor, while the CSS engine uses the
+<i>276</i>&nbsp;        // array based constructor (for speed).
+<b class="nc"><i>277</i>&nbsp;        this(strokes == null ? null : strokes.toArray(new BorderStroke[strokes.size()]),</b>
+<b class="nc"><i>278</i>&nbsp;             images == null ? null : images.toArray(new BorderImage[images.size()]));</b>
+<b class="nc"><i>279</i>&nbsp;    }</b>
+<i>280</i>&nbsp;
+<i>281</i>&nbsp;    /**
+<i>282</i>&nbsp;     * Creates a new Border by supplying an array of BorderStrokes and BorderImages.
+<i>283</i>&nbsp;     * These arrays may be null, or may contain null values. Any null values
+<i>284</i>&nbsp;     * will be ignored and will not contribute to the {@link #getStrokes() strokes}
+<i>285</i>&nbsp;     * or {@link #getImages() images}, {@link #getOutsets() outsets}, or
+<i>286</i>&nbsp;     * {@link #getInsets() insets}.
+<i>287</i>&nbsp;     *
+<i>288</i>&nbsp;     * @param strokes   The strokes. This may be null, and may contain nulls. Any
+<i>289</i>&nbsp;     *                  contained nulls are filtered out and not included in the
+<i>290</i>&nbsp;     *                  final List of strokes. A null array becomes an empty List.
+<i>291</i>&nbsp;     *                  If both strokes and images are specified, and if any one
+<i>292</i>&nbsp;     *                  of the images specified succeeds in loading, then no
+<i>293</i>&nbsp;     *                  strokes are shown. In this way, strokes can be defined as
+<i>294</i>&nbsp;     *                  a fallback in the case that an image failed to load.
+<i>295</i>&nbsp;     * @param images    The images. This may be null, and may contain nulls. Any
+<i>296</i>&nbsp;     *                  contained nulls are filtered out and not included in the
+<i>297</i>&nbsp;     *                  final List of images. A null array becomes an empty List.
+<i>298</i>&nbsp;     */
+<b class="fc"><i>299</i>&nbsp;    public Border(@NamedArg(&quot;strokes&quot;) BorderStroke[] strokes, @NamedArg(&quot;images&quot;) BorderImage[] images) {</b>
+<b class="fc"><i>300</i>&nbsp;        double innerTop = 0, innerRight = 0, innerBottom = 0, innerLeft = 0;</b>
+<b class="fc"><i>301</i>&nbsp;        double outerTop = 0, outerRight = 0, outerBottom = 0, outerLeft = 0;</b>
+<i>302</i>&nbsp;
+<b class="fc"><i>303</i>&nbsp;        if (strokes == null || strokes.length == 0) {</b>
+<b class="fc"><i>304</i>&nbsp;            this.strokes = Collections.emptyList();</b>
+<i>305</i>&nbsp;        } else {
+<b class="nc"><i>306</i>&nbsp;            final BorderStroke[] noNulls = new BorderStroke[strokes.length];</b>
+<b class="nc"><i>307</i>&nbsp;            int size = 0;</b>
+<b class="nc"><i>308</i>&nbsp;            for (int i=0; i&lt;strokes.length; i++) {</b>
+<b class="nc"><i>309</i>&nbsp;                final BorderStroke stroke = strokes[i];</b>
+<b class="nc"><i>310</i>&nbsp;                if (stroke != null) {</b>
+<b class="nc"><i>311</i>&nbsp;                    noNulls[size++] = stroke;</b>
+<i>312</i>&nbsp;
+<i>313</i>&nbsp;                    // Calculate the insets and outsets. &quot;insets&quot; are the distance
+<i>314</i>&nbsp;                    // from the edge of the region to the inmost edge of the inmost border.
+<i>315</i>&nbsp;                    // Outsets are the distance from the edge of the region out towards the
+<i>316</i>&nbsp;                    // outer-most edge of the outer-most border.
+<b class="nc"><i>317</i>&nbsp;                    final double strokeInnerTop = stroke.innerEdge.getTop();</b>
+<b class="nc"><i>318</i>&nbsp;                    final double strokeInnerRight = stroke.innerEdge.getRight();</b>
+<b class="nc"><i>319</i>&nbsp;                    final double strokeInnerBottom = stroke.innerEdge.getBottom();</b>
+<b class="nc"><i>320</i>&nbsp;                    final double strokeInnerLeft = stroke.innerEdge.getLeft();</b>
+<i>321</i>&nbsp;
+<b class="nc"><i>322</i>&nbsp;                    innerTop = innerTop &gt;= strokeInnerTop ? innerTop : strokeInnerTop;</b>
+<b class="nc"><i>323</i>&nbsp;                    innerRight = innerRight &gt;= strokeInnerRight? innerRight : strokeInnerRight;</b>
+<b class="nc"><i>324</i>&nbsp;                    innerBottom = innerBottom &gt;= strokeInnerBottom ? innerBottom : strokeInnerBottom;</b>
+<b class="nc"><i>325</i>&nbsp;                    innerLeft = innerLeft &gt;= strokeInnerLeft ? innerLeft : strokeInnerLeft;</b>
+<i>326</i>&nbsp;
+<b class="nc"><i>327</i>&nbsp;                    final double strokeOuterTop = stroke.outerEdge.getTop();</b>
+<b class="nc"><i>328</i>&nbsp;                    final double strokeOuterRight = stroke.outerEdge.getRight();</b>
+<b class="nc"><i>329</i>&nbsp;                    final double strokeOuterBottom = stroke.outerEdge.getBottom();</b>
+<b class="nc"><i>330</i>&nbsp;                    final double strokeOuterLeft = stroke.outerEdge.getLeft();</b>
+<i>331</i>&nbsp;
+<b class="nc"><i>332</i>&nbsp;                    outerTop = outerTop &gt;= strokeOuterTop ? outerTop : strokeOuterTop;</b>
+<b class="nc"><i>333</i>&nbsp;                    outerRight = outerRight &gt;= strokeOuterRight? outerRight : strokeOuterRight;</b>
+<b class="nc"><i>334</i>&nbsp;                    outerBottom = outerBottom &gt;= strokeOuterBottom ? outerBottom : strokeOuterBottom;</b>
+<b class="nc"><i>335</i>&nbsp;                    outerLeft = outerLeft &gt;= strokeOuterLeft ? outerLeft : strokeOuterLeft;</b>
+<i>336</i>&nbsp;                }
+<i>337</i>&nbsp;            }
+<b class="nc"><i>338</i>&nbsp;            this.strokes = new UnmodifiableArrayList&lt;BorderStroke&gt;(noNulls, size);</b>
+<i>339</i>&nbsp;        }
+<i>340</i>&nbsp;
+<b class="fc"><i>341</i>&nbsp;        if (images == null || images.length == 0) {</b>
+<b class="fc"><i>342</i>&nbsp;            this.images = Collections.emptyList();</b>
+<i>343</i>&nbsp;        } else {
+<b class="nc"><i>344</i>&nbsp;            final BorderImage[] noNulls = new BorderImage[images.length];</b>
+<b class="nc"><i>345</i>&nbsp;            int size = 0;</b>
+<b class="nc"><i>346</i>&nbsp;            for (int i=0; i&lt;images.length; i++) {</b>
+<b class="nc"><i>347</i>&nbsp;                final BorderImage image = images[i];</b>
+<b class="nc"><i>348</i>&nbsp;                if (image != null){</b>
+<b class="nc"><i>349</i>&nbsp;                    noNulls[size++] = image;</b>
+<i>350</i>&nbsp;
+<i>351</i>&nbsp;                    // The Image width + insets may contribute to the insets / outsets of
+<i>352</i>&nbsp;                    // this border.
+<b class="nc"><i>353</i>&nbsp;                    final double imageInnerTop = image.innerEdge.getTop();</b>
+<b class="nc"><i>354</i>&nbsp;                    final double imageInnerRight = image.innerEdge.getRight();</b>
+<b class="nc"><i>355</i>&nbsp;                    final double imageInnerBottom = image.innerEdge.getBottom();</b>
+<b class="nc"><i>356</i>&nbsp;                    final double imageInnerLeft = image.innerEdge.getLeft();</b>
+<i>357</i>&nbsp;
+<b class="nc"><i>358</i>&nbsp;                    innerTop = innerTop &gt;= imageInnerTop ? innerTop : imageInnerTop;</b>
+<b class="nc"><i>359</i>&nbsp;                    innerRight = innerRight &gt;= imageInnerRight? innerRight : imageInnerRight;</b>
+<b class="nc"><i>360</i>&nbsp;                    innerBottom = innerBottom &gt;= imageInnerBottom ? innerBottom : imageInnerBottom;</b>
+<b class="nc"><i>361</i>&nbsp;                    innerLeft = innerLeft &gt;= imageInnerLeft ? innerLeft : imageInnerLeft;</b>
+<i>362</i>&nbsp;
+<b class="nc"><i>363</i>&nbsp;                    final double imageOuterTop = image.outerEdge.getTop();</b>
+<b class="nc"><i>364</i>&nbsp;                    final double imageOuterRight = image.outerEdge.getRight();</b>
+<b class="nc"><i>365</i>&nbsp;                    final double imageOuterBottom = image.outerEdge.getBottom();</b>
+<b class="nc"><i>366</i>&nbsp;                    final double imageOuterLeft = image.outerEdge.getLeft();</b>
+<i>367</i>&nbsp;
+<b class="nc"><i>368</i>&nbsp;                    outerTop = outerTop &gt;= imageOuterTop ? outerTop : imageOuterTop;</b>
+<b class="nc"><i>369</i>&nbsp;                    outerRight = outerRight &gt;= imageOuterRight? outerRight : imageOuterRight;</b>
+<b class="nc"><i>370</i>&nbsp;                    outerBottom = outerBottom &gt;= imageOuterBottom ? outerBottom : imageOuterBottom;</b>
+<b class="nc"><i>371</i>&nbsp;                    outerLeft = outerLeft &gt;= imageOuterLeft ? outerLeft : imageOuterLeft;</b>
+<i>372</i>&nbsp;                }
+<i>373</i>&nbsp;            }
+<b class="nc"><i>374</i>&nbsp;            this.images = new UnmodifiableArrayList&lt;BorderImage&gt;(noNulls, size);</b>
+<i>375</i>&nbsp;        }
+<i>376</i>&nbsp;
+<i>377</i>&nbsp;        // Both the BorderStroke and BorderImage class make sure to return the outsets
+<i>378</i>&nbsp;        // and insets in the right way, such that we don&#39;t have to worry about adjusting
+<i>379</i>&nbsp;        // the sign, etc, unlike in the Background implementation.
+<b class="fc"><i>380</i>&nbsp;        outsets = new Insets(outerTop, outerRight, outerBottom, outerLeft);</b>
+<b class="fc"><i>381</i>&nbsp;        insets = new Insets(innerTop, innerRight, innerBottom, innerLeft);</b>
+<i>382</i>&nbsp;
+<i>383</i>&nbsp;        // Pre-compute the hash code. NOTE: all variables are prefixed with &quot;this&quot; so that we
+<i>384</i>&nbsp;        // do not accidentally compute the hash based on the constructor arguments rather than
+<i>385</i>&nbsp;        // based on the fields themselves!
+<b class="fc"><i>386</i>&nbsp;        int result = this.strokes.hashCode();</b>
+<b class="fc"><i>387</i>&nbsp;        result = 31 * result + this.images.hashCode();</b>
+<b class="fc"><i>388</i>&nbsp;        hash = result;</b>
+<b class="fc"><i>389</i>&nbsp;    }</b>
+<i>390</i>&nbsp;
+<i>391</i>&nbsp;    /**
+<i>392</i>&nbsp;     * {@inheritDoc}
+<i>393</i>&nbsp;     */
+<i>394</i>&nbsp;    @Override public boolean equals(Object o) {
+<b class="nc"><i>395</i>&nbsp;        if (this == o) return true;</b>
+<b class="nc"><i>396</i>&nbsp;        if (o == null || getClass() != o.getClass()) return false;</b>
+<b class="nc"><i>397</i>&nbsp;        Border border = (Border) o;</b>
+<b class="nc"><i>398</i>&nbsp;        if (this.hash != border.hash) return false;</b>
+<i>399</i>&nbsp;
+<b class="nc"><i>400</i>&nbsp;        if (!images.equals(border.images)) return false;</b>
+<b class="nc"><i>401</i>&nbsp;        if (!strokes.equals(border.strokes)) return false;</b>
+<i>402</i>&nbsp;
+<b class="nc"><i>403</i>&nbsp;        return true;</b>
+<i>404</i>&nbsp;    }
+<i>405</i>&nbsp;
+<i>406</i>&nbsp;    /**
+<i>407</i>&nbsp;     * {@inheritDoc}
+<i>408</i>&nbsp;     */
+<i>409</i>&nbsp;    @Override public int hashCode() {
+<b class="nc"><i>410</i>&nbsp;        return hash;</b>
+<i>411</i>&nbsp;    }
+<i>412</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2017-12-04 21:49</div>
+</div>
+</body>
+</html>

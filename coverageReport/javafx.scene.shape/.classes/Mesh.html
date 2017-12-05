@@ -1,0 +1,188 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: Mesh</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">javafx.scene.shape</a> ]
+</div>
+
+<h1>Coverage Summary for Class: Mesh (javafx.scene.shape)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">Mesh</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 6)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 14)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright (c) 2013, 2016, Oracle and/or its affiliates. All rights reserved.
+<i>3</i>&nbsp; * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+<i>4</i>&nbsp; *
+<i>5</i>&nbsp; *
+<i>6</i>&nbsp; *
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; *
+<i>11</i>&nbsp; *
+<i>12</i>&nbsp; *
+<i>13</i>&nbsp; *
+<i>14</i>&nbsp; *
+<i>15</i>&nbsp; *
+<i>16</i>&nbsp; *
+<i>17</i>&nbsp; *
+<i>18</i>&nbsp; *
+<i>19</i>&nbsp; *
+<i>20</i>&nbsp; *
+<i>21</i>&nbsp; *
+<i>22</i>&nbsp; *
+<i>23</i>&nbsp; *
+<i>24</i>&nbsp; */
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;package javafx.scene.shape;
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;import com.sun.javafx.geom.BaseBounds;
+<i>29</i>&nbsp;import com.sun.javafx.scene.shape.MeshHelper;
+<i>30</i>&nbsp;import com.sun.javafx.sg.prism.NGTriangleMesh;
+<i>31</i>&nbsp;import javafx.application.ConditionalFeature;
+<i>32</i>&nbsp;import javafx.application.Platform;
+<i>33</i>&nbsp;import javafx.beans.property.BooleanProperty;
+<i>34</i>&nbsp;import javafx.beans.property.SimpleBooleanProperty;
+<i>35</i>&nbsp;import sun.util.logging.PlatformLogger;
+<i>36</i>&nbsp;
+<i>37</i>&nbsp;/**
+<i>38</i>&nbsp; * Base class for representing a 3D geometric surface.
+<i>39</i>&nbsp; *
+<i>40</i>&nbsp; * Note that this is a conditional feature. See
+<i>41</i>&nbsp; * {@link javafx.application.ConditionalFeature#SCENE3D ConditionalFeature.SCENE3D}
+<i>42</i>&nbsp; * for more information.
+<i>43</i>&nbsp; *
+<i>44</i>&nbsp; * @since JavaFX 8.0
+<i>45</i>&nbsp; */
+<b class="nc"><i>46</i>&nbsp;public abstract class Mesh {</b>
+<i>47</i>&nbsp;
+<i>48</i>&nbsp;    /*
+<i>49</i>&nbsp;     * Store the singleton instance of the MeshHelper subclass corresponding
+<i>50</i>&nbsp;     * to the subclass of this instance of Mesh
+<i>51</i>&nbsp;     */
+<b class="nc"><i>52</i>&nbsp;    private MeshHelper meshHelper = null;</b>
+<i>53</i>&nbsp;
+<i>54</i>&nbsp;    static {
+<i>55</i>&nbsp;        // This is used by classes in different packages to get access to
+<i>56</i>&nbsp;        // private and package private methods.
+<b class="nc"><i>57</i>&nbsp;        MeshHelper.setMeshAccessor(new MeshHelper.MeshAccessor() {</b>
+<i>58</i>&nbsp;            @Override
+<i>59</i>&nbsp;            public MeshHelper getHelper(Mesh mesh) {
+<i>60</i>&nbsp;                return mesh.meshHelper;
+<i>61</i>&nbsp;            }
+<i>62</i>&nbsp;
+<i>63</i>&nbsp;            @Override
+<i>64</i>&nbsp;            public void setHelper(Mesh mesh, MeshHelper meshHelper) {
+<i>65</i>&nbsp;                mesh.meshHelper = meshHelper;
+<i>66</i>&nbsp;            }
+<i>67</i>&nbsp;        });
+<b class="nc"><i>68</i>&nbsp;    }</b>
+<i>69</i>&nbsp;
+<b class="nc"><i>70</i>&nbsp;    protected Mesh() {</b>
+<b class="nc"><i>71</i>&nbsp;        if (!Platform.isSupported(ConditionalFeature.SCENE3D)) {</b>
+<b class="nc"><i>72</i>&nbsp;            String logname = Mesh.class.getName();</b>
+<b class="nc"><i>73</i>&nbsp;            PlatformLogger.getLogger(logname).warning(&quot;System can&#39;t support &quot;</b>
+<i>74</i>&nbsp;                                                      + &quot;ConditionalFeature.SCENE3D&quot;);
+<i>75</i>&nbsp;        }
+<b class="nc"><i>76</i>&nbsp;    }</b>
+<i>77</i>&nbsp;
+<i>78</i>&nbsp;    // Mesh isn&#39;t a Node. It can&#39;t use the standard dirtyBits pattern that is
+<i>79</i>&nbsp;    // in Node
+<i>80</i>&nbsp;    // TODO: 3D - Material and Mesh have similar pattern. We should look into creating
+<i>81</i>&nbsp;    // a &quot;NodeComponent&quot; class if more non-Node classes are needed.
+<i>82</i>&nbsp;
+<i>83</i>&nbsp;    // Material isn&#39;t a Node. It can&#39;t use the standard dirtyBits pattern that is
+<i>84</i>&nbsp;    // in Node
+<b class="nc"><i>85</i>&nbsp;    private final BooleanProperty dirty = new SimpleBooleanProperty(true);</b>
+<i>86</i>&nbsp;
+<i>87</i>&nbsp;    final boolean isDirty() {
+<b class="nc"><i>88</i>&nbsp;        return dirty.getValue();</b>
+<i>89</i>&nbsp;    }
+<i>90</i>&nbsp;
+<i>91</i>&nbsp;    void setDirty(boolean value) {
+<b class="nc"><i>92</i>&nbsp;        dirty.setValue(value);</b>
+<b class="nc"><i>93</i>&nbsp;    }</b>
+<i>94</i>&nbsp;
+<i>95</i>&nbsp;    final BooleanProperty dirtyProperty() {
+<b class="nc"><i>96</i>&nbsp;        return dirty;</b>
+<i>97</i>&nbsp;    }
+<i>98</i>&nbsp;
+<i>99</i>&nbsp;    // We only support one type of mesh for FX 8.
+<i>100</i>&nbsp;    abstract NGTriangleMesh getPGMesh();
+<i>101</i>&nbsp;    abstract void updatePG();
+<i>102</i>&nbsp;
+<i>103</i>&nbsp;    abstract BaseBounds computeBounds(BaseBounds b);
+<i>104</i>&nbsp;
+<i>105</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2017-12-04 21:49</div>
+</div>
+</body>
+</html>

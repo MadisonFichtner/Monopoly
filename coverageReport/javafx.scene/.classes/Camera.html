@@ -1,0 +1,690 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: Camera</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">javafx.scene</a> ]
+</div>
+
+<h1>Coverage Summary for Class: Camera (javafx.scene)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">Camera</td>
+<td class="coverageStat">
+  <span class="percent">
+    53.1%
+  </span>
+  <span class="absValue">
+    (17/ 32)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    58.1%
+  </span>
+  <span class="absValue">
+    (86/ 148)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">Camera$1</td>
+<td class="coverageStat">
+  <span class="percent">
+    44.4%
+  </span>
+  <span class="absValue">
+    (4/ 9)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    54.5%
+  </span>
+  <span class="absValue">
+    (6/ 11)
+  </span>
+</td>
+  </tr>
+  <tr>
+    <td class="name">Camera$2</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 4)
+  </span>
+</td>
+  </tr>
+  <tr>
+    <td class="name">Camera$3</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 4)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    46.7%
+  </span>
+  <span class="absValue">
+    (21/ 45)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    55.1%
+  </span>
+  <span class="absValue">
+    (92/ 167)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright (c) 2010, 2017, Oracle and/or its affiliates. All rights reserved.
+<i>3</i>&nbsp; * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+<i>4</i>&nbsp; *
+<i>5</i>&nbsp; *
+<i>6</i>&nbsp; *
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; *
+<i>11</i>&nbsp; *
+<i>12</i>&nbsp; *
+<i>13</i>&nbsp; *
+<i>14</i>&nbsp; *
+<i>15</i>&nbsp; *
+<i>16</i>&nbsp; *
+<i>17</i>&nbsp; *
+<i>18</i>&nbsp; *
+<i>19</i>&nbsp; *
+<i>20</i>&nbsp; *
+<i>21</i>&nbsp; *
+<i>22</i>&nbsp; *
+<i>23</i>&nbsp; *
+<i>24</i>&nbsp; */
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;package javafx.scene;
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;import javafx.beans.InvalidationListener;
+<i>29</i>&nbsp;import javafx.beans.Observable;
+<i>30</i>&nbsp;import javafx.beans.property.DoubleProperty;
+<i>31</i>&nbsp;import javafx.beans.property.SimpleDoubleProperty;
+<i>32</i>&nbsp;import javafx.geometry.Point2D;
+<i>33</i>&nbsp;import javafx.geometry.Point3D;
+<i>34</i>&nbsp;import javafx.scene.transform.Transform;
+<i>35</i>&nbsp;import com.sun.javafx.geom.BaseBounds;
+<i>36</i>&nbsp;import com.sun.javafx.geom.BoxBounds;
+<i>37</i>&nbsp;import com.sun.javafx.geom.PickRay;
+<i>38</i>&nbsp;import com.sun.javafx.geom.Vec3d;
+<i>39</i>&nbsp;import com.sun.javafx.geom.transform.Affine3D;
+<i>40</i>&nbsp;import com.sun.javafx.geom.transform.BaseTransform;
+<i>41</i>&nbsp;import com.sun.javafx.geom.transform.GeneralTransform3D;
+<i>42</i>&nbsp;import com.sun.javafx.geom.transform.NoninvertibleTransformException;
+<i>43</i>&nbsp;import com.sun.javafx.jmx.MXNodeAlgorithm;
+<i>44</i>&nbsp;import com.sun.javafx.jmx.MXNodeAlgorithmContext;
+<i>45</i>&nbsp;import com.sun.javafx.scene.CameraHelper;
+<i>46</i>&nbsp;import com.sun.javafx.scene.DirtyBits;
+<i>47</i>&nbsp;import com.sun.javafx.scene.NodeHelper;
+<i>48</i>&nbsp;import com.sun.javafx.scene.transform.TransformHelper;
+<i>49</i>&nbsp;import com.sun.javafx.sg.prism.NGCamera;
+<i>50</i>&nbsp;import sun.util.logging.PlatformLogger;
+<i>51</i>&nbsp;
+<i>52</i>&nbsp;
+<i>53</i>&nbsp;/**
+<i>54</i>&nbsp; * Base class for a camera used to render a scene.
+<i>55</i>&nbsp; * The camera defines the mapping of the scene coordinate space onto the window.
+<i>56</i>&nbsp; * Camera is an abstract class with two concrete subclasses:
+<i>57</i>&nbsp; * {@link ParallelCamera} and {@link PerspectiveCamera}.
+<i>58</i>&nbsp; *
+<i>59</i>&nbsp; * &lt;p&gt;
+<i>60</i>&nbsp; * The default camera is positioned in the scene such that its projection plane
+<i>61</i>&nbsp; * in the scene coordinate space is at Z = 0, and it is looking into the screen in
+<i>62</i>&nbsp; * the positive Z direction. The distance in Z from the camera to the projection
+<i>63</i>&nbsp; * plane is determined by the {@code width} and {@code height} of the Scene to
+<i>64</i>&nbsp; * which it is attached and its {@code fieldOfView}.
+<i>65</i>&nbsp; * &lt;/p&gt;
+<i>66</i>&nbsp; *
+<i>67</i>&nbsp; * &lt;p&gt;
+<i>68</i>&nbsp; * The {@code nearClip} and {@code farClip} of this camera are specified in the
+<i>69</i>&nbsp; * eye coordinate space. This space is defined such that the eye is at its
+<i>70</i>&nbsp; * origin and the projection plane is one unit in front of the eye in the
+<i>71</i>&nbsp; * positive Z direction.
+<i>72</i>&nbsp; * &lt;/p&gt;
+<i>73</i>&nbsp; *
+<i>74</i>&nbsp; * &lt;p&gt;
+<i>75</i>&nbsp; * The following pseudo code is the math used to compute the near and far clip
+<i>76</i>&nbsp; * distances in the scene coordinate space:
+<i>77</i>&nbsp; * &lt;/p&gt;
+<i>78</i>&nbsp; *
+<i>79</i>&nbsp; * &lt;pre&gt;
+<i>80</i>&nbsp; * final double tanOfHalfFOV = Math.tan(Math.toRadians(FOV) / 2.0);
+<i>81</i>&nbsp; * final double halfHeight = HEIGHT / 2;
+<i>82</i>&nbsp; * final double focalLenght = halfHeight / tanOfHalfFOV;
+<i>83</i>&nbsp; * final double eyePositionZ = -1.0 * focalLenght;
+<i>84</i>&nbsp; * final double nearClipDistance = focalLenght * NEAR + eyePositionZ;
+<i>85</i>&nbsp; * final double farClipDistance = focalLenght * FAR + eyePositionZ;
+<i>86</i>&nbsp; * &lt;/pre&gt;
+<i>87</i>&nbsp; *
+<i>88</i>&nbsp; * &lt;p&gt;
+<i>89</i>&nbsp; * where {@code FOV} is {@code fieldOfView} in degrees,
+<i>90</i>&nbsp; * {@code NEAR} is {@code nearClip} specified in eye space,
+<i>91</i>&nbsp; * and {@code FAR} is {@code farClip} specified in eye space.
+<i>92</i>&nbsp; * &lt;/p&gt;
+<i>93</i>&nbsp; *
+<i>94</i>&nbsp; * &lt;p&gt;
+<i>95</i>&nbsp; * Note: Since the ParallelCamera class has no {@code fieldOfView} property, a
+<i>96</i>&nbsp; * 30 degrees vertical field of view is used.
+<i>97</i>&nbsp; * &lt;/p&gt;
+<i>98</i>&nbsp; *
+<i>99</i>&nbsp; * &lt;p&gt;
+<i>100</i>&nbsp; * Note: For the case of a PerspectiveCamera where the fixedEyeAtCameraZero
+<i>101</i>&nbsp; * attribute is true, the scene coordinate space is normalized in order to fit
+<i>102</i>&nbsp; * into the view frustum (see {@link PerspectiveCamera} for more details). In
+<i>103</i>&nbsp; * this mode, the eye coordinate space is the same as this Camera node&#39;s local
+<i>104</i>&nbsp; * coordinate space. Hence the conversion formula mentioned above is not used.
+<i>105</i>&nbsp; * &lt;/p&gt;
+<i>106</i>&nbsp; *
+<i>107</i>&nbsp; * &lt;p&gt;
+<i>108</i>&nbsp; * An application should not extend the Camera class directly. Doing so may lead to
+<i>109</i>&nbsp; * an UnsupportedOperationException being thrown.
+<i>110</i>&nbsp; * &lt;/p&gt;
+<i>111</i>&nbsp; *
+<i>112</i>&nbsp; * @since JavaFX 2.0
+<i>113</i>&nbsp; */
+<b class="fc"><i>114</i>&nbsp;public abstract class Camera extends Node {</b>
+<i>115</i>&nbsp;    static {
+<i>116</i>&nbsp;         // This is used by classes in different packages to get access to
+<i>117</i>&nbsp;         // private and package private methods.
+<b class="fc"><i>118</i>&nbsp;        CameraHelper.setCameraAccessor(new CameraHelper.CameraAccessor() {</b>
+<i>119</i>&nbsp;            @Override
+<i>120</i>&nbsp;            public void doMarkDirty(Node node, DirtyBits dirtyBit) {
+<b class="fc"><i>121</i>&nbsp;                ((Camera) node).doMarkDirty(dirtyBit);</b>
+<b class="fc"><i>122</i>&nbsp;            }</b>
+<i>123</i>&nbsp;
+<i>124</i>&nbsp;            @Override
+<i>125</i>&nbsp;            public void doUpdatePeer(Node node) {
+<b class="fc"><i>126</i>&nbsp;                ((Camera) node).doUpdatePeer();</b>
+<b class="fc"><i>127</i>&nbsp;            }</b>
+<i>128</i>&nbsp;
+<i>129</i>&nbsp;            @Override
+<i>130</i>&nbsp;            public BaseBounds doComputeGeomBounds(Node node,
+<i>131</i>&nbsp;                    BaseBounds bounds, BaseTransform tx) {
+<b class="nc"><i>132</i>&nbsp;                return ((Camera) node).doComputeGeomBounds(bounds, tx);</b>
+<i>133</i>&nbsp;            }
+<i>134</i>&nbsp;
+<i>135</i>&nbsp;            @Override
+<i>136</i>&nbsp;            public boolean doComputeContains(Node node, double localX, double localY) {
+<b class="nc"><i>137</i>&nbsp;                return ((Camera) node).doComputeContains(localX, localY);</b>
+<i>138</i>&nbsp;            }
+<i>139</i>&nbsp;
+<i>140</i>&nbsp;            @Override
+<i>141</i>&nbsp;            public Object doProcessMXNode(Node node, MXNodeAlgorithm alg, MXNodeAlgorithmContext ctx) {
+<b class="nc"><i>142</i>&nbsp;                return ((Camera) node).doProcessMXNode(alg, ctx);</b>
+<i>143</i>&nbsp;            }
+<i>144</i>&nbsp;
+<i>145</i>&nbsp;            @Override
+<i>146</i>&nbsp;            public Point2D project(Camera camera, Point3D p) {
+<b class="fc"><i>147</i>&nbsp;                return camera.project(p);</b>
+<i>148</i>&nbsp;            }
+<i>149</i>&nbsp;
+<i>150</i>&nbsp;            @Override
+<i>151</i>&nbsp;            public Point2D pickNodeXYPlane(Camera camera, Node node, double x, double y) {
+<b class="nc"><i>152</i>&nbsp;                return camera.pickNodeXYPlane(node, x, y);</b>
+<i>153</i>&nbsp;            }
+<i>154</i>&nbsp;
+<i>155</i>&nbsp;            @Override
+<i>156</i>&nbsp;            public Point3D pickProjectPlane(Camera camera, double x, double y) {
+<b class="nc"><i>157</i>&nbsp;                return camera.pickProjectPlane(x, y);</b>
+<i>158</i>&nbsp;            }
+<i>159</i>&nbsp;        });
+<b class="fc"><i>160</i>&nbsp;    }</b>
+<i>161</i>&nbsp;
+<b class="fc"><i>162</i>&nbsp;    private Affine3D localToSceneTx = new Affine3D();</b>
+<i>163</i>&nbsp;
+<i>164</i>&nbsp;    {
+<i>165</i>&nbsp;        // To initialize the class helper at the begining each constructor of this class
+<b class="fc"><i>166</i>&nbsp;        CameraHelper.initHelper(this);</b>
+<i>167</i>&nbsp;    }
+<i>168</i>&nbsp;
+<b class="fc"><i>169</i>&nbsp;    protected Camera() {</b>
+<b class="fc"><i>170</i>&nbsp;        InvalidationListener dirtyTransformListener = observable</b>
+<b class="nc"><i>171</i>&nbsp;                -&gt; NodeHelper.markDirty(this, DirtyBits.NODE_CAMERA_TRANSFORM);</b>
+<i>172</i>&nbsp;
+<b class="fc"><i>173</i>&nbsp;        this.localToSceneTransformProperty().addListener(dirtyTransformListener);</b>
+<i>174</i>&nbsp;        // if camera is removed from scene it needs to stop using its transforms
+<b class="fc"><i>175</i>&nbsp;        this.sceneProperty().addListener(dirtyTransformListener);</b>
+<b class="fc"><i>176</i>&nbsp;    }</b>
+<i>177</i>&nbsp;
+<i>178</i>&nbsp;    // NOTE: farClipInScene and nearClipInScene are valid only if there is no rotation
+<i>179</i>&nbsp;    private double farClipInScene;
+<i>180</i>&nbsp;    private double nearClipInScene;
+<i>181</i>&nbsp;
+<i>182</i>&nbsp;    // only one of them can be non-null at a time
+<b class="fc"><i>183</i>&nbsp;    private Scene ownerScene = null;</b>
+<b class="fc"><i>184</i>&nbsp;    private SubScene ownerSubScene = null;</b>
+<i>185</i>&nbsp;
+<b class="fc"><i>186</i>&nbsp;    private GeneralTransform3D projViewTx = new GeneralTransform3D();</b>
+<b class="fc"><i>187</i>&nbsp;    private GeneralTransform3D projTx = new GeneralTransform3D();</b>
+<b class="fc"><i>188</i>&nbsp;    private Affine3D viewTx = new Affine3D();</b>
+<b class="fc"><i>189</i>&nbsp;    private double viewWidth = 1.0;</b>
+<b class="fc"><i>190</i>&nbsp;    private double viewHeight = 1.0;</b>
+<b class="fc"><i>191</i>&nbsp;    private Vec3d position = new Vec3d();</b>
+<i>192</i>&nbsp;
+<b class="fc"><i>193</i>&nbsp;    private boolean clipInSceneValid = false;</b>
+<b class="fc"><i>194</i>&nbsp;    private boolean projViewTxValid = false;</b>
+<b class="fc"><i>195</i>&nbsp;    private boolean localToSceneValid = false;</b>
+<b class="fc"><i>196</i>&nbsp;    private boolean sceneToLocalValid = false;</b>
+<i>197</i>&nbsp;
+<i>198</i>&nbsp;    double getFarClipInScene() {
+<b class="nc"><i>199</i>&nbsp;        updateClipPlane();</b>
+<b class="nc"><i>200</i>&nbsp;        return farClipInScene;</b>
+<i>201</i>&nbsp;    }
+<i>202</i>&nbsp;
+<i>203</i>&nbsp;    double getNearClipInScene() {
+<b class="nc"><i>204</i>&nbsp;        updateClipPlane();</b>
+<b class="nc"><i>205</i>&nbsp;        return nearClipInScene;</b>
+<i>206</i>&nbsp;    }
+<i>207</i>&nbsp;
+<i>208</i>&nbsp;    private void updateClipPlane() {
+<b class="nc"><i>209</i>&nbsp;        if (!clipInSceneValid) {</b>
+<b class="nc"><i>210</i>&nbsp;            final Transform localToSceneTransform = getLocalToSceneTransform();</b>
+<b class="nc"><i>211</i>&nbsp;            nearClipInScene = localToSceneTransform.transform(0, 0, getNearClip()).getZ();</b>
+<b class="nc"><i>212</i>&nbsp;            farClipInScene = localToSceneTransform.transform(0, 0, getFarClip()).getZ();</b>
+<b class="nc"><i>213</i>&nbsp;            clipInSceneValid = true;</b>
+<i>214</i>&nbsp;        }
+<b class="nc"><i>215</i>&nbsp;    }</b>
+<i>216</i>&nbsp;
+<i>217</i>&nbsp;    /**
+<i>218</i>&nbsp;     * An affine transform that holds the computed scene-to-local transform.
+<i>219</i>&nbsp;     * It is used to convert node to camera coordinate when rotation is involved.
+<i>220</i>&nbsp;     */
+<b class="fc"><i>221</i>&nbsp;    private Affine3D sceneToLocalTx = new Affine3D();</b>
+<i>222</i>&nbsp;
+<i>223</i>&nbsp;    Affine3D getSceneToLocalTransform() {
+<b class="fc"><i>224</i>&nbsp;        if (!sceneToLocalValid) {</b>
+<b class="fc"><i>225</i>&nbsp;            sceneToLocalTx.setTransform(getCameraTransform());</b>
+<i>226</i>&nbsp;            try {
+<b class="fc"><i>227</i>&nbsp;                sceneToLocalTx.invert();</b>
+<b class="nc"><i>228</i>&nbsp;            } catch (NoninvertibleTransformException ex) {</b>
+<b class="nc"><i>229</i>&nbsp;                String logname = Camera.class.getName();</b>
+<b class="nc"><i>230</i>&nbsp;                PlatformLogger.getLogger(logname).severe(&quot;getSceneToLocalTransform&quot;, ex);</b>
+<b class="nc"><i>231</i>&nbsp;                sceneToLocalTx.setToIdentity();</b>
+<b class="fc"><i>232</i>&nbsp;            }</b>
+<b class="fc"><i>233</i>&nbsp;            sceneToLocalValid = true;</b>
+<i>234</i>&nbsp;        }
+<i>235</i>&nbsp;
+<b class="fc"><i>236</i>&nbsp;        return sceneToLocalTx;</b>
+<i>237</i>&nbsp;    }
+<i>238</i>&nbsp;
+<i>239</i>&nbsp;    /**
+<i>240</i>&nbsp;     * Specifies the distance from the eye of the near clipping plane of
+<i>241</i>&nbsp;     * this {@code Camera} in the eye coordinate space.
+<i>242</i>&nbsp;     * Objects closer to the eye than {@code nearClip} are not drawn.
+<i>243</i>&nbsp;     * {@code nearClip} is specified as a value greater than zero. A value less
+<i>244</i>&nbsp;     * than or equal to zero is treated as a very small positive number.
+<i>245</i>&nbsp;     *
+<i>246</i>&nbsp;     * @defaultValue 0.1
+<i>247</i>&nbsp;     * @since JavaFX 8.0
+<i>248</i>&nbsp;     */
+<i>249</i>&nbsp;    private DoubleProperty nearClip;
+<i>250</i>&nbsp;
+<i>251</i>&nbsp;    public final void setNearClip(double value){
+<b class="nc"><i>252</i>&nbsp;        nearClipProperty().set(value);</b>
+<b class="nc"><i>253</i>&nbsp;    }</b>
+<i>254</i>&nbsp;
+<i>255</i>&nbsp;    public final double getNearClip() {
+<b class="fc"><i>256</i>&nbsp;        return nearClip == null ? 0.1 : nearClip.get();</b>
+<i>257</i>&nbsp;    }
+<i>258</i>&nbsp;
+<i>259</i>&nbsp;    public final DoubleProperty nearClipProperty() {
+<b class="nc"><i>260</i>&nbsp;        if (nearClip == null) {</b>
+<b class="nc"><i>261</i>&nbsp;            nearClip = new SimpleDoubleProperty(Camera.this, &quot;nearClip&quot;, 0.1) {</b>
+<i>262</i>&nbsp;                @Override
+<i>263</i>&nbsp;                protected void invalidated() {
+<b class="nc"><i>264</i>&nbsp;                    clipInSceneValid = false;</b>
+<b class="nc"><i>265</i>&nbsp;                    NodeHelper.markDirty(Camera.this, DirtyBits.NODE_CAMERA);</b>
+<b class="nc"><i>266</i>&nbsp;                }</b>
+<i>267</i>&nbsp;            };
+<i>268</i>&nbsp;        }
+<b class="nc"><i>269</i>&nbsp;        return nearClip;</b>
+<i>270</i>&nbsp;    }
+<i>271</i>&nbsp;
+<i>272</i>&nbsp;    /**
+<i>273</i>&nbsp;     * Specifies the distance from the eye of the far clipping plane of
+<i>274</i>&nbsp;     * this {@code Camera} in the eye coordinate space.
+<i>275</i>&nbsp;     * Objects farther away from the eye than {@code farClip} are not
+<i>276</i>&nbsp;     * drawn.
+<i>277</i>&nbsp;     * {@code farClip} is specified as a value greater than {@code nearClip}.
+<i>278</i>&nbsp;     * A value less than or equal to {@code nearClip} is treated as
+<i>279</i>&nbsp;     * {@code nearClip} plus a very small positive number.
+<i>280</i>&nbsp;     *
+<i>281</i>&nbsp;     * @defaultValue 100.0
+<i>282</i>&nbsp;     * @since JavaFX 8.0
+<i>283</i>&nbsp;     */
+<i>284</i>&nbsp;    private DoubleProperty farClip;
+<i>285</i>&nbsp;
+<i>286</i>&nbsp;    public final void setFarClip(double value){
+<b class="nc"><i>287</i>&nbsp;        farClipProperty().set(value);</b>
+<b class="nc"><i>288</i>&nbsp;    }</b>
+<i>289</i>&nbsp;
+<i>290</i>&nbsp;    public final double getFarClip() {
+<b class="fc"><i>291</i>&nbsp;        return farClip == null ? 100.0 : farClip.get();</b>
+<i>292</i>&nbsp;    }
+<i>293</i>&nbsp;
+<i>294</i>&nbsp;    public final DoubleProperty farClipProperty() {
+<b class="nc"><i>295</i>&nbsp;        if (farClip == null) {</b>
+<b class="nc"><i>296</i>&nbsp;            farClip = new SimpleDoubleProperty(Camera.this, &quot;farClip&quot;, 100.0) {</b>
+<i>297</i>&nbsp;                @Override
+<i>298</i>&nbsp;                protected void invalidated() {
+<b class="nc"><i>299</i>&nbsp;                    clipInSceneValid = false;</b>
+<b class="nc"><i>300</i>&nbsp;                    NodeHelper.markDirty(Camera.this, DirtyBits.NODE_CAMERA);</b>
+<b class="nc"><i>301</i>&nbsp;                }</b>
+<i>302</i>&nbsp;            };
+<i>303</i>&nbsp;        }
+<b class="nc"><i>304</i>&nbsp;        return farClip;</b>
+<i>305</i>&nbsp;    }
+<i>306</i>&nbsp;
+<i>307</i>&nbsp;    Camera copy() {
+<b class="nc"><i>308</i>&nbsp;        return this;</b>
+<i>309</i>&nbsp;    }
+<i>310</i>&nbsp;
+<i>311</i>&nbsp;    /*
+<i>312</i>&nbsp;     * Note: This method MUST only be called via its accessor method.
+<i>313</i>&nbsp;     */
+<i>314</i>&nbsp;    private void doUpdatePeer() {
+<b class="fc"><i>315</i>&nbsp;        NGCamera peer = getPeer();</b>
+<b class="fc"><i>316</i>&nbsp;        if (!NodeHelper.isDirtyEmpty(this)) {</b>
+<b class="fc"><i>317</i>&nbsp;            if (isDirty(DirtyBits.NODE_CAMERA)) {</b>
+<b class="fc"><i>318</i>&nbsp;                peer.setNearClip((float) getNearClip());</b>
+<b class="fc"><i>319</i>&nbsp;                peer.setFarClip((float) getFarClip());</b>
+<b class="fc"><i>320</i>&nbsp;                peer.setViewWidth(getViewWidth());</b>
+<b class="fc"><i>321</i>&nbsp;                peer.setViewHeight(getViewHeight());</b>
+<i>322</i>&nbsp;            }
+<b class="fc"><i>323</i>&nbsp;            if (isDirty(DirtyBits.NODE_CAMERA_TRANSFORM)) {</b>
+<i>324</i>&nbsp;                // TODO: 3D - For now, we are treating the scene as world.
+<i>325</i>&nbsp;                // This may need to change for the fixed eye position case.
+<b class="fc"><i>326</i>&nbsp;                peer.setWorldTransform(getCameraTransform());</b>
+<i>327</i>&nbsp;            }
+<i>328</i>&nbsp;
+<b class="fc"><i>329</i>&nbsp;            peer.setProjViewTransform(getProjViewTransform());</b>
+<i>330</i>&nbsp;
+<b class="fc"><i>331</i>&nbsp;            position = computePosition(position);</b>
+<b class="fc"><i>332</i>&nbsp;            getCameraTransform().transform(position, position);</b>
+<b class="fc"><i>333</i>&nbsp;            peer.setPosition(position);</b>
+<i>334</i>&nbsp;        }
+<b class="fc"><i>335</i>&nbsp;    }</b>
+<i>336</i>&nbsp;
+<i>337</i>&nbsp;    void setViewWidth(double width) {
+<b class="fc"><i>338</i>&nbsp;        this.viewWidth = width;</b>
+<b class="fc"><i>339</i>&nbsp;        NodeHelper.markDirty(this, DirtyBits.NODE_CAMERA);</b>
+<b class="fc"><i>340</i>&nbsp;    }</b>
+<i>341</i>&nbsp;
+<i>342</i>&nbsp;    double getViewWidth() {
+<b class="fc"><i>343</i>&nbsp;        return viewWidth;</b>
+<i>344</i>&nbsp;    }
+<i>345</i>&nbsp;
+<i>346</i>&nbsp;    void setViewHeight(double height) {
+<b class="fc"><i>347</i>&nbsp;        this.viewHeight = height;</b>
+<b class="fc"><i>348</i>&nbsp;        NodeHelper.markDirty(this, DirtyBits.NODE_CAMERA);</b>
+<b class="fc"><i>349</i>&nbsp;    }</b>
+<i>350</i>&nbsp;
+<i>351</i>&nbsp;    double getViewHeight() {
+<b class="fc"><i>352</i>&nbsp;        return viewHeight;</b>
+<i>353</i>&nbsp;    }
+<i>354</i>&nbsp;
+<i>355</i>&nbsp;    void setOwnerScene(Scene s) {
+<b class="fc"><i>356</i>&nbsp;        if (s == null) {</b>
+<b class="nc"><i>357</i>&nbsp;            ownerScene = null;</b>
+<b class="fc"><i>358</i>&nbsp;        } else if (s != ownerScene) {</b>
+<b class="fc"><i>359</i>&nbsp;            if (ownerScene != null || ownerSubScene != null) {</b>
+<b class="nc"><i>360</i>&nbsp;                throw new IllegalArgumentException(this</b>
+<i>361</i>&nbsp;                        + &quot;is already set as camera in other scene or subscene&quot;);
+<i>362</i>&nbsp;            }
+<b class="fc"><i>363</i>&nbsp;            ownerScene = s;</b>
+<b class="fc"><i>364</i>&nbsp;            markOwnerDirty();</b>
+<i>365</i>&nbsp;        }
+<b class="fc"><i>366</i>&nbsp;    }</b>
+<i>367</i>&nbsp;
+<i>368</i>&nbsp;    void setOwnerSubScene(SubScene s) {
+<b class="nc"><i>369</i>&nbsp;        if (s == null) {</b>
+<b class="nc"><i>370</i>&nbsp;            ownerSubScene = null;</b>
+<b class="nc"><i>371</i>&nbsp;        } else if (s != ownerSubScene) {</b>
+<b class="nc"><i>372</i>&nbsp;            if (ownerScene != null || ownerSubScene != null) {</b>
+<b class="nc"><i>373</i>&nbsp;                throw new IllegalArgumentException(this</b>
+<i>374</i>&nbsp;                        + &quot;is already set as camera in other scene or subscene&quot;);
+<i>375</i>&nbsp;            }
+<b class="nc"><i>376</i>&nbsp;            ownerSubScene = s;</b>
+<b class="nc"><i>377</i>&nbsp;            markOwnerDirty();</b>
+<i>378</i>&nbsp;        }
+<b class="nc"><i>379</i>&nbsp;    }</b>
+<i>380</i>&nbsp;
+<i>381</i>&nbsp;    /*
+<i>382</i>&nbsp;     * Note: This method MUST only be called via its accessor method.
+<i>383</i>&nbsp;     */
+<i>384</i>&nbsp;    private void doMarkDirty(DirtyBits dirtyBit) {
+<b class="fc"><i>385</i>&nbsp;        if (dirtyBit == DirtyBits.NODE_CAMERA_TRANSFORM) {</b>
+<b class="nc"><i>386</i>&nbsp;            localToSceneValid = false;</b>
+<b class="nc"><i>387</i>&nbsp;            sceneToLocalValid = false;</b>
+<b class="nc"><i>388</i>&nbsp;            clipInSceneValid = false;</b>
+<b class="nc"><i>389</i>&nbsp;            projViewTxValid = false;</b>
+<b class="fc"><i>390</i>&nbsp;        } else if (dirtyBit == DirtyBits.NODE_CAMERA) {</b>
+<b class="fc"><i>391</i>&nbsp;            projViewTxValid = false;</b>
+<i>392</i>&nbsp;        }
+<b class="fc"><i>393</i>&nbsp;        markOwnerDirty();</b>
+<b class="fc"><i>394</i>&nbsp;    }</b>
+<i>395</i>&nbsp;
+<i>396</i>&nbsp;    private void markOwnerDirty() {
+<i>397</i>&nbsp;        // if the camera is part of the scene/subScene, we will need to notify
+<i>398</i>&nbsp;        // the owner to mark the entire scene/subScene dirty.
+<b class="fc"><i>399</i>&nbsp;        if (ownerScene != null) {</b>
+<b class="fc"><i>400</i>&nbsp;            ownerScene.markCameraDirty();</b>
+<i>401</i>&nbsp;        }
+<b class="fc"><i>402</i>&nbsp;        if (ownerSubScene != null) {</b>
+<b class="nc"><i>403</i>&nbsp;            ownerSubScene.markContentDirty();</b>
+<i>404</i>&nbsp;        }
+<b class="fc"><i>405</i>&nbsp;    }</b>
+<i>406</i>&nbsp;
+<i>407</i>&nbsp;    /**
+<i>408</i>&nbsp;     * Returns the local-to-scene transform of this camera.
+<i>409</i>&nbsp;     * Package private, for use in our internal subclasses.
+<i>410</i>&nbsp;     * Returns directly the internal instance, it must not be altered.
+<i>411</i>&nbsp;     */
+<i>412</i>&nbsp;    Affine3D getCameraTransform() {
+<b class="fc"><i>413</i>&nbsp;        if (!localToSceneValid) {</b>
+<b class="fc"><i>414</i>&nbsp;            localToSceneTx.setToIdentity();</b>
+<b class="fc"><i>415</i>&nbsp;            TransformHelper.apply(getLocalToSceneTransform(), localToSceneTx);</b>
+<b class="fc"><i>416</i>&nbsp;            localToSceneValid = true;</b>
+<i>417</i>&nbsp;        }
+<b class="fc"><i>418</i>&nbsp;        return localToSceneTx;</b>
+<i>419</i>&nbsp;    }
+<i>420</i>&nbsp;
+<i>421</i>&nbsp;    abstract void computeProjectionTransform(GeneralTransform3D proj);
+<i>422</i>&nbsp;    abstract void computeViewTransform(Affine3D view);
+<i>423</i>&nbsp;
+<i>424</i>&nbsp;    /**
+<i>425</i>&nbsp;     * Returns the projView transform of this camera.
+<i>426</i>&nbsp;     * Package private, for internal use.
+<i>427</i>&nbsp;     * Returns directly the internal instance, it must not be altered.
+<i>428</i>&nbsp;     */
+<i>429</i>&nbsp;    GeneralTransform3D getProjViewTransform() {
+<b class="fc"><i>430</i>&nbsp;        if (!projViewTxValid) {</b>
+<b class="fc"><i>431</i>&nbsp;            computeProjectionTransform(projTx);</b>
+<b class="fc"><i>432</i>&nbsp;            computeViewTransform(viewTx);</b>
+<i>433</i>&nbsp;
+<b class="fc"><i>434</i>&nbsp;            projViewTx.set(projTx);</b>
+<b class="fc"><i>435</i>&nbsp;            projViewTx.mul(viewTx);</b>
+<b class="fc"><i>436</i>&nbsp;            projViewTx.mul(getSceneToLocalTransform());</b>
+<i>437</i>&nbsp;
+<b class="fc"><i>438</i>&nbsp;            projViewTxValid = true;</b>
+<i>439</i>&nbsp;        }
+<i>440</i>&nbsp;
+<b class="fc"><i>441</i>&nbsp;        return projViewTx;</b>
+<i>442</i>&nbsp;    }
+<i>443</i>&nbsp;
+<i>444</i>&nbsp;    /**
+<i>445</i>&nbsp;     * Transforms the given 3D point to the flat projected coordinates.
+<i>446</i>&nbsp;     */
+<i>447</i>&nbsp;    private Point2D project(Point3D p) {
+<i>448</i>&nbsp;
+<b class="fc"><i>449</i>&nbsp;        final Vec3d vec = getProjViewTransform().transform(new Vec3d(</b>
+<b class="fc"><i>450</i>&nbsp;                p.getX(), p.getY(), p.getZ()));</b>
+<i>451</i>&nbsp;
+<b class="fc"><i>452</i>&nbsp;        final double halfViewWidth = getViewWidth() / 2.0;</b>
+<b class="fc"><i>453</i>&nbsp;        final double halfViewHeight = getViewHeight() / 2.0;</b>
+<i>454</i>&nbsp;
+<b class="fc"><i>455</i>&nbsp;        return new Point2D(</b>
+<i>456</i>&nbsp;                halfViewWidth * (1 + vec.x),
+<i>457</i>&nbsp;                halfViewHeight * (1 - vec.y));
+<i>458</i>&nbsp;    }
+<i>459</i>&nbsp;
+<i>460</i>&nbsp;    /**
+<i>461</i>&nbsp;     * Computes intersection point of the pick ray cast by the given coordinates
+<i>462</i>&nbsp;     * and the node&#39;s local XY plane.
+<i>463</i>&nbsp;     */
+<i>464</i>&nbsp;    private Point2D pickNodeXYPlane(Node node, double x, double y) {
+<b class="nc"><i>465</i>&nbsp;        final PickRay ray = computePickRay(x, y, null);</b>
+<i>466</i>&nbsp;
+<b class="nc"><i>467</i>&nbsp;        final Affine3D localToScene = new Affine3D();</b>
+<b class="nc"><i>468</i>&nbsp;        TransformHelper.apply(node.getLocalToSceneTransform(), localToScene);</b>
+<i>469</i>&nbsp;
+<b class="nc"><i>470</i>&nbsp;        final Vec3d o = ray.getOriginNoClone();</b>
+<b class="nc"><i>471</i>&nbsp;        final Vec3d d = ray.getDirectionNoClone();</b>
+<i>472</i>&nbsp;
+<i>473</i>&nbsp;        try {
+<b class="nc"><i>474</i>&nbsp;            localToScene.inverseTransform(o, o);</b>
+<b class="nc"><i>475</i>&nbsp;            localToScene.inverseDeltaTransform(d, d);</b>
+<b class="nc"><i>476</i>&nbsp;        } catch (NoninvertibleTransformException e) {</b>
+<b class="nc"><i>477</i>&nbsp;            return null;</b>
+<b class="nc"><i>478</i>&nbsp;        }</b>
+<i>479</i>&nbsp;
+<b class="nc"><i>480</i>&nbsp;        if (almostZero(d.z)) {</b>
+<b class="nc"><i>481</i>&nbsp;            return null;</b>
+<i>482</i>&nbsp;        }
+<i>483</i>&nbsp;
+<b class="nc"><i>484</i>&nbsp;        final double t = -o.z / d.z;</b>
+<b class="nc"><i>485</i>&nbsp;        return new Point2D(o.x + (d.x * t), o.y + (d.y * t));</b>
+<i>486</i>&nbsp;    }
+<i>487</i>&nbsp;
+<i>488</i>&nbsp;    /**
+<i>489</i>&nbsp;     * Computes intersection point of the pick ray cast by the given coordinates
+<i>490</i>&nbsp;     * and the projection plane.
+<i>491</i>&nbsp;     */
+<i>492</i>&nbsp;    Point3D pickProjectPlane(double x, double y) {
+<b class="nc"><i>493</i>&nbsp;        final PickRay ray = computePickRay(x, y, null);</b>
+<b class="nc"><i>494</i>&nbsp;        final Vec3d p = new Vec3d();</b>
+<b class="nc"><i>495</i>&nbsp;        p.add(ray.getOriginNoClone(), ray.getDirectionNoClone());</b>
+<i>496</i>&nbsp;
+<b class="nc"><i>497</i>&nbsp;        return new Point3D(p.x, p.y, p.z);</b>
+<i>498</i>&nbsp;    }
+<i>499</i>&nbsp;
+<i>500</i>&nbsp;
+<i>501</i>&nbsp;    /**
+<i>502</i>&nbsp;     * Computes pick ray for the content rendered by this camera.
+<i>503</i>&nbsp;     * @param x horizontal coordinate of the pick ray in the projected
+<i>504</i>&nbsp;     *               view, usually mouse cursor position
+<i>505</i>&nbsp;     * @param y vertical coordinate of the pick ray in the projected
+<i>506</i>&nbsp;     *               view, usually mouse cursor position
+<i>507</i>&nbsp;     * @param pickRay pick ray to be reused. New instance is created in case
+<i>508</i>&nbsp;     *                of null.
+<i>509</i>&nbsp;     * @return The PickRay instance computed based on this camera and the given
+<i>510</i>&nbsp;     *         arguments.
+<i>511</i>&nbsp;     */
+<i>512</i>&nbsp;    abstract PickRay computePickRay(double x, double y, PickRay pickRay);
+<i>513</i>&nbsp;
+<i>514</i>&nbsp;    /**
+<i>515</i>&nbsp;     * Computes local position of the camera in the scene.
+<i>516</i>&nbsp;     * @param position Position to be reused. New instance is created in case
+<i>517</i>&nbsp;     *                 of null.
+<i>518</i>&nbsp;     * @return The position of the camera in the scene in camera local coords
+<i>519</i>&nbsp;     */
+<i>520</i>&nbsp;    abstract Vec3d computePosition(Vec3d position);
+<i>521</i>&nbsp;
+<i>522</i>&nbsp;    /*
+<i>523</i>&nbsp;     * Note: This method MUST only be called via its accessor method.
+<i>524</i>&nbsp;     */
+<i>525</i>&nbsp;    private BaseBounds doComputeGeomBounds(BaseBounds bounds, BaseTransform tx) {
+<b class="nc"><i>526</i>&nbsp;        return new BoxBounds(0, 0, 0, 0, 0, 0);</b>
+<i>527</i>&nbsp;    }
+<i>528</i>&nbsp;
+<i>529</i>&nbsp;    /*
+<i>530</i>&nbsp;     * Note: This method MUST only be called via its accessor method.
+<i>531</i>&nbsp;     */
+<i>532</i>&nbsp;    private boolean doComputeContains(double localX, double localY) {
+<b class="nc"><i>533</i>&nbsp;        return false;</b>
+<i>534</i>&nbsp;    }
+<i>535</i>&nbsp;
+<i>536</i>&nbsp;    /*
+<i>537</i>&nbsp;     * Note: This method MUST only be called via its accessor method.
+<i>538</i>&nbsp;     */
+<i>539</i>&nbsp;    private Object doProcessMXNode(MXNodeAlgorithm alg, MXNodeAlgorithmContext ctx) {
+<b class="nc"><i>540</i>&nbsp;        throw new UnsupportedOperationException(&quot;Not supported yet.&quot;);</b>
+<i>541</i>&nbsp;    }
+<i>542</i>&nbsp;
+<i>543</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2017-12-04 21:49</div>
+</div>
+</body>
+</html>

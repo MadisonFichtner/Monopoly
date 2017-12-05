@@ -1,0 +1,855 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: Application</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.glass.ui</a> ]
+</div>
+
+<h1>Coverage Summary for Class: Application (com.sun.glass.ui)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">Application</td>
+<td class="coverageStat">
+  <span class="percent">
+    39.7%
+  </span>
+  <span class="absValue">
+    (29/ 73)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    35.8%
+  </span>
+  <span class="absValue">
+    (76/ 212)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">Application$EventHandler</td>
+<td class="coverageStat">
+  <span class="percent">
+    6.7%
+  </span>
+  <span class="absValue">
+    (1/ 15)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    6.7%
+  </span>
+  <span class="absValue">
+    (1/ 15)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    34.1%
+  </span>
+  <span class="absValue">
+    (30/ 88)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    33.9%
+  </span>
+  <span class="absValue">
+    (77/ 227)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright (c) 2010, 2016, Oracle and/or its affiliates. All rights reserved.
+<i>3</i>&nbsp; * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+<i>4</i>&nbsp; *
+<i>5</i>&nbsp; *
+<i>6</i>&nbsp; *
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; *
+<i>11</i>&nbsp; *
+<i>12</i>&nbsp; *
+<i>13</i>&nbsp; *
+<i>14</i>&nbsp; *
+<i>15</i>&nbsp; *
+<i>16</i>&nbsp; *
+<i>17</i>&nbsp; *
+<i>18</i>&nbsp; *
+<i>19</i>&nbsp; *
+<i>20</i>&nbsp; *
+<i>21</i>&nbsp; *
+<i>22</i>&nbsp; *
+<i>23</i>&nbsp; *
+<i>24</i>&nbsp; */
+<i>25</i>&nbsp;package com.sun.glass.ui;
+<i>26</i>&nbsp;
+<i>27</i>&nbsp;import com.sun.glass.events.KeyEvent;
+<i>28</i>&nbsp;import com.sun.glass.ui.CommonDialogs.ExtensionFilter;
+<i>29</i>&nbsp;import com.sun.glass.ui.CommonDialogs.FileChooserResult;
+<i>30</i>&nbsp;
+<i>31</i>&nbsp;import java.io.File;
+<i>32</i>&nbsp;import java.nio.ByteBuffer;
+<i>33</i>&nbsp;import java.nio.IntBuffer;
+<i>34</i>&nbsp;import java.security.AccessController;
+<i>35</i>&nbsp;import java.security.PrivilegedAction;
+<i>36</i>&nbsp;import java.util.ArrayList;
+<i>37</i>&nbsp;import java.util.Iterator;
+<i>38</i>&nbsp;import java.util.List;
+<i>39</i>&nbsp;import java.util.Map;
+<i>40</i>&nbsp;import java.util.LinkedList;
+<i>41</i>&nbsp;
+<i>42</i>&nbsp;public abstract class Application {
+<i>43</i>&nbsp;
+<i>44</i>&nbsp;    private final static String DEFAULT_NAME = &quot;java&quot;;
+<b class="fc"><i>45</i>&nbsp;    protected String name = DEFAULT_NAME;</b>
+<i>46</i>&nbsp;
+<b class="fc"><i>47</i>&nbsp;    public static class EventHandler {</b>
+<i>48</i>&nbsp;        // currently used only on Mac OS X
+<i>49</i>&nbsp;        public void handleWillFinishLaunchingAction(Application app, long time) {
+<b class="nc"><i>50</i>&nbsp;        }</b>
+<i>51</i>&nbsp;        // currently used only on Mac OS X
+<i>52</i>&nbsp;        public void handleDidFinishLaunchingAction(Application app, long time) {
+<b class="nc"><i>53</i>&nbsp;        }</b>
+<i>54</i>&nbsp;        // currently used only on Mac OS X
+<i>55</i>&nbsp;        public void handleWillBecomeActiveAction(Application app, long time) {
+<b class="nc"><i>56</i>&nbsp;        }</b>
+<i>57</i>&nbsp;        // currently used only on Mac OS X
+<i>58</i>&nbsp;        public void handleDidBecomeActiveAction(Application app, long time) {
+<b class="nc"><i>59</i>&nbsp;        }</b>
+<i>60</i>&nbsp;        // currently used only on Mac OS X
+<i>61</i>&nbsp;        public void handleWillResignActiveAction(Application app, long time) {
+<b class="nc"><i>62</i>&nbsp;        }</b>
+<i>63</i>&nbsp;        // currently used only on Mac OS X
+<i>64</i>&nbsp;        public void handleDidResignActiveAction(Application app, long time) {
+<b class="nc"><i>65</i>&nbsp;        }</b>
+<i>66</i>&nbsp;        // currently used only on iOS
+<i>67</i>&nbsp;        public void handleDidReceiveMemoryWarning(Application app, long time) {
+<b class="nc"><i>68</i>&nbsp;        }</b>
+<i>69</i>&nbsp;        // currently used only on Mac OS X
+<i>70</i>&nbsp;        public void handleWillHideAction(Application app, long time) {
+<b class="nc"><i>71</i>&nbsp;        }</b>
+<i>72</i>&nbsp;        // currently used only on Mac OS X
+<i>73</i>&nbsp;        public void handleDidHideAction(Application app, long time) {
+<b class="nc"><i>74</i>&nbsp;        }</b>
+<i>75</i>&nbsp;        // currently used only on Mac OS X
+<i>76</i>&nbsp;        public void handleWillUnhideAction(Application app, long time) {
+<b class="nc"><i>77</i>&nbsp;        }</b>
+<i>78</i>&nbsp;        // currently used only on Mac OS X
+<i>79</i>&nbsp;        public void handleDidUnhideAction(Application app, long time) {
+<b class="nc"><i>80</i>&nbsp;        }</b>
+<i>81</i>&nbsp;        // currently used only on Mac OS X
+<i>82</i>&nbsp;        // the open files which started up the app will arrive before app becomes active
+<i>83</i>&nbsp;        public void handleOpenFilesAction(Application app, long time, String files[]) {
+<b class="nc"><i>84</i>&nbsp;        }</b>
+<i>85</i>&nbsp;        // currently used only on Mac OS X
+<i>86</i>&nbsp;        public void handleQuitAction(Application app, long time) {
+<b class="nc"><i>87</i>&nbsp;        }</b>
+<i>88</i>&nbsp;        public boolean handleThemeChanged(String themeName) {
+<b class="nc"><i>89</i>&nbsp;            return false;</b>
+<i>90</i>&nbsp;        }
+<i>91</i>&nbsp;    }
+<i>92</i>&nbsp;
+<i>93</i>&nbsp;    private EventHandler eventHandler;
+<b class="fc"><i>94</i>&nbsp;    private boolean initialActiveEventReceived = false;</b>
+<b class="fc"><i>95</i>&nbsp;    private String initialOpenedFiles[] = null;</b>
+<i>96</i>&nbsp;
+<b class="fc"><i>97</i>&nbsp;    private static boolean loaded = false;</b>
+<i>98</i>&nbsp;    private static Application application;
+<i>99</i>&nbsp;    private static Thread eventThread;
+<b class="fc"><i>100</i>&nbsp;    private static final boolean disableThreadChecks =</b>
+<b class="fc"><i>101</i>&nbsp;        AccessController.doPrivileged((PrivilegedAction&lt;Boolean&gt;) () -&gt; {</b>
+<b class="fc"><i>102</i>&nbsp;            final String str =</b>
+<b class="fc"><i>103</i>&nbsp;                    System.getProperty(&quot;glass.disableThreadChecks&quot;, &quot;false&quot;);</b>
+<b class="fc"><i>104</i>&nbsp;            return &quot;true&quot;.equalsIgnoreCase(str);</b>
+<i>105</i>&nbsp;        });
+<i>106</i>&nbsp;
+<i>107</i>&nbsp;    // May be called on any thread.
+<i>108</i>&nbsp;    protected static synchronized void loadNativeLibrary(final String libname) {
+<i>109</i>&nbsp;        // load the native library of the specified libname.
+<i>110</i>&nbsp;        // the platform default by convention is &quot;glass&quot;, all others should have a suffix, ie glass-x11
+<b class="fc"><i>111</i>&nbsp;        if (!loaded) {</b>
+<b class="fc"><i>112</i>&nbsp;            com.sun.glass.utils.NativeLibLoader.loadLibrary(libname);</b>
+<b class="fc"><i>113</i>&nbsp;            loaded = true;</b>
+<i>114</i>&nbsp;        }
+<b class="fc"><i>115</i>&nbsp;    }</b>
+<i>116</i>&nbsp;
+<i>117</i>&nbsp;    // May be called on any thread.
+<i>118</i>&nbsp;    protected static synchronized void loadNativeLibrary() {
+<i>119</i>&nbsp;        // use the &quot;platform default&quot; name of &quot;glass&quot;
+<b class="fc"><i>120</i>&nbsp;        loadNativeLibrary(&quot;glass&quot;);</b>
+<b class="fc"><i>121</i>&nbsp;    }</b>
+<i>122</i>&nbsp;
+<b class="fc"><i>123</i>&nbsp;    private static volatile Map deviceDetails = null;</b>
+<i>124</i>&nbsp;
+<i>125</i>&nbsp;    // provides a means for the user to pass platorm specific details
+<i>126</i>&nbsp;    // to the native glass impl. Can be null.
+<i>127</i>&nbsp;    // May need be called before Run.
+<i>128</i>&nbsp;    // May be called on any thread.
+<i>129</i>&nbsp;    public static void setDeviceDetails(Map details) {
+<b class="fc"><i>130</i>&nbsp;        deviceDetails = details;</b>
+<b class="fc"><i>131</i>&nbsp;    }</b>
+<i>132</i>&nbsp;
+<i>133</i>&nbsp;    // May be called on any thread.
+<i>134</i>&nbsp;    public static Map getDeviceDetails() {
+<b class="fc"><i>135</i>&nbsp;        return deviceDetails;</b>
+<i>136</i>&nbsp;    }
+<i>137</i>&nbsp;
+<b class="fc"><i>138</i>&nbsp;    protected Application() {</b>
+<b class="fc"><i>139</i>&nbsp;    }</b>
+<i>140</i>&nbsp;
+<i>141</i>&nbsp;    // May be called on any thread.
+<i>142</i>&nbsp;    public static void run(final Runnable launchable) {
+<b class="fc"><i>143</i>&nbsp;        if (application != null) {</b>
+<b class="nc"><i>144</i>&nbsp;            throw new IllegalStateException(&quot;Application is already running&quot;);</b>
+<i>145</i>&nbsp;        }
+<b class="fc"><i>146</i>&nbsp;        application = PlatformFactory.getPlatformFactory().createApplication();</b>
+<i>147</i>&nbsp;        // each concrete Application should set the app name using its own platform mechanism:
+<i>148</i>&nbsp;        // on Mac OS X - use NSBundle info, which can be overriden by -Xdock:name
+<i>149</i>&nbsp;        // on Windows - TODO
+<i>150</i>&nbsp;        // on Linux - TODO
+<i>151</i>&nbsp;        //application.name = DEFAULT_NAME; // default
+<i>152</i>&nbsp;        try {
+<b class="fc"><i>153</i>&nbsp;            application.runLoop(() -&gt; {</b>
+<b class="fc"><i>154</i>&nbsp;                Screen.initScreens();</b>
+<b class="fc"><i>155</i>&nbsp;                launchable.run();</b>
+<b class="fc"><i>156</i>&nbsp;            });</b>
+<b class="nc"><i>157</i>&nbsp;        } catch (Throwable t) {</b>
+<b class="nc"><i>158</i>&nbsp;            t.printStackTrace();</b>
+<b class="fc"><i>159</i>&nbsp;        }</b>
+<b class="fc"><i>160</i>&nbsp;    }</b>
+<i>161</i>&nbsp;
+<i>162</i>&nbsp;    // runLoop never exits until app terminates
+<i>163</i>&nbsp;    protected abstract void runLoop(Runnable launchable);
+<i>164</i>&nbsp;
+<i>165</i>&nbsp;    // should return after loop termination completion
+<i>166</i>&nbsp;    protected void finishTerminating() {
+<i>167</i>&nbsp;        // To make sure application object is not used outside of the run loop
+<b class="fc"><i>168</i>&nbsp;        application = null;</b>
+<i>169</i>&nbsp;        // The eventThread is null at this point, no need to check it
+<b class="fc"><i>170</i>&nbsp;    }</b>
+<i>171</i>&nbsp;
+<i>172</i>&nbsp;    /**
+<i>173</i>&nbsp;     * Gets the name for the application.  The application name may
+<i>174</i>&nbsp;     * be used to identify the application in the user interface or
+<i>175</i>&nbsp;     * as part of the platform specific path used to store application
+<i>176</i>&nbsp;     * data.
+<i>177</i>&nbsp;     *
+<i>178</i>&nbsp;     * This is a hint and may not be used on some platforms.
+<i>179</i>&nbsp;     *
+<i>180</i>&nbsp;     * @return the application name
+<i>181</i>&nbsp;     */
+<i>182</i>&nbsp;    public String getName() {
+<b class="nc"><i>183</i>&nbsp;        checkEventThread();</b>
+<b class="nc"><i>184</i>&nbsp;        return name;</b>
+<i>185</i>&nbsp;    }
+<i>186</i>&nbsp;
+<i>187</i>&nbsp;    /**
+<i>188</i>&nbsp;     * Sets the name for the application.  The application name may
+<i>189</i>&nbsp;     * be used to identify the application in the user interface or
+<i>190</i>&nbsp;     * as part of the platform specific path used to store application
+<i>191</i>&nbsp;     * data.
+<i>192</i>&nbsp;     *
+<i>193</i>&nbsp;     * The name could be set only once. All subsequent calls are ignored.
+<i>194</i>&nbsp;     *
+<i>195</i>&nbsp;     * This is a hint and may not be used on some platforms.
+<i>196</i>&nbsp;     *
+<i>197</i>&nbsp;     * @param name the new application name
+<i>198</i>&nbsp;     */
+<i>199</i>&nbsp;    public void setName(String name) {
+<b class="fc"><i>200</i>&nbsp;        checkEventThread();</b>
+<b class="fc"><i>201</i>&nbsp;        if (name != null &amp;&amp; DEFAULT_NAME.equals(this.name)) {</b>
+<b class="fc"><i>202</i>&nbsp;            this.name = name;</b>
+<i>203</i>&nbsp;        }
+<b class="fc"><i>204</i>&nbsp;    }</b>
+<i>205</i>&nbsp;
+<i>206</i>&nbsp;    /**
+<i>207</i>&nbsp;     * Gets a platform specific path that can be used to store
+<i>208</i>&nbsp;     * application data.  The application name typically appears
+<i>209</i>&nbsp;     * as part of the path.
+<i>210</i>&nbsp;     *
+<i>211</i>&nbsp;     * On some platforms, the path may not yet exist and the caller
+<i>212</i>&nbsp;     * will need to create it.
+<i>213</i>&nbsp;     *
+<i>214</i>&nbsp;     * @return the platform specific path for the application data
+<i>215</i>&nbsp;     */
+<i>216</i>&nbsp;    public String getDataDirectory() {
+<b class="nc"><i>217</i>&nbsp;        checkEventThread();</b>
+<b class="nc"><i>218</i>&nbsp;        String userHome = AccessController.doPrivileged((PrivilegedAction&lt;String&gt;) () -&gt; System.getProperty(&quot;user.home&quot;));</b>
+<b class="nc"><i>219</i>&nbsp;        return userHome + File.separator + &quot;.&quot; + name + File.separator;</b>
+<i>220</i>&nbsp;    }
+<i>221</i>&nbsp;
+<i>222</i>&nbsp;    private void notifyWillFinishLaunching() {
+<b class="nc"><i>223</i>&nbsp;        EventHandler handler = getEventHandler();</b>
+<b class="nc"><i>224</i>&nbsp;        if (handler != null) {</b>
+<b class="nc"><i>225</i>&nbsp;            handler.handleWillFinishLaunchingAction(this, System.nanoTime());</b>
+<i>226</i>&nbsp;        }
+<b class="nc"><i>227</i>&nbsp;    }</b>
+<i>228</i>&nbsp;
+<i>229</i>&nbsp;    private void notifyDidFinishLaunching() {
+<b class="nc"><i>230</i>&nbsp;        EventHandler handler = getEventHandler();</b>
+<b class="nc"><i>231</i>&nbsp;        if (handler != null) {</b>
+<b class="nc"><i>232</i>&nbsp;            handler.handleDidFinishLaunchingAction(this, System.nanoTime());</b>
+<i>233</i>&nbsp;        }
+<b class="nc"><i>234</i>&nbsp;    }</b>
+<i>235</i>&nbsp;
+<i>236</i>&nbsp;    private void notifyWillBecomeActive() {
+<b class="nc"><i>237</i>&nbsp;        EventHandler handler = getEventHandler();</b>
+<b class="nc"><i>238</i>&nbsp;        if (handler != null) {</b>
+<b class="nc"><i>239</i>&nbsp;            handler.handleWillBecomeActiveAction(this, System.nanoTime());</b>
+<i>240</i>&nbsp;        }
+<b class="nc"><i>241</i>&nbsp;    }</b>
+<i>242</i>&nbsp;
+<i>243</i>&nbsp;    private void notifyDidBecomeActive() {
+<b class="nc"><i>244</i>&nbsp;        this.initialActiveEventReceived = true;</b>
+<b class="nc"><i>245</i>&nbsp;        EventHandler handler = getEventHandler();</b>
+<b class="nc"><i>246</i>&nbsp;        if (handler != null) {</b>
+<b class="nc"><i>247</i>&nbsp;            handler.handleDidBecomeActiveAction(this, System.nanoTime());</b>
+<i>248</i>&nbsp;        }
+<b class="nc"><i>249</i>&nbsp;    }</b>
+<i>250</i>&nbsp;
+<i>251</i>&nbsp;    private void notifyWillResignActive() {
+<b class="nc"><i>252</i>&nbsp;        EventHandler handler = getEventHandler();</b>
+<b class="nc"><i>253</i>&nbsp;        if (handler != null) {</b>
+<b class="nc"><i>254</i>&nbsp;            handler.handleWillResignActiveAction(this, System.nanoTime());</b>
+<i>255</i>&nbsp;        }
+<b class="nc"><i>256</i>&nbsp;    }</b>
+<i>257</i>&nbsp;
+<i>258</i>&nbsp;    private boolean notifyThemeChanged(String themeName) {
+<b class="nc"><i>259</i>&nbsp;        EventHandler handler = getEventHandler();</b>
+<b class="nc"><i>260</i>&nbsp;        if (handler != null) {</b>
+<b class="nc"><i>261</i>&nbsp;            return handler.handleThemeChanged(themeName);</b>
+<i>262</i>&nbsp;        }
+<b class="nc"><i>263</i>&nbsp;        return false;</b>
+<i>264</i>&nbsp;    }
+<i>265</i>&nbsp;
+<i>266</i>&nbsp;    private void notifyDidResignActive() {
+<b class="nc"><i>267</i>&nbsp;        EventHandler handler = getEventHandler();</b>
+<b class="nc"><i>268</i>&nbsp;        if (handler != null) {</b>
+<b class="nc"><i>269</i>&nbsp;            handler.handleDidResignActiveAction(this, System.nanoTime());</b>
+<i>270</i>&nbsp;        }
+<b class="nc"><i>271</i>&nbsp;    }</b>
+<i>272</i>&nbsp;
+<i>273</i>&nbsp;    private void notifyDidReceiveMemoryWarning() {
+<b class="nc"><i>274</i>&nbsp;        EventHandler handler = getEventHandler();</b>
+<b class="nc"><i>275</i>&nbsp;        if (handler != null) {</b>
+<b class="nc"><i>276</i>&nbsp;            handler.handleDidReceiveMemoryWarning(this, System.nanoTime());</b>
+<i>277</i>&nbsp;        }
+<b class="nc"><i>278</i>&nbsp;    }</b>
+<i>279</i>&nbsp;
+<i>280</i>&nbsp;    private void notifyWillHide() {
+<b class="nc"><i>281</i>&nbsp;        EventHandler handler = getEventHandler();</b>
+<b class="nc"><i>282</i>&nbsp;        if (handler != null) {</b>
+<b class="nc"><i>283</i>&nbsp;            handler.handleWillHideAction(this, System.nanoTime());</b>
+<i>284</i>&nbsp;        }
+<b class="nc"><i>285</i>&nbsp;    }</b>
+<i>286</i>&nbsp;
+<i>287</i>&nbsp;    private void notifyDidHide() {
+<b class="nc"><i>288</i>&nbsp;        EventHandler handler = getEventHandler();</b>
+<b class="nc"><i>289</i>&nbsp;        if (handler != null) {</b>
+<b class="nc"><i>290</i>&nbsp;            handler.handleDidHideAction(this, System.nanoTime());</b>
+<i>291</i>&nbsp;        }
+<b class="nc"><i>292</i>&nbsp;    }</b>
+<i>293</i>&nbsp;
+<i>294</i>&nbsp;    private void notifyWillUnhide() {
+<b class="nc"><i>295</i>&nbsp;        EventHandler handler = getEventHandler();</b>
+<b class="nc"><i>296</i>&nbsp;        if (handler != null) {</b>
+<b class="nc"><i>297</i>&nbsp;            handler.handleWillUnhideAction(this, System.nanoTime());</b>
+<i>298</i>&nbsp;        }
+<b class="nc"><i>299</i>&nbsp;    }</b>
+<i>300</i>&nbsp;
+<i>301</i>&nbsp;    private void notifyDidUnhide() {
+<b class="nc"><i>302</i>&nbsp;        EventHandler handler = getEventHandler();</b>
+<b class="nc"><i>303</i>&nbsp;        if (handler != null) {</b>
+<b class="nc"><i>304</i>&nbsp;            handler.handleDidUnhideAction(this, System.nanoTime());</b>
+<i>305</i>&nbsp;        }
+<b class="nc"><i>306</i>&nbsp;    }</b>
+<i>307</i>&nbsp;
+<i>308</i>&nbsp;    // notificiation when user drag and drops files onto app icon
+<i>309</i>&nbsp;    private void notifyOpenFiles(String files[]) {
+<b class="nc"><i>310</i>&nbsp;        if ((this.initialActiveEventReceived == false) &amp;&amp; (this.initialOpenedFiles == null)) {</b>
+<i>311</i>&nbsp;            // rememeber the initial opened files
+<b class="nc"><i>312</i>&nbsp;            this.initialOpenedFiles = files;</b>
+<i>313</i>&nbsp;        }
+<b class="nc"><i>314</i>&nbsp;        EventHandler handler = getEventHandler();</b>
+<b class="nc"><i>315</i>&nbsp;        if ((handler != null) &amp;&amp; (files != null)) {</b>
+<b class="nc"><i>316</i>&nbsp;            handler.handleOpenFilesAction(this, System.nanoTime(), files);</b>
+<i>317</i>&nbsp;        }
+<b class="nc"><i>318</i>&nbsp;    }</b>
+<i>319</i>&nbsp;
+<i>320</i>&nbsp;    private void notifyWillQuit() {
+<b class="nc"><i>321</i>&nbsp;        EventHandler handler = getEventHandler();</b>
+<b class="nc"><i>322</i>&nbsp;        if (handler != null) {</b>
+<b class="nc"><i>323</i>&nbsp;            handler.handleQuitAction(this, System.nanoTime());</b>
+<i>324</i>&nbsp;        }
+<b class="nc"><i>325</i>&nbsp;    }</b>
+<i>326</i>&nbsp;
+<i>327</i>&nbsp;    /**
+<i>328</i>&nbsp;     * Install app&#39;s default native menus:
+<i>329</i>&nbsp;     * on Mac OS X - Apple menu (showing the app name) with a single Quit menu item
+<i>330</i>&nbsp;     * on Windows - NOP
+<i>331</i>&nbsp;     * on Linux - NOP
+<i>332</i>&nbsp;     */
+<i>333</i>&nbsp;    public void installDefaultMenus(MenuBar menubar) {
+<b class="nc"><i>334</i>&nbsp;        checkEventThread();</b>
+<i>335</i>&nbsp;        // To override in subclasses
+<b class="nc"><i>336</i>&nbsp;    }</b>
+<i>337</i>&nbsp;
+<i>338</i>&nbsp;    public EventHandler getEventHandler() {
+<i>339</i>&nbsp;        //checkEventThread(); // Glass (Mac)
+<i>340</i>&nbsp;        // When an app is closing, Mac calls notify- Will/DidHide, Will/DidResignActive
+<i>341</i>&nbsp;        // on a thread other than the Main thread
+<b class="nc"><i>342</i>&nbsp;        return eventHandler;</b>
+<i>343</i>&nbsp;    }
+<i>344</i>&nbsp;
+<i>345</i>&nbsp;    public void setEventHandler(EventHandler eventHandler) {
+<b class="fc"><i>346</i>&nbsp;        checkEventThread();</b>
+<b class="fc"><i>347</i>&nbsp;        boolean resendOpenFiles = ((this.eventHandler != null) &amp;&amp; (this.initialOpenedFiles != null));</b>
+<b class="fc"><i>348</i>&nbsp;        this.eventHandler = eventHandler;</b>
+<b class="fc"><i>349</i>&nbsp;        if (resendOpenFiles == true) {</b>
+<i>350</i>&nbsp;            // notify the new event handler with initial opened files
+<b class="nc"><i>351</i>&nbsp;            notifyOpenFiles(this.initialOpenedFiles);</b>
+<i>352</i>&nbsp;    }
+<b class="fc"><i>353</i>&nbsp;    }</b>
+<i>354</i>&nbsp;
+<b class="fc"><i>355</i>&nbsp;    private boolean terminateWhenLastWindowClosed = true;</b>
+<i>356</i>&nbsp;    public final boolean shouldTerminateWhenLastWindowClosed() {
+<b class="nc"><i>357</i>&nbsp;        checkEventThread();</b>
+<b class="nc"><i>358</i>&nbsp;        return terminateWhenLastWindowClosed;</b>
+<i>359</i>&nbsp;    }
+<i>360</i>&nbsp;    public final void setTerminateWhenLastWindowClosed(boolean b) {
+<b class="nc"><i>361</i>&nbsp;        checkEventThread();</b>
+<b class="nc"><i>362</i>&nbsp;        terminateWhenLastWindowClosed = b;</b>
+<b class="nc"><i>363</i>&nbsp;    }</b>
+<i>364</i>&nbsp;
+<i>365</i>&nbsp;    public boolean shouldUpdateWindow() {
+<b class="nc"><i>366</i>&nbsp;        checkEventThread();</b>
+<b class="nc"><i>367</i>&nbsp;        return false; // overridden in platform application class</b>
+<i>368</i>&nbsp;    }
+<i>369</i>&nbsp;
+<i>370</i>&nbsp;    public boolean hasWindowManager() {
+<i>371</i>&nbsp;        //checkEventThread(); // Prism (Mac)
+<b class="fc"><i>372</i>&nbsp;        return true; // overridden in platform application class</b>
+<i>373</i>&nbsp;    }
+<i>374</i>&nbsp;
+<i>375</i>&nbsp;    /**
+<i>376</i>&nbsp;     * Notifies the Application that rendering has completed for current pulse.
+<i>377</i>&nbsp;     *
+<i>378</i>&nbsp;     * This is called on the render thread.
+<i>379</i>&nbsp;     */
+<i>380</i>&nbsp;    public void notifyRenderingFinished() {
+<b class="fc"><i>381</i>&nbsp;    }</b>
+<i>382</i>&nbsp;
+<i>383</i>&nbsp;    public void terminate() {
+<b class="fc"><i>384</i>&nbsp;        checkEventThread();</b>
+<i>385</i>&nbsp;        try {
+<b class="fc"><i>386</i>&nbsp;                final List&lt;Window&gt; windows = new LinkedList&lt;&gt;(Window.getWindows());</b>
+<b class="fc"><i>387</i>&nbsp;                for (Window window : windows) {</b>
+<i>388</i>&nbsp;                    // first make windows invisible
+<b class="nc"><i>389</i>&nbsp;                    window.setVisible(false);</b>
+<b class="nc"><i>390</i>&nbsp;                }</b>
+<b class="fc"><i>391</i>&nbsp;                for (Window window : windows) {</b>
+<i>392</i>&nbsp;                    // now we can close windows
+<b class="nc"><i>393</i>&nbsp;                    window.close();</b>
+<b class="nc"><i>394</i>&nbsp;                }</b>
+<b class="nc"><i>395</i>&nbsp;        } catch (Throwable t) {</b>
+<b class="nc"><i>396</i>&nbsp;            t.printStackTrace();</b>
+<i>397</i>&nbsp;        } finally {
+<b class="fc"><i>398</i>&nbsp;            finishTerminating();</b>
+<b class="fc"><i>399</i>&nbsp;        }</b>
+<b class="fc"><i>400</i>&nbsp;    }</b>
+<i>401</i>&nbsp;
+<i>402</i>&nbsp;    // May be called on any thread
+<i>403</i>&nbsp;    static public Application GetApplication() {
+<b class="fc"><i>404</i>&nbsp;        return Application.application;</b>
+<i>405</i>&nbsp;    }
+<i>406</i>&nbsp;
+<i>407</i>&nbsp;    // May be called on any thread
+<i>408</i>&nbsp;    protected static void setEventThread(Thread thread) {
+<b class="fc"><i>409</i>&nbsp;        Application.eventThread = thread;</b>
+<b class="fc"><i>410</i>&nbsp;    }</b>
+<i>411</i>&nbsp;
+<i>412</i>&nbsp;    // May be called on any thread
+<i>413</i>&nbsp;    protected static Thread getEventThread() {
+<b class="fc"><i>414</i>&nbsp;        return Application.eventThread;</b>
+<i>415</i>&nbsp;    }
+<i>416</i>&nbsp;
+<i>417</i>&nbsp;    /**
+<i>418</i>&nbsp;     * Returns {@code true} if the current thread is the event thread.
+<i>419</i>&nbsp;     */
+<i>420</i>&nbsp;    public static boolean isEventThread() {
+<b class="fc"><i>421</i>&nbsp;        return Thread.currentThread() == Application.eventThread;</b>
+<i>422</i>&nbsp;    }
+<i>423</i>&nbsp;
+<i>424</i>&nbsp;    /**
+<i>425</i>&nbsp;     * Verifies that the current thread is the event thread, and throws
+<i>426</i>&nbsp;     * an exception if this is not so.
+<i>427</i>&nbsp;     *
+<i>428</i>&nbsp;     * The check can be disabled by setting the &quot;glass.disableThreadChecks&quot;
+<i>429</i>&nbsp;     * system property. It is preferred, however, to fix the application code
+<i>430</i>&nbsp;     * instead.
+<i>431</i>&nbsp;     *
+<i>432</i>&nbsp;     * @throws IllegalStateException if the current thread is not the event thread
+<i>433</i>&nbsp;     */
+<i>434</i>&nbsp;    public static void checkEventThread() {
+<i>435</i>&nbsp;        //TODO: we do NOT advertise the &quot;glass.disableThreadChecks&quot;.
+<i>436</i>&nbsp;        //      If we never get a complaint about this check, we can consider
+<i>437</i>&nbsp;        //      dropping the system property and perform the check unconditionally
+<b class="fc"><i>438</i>&nbsp;        if (!disableThreadChecks &amp;&amp;</b>
+<b class="fc"><i>439</i>&nbsp;                Thread.currentThread() != Application.eventThread)</b>
+<i>440</i>&nbsp;        {
+<b class="nc"><i>441</i>&nbsp;            throw new IllegalStateException(</b>
+<i>442</i>&nbsp;                    &quot;This operation is permitted on the event thread only; currentThread = &quot;
+<b class="nc"><i>443</i>&nbsp;                    + Thread.currentThread().getName());</b>
+<i>444</i>&nbsp;
+<i>445</i>&nbsp;        }
+<b class="fc"><i>446</i>&nbsp;    }</b>
+<i>447</i>&nbsp;
+<i>448</i>&nbsp;    // Called from native, when a JNI exception has occurred
+<i>449</i>&nbsp;    public static void reportException(Throwable t) {
+<b class="nc"><i>450</i>&nbsp;        Thread currentThread = Thread.currentThread();</b>
+<b class="nc"><i>451</i>&nbsp;        Thread.UncaughtExceptionHandler handler =</b>
+<b class="nc"><i>452</i>&nbsp;                currentThread.getUncaughtExceptionHandler();</b>
+<b class="nc"><i>453</i>&nbsp;        handler.uncaughtException(currentThread, t);</b>
+<b class="nc"><i>454</i>&nbsp;    }</b>
+<i>455</i>&nbsp;
+<i>456</i>&nbsp;    abstract protected void _invokeAndWait(java.lang.Runnable runnable);
+<i>457</i>&nbsp;    /**
+<i>458</i>&nbsp;     * Block the current thread and wait until the given  runnable finishes
+<i>459</i>&nbsp;     * running on the native event loop thread.
+<i>460</i>&nbsp;     */
+<i>461</i>&nbsp;    public static void invokeAndWait(java.lang.Runnable runnable) {
+<b class="fc"><i>462</i>&nbsp;        if (runnable == null) {</b>
+<b class="nc"><i>463</i>&nbsp;            return;</b>
+<i>464</i>&nbsp;        }
+<b class="fc"><i>465</i>&nbsp;        if (isEventThread()) {</b>
+<b class="fc"><i>466</i>&nbsp;            runnable.run();</b>
+<i>467</i>&nbsp;        } else {
+<b class="nc"><i>468</i>&nbsp;            GetApplication()._invokeAndWait(runnable);</b>
+<i>469</i>&nbsp;        }
+<b class="fc"><i>470</i>&nbsp;    }</b>
+<i>471</i>&nbsp;
+<i>472</i>&nbsp;    abstract protected void _invokeLater(java.lang.Runnable runnable);
+<i>473</i>&nbsp;    /**
+<i>474</i>&nbsp;     * Schedule the given runnable to run on the native event loop thread
+<i>475</i>&nbsp;     * some time in the future, and return immediately.
+<i>476</i>&nbsp;     */
+<i>477</i>&nbsp;    public static void invokeLater(java.lang.Runnable runnable) {
+<b class="fc"><i>478</i>&nbsp;        if (runnable == null) {</b>
+<b class="nc"><i>479</i>&nbsp;            return;</b>
+<i>480</i>&nbsp;        }
+<b class="fc"><i>481</i>&nbsp;        GetApplication()._invokeLater(runnable);</b>
+<b class="fc"><i>482</i>&nbsp;    }</b>
+<i>483</i>&nbsp;
+<i>484</i>&nbsp;    protected abstract Object _enterNestedEventLoop();
+<i>485</i>&nbsp;    protected abstract void _leaveNestedEventLoop(Object retValue);
+<i>486</i>&nbsp;
+<b class="fc"><i>487</i>&nbsp;    private static int nestedEventLoopCounter = 0;</b>
+<i>488</i>&nbsp;
+<i>489</i>&nbsp;    /**
+<i>490</i>&nbsp;     * Starts a nested event loop.
+<i>491</i>&nbsp;     *
+<i>492</i>&nbsp;     * Calling this method temporarily blocks processing of the current event,
+<i>493</i>&nbsp;     * and starts a nested event loop to handle other native events.  To
+<i>494</i>&nbsp;     * proceed with the blocked execution path, the application should call the
+<i>495</i>&nbsp;     * {@link #leaveNestedEventLoop(Object)} method.
+<i>496</i>&nbsp;     *
+<i>497</i>&nbsp;     * Note that this method may only be invoked on the main (event handling)
+<i>498</i>&nbsp;     * thread.
+<i>499</i>&nbsp;     *
+<i>500</i>&nbsp;     * An application may enter several nested loops recursively. There&#39;s no
+<i>501</i>&nbsp;     * limit of recursion other than that imposed by the native stack size.
+<i>502</i>&nbsp;     *
+<i>503</i>&nbsp;     * @return an object passed to the leaveNestedEventLoop() method
+<i>504</i>&nbsp;     * @throws RuntimeException if the current thread is not the main thread
+<i>505</i>&nbsp;     */
+<i>506</i>&nbsp;    static Object enterNestedEventLoop() {
+<b class="nc"><i>507</i>&nbsp;        checkEventThread();</b>
+<i>508</i>&nbsp;
+<b class="nc"><i>509</i>&nbsp;        nestedEventLoopCounter++;</b>
+<i>510</i>&nbsp;        try {
+<b class="nc"><i>511</i>&nbsp;            return GetApplication()._enterNestedEventLoop();</b>
+<i>512</i>&nbsp;        } finally {
+<b class="nc"><i>513</i>&nbsp;            nestedEventLoopCounter--;</b>
+<i>514</i>&nbsp;        }
+<i>515</i>&nbsp;    }
+<i>516</i>&nbsp;
+<i>517</i>&nbsp;    /**
+<i>518</i>&nbsp;     * Terminates the current nested event loop.
+<i>519</i>&nbsp;     *
+<i>520</i>&nbsp;     * After calling this method and returning from the current event handler,
+<i>521</i>&nbsp;     * the execusion returns to the point where the {@link #enterNestedEventLoop}
+<i>522</i>&nbsp;     * was called previously. You may specify a return value for the
+<i>523</i>&nbsp;     * enterNestedEventLoop() method by passing the argument {@code retValue} to
+<i>524</i>&nbsp;     * the leaveNestedEventLoop().
+<i>525</i>&nbsp;     *
+<i>526</i>&nbsp;     * Note that this method may only be invoked on the main (event handling)
+<i>527</i>&nbsp;     * thread.
+<i>528</i>&nbsp;     *
+<i>529</i>&nbsp;     * @throws RuntimeException if the current thread is not the main thread
+<i>530</i>&nbsp;     * @throws IllegalStateException if the application hasn&#39;t started a nested
+<i>531</i>&nbsp;     *                               event loop
+<i>532</i>&nbsp;     */
+<i>533</i>&nbsp;    static void leaveNestedEventLoop(Object retValue) {
+<b class="nc"><i>534</i>&nbsp;        checkEventThread();</b>
+<i>535</i>&nbsp;
+<b class="nc"><i>536</i>&nbsp;        if (nestedEventLoopCounter == 0) {</b>
+<b class="nc"><i>537</i>&nbsp;            throw new IllegalStateException(&quot;Not in a nested event loop&quot;);</b>
+<i>538</i>&nbsp;        }
+<i>539</i>&nbsp;
+<b class="nc"><i>540</i>&nbsp;        GetApplication()._leaveNestedEventLoop(retValue);</b>
+<b class="nc"><i>541</i>&nbsp;    }</b>
+<i>542</i>&nbsp;
+<i>543</i>&nbsp;    public static boolean isNestedLoopRunning() {
+<b class="fc"><i>544</i>&nbsp;        checkEventThread();</b>
+<b class="fc"><i>545</i>&nbsp;        return nestedEventLoopCounter &gt; 0;</b>
+<i>546</i>&nbsp;    }
+<i>547</i>&nbsp;
+<i>548</i>&nbsp;    //TODO: move to the EventHandler
+<i>549</i>&nbsp;    public void menuAboutAction() {
+<b class="nc"><i>550</i>&nbsp;        System.err.println(&quot;about&quot;);</b>
+<b class="nc"><i>551</i>&nbsp;    }</b>
+<i>552</i>&nbsp;
+<i>553</i>&nbsp;
+<i>554</i>&nbsp;    // FACTORY METHODS
+<i>555</i>&nbsp;
+<i>556</i>&nbsp;    /**
+<i>557</i>&nbsp;     * Create a window.
+<i>558</i>&nbsp;     *
+<i>559</i>&nbsp;     * The styleMask argument is a bitmask of window styles as defined in the
+<i>560</i>&nbsp;     * Window class.  Note, however, that visual kinds (UNTITLED, TITLED,
+<i>561</i>&nbsp;     * or TRANSPARENT) can&#39;t be combined together.  Also, functional types
+<i>562</i>&nbsp;     * (NORMAL, POPUP, or UTILITY) can&#39;t be combined together.  A window is
+<i>563</i>&nbsp;     * allowed to be of exactly one visual kind, and exactly one functional
+<i>564</i>&nbsp;     * type.
+<i>565</i>&nbsp;     */
+<i>566</i>&nbsp;    public abstract Window createWindow(Window owner, Screen screen, int styleMask);
+<i>567</i>&nbsp;
+<i>568</i>&nbsp;    /**
+<i>569</i>&nbsp;     * Create a window.
+<i>570</i>&nbsp;     *
+<i>571</i>&nbsp;     * The styleMask argument is a bitmask of window styles as defined in the
+<i>572</i>&nbsp;     * Window class.  Note, however, that visual kinds (UNTITLED, TITLED,
+<i>573</i>&nbsp;     * or TRANSPARENT) can&#39;t be combined together.  Also, functional types
+<i>574</i>&nbsp;     * (NORMAL, POPUP, or UTILITY) can&#39;t be combined together.  A window is
+<i>575</i>&nbsp;     * allowed to be of exactly one visual kind, and exactly one functional
+<i>576</i>&nbsp;     * type.
+<i>577</i>&nbsp;     */
+<i>578</i>&nbsp;    public final Window createWindow(Screen screen, int styleMask) {
+<b class="nc"><i>579</i>&nbsp;        return createWindow(null, screen, styleMask);</b>
+<i>580</i>&nbsp;    }
+<i>581</i>&nbsp;
+<i>582</i>&nbsp;    public abstract Window createWindow(long parent);
+<i>583</i>&nbsp;
+<i>584</i>&nbsp;    public abstract View createView();
+<i>585</i>&nbsp;
+<i>586</i>&nbsp;    public abstract Cursor createCursor(int type);
+<i>587</i>&nbsp;    public abstract Cursor createCursor(int x, int y, Pixels pixels);
+<i>588</i>&nbsp;
+<i>589</i>&nbsp;    protected abstract void staticCursor_setVisible(boolean visible);
+<i>590</i>&nbsp;    protected abstract Size staticCursor_getBestSize(int width, int height);
+<i>591</i>&nbsp;
+<i>592</i>&nbsp;    public final Menu createMenu(String title) {
+<b class="nc"><i>593</i>&nbsp;        return new Menu(title);</b>
+<i>594</i>&nbsp;    }
+<i>595</i>&nbsp;
+<i>596</i>&nbsp;    public final Menu createMenu(String title, boolean enabled) {
+<b class="nc"><i>597</i>&nbsp;        return new Menu(title, enabled);</b>
+<i>598</i>&nbsp;    }
+<i>599</i>&nbsp;
+<i>600</i>&nbsp;    public final MenuBar createMenuBar() {
+<b class="nc"><i>601</i>&nbsp;        return new MenuBar();</b>
+<i>602</i>&nbsp;    }
+<i>603</i>&nbsp;
+<i>604</i>&nbsp;    public final MenuItem createMenuItem(String title) {
+<b class="nc"><i>605</i>&nbsp;        return createMenuItem(title, null);</b>
+<i>606</i>&nbsp;    }
+<i>607</i>&nbsp;
+<i>608</i>&nbsp;    public final MenuItem createMenuItem(String title, MenuItem.Callback callback) {
+<b class="nc"><i>609</i>&nbsp;        return createMenuItem(title, callback, KeyEvent.VK_UNDEFINED, KeyEvent.MODIFIER_NONE);</b>
+<i>610</i>&nbsp;    }
+<i>611</i>&nbsp;
+<i>612</i>&nbsp;    public final MenuItem createMenuItem(String title, MenuItem.Callback callback,
+<i>613</i>&nbsp;            int shortcutKey, int shortcutModifiers) {
+<b class="nc"><i>614</i>&nbsp;        return createMenuItem(title, callback, shortcutKey, shortcutModifiers, null);</b>
+<i>615</i>&nbsp;    }
+<i>616</i>&nbsp;
+<i>617</i>&nbsp;    public final MenuItem createMenuItem(String title, MenuItem.Callback callback,
+<i>618</i>&nbsp;            int shortcutKey, int shortcutModifiers, Pixels pixels) {
+<b class="nc"><i>619</i>&nbsp;        return new MenuItem(title, callback, shortcutKey, shortcutModifiers, pixels);</b>
+<i>620</i>&nbsp;    }
+<i>621</i>&nbsp;
+<i>622</i>&nbsp;    public abstract Pixels createPixels(int width, int height, ByteBuffer data);
+<i>623</i>&nbsp;    public abstract Pixels createPixels(int width, int height, IntBuffer data);
+<i>624</i>&nbsp;    public abstract Pixels createPixels(int width, int height, IntBuffer data, float scalex, float scaley);
+<i>625</i>&nbsp;    protected abstract int staticPixels_getNativeFormat();
+<i>626</i>&nbsp;
+<i>627</i>&nbsp;    /* utility method called from native code */
+<i>628</i>&nbsp;    static Pixels createPixels(int width, int height, int[] data, float scalex, float scaley) {
+<b class="nc"><i>629</i>&nbsp;        return Application.GetApplication().createPixels(width, height, IntBuffer.wrap(data), scalex, scaley);</b>
+<i>630</i>&nbsp;    }
+<i>631</i>&nbsp;
+<i>632</i>&nbsp;    /* utility method called from native code */
+<i>633</i>&nbsp;    static float getScaleFactor(final int x, final int y, final int w, final int h) {
+<b class="nc"><i>634</i>&nbsp;        float scale = 0.0f;</b>
+<i>635</i>&nbsp;        // Find the maximum scale for screens this area overlaps
+<b class="nc"><i>636</i>&nbsp;        for (Screen s : Screen.getScreens()) {</b>
+<b class="nc"><i>637</i>&nbsp;            final int sx = s.getX(), sy = s.getY(), sw = s.getWidth(), sh = s.getHeight();</b>
+<b class="nc"><i>638</i>&nbsp;            if (x &lt; (sx + sw) &amp;&amp; (x + w) &gt; sx &amp;&amp; y &lt; (sy + sh) &amp;&amp; (y + h) &gt; sy) {</b>
+<b class="nc"><i>639</i>&nbsp;                if (scale &lt; s.getRecommendedOutputScaleX()) {</b>
+<b class="nc"><i>640</i>&nbsp;                    scale = s.getRecommendedOutputScaleX();</b>
+<i>641</i>&nbsp;                }
+<b class="nc"><i>642</i>&nbsp;                if (scale &lt; s.getRecommendedOutputScaleY()) {</b>
+<b class="nc"><i>643</i>&nbsp;                    scale = s.getRecommendedOutputScaleY();</b>
+<i>644</i>&nbsp;                }
+<i>645</i>&nbsp;            }
+<b class="nc"><i>646</i>&nbsp;        }</b>
+<b class="nc"><i>647</i>&nbsp;        return scale == 0.0f ? 1.0f : scale;</b>
+<i>648</i>&nbsp;    }
+<i>649</i>&nbsp;
+<i>650</i>&nbsp;
+<i>651</i>&nbsp;    public abstract Robot createRobot();
+<i>652</i>&nbsp;
+<i>653</i>&nbsp;    protected abstract double staticScreen_getVideoRefreshPeriod();
+<i>654</i>&nbsp;    protected abstract Screen[] staticScreen_getScreens();
+<i>655</i>&nbsp;
+<i>656</i>&nbsp;    public abstract Timer createTimer(Runnable runnable);
+<i>657</i>&nbsp;    protected abstract int staticTimer_getMinPeriod();
+<i>658</i>&nbsp;    protected abstract int staticTimer_getMaxPeriod();
+<i>659</i>&nbsp;
+<i>660</i>&nbsp;    public final EventLoop createEventLoop() {
+<b class="nc"><i>661</i>&nbsp;        return new EventLoop();</b>
+<i>662</i>&nbsp;    }
+<i>663</i>&nbsp;
+<b class="nc"><i>664</i>&nbsp;    public Accessible createAccessible() { return null; }</b>
+<i>665</i>&nbsp;
+<i>666</i>&nbsp;    protected abstract FileChooserResult staticCommonDialogs_showFileChooser(Window owner, String folder, String filename, String title, int type,
+<i>667</i>&nbsp;                                                     boolean multipleMode, ExtensionFilter[] extensionFilters, int defaultFilterIndex);
+<i>668</i>&nbsp;
+<i>669</i>&nbsp;    protected abstract File staticCommonDialogs_showFolderChooser(Window owner, String folder, String title);
+<i>670</i>&nbsp;
+<i>671</i>&nbsp;    protected abstract long staticView_getMultiClickTime();
+<i>672</i>&nbsp;    protected abstract int staticView_getMultiClickMaxX();
+<i>673</i>&nbsp;    protected abstract int staticView_getMultiClickMaxY();
+<i>674</i>&nbsp;
+<i>675</i>&nbsp;    /**
+<i>676</i>&nbsp;     * Gets the Name of the currently active high contrast theme.
+<i>677</i>&nbsp;     * If null, then high contrast is not enabled.
+<i>678</i>&nbsp;     */
+<i>679</i>&nbsp;    public String getHighContrastTheme() {
+<b class="nc"><i>680</i>&nbsp;        checkEventThread();</b>
+<b class="nc"><i>681</i>&nbsp;        return null;</b>
+<i>682</i>&nbsp;    }
+<i>683</i>&nbsp;
+<i>684</i>&nbsp;    protected boolean _supportsInputMethods() {
+<i>685</i>&nbsp;        // Overridden in subclasses
+<b class="nc"><i>686</i>&nbsp;        return false;</b>
+<i>687</i>&nbsp;    }
+<i>688</i>&nbsp;    public final boolean supportsInputMethods() {
+<b class="nc"><i>689</i>&nbsp;        checkEventThread();</b>
+<b class="nc"><i>690</i>&nbsp;        return _supportsInputMethods();</b>
+<i>691</i>&nbsp;    }
+<i>692</i>&nbsp;
+<i>693</i>&nbsp;    protected abstract boolean _supportsTransparentWindows();
+<i>694</i>&nbsp;    public final boolean supportsTransparentWindows() {
+<b class="fc"><i>695</i>&nbsp;        checkEventThread();</b>
+<b class="fc"><i>696</i>&nbsp;        return _supportsTransparentWindows();</b>
+<i>697</i>&nbsp;    }
+<i>698</i>&nbsp;
+<i>699</i>&nbsp;    public boolean hasTwoLevelFocus() {
+<b class="fc"><i>700</i>&nbsp;        return false;</b>
+<i>701</i>&nbsp;    }
+<i>702</i>&nbsp;
+<i>703</i>&nbsp;    public boolean hasVirtualKeyboard() {
+<b class="fc"><i>704</i>&nbsp;        return false;</b>
+<i>705</i>&nbsp;    }
+<i>706</i>&nbsp;
+<i>707</i>&nbsp;    public boolean hasTouch() {
+<b class="fc"><i>708</i>&nbsp;        return false;</b>
+<i>709</i>&nbsp;    }
+<i>710</i>&nbsp;
+<i>711</i>&nbsp;    public boolean hasMultiTouch() {
+<b class="nc"><i>712</i>&nbsp;        return false;</b>
+<i>713</i>&nbsp;    }
+<i>714</i>&nbsp;
+<i>715</i>&nbsp;    public boolean hasPointer() {
+<b class="nc"><i>716</i>&nbsp;        return true;</b>
+<i>717</i>&nbsp;    }
+<i>718</i>&nbsp;
+<i>719</i>&nbsp;    protected abstract boolean _supportsUnifiedWindows();
+<i>720</i>&nbsp;    public final boolean supportsUnifiedWindows() {
+<b class="nc"><i>721</i>&nbsp;        checkEventThread();</b>
+<b class="nc"><i>722</i>&nbsp;        return _supportsUnifiedWindows();</b>
+<i>723</i>&nbsp;    }
+<i>724</i>&nbsp;
+<i>725</i>&nbsp;    protected boolean _supportsSystemMenu() {
+<i>726</i>&nbsp;        // Overridden in subclasses
+<b class="fc"><i>727</i>&nbsp;        return false;</b>
+<i>728</i>&nbsp;    }
+<i>729</i>&nbsp;    public final boolean supportsSystemMenu() {
+<b class="fc"><i>730</i>&nbsp;        checkEventThread();</b>
+<b class="fc"><i>731</i>&nbsp;        return _supportsSystemMenu();</b>
+<i>732</i>&nbsp;    }
+<i>733</i>&nbsp;
+<i>734</i>&nbsp;    protected abstract int _getKeyCodeForChar(char c);
+<i>735</i>&nbsp;    /**
+<i>736</i>&nbsp;     * Returns a VK_ code of a key capable of producing the given unicode
+<i>737</i>&nbsp;     * character with respect to the currently active keyboard layout or
+<i>738</i>&nbsp;     * VK_UNDEFINED if the character isn&#39;t present in the current layout.
+<i>739</i>&nbsp;     *
+<i>740</i>&nbsp;     * @param c the character
+<i>741</i>&nbsp;     * @return integer code for the given char
+<i>742</i>&nbsp;     */
+<i>743</i>&nbsp;    public static int getKeyCodeForChar(char c) {
+<b class="nc"><i>744</i>&nbsp;        return application._getKeyCodeForChar(c);</b>
+<i>745</i>&nbsp;    }
+<i>746</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2017-12-04 21:49</div>
+</div>
+</body>
+</html>

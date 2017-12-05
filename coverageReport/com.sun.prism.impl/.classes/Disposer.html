@@ -1,0 +1,302 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: Disposer</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.prism.impl</a> ]
+</div>
+
+<h1>Coverage Summary for Class: Disposer (com.sun.prism.impl)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">Disposer</td>
+<td class="coverageStat">
+  <span class="percent">
+    77.8%
+  </span>
+  <span class="absValue">
+    (7/ 9)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    48%
+  </span>
+  <span class="absValue">
+    (24/ 50)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">Disposer$Record</td>
+  </tr>
+  <tr>
+    <td class="name">Disposer$Target</td>
+  </tr>
+<tr>
+  <td class="name"><strong>total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    77.8%
+  </span>
+  <span class="absValue">
+    (7/ 9)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    48%
+  </span>
+  <span class="absValue">
+    (24/ 50)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright (c) 2002, 2013, Oracle and/or its affiliates. All rights reserved.
+<i>3</i>&nbsp; * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+<i>4</i>&nbsp; *
+<i>5</i>&nbsp; *
+<i>6</i>&nbsp; *
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; *
+<i>11</i>&nbsp; *
+<i>12</i>&nbsp; *
+<i>13</i>&nbsp; *
+<i>14</i>&nbsp; *
+<i>15</i>&nbsp; *
+<i>16</i>&nbsp; *
+<i>17</i>&nbsp; *
+<i>18</i>&nbsp; *
+<i>19</i>&nbsp; *
+<i>20</i>&nbsp; *
+<i>21</i>&nbsp; *
+<i>22</i>&nbsp; *
+<i>23</i>&nbsp; *
+<i>24</i>&nbsp; */
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;package com.sun.prism.impl;
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;import java.lang.ref.Reference;
+<i>29</i>&nbsp;import java.lang.ref.ReferenceQueue;
+<i>30</i>&nbsp;import java.lang.ref.PhantomReference;
+<i>31</i>&nbsp;import java.lang.ref.SoftReference;
+<i>32</i>&nbsp;import java.lang.ref.WeakReference;
+<i>33</i>&nbsp;import java.util.Hashtable;
+<i>34</i>&nbsp;import java.util.LinkedList;
+<i>35</i>&nbsp;
+<i>36</i>&nbsp;/**
+<i>37</i>&nbsp; * This class is used for registering and disposing the native
+<i>38</i>&nbsp; * data associated with Java objects.
+<i>39</i>&nbsp; *
+<i>40</i>&nbsp; * The object can register itself by calling one of the addRecord
+<i>41</i>&nbsp; * methods and providing either the pointer to the native disposal
+<i>42</i>&nbsp; * method or a descendant of the Disposer.Record interface with overridden
+<i>43</i>&nbsp; * dispose() method.
+<i>44</i>&nbsp; *
+<i>45</i>&nbsp; * When the object becomes unreachable, the dispose() method
+<i>46</i>&nbsp; * of the associated Disposer.Record object will be called.
+<i>47</i>&nbsp; */
+<i>48</i>&nbsp;public class Disposer {
+<i>49</i>&nbsp;
+<i>50</i>&nbsp;    private static Disposer disposerInstance;
+<i>51</i>&nbsp;    private static final int WEAK = 0;
+<i>52</i>&nbsp;    private static final int PHANTOM = 1;
+<i>53</i>&nbsp;    private static final int SOFT = 2;
+<b class="fc"><i>54</i>&nbsp;    private static int refType = PHANTOM;</b>
+<i>55</i>&nbsp;
+<i>56</i>&nbsp;    static {
+<b class="fc"><i>57</i>&nbsp;        String type = PrismSettings.refType;</b>
+<b class="fc"><i>58</i>&nbsp;        if (type != null) {</b>
+<b class="nc"><i>59</i>&nbsp;            if (type.equals(&quot;weak&quot;)) {</b>
+<b class="nc"><i>60</i>&nbsp;                refType = WEAK;</b>
+<b class="nc"><i>61</i>&nbsp;                if (PrismSettings.verbose) System.err.println(&quot;Using WEAK refs&quot;);</b>
+<b class="nc"><i>62</i>&nbsp;            } else if (type.equals(&quot;soft&quot;)) {</b>
+<b class="nc"><i>63</i>&nbsp;                refType = SOFT;</b>
+<b class="nc"><i>64</i>&nbsp;                if (PrismSettings.verbose) System.err.println(&quot;Using SOFT refs&quot;);</b>
+<i>65</i>&nbsp;            } else {
+<b class="nc"><i>66</i>&nbsp;                refType = PHANTOM;</b>
+<b class="nc"><i>67</i>&nbsp;                if (PrismSettings.verbose) System.err.println(&quot;Using PHANTOM refs&quot;);</b>
+<i>68</i>&nbsp;            }
+<i>69</i>&nbsp;        }
+<b class="fc"><i>70</i>&nbsp;        disposerInstance = new Disposer();</b>
+<b class="fc"><i>71</i>&nbsp;    }</b>
+<i>72</i>&nbsp;
+<b class="fc"><i>73</i>&nbsp;    private final ReferenceQueue queue = new ReferenceQueue();</b>
+<b class="fc"><i>74</i>&nbsp;    private final Hashtable records = new Hashtable();</b>
+<b class="fc"><i>75</i>&nbsp;    private final LinkedList&lt;Record&gt; disposalQueue = new LinkedList&lt;Record&gt;();</b>
+<i>76</i>&nbsp;
+<i>77</i>&nbsp;    /**
+<i>78</i>&nbsp;     * Private constructor to prevent outside instantiation.
+<i>79</i>&nbsp;     */
+<b class="fc"><i>80</i>&nbsp;    private Disposer() {</b>
+<b class="fc"><i>81</i>&nbsp;    }</b>
+<i>82</i>&nbsp;
+<i>83</i>&nbsp;//    /**
+<i>84</i>&nbsp;//     * Registers the object and the native data for later disposal.
+<i>85</i>&nbsp;//     * @param target Object to be registered
+<i>86</i>&nbsp;//     * @param disposeMethod pointer to the native disposal method
+<i>87</i>&nbsp;//     * @param pData pointer to the data to be passed to the
+<i>88</i>&nbsp;//     *              native disposal method
+<i>89</i>&nbsp;//     */
+<i>90</i>&nbsp;//    public static void addRecord(Object target,
+<i>91</i>&nbsp;//                                 long disposeMethod, long pData)
+<i>92</i>&nbsp;//    {
+<i>93</i>&nbsp;//        disposerInstance.add(target,
+<i>94</i>&nbsp;//                             new DefaultDisposerRecord(disposeMethod, pData));
+<i>95</i>&nbsp;//    }
+<i>96</i>&nbsp;
+<i>97</i>&nbsp;    /**
+<i>98</i>&nbsp;     * Registers the target object and the native data for later disposal when
+<i>99</i>&nbsp;     * the target is unreachable.
+<i>100</i>&nbsp;     * .
+<i>101</i>&nbsp;     * @param target Object to be registered
+<i>102</i>&nbsp;     * @param rec the associated DisposerRecord object
+<i>103</i>&nbsp;     * @see DisposerRecord
+<i>104</i>&nbsp;     */
+<i>105</i>&nbsp;    public static void addRecord(Object target, Disposer.Record rec) {
+<b class="fc"><i>106</i>&nbsp;        disposerInstance.add(target, rec);</b>
+<b class="fc"><i>107</i>&nbsp;    }</b>
+<i>108</i>&nbsp;
+<i>109</i>&nbsp;    /**
+<i>110</i>&nbsp;     * Add the object to the disposal queue. The object will be disposed
+<i>111</i>&nbsp;     * the next time cleanup is called.
+<i>112</i>&nbsp;     *
+<i>113</i>&nbsp;     * @param rec the DisposerRecord object to be disposed
+<i>114</i>&nbsp;     */
+<i>115</i>&nbsp;    public static void disposeRecord(Disposer.Record rec) {
+<b class="nc"><i>116</i>&nbsp;        disposerInstance.addToDisposalQueue(rec);</b>
+<b class="nc"><i>117</i>&nbsp;    }</b>
+<i>118</i>&nbsp;
+<i>119</i>&nbsp;    /**
+<i>120</i>&nbsp;     * Disposes all unreachable objects and all objects in the disposal queue.
+<i>121</i>&nbsp;     * It first polls the reference queue, calling the dispose method of each
+<i>122</i>&nbsp;     * unreachable object. It then iterates the list of objects in the
+<i>123</i>&nbsp;     * disposal queue, calling the dispose method of each object.
+<i>124</i>&nbsp;     *
+<i>125</i>&nbsp;     * NOTE: This method must only be called from the Render Thread (the
+<i>126</i>&nbsp;     * thread on which  the resources were created).
+<i>127</i>&nbsp;     */
+<i>128</i>&nbsp;    public static void cleanUp() {
+<b class="fc"><i>129</i>&nbsp;        disposerInstance.disposeUnreachables();</b>
+<b class="fc"><i>130</i>&nbsp;        disposerInstance.processDisposalQueue();</b>
+<b class="fc"><i>131</i>&nbsp;    }</b>
+<i>132</i>&nbsp;
+<i>133</i>&nbsp;    /**
+<i>134</i>&nbsp;     * Performs the actual registration of the target object to be disposed.
+<i>135</i>&nbsp;     * @param target Object to be registered, or if target is an instance
+<i>136</i>&nbsp;     *               of DisposerTarget, its associated disposer referent
+<i>137</i>&nbsp;     *               will be the Object that is registered
+<i>138</i>&nbsp;     * @param rec the associated DisposerRecord object
+<i>139</i>&nbsp;     * @see DisposerRecord
+<i>140</i>&nbsp;     */
+<i>141</i>&nbsp;    synchronized private void add(Object target, Disposer.Record rec) {
+<b class="fc"><i>142</i>&nbsp;        if (target instanceof Disposer.Target) {</b>
+<b class="nc"><i>143</i>&nbsp;            target = ((Disposer.Target)target).getDisposerReferent();</b>
+<i>144</i>&nbsp;        }
+<i>145</i>&nbsp;        Reference ref;
+<b class="fc"><i>146</i>&nbsp;        if (refType == PHANTOM) {</b>
+<b class="fc"><i>147</i>&nbsp;            ref = new PhantomReference(target, queue);</b>
+<b class="nc"><i>148</i>&nbsp;        } else if (refType == SOFT) {</b>
+<b class="nc"><i>149</i>&nbsp;            ref = new SoftReference(target, queue);</b>
+<i>150</i>&nbsp;        } else {
+<b class="nc"><i>151</i>&nbsp;            ref = new WeakReference(target, queue);</b>
+<i>152</i>&nbsp;        }
+<b class="fc"><i>153</i>&nbsp;        records.put(ref, rec);</b>
+<b class="fc"><i>154</i>&nbsp;    }</b>
+<i>155</i>&nbsp;
+<i>156</i>&nbsp;    synchronized private void addToDisposalQueue(Disposer.Record rec) {
+<b class="nc"><i>157</i>&nbsp;        disposalQueue.add(rec);</b>
+<b class="nc"><i>158</i>&nbsp;    }</b>
+<i>159</i>&nbsp;
+<i>160</i>&nbsp;    /**
+<i>161</i>&nbsp;     * Polls the reference queue to see if there are any unreachable objects
+<i>162</i>&nbsp;     * to be disposed.  If there is work to be done, this method disposes all
+<i>163</i>&nbsp;     * unreachable objects in the queue, otherwise it returns immediately.
+<i>164</i>&nbsp;     */
+<i>165</i>&nbsp;    synchronized private void disposeUnreachables() {
+<i>166</i>&nbsp;        Object obj;
+<b class="fc"><i>167</i>&nbsp;        while ((obj = queue.poll()) != null) {</b>
+<i>168</i>&nbsp;            try {
+<b class="nc"><i>169</i>&nbsp;                ((Reference)obj).clear();</b>
+<b class="nc"><i>170</i>&nbsp;                Disposer.Record rec = (Disposer.Record)records.remove(obj);</b>
+<b class="nc"><i>171</i>&nbsp;                rec.dispose();</b>
+<b class="nc"><i>172</i>&nbsp;                obj = null;</b>
+<b class="nc"><i>173</i>&nbsp;                rec = null;</b>
+<b class="nc"><i>174</i>&nbsp;            } catch (Exception e) {</b>
+<b class="nc"><i>175</i>&nbsp;                System.out.println(&quot;Exception while removing reference: &quot; + e);</b>
+<b class="nc"><i>176</i>&nbsp;                e.printStackTrace();</b>
+<b class="nc"><i>177</i>&nbsp;            }</b>
+<i>178</i>&nbsp;        }
+<b class="fc"><i>179</i>&nbsp;    }</b>
+<i>180</i>&nbsp;
+<i>181</i>&nbsp;    synchronized private void processDisposalQueue() {
+<i>182</i>&nbsp;        // disposalQueue is always empty in the case of Windows using the d3d pipe.
+<b class="fc"><i>183</i>&nbsp;        while (!disposalQueue.isEmpty()) {</b>
+<b class="nc"><i>184</i>&nbsp;            disposalQueue.remove().dispose();</b>
+<i>185</i>&nbsp;        }
+<b class="fc"><i>186</i>&nbsp;    }</b>
+<i>187</i>&nbsp;
+<i>188</i>&nbsp;    /**
+<i>189</i>&nbsp;     * This interface is used to hold the resource to be disposed.
+<i>190</i>&nbsp;     */
+<i>191</i>&nbsp;    public static interface Record {
+<i>192</i>&nbsp;        public void dispose();
+<i>193</i>&nbsp;    }
+<i>194</i>&nbsp;
+<i>195</i>&nbsp;    /**
+<i>196</i>&nbsp;     * This is an interface which should be implemented by
+<i>197</i>&nbsp;     * the classes which use Disposer.
+<i>198</i>&nbsp;     */
+<i>199</i>&nbsp;    public static interface Target {
+<i>200</i>&nbsp;        /**
+<i>201</i>&nbsp;         * Returns an object which will be
+<i>202</i>&nbsp;         * used as the referent in the ReferenceQueue.
+<i>203</i>&nbsp;         */
+<i>204</i>&nbsp;        public Object getDisposerReferent();
+<i>205</i>&nbsp;    }
+<i>206</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2017-12-04 21:49</div>
+</div>
+</body>
+</html>

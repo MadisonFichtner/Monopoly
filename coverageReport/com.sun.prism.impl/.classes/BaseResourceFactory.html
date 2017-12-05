@@ -1,0 +1,438 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: BaseResourceFactory</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.prism.impl</a> ]
+</div>
+
+<h1>Coverage Summary for Class: BaseResourceFactory (com.sun.prism.impl)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">BaseResourceFactory</td>
+<td class="coverageStat">
+  <span class="percent">
+    61.5%
+  </span>
+  <span class="absValue">
+    (16/ 26)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    54.5%
+  </span>
+  <span class="absValue">
+    (67/ 123)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">BaseResourceFactory$1</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    63%
+  </span>
+  <span class="absValue">
+    (17/ 27)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    54.8%
+  </span>
+  <span class="absValue">
+    (68/ 124)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright (c) 2009, 2015, Oracle and/or its affiliates. All rights reserved.
+<i>3</i>&nbsp; * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+<i>4</i>&nbsp; *
+<i>5</i>&nbsp; *
+<i>6</i>&nbsp; *
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; *
+<i>11</i>&nbsp; *
+<i>12</i>&nbsp; *
+<i>13</i>&nbsp; *
+<i>14</i>&nbsp; *
+<i>15</i>&nbsp; *
+<i>16</i>&nbsp; *
+<i>17</i>&nbsp; *
+<i>18</i>&nbsp; *
+<i>19</i>&nbsp; *
+<i>20</i>&nbsp; *
+<i>21</i>&nbsp; *
+<i>22</i>&nbsp; *
+<i>23</i>&nbsp; *
+<i>24</i>&nbsp; */
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;package com.sun.prism.impl;
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;import com.sun.prism.Image;
+<i>29</i>&nbsp;import com.sun.prism.PixelFormat;
+<i>30</i>&nbsp;import com.sun.prism.ResourceFactory;
+<i>31</i>&nbsp;import com.sun.prism.ResourceFactoryListener;
+<i>32</i>&nbsp;import com.sun.prism.Texture;
+<i>33</i>&nbsp;import com.sun.prism.Texture.Usage;
+<i>34</i>&nbsp;import com.sun.prism.Texture.WrapMode;
+<i>35</i>&nbsp;import java.util.Map;
+<i>36</i>&nbsp;import java.util.WeakHashMap;
+<i>37</i>&nbsp;import java.util.Collection;
+<i>38</i>&nbsp;
+<i>39</i>&nbsp;public abstract class BaseResourceFactory implements ResourceFactory {
+<i>40</i>&nbsp;    private final Map&lt;Image,Texture&gt; clampTexCache;
+<i>41</i>&nbsp;    private final Map&lt;Image,Texture&gt; repeatTexCache;
+<i>42</i>&nbsp;    // Solely used by diffuse and selfillum maps in PhongMaterial for 3D rendering
+<i>43</i>&nbsp;    private final Map&lt;Image,Texture&gt; mipmapTexCache;
+<i>44</i>&nbsp;
+<i>45</i>&nbsp;    // Use a WeakHashMap as it automatically removes dead objects when they&#39;re
+<i>46</i>&nbsp;    // collected
+<b class="fc"><i>47</i>&nbsp;    private final WeakHashMap&lt;ResourceFactoryListener,Boolean&gt; listenerMap =</b>
+<i>48</i>&nbsp;            new WeakHashMap&lt;ResourceFactoryListener,Boolean&gt;();
+<i>49</i>&nbsp;
+<i>50</i>&nbsp;    private Texture regionTexture;
+<i>51</i>&nbsp;    private Texture glyphTexture;
+<i>52</i>&nbsp;    private boolean superShaderAllowed;
+<i>53</i>&nbsp;
+<i>54</i>&nbsp;    public BaseResourceFactory() {
+<b class="nc"><i>55</i>&nbsp;        this(new WeakHashMap&lt;Image,Texture&gt;(),</b>
+<i>56</i>&nbsp;             new WeakHashMap&lt;Image,Texture&gt;(),
+<i>57</i>&nbsp;             new WeakHashMap&lt;Image,Texture&gt;());
+<b class="nc"><i>58</i>&nbsp;    }</b>
+<i>59</i>&nbsp;
+<i>60</i>&nbsp;    public BaseResourceFactory(Map&lt;Image, Texture&gt; clampTexCache,
+<i>61</i>&nbsp;                               Map&lt;Image, Texture&gt; repeatTexCache,
+<i>62</i>&nbsp;                               Map&lt;Image, Texture&gt; mipmapTexCache)
+<b class="fc"><i>63</i>&nbsp;    {</b>
+<b class="fc"><i>64</i>&nbsp;        this.clampTexCache = clampTexCache;</b>
+<b class="fc"><i>65</i>&nbsp;        this.repeatTexCache = repeatTexCache;</b>
+<b class="fc"><i>66</i>&nbsp;        this.mipmapTexCache = mipmapTexCache;</b>
+<b class="fc"><i>67</i>&nbsp;    }</b>
+<i>68</i>&nbsp;
+<i>69</i>&nbsp;    @Override public void addFactoryListener(ResourceFactoryListener l) {
+<b class="fc"><i>70</i>&nbsp;        listenerMap.put(l, Boolean.TRUE);</b>
+<b class="fc"><i>71</i>&nbsp;    }</b>
+<i>72</i>&nbsp;
+<i>73</i>&nbsp;    @Override public void removeFactoryListener(ResourceFactoryListener l) {
+<i>74</i>&nbsp;        // remove will return null if there is no mapping, so it&#39;s safe to call
+<i>75</i>&nbsp;        // with unregistered listeners
+<b class="fc"><i>76</i>&nbsp;        listenerMap.remove(l);</b>
+<b class="fc"><i>77</i>&nbsp;    }</b>
+<i>78</i>&nbsp;
+<i>79</i>&nbsp;    @Override public boolean isDeviceReady() {
+<b class="nc"><i>80</i>&nbsp;        return true;</b>
+<i>81</i>&nbsp;    }
+<i>82</i>&nbsp;
+<i>83</i>&nbsp;    protected void clearTextureCache() {
+<b class="nc"><i>84</i>&nbsp;        clearTextureCache(clampTexCache);</b>
+<b class="nc"><i>85</i>&nbsp;        clearTextureCache(repeatTexCache);</b>
+<b class="nc"><i>86</i>&nbsp;        clearTextureCache(mipmapTexCache);</b>
+<b class="nc"><i>87</i>&nbsp;    }</b>
+<i>88</i>&nbsp;
+<i>89</i>&nbsp;    protected void clearTextureCache(Map&lt;Image,Texture&gt; texCache) {
+<b class="nc"><i>90</i>&nbsp;        Collection&lt;Texture&gt; texAll = texCache.values();</b>
+<b class="nc"><i>91</i>&nbsp;        for (Texture i : texAll) {</b>
+<b class="nc"><i>92</i>&nbsp;            i.dispose();</b>
+<b class="nc"><i>93</i>&nbsp;        }</b>
+<b class="nc"><i>94</i>&nbsp;        texCache.clear();</b>
+<b class="nc"><i>95</i>&nbsp;    }</b>
+<i>96</i>&nbsp;
+<i>97</i>&nbsp;    protected ResourceFactoryListener[] getFactoryListeners() {
+<b class="fc"><i>98</i>&nbsp;        return listenerMap.keySet().toArray(new ResourceFactoryListener[0]);</b>
+<i>99</i>&nbsp;    }
+<i>100</i>&nbsp;
+<i>101</i>&nbsp;    /**
+<i>102</i>&nbsp;     * Called when the factory is reset. Some resources (based in vram) could
+<i>103</i>&nbsp;     * be lost.
+<i>104</i>&nbsp;     */
+<i>105</i>&nbsp;    protected void notifyReset() {
+<b class="nc"><i>106</i>&nbsp;        clampTexCache.clear();</b>
+<b class="nc"><i>107</i>&nbsp;        repeatTexCache.clear();</b>
+<b class="nc"><i>108</i>&nbsp;        mipmapTexCache.clear();</b>
+<i>109</i>&nbsp;
+<i>110</i>&nbsp;        // Iterate over a *copy* of the key set because listeners may remove
+<i>111</i>&nbsp;        // themselves during the callback
+<b class="nc"><i>112</i>&nbsp;        ResourceFactoryListener[] notifyList = getFactoryListeners();</b>
+<b class="nc"><i>113</i>&nbsp;        for (ResourceFactoryListener listener : notifyList) {</b>
+<b class="nc"><i>114</i>&nbsp;            if (null != listener) {</b>
+<b class="nc"><i>115</i>&nbsp;                listener.factoryReset();</b>
+<i>116</i>&nbsp;            }
+<i>117</i>&nbsp;        }
+<b class="nc"><i>118</i>&nbsp;    }</b>
+<i>119</i>&nbsp;
+<i>120</i>&nbsp;    /**
+<i>121</i>&nbsp;     * Called when the factory&#39;s data is released
+<i>122</i>&nbsp;     */
+<i>123</i>&nbsp;    protected void notifyReleased() {
+<b class="fc"><i>124</i>&nbsp;        clampTexCache.clear();</b>
+<b class="fc"><i>125</i>&nbsp;        repeatTexCache.clear();</b>
+<b class="fc"><i>126</i>&nbsp;        mipmapTexCache.clear();</b>
+<i>127</i>&nbsp;
+<i>128</i>&nbsp;        // Iterate over a *copy* of the key set because listeners may remove
+<i>129</i>&nbsp;        // themselves during the callback
+<b class="fc"><i>130</i>&nbsp;        ResourceFactoryListener[] notifyList = getFactoryListeners();</b>
+<b class="fc"><i>131</i>&nbsp;        for (ResourceFactoryListener listener : notifyList) {</b>
+<b class="fc"><i>132</i>&nbsp;            if (null != listener) {</b>
+<b class="fc"><i>133</i>&nbsp;                listener.factoryReleased();</b>
+<i>134</i>&nbsp;            }
+<i>135</i>&nbsp;        }
+<b class="fc"><i>136</i>&nbsp;    }</b>
+<i>137</i>&nbsp;
+<i>138</i>&nbsp;    static long sizeWithMipMap(int w, int h, PixelFormat format) {
+<b class="nc"><i>139</i>&nbsp;        long size = 0;</b>
+<b class="nc"><i>140</i>&nbsp;        int bytesPerPixel = format.getBytesPerPixelUnit();</b>
+<b class="nc"><i>141</i>&nbsp;        while (w &gt; 1 &amp;&amp; h &gt; 1) {</b>
+<b class="nc"><i>142</i>&nbsp;            size += ((long) w) * ((long) h);</b>
+<b class="nc"><i>143</i>&nbsp;            w = (w + 1) &gt;&gt; 1;</b>
+<b class="nc"><i>144</i>&nbsp;            h = (h + 1) &gt;&gt; 1;</b>
+<i>145</i>&nbsp;        }
+<b class="nc"><i>146</i>&nbsp;        size += 1;</b>
+<b class="nc"><i>147</i>&nbsp;        return size * bytesPerPixel;</b>
+<i>148</i>&nbsp;    }
+<i>149</i>&nbsp;
+<i>150</i>&nbsp;    @Override
+<i>151</i>&nbsp;    public Texture getCachedTexture(Image image, WrapMode wrapMode) {
+<b class="fc"><i>152</i>&nbsp;       return  getCachedTexture(image, wrapMode, false);</b>
+<i>153</i>&nbsp;    }
+<i>154</i>&nbsp;
+<i>155</i>&nbsp;    @Override
+<i>156</i>&nbsp;    public Texture getCachedTexture(Image image, WrapMode wrapMode, boolean useMipmap) {
+<b class="fc"><i>157</i>&nbsp;        if (image == null) {</b>
+<b class="nc"><i>158</i>&nbsp;            throw new IllegalArgumentException(&quot;Image must be non-null&quot;);</b>
+<i>159</i>&nbsp;        }
+<i>160</i>&nbsp;        Map&lt;Image,Texture&gt; texCache;
+<b class="fc"><i>161</i>&nbsp;        if (wrapMode == WrapMode.CLAMP_TO_EDGE) {</b>
+<i>162</i>&nbsp;            // Mipmap not supported with CLAMP mode in current implementation
+<b class="fc"><i>163</i>&nbsp;            if (useMipmap) {</b>
+<b class="nc"><i>164</i>&nbsp;                throw new IllegalArgumentException(&quot;Mipmap not supported with CLAMP mode: useMipmap = &quot;</b>
+<i>165</i>&nbsp;                        + useMipmap + &quot;, wrapMode = &quot; + wrapMode);
+<i>166</i>&nbsp;            }
+<b class="fc"><i>167</i>&nbsp;            texCache = clampTexCache;</b>
+<b class="nc"><i>168</i>&nbsp;        } else if (wrapMode == WrapMode.REPEAT) {</b>
+<b class="nc"><i>169</i>&nbsp;            texCache = useMipmap ? mipmapTexCache : repeatTexCache;</b>
+<i>170</i>&nbsp;        } else {
+<b class="nc"><i>171</i>&nbsp;            throw new IllegalArgumentException(&quot;no caching for &quot;+wrapMode);</b>
+<i>172</i>&nbsp;        }
+<b class="fc"><i>173</i>&nbsp;         Texture tex = texCache.get(image);</b>
+<b class="fc"><i>174</i>&nbsp;         if (tex != null) {</b>
+<b class="fc"><i>175</i>&nbsp;             tex.lock();</b>
+<b class="fc"><i>176</i>&nbsp;             if (tex.isSurfaceLost()) {</b>
+<b class="nc"><i>177</i>&nbsp;                 texCache.remove(image);</b>
+<b class="nc"><i>178</i>&nbsp;                 tex = null;</b>
+<i>179</i>&nbsp;             }
+<i>180</i>&nbsp;         }
+<b class="fc"><i>181</i>&nbsp;         int serial = image.getSerial();</b>
+<i>182</i>&nbsp;
+<i>183</i>&nbsp;         // Doesn&#39;t apply if useMipmap is true
+<b class="fc"><i>184</i>&nbsp;         if (!useMipmap &amp;&amp; tex == null) {</b>
+<i>185</i>&nbsp;            // Try to share a converted texture from the other cache
+<b class="fc"><i>186</i>&nbsp;            Texture othertex = (wrapMode == WrapMode.REPEAT</b>
+<b class="nc"><i>187</i>&nbsp;                   ? clampTexCache</b>
+<b class="fc"><i>188</i>&nbsp;                   : repeatTexCache).get(image);</b>
+<b class="fc"><i>189</i>&nbsp;            if (othertex != null) {</b>
+<b class="nc"><i>190</i>&nbsp;                othertex.lock();</b>
+<b class="nc"><i>191</i>&nbsp;                if (!othertex.isSurfaceLost()) {</b>
+<i>192</i>&nbsp;                    // This conversion operation will fail if the texture is
+<i>193</i>&nbsp;                    // _SIMULATED
+<b class="nc"><i>194</i>&nbsp;                    tex = othertex.getSharedTexture(wrapMode);</b>
+<b class="nc"><i>195</i>&nbsp;                    if (tex != null) {</b>
+<i>196</i>&nbsp;                        // Technically, our shared texture will maintain that
+<i>197</i>&nbsp;                        // the contents are useful, but for completeness we
+<i>198</i>&nbsp;                        // will register both references as &quot;useful&quot;
+<b class="nc"><i>199</i>&nbsp;                        tex.contentsUseful();</b>
+<b class="nc"><i>200</i>&nbsp;                        texCache.put(image, tex);</b>
+<i>201</i>&nbsp;                    }
+<i>202</i>&nbsp;                }
+<b class="nc"><i>203</i>&nbsp;                othertex.unlock();</b>
+<i>204</i>&nbsp;            }
+<i>205</i>&nbsp;        }
+<i>206</i>&nbsp;
+<b class="fc"><i>207</i>&nbsp;        if (tex == null) {</b>
+<b class="fc"><i>208</i>&nbsp;            int w = image.getWidth();</b>
+<b class="fc"><i>209</i>&nbsp;            int h = image.getHeight();</b>
+<b class="fc"><i>210</i>&nbsp;            TextureResourcePool pool = getTextureResourcePool();</b>
+<i>211</i>&nbsp;            // Mipmap will use more memory
+<b class="fc"><i>212</i>&nbsp;            long size = useMipmap ? sizeWithMipMap(w, h, image.getPixelFormat())</b>
+<b class="fc"><i>213</i>&nbsp;                    : pool.estimateTextureSize(w, h, image.getPixelFormat());</b>
+<b class="fc"><i>214</i>&nbsp;            if (!pool.prepareForAllocation(size)) {</b>
+<b class="nc"><i>215</i>&nbsp;                return null;</b>
+<i>216</i>&nbsp;            }
+<i>217</i>&nbsp;
+<b class="fc"><i>218</i>&nbsp;            tex = createTexture(image, Usage.DEFAULT, wrapMode, useMipmap);</b>
+<b class="fc"><i>219</i>&nbsp;            if (tex != null) {</b>
+<b class="fc"><i>220</i>&nbsp;                tex.setLastImageSerial(serial);</b>
+<b class="fc"><i>221</i>&nbsp;                texCache.put(image, tex);</b>
+<i>222</i>&nbsp;            }
+<b class="fc"><i>223</i>&nbsp;        } else if (tex.getLastImageSerial() != serial) {</b>
+<b class="nc"><i>224</i>&nbsp;            tex.update(image, 0, 0, image.getWidth(), image.getHeight(), false);</b>
+<b class="nc"><i>225</i>&nbsp;            tex.setLastImageSerial(serial);</b>
+<i>226</i>&nbsp;        }
+<b class="fc"><i>227</i>&nbsp;        return tex;</b>
+<i>228</i>&nbsp;    }
+<i>229</i>&nbsp;
+<i>230</i>&nbsp;    @Override
+<i>231</i>&nbsp;    public Texture createTexture(Image image, Usage usageHint, WrapMode wrapMode) {
+<b class="nc"><i>232</i>&nbsp;        return createTexture(image, usageHint, wrapMode, false);</b>
+<i>233</i>&nbsp;    }
+<i>234</i>&nbsp;
+<i>235</i>&nbsp;    @Override
+<i>236</i>&nbsp;    public Texture createTexture(Image image, Usage usageHint, WrapMode wrapMode,
+<i>237</i>&nbsp;            boolean useMipmap) {
+<b class="fc"><i>238</i>&nbsp;        PixelFormat format = image.getPixelFormat();</b>
+<b class="fc"><i>239</i>&nbsp;        int w = image.getWidth();</b>
+<b class="fc"><i>240</i>&nbsp;        int h = image.getHeight();</b>
+<i>241</i>&nbsp;
+<b class="fc"><i>242</i>&nbsp;        Texture tex = createTexture(format, usageHint, wrapMode, w, h, useMipmap);</b>
+<i>243</i>&nbsp;        // creation of a texture does not require flushing the vertex buffer
+<i>244</i>&nbsp;        // since there are no pending vertices that depend on this new texture,
+<i>245</i>&nbsp;        // so pass skipFlush=true here...
+<b class="fc"><i>246</i>&nbsp;        if (tex != null) {</b>
+<b class="fc"><i>247</i>&nbsp;            tex.update(image, 0, 0, w, h, true);</b>
+<b class="fc"><i>248</i>&nbsp;            tex.contentsUseful();</b>
+<i>249</i>&nbsp;        }
+<b class="fc"><i>250</i>&nbsp;        return tex;</b>
+<i>251</i>&nbsp;    }
+<i>252</i>&nbsp;
+<i>253</i>&nbsp;    @Override
+<i>254</i>&nbsp;    public Texture createMaskTexture(int width, int height, WrapMode wrapMode) {
+<b class="fc"><i>255</i>&nbsp;        return createTexture(PixelFormat.BYTE_ALPHA,</b>
+<i>256</i>&nbsp;                             Usage.DEFAULT, wrapMode,
+<i>257</i>&nbsp;                             width, height);
+<i>258</i>&nbsp;    }
+<i>259</i>&nbsp;
+<i>260</i>&nbsp;    @Override
+<i>261</i>&nbsp;    public Texture createFloatTexture(int width, int height) {
+<b class="nc"><i>262</i>&nbsp;        return createTexture(PixelFormat.FLOAT_XYZW,</b>
+<i>263</i>&nbsp;                             Usage.DEFAULT, WrapMode.CLAMP_TO_ZERO,
+<i>264</i>&nbsp;                             width, height);
+<i>265</i>&nbsp;    }
+<i>266</i>&nbsp;
+<i>267</i>&nbsp;    @Override
+<i>268</i>&nbsp;    public void setRegionTexture(Texture texture) {
+<b class="fc"><i>269</i>&nbsp;        regionTexture = texture;</b>
+<b class="fc"><i>270</i>&nbsp;        superShaderAllowed = PrismSettings.superShader &amp;&amp;</b>
+<i>271</i>&nbsp;                             regionTexture != null &amp;&amp;
+<i>272</i>&nbsp;                             glyphTexture != null;
+<b class="fc"><i>273</i>&nbsp;    }</b>
+<i>274</i>&nbsp;
+<i>275</i>&nbsp;    @Override
+<i>276</i>&nbsp;    public Texture getRegionTexture() {
+<b class="fc"><i>277</i>&nbsp;        return regionTexture;</b>
+<i>278</i>&nbsp;    }
+<i>279</i>&nbsp;
+<i>280</i>&nbsp;    @Override
+<i>281</i>&nbsp;    public void setGlyphTexture(Texture texture) {
+<b class="fc"><i>282</i>&nbsp;        glyphTexture = texture;</b>
+<b class="fc"><i>283</i>&nbsp;        superShaderAllowed = PrismSettings.superShader &amp;&amp;</b>
+<i>284</i>&nbsp;                             regionTexture != null &amp;&amp;
+<i>285</i>&nbsp;                             glyphTexture != null;
+<b class="fc"><i>286</i>&nbsp;    }</b>
+<i>287</i>&nbsp;
+<i>288</i>&nbsp;    @Override
+<i>289</i>&nbsp;    public Texture getGlyphTexture() {
+<b class="fc"><i>290</i>&nbsp;        return glyphTexture;</b>
+<i>291</i>&nbsp;    }
+<i>292</i>&nbsp;
+<i>293</i>&nbsp;    @Override
+<i>294</i>&nbsp;    public boolean isSuperShaderAllowed() {
+<b class="fc"><i>295</i>&nbsp;        return superShaderAllowed;</b>
+<i>296</i>&nbsp;    }
+<i>297</i>&nbsp;
+<i>298</i>&nbsp;    protected boolean canClampToZero() {
+<b class="fc"><i>299</i>&nbsp;        return true;</b>
+<i>300</i>&nbsp;    }
+<i>301</i>&nbsp;
+<i>302</i>&nbsp;    protected boolean canClampToEdge() {
+<b class="nc"><i>303</i>&nbsp;        return true;</b>
+<i>304</i>&nbsp;    }
+<i>305</i>&nbsp;
+<i>306</i>&nbsp;    protected boolean canRepeat() {
+<b class="nc"><i>307</i>&nbsp;        return true;</b>
+<i>308</i>&nbsp;    }
+<i>309</i>&nbsp;
+<i>310</i>&nbsp;    @Override
+<i>311</i>&nbsp;    public boolean isWrapModeSupported(WrapMode mode) {
+<b class="fc"><i>312</i>&nbsp;        switch (mode) {</b>
+<i>313</i>&nbsp;            case CLAMP_NOT_NEEDED:
+<b class="nc"><i>314</i>&nbsp;                return true;</b>
+<i>315</i>&nbsp;            case CLAMP_TO_EDGE:
+<b class="nc"><i>316</i>&nbsp;                return canClampToEdge();</b>
+<i>317</i>&nbsp;            case REPEAT:
+<b class="nc"><i>318</i>&nbsp;                return canRepeat();</b>
+<i>319</i>&nbsp;            case CLAMP_TO_ZERO:
+<b class="fc"><i>320</i>&nbsp;                return canClampToZero();</b>
+<i>321</i>&nbsp;            case CLAMP_TO_EDGE_SIMULATED:
+<i>322</i>&nbsp;            case CLAMP_TO_ZERO_SIMULATED:
+<i>323</i>&nbsp;            case REPEAT_SIMULATED:
+<b class="nc"><i>324</i>&nbsp;                throw new InternalError(&quot;Cannot test support for simulated wrap modes&quot;);</b>
+<i>325</i>&nbsp;            default:
+<b class="nc"><i>326</i>&nbsp;                throw new InternalError(&quot;Unrecognized wrap mode: &quot;+mode);</b>
+<i>327</i>&nbsp;        }
+<i>328</i>&nbsp;    }
+<i>329</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2017-12-04 21:49</div>
+</div>
+</body>
+</html>

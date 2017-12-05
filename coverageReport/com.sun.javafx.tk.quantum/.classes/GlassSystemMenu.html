@@ -1,0 +1,461 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: GlassSystemMenu</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.javafx.tk.quantum</a> ]
+</div>
+
+<h1>Coverage Summary for Class: GlassSystemMenu (com.sun.javafx.tk.quantum)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">GlassSystemMenu</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    11.1%
+  </span>
+  <span class="absValue">
+    (2/ 18)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    2.9%
+  </span>
+  <span class="absValue">
+    (5/ 174)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright (c) 2012, 2016, Oracle and/or its affiliates. All rights reserved.
+<i>3</i>&nbsp; * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+<i>4</i>&nbsp; *
+<i>5</i>&nbsp; *
+<i>6</i>&nbsp; *
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; *
+<i>11</i>&nbsp; *
+<i>12</i>&nbsp; *
+<i>13</i>&nbsp; *
+<i>14</i>&nbsp; *
+<i>15</i>&nbsp; *
+<i>16</i>&nbsp; *
+<i>17</i>&nbsp; *
+<i>18</i>&nbsp; *
+<i>19</i>&nbsp; *
+<i>20</i>&nbsp; *
+<i>21</i>&nbsp; *
+<i>22</i>&nbsp; *
+<i>23</i>&nbsp; *
+<i>24</i>&nbsp; */
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;package com.sun.javafx.tk.quantum;
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;import com.sun.javafx.menu.CheckMenuItemBase;
+<i>29</i>&nbsp;import com.sun.javafx.menu.MenuBase;
+<i>30</i>&nbsp;import com.sun.javafx.menu.MenuItemBase;
+<i>31</i>&nbsp;import com.sun.javafx.menu.RadioMenuItemBase;
+<i>32</i>&nbsp;import com.sun.javafx.menu.SeparatorMenuItemBase;
+<i>33</i>&nbsp;import com.sun.javafx.PlatformUtil;
+<i>34</i>&nbsp;import com.sun.javafx.tk.TKSystemMenu;
+<i>35</i>&nbsp;import com.sun.glass.events.KeyEvent;
+<i>36</i>&nbsp;import com.sun.glass.ui.Application;
+<i>37</i>&nbsp;import com.sun.glass.ui.Menu;
+<i>38</i>&nbsp;import com.sun.glass.ui.MenuBar;
+<i>39</i>&nbsp;import com.sun.glass.ui.MenuItem;
+<i>40</i>&nbsp;import com.sun.glass.ui.Pixels;
+<i>41</i>&nbsp;import com.sun.javafx.tk.Toolkit;
+<i>42</i>&nbsp;
+<i>43</i>&nbsp;import java.util.List;
+<i>44</i>&nbsp;
+<i>45</i>&nbsp;import javafx.collections.ListChangeListener;
+<i>46</i>&nbsp;import javafx.collections.ObservableList;
+<i>47</i>&nbsp;import javafx.beans.InvalidationListener;
+<i>48</i>&nbsp;import javafx.scene.image.Image;
+<i>49</i>&nbsp;import javafx.scene.image.ImageView;
+<i>50</i>&nbsp;import javafx.scene.input.KeyCode;
+<i>51</i>&nbsp;import javafx.scene.input.KeyCombination;
+<i>52</i>&nbsp;import javafx.scene.input.KeyCharacterCombination;
+<i>53</i>&nbsp;import javafx.scene.input.KeyCodeCombination;
+<i>54</i>&nbsp;
+<b class="fc"><i>55</i>&nbsp;class GlassSystemMenu implements TKSystemMenu {</b>
+<i>56</i>&nbsp;
+<b class="fc"><i>57</i>&nbsp;    private List&lt;MenuBase&gt;      systemMenus = null;</b>
+<b class="fc"><i>58</i>&nbsp;    private MenuBar             glassSystemMenuBar = null;</b>
+<i>59</i>&nbsp;
+<b class="fc"><i>60</i>&nbsp;    private InvalidationListener visibilityListener = valueModel -&gt; {</b>
+<b class="nc"><i>61</i>&nbsp;        if (systemMenus != null) {</b>
+<b class="nc"><i>62</i>&nbsp;            setMenus(systemMenus);</b>
+<i>63</i>&nbsp;        }
+<b class="nc"><i>64</i>&nbsp;    };</b>
+<i>65</i>&nbsp;
+<i>66</i>&nbsp;    protected void createMenuBar() {
+<b class="nc"><i>67</i>&nbsp;        if (glassSystemMenuBar == null) {</b>
+<b class="nc"><i>68</i>&nbsp;            Application app = Application.GetApplication();</b>
+<b class="nc"><i>69</i>&nbsp;            glassSystemMenuBar = app.createMenuBar();</b>
+<b class="nc"><i>70</i>&nbsp;            app.installDefaultMenus(glassSystemMenuBar);</b>
+<i>71</i>&nbsp;
+<b class="nc"><i>72</i>&nbsp;            if (systemMenus != null) {</b>
+<b class="nc"><i>73</i>&nbsp;                setMenus(systemMenus);</b>
+<i>74</i>&nbsp;            }
+<i>75</i>&nbsp;        }
+<b class="nc"><i>76</i>&nbsp;    }</b>
+<i>77</i>&nbsp;
+<i>78</i>&nbsp;    protected MenuBar getMenuBar() {
+<b class="nc"><i>79</i>&nbsp;        return glassSystemMenuBar;</b>
+<i>80</i>&nbsp;    }
+<i>81</i>&nbsp;
+<i>82</i>&nbsp;    @Override public boolean isSupported() {
+<b class="fc"><i>83</i>&nbsp;        return Application.GetApplication().supportsSystemMenu();</b>
+<i>84</i>&nbsp;    }
+<i>85</i>&nbsp;
+<i>86</i>&nbsp;    @Override public void setMenus(List&lt;MenuBase&gt; menus) {
+<b class="nc"><i>87</i>&nbsp;        systemMenus = menus;</b>
+<b class="nc"><i>88</i>&nbsp;        if (glassSystemMenuBar != null) {</b>
+<i>89</i>&nbsp;
+<i>90</i>&nbsp;            /*
+<i>91</i>&nbsp;             * Remove existing menus
+<i>92</i>&nbsp;             */
+<b class="nc"><i>93</i>&nbsp;            List&lt;Menu&gt; existingMenus = glassSystemMenuBar.getMenus();</b>
+<b class="nc"><i>94</i>&nbsp;            int existingSize = existingMenus.size();</b>
+<i>95</i>&nbsp;
+<i>96</i>&nbsp;            /*
+<i>97</i>&nbsp;             * Leave the Apple menu in place
+<i>98</i>&nbsp;             */
+<b class="nc"><i>99</i>&nbsp;            for (int index = existingSize - 1; index &gt;= 1; index--) {</b>
+<b class="nc"><i>100</i>&nbsp;                Menu menu = existingMenus.get(index);</b>
+<b class="nc"><i>101</i>&nbsp;                clearMenu(menu);</b>
+<b class="nc"><i>102</i>&nbsp;                glassSystemMenuBar.remove(index);</b>
+<i>103</i>&nbsp;            }
+<i>104</i>&nbsp;
+<b class="nc"><i>105</i>&nbsp;            for (MenuBase menu : menus) {</b>
+<b class="nc"><i>106</i>&nbsp;                addMenu(null, menu);</b>
+<b class="nc"><i>107</i>&nbsp;            }</b>
+<i>108</i>&nbsp;        }
+<b class="nc"><i>109</i>&nbsp;    }</b>
+<i>110</i>&nbsp;
+<i>111</i>&nbsp;    // Clear the menu to prevent a memory leak, as outlined in RT-34779
+<i>112</i>&nbsp;    private void clearMenu(Menu menu) {
+<b class="nc"><i>113</i>&nbsp;        for (int i = menu.getItems().size() - 1; i &gt;= 0; i--) {</b>
+<b class="nc"><i>114</i>&nbsp;            Object o = menu.getItems().get(i);</b>
+<i>115</i>&nbsp;
+<b class="nc"><i>116</i>&nbsp;            if (o instanceof MenuItem) {</b>
+<b class="nc"><i>117</i>&nbsp;                ((MenuItem)o).setCallback(null);</b>
+<b class="nc"><i>118</i>&nbsp;            } else if (o instanceof Menu) {</b>
+<b class="nc"><i>119</i>&nbsp;                clearMenu((Menu) o);</b>
+<i>120</i>&nbsp;            }
+<i>121</i>&nbsp;        }
+<b class="nc"><i>122</i>&nbsp;        menu.setEventHandler(null);</b>
+<b class="nc"><i>123</i>&nbsp;    }</b>
+<i>124</i>&nbsp;
+<i>125</i>&nbsp;    private void addMenu(final Menu parent, final MenuBase mb) {
+<b class="nc"><i>126</i>&nbsp;        if (parent != null) {</b>
+<b class="nc"><i>127</i>&nbsp;            insertMenu(parent, mb, parent.getItems().size());</b>
+<i>128</i>&nbsp;        } else {
+<b class="nc"><i>129</i>&nbsp;            insertMenu(parent, mb, glassSystemMenuBar.getMenus().size());</b>
+<i>130</i>&nbsp;        }
+<b class="nc"><i>131</i>&nbsp;    }</b>
+<i>132</i>&nbsp;
+<i>133</i>&nbsp;    private void insertMenu(final Menu parent, final MenuBase mb, int pos) {
+<b class="nc"><i>134</i>&nbsp;        Application app = Application.GetApplication();</b>
+<b class="nc"><i>135</i>&nbsp;        final Menu glassMenu = app.createMenu(parseText(mb), ! mb.isDisable());</b>
+<b class="nc"><i>136</i>&nbsp;        glassMenu.setEventHandler(new GlassMenuEventHandler(mb));</b>
+<i>137</i>&nbsp;
+<i>138</i>&nbsp;        // There is no way of knowing if listener was already added.
+<b class="nc"><i>139</i>&nbsp;        mb.visibleProperty().removeListener(visibilityListener);</b>
+<b class="nc"><i>140</i>&nbsp;        mb.visibleProperty().addListener(visibilityListener);</b>
+<i>141</i>&nbsp;
+<b class="nc"><i>142</i>&nbsp;        if (!mb.isVisible()) {</b>
+<b class="nc"><i>143</i>&nbsp;            return;</b>
+<i>144</i>&nbsp;        }
+<i>145</i>&nbsp;
+<b class="nc"><i>146</i>&nbsp;        final ObservableList&lt;MenuItemBase&gt; items = mb.getItemsBase();</b>
+<i>147</i>&nbsp;
+<b class="nc"><i>148</i>&nbsp;        items.addListener((ListChangeListener.Change&lt;? extends MenuItemBase&gt; change) -&gt; {</b>
+<b class="nc"><i>149</i>&nbsp;            while (change.next()) {</b>
+<b class="nc"><i>150</i>&nbsp;                int from = change.getFrom();</b>
+<b class="nc"><i>151</i>&nbsp;                int to = change.getTo();</b>
+<b class="nc"><i>152</i>&nbsp;                List&lt;? extends MenuItemBase&gt; removed = change.getRemoved();</b>
+<i>153</i>&nbsp;
+<b class="nc"><i>154</i>&nbsp;                for (int i = from + removed.size() - 1; i &gt;= from ; i--) {</b>
+<b class="nc"><i>155</i>&nbsp;                    List&lt;Object&gt; menuItemList = glassMenu.getItems();</b>
+<b class="nc"><i>156</i>&nbsp;                    if (i &gt;= 0 &amp;&amp; menuItemList.size() &gt; i) {</b>
+<b class="nc"><i>157</i>&nbsp;                        glassMenu.remove(i);</b>
+<i>158</i>&nbsp;                    }
+<i>159</i>&nbsp;                }
+<b class="nc"><i>160</i>&nbsp;                for (int i = from; i &lt; to; i++) {</b>
+<b class="nc"><i>161</i>&nbsp;                    MenuItemBase item = change.getList().get(i);</b>
+<b class="nc"><i>162</i>&nbsp;                    if (item instanceof MenuBase) {</b>
+<b class="nc"><i>163</i>&nbsp;                        insertMenu(glassMenu, (MenuBase)item, i);</b>
+<i>164</i>&nbsp;                    } else {
+<b class="nc"><i>165</i>&nbsp;                        insertMenuItem(glassMenu, item, i);</b>
+<i>166</i>&nbsp;                    }
+<i>167</i>&nbsp;                }
+<b class="nc"><i>168</i>&nbsp;            }</b>
+<b class="nc"><i>169</i>&nbsp;        });</b>
+<i>170</i>&nbsp;
+<b class="nc"><i>171</i>&nbsp;        for (MenuItemBase item : items) {</b>
+<b class="nc"><i>172</i>&nbsp;            if (item instanceof MenuBase) {</b>
+<i>173</i>&nbsp;                // submenu
+<b class="nc"><i>174</i>&nbsp;                addMenu(glassMenu, (MenuBase)item);</b>
+<i>175</i>&nbsp;            } else {
+<i>176</i>&nbsp;                // menu item
+<b class="nc"><i>177</i>&nbsp;                addMenuItem(glassMenu, item);</b>
+<i>178</i>&nbsp;            }
+<b class="nc"><i>179</i>&nbsp;        }</b>
+<b class="nc"><i>180</i>&nbsp;        glassMenu.setPixels(getPixels(mb));</b>
+<i>181</i>&nbsp;
+<b class="nc"><i>182</i>&nbsp;        setMenuBindings(glassMenu, mb);</b>
+<i>183</i>&nbsp;
+<b class="nc"><i>184</i>&nbsp;        if (parent != null) {</b>
+<b class="nc"><i>185</i>&nbsp;            parent.insert(glassMenu, pos);</b>
+<i>186</i>&nbsp;        } else {
+<b class="nc"><i>187</i>&nbsp;            glassSystemMenuBar.insert(glassMenu, pos);</b>
+<i>188</i>&nbsp;        }
+<b class="nc"><i>189</i>&nbsp;    }</b>
+<i>190</i>&nbsp;
+<i>191</i>&nbsp;    private void setMenuBindings(final Menu glassMenu, final MenuBase mb) {
+<b class="nc"><i>192</i>&nbsp;        mb.textProperty().addListener(valueModel -&gt; glassMenu.setTitle(parseText(mb)));</b>
+<b class="nc"><i>193</i>&nbsp;        mb.disableProperty().addListener(valueModel -&gt; glassMenu.setEnabled(!mb.isDisable()));</b>
+<b class="nc"><i>194</i>&nbsp;        mb.mnemonicParsingProperty().addListener(valueModel -&gt; glassMenu.setTitle(parseText(mb)));</b>
+<b class="nc"><i>195</i>&nbsp;    }</b>
+<i>196</i>&nbsp;
+<i>197</i>&nbsp;    private void addMenuItem(Menu parent, final MenuItemBase menuitem) {
+<b class="nc"><i>198</i>&nbsp;        insertMenuItem(parent, menuitem, parent.getItems().size());</b>
+<b class="nc"><i>199</i>&nbsp;    }</b>
+<i>200</i>&nbsp;
+<i>201</i>&nbsp;    private void insertMenuItem(final Menu parent, final MenuItemBase menuitem, int pos) {
+<b class="nc"><i>202</i>&nbsp;        Application app = Application.GetApplication();</b>
+<i>203</i>&nbsp;
+<i>204</i>&nbsp;        // There is no way of knowing if listener was already added.
+<b class="nc"><i>205</i>&nbsp;        menuitem.visibleProperty().removeListener(visibilityListener);</b>
+<b class="nc"><i>206</i>&nbsp;        menuitem.visibleProperty().addListener(visibilityListener);</b>
+<i>207</i>&nbsp;
+<b class="nc"><i>208</i>&nbsp;        if (!menuitem.isVisible()) {</b>
+<b class="nc"><i>209</i>&nbsp;            return;</b>
+<i>210</i>&nbsp;        }
+<i>211</i>&nbsp;
+<b class="nc"><i>212</i>&nbsp;        if (menuitem instanceof SeparatorMenuItemBase) {</b>
+<b class="nc"><i>213</i>&nbsp;            if (menuitem.isVisible()) {</b>
+<b class="nc"><i>214</i>&nbsp;                parent.insert(MenuItem.Separator, pos);</b>
+<i>215</i>&nbsp;            }
+<i>216</i>&nbsp;        } else {
+<b class="nc"><i>217</i>&nbsp;            MenuItem.Callback callback = new MenuItem.Callback() {</b>
+<i>218</i>&nbsp;                @Override public void action() {
+<i>219</i>&nbsp;                    // toggle state of check or radio items (from ContextMenuContent.java)
+<i>220</i>&nbsp;                    if (menuitem instanceof CheckMenuItemBase) {
+<i>221</i>&nbsp;                        CheckMenuItemBase checkItem = (CheckMenuItemBase)menuitem;
+<i>222</i>&nbsp;                        checkItem.setSelected(!checkItem.isSelected());
+<i>223</i>&nbsp;                    } else if (menuitem instanceof RadioMenuItemBase) {
+<i>224</i>&nbsp;                        // this is a radio button. If there is a toggleGroup specified, we
+<i>225</i>&nbsp;                        // simply set selected to true. If no toggleGroup is specified, we
+<i>226</i>&nbsp;                        // toggle the selected state, as there is no assumption of mutual
+<i>227</i>&nbsp;                        // exclusivity when no toggleGroup is set.
+<i>228</i>&nbsp;                        RadioMenuItemBase radioItem = (RadioMenuItemBase)menuitem;
+<i>229</i>&nbsp;                        // Note: The ToggleGroup is not exposed for RadioMenuItemBase,
+<i>230</i>&nbsp;                        // so we just assume that one has been set at this point.
+<i>231</i>&nbsp;                        //radioItem.setSelected(radioItem.getToggleGroup() != null ? true : !radioItem.isSelected());
+<i>232</i>&nbsp;                        radioItem.setSelected(true);
+<i>233</i>&nbsp;                    }
+<i>234</i>&nbsp;                    menuitem.fire();
+<i>235</i>&nbsp;                }
+<i>236</i>&nbsp;                @Override public void validate() {
+<i>237</i>&nbsp;                    Menu.EventHandler     meh  = parent.getEventHandler();
+<i>238</i>&nbsp;                    GlassMenuEventHandler gmeh = (GlassMenuEventHandler)meh;
+<i>239</i>&nbsp;
+<i>240</i>&nbsp;                    if (gmeh.isMenuOpen()) {
+<i>241</i>&nbsp;                        return;
+<i>242</i>&nbsp;                    }
+<i>243</i>&nbsp;                    menuitem.fireValidation();
+<i>244</i>&nbsp;                }
+<i>245</i>&nbsp;            };
+<i>246</i>&nbsp;
+<b class="nc"><i>247</i>&nbsp;            final MenuItem glassSubMenuItem = app.createMenuItem(parseText(menuitem), callback);</b>
+<i>248</i>&nbsp;
+<b class="nc"><i>249</i>&nbsp;            menuitem.textProperty().addListener(valueModel -&gt; glassSubMenuItem.setTitle(parseText(menuitem)));</b>
+<i>250</i>&nbsp;
+<b class="nc"><i>251</i>&nbsp;            glassSubMenuItem.setPixels(getPixels(menuitem));</b>
+<b class="nc"><i>252</i>&nbsp;            menuitem.graphicProperty().addListener(valueModel -&gt; {</b>
+<b class="nc"><i>253</i>&nbsp;                glassSubMenuItem.setPixels(getPixels(menuitem));</b>
+<b class="nc"><i>254</i>&nbsp;            });</b>
+<i>255</i>&nbsp;
+<b class="nc"><i>256</i>&nbsp;            glassSubMenuItem.setEnabled(! menuitem.isDisable());</b>
+<b class="nc"><i>257</i>&nbsp;            menuitem.disableProperty().addListener(valueModel -&gt; glassSubMenuItem.setEnabled(!menuitem.isDisable()));</b>
+<i>258</i>&nbsp;
+<b class="nc"><i>259</i>&nbsp;            setShortcut(glassSubMenuItem, menuitem);</b>
+<b class="nc"><i>260</i>&nbsp;            menuitem.acceleratorProperty().addListener(valueModel -&gt; setShortcut(glassSubMenuItem, menuitem));</b>
+<i>261</i>&nbsp;
+<b class="nc"><i>262</i>&nbsp;            menuitem.mnemonicParsingProperty().addListener(valueModel -&gt; glassSubMenuItem.setTitle(parseText(menuitem)));</b>
+<i>263</i>&nbsp;
+<b class="nc"><i>264</i>&nbsp;            if (menuitem instanceof CheckMenuItemBase) {</b>
+<b class="nc"><i>265</i>&nbsp;                final CheckMenuItemBase checkItem = (CheckMenuItemBase)menuitem;</b>
+<b class="nc"><i>266</i>&nbsp;                glassSubMenuItem.setChecked(checkItem.isSelected());</b>
+<b class="nc"><i>267</i>&nbsp;                checkItem.selectedProperty().addListener(valueModel -&gt; glassSubMenuItem.setChecked(checkItem.isSelected()));</b>
+<b class="nc"><i>268</i>&nbsp;            } else if (menuitem instanceof RadioMenuItemBase) {</b>
+<b class="nc"><i>269</i>&nbsp;                final RadioMenuItemBase radioItem = (RadioMenuItemBase)menuitem;</b>
+<b class="nc"><i>270</i>&nbsp;                glassSubMenuItem.setChecked(radioItem.isSelected());</b>
+<b class="nc"><i>271</i>&nbsp;                radioItem.selectedProperty().addListener(valueModel -&gt; glassSubMenuItem.setChecked(radioItem.isSelected()));</b>
+<i>272</i>&nbsp;            }
+<i>273</i>&nbsp;
+<b class="nc"><i>274</i>&nbsp;            parent.insert(glassSubMenuItem, pos);</b>
+<i>275</i>&nbsp;        }
+<b class="nc"><i>276</i>&nbsp;    }</b>
+<i>277</i>&nbsp;
+<i>278</i>&nbsp;    private String parseText(MenuItemBase menuItem) {
+<b class="nc"><i>279</i>&nbsp;        String text = menuItem.getText();</b>
+<b class="nc"><i>280</i>&nbsp;        if (text == null) {</b>
+<i>281</i>&nbsp;            // don&#39;t pass null strings to Glass
+<b class="nc"><i>282</i>&nbsp;            return &quot;&quot;;</b>
+<b class="nc"><i>283</i>&nbsp;        } else if (!text.isEmpty() &amp;&amp; menuItem.isMnemonicParsing()) {</b>
+<i>284</i>&nbsp;            // \ufffc is a placeholder character
+<i>285</i>&nbsp;            //return text.replace(&quot;__&quot;, &quot;\ufffc&quot;).replace(&quot;_&quot;, &quot;&quot;).replace(&quot;\ufffc&quot;, &quot;_&quot;);
+<b class="nc"><i>286</i>&nbsp;            return text.replaceFirst(&quot;_([^_])&quot;, &quot;$1&quot;);</b>
+<i>287</i>&nbsp;        } else {
+<b class="nc"><i>288</i>&nbsp;            return text;</b>
+<i>289</i>&nbsp;        }
+<i>290</i>&nbsp;    }
+<i>291</i>&nbsp;
+<i>292</i>&nbsp;    private Pixels getPixels(MenuItemBase menuItem) {
+<b class="nc"><i>293</i>&nbsp;        if (menuItem.getGraphic() instanceof ImageView) {</b>
+<b class="nc"><i>294</i>&nbsp;            ImageView iv = (ImageView)menuItem.getGraphic();</b>
+<b class="nc"><i>295</i>&nbsp;            Image     im = iv.getImage();</b>
+<b class="nc"><i>296</i>&nbsp;            if (im == null) return null;</b>
+<i>297</i>&nbsp;
+<b class="nc"><i>298</i>&nbsp;            String    url          = im.getUrl();</b>
+<i>299</i>&nbsp;
+<b class="nc"><i>300</i>&nbsp;            if (url == null || PixelUtils.supportedFormatType(url)) {</b>
+<b class="nc"><i>301</i>&nbsp;                com.sun.prism.Image pi = (com.sun.prism.Image) Toolkit.getImageAccessor().getPlatformImage(im);</b>
+<i>302</i>&nbsp;
+<b class="nc"><i>303</i>&nbsp;                return pi == null ? null : PixelUtils.imageToPixels(pi);</b>
+<i>304</i>&nbsp;            }
+<i>305</i>&nbsp;        }
+<b class="nc"><i>306</i>&nbsp;        return (null);</b>
+<i>307</i>&nbsp;    }
+<i>308</i>&nbsp;
+<i>309</i>&nbsp;    private void setShortcut(MenuItem glassSubMenuItem, MenuItemBase menuItem) {
+<b class="nc"><i>310</i>&nbsp;        final KeyCombination accelerator = menuItem.getAccelerator();</b>
+<b class="nc"><i>311</i>&nbsp;        if (accelerator == null) {</b>
+<b class="nc"><i>312</i>&nbsp;            glassSubMenuItem.setShortcut(0, 0);</b>
+<b class="nc"><i>313</i>&nbsp;        } else if (accelerator instanceof KeyCodeCombination) {</b>
+<b class="nc"><i>314</i>&nbsp;            KeyCodeCombination kcc  = (KeyCodeCombination)accelerator;</b>
+<b class="nc"><i>315</i>&nbsp;            KeyCode            code = kcc.getCode();</b>
+<b class="nc"><i>316</i>&nbsp;            assert PlatformUtil.isMac() || PlatformUtil.isLinux();</b>
+<b class="nc"><i>317</i>&nbsp;            int modifier = glassModifiers(kcc);</b>
+<b class="nc"><i>318</i>&nbsp;            if (PlatformUtil.isMac()) {</b>
+<b class="nc"><i>319</i>&nbsp;                int finalCode = code.isLetterKey() ? code.getChar().toUpperCase().charAt(0)</b>
+<b class="nc"><i>320</i>&nbsp;                        : code.getCode();</b>
+<b class="nc"><i>321</i>&nbsp;                glassSubMenuItem.setShortcut(finalCode, modifier);</b>
+<b class="nc"><i>322</i>&nbsp;            } else if (PlatformUtil.isLinux()) {</b>
+<b class="nc"><i>323</i>&nbsp;                String lower = code.getChar().toLowerCase();</b>
+<b class="nc"><i>324</i>&nbsp;                if ((modifier &amp; KeyEvent.MODIFIER_CONTROL) != 0) {</b>
+<b class="nc"><i>325</i>&nbsp;                    glassSubMenuItem.setShortcut(lower.charAt(0), modifier);</b>
+<i>326</i>&nbsp;                } else {
+<b class="nc"><i>327</i>&nbsp;                    glassSubMenuItem.setShortcut(0, 0);</b>
+<i>328</i>&nbsp;                }
+<b class="nc"><i>329</i>&nbsp;            } else {</b>
+<b class="nc"><i>330</i>&nbsp;                glassSubMenuItem.setShortcut(0, 0);</b>
+<i>331</i>&nbsp;            }
+<b class="nc"><i>332</i>&nbsp;        } else if (accelerator instanceof KeyCharacterCombination) {</b>
+<b class="nc"><i>333</i>&nbsp;            KeyCharacterCombination kcc = (KeyCharacterCombination)accelerator;</b>
+<b class="nc"><i>334</i>&nbsp;            String kchar = kcc.getCharacter();</b>
+<b class="nc"><i>335</i>&nbsp;            glassSubMenuItem.setShortcut(kchar.charAt(0), glassModifiers(kcc));</b>
+<i>336</i>&nbsp;        }
+<b class="nc"><i>337</i>&nbsp;    }</b>
+<i>338</i>&nbsp;
+<i>339</i>&nbsp;    private int glassModifiers(KeyCombination kcc) {
+<b class="nc"><i>340</i>&nbsp;        int ret = 0;</b>
+<b class="nc"><i>341</i>&nbsp;        if (kcc.getShift() == KeyCombination.ModifierValue.DOWN) {</b>
+<b class="nc"><i>342</i>&nbsp;            ret += KeyEvent.MODIFIER_SHIFT;</b>
+<i>343</i>&nbsp;        }
+<b class="nc"><i>344</i>&nbsp;        if (kcc.getControl() == KeyCombination.ModifierValue.DOWN) {</b>
+<b class="nc"><i>345</i>&nbsp;            ret += KeyEvent.MODIFIER_CONTROL;</b>
+<i>346</i>&nbsp;        }
+<b class="nc"><i>347</i>&nbsp;        if (kcc.getAlt() == KeyCombination.ModifierValue.DOWN) {</b>
+<b class="nc"><i>348</i>&nbsp;            ret += KeyEvent.MODIFIER_ALT;</b>
+<i>349</i>&nbsp;        }
+<b class="nc"><i>350</i>&nbsp;        if (kcc.getShortcut() == KeyCombination.ModifierValue.DOWN) {</b>
+<b class="nc"><i>351</i>&nbsp;            if (PlatformUtil.isLinux()) {</b>
+<b class="nc"><i>352</i>&nbsp;                ret += KeyEvent.MODIFIER_CONTROL;</b>
+<b class="nc"><i>353</i>&nbsp;            } else if (PlatformUtil.isMac()) {</b>
+<b class="nc"><i>354</i>&nbsp;                ret += KeyEvent.MODIFIER_COMMAND;</b>
+<i>355</i>&nbsp;            }
+<i>356</i>&nbsp;        }
+<b class="nc"><i>357</i>&nbsp;        if (kcc.getMeta() == KeyCombination.ModifierValue.DOWN) {</b>
+<b class="nc"><i>358</i>&nbsp;            if (PlatformUtil.isLinux()) {</b>
+<b class="nc"><i>359</i>&nbsp;                ret += KeyEvent.MODIFIER_WINDOWS;   // RT-19326 - Linux shortcut support</b>
+<b class="nc"><i>360</i>&nbsp;            } else if (PlatformUtil.isMac()) {</b>
+<b class="nc"><i>361</i>&nbsp;                ret += KeyEvent.MODIFIER_COMMAND;</b>
+<i>362</i>&nbsp;            }
+<i>363</i>&nbsp;        }
+<i>364</i>&nbsp;
+<b class="nc"><i>365</i>&nbsp;        if (kcc instanceof KeyCodeCombination) {</b>
+<b class="nc"><i>366</i>&nbsp;            KeyCode kcode = ((KeyCodeCombination)kcc).getCode();</b>
+<b class="nc"><i>367</i>&nbsp;            int     code  = kcode.getCode();</b>
+<i>368</i>&nbsp;
+<b class="nc"><i>369</i>&nbsp;            if (((code &gt;= KeyCode.F1.getCode())  &amp;&amp; (code &lt;= KeyCode.F12.getCode())) ||</b>
+<b class="nc"><i>370</i>&nbsp;                ((code &gt;= KeyCode.F13.getCode()) &amp;&amp; (code &lt;= KeyCode.F24.getCode()))) {</b>
+<b class="nc"><i>371</i>&nbsp;                ret += KeyEvent.MODIFIER_FUNCTION;</b>
+<i>372</i>&nbsp;            }
+<i>373</i>&nbsp;        }
+<i>374</i>&nbsp;
+<b class="nc"><i>375</i>&nbsp;        return (ret);</b>
+<i>376</i>&nbsp;    }
+<i>377</i>&nbsp;
+<i>378</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2017-12-04 21:49</div>
+</div>
+</body>
+</html>

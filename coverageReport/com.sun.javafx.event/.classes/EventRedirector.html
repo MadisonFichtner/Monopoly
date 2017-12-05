@@ -1,0 +1,212 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: EventRedirector</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.javafx.event</a> ]
+</div>
+
+<h1>Coverage Summary for Class: EventRedirector (com.sun.javafx.event)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">EventRedirector</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    83.3%
+  </span>
+  <span class="absValue">
+    (5/ 6)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    89.3%
+  </span>
+  <span class="absValue">
+    (25/ 28)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright (c) 2011, 2013, Oracle and/or its affiliates. All rights reserved.
+<i>3</i>&nbsp; * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+<i>4</i>&nbsp; *
+<i>5</i>&nbsp; *
+<i>6</i>&nbsp; *
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; *
+<i>11</i>&nbsp; *
+<i>12</i>&nbsp; *
+<i>13</i>&nbsp; *
+<i>14</i>&nbsp; *
+<i>15</i>&nbsp; *
+<i>16</i>&nbsp; *
+<i>17</i>&nbsp; *
+<i>18</i>&nbsp; *
+<i>19</i>&nbsp; *
+<i>20</i>&nbsp; *
+<i>21</i>&nbsp; *
+<i>22</i>&nbsp; *
+<i>23</i>&nbsp; *
+<i>24</i>&nbsp; */
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;package com.sun.javafx.event;
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;import java.util.List;
+<i>29</i>&nbsp;import java.util.concurrent.CopyOnWriteArrayList;
+<i>30</i>&nbsp;
+<i>31</i>&nbsp;import javafx.event.Event;
+<i>32</i>&nbsp;import javafx.event.EventDispatcher;
+<i>33</i>&nbsp;import javafx.event.EventType;
+<i>34</i>&nbsp;
+<i>35</i>&nbsp;/**
+<i>36</i>&nbsp; * This event dispatcher redirects received events to the registered child
+<i>37</i>&nbsp; * dispatchers before dispatching them to the rest of the dispatch chain. The
+<i>38</i>&nbsp; * redirected events are wrapped in {@code RedirectedEvent} instances, so they
+<i>39</i>&nbsp; * can be easily recognized from normal direct events. If an original event
+<i>40</i>&nbsp; * wrapped in the {@code RedirectedEvent} is consumed by any of the child
+<i>41</i>&nbsp; * dispatchers, it won&#39;t be sent by the {@code EventRedirector} to the rest of
+<i>42</i>&nbsp; * the original dispatch chain.
+<i>43</i>&nbsp; * &lt;p&gt;
+<i>44</i>&nbsp; * The child dispatchers can also be instances of {@code EventRedirector} and
+<i>45</i>&nbsp; * might receive both, the normal events (from other sources) and the redirected
+<i>46</i>&nbsp; * events from the parent {@code EventRedirector}. If a {@code RedirectedEvent}
+<i>47</i>&nbsp; * is received, it is forwarded to the child event dispatchers without any
+<i>48</i>&nbsp; * additional wrapping.
+<i>49</i>&nbsp; * &lt;p&gt;
+<i>50</i>&nbsp; * For this hierarchical arrangement of {@code EventRedirector} instances the
+<i>51</i>&nbsp; * class defines the {@code handleRedirectedEvent} method, which is called with
+<i>52</i>&nbsp; * a received redirected event, after the event has been forwarded to the child
+<i>53</i>&nbsp; * dispatchers. By default this method is empty, but can be overridden in
+<i>54</i>&nbsp; * derived classes to define specific handling of these redirected events.
+<i>55</i>&nbsp; */
+<i>56</i>&nbsp;public class EventRedirector extends BasicEventDispatcher {
+<i>57</i>&nbsp;    private final EventDispatchChainImpl eventDispatchChain;
+<i>58</i>&nbsp;
+<i>59</i>&nbsp;    private final List&lt;EventDispatcher&gt; eventDispatchers;
+<i>60</i>&nbsp;    private final Object eventSource;
+<i>61</i>&nbsp;
+<i>62</i>&nbsp;    /**
+<i>63</i>&nbsp;     * Constructs a new {@code EventRedirector}.
+<i>64</i>&nbsp;     *
+<i>65</i>&nbsp;     * @param eventSource the object for which to redirect the events
+<i>66</i>&nbsp;     *      ({@code RedirectedEvent} event source)
+<i>67</i>&nbsp;     */
+<b class="fc"><i>68</i>&nbsp;    public EventRedirector(final Object eventSource) {</b>
+<b class="fc"><i>69</i>&nbsp;        this.eventDispatchers = new CopyOnWriteArrayList&lt;EventDispatcher&gt;();</b>
+<b class="fc"><i>70</i>&nbsp;        this.eventDispatchChain = new EventDispatchChainImpl();</b>
+<b class="fc"><i>71</i>&nbsp;        this.eventSource = eventSource;</b>
+<b class="fc"><i>72</i>&nbsp;    }</b>
+<i>73</i>&nbsp;
+<i>74</i>&nbsp;    /**
+<i>75</i>&nbsp;     * Called when a redirected event is received by this instance.
+<i>76</i>&nbsp;     *
+<i>77</i>&nbsp;     * @param eventSource the object from which the event has been redirected
+<i>78</i>&nbsp;     * @param event the event which has been redirected
+<i>79</i>&nbsp;     */
+<i>80</i>&nbsp;    protected void handleRedirectedEvent(
+<i>81</i>&nbsp;            final Object eventSource,
+<i>82</i>&nbsp;            final Event event) {
+<b class="nc"><i>83</i>&nbsp;    }</b>
+<i>84</i>&nbsp;
+<i>85</i>&nbsp;    public final void addEventDispatcher(
+<i>86</i>&nbsp;            final EventDispatcher eventDispatcher) {
+<b class="fc"><i>87</i>&nbsp;        eventDispatchers.add(eventDispatcher);</b>
+<b class="fc"><i>88</i>&nbsp;    }</b>
+<i>89</i>&nbsp;
+<i>90</i>&nbsp;    public final void removeEventDispatcher(
+<i>91</i>&nbsp;            final EventDispatcher eventDispatcher) {
+<b class="fc"><i>92</i>&nbsp;        eventDispatchers.remove(eventDispatcher);</b>
+<b class="fc"><i>93</i>&nbsp;    }</b>
+<i>94</i>&nbsp;
+<i>95</i>&nbsp;    @Override
+<i>96</i>&nbsp;    public final Event dispatchCapturingEvent(Event event) {
+<b class="fc"><i>97</i>&nbsp;        final EventType&lt;?&gt; eventType = event.getEventType();</b>
+<i>98</i>&nbsp;
+<b class="fc"><i>99</i>&nbsp;        if (eventType == DirectEvent.DIRECT) {</b>
+<i>100</i>&nbsp;            // unwrap event, but don&#39;t redirect
+<b class="nc"><i>101</i>&nbsp;            event = ((DirectEvent) event).getOriginalEvent();</b>
+<i>102</i>&nbsp;        } else {
+<b class="fc"><i>103</i>&nbsp;            redirectEvent(event);</b>
+<i>104</i>&nbsp;
+<b class="fc"><i>105</i>&nbsp;            if (eventType == RedirectedEvent.REDIRECTED) {</b>
+<b class="fc"><i>106</i>&nbsp;                handleRedirectedEvent(</b>
+<b class="fc"><i>107</i>&nbsp;                        event.getSource(),</b>
+<b class="fc"><i>108</i>&nbsp;                        ((RedirectedEvent) event).getOriginalEvent());</b>
+<i>109</i>&nbsp;            }
+<i>110</i>&nbsp;        }
+<i>111</i>&nbsp;
+<b class="fc"><i>112</i>&nbsp;        return event;</b>
+<i>113</i>&nbsp;    }
+<i>114</i>&nbsp;
+<i>115</i>&nbsp;    private void redirectEvent(final Event event) {
+<b class="fc"><i>116</i>&nbsp;        if (!eventDispatchers.isEmpty()) {</b>
+<i>117</i>&nbsp;            final RedirectedEvent redirectedEvent =
+<b class="fc"><i>118</i>&nbsp;                    (event.getEventType() == RedirectedEvent.REDIRECTED)</b>
+<b class="nc"><i>119</i>&nbsp;                            ? (RedirectedEvent) event</b>
+<b class="fc"><i>120</i>&nbsp;                            : new RedirectedEvent(event, eventSource, null);</b>
+<i>121</i>&nbsp;
+<b class="fc"><i>122</i>&nbsp;            for (final EventDispatcher eventDispatcher: eventDispatchers) {</b>
+<b class="fc"><i>123</i>&nbsp;                eventDispatchChain.reset();</b>
+<b class="fc"><i>124</i>&nbsp;                eventDispatcher.dispatchEvent(</b>
+<i>125</i>&nbsp;                        redirectedEvent, eventDispatchChain);
+<b class="fc"><i>126</i>&nbsp;            }</b>
+<i>127</i>&nbsp;        }
+<b class="fc"><i>128</i>&nbsp;    }</b>
+<i>129</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2017-12-04 21:49</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,177 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: Gradient</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.prism.paint</a> ]
+</div>
+
+<h1>Coverage Summary for Class: Gradient (com.sun.prism.paint)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">Gradient</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    87.5%
+  </span>
+  <span class="absValue">
+    (7/ 8)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    75%
+  </span>
+  <span class="absValue">
+    (15/ 20)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright (c) 2009, 2013, Oracle and/or its affiliates. All rights reserved.
+<i>3</i>&nbsp; * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+<i>4</i>&nbsp; *
+<i>5</i>&nbsp; *
+<i>6</i>&nbsp; *
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; *
+<i>11</i>&nbsp; *
+<i>12</i>&nbsp; *
+<i>13</i>&nbsp; *
+<i>14</i>&nbsp; *
+<i>15</i>&nbsp; *
+<i>16</i>&nbsp; *
+<i>17</i>&nbsp; *
+<i>18</i>&nbsp; *
+<i>19</i>&nbsp; *
+<i>20</i>&nbsp; *
+<i>21</i>&nbsp; *
+<i>22</i>&nbsp; *
+<i>23</i>&nbsp; *
+<i>24</i>&nbsp; */
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;package com.sun.prism.paint;
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;import com.sun.javafx.geom.transform.BaseTransform;
+<i>29</i>&nbsp;import java.util.List;
+<i>30</i>&nbsp;
+<i>31</i>&nbsp;public abstract class Gradient extends Paint {
+<i>32</i>&nbsp;
+<i>33</i>&nbsp;    public static final int PAD = 0;
+<i>34</i>&nbsp;    public static final int REFLECT = 1;
+<i>35</i>&nbsp;    public static final int REPEAT = 2;
+<i>36</i>&nbsp;
+<i>37</i>&nbsp;    private final int numStops;
+<i>38</i>&nbsp;    private final List&lt;Stop&gt; stops;
+<i>39</i>&nbsp;    private final BaseTransform gradientTransform;
+<i>40</i>&nbsp;    private final int spreadMethod;
+<b class="fc"><i>41</i>&nbsp;    private long cacheOffset = -1;</b>
+<i>42</i>&nbsp;
+<i>43</i>&nbsp;    protected Gradient(Type type,
+<i>44</i>&nbsp;                       BaseTransform gradientTransform,
+<i>45</i>&nbsp;                       boolean proportional,
+<i>46</i>&nbsp;                       int spreadMethod,
+<i>47</i>&nbsp;                       List&lt;Stop&gt; stops)
+<i>48</i>&nbsp;    {
+<b class="fc"><i>49</i>&nbsp;        super(type, proportional, false);</b>
+<b class="fc"><i>50</i>&nbsp;        if (gradientTransform != null) {</b>
+<b class="nc"><i>51</i>&nbsp;            this.gradientTransform = gradientTransform.copy();</b>
+<i>52</i>&nbsp;        } else {
+<b class="fc"><i>53</i>&nbsp;            this.gradientTransform = BaseTransform.IDENTITY_TRANSFORM;</b>
+<i>54</i>&nbsp;        }
+<b class="fc"><i>55</i>&nbsp;        this.spreadMethod = spreadMethod;</b>
+<b class="fc"><i>56</i>&nbsp;        this.numStops = stops.size();</b>
+<b class="fc"><i>57</i>&nbsp;        this.stops = stops;</b>
+<b class="fc"><i>58</i>&nbsp;    }</b>
+<i>59</i>&nbsp;
+<i>60</i>&nbsp;
+<i>61</i>&nbsp;    public int getSpreadMethod() {
+<b class="fc"><i>62</i>&nbsp;        return spreadMethod;</b>
+<i>63</i>&nbsp;    }
+<i>64</i>&nbsp;
+<i>65</i>&nbsp;    public BaseTransform getGradientTransformNoClone() {
+<b class="fc"><i>66</i>&nbsp;        return gradientTransform;</b>
+<i>67</i>&nbsp;    }
+<i>68</i>&nbsp;
+<i>69</i>&nbsp;    public int getNumStops() {
+<b class="fc"><i>70</i>&nbsp;        return numStops;</b>
+<i>71</i>&nbsp;    }
+<i>72</i>&nbsp;
+<i>73</i>&nbsp;    public List&lt;Stop&gt; getStops() {
+<b class="fc"><i>74</i>&nbsp;        return stops;</b>
+<i>75</i>&nbsp;    }
+<i>76</i>&nbsp;
+<i>77</i>&nbsp;    public void setGradientOffset(long offset) {
+<b class="fc"><i>78</i>&nbsp;        this.cacheOffset = offset;</b>
+<b class="fc"><i>79</i>&nbsp;    }</b>
+<i>80</i>&nbsp;
+<i>81</i>&nbsp;    public long getGradientOffset() {
+<b class="fc"><i>82</i>&nbsp;        return cacheOffset;</b>
+<i>83</i>&nbsp;    }
+<i>84</i>&nbsp;
+<i>85</i>&nbsp;    @Override
+<i>86</i>&nbsp;    public boolean isOpaque() {
+<b class="nc"><i>87</i>&nbsp;        for (int i = 0; i &lt; numStops; i++) {</b>
+<b class="nc"><i>88</i>&nbsp;            if (!stops.get(i).getColor().isOpaque()) {</b>
+<b class="nc"><i>89</i>&nbsp;                return false;</b>
+<i>90</i>&nbsp;            }
+<i>91</i>&nbsp;        }
+<b class="nc"><i>92</i>&nbsp;        return true;</b>
+<i>93</i>&nbsp;    }
+<i>94</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2017-12-04 21:49</div>
+</div>
+</body>
+</html>

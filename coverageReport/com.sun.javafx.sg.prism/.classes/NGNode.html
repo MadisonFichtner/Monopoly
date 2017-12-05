@@ -1,0 +1,2734 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: NGNode</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.javafx.sg.prism</a> ]
+</div>
+
+<h1>Coverage Summary for Class: NGNode (com.sun.javafx.sg.prism)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">NGNode</td>
+<td class="coverageStat">
+  <span class="percent">
+    76.4%
+  </span>
+  <span class="absValue">
+    (68/ 89)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    56.3%
+  </span>
+  <span class="absValue">
+    (462/ 821)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">NGNode$DirtyFlag</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (2/ 2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (4/ 4)
+  </span>
+</td>
+  </tr>
+  <tr>
+    <td class="name">NGNode$EffectDirtyBoundsHelper</td>
+<td class="coverageStat">
+  <span class="percent">
+    60%
+  </span>
+  <span class="absValue">
+    (6/ 10)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    66.7%
+  </span>
+  <span class="absValue">
+    (12/ 18)
+  </span>
+</td>
+  </tr>
+  <tr>
+    <td class="name">NGNode$PassThrough</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 6)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 12)
+  </span>
+</td>
+  </tr>
+  <tr>
+    <td class="name">NGNode$RenderRootResult</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (2/ 2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (4/ 4)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    71.6%
+  </span>
+  <span class="absValue">
+    (78/ 109)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    56.1%
+  </span>
+  <span class="absValue">
+    (482/ 859)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright (c) 2011, 2016, Oracle and/or its affiliates. All rights reserved.
+<i>3</i>&nbsp; * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+<i>4</i>&nbsp; *
+<i>5</i>&nbsp; *
+<i>6</i>&nbsp; *
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; *
+<i>11</i>&nbsp; *
+<i>12</i>&nbsp; *
+<i>13</i>&nbsp; *
+<i>14</i>&nbsp; *
+<i>15</i>&nbsp; *
+<i>16</i>&nbsp; *
+<i>17</i>&nbsp; *
+<i>18</i>&nbsp; *
+<i>19</i>&nbsp; *
+<i>20</i>&nbsp; *
+<i>21</i>&nbsp; *
+<i>22</i>&nbsp; *
+<i>23</i>&nbsp; *
+<i>24</i>&nbsp; */
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;package com.sun.javafx.sg.prism;
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;import javafx.scene.CacheHint;
+<i>29</i>&nbsp;import java.util.ArrayList;
+<i>30</i>&nbsp;import java.util.List;
+<i>31</i>&nbsp;import com.sun.glass.ui.Screen;
+<i>32</i>&nbsp;import com.sun.javafx.geom.BaseBounds;
+<i>33</i>&nbsp;import com.sun.javafx.geom.BoxBounds;
+<i>34</i>&nbsp;import com.sun.javafx.geom.DirtyRegionContainer;
+<i>35</i>&nbsp;import com.sun.javafx.geom.DirtyRegionPool;
+<i>36</i>&nbsp;import com.sun.javafx.geom.Point2D;
+<i>37</i>&nbsp;import com.sun.javafx.geom.RectBounds;
+<i>38</i>&nbsp;import com.sun.javafx.geom.Rectangle;
+<i>39</i>&nbsp;import com.sun.javafx.geom.transform.Affine3D;
+<i>40</i>&nbsp;import com.sun.javafx.geom.transform.BaseTransform;
+<i>41</i>&nbsp;import com.sun.javafx.geom.transform.GeneralTransform3D;
+<i>42</i>&nbsp;import com.sun.javafx.geom.transform.NoninvertibleTransformException;
+<i>43</i>&nbsp;import com.sun.prism.CompositeMode;
+<i>44</i>&nbsp;import com.sun.prism.Graphics;
+<i>45</i>&nbsp;import com.sun.prism.GraphicsPipeline;
+<i>46</i>&nbsp;import com.sun.prism.RTTexture;
+<i>47</i>&nbsp;import com.sun.prism.ReadbackGraphics;
+<i>48</i>&nbsp;import com.sun.prism.impl.PrismSettings;
+<i>49</i>&nbsp;import com.sun.scenario.effect.Blend;
+<i>50</i>&nbsp;import com.sun.scenario.effect.Effect;
+<i>51</i>&nbsp;import com.sun.scenario.effect.FilterContext;
+<i>52</i>&nbsp;import com.sun.scenario.effect.ImageData;
+<i>53</i>&nbsp;import com.sun.scenario.effect.impl.prism.PrDrawable;
+<i>54</i>&nbsp;import com.sun.scenario.effect.impl.prism.PrEffectHelper;
+<i>55</i>&nbsp;import com.sun.scenario.effect.impl.prism.PrFilterContext;
+<i>56</i>&nbsp;import com.sun.javafx.logging.PulseLogger;
+<i>57</i>&nbsp;import static com.sun.javafx.logging.PulseLogger.PULSE_LOGGING_ENABLED;
+<i>58</i>&nbsp;
+<i>59</i>&nbsp;/**
+<i>60</i>&nbsp; * NGNode is the abstract base class peer of Node, forming
+<i>61</i>&nbsp; * the basis for Prism and Scenario render graphs.
+<i>62</i>&nbsp; * &lt;p&gt;
+<i>63</i>&nbsp; * During synchronization, the FX scene graph will pass down to us
+<i>64</i>&nbsp; * the transform which takes us from local space to parent space, the
+<i>65</i>&nbsp; * content bounds (ie: geom bounds), and the transformed bounds
+<i>66</i>&nbsp; * (ie: boundsInParent), and the clippedBounds. The effect bounds have
+<i>67</i>&nbsp; * already been passed to the Effect peer (if there is one).
+<i>68</i>&nbsp; * &lt;p&gt;
+<i>69</i>&nbsp; * Whenever the transformedBounds of the NGNode are changed, we update
+<i>70</i>&nbsp; * the dirtyBounds, so that the next time we need to accumulate dirty
+<i>71</i>&nbsp; * regions, we will have the information we need to make sure we create
+<i>72</i>&nbsp; * an appropriate dirty region.
+<i>73</i>&nbsp; * &lt;p&gt;
+<i>74</i>&nbsp; * NGNode maintains a single &quot;dirty&quot; flag, which indicates that this
+<i>75</i>&nbsp; * node itself is dirty and must contribute to the dirty region. More
+<i>76</i>&nbsp; * specifically, it indicates that this node is now dirty with respect
+<i>77</i>&nbsp; * to the back buffer. Any rendering of the scene which will go on the
+<i>78</i>&nbsp; * back buffer will cause the dirty flag to be cleared, whereas a
+<i>79</i>&nbsp; * rendering of the scene which is for an intermediate image will not
+<i>80</i>&nbsp; * clear this dirty flag.
+<i>81</i>&nbsp; */
+<b class="fc"><i>82</i>&nbsp;public abstract class NGNode {</b>
+<i>83</i>&nbsp;    private final static GraphicsPipeline pipeline =
+<b class="fc"><i>84</i>&nbsp;        GraphicsPipeline.getPipeline();</b>
+<i>85</i>&nbsp;
+<i>86</i>&nbsp;    private final static Boolean effectsSupported =
+<b class="fc"><i>87</i>&nbsp;        (pipeline == null ? false : pipeline.isEffectSupported());</b>
+<i>88</i>&nbsp;
+<b class="fc"><i>89</i>&nbsp;    public static enum DirtyFlag {</b>
+<b class="fc"><i>90</i>&nbsp;        CLEAN,</b>
+<i>91</i>&nbsp;        // Means that the node is dirty, but only because of translation
+<b class="fc"><i>92</i>&nbsp;        DIRTY_BY_TRANSLATION,</b>
+<b class="fc"><i>93</i>&nbsp;        DIRTY</b>
+<i>94</i>&nbsp;    }
+<i>95</i>&nbsp;
+<i>96</i>&nbsp;    /**
+<i>97</i>&nbsp;     * Used for debug purposes. Set during sync.
+<i>98</i>&nbsp;     */
+<i>99</i>&nbsp;    private String name;
+<i>100</i>&nbsp;
+<i>101</i>&nbsp;    /**
+<i>102</i>&nbsp;     * Temporary bounds for use by this class or subclasses, designed to
+<i>103</i>&nbsp;     * reduce the amount of garbage we generate. If we get to the point
+<i>104</i>&nbsp;     * where we have multi-threaded rasterization, we might need to make
+<i>105</i>&nbsp;     * this per-instance instead of static.
+<i>106</i>&nbsp;     */
+<b class="fc"><i>107</i>&nbsp;    private static final BoxBounds TEMP_BOUNDS = new BoxBounds();</b>
+<b class="fc"><i>108</i>&nbsp;    private static final RectBounds TEMP_RECT_BOUNDS = new RectBounds();</b>
+<b class="fc"><i>109</i>&nbsp;    protected static final Affine3D TEMP_TRANSFORM = new Affine3D();</b>
+<i>110</i>&nbsp;
+<i>111</i>&nbsp;    /**
+<i>112</i>&nbsp;     * Statics for defining what the culling bits are. We use 2 bits to
+<i>113</i>&nbsp;     * determine culling status
+<i>114</i>&nbsp;     */
+<i>115</i>&nbsp;    static final int DIRTY_REGION_INTERSECTS_NODE_BOUNDS = 0x1;
+<i>116</i>&nbsp;    static final int DIRTY_REGION_CONTAINS_NODE_BOUNDS = 0x2;
+<i>117</i>&nbsp;    static final int DIRTY_REGION_CONTAINS_OR_INTERSECTS_NODE_BOUNDS =
+<i>118</i>&nbsp;            DIRTY_REGION_INTERSECTS_NODE_BOUNDS | DIRTY_REGION_CONTAINS_NODE_BOUNDS;
+<i>119</i>&nbsp;
+<i>120</i>&nbsp;    /**
+<i>121</i>&nbsp;     * The transform for this node. Although we are handed all the bounds
+<i>122</i>&nbsp;     * during synchronization (including the transformed bounds), we still
+<i>123</i>&nbsp;     * need the transform so that we can apply it to the clip and so forth
+<i>124</i>&nbsp;     * while accumulating dirty regions and rendering.
+<i>125</i>&nbsp;     */
+<b class="fc"><i>126</i>&nbsp;    private BaseTransform transform = BaseTransform.IDENTITY_TRANSFORM;</b>
+<i>127</i>&nbsp;
+<i>128</i>&nbsp;    /**
+<i>129</i>&nbsp;     * The cached transformed bounds. This is never null, but is frequently set
+<i>130</i>&nbsp;     * to be invalid whenever the bounds for the node have changed. These are
+<i>131</i>&nbsp;     * &quot;complete&quot; bounds, that is, with transforms and effect and clip applied.
+<i>132</i>&nbsp;     * Note that this is equivalent to boundsInParent in FX.
+<i>133</i>&nbsp;     */
+<b class="fc"><i>134</i>&nbsp;    protected BaseBounds transformedBounds = new RectBounds();</b>
+<i>135</i>&nbsp;
+<i>136</i>&nbsp;    /**
+<i>137</i>&nbsp;     * The cached bounds. This is never null, but is frequently set to be
+<i>138</i>&nbsp;     * invalid whenever the bounds for the node have changed. These are the
+<i>139</i>&nbsp;     * &quot;content&quot; bounds, that is, without transforms or filters applied.
+<i>140</i>&nbsp;     */
+<b class="fc"><i>141</i>&nbsp;    protected BaseBounds contentBounds = new RectBounds();</b>
+<i>142</i>&nbsp;
+<i>143</i>&nbsp;    /**
+<i>144</i>&nbsp;     * We keep a reference to the last transform bounds that were valid
+<i>145</i>&nbsp;     * and known. We do this to significantly speed up the rendering of the
+<i>146</i>&nbsp;     * scene by culling and clipping based on &quot;dirty&quot; regions, which are
+<i>147</i>&nbsp;     * essentially the rectangle formed by the union of the dirtyBounds
+<i>148</i>&nbsp;     * and the transformedBounds.
+<i>149</i>&nbsp;     */
+<b class="fc"><i>150</i>&nbsp;    BaseBounds dirtyBounds = new RectBounds();</b>
+<i>151</i>&nbsp;
+<i>152</i>&nbsp;    /**
+<i>153</i>&nbsp;     * Whether the node is visible. We need to know about the visibility of
+<i>154</i>&nbsp;     * the node so that we can determine whether to cull it out, and perform
+<i>155</i>&nbsp;     * other such optimizations.
+<i>156</i>&nbsp;     */
+<b class="fc"><i>157</i>&nbsp;    private boolean visible = true;</b>
+<i>158</i>&nbsp;
+<i>159</i>&nbsp;    /**
+<i>160</i>&nbsp;     * Indicates that this NGNode is itself dirty and needs its full bounds
+<i>161</i>&nbsp;     * included in the next repaint. This means it is dirty with respect to
+<i>162</i>&nbsp;     * the back buffer. We don&#39;t bother differentiating between bounds dirty
+<i>163</i>&nbsp;     * and visuals dirty because we can simply inspect the dirtyBounds to
+<i>164</i>&nbsp;     * see if it is valid. If so, then bounds must be dirty.
+<i>165</i>&nbsp;     */
+<b class="fc"><i>166</i>&nbsp;    protected DirtyFlag dirty = DirtyFlag.DIRTY;</b>
+<i>167</i>&nbsp;
+<i>168</i>&nbsp;    /**
+<i>169</i>&nbsp;     * The parent of the node. In the case of a normal render graph node,
+<i>170</i>&nbsp;     * this will be an NGGroup. However, if this node is being used as
+<i>171</i>&nbsp;     * a clip node, then the parent is the node it is the clip for.
+<i>172</i>&nbsp;     */
+<i>173</i>&nbsp;    private NGNode parent;
+<i>174</i>&nbsp;
+<i>175</i>&nbsp;    /**
+<i>176</i>&nbsp;     * True if this node is a clip. This means the parent is clipped by this node.
+<i>177</i>&nbsp;     */
+<i>178</i>&nbsp;    private boolean isClip;
+<i>179</i>&nbsp;
+<i>180</i>&nbsp;    /**
+<i>181</i>&nbsp;     * The node used for specifying the clipping shape for this node. If null,
+<i>182</i>&nbsp;     * then there is no clip.
+<i>183</i>&nbsp;     */
+<i>184</i>&nbsp;    private NGNode clipNode;
+<i>185</i>&nbsp;
+<i>186</i>&nbsp;    /**
+<i>187</i>&nbsp;     * The opacity of this node.
+<i>188</i>&nbsp;     */
+<b class="fc"><i>189</i>&nbsp;    private float opacity = 1f;</b>
+<i>190</i>&nbsp;
+<i>191</i>&nbsp;    /**
+<i>192</i>&nbsp;     * The view order of this node.
+<i>193</i>&nbsp;     */
+<b class="fc"><i>194</i>&nbsp;    private double viewOrder = 0;</b>
+<i>195</i>&nbsp;
+<i>196</i>&nbsp;    /**
+<i>197</i>&nbsp;     * The blend mode that controls how the pixels of this node blend into
+<i>198</i>&nbsp;     * the rest of the scene behind it.
+<i>199</i>&nbsp;     */
+<i>200</i>&nbsp;    private Blend.Mode nodeBlendMode;
+<i>201</i>&nbsp;
+<i>202</i>&nbsp;    /**
+<i>203</i>&nbsp;     * The depth test flag for this node. It is used when rendering if the window
+<i>204</i>&nbsp;     * into which we are rendering has a depth buffer.
+<i>205</i>&nbsp;     */
+<b class="fc"><i>206</i>&nbsp;    private boolean depthTest = true;</b>
+<i>207</i>&nbsp;
+<i>208</i>&nbsp;    /**
+<i>209</i>&nbsp;     * A filter used when the node is cached. If null, then the node is not
+<i>210</i>&nbsp;     * being cached. While in theory this could be created automatically by
+<i>211</i>&nbsp;     * the implementation due to some form of heuristic, currently we
+<i>212</i>&nbsp;     * only set this if the application has requested that the node be cached.
+<i>213</i>&nbsp;     */
+<i>214</i>&nbsp;    private CacheFilter cacheFilter;
+<i>215</i>&nbsp;
+<i>216</i>&nbsp;    /**
+<i>217</i>&nbsp;     * A filter used whenever an effect is placed on the node. Of course
+<i>218</i>&nbsp;     * effects can form a kind of tree, such that this one effect might be
+<i>219</i>&nbsp;     * an accumulation of several different effects. This will be null if
+<i>220</i>&nbsp;     * there are no effects on the FX scene graph node.
+<i>221</i>&nbsp;     */
+<i>222</i>&nbsp;    private EffectFilter effectFilter;
+<i>223</i>&nbsp;
+<i>224</i>&nbsp;    /**
+<i>225</i>&nbsp;     * If this node is an NGGroup, then this flag will be used to indicate
+<i>226</i>&nbsp;     * whether one or more of its children is dirty. While it would seem this
+<i>227</i>&nbsp;     * flag should be on NGGroup, the code turns out to be a bit cleaner with
+<i>228</i>&nbsp;     * this flag in the NGNode class.
+<i>229</i>&nbsp;     */
+<b class="fc"><i>230</i>&nbsp;    protected boolean childDirty = false;</b>
+<i>231</i>&nbsp;
+<i>232</i>&nbsp;    /**
+<i>233</i>&nbsp;     * How many children are going to be accumulated
+<i>234</i>&nbsp;     */
+<b class="fc"><i>235</i>&nbsp;    protected int dirtyChildrenAccumulated = 0;</b>
+<i>236</i>&nbsp;
+<i>237</i>&nbsp;    /**
+<i>238</i>&nbsp;     * Do not iterate over all children in group. Mark group as dirty
+<i>239</i>&nbsp;     * when threshold was reached.
+<i>240</i>&nbsp;     */
+<i>241</i>&nbsp;    protected final static int DIRTY_CHILDREN_ACCUMULATED_THRESHOLD = 12;
+<i>242</i>&nbsp;
+<i>243</i>&nbsp;    /**
+<i>244</i>&nbsp;     * Marks position of this node in dirty regions.
+<i>245</i>&nbsp;     */
+<b class="fc"><i>246</i>&nbsp;    protected int cullingBits = 0x0;</b>
+<i>247</i>&nbsp;    private DirtyHint hint;
+<i>248</i>&nbsp;
+<i>249</i>&nbsp;    /**
+<i>250</i>&nbsp;     * A cached representation of the opaque region for this node. This
+<i>251</i>&nbsp;     * cached version needs to be recomputed whenever the opaque region becomes
+<i>252</i>&nbsp;     * invalid, which includes local transform changes (translations included!).
+<i>253</i>&nbsp;     */
+<b class="fc"><i>254</i>&nbsp;    private RectBounds opaqueRegion = null;</b>
+<i>255</i>&nbsp;
+<i>256</i>&nbsp;    /**
+<i>257</i>&nbsp;     * To avoid object churn we keep opaqueRegion around, and just toggle this
+<i>258</i>&nbsp;     * boolean to indicate whether we need to recompute the opaqueRegion.
+<i>259</i>&nbsp;     */
+<b class="fc"><i>260</i>&nbsp;    private boolean opaqueRegionInvalid = true;</b>
+<i>261</i>&nbsp;
+<i>262</i>&nbsp;    /**
+<i>263</i>&nbsp;     * Used for debug purposes. This field will keep track of which nodes were
+<i>264</i>&nbsp;     * rendered as a result of different dirty regions. These correspond to the
+<i>265</i>&nbsp;     * same positions as the cullingBits. So for example, if a node was rendered
+<i>266</i>&nbsp;     * by dirty region 0, then painted will have the lowest bit set. If it
+<i>267</i>&nbsp;     * was rendered by dirty region 3, then it would have the 3rd bit from the
+<i>268</i>&nbsp;     * right set ( that is, 1 &lt;&lt; 2)
+<i>269</i>&nbsp;     */
+<b class="fc"><i>270</i>&nbsp;    private int painted = 0;</b>
+<i>271</i>&nbsp;
+<b class="fc"><i>272</i>&nbsp;    protected NGNode() { }</b>
+<i>273</i>&nbsp;
+<i>274</i>&nbsp;    /***************************************************************************
+<i>275</i>&nbsp;     *                                                                         *
+<i>276</i>&nbsp;     *                Methods invoked during synchronization                   *
+<i>277</i>&nbsp;     *                                                                         *
+<i>278</i>&nbsp;     **************************************************************************/
+<i>279</i>&nbsp;
+<i>280</i>&nbsp;    /**
+<i>281</i>&nbsp;     * Called by the FX scene graph to tell us whether we should be visible or not.
+<i>282</i>&nbsp;     * @param value whether it is visible
+<i>283</i>&nbsp;     */
+<i>284</i>&nbsp;    public void setVisible(boolean value) {
+<i>285</i>&nbsp;        // If the visibility changes, we need to mark this node as being dirty.
+<i>286</i>&nbsp;        // If this node is being cached, changing visibility should have no
+<i>287</i>&nbsp;        // effect, since it doesn&#39;t affect the rendering of the content in
+<i>288</i>&nbsp;        // any way. If we were to release the cached image, that might thwart
+<i>289</i>&nbsp;        // the developer&#39;s attempt to improve performance for things that
+<i>290</i>&nbsp;        // rapidly appear and disappear but which are expensive to render.
+<i>291</i>&nbsp;        // Ancestors, of course, must still have their caches invalidated.
+<b class="fc"><i>292</i>&nbsp;        if (visible != value) {</b>
+<b class="fc"><i>293</i>&nbsp;            this.visible = value;</b>
+<b class="fc"><i>294</i>&nbsp;            markDirty();</b>
+<i>295</i>&nbsp;        }
+<b class="fc"><i>296</i>&nbsp;    }</b>
+<i>297</i>&nbsp;
+<i>298</i>&nbsp;    /**
+<i>299</i>&nbsp;     * Called by the FX scene graph to tell us what our new content bounds are.
+<i>300</i>&nbsp;     * @param bounds must not be null
+<i>301</i>&nbsp;     */
+<i>302</i>&nbsp;    public void setContentBounds(BaseBounds bounds) {
+<i>303</i>&nbsp;        // Note, there isn&#39;t anything to do here. We&#39;re dirty if geom or
+<i>304</i>&nbsp;        // visuals or transformed bounds or effects or clip have changed.
+<i>305</i>&nbsp;        // There&#39;s no point dealing with it here.
+<b class="fc"><i>306</i>&nbsp;        contentBounds = contentBounds.deriveWithNewBounds(bounds);</b>
+<b class="fc"><i>307</i>&nbsp;    }</b>
+<i>308</i>&nbsp;
+<i>309</i>&nbsp;    /**
+<i>310</i>&nbsp;     * Called by the FX scene graph to tell us what our transformed bounds are.
+<i>311</i>&nbsp;     * @param bounds must not be null
+<i>312</i>&nbsp;     */
+<i>313</i>&nbsp;    public void setTransformedBounds(BaseBounds bounds, boolean byTransformChangeOnly) {
+<b class="fc"><i>314</i>&nbsp;        if (transformedBounds.equals(bounds)) {</b>
+<i>315</i>&nbsp;            // There has been no change, so ignore. It turns out this happens
+<i>316</i>&nbsp;            // a lot, because when a leaf has dirty bounds, all parents also
+<i>317</i>&nbsp;            // assume their bounds have changed, and only when they recompute
+<i>318</i>&nbsp;            // their bounds do we discover otherwise. This check could happen
+<i>319</i>&nbsp;            // on the FX side, however, then the FX side needs to cache the
+<i>320</i>&nbsp;            // former content bounds at the time of the last sync or needs to
+<i>321</i>&nbsp;            // be able to read state back from the NG side. Yuck. Just doing
+<i>322</i>&nbsp;            // it here for now.
+<b class="fc"><i>323</i>&nbsp;            return;</b>
+<i>324</i>&nbsp;        }
+<i>325</i>&nbsp;        // If the transformed bounds have changed, then we need to save off the
+<i>326</i>&nbsp;        // transformed bounds into the dirty bounds, so that the resulting
+<i>327</i>&nbsp;        // dirty region will be correct. If this node is cached, we DO NOT
+<i>328</i>&nbsp;        // invalidate the cache. The cacheFilter will compare its cached
+<i>329</i>&nbsp;        // transform to the accumulated transform to determine whether the
+<i>330</i>&nbsp;        // cache needs to be regenerated. So we will not invalidate it here.
+<b class="fc"><i>331</i>&nbsp;        if (dirtyBounds.isEmpty()) {</b>
+<b class="fc"><i>332</i>&nbsp;            dirtyBounds = dirtyBounds.deriveWithNewBounds(transformedBounds);</b>
+<b class="fc"><i>333</i>&nbsp;            dirtyBounds = dirtyBounds.deriveWithUnion(bounds);</b>
+<i>334</i>&nbsp;        } else {
+<i>335</i>&nbsp;            // TODO I think this is vestigial from Scenario and will never
+<i>336</i>&nbsp;            // actually occur in real life... (RT-23956)
+<b class="nc"><i>337</i>&nbsp;            dirtyBounds = dirtyBounds.deriveWithUnion(transformedBounds);</b>
+<i>338</i>&nbsp;        }
+<b class="fc"><i>339</i>&nbsp;        transformedBounds = transformedBounds.deriveWithNewBounds(bounds);</b>
+<b class="fc"><i>340</i>&nbsp;        if (hasVisuals() &amp;&amp; !byTransformChangeOnly) {</b>
+<b class="fc"><i>341</i>&nbsp;            markDirty();</b>
+<i>342</i>&nbsp;        }
+<b class="fc"><i>343</i>&nbsp;    }</b>
+<i>344</i>&nbsp;
+<i>345</i>&nbsp;    /**
+<i>346</i>&nbsp;     * Called by the FX scene graph to tell us what our transform matrix is.
+<i>347</i>&nbsp;     * @param tx must not be null
+<i>348</i>&nbsp;     */
+<i>349</i>&nbsp;    public void setTransformMatrix(BaseTransform tx) {
+<b class="fc"><i>350</i>&nbsp;        if (transform.equals(tx)) {</b>
+<b class="fc"><i>351</i>&nbsp;            return;</b>
+<i>352</i>&nbsp;        }
+<i>353</i>&nbsp;        // If the transform matrix has changed, then we need to update it,
+<i>354</i>&nbsp;        // and mark this node as dirty. If this node is cached, we DO NOT
+<i>355</i>&nbsp;        // invalidate the cache. The cacheFilter will compare its cached
+<i>356</i>&nbsp;        // transform to the accumulated transform to determine whether the
+<i>357</i>&nbsp;        // cache needs to be regenerated. So we will not invalidate it here.
+<i>358</i>&nbsp;        // This approach allows the cached image to be reused in situations
+<i>359</i>&nbsp;        // where only the translation parameters of the accumulated transform
+<i>360</i>&nbsp;        // are changing. The scene will still be marked dirty and cached
+<i>361</i>&nbsp;        // images of any ancestors will be invalidated.
+<b class="fc"><i>362</i>&nbsp;        boolean useHint = false;</b>
+<i>363</i>&nbsp;
+<i>364</i>&nbsp;        // If the parent is cached, try to check if the transformation is only a translation
+<b class="fc"><i>365</i>&nbsp;        if (parent != null &amp;&amp; parent.cacheFilter != null &amp;&amp; PrismSettings.scrollCacheOpt) {</b>
+<b class="nc"><i>366</i>&nbsp;            if (hint == null) {</b>
+<i>367</i>&nbsp;                // If there&#39;s no hint created yet, this is the first setTransformMatrix
+<i>368</i>&nbsp;                // call and we have nothing to compare to yet.
+<b class="nc"><i>369</i>&nbsp;                hint = new DirtyHint();</b>
+<i>370</i>&nbsp;            } else {
+<b class="nc"><i>371</i>&nbsp;                if (transform.getMxx() == tx.getMxx()</b>
+<b class="nc"><i>372</i>&nbsp;                        &amp;&amp; transform.getMxy() == tx.getMxy()</b>
+<b class="nc"><i>373</i>&nbsp;                        &amp;&amp; transform.getMyy() == tx.getMyy()</b>
+<b class="nc"><i>374</i>&nbsp;                        &amp;&amp; transform.getMyx() == tx.getMyx()</b>
+<b class="nc"><i>375</i>&nbsp;                        &amp;&amp; transform.getMxz() == tx.getMxz()</b>
+<b class="nc"><i>376</i>&nbsp;                        &amp;&amp; transform.getMyz() == tx.getMyz()</b>
+<b class="nc"><i>377</i>&nbsp;                        &amp;&amp; transform.getMzx() == tx.getMzx()</b>
+<b class="nc"><i>378</i>&nbsp;                        &amp;&amp; transform.getMzy() == tx.getMzy()</b>
+<b class="nc"><i>379</i>&nbsp;                        &amp;&amp; transform.getMzz() == tx.getMzz()</b>
+<b class="nc"><i>380</i>&nbsp;                        &amp;&amp; transform.getMzt() == tx.getMzt()) {</b>
+<b class="nc"><i>381</i>&nbsp;                    useHint = true;</b>
+<b class="nc"><i>382</i>&nbsp;                    hint.translateXDelta = tx.getMxt() - transform.getMxt();</b>
+<b class="nc"><i>383</i>&nbsp;                    hint.translateYDelta = tx.getMyt() - transform.getMyt();</b>
+<i>384</i>&nbsp;                }
+<i>385</i>&nbsp;            }
+<i>386</i>&nbsp;        }
+<i>387</i>&nbsp;
+<b class="fc"><i>388</i>&nbsp;        transform = transform.deriveWithNewTransform(tx);</b>
+<b class="fc"><i>389</i>&nbsp;        if (useHint) {</b>
+<b class="nc"><i>390</i>&nbsp;            markDirtyByTranslation();</b>
+<i>391</i>&nbsp;        } else {
+<b class="fc"><i>392</i>&nbsp;            markDirty();</b>
+<i>393</i>&nbsp;        }
+<b class="fc"><i>394</i>&nbsp;        invalidateOpaqueRegion();</b>
+<b class="fc"><i>395</i>&nbsp;    }</b>
+<i>396</i>&nbsp;
+<i>397</i>&nbsp;    /**
+<i>398</i>&nbsp;     * Called by the FX scene graph whenever the clip node for this node changes.
+<i>399</i>&nbsp;     * @param clipNode can be null if the clip node is being cleared
+<i>400</i>&nbsp;     */
+<i>401</i>&nbsp;    public void setClipNode(NGNode clipNode) {
+<i>402</i>&nbsp;        // Whenever the clipNode itself has changed (that is, the reference to
+<i>403</i>&nbsp;        // the clipNode), we need to be sure to mark this node dirty and to
+<i>404</i>&nbsp;        // invalidate the cache of this node (if there is one) and all parents.
+<b class="fc"><i>405</i>&nbsp;        if (clipNode != this.clipNode) {</b>
+<i>406</i>&nbsp;            // Clear the &quot;parent&quot; property of the clip node, if there was one
+<b class="fc"><i>407</i>&nbsp;            if (this.clipNode != null) this.clipNode.setParent(null);</b>
+<i>408</i>&nbsp;            // Make the &quot;parent&quot; property of the clip node point to this
+<b class="fc"><i>409</i>&nbsp;            if (clipNode != null) clipNode.setParent(this, true);</b>
+<i>410</i>&nbsp;            // Keep the reference to the new clip node
+<b class="fc"><i>411</i>&nbsp;            this.clipNode = clipNode;</b>
+<i>412</i>&nbsp;            // Mark this node dirty, invalidate its cache, and all parents.
+<b class="fc"><i>413</i>&nbsp;            visualsChanged();</b>
+<b class="fc"><i>414</i>&nbsp;            invalidateOpaqueRegion();</b>
+<i>415</i>&nbsp;        }
+<b class="fc"><i>416</i>&nbsp;    }</b>
+<i>417</i>&nbsp;
+<i>418</i>&nbsp;    /**
+<i>419</i>&nbsp;     * Called by the FX scene graph whenever the opacity for the node changes.
+<i>420</i>&nbsp;     * We create a special filter when the opacity is &lt; 1.
+<i>421</i>&nbsp;     * @param opacity A value between 0 and 1.
+<i>422</i>&nbsp;     */
+<i>423</i>&nbsp;    public void setOpacity(float opacity) {
+<i>424</i>&nbsp;        // Check the argument to make sure it is valid.
+<b class="fc"><i>425</i>&nbsp;        if (opacity &lt; 0 || opacity &gt; 1) {</b>
+<b class="nc"><i>426</i>&nbsp;            throw new IllegalArgumentException(&quot;Internal Error: The opacity must be between 0 and 1&quot;);</b>
+<i>427</i>&nbsp;        }
+<i>428</i>&nbsp;        // If the opacity has changed, react. If this node is being cached,
+<i>429</i>&nbsp;        // then we do not want to invalidate the cache due to an opacity
+<i>430</i>&nbsp;        // change. However, as usual, all parent caches must be invalidated.
+<b class="fc"><i>431</i>&nbsp;        if (opacity != this.opacity) {</b>
+<b class="fc"><i>432</i>&nbsp;            final float old = this.opacity;</b>
+<b class="fc"><i>433</i>&nbsp;            this.opacity = opacity;</b>
+<b class="fc"><i>434</i>&nbsp;            markDirty();</b>
+<i>435</i>&nbsp;            // Even though the opacity has changed, for example from .5 to .6,
+<i>436</i>&nbsp;            // we don&#39;t need to invalidate the opaque region unless it has toggled
+<i>437</i>&nbsp;            // from 1 to !1, or from !1 to 1.
+<b class="fc"><i>438</i>&nbsp;            if (old &lt; 1 &amp;&amp; (opacity == 1 || opacity == 0) || opacity &lt; 1 &amp;&amp; (old == 1 || old == 0)) {</b>
+<b class="fc"><i>439</i>&nbsp;                invalidateOpaqueRegion();</b>
+<i>440</i>&nbsp;            }
+<i>441</i>&nbsp;        }
+<b class="fc"><i>442</i>&nbsp;    }</b>
+<i>443</i>&nbsp;
+<i>444</i>&nbsp;    /**
+<i>445</i>&nbsp;     * Called by the FX scene graph whenever the view order for the node
+<i>446</i>&nbsp;     * changes.
+<i>447</i>&nbsp;     *
+<i>448</i>&nbsp;     * @param viewOrder A value between the range of negative Double.MAX_VALUE
+<i>449</i>&nbsp;     * and positive Double.MAX_VALUE.
+<i>450</i>&nbsp;     */
+<i>451</i>&nbsp;    public void setViewOrder(double viewOrder) {
+<i>452</i>&nbsp;        // If the viewOrder value has changed, react.
+<b class="fc"><i>453</i>&nbsp;        if (viewOrder != this.viewOrder) {</b>
+<b class="nc"><i>454</i>&nbsp;            this.viewOrder = viewOrder;</b>
+<i>455</i>&nbsp;            // Mark this node dirty and invalidate its cache.
+<b class="nc"><i>456</i>&nbsp;            visualsChanged();</b>
+<i>457</i>&nbsp;        }
+<b class="fc"><i>458</i>&nbsp;    }</b>
+<i>459</i>&nbsp;
+<i>460</i>&nbsp;    /**
+<i>461</i>&nbsp;     * Set by the FX scene graph.
+<i>462</i>&nbsp;     * @param blendMode may be null to indicate &quot;default&quot;
+<i>463</i>&nbsp;     */
+<i>464</i>&nbsp;    public void setNodeBlendMode(Blend.Mode blendMode) {
+<i>465</i>&nbsp;        // The following code was a broken optimization that made an
+<i>466</i>&nbsp;        // incorrect assumption about null meaning the same thing as
+<i>467</i>&nbsp;        // SRC_OVER.  In reality, null means &quot;pass through blending
+<i>468</i>&nbsp;        // from children&quot; and SRC_OVER means &quot;intercept blending of
+<i>469</i>&nbsp;        // children, allow them to blend with each other, but pass
+<i>470</i>&nbsp;        // their result on in a single SRC_OVER operation into the bg&quot;.
+<i>471</i>&nbsp;        // For leaf nodes, those are mostly the same thing, but Regions
+<i>472</i>&nbsp;        // and Groups might behave differently for the two modes.
+<i>473</i>&nbsp;//        if (blendMode == Blend.Mode.SRC_OVER) {
+<i>474</i>&nbsp;//            blendMode = null;
+<i>475</i>&nbsp;//        }
+<i>476</i>&nbsp;
+<i>477</i>&nbsp;        // If the blend mode has changed, react. If this node is being cached,
+<i>478</i>&nbsp;        // then we do not want to invalidate the cache due to a compositing
+<i>479</i>&nbsp;        // change. However, as usual, all parent caches must be invalidated.
+<i>480</i>&nbsp;
+<b class="fc"><i>481</i>&nbsp;        if (this.nodeBlendMode != blendMode) {</b>
+<b class="nc"><i>482</i>&nbsp;            this.nodeBlendMode = blendMode;</b>
+<b class="nc"><i>483</i>&nbsp;            markDirty();</b>
+<b class="nc"><i>484</i>&nbsp;            invalidateOpaqueRegion();</b>
+<i>485</i>&nbsp;        }
+<b class="fc"><i>486</i>&nbsp;    }</b>
+<i>487</i>&nbsp;
+<i>488</i>&nbsp;    /**
+<i>489</i>&nbsp;     * Called by the FX scene graph whenever the derived depth test flag for
+<i>490</i>&nbsp;     * the node changes.
+<i>491</i>&nbsp;     * @param depthTest indicates whether to perform a depth test operation
+<i>492</i>&nbsp;     * (if the window has a depth buffer).
+<i>493</i>&nbsp;     */
+<i>494</i>&nbsp;    public void setDepthTest(boolean depthTest) {
+<i>495</i>&nbsp;        // If the depth test flag has changed, react.
+<b class="fc"><i>496</i>&nbsp;        if (depthTest != this.depthTest) {</b>
+<b class="nc"><i>497</i>&nbsp;            this.depthTest = depthTest;</b>
+<i>498</i>&nbsp;            // Mark this node dirty, invalidate its cache, and all parents.
+<b class="nc"><i>499</i>&nbsp;            visualsChanged();</b>
+<i>500</i>&nbsp;        }
+<b class="fc"><i>501</i>&nbsp;    }</b>
+<i>502</i>&nbsp;
+<i>503</i>&nbsp;    /**
+<i>504</i>&nbsp;     * Called by the FX scene graph whenever &quot;cached&quot; or &quot;cacheHint&quot; changes.
+<i>505</i>&nbsp;     * These hints provide a way for the developer to indicate whether they
+<i>506</i>&nbsp;     * want this node to be cached as a raster, which can be quite a performance
+<i>507</i>&nbsp;     * optimization in some cases (and lethal in others).
+<i>508</i>&nbsp;     * @param cached specifies whether or not this node should be cached
+<i>509</i>&nbsp;     * @param cacheHint never null, indicates some hint as to how to cache
+<i>510</i>&nbsp;     */
+<i>511</i>&nbsp;    public void setCachedAsBitmap(boolean cached, CacheHint cacheHint) {
+<i>512</i>&nbsp;        // Validate the arguments
+<b class="fc"><i>513</i>&nbsp;        if (cacheHint == null) {</b>
+<b class="nc"><i>514</i>&nbsp;            throw new IllegalArgumentException(&quot;Internal Error: cacheHint must not be null&quot;);</b>
+<i>515</i>&nbsp;        }
+<i>516</i>&nbsp;
+<b class="fc"><i>517</i>&nbsp;        if (cached) {</b>
+<b class="nc"><i>518</i>&nbsp;            if (cacheFilter == null) {</b>
+<b class="nc"><i>519</i>&nbsp;                cacheFilter = new CacheFilter(this, cacheHint);</b>
+<i>520</i>&nbsp;                // We do not technically need to do a render pass here, but if
+<i>521</i>&nbsp;                // we wait for the next render pass to cache it, then we will
+<i>522</i>&nbsp;                // cache not the current visuals, but the visuals as defined
+<i>523</i>&nbsp;                // by any transform changes that happen between now and then.
+<i>524</i>&nbsp;                // Repainting now encourages the cached version to be as close
+<i>525</i>&nbsp;                // as possible to the state of the node when the cache hint
+<i>526</i>&nbsp;                // was set...
+<b class="nc"><i>527</i>&nbsp;                markDirty();</b>
+<i>528</i>&nbsp;            } else {
+<b class="nc"><i>529</i>&nbsp;                if (!cacheFilter.matchesHint(cacheHint)) {</b>
+<b class="nc"><i>530</i>&nbsp;                    cacheFilter.setHint(cacheHint);</b>
+<i>531</i>&nbsp;                    // Different hints may have different requirements of
+<i>532</i>&nbsp;                    // whether the cache is stale.  We do not have enough info
+<i>533</i>&nbsp;                    // right here to evaluate that, but it will be determined
+<i>534</i>&nbsp;                    // naturally during a repaint cycle.
+<i>535</i>&nbsp;                    // If the new hint is more relaxed (QUALITY =&gt; SPEED for
+<i>536</i>&nbsp;                    // instance) then rendering should be quick.
+<i>537</i>&nbsp;                    // If the new hint is more restricted (SPEED =&gt; QUALITY)
+<i>538</i>&nbsp;                    // then we need to render to improve the results anyway.
+<b class="nc"><i>539</i>&nbsp;                    markDirty();</b>
+<i>540</i>&nbsp;                }
+<i>541</i>&nbsp;            }
+<i>542</i>&nbsp;        } else {
+<b class="fc"><i>543</i>&nbsp;            if (cacheFilter != null) {</b>
+<b class="nc"><i>544</i>&nbsp;                cacheFilter.dispose();</b>
+<b class="nc"><i>545</i>&nbsp;                cacheFilter = null;</b>
+<i>546</i>&nbsp;                // A cache will often look worse than uncached rendering.  It
+<i>547</i>&nbsp;                // may look the same in some circumstances, and this may then
+<i>548</i>&nbsp;                // be an unnecessary rendering pass, but we do not have enough
+<i>549</i>&nbsp;                // information here to be able to optimize that when possible.
+<b class="nc"><i>550</i>&nbsp;                markDirty();</b>
+<i>551</i>&nbsp;            }
+<i>552</i>&nbsp;        }
+<b class="fc"><i>553</i>&nbsp;    }</b>
+<i>554</i>&nbsp;
+<i>555</i>&nbsp;    /**
+<i>556</i>&nbsp;     * Called by the FX scene graph to set the effect.
+<i>557</i>&nbsp;     * @param effect the effect (can be null to clear it)
+<i>558</i>&nbsp;     */
+<i>559</i>&nbsp;    public void setEffect(Effect effect) {
+<b class="fc"><i>560</i>&nbsp;        final Effect old = getEffect();</b>
+<i>561</i>&nbsp;        // When effects are disabled, be sure to reset the effect filter
+<b class="fc"><i>562</i>&nbsp;        if (PrismSettings.disableEffects) {</b>
+<b class="nc"><i>563</i>&nbsp;            effect = null;</b>
+<i>564</i>&nbsp;        }
+<i>565</i>&nbsp;
+<i>566</i>&nbsp;        // We only need to take action if the effect is different than what was
+<i>567</i>&nbsp;        // set previously. There are four possibilities. Of these, #1 and #3 matter:
+<i>568</i>&nbsp;        // 0. effectFilter == null, effect == null
+<i>569</i>&nbsp;        // 1. effectFilter == null, effect != null
+<i>570</i>&nbsp;        // 2. effectFilter != null, effectFilter.effect == effect
+<i>571</i>&nbsp;        // 3. effectFilter != null, effectFilter.effect != effect
+<i>572</i>&nbsp;        // In any case where the effect is changed, we must both invalidate
+<i>573</i>&nbsp;        // the cache for this node (if there is one) and all parents, and mark
+<i>574</i>&nbsp;        // this node as dirty.
+<b class="fc"><i>575</i>&nbsp;        if (effectFilter == null &amp;&amp; effect != null) {</b>
+<b class="fc"><i>576</i>&nbsp;            effectFilter = new EffectFilter(effect, this);</b>
+<b class="fc"><i>577</i>&nbsp;            visualsChanged();</b>
+<b class="fc"><i>578</i>&nbsp;        } else if (effectFilter != null &amp;&amp; effectFilter.getEffect() != effect) {</b>
+<b class="nc"><i>579</i>&nbsp;            effectFilter.dispose();</b>
+<b class="nc"><i>580</i>&nbsp;            effectFilter = null;</b>
+<b class="nc"><i>581</i>&nbsp;            if (effect != null) {</b>
+<b class="nc"><i>582</i>&nbsp;                effectFilter = new EffectFilter(effect, this);</b>
+<i>583</i>&nbsp;            }
+<b class="nc"><i>584</i>&nbsp;            visualsChanged();</b>
+<i>585</i>&nbsp;        }
+<i>586</i>&nbsp;
+<i>587</i>&nbsp;        // The only thing we do with the effect in #computeOpaqueRegion is to check
+<i>588</i>&nbsp;        // whether the effect is null / not null. If the answer to these question has
+<i>589</i>&nbsp;        // not changed from last time, then there is no need to recompute the opaque region.
+<b class="fc"><i>590</i>&nbsp;        if (old != effect) {</b>
+<b class="fc"><i>591</i>&nbsp;            if (old == null || effect == null) {</b>
+<b class="fc"><i>592</i>&nbsp;                invalidateOpaqueRegion();</b>
+<i>593</i>&nbsp;            }
+<i>594</i>&nbsp;        }
+<b class="fc"><i>595</i>&nbsp;    }</b>
+<i>596</i>&nbsp;
+<i>597</i>&nbsp;    /**
+<i>598</i>&nbsp;     * Called by the FX scene graph when an effect in the effect chain on the node
+<i>599</i>&nbsp;     * changes internally.
+<i>600</i>&nbsp;     */
+<i>601</i>&nbsp;    public void effectChanged() {
+<b class="fc"><i>602</i>&nbsp;        visualsChanged();</b>
+<b class="fc"><i>603</i>&nbsp;    }</b>
+<i>604</i>&nbsp;
+<i>605</i>&nbsp;    /**
+<i>606</i>&nbsp;     * Return true if contentBounds is purely a 2D bounds, ie. it is a
+<i>607</i>&nbsp;     * RectBounds or its Z dimension is almost zero.
+<i>608</i>&nbsp;     */
+<i>609</i>&nbsp;    public boolean isContentBounds2D() {
+<b class="nc"><i>610</i>&nbsp;        return contentBounds.is2D();</b>
+<i>611</i>&nbsp;    }
+<i>612</i>&nbsp;
+<i>613</i>&nbsp;    /***************************************************************************
+<i>614</i>&nbsp;     *                                                                         *
+<i>615</i>&nbsp;     * Hierarchy, visibility, and other such miscellaneous NGNode properties   *
+<i>616</i>&nbsp;     *                                                                         *
+<i>617</i>&nbsp;     **************************************************************************/
+<i>618</i>&nbsp;
+<i>619</i>&nbsp;    /**
+<i>620</i>&nbsp;     * Gets the parent of this node. The parent might be an NGGroup. However,
+<i>621</i>&nbsp;     * if this node is a clip node on some other node, then the node on which
+<i>622</i>&nbsp;     * it is set as the clip will be returned. That is, suppose some node A
+<i>623</i>&nbsp;     * has a clip node B. The method B.getParent() will return A.
+<i>624</i>&nbsp;     */
+<b class="nc"><i>625</i>&nbsp;    public NGNode getParent() { return parent; }</b>
+<i>626</i>&nbsp;
+<i>627</i>&nbsp;    /**
+<i>628</i>&nbsp;     * Only called by this class, or by the NGGroup class.
+<i>629</i>&nbsp;     */
+<i>630</i>&nbsp;    public void setParent(NGNode parent) {
+<b class="fc"><i>631</i>&nbsp;        setParent(parent, false);</b>
+<b class="fc"><i>632</i>&nbsp;    }</b>
+<i>633</i>&nbsp;
+<i>634</i>&nbsp;    private void setParent(NGNode parent, boolean isClip) {
+<b class="fc"><i>635</i>&nbsp;        this.parent = parent;</b>
+<b class="fc"><i>636</i>&nbsp;        this.isClip = isClip;</b>
+<b class="fc"><i>637</i>&nbsp;    }</b>
+<i>638</i>&nbsp;
+<i>639</i>&nbsp;    /**
+<i>640</i>&nbsp;     * Used for debug purposes.
+<i>641</i>&nbsp;     */
+<i>642</i>&nbsp;    public final void setName(String value) {
+<b class="nc"><i>643</i>&nbsp;        this.name = value;</b>
+<b class="nc"><i>644</i>&nbsp;    }</b>
+<i>645</i>&nbsp;
+<i>646</i>&nbsp;    /**
+<i>647</i>&nbsp;     * Used for debug purposes.
+<i>648</i>&nbsp;     */
+<i>649</i>&nbsp;    public final String getName() {
+<b class="nc"><i>650</i>&nbsp;        return name;</b>
+<i>651</i>&nbsp;    }
+<i>652</i>&nbsp;
+<b class="fc"><i>653</i>&nbsp;    protected final Effect getEffect() { return effectFilter == null ? null : effectFilter.getEffect(); }</b>
+<i>654</i>&nbsp;
+<i>655</i>&nbsp;    /**
+<i>656</i>&nbsp;     * Gets whether this node&#39;s visible property is set
+<i>657</i>&nbsp;     */
+<b class="fc"><i>658</i>&nbsp;    public boolean isVisible() { return visible; }</b>
+<i>659</i>&nbsp;
+<b class="fc"><i>660</i>&nbsp;    public final BaseTransform getTransform() { return transform; }</b>
+<b class="fc"><i>661</i>&nbsp;    public final float getOpacity() { return opacity; }</b>
+<b class="fc"><i>662</i>&nbsp;    public final Blend.Mode getNodeBlendMode() { return nodeBlendMode; }</b>
+<b class="fc"><i>663</i>&nbsp;    public final boolean isDepthTest() { return depthTest; }</b>
+<b class="fc"><i>664</i>&nbsp;    public final CacheFilter getCacheFilter() { return cacheFilter; }</b>
+<b class="fc"><i>665</i>&nbsp;    public final EffectFilter getEffectFilter() { return effectFilter; }</b>
+<b class="fc"><i>666</i>&nbsp;    public final NGNode getClipNode() { return clipNode; }</b>
+<i>667</i>&nbsp;
+<i>668</i>&nbsp;    public BaseBounds getContentBounds(BaseBounds bounds, BaseTransform tx) {
+<b class="fc"><i>669</i>&nbsp;        if (tx.isTranslateOrIdentity()) {</b>
+<b class="fc"><i>670</i>&nbsp;            bounds = bounds.deriveWithNewBounds(contentBounds);</b>
+<b class="fc"><i>671</i>&nbsp;            if (!tx.isIdentity()) {</b>
+<b class="fc"><i>672</i>&nbsp;                float translateX = (float) tx.getMxt();</b>
+<b class="fc"><i>673</i>&nbsp;                float translateY = (float) tx.getMyt();</b>
+<b class="fc"><i>674</i>&nbsp;                float translateZ = (float) tx.getMzt();</b>
+<b class="fc"><i>675</i>&nbsp;                bounds = bounds.deriveWithNewBounds(</b>
+<b class="fc"><i>676</i>&nbsp;                    bounds.getMinX() + translateX,</b>
+<b class="fc"><i>677</i>&nbsp;                    bounds.getMinY() + translateY,</b>
+<b class="fc"><i>678</i>&nbsp;                    bounds.getMinZ() + translateZ,</b>
+<b class="fc"><i>679</i>&nbsp;                    bounds.getMaxX() + translateX,</b>
+<b class="fc"><i>680</i>&nbsp;                    bounds.getMaxY() + translateY,</b>
+<b class="fc"><i>681</i>&nbsp;                    bounds.getMaxZ() + translateZ);</b>
+<i>682</i>&nbsp;            }
+<b class="fc"><i>683</i>&nbsp;            return bounds;</b>
+<i>684</i>&nbsp;        } else {
+<i>685</i>&nbsp;            // This is a scale / rotate / skew transform.
+<i>686</i>&nbsp;            // We have contentBounds cached throughout the entire tree.
+<i>687</i>&nbsp;            // just walk down the tree and add everything up
+<b class="nc"><i>688</i>&nbsp;            return computeBounds(bounds, tx);</b>
+<i>689</i>&nbsp;        }
+<i>690</i>&nbsp;    }
+<i>691</i>&nbsp;
+<i>692</i>&nbsp;    private BaseBounds computeBounds(BaseBounds bounds, BaseTransform tx) {
+<i>693</i>&nbsp;        // TODO: This code almost worked, but it ignored the local to
+<i>694</i>&nbsp;        // parent transforms on the nodes.  The short fix is to disable
+<i>695</i>&nbsp;        // this block and use the more general form below, but we need
+<i>696</i>&nbsp;        // to revisit this and see if we can make it work more optimally.
+<i>697</i>&nbsp;        // @see RT-12105 http://javafx-jira.kenai.com/browse/RT-12105
+<i>698</i>&nbsp;        if (false &amp;&amp; this instanceof NGGroup) {
+<i>699</i>&nbsp;            List&lt;NGNode&gt; children = ((NGGroup)this).getChildren();
+<i>700</i>&nbsp;            BaseBounds tmp = TEMP_BOUNDS;
+<i>701</i>&nbsp;            for (int i=0; i&lt;children.size(); i++) {
+<i>702</i>&nbsp;                float minX = bounds.getMinX();
+<i>703</i>&nbsp;                float minY = bounds.getMinY();
+<i>704</i>&nbsp;                float minZ = bounds.getMinZ();
+<i>705</i>&nbsp;                float maxX = bounds.getMaxX();
+<i>706</i>&nbsp;                float maxY = bounds.getMaxY();
+<i>707</i>&nbsp;                float maxZ = bounds.getMaxZ();
+<i>708</i>&nbsp;                NGNode child = children.get(i);
+<i>709</i>&nbsp;                bounds = child.computeBounds(bounds, tx);
+<i>710</i>&nbsp;                tmp = tmp.deriveWithNewBounds(minX, minY, minZ, maxX, maxY, maxZ);
+<i>711</i>&nbsp;                bounds = bounds.deriveWithUnion(tmp);
+<i>712</i>&nbsp;            }
+<i>713</i>&nbsp;            return bounds;
+<i>714</i>&nbsp;        } else {
+<b class="nc"><i>715</i>&nbsp;            bounds = bounds.deriveWithNewBounds(contentBounds);</b>
+<b class="nc"><i>716</i>&nbsp;            return tx.transform(contentBounds, bounds);</b>
+<i>717</i>&nbsp;        }
+<i>718</i>&nbsp;    }
+<i>719</i>&nbsp;
+<i>720</i>&nbsp;    /**
+<i>721</i>&nbsp;     */
+<i>722</i>&nbsp;    public final BaseBounds getClippedBounds(BaseBounds bounds, BaseTransform tx) {
+<b class="fc"><i>723</i>&nbsp;        BaseBounds effectBounds = getEffectBounds(bounds, tx);</b>
+<b class="fc"><i>724</i>&nbsp;        if (clipNode != null) {</b>
+<i>725</i>&nbsp;            // there is a clip in place, so we will save off the effect/content
+<i>726</i>&nbsp;            // bounds (so as not to generate garbage) and will then get the
+<i>727</i>&nbsp;            // bounds of the clip node and do an intersection of the two
+<b class="fc"><i>728</i>&nbsp;            float ex1 = effectBounds.getMinX();</b>
+<b class="fc"><i>729</i>&nbsp;            float ey1 = effectBounds.getMinY();</b>
+<b class="fc"><i>730</i>&nbsp;            float ez1 = effectBounds.getMinZ();</b>
+<b class="fc"><i>731</i>&nbsp;            float ex2 = effectBounds.getMaxX();</b>
+<b class="fc"><i>732</i>&nbsp;            float ey2 = effectBounds.getMaxY();</b>
+<b class="fc"><i>733</i>&nbsp;            float ez2 = effectBounds.getMaxZ();</b>
+<b class="fc"><i>734</i>&nbsp;            effectBounds = clipNode.getCompleteBounds(effectBounds, tx);</b>
+<b class="fc"><i>735</i>&nbsp;            effectBounds.intersectWith(ex1, ey1, ez1, ex2, ey2, ez2);</b>
+<i>736</i>&nbsp;        }
+<b class="fc"><i>737</i>&nbsp;        return effectBounds;</b>
+<i>738</i>&nbsp;    }
+<i>739</i>&nbsp;
+<i>740</i>&nbsp;    public final BaseBounds getEffectBounds(BaseBounds bounds, BaseTransform tx) {
+<b class="fc"><i>741</i>&nbsp;        if (effectFilter != null) {</b>
+<b class="nc"><i>742</i>&nbsp;            return effectFilter.getBounds(bounds, tx);</b>
+<i>743</i>&nbsp;        } else {
+<b class="fc"><i>744</i>&nbsp;            return getContentBounds(bounds, tx);</b>
+<i>745</i>&nbsp;        }
+<i>746</i>&nbsp;    }
+<i>747</i>&nbsp;
+<i>748</i>&nbsp;    public final BaseBounds getCompleteBounds(BaseBounds bounds, BaseTransform tx) {
+<b class="fc"><i>749</i>&nbsp;        if (tx.isIdentity()) {</b>
+<b class="nc"><i>750</i>&nbsp;            bounds = bounds.deriveWithNewBounds(transformedBounds);</b>
+<b class="nc"><i>751</i>&nbsp;            return bounds;</b>
+<b class="fc"><i>752</i>&nbsp;        } else if (transform.isIdentity()) {</b>
+<b class="fc"><i>753</i>&nbsp;            return getClippedBounds(bounds, tx);</b>
+<i>754</i>&nbsp;        } else {
+<b class="nc"><i>755</i>&nbsp;            double mxx = tx.getMxx();</b>
+<b class="nc"><i>756</i>&nbsp;            double mxy = tx.getMxy();</b>
+<b class="nc"><i>757</i>&nbsp;            double mxz = tx.getMxz();</b>
+<b class="nc"><i>758</i>&nbsp;            double mxt = tx.getMxt();</b>
+<b class="nc"><i>759</i>&nbsp;            double myx = tx.getMyx();</b>
+<b class="nc"><i>760</i>&nbsp;            double myy = tx.getMyy();</b>
+<b class="nc"><i>761</i>&nbsp;            double myz = tx.getMyz();</b>
+<b class="nc"><i>762</i>&nbsp;            double myt = tx.getMyt();</b>
+<b class="nc"><i>763</i>&nbsp;            double mzx = tx.getMzx();</b>
+<b class="nc"><i>764</i>&nbsp;            double mzy = tx.getMzy();</b>
+<b class="nc"><i>765</i>&nbsp;            double mzz = tx.getMzz();</b>
+<b class="nc"><i>766</i>&nbsp;            double mzt = tx.getMzt();</b>
+<b class="nc"><i>767</i>&nbsp;            BaseTransform boundsTx = tx.deriveWithConcatenation(this.transform);</b>
+<b class="nc"><i>768</i>&nbsp;            bounds = getClippedBounds(bounds, tx);</b>
+<b class="nc"><i>769</i>&nbsp;            if (boundsTx == tx) {</b>
+<b class="nc"><i>770</i>&nbsp;                tx.restoreTransform(mxx, mxy, mxz, mxt,</b>
+<i>771</i>&nbsp;                                    myx, myy, myz, myt,
+<i>772</i>&nbsp;                                    mzx, mzy, mzz, mzt);
+<i>773</i>&nbsp;            }
+<b class="nc"><i>774</i>&nbsp;            return bounds;</b>
+<i>775</i>&nbsp;        }
+<i>776</i>&nbsp;    }
+<i>777</i>&nbsp;
+<i>778</i>&nbsp;    /***************************************************************************
+<i>779</i>&nbsp;     *                                                                         *
+<i>780</i>&nbsp;     * Dirty States                                                            *
+<i>781</i>&nbsp;     *                                                                         *
+<i>782</i>&nbsp;     **************************************************************************/
+<i>783</i>&nbsp;
+<i>784</i>&nbsp;    /**
+<i>785</i>&nbsp;     * Invoked by subclasses whenever some change to the geometry or visuals
+<i>786</i>&nbsp;     * has occurred. This will mark the node as dirty and invalidate the cache.
+<i>787</i>&nbsp;     */
+<i>788</i>&nbsp;    protected void visualsChanged() {
+<b class="fc"><i>789</i>&nbsp;        invalidateCache();</b>
+<b class="fc"><i>790</i>&nbsp;        markDirty();</b>
+<b class="fc"><i>791</i>&nbsp;    }</b>
+<i>792</i>&nbsp;
+<i>793</i>&nbsp;    protected void geometryChanged() {
+<b class="fc"><i>794</i>&nbsp;        invalidateCache();</b>
+<b class="fc"><i>795</i>&nbsp;        invalidateOpaqueRegion();</b>
+<b class="fc"><i>796</i>&nbsp;        if (hasVisuals()) {</b>
+<b class="fc"><i>797</i>&nbsp;            markDirty();</b>
+<i>798</i>&nbsp;        }
+<b class="fc"><i>799</i>&nbsp;    }</b>
+<i>800</i>&nbsp;
+<i>801</i>&nbsp;    /**
+<i>802</i>&nbsp;     * Makes this node dirty, meaning that it needs to be included in the
+<i>803</i>&nbsp;     * next repaint to the back buffer, and its bounds should be included
+<i>804</i>&nbsp;     * in the dirty region. This flag means that this node itself is dirty.
+<i>805</i>&nbsp;     * In contrast, the childDirty flag indicates that a child of the node
+<i>806</i>&nbsp;     * (maybe a distant child) is dirty. This method does not invalidate the
+<i>807</i>&nbsp;     * cache of this node. However, it ends up walking up the tree marking
+<i>808</i>&nbsp;     * all parents as having a dirty child and also invalidating their caches.
+<i>809</i>&nbsp;     * This method has no effect if the node is already dirty.
+<i>810</i>&nbsp;     */
+<i>811</i>&nbsp;    public final void markDirty() {
+<b class="fc"><i>812</i>&nbsp;        if (dirty != DirtyFlag.DIRTY) {</b>
+<b class="fc"><i>813</i>&nbsp;            dirty = DirtyFlag.DIRTY;</b>
+<b class="fc"><i>814</i>&nbsp;            markTreeDirty();</b>
+<i>815</i>&nbsp;        }
+<b class="fc"><i>816</i>&nbsp;    }</b>
+<i>817</i>&nbsp;
+<i>818</i>&nbsp;    /**
+<i>819</i>&nbsp;     * Mark the node as DIRTY_BY_TRANSLATION. This will call special cache invalidation
+<i>820</i>&nbsp;     */
+<i>821</i>&nbsp;    private void markDirtyByTranslation() {
+<b class="nc"><i>822</i>&nbsp;        if (dirty == DirtyFlag.CLEAN) {</b>
+<b class="nc"><i>823</i>&nbsp;            if (parent != null &amp;&amp; parent.dirty == DirtyFlag.CLEAN &amp;&amp; !parent.childDirty) {</b>
+<b class="nc"><i>824</i>&nbsp;                dirty = DirtyFlag.DIRTY_BY_TRANSLATION;</b>
+<b class="nc"><i>825</i>&nbsp;                parent.childDirty = true;</b>
+<b class="nc"><i>826</i>&nbsp;                parent.dirtyChildrenAccumulated++;</b>
+<b class="nc"><i>827</i>&nbsp;                parent.invalidateCacheByTranslation(hint);</b>
+<b class="nc"><i>828</i>&nbsp;                parent.markTreeDirty();</b>
+<i>829</i>&nbsp;            } else {
+<b class="nc"><i>830</i>&nbsp;                markDirty();</b>
+<i>831</i>&nbsp;            }
+<i>832</i>&nbsp;        }
+<b class="nc"><i>833</i>&nbsp;    }</b>
+<i>834</i>&nbsp;
+<i>835</i>&nbsp;    //Mark tree dirty, but make sure this node&#39;s
+<i>836</i>&nbsp;    // dirtyChildrenAccumulated has not been incremented.
+<i>837</i>&nbsp;    // Useful when a markTree is called on a node that&#39;s not
+<i>838</i>&nbsp;    // the dirty source of change, e.g. group knows it has new child
+<i>839</i>&nbsp;    // or one of it&#39;s child has been removed
+<i>840</i>&nbsp;    protected final void markTreeDirtyNoIncrement() {
+<b class="fc"><i>841</i>&nbsp;        if (parent != null &amp;&amp; (!parent.childDirty || dirty == DirtyFlag.DIRTY_BY_TRANSLATION)) {</b>
+<b class="fc"><i>842</i>&nbsp;            markTreeDirty();</b>
+<i>843</i>&nbsp;        }
+<b class="fc"><i>844</i>&nbsp;    }</b>
+<i>845</i>&nbsp;
+<i>846</i>&nbsp;    /**
+<i>847</i>&nbsp;     * Notifies the parent (whether an NGGroup or just a NGNode) that
+<i>848</i>&nbsp;     * a child has become dirty. This walk will continue all the way up
+<i>849</i>&nbsp;     * to the root of the tree. If a node is encountered which is already
+<i>850</i>&nbsp;     * dirty, or which already has childDirty set, then this loop will
+<i>851</i>&nbsp;     * terminate (ie: there is no point going further so we might as well
+<i>852</i>&nbsp;     * just bail). This method ends up invalidating the cache of each
+<i>853</i>&nbsp;     * parent up the tree. Since it is possible for a node to already
+<i>854</i>&nbsp;     * have its dirty bit set, but not have its cache invalidated, this
+<i>855</i>&nbsp;     * method is careful to make sure the first parent it encounters
+<i>856</i>&nbsp;     * which is already marked dirty still has its cache invalidated. If
+<i>857</i>&nbsp;     * this turns out to be expensive due to high occurrence, we can add
+<i>858</i>&nbsp;     * a quick &quot;invalidated&quot; flag to every node (at the cost of yet
+<i>859</i>&nbsp;     * another bit).
+<i>860</i>&nbsp;     */
+<i>861</i>&nbsp;    protected final void markTreeDirty() {
+<b class="fc"><i>862</i>&nbsp;        NGNode p = parent;</b>
+<b class="fc"><i>863</i>&nbsp;        boolean atClip = isClip;</b>
+<b class="fc"><i>864</i>&nbsp;        boolean byTranslation = dirty == DirtyFlag.DIRTY_BY_TRANSLATION;</b>
+<b class="fc"><i>865</i>&nbsp;        while (p != null &amp;&amp; p.dirty != DirtyFlag.DIRTY &amp;&amp; (!p.childDirty || atClip || byTranslation)) {</b>
+<b class="fc"><i>866</i>&nbsp;            if (atClip) {</b>
+<b class="nc"><i>867</i>&nbsp;                p.dirty = DirtyFlag.DIRTY;</b>
+<b class="fc"><i>868</i>&nbsp;            } else if (!byTranslation) {</b>
+<b class="fc"><i>869</i>&nbsp;                p.childDirty = true;</b>
+<b class="fc"><i>870</i>&nbsp;                p.dirtyChildrenAccumulated++;</b>
+<i>871</i>&nbsp;            }
+<b class="fc"><i>872</i>&nbsp;            p.invalidateCache();</b>
+<b class="fc"><i>873</i>&nbsp;            atClip = p.isClip;</b>
+<b class="fc"><i>874</i>&nbsp;            byTranslation = p.dirty == DirtyFlag.DIRTY_BY_TRANSLATION;</b>
+<b class="fc"><i>875</i>&nbsp;            p = p.parent;</b>
+<i>876</i>&nbsp;        }
+<i>877</i>&nbsp;        // if we stopped on a parent that already has dirty children, increase it&#39;s
+<i>878</i>&nbsp;        // dirty children count.
+<i>879</i>&nbsp;        // Note that when incrementDirty is false, we don&#39;t increment in this case.
+<b class="fc"><i>880</i>&nbsp;        if (p != null &amp;&amp; p.dirty == DirtyFlag.CLEAN &amp;&amp; !atClip &amp;&amp; !byTranslation) {</b>
+<b class="fc"><i>881</i>&nbsp;            p.dirtyChildrenAccumulated++;</b>
+<i>882</i>&nbsp;        }
+<i>883</i>&nbsp;        // Must make sure this happens. In some cases, a parent might
+<i>884</i>&nbsp;        // already be marked dirty (for example, its opacity may have
+<i>885</i>&nbsp;        // changed) but its cache has not been made invalid. This call
+<i>886</i>&nbsp;        // will make sure it is invalidated in that case
+<b class="fc"><i>887</i>&nbsp;        if (p != null) p.invalidateCache();</b>
+<b class="fc"><i>888</i>&nbsp;    }</b>
+<i>889</i>&nbsp;
+<i>890</i>&nbsp;    /**
+<i>891</i>&nbsp;     * Gets whether this SGNode is clean. This will return true only if
+<i>892</i>&nbsp;     * this node and any / all child nodes are clean.
+<i>893</i>&nbsp;     */
+<i>894</i>&nbsp;    public final boolean isClean() {
+<b class="fc"><i>895</i>&nbsp;        return dirty == DirtyFlag.CLEAN &amp;&amp; !childDirty;</b>
+<i>896</i>&nbsp;    }
+<i>897</i>&nbsp;
+<i>898</i>&nbsp;    /**
+<i>899</i>&nbsp;     * Clears the dirty flag. This should only happen during rendering.
+<i>900</i>&nbsp;     */
+<i>901</i>&nbsp;    protected void clearDirty() {
+<b class="fc"><i>902</i>&nbsp;        dirty = DirtyFlag.CLEAN;</b>
+<b class="fc"><i>903</i>&nbsp;        childDirty = false;</b>
+<b class="fc"><i>904</i>&nbsp;        dirtyBounds.makeEmpty();</b>
+<b class="fc"><i>905</i>&nbsp;        dirtyChildrenAccumulated = 0;</b>
+<b class="fc"><i>906</i>&nbsp;    }</b>
+<i>907</i>&nbsp;
+<i>908</i>&nbsp;    /**
+<i>909</i>&nbsp;     * Walks down the tree clearing the &quot;painted&quot; bits for each node. This is only
+<i>910</i>&nbsp;     * called if we&#39;re drawing dirty rectangles or overdraw rectangles.
+<i>911</i>&nbsp;     */
+<i>912</i>&nbsp;    public void clearPainted() {
+<b class="nc"><i>913</i>&nbsp;        painted = 0;</b>
+<b class="nc"><i>914</i>&nbsp;        if (this instanceof NGGroup) {</b>
+<b class="nc"><i>915</i>&nbsp;            List&lt;NGNode&gt; children = ((NGGroup)this).getChildren();</b>
+<b class="nc"><i>916</i>&nbsp;            for (int i=0; i&lt;children.size(); i++) {</b>
+<b class="nc"><i>917</i>&nbsp;                children.get(i).clearPainted();</b>
+<i>918</i>&nbsp;            }
+<i>919</i>&nbsp;        }
+<b class="nc"><i>920</i>&nbsp;    }</b>
+<i>921</i>&nbsp;
+<i>922</i>&nbsp;    public void clearDirtyTree() {
+<b class="fc"><i>923</i>&nbsp;        clearDirty();</b>
+<b class="fc"><i>924</i>&nbsp;        if (getClipNode() != null) {</b>
+<b class="fc"><i>925</i>&nbsp;            getClipNode().clearDirtyTree();</b>
+<i>926</i>&nbsp;        }
+<b class="fc"><i>927</i>&nbsp;        if (this instanceof NGGroup) {</b>
+<b class="fc"><i>928</i>&nbsp;            List&lt;NGNode&gt; children = ((NGGroup) this).getChildren();</b>
+<b class="fc"><i>929</i>&nbsp;            for (int i = 0; i &lt; children.size(); ++i) {</b>
+<b class="fc"><i>930</i>&nbsp;                NGNode child = children.get(i);</b>
+<b class="fc"><i>931</i>&nbsp;                if (child.dirty != DirtyFlag.CLEAN || child.childDirty) {</b>
+<b class="nc"><i>932</i>&nbsp;                    child.clearDirtyTree();</b>
+<i>933</i>&nbsp;                }
+<i>934</i>&nbsp;            }
+<i>935</i>&nbsp;        }
+<b class="fc"><i>936</i>&nbsp;    }</b>
+<i>937</i>&nbsp;
+<i>938</i>&nbsp;    /**
+<i>939</i>&nbsp;     * Invalidates the cache, if it is in use. There are several operations
+<i>940</i>&nbsp;     * which need to cause the cached raster to become invalid so that a
+<i>941</i>&nbsp;     * subsequent render operation will result in the cached image being
+<i>942</i>&nbsp;     * reconstructed.
+<i>943</i>&nbsp;     */
+<i>944</i>&nbsp;    protected final void invalidateCache() {
+<b class="fc"><i>945</i>&nbsp;        if (cacheFilter != null) {</b>
+<b class="nc"><i>946</i>&nbsp;            cacheFilter.invalidate();</b>
+<i>947</i>&nbsp;        }
+<b class="fc"><i>948</i>&nbsp;    }</b>
+<i>949</i>&nbsp;
+<i>950</i>&nbsp;    /**
+<i>951</i>&nbsp;     * Mark the cache as invalid due to a translation of a child. The cache filter
+<i>952</i>&nbsp;     * might use this information for optimizations.
+<i>953</i>&nbsp;     */
+<i>954</i>&nbsp;    protected final void invalidateCacheByTranslation(DirtyHint hint) {
+<b class="nc"><i>955</i>&nbsp;        if (cacheFilter != null) {</b>
+<b class="nc"><i>956</i>&nbsp;            cacheFilter.invalidateByTranslation(hint.translateXDelta, hint.translateYDelta);</b>
+<i>957</i>&nbsp;        }
+<b class="nc"><i>958</i>&nbsp;    }</b>
+<i>959</i>&nbsp;
+<i>960</i>&nbsp;    /***************************************************************************
+<i>961</i>&nbsp;     *                                                                         *
+<i>962</i>&nbsp;     * Dirty Regions                                                           *
+<i>963</i>&nbsp;     *                                                                         *
+<i>964</i>&nbsp;     * Need to add documentation about dirty regions and how they work. One    *
+<i>965</i>&nbsp;     * thing to be aware of is that during the dirty region accumulation phase *
+<i>966</i>&nbsp;     * we use precise floating point values, but during                        *
+<i>967</i>&nbsp;     *                                                                         *
+<i>968</i>&nbsp;     **************************************************************************/
+<i>969</i>&nbsp;
+<i>970</i>&nbsp;    /**
+<i>971</i>&nbsp;     * Accumulates and returns the dirty regions in transformed coordinates for
+<i>972</i>&nbsp;     * this node. This method is designed such that a single downward traversal
+<i>973</i>&nbsp;     * of the tree is sufficient to update the dirty regions.
+<i>974</i>&nbsp;     * &lt;p&gt;
+<i>975</i>&nbsp;     * This method only accumulates dirty regions for parts of the tree which lie
+<i>976</i>&nbsp;     * inside the clip since there is no point in accumulating dirty regions which
+<i>977</i>&nbsp;     * lie outside the clip. The returned dirty regions bounds  the same object
+<i>978</i>&nbsp;     * as that passed into the function. The returned dirty regions bounds will
+<i>979</i>&nbsp;     * always be adjusted such that they do not extend beyond the clip.
+<i>980</i>&nbsp;     * &lt;p&gt;
+<i>981</i>&nbsp;     * The given transform is the accumulated transform up to but not including the
+<i>982</i>&nbsp;     * transform of this node.
+<i>983</i>&nbsp;     *
+<i>984</i>&nbsp;     * @param clip must not be null, the clip in scene coordinates, supplied by the
+<i>985</i>&nbsp;     *        rendering system. At most, this is usually the bounds of the window&#39;s
+<i>986</i>&nbsp;     *        content area, however it might be smaller.
+<i>987</i>&nbsp;     * @param dirtyRegionTemp must not be null, the dirty region in scene coordinates.
+<i>988</i>&nbsp;     *        When this method is initially invoked by the rendering system, the
+<i>989</i>&nbsp;     *        dirtyRegion should be marked as invalid.
+<i>990</i>&nbsp;     * @param dirtyRegionContainer must not be null, the container of dirty regions in scene
+<i>991</i>&nbsp;     *        coordinates.
+<i>992</i>&nbsp;     * @param tx must not be null, the accumulated transform up to but not
+<i>993</i>&nbsp;     *        including this node&#39;s transform. When this method concludes, it must
+<i>994</i>&nbsp;     *        restore this transform if it was changed within the function.
+<i>995</i>&nbsp;     * @param pvTx must not be null, it&#39;s the perspective transform of the current
+<i>996</i>&nbsp;     *        perspective camera or identity transform if parallel camera is used.
+<i>997</i>&nbsp;     * @return The dirty region container. If the returned value is null, then that means
+<i>998</i>&nbsp;     *         the clip should be used as the dirty region. This is a special
+<i>999</i>&nbsp;     *         case indicating that there is no more need to walk the tree but
+<i>1000</i>&nbsp;     *         we can take a shortcut. Note that returning null is *always*
+<i>1001</i>&nbsp;     *         safe. Returning something other than null is simply an
+<i>1002</i>&nbsp;     *         optimization for cases where the dirty region is substantially
+<i>1003</i>&nbsp;     *         smaller than the clip.
+<i>1004</i>&nbsp;     * TODO: Only made non-final for the sake of testing (see javafx-sg-prism tests) (RT-23957)
+<i>1005</i>&nbsp;     */
+<i>1006</i>&nbsp;    public /*final*/ int accumulateDirtyRegions(final RectBounds clip,
+<i>1007</i>&nbsp;                                                final RectBounds dirtyRegionTemp,
+<i>1008</i>&nbsp;                                                DirtyRegionPool regionPool,
+<i>1009</i>&nbsp;                                                final DirtyRegionContainer dirtyRegionContainer,
+<i>1010</i>&nbsp;                                                final BaseTransform tx,
+<i>1011</i>&nbsp;                                                final GeneralTransform3D pvTx)
+<i>1012</i>&nbsp;    {
+<i>1013</i>&nbsp;        // This is the main entry point, make sure to check these inputs for validity
+<b class="fc"><i>1014</i>&nbsp;        if (clip == null || dirtyRegionTemp == null || regionPool == null || dirtyRegionContainer == null ||</b>
+<b class="nc"><i>1015</i>&nbsp;                tx == null || pvTx == null) throw new NullPointerException();</b>
+<i>1016</i>&nbsp;
+<i>1017</i>&nbsp;        // Even though a node with 0 visibility or 0 opacity doesn&#39;t get
+<i>1018</i>&nbsp;        // rendered, it may contribute to the dirty bounds, for example, if it
+<i>1019</i>&nbsp;        // WAS visible or if it HAD an opacity &gt; 0 last time we rendered then
+<i>1020</i>&nbsp;        // we must honor its dirty region. We have front-loaded this work so
+<i>1021</i>&nbsp;        // that we don&#39;t mark nodes as having dirty flags or dirtyBounds if
+<i>1022</i>&nbsp;        // they shouldn&#39;t contribute to the dirty region. So we can simply
+<i>1023</i>&nbsp;        // treat all nodes, regardless of their opacity or visibility, as
+<i>1024</i>&nbsp;        // though their dirty regions matter. They do.
+<i>1025</i>&nbsp;
+<i>1026</i>&nbsp;        // If this node is clean then we can simply return the dirty region as
+<i>1027</i>&nbsp;        // there is no need to walk any further down this branch of the tree.
+<i>1028</i>&nbsp;        // The node is &quot;clean&quot; if neither it, nor its children, are dirty.
+<b class="fc"><i>1029</i>&nbsp;         if (dirty == DirtyFlag.CLEAN &amp;&amp; !childDirty) {</b>
+<b class="fc"><i>1030</i>&nbsp;             return DirtyRegionContainer.DTR_OK;</b>
+<i>1031</i>&nbsp;         }
+<i>1032</i>&nbsp;
+<i>1033</i>&nbsp;        // We simply collect this nodes dirty region if it has its dirty flag
+<i>1034</i>&nbsp;        // set, regardless of whether it is a group or not. However, if this
+<i>1035</i>&nbsp;        // node is not dirty, then we can ask the accumulateGroupDirtyRegion
+<i>1036</i>&nbsp;        // method to collect the dirty regions of the children.
+<b class="fc"><i>1037</i>&nbsp;        if (dirty != DirtyFlag.CLEAN) {</b>
+<b class="fc"><i>1038</i>&nbsp;            return accumulateNodeDirtyRegion(clip, dirtyRegionTemp, dirtyRegionContainer, tx, pvTx);</b>
+<i>1039</i>&nbsp;        } else {
+<b class="fc"><i>1040</i>&nbsp;            assert childDirty; // this must be true by this point</b>
+<b class="fc"><i>1041</i>&nbsp;            return accumulateGroupDirtyRegion(clip, dirtyRegionTemp, regionPool,</b>
+<i>1042</i>&nbsp;                                              dirtyRegionContainer, tx, pvTx);
+<i>1043</i>&nbsp;        }
+<i>1044</i>&nbsp;    }
+<i>1045</i>&nbsp;
+<i>1046</i>&nbsp;    /**
+<i>1047</i>&nbsp;     * Accumulates the dirty region of a node.
+<i>1048</i>&nbsp;     * TODO: Only made non-final for the sake of testing (see javafx-sg-prism tests) (RT-23957)
+<i>1049</i>&nbsp;     */
+<i>1050</i>&nbsp;    int accumulateNodeDirtyRegion(final RectBounds clip,
+<i>1051</i>&nbsp;                                  final RectBounds dirtyRegionTemp,
+<i>1052</i>&nbsp;                                  final DirtyRegionContainer dirtyRegionContainer,
+<i>1053</i>&nbsp;                                  final BaseTransform tx,
+<i>1054</i>&nbsp;                                  final GeneralTransform3D pvTx) {
+<i>1055</i>&nbsp;
+<i>1056</i>&nbsp;        // Get the dirty bounds of this specific node in scene coordinates
+<b class="fc"><i>1057</i>&nbsp;        final BaseBounds bb = computeDirtyRegion(dirtyRegionTemp, tx, pvTx);</b>
+<i>1058</i>&nbsp;
+<i>1059</i>&nbsp;        // Note: dirtyRegion is strictly a 2D operation. We simply need the largest
+<i>1060</i>&nbsp;        // rectangular bounds of bb. Hence the Z-axis projection of bb; taking
+<i>1061</i>&nbsp;        // minX, minY, maxX and maxY values from this point on. Also, in many cases
+<i>1062</i>&nbsp;        // bb == dirtyRegionTemp. In fact, the only time this won&#39;t be true is if
+<i>1063</i>&nbsp;        // there is (or was) a perspective transform involved on this node.
+<b class="fc"><i>1064</i>&nbsp;        if (bb != dirtyRegionTemp) {</b>
+<b class="nc"><i>1065</i>&nbsp;            bb.flattenInto(dirtyRegionTemp);</b>
+<i>1066</i>&nbsp;        }
+<i>1067</i>&nbsp;
+<i>1068</i>&nbsp;        // If my dirty region is empty, or if it doesn&#39;t intersect with the
+<i>1069</i>&nbsp;        // clip, then we can simply return since this node&#39;s dirty region is
+<i>1070</i>&nbsp;        // not helpful
+<b class="fc"><i>1071</i>&nbsp;        if (dirtyRegionTemp.isEmpty() || clip.disjoint(dirtyRegionTemp)) {</b>
+<b class="fc"><i>1072</i>&nbsp;            return DirtyRegionContainer.DTR_OK;</b>
+<i>1073</i>&nbsp;        }
+<i>1074</i>&nbsp;
+<i>1075</i>&nbsp;        // If the clip is completely contained within the dirty region (including
+<i>1076</i>&nbsp;        // if they are equal) then we return DTR_CONTAINS_CLIP
+<b class="fc"><i>1077</i>&nbsp;        if (dirtyRegionTemp.contains(clip)) {</b>
+<b class="fc"><i>1078</i>&nbsp;            return DirtyRegionContainer.DTR_CONTAINS_CLIP;</b>
+<i>1079</i>&nbsp;        }
+<i>1080</i>&nbsp;
+<i>1081</i>&nbsp;        // The only overhead in calling intersectWith, and contains (above) is the repeated checking
+<i>1082</i>&nbsp;        // if the isEmpty state. But the code is cleaner and less error prone.
+<b class="fc"><i>1083</i>&nbsp;        dirtyRegionTemp.intersectWith(clip);</b>
+<i>1084</i>&nbsp;
+<i>1085</i>&nbsp;        // Add the dirty region to the container
+<b class="fc"><i>1086</i>&nbsp;        dirtyRegionContainer.addDirtyRegion(dirtyRegionTemp);</b>
+<i>1087</i>&nbsp;
+<b class="fc"><i>1088</i>&nbsp;        return DirtyRegionContainer.DTR_OK;</b>
+<i>1089</i>&nbsp;    }
+<i>1090</i>&nbsp;
+<i>1091</i>&nbsp;    /**
+<i>1092</i>&nbsp;     * Accumulates the dirty region of an NGGroup. This is implemented here as opposed to
+<i>1093</i>&nbsp;     * using polymorphism because we wanted to centralize all of the dirty region
+<i>1094</i>&nbsp;     * management code in one place, rather than having it spread between Prism,
+<i>1095</i>&nbsp;     * Scenario, and any other future toolkits.
+<i>1096</i>&nbsp;     * TODO: Only made non-final for the sake of testing (see javafx-sg-prism tests) (RT-23957)
+<i>1097</i>&nbsp;     */
+<i>1098</i>&nbsp;    int accumulateGroupDirtyRegion(final RectBounds clip,
+<i>1099</i>&nbsp;                                   final RectBounds dirtyRegionTemp,
+<i>1100</i>&nbsp;                                   final DirtyRegionPool regionPool,
+<i>1101</i>&nbsp;                                   DirtyRegionContainer dirtyRegionContainer,
+<i>1102</i>&nbsp;                                   final BaseTransform tx,
+<i>1103</i>&nbsp;                                   final GeneralTransform3D pvTx) {
+<i>1104</i>&nbsp;        // We should have only made it to this point if this node has a dirty
+<i>1105</i>&nbsp;        // child. If this node itself is dirty, this method never would get called.
+<i>1106</i>&nbsp;        // If this node was not dirty and had no dirty children, then this
+<i>1107</i>&nbsp;        // method never should have been called. So at this point, the following
+<i>1108</i>&nbsp;        // assertions should be correct.
+<b class="fc"><i>1109</i>&nbsp;        assert childDirty;</b>
+<b class="fc"><i>1110</i>&nbsp;        assert dirty == DirtyFlag.CLEAN;</b>
+<i>1111</i>&nbsp;
+<b class="fc"><i>1112</i>&nbsp;        int status = DirtyRegionContainer.DTR_OK;</b>
+<i>1113</i>&nbsp;
+<b class="fc"><i>1114</i>&nbsp;        if (dirtyChildrenAccumulated &gt; DIRTY_CHILDREN_ACCUMULATED_THRESHOLD) {</b>
+<b class="nc"><i>1115</i>&nbsp;            status = accumulateNodeDirtyRegion(clip, dirtyRegionTemp, dirtyRegionContainer, tx, pvTx);</b>
+<b class="nc"><i>1116</i>&nbsp;            return status;</b>
+<i>1117</i>&nbsp;        }
+<i>1118</i>&nbsp;
+<i>1119</i>&nbsp;        // If we got here, then we are following a &quot;bread crumb&quot; trail down to
+<i>1120</i>&nbsp;        // some child (perhaps distant) which is dirty. So we need to iterate
+<i>1121</i>&nbsp;        // over all the children and accumulate their dirty regions. Before doing
+<i>1122</i>&nbsp;        // so we, will save off the transform state and restore it after having
+<i>1123</i>&nbsp;        // called all the children.
+<b class="fc"><i>1124</i>&nbsp;        double mxx = tx.getMxx();</b>
+<b class="fc"><i>1125</i>&nbsp;        double mxy = tx.getMxy();</b>
+<b class="fc"><i>1126</i>&nbsp;        double mxz = tx.getMxz();</b>
+<b class="fc"><i>1127</i>&nbsp;        double mxt = tx.getMxt();</b>
+<i>1128</i>&nbsp;
+<b class="fc"><i>1129</i>&nbsp;        double myx = tx.getMyx();</b>
+<b class="fc"><i>1130</i>&nbsp;        double myy = tx.getMyy();</b>
+<b class="fc"><i>1131</i>&nbsp;        double myz = tx.getMyz();</b>
+<b class="fc"><i>1132</i>&nbsp;        double myt = tx.getMyt();</b>
+<i>1133</i>&nbsp;
+<b class="fc"><i>1134</i>&nbsp;        double mzx = tx.getMzx();</b>
+<b class="fc"><i>1135</i>&nbsp;        double mzy = tx.getMzy();</b>
+<b class="fc"><i>1136</i>&nbsp;        double mzz = tx.getMzz();</b>
+<b class="fc"><i>1137</i>&nbsp;        double mzt = tx.getMzt();</b>
+<b class="fc"><i>1138</i>&nbsp;        BaseTransform renderTx = tx;</b>
+<b class="fc"><i>1139</i>&nbsp;        if (this.transform != null) renderTx = renderTx.deriveWithConcatenation(this.transform);</b>
+<i>1140</i>&nbsp;
+<i>1141</i>&nbsp;        // If this group node has a clip, then we will perform some special
+<i>1142</i>&nbsp;        // logic which will cause the dirty region accumulation loops to run
+<i>1143</i>&nbsp;        // faster. We already have a system whereby if a node determines that
+<i>1144</i>&nbsp;        // its dirty region exceeds that of the clip, it simply returns null,
+<i>1145</i>&nbsp;        // short circuiting the accumulation process. We extend that logic
+<i>1146</i>&nbsp;        // here by also taking into account the clipNode on the group. If
+<i>1147</i>&nbsp;        // there is a clip node, then we will union the bounds of the clip
+<i>1148</i>&nbsp;        // node (in boundsInScene space) with the current clip and pass this
+<i>1149</i>&nbsp;        // new clip down to the children. If they determine that their dirty
+<i>1150</i>&nbsp;        // regions exceed the bounds of this new clip, then they will return
+<i>1151</i>&nbsp;        // null. We&#39;ll catch that here, and use that information to know that
+<i>1152</i>&nbsp;        // we ought to simply accumulate the bounds of this group as if it
+<i>1153</i>&nbsp;        // were dirty. This process will do all the other optimizations we
+<i>1154</i>&nbsp;        // already have in place for getting the normal dirty region.
+<b class="fc"><i>1155</i>&nbsp;        RectBounds myClip = clip;</b>
+<i>1156</i>&nbsp;        //Save current dirty region so we can fast-reset to (something like) the last state
+<i>1157</i>&nbsp;        //and possibly save a few intersects() calls
+<i>1158</i>&nbsp;
+<b class="fc"><i>1159</i>&nbsp;        DirtyRegionContainer originalDirtyRegion = null;</b>
+<b class="fc"><i>1160</i>&nbsp;        BaseTransform originalRenderTx = null;</b>
+<b class="fc"><i>1161</i>&nbsp;        if (effectFilter != null) {</b>
+<i>1162</i>&nbsp;            try {
+<b class="fc"><i>1163</i>&nbsp;                myClip = new RectBounds();</b>
+<b class="fc"><i>1164</i>&nbsp;                BaseBounds myClipBaseBounds = renderTx.inverseTransform(clip, TEMP_BOUNDS);</b>
+<b class="fc"><i>1165</i>&nbsp;                myClipBaseBounds.flattenInto(myClip);</b>
+<b class="nc"><i>1166</i>&nbsp;            } catch (NoninvertibleTransformException ex) {</b>
+<b class="nc"><i>1167</i>&nbsp;                return DirtyRegionContainer.DTR_OK;</b>
+<b class="fc"><i>1168</i>&nbsp;            }</b>
+<i>1169</i>&nbsp;
+<b class="fc"><i>1170</i>&nbsp;            originalRenderTx = renderTx;</b>
+<b class="fc"><i>1171</i>&nbsp;            renderTx = BaseTransform.IDENTITY_TRANSFORM;</b>
+<b class="fc"><i>1172</i>&nbsp;            originalDirtyRegion = dirtyRegionContainer;</b>
+<b class="fc"><i>1173</i>&nbsp;            dirtyRegionContainer = regionPool.checkOut();</b>
+<b class="fc"><i>1174</i>&nbsp;        } else if (clipNode != null) {</b>
+<b class="fc"><i>1175</i>&nbsp;            originalDirtyRegion = dirtyRegionContainer;</b>
+<b class="fc"><i>1176</i>&nbsp;            myClip = new RectBounds();</b>
+<b class="fc"><i>1177</i>&nbsp;            BaseBounds clipBounds = clipNode.getCompleteBounds(myClip, renderTx);</b>
+<b class="fc"><i>1178</i>&nbsp;            pvTx.transform(clipBounds, clipBounds);</b>
+<b class="fc"><i>1179</i>&nbsp;            clipBounds.flattenInto(myClip);</b>
+<b class="fc"><i>1180</i>&nbsp;            myClip.intersectWith(clip);</b>
+<b class="fc"><i>1181</i>&nbsp;            dirtyRegionContainer = regionPool.checkOut();</b>
+<i>1182</i>&nbsp;        }
+<i>1183</i>&nbsp;
+<i>1184</i>&nbsp;
+<i>1185</i>&nbsp;        //Accumulate also removed children to dirty region.
+<b class="fc"><i>1186</i>&nbsp;        List&lt;NGNode&gt; removed = ((NGGroup) this).getRemovedChildren();</b>
+<b class="fc"><i>1187</i>&nbsp;        if (removed != null) {</b>
+<i>1188</i>&nbsp;            NGNode removedChild;
+<b class="nc"><i>1189</i>&nbsp;            for (int i = removed.size() - 1; i &gt;= 0; --i) {</b>
+<b class="nc"><i>1190</i>&nbsp;                removedChild = removed.get(i);</b>
+<b class="nc"><i>1191</i>&nbsp;                removedChild.dirty = DirtyFlag.DIRTY;</b>
+<b class="nc"><i>1192</i>&nbsp;                    status = removedChild.accumulateDirtyRegions(myClip,</b>
+<i>1193</i>&nbsp;                            dirtyRegionTemp,regionPool, dirtyRegionContainer, renderTx, pvTx);
+<b class="nc"><i>1194</i>&nbsp;                    if (status == DirtyRegionContainer.DTR_CONTAINS_CLIP) {</b>
+<b class="nc"><i>1195</i>&nbsp;                        break;</b>
+<i>1196</i>&nbsp;                    }
+<i>1197</i>&nbsp;            }
+<i>1198</i>&nbsp;        }
+<i>1199</i>&nbsp;
+<b class="fc"><i>1200</i>&nbsp;        List&lt;NGNode&gt; children = ((NGGroup) this).getChildren();</b>
+<b class="fc"><i>1201</i>&nbsp;        int num = children.size();</b>
+<b class="fc"><i>1202</i>&nbsp;        for (int i=0; i&lt;num &amp;&amp; status == DirtyRegionContainer.DTR_OK; i++) {</b>
+<b class="fc"><i>1203</i>&nbsp;            NGNode child = children.get(i);</b>
+<i>1204</i>&nbsp;            // The child will check the dirty bits itself. If we tested it here
+<i>1205</i>&nbsp;            // (as we used to), we are just doing the check twice. True, it might
+<i>1206</i>&nbsp;            // mean fewer method calls, but hotspot will probably inline this all
+<i>1207</i>&nbsp;            // anyway, and doing the check in one place is less error prone.
+<b class="fc"><i>1208</i>&nbsp;            status = child.accumulateDirtyRegions(myClip, dirtyRegionTemp, regionPool,</b>
+<i>1209</i>&nbsp;                                                  dirtyRegionContainer, renderTx, pvTx);
+<b class="fc"><i>1210</i>&nbsp;            if (status == DirtyRegionContainer.DTR_CONTAINS_CLIP) {</b>
+<b class="nc"><i>1211</i>&nbsp;                break;</b>
+<i>1212</i>&nbsp;            }
+<i>1213</i>&nbsp;        }
+<i>1214</i>&nbsp;
+<b class="fc"><i>1215</i>&nbsp;        if (effectFilter != null &amp;&amp; status == DirtyRegionContainer.DTR_OK) {</b>
+<i>1216</i>&nbsp;            //apply effect on effect dirty regions
+<b class="fc"><i>1217</i>&nbsp;            applyEffect(effectFilter, dirtyRegionContainer, regionPool);</b>
+<i>1218</i>&nbsp;
+<b class="fc"><i>1219</i>&nbsp;            if (clipNode != null) {</b>
+<b class="nc"><i>1220</i>&nbsp;                myClip = new RectBounds();</b>
+<b class="nc"><i>1221</i>&nbsp;                BaseBounds clipBounds = clipNode.getCompleteBounds(myClip, renderTx);</b>
+<b class="nc"><i>1222</i>&nbsp;                applyClip(clipBounds, dirtyRegionContainer);</b>
+<i>1223</i>&nbsp;            }
+<i>1224</i>&nbsp;
+<i>1225</i>&nbsp;            //apply transform on effect dirty regions
+<b class="fc"><i>1226</i>&nbsp;            applyTransform(originalRenderTx, dirtyRegionContainer);</b>
+<b class="fc"><i>1227</i>&nbsp;            renderTx = originalRenderTx;</b>
+<i>1228</i>&nbsp;
+<b class="fc"><i>1229</i>&nbsp;            originalDirtyRegion.merge(dirtyRegionContainer);</b>
+<b class="fc"><i>1230</i>&nbsp;            regionPool.checkIn(dirtyRegionContainer);</b>
+<i>1231</i>&nbsp;        }
+<i>1232</i>&nbsp;
+<i>1233</i>&nbsp;        // If the process of applying the transform caused renderTx to not equal
+<i>1234</i>&nbsp;        // tx, then there is no point restoring it since it will be a different
+<i>1235</i>&nbsp;        // reference and will therefore be gc&#39;d.
+<b class="fc"><i>1236</i>&nbsp;        if (renderTx == tx) {</b>
+<b class="fc"><i>1237</i>&nbsp;            tx.restoreTransform(mxx, mxy, mxz, mxt, myx, myy, myz, myt, mzx, mzy, mzz, mzt);</b>
+<i>1238</i>&nbsp;        }
+<i>1239</i>&nbsp;
+<i>1240</i>&nbsp;        // If the dirty region is null and there is a clip node specified, then what
+<i>1241</i>&nbsp;        // happened is that the dirty region of content within this group exceeded
+<i>1242</i>&nbsp;        // the clip of this group, and thus, we should accumulate the bounds of
+<i>1243</i>&nbsp;        // this group into the dirty region. If the bounds of the group exceeds
+<i>1244</i>&nbsp;        // the bounds of the dirty region, then we end up returning null in the
+<i>1245</i>&nbsp;        // end. But the implementation of accumulateNodeDirtyRegion handles this.
+<b class="fc"><i>1246</i>&nbsp;        if (clipNode != null &amp;&amp; effectFilter == null) {</b>
+<b class="fc"><i>1247</i>&nbsp;            if (status == DirtyRegionContainer.DTR_CONTAINS_CLIP) {</b>
+<b class="nc"><i>1248</i>&nbsp;                status = accumulateNodeDirtyRegion(clip, dirtyRegionTemp, originalDirtyRegion, tx, pvTx);</b>
+<i>1249</i>&nbsp;            } else {
+<b class="fc"><i>1250</i>&nbsp;                originalDirtyRegion.merge(dirtyRegionContainer);</b>
+<i>1251</i>&nbsp;            }
+<b class="fc"><i>1252</i>&nbsp;            regionPool.checkIn(dirtyRegionContainer);</b>
+<i>1253</i>&nbsp;        }
+<b class="fc"><i>1254</i>&nbsp;        return status;</b>
+<i>1255</i>&nbsp;    }
+<i>1256</i>&nbsp;
+<i>1257</i>&nbsp;    /**
+<i>1258</i>&nbsp;     * Computes the dirty region for this Node. The specified region is in
+<i>1259</i>&nbsp;     * scene coordinates. The specified tx can be used to convert local bounds
+<i>1260</i>&nbsp;     * to scene bounds (it includes everything up to but not including my own
+<i>1261</i>&nbsp;     * transform).
+<i>1262</i>&nbsp;     *
+<i>1263</i>&nbsp;     * @param dirtyRegionTemp A temporary RectBounds that this method can use for scratch.
+<i>1264</i>&nbsp;     *                        In the case that no perspective transform occurs, it is best if
+<i>1265</i>&nbsp;     *                        the returned BaseBounds is this instance.
+<i>1266</i>&nbsp;     * @param tx Any transform that needs to be applied
+<i>1267</i>&nbsp;     * @param pvTx must not be null, it&#39;s the perspective transform of the current
+<i>1268</i>&nbsp;     *        perspective camera or identity transform if parallel camera is used.
+<i>1269</i>&nbsp;     */
+<i>1270</i>&nbsp;    private BaseBounds computeDirtyRegion(final RectBounds dirtyRegionTemp,
+<i>1271</i>&nbsp;                                          final BaseTransform tx,
+<i>1272</i>&nbsp;                                          final GeneralTransform3D pvTx)
+<i>1273</i>&nbsp;    {
+<b class="fc"><i>1274</i>&nbsp;        if (cacheFilter != null) {</b>
+<b class="nc"><i>1275</i>&nbsp;            return cacheFilter.computeDirtyBounds(dirtyRegionTemp, tx, pvTx);</b>
+<i>1276</i>&nbsp;        }
+<i>1277</i>&nbsp;        // The passed in region is a scratch object that exists for me to use,
+<i>1278</i>&nbsp;        // such that I don&#39;t have to create a temporary object. So I just
+<i>1279</i>&nbsp;        // hijack it right here to start with. Note that any of the calls
+<i>1280</i>&nbsp;        // in computeDirtyRegion might end up changing the region instance
+<i>1281</i>&nbsp;        // from dirtyRegionTemp (which is a RectBounds) to a BoxBounds if any
+<i>1282</i>&nbsp;        // of the other bounds / transforms involve a perspective transformation.
+<b class="fc"><i>1283</i>&nbsp;        BaseBounds region = dirtyRegionTemp;</b>
+<b class="fc"><i>1284</i>&nbsp;        if (!dirtyBounds.isEmpty()) {</b>
+<b class="fc"><i>1285</i>&nbsp;            region = region.deriveWithNewBounds(dirtyBounds);</b>
+<i>1286</i>&nbsp;        } else {
+<i>1287</i>&nbsp;            // If dirtyBounds is empty, then we will simply set the bounds to
+<i>1288</i>&nbsp;            // be the same as the transformedBounds (since that means the bounds
+<i>1289</i>&nbsp;            // haven&#39;t changed and right now we don&#39;t support dirty sub regions
+<i>1290</i>&nbsp;            // for generic nodes). This can happen if, for example, this is
+<i>1291</i>&nbsp;            // a group with a clip and the dirty area of child nodes within
+<i>1292</i>&nbsp;            // the group exceeds the bounds of the clip on the group. Just trust me.
+<b class="fc"><i>1293</i>&nbsp;            region = region.deriveWithNewBounds(transformedBounds);</b>
+<i>1294</i>&nbsp;        }
+<i>1295</i>&nbsp;
+<i>1296</i>&nbsp;        // We shouldn&#39;t do anything with empty region, as we may accidentally make
+<i>1297</i>&nbsp;        // it non empty or turn it into some nonsense (like (-1,-1,0,0) )
+<b class="fc"><i>1298</i>&nbsp;        if (!region.isEmpty()) {</b>
+<i>1299</i>&nbsp;                // Now that we have the dirty region, we will simply apply the tx
+<i>1300</i>&nbsp;                // to it (after slightly padding it for good luck) to get the scene
+<i>1301</i>&nbsp;                // coordinates for this.
+<b class="fc"><i>1302</i>&nbsp;                region = computePadding(region);</b>
+<b class="fc"><i>1303</i>&nbsp;                region = tx.transform(region, region);</b>
+<b class="fc"><i>1304</i>&nbsp;                region = pvTx.transform(region, region);</b>
+<i>1305</i>&nbsp;        }
+<b class="fc"><i>1306</i>&nbsp;        return region;</b>
+<i>1307</i>&nbsp;    }
+<i>1308</i>&nbsp;
+<i>1309</i>&nbsp;    /**
+<i>1310</i>&nbsp;     * LCD Text creates some painful situations where, due to the LCD text
+<i>1311</i>&nbsp;     * algorithm, we end up with some pixels touched that are normally outside
+<i>1312</i>&nbsp;     * the bounds. To compensate, we need a hook for NGText to add padding.
+<i>1313</i>&nbsp;     */
+<i>1314</i>&nbsp;    protected BaseBounds computePadding(BaseBounds region) {
+<b class="fc"><i>1315</i>&nbsp;        return region;</b>
+<i>1316</i>&nbsp;    }
+<i>1317</i>&nbsp;
+<i>1318</i>&nbsp;    /**
+<i>1319</i>&nbsp;     * Marks if the node has some visuals and that the bounds change
+<i>1320</i>&nbsp;     * should be taken into account when using the dirty region.
+<i>1321</i>&nbsp;     * This will be false for NGGroup (but not for NGRegion)
+<i>1322</i>&nbsp;     * @return true if the node has some visuals
+<i>1323</i>&nbsp;     */
+<i>1324</i>&nbsp;    protected boolean hasVisuals() {
+<b class="fc"><i>1325</i>&nbsp;        return true;</b>
+<i>1326</i>&nbsp;    }
+<i>1327</i>&nbsp;
+<i>1328</i>&nbsp;    /***************************************************************************
+<i>1329</i>&nbsp;     *                                                                         *
+<i>1330</i>&nbsp;     * Culling                                                                 *
+<i>1331</i>&nbsp;     *                                                                         *
+<i>1332</i>&nbsp;     **************************************************************************/
+<i>1333</i>&nbsp;
+<i>1334</i>&nbsp;    /**
+<i>1335</i>&nbsp;     * Culling support for multiple dirty regions.
+<i>1336</i>&nbsp;     * Set culling bits for the whole graph.
+<i>1337</i>&nbsp;     * @param drc Array of dirty regions. Cannot be null.
+<i>1338</i>&nbsp;     * @param tx The transform for this render operation. Cannot be null.
+<i>1339</i>&nbsp;     * @param pvTx Perspective camera transformation. Cannot be null.
+<i>1340</i>&nbsp;     */
+<i>1341</i>&nbsp;    public final void doPreCulling(DirtyRegionContainer drc, BaseTransform tx, GeneralTransform3D pvTx) {
+<b class="fc"><i>1342</i>&nbsp;        if (drc == null || tx == null || pvTx == null) throw new NullPointerException();</b>
+<b class="fc"><i>1343</i>&nbsp;        markCullRegions(drc, -1, tx, pvTx);</b>
+<b class="fc"><i>1344</i>&nbsp;    }</b>
+<i>1345</i>&nbsp;
+<i>1346</i>&nbsp;    /**
+<i>1347</i>&nbsp;     * Marks placement of the node in dirty region encoded into 2 bit flag:
+<i>1348</i>&nbsp;     * 00 - node outside dirty region
+<i>1349</i>&nbsp;     * 01 - node intersecting dirty region
+<i>1350</i>&nbsp;     * 11 - node completely within dirty region
+<i>1351</i>&nbsp;     *
+<i>1352</i>&nbsp;     * 32 bits = 15 regions max. * 2 bit each. The first two bits are not used
+<i>1353</i>&nbsp;     * because we have a special use case for -1, so they should only be set if
+<i>1354</i>&nbsp;     * in that case.
+<i>1355</i>&nbsp;     *
+<i>1356</i>&nbsp;     * @param drc The array of dirty regions.
+<i>1357</i>&nbsp;     * @param cullingRegionsBitsOfParent culling bits of parent. -1 if there&#39;s no parent.
+<i>1358</i>&nbsp;     * @param tx The transform for this render operation. Cannot be null.
+<i>1359</i>&nbsp;     * @param pvTx Perspective camera transform. Cannot be null.
+<i>1360</i>&nbsp;     */
+<i>1361</i>&nbsp;    void markCullRegions(
+<i>1362</i>&nbsp;            DirtyRegionContainer drc,
+<i>1363</i>&nbsp;            int cullingRegionsBitsOfParent,
+<i>1364</i>&nbsp;            BaseTransform tx,
+<i>1365</i>&nbsp;            GeneralTransform3D pvTx) {
+<i>1366</i>&nbsp;
+<i>1367</i>&nbsp;        // Spent a long time tracking down how cullingRegionsBitsOfParent works. Note that it is
+<i>1368</i>&nbsp;        // not just the parent&#39;s bits, but also -1 in the case of the &quot;root&quot;, where the root is
+<i>1369</i>&nbsp;        // either the actual root, or the root of a sub-render operation such as occurs with
+<i>1370</i>&nbsp;        // render-to-texture for effects!
+<i>1371</i>&nbsp;
+<b class="fc"><i>1372</i>&nbsp;        if (tx.isIdentity()) {</b>
+<b class="fc"><i>1373</i>&nbsp;            TEMP_BOUNDS.deriveWithNewBounds(transformedBounds);</b>
+<i>1374</i>&nbsp;        } else {
+<b class="fc"><i>1375</i>&nbsp;            tx.transform(transformedBounds, TEMP_BOUNDS);</b>
+<i>1376</i>&nbsp;        }
+<i>1377</i>&nbsp;
+<b class="fc"><i>1378</i>&nbsp;        if (!pvTx.isIdentity()) {</b>
+<b class="nc"><i>1379</i>&nbsp;            pvTx.transform(TEMP_BOUNDS, TEMP_BOUNDS);</b>
+<i>1380</i>&nbsp;        }
+<i>1381</i>&nbsp;
+<b class="fc"><i>1382</i>&nbsp;        TEMP_BOUNDS.flattenInto(TEMP_RECT_BOUNDS);</b>
+<i>1383</i>&nbsp;
+<b class="fc"><i>1384</i>&nbsp;        cullingBits = 0;</b>
+<i>1385</i>&nbsp;        RectBounds region;
+<b class="fc"><i>1386</i>&nbsp;        int mask = 0x1; // Check only for intersections</b>
+<b class="fc"><i>1387</i>&nbsp;        for(int i = 0; i &lt; drc.size(); i++) {</b>
+<b class="fc"><i>1388</i>&nbsp;            region = drc.getDirtyRegion(i);</b>
+<b class="fc"><i>1389</i>&nbsp;            if (region == null || region.isEmpty()) {</b>
+<b class="nc"><i>1390</i>&nbsp;                break;</b>
+<i>1391</i>&nbsp;            }
+<i>1392</i>&nbsp;            // For each dirty region, we will check to see if this child
+<i>1393</i>&nbsp;            // intersects with the dirty region and whether it contains the
+<i>1394</i>&nbsp;            // dirty region. Note however, that we only care to mark those
+<i>1395</i>&nbsp;            // child nodes which are inside a group that intersects. We don&#39;t
+<i>1396</i>&nbsp;            // care about marking child nodes which are within a parent which
+<i>1397</i>&nbsp;            // is wholly contained within the dirty region.
+<b class="fc"><i>1398</i>&nbsp;            if ((cullingRegionsBitsOfParent == -1 || (cullingRegionsBitsOfParent &amp; mask) != 0) &amp;&amp;</b>
+<b class="fc"><i>1399</i>&nbsp;                    region.intersects(TEMP_RECT_BOUNDS)) {</b>
+<b class="fc"><i>1400</i>&nbsp;                int b = DIRTY_REGION_INTERSECTS_NODE_BOUNDS;</b>
+<b class="fc"><i>1401</i>&nbsp;                if (region.contains(TEMP_RECT_BOUNDS)) {</b>
+<b class="fc"><i>1402</i>&nbsp;                    b = DIRTY_REGION_CONTAINS_NODE_BOUNDS;</b>
+<i>1403</i>&nbsp;                }
+<b class="fc"><i>1404</i>&nbsp;                cullingBits = cullingBits | (b &lt;&lt; (2 * i));</b>
+<i>1405</i>&nbsp;            }
+<b class="fc"><i>1406</i>&nbsp;            mask = mask &lt;&lt; 2;</b>
+<i>1407</i>&nbsp;        }//for
+<i>1408</i>&nbsp;
+<i>1409</i>&nbsp;        // If we are going to cull a node/group that&#39;s dirty,
+<i>1410</i>&nbsp;        // make sure it&#39;s dirty flags are properly cleared.
+<b class="fc"><i>1411</i>&nbsp;        if (cullingBits == 0 &amp;&amp; (dirty != DirtyFlag.CLEAN || childDirty)) {</b>
+<b class="fc"><i>1412</i>&nbsp;            clearDirtyTree();</b>
+<i>1413</i>&nbsp;        }
+<i>1414</i>&nbsp;
+<i>1415</i>&nbsp;//        System.out.printf(&quot;%s bits: %s bounds: %s\n&quot;,
+<i>1416</i>&nbsp;//            this, Integer.toBinaryString(cullingBits), TEMP_RECT_BOUNDS);
+<b class="fc"><i>1417</i>&nbsp;    }</b>
+<i>1418</i>&nbsp;
+<i>1419</i>&nbsp;    /**
+<i>1420</i>&nbsp;     * Fills the given StringBuilder with text representing the structure of the NG graph insofar as dirty
+<i>1421</i>&nbsp;     * opts is concerned. Used for debug purposes. This is typically called on the root node. The List of
+<i>1422</i>&nbsp;     * roots is the list of dirty roots as determined by successive calls to getRenderRoot for each dirty
+<i>1423</i>&nbsp;     * region. The output will be prefixed with a key indicating how to interpret the printout.
+<i>1424</i>&nbsp;     *
+<i>1425</i>&nbsp;     * @param s A StringBuilder to fill with the output.
+<i>1426</i>&nbsp;     * @param roots The list of render roots (may be empty, must not be null).
+<i>1427</i>&nbsp;     */
+<i>1428</i>&nbsp;    public final void printDirtyOpts(StringBuilder s, List&lt;NGNode&gt; roots) {
+<b class="nc"><i>1429</i>&nbsp;        s.append(&quot;\n*=Render Root\n&quot;);</b>
+<b class="nc"><i>1430</i>&nbsp;        s.append(&quot;d=Dirty\n&quot;);</b>
+<b class="nc"><i>1431</i>&nbsp;        s.append(&quot;dt=Dirty By Translation\n&quot;);</b>
+<b class="nc"><i>1432</i>&nbsp;        s.append(&quot;i=Dirty Region Intersects the NGNode\n&quot;);</b>
+<b class="nc"><i>1433</i>&nbsp;        s.append(&quot;c=Dirty Region Contains the NGNode\n&quot;);</b>
+<b class="nc"><i>1434</i>&nbsp;        s.append(&quot;ef=Effect Filter\n&quot;);</b>
+<b class="nc"><i>1435</i>&nbsp;        s.append(&quot;cf=Cache Filter\n&quot;);</b>
+<b class="nc"><i>1436</i>&nbsp;        s.append(&quot;cl=This node is a clip node\n&quot;);</b>
+<b class="nc"><i>1437</i>&nbsp;        s.append(&quot;b=Blend mode is set\n&quot;);</b>
+<b class="nc"><i>1438</i>&nbsp;        s.append(&quot;or=Opaque Region\n&quot;);</b>
+<b class="nc"><i>1439</i>&nbsp;        printDirtyOpts(s, this, BaseTransform.IDENTITY_TRANSFORM, &quot;&quot;, roots);</b>
+<b class="nc"><i>1440</i>&nbsp;    }</b>
+<i>1441</i>&nbsp;
+<i>1442</i>&nbsp;    /**
+<i>1443</i>&nbsp;     * Used for debug purposes. Recursively visits all NGNodes and prints those that are possibly part of
+<i>1444</i>&nbsp;     * the render operation and annotates each node.
+<i>1445</i>&nbsp;     *
+<i>1446</i>&nbsp;     * @param s The String builder
+<i>1447</i>&nbsp;     * @param node The node that we&#39;re printing out information about
+<i>1448</i>&nbsp;     * @param tx The transform
+<i>1449</i>&nbsp;     * @param prefix Some prefix to put in front of the node output (mostly spacing)
+<i>1450</i>&nbsp;     * @param roots The different dirty roots, if any.
+<i>1451</i>&nbsp;     */
+<i>1452</i>&nbsp;    private final void printDirtyOpts(StringBuilder s, NGNode node, BaseTransform tx, String prefix, List&lt;NGNode&gt; roots) {
+<b class="nc"><i>1453</i>&nbsp;        if (!node.isVisible() || node.getOpacity() == 0) return;</b>
+<i>1454</i>&nbsp;
+<b class="nc"><i>1455</i>&nbsp;        BaseTransform copy = tx.copy();</b>
+<b class="nc"><i>1456</i>&nbsp;        copy = copy.deriveWithConcatenation(node.getTransform());</b>
+<b class="nc"><i>1457</i>&nbsp;        List&lt;String&gt; stuff = new ArrayList&lt;&gt;();</b>
+<b class="nc"><i>1458</i>&nbsp;        for (int i=0; i&lt;roots.size(); i++) {</b>
+<b class="nc"><i>1459</i>&nbsp;            NGNode root = roots.get(i);</b>
+<b class="nc"><i>1460</i>&nbsp;            if (node == root) stuff.add(&quot;*&quot; + i);</b>
+<i>1461</i>&nbsp;        }
+<i>1462</i>&nbsp;
+<b class="nc"><i>1463</i>&nbsp;        if (node.dirty != NGNode.DirtyFlag.CLEAN) {</b>
+<b class="nc"><i>1464</i>&nbsp;            stuff.add(node.dirty == NGNode.DirtyFlag.DIRTY ? &quot;d&quot; : &quot;dt&quot;);</b>
+<i>1465</i>&nbsp;        }
+<i>1466</i>&nbsp;
+<b class="nc"><i>1467</i>&nbsp;        if (node.cullingBits != 0) {</b>
+<b class="nc"><i>1468</i>&nbsp;            int mask = 0x11;</b>
+<b class="nc"><i>1469</i>&nbsp;            for (int i=0; i&lt;15; i++) {</b>
+<b class="nc"><i>1470</i>&nbsp;                int bits = node.cullingBits &amp; mask;</b>
+<b class="nc"><i>1471</i>&nbsp;                if (bits != 0) {</b>
+<b class="nc"><i>1472</i>&nbsp;                    stuff.add(bits == 1 ? &quot;i&quot; + i : bits == 0 ? &quot;c&quot; + i : &quot;ci&quot; + i);</b>
+<i>1473</i>&nbsp;                }
+<b class="nc"><i>1474</i>&nbsp;                mask = mask &lt;&lt; 2;</b>
+<i>1475</i>&nbsp;            }
+<i>1476</i>&nbsp;        }
+<i>1477</i>&nbsp;
+<b class="nc"><i>1478</i>&nbsp;        if (node.effectFilter != null) stuff.add(&quot;ef&quot;);</b>
+<b class="nc"><i>1479</i>&nbsp;        if (node.cacheFilter != null) stuff.add(&quot;cf&quot;);</b>
+<b class="nc"><i>1480</i>&nbsp;        if (node.nodeBlendMode != null) stuff.add(&quot;b&quot;);</b>
+<i>1481</i>&nbsp;
+<b class="nc"><i>1482</i>&nbsp;        RectBounds opaqueRegion = node.getOpaqueRegion();</b>
+<b class="nc"><i>1483</i>&nbsp;        if (opaqueRegion != null) {</b>
+<b class="nc"><i>1484</i>&nbsp;            RectBounds or = new RectBounds();</b>
+<b class="nc"><i>1485</i>&nbsp;            copy.transform(opaqueRegion, or);</b>
+<b class="nc"><i>1486</i>&nbsp;            stuff.add(&quot;or=&quot; + or.getMinX() + &quot;, &quot; + or.getMinY() + &quot;, &quot; + or.getWidth() + &quot;, &quot; + or.getHeight());</b>
+<i>1487</i>&nbsp;        }
+<i>1488</i>&nbsp;
+<b class="nc"><i>1489</i>&nbsp;        if (stuff.isEmpty()) {</b>
+<b class="nc"><i>1490</i>&nbsp;            s.append(prefix + node.name + &quot;\n&quot;);</b>
+<i>1491</i>&nbsp;        } else {
+<b class="nc"><i>1492</i>&nbsp;            String postfix = &quot; [&quot;;</b>
+<b class="nc"><i>1493</i>&nbsp;            for (int i=0; i&lt;stuff.size(); i++) {</b>
+<b class="nc"><i>1494</i>&nbsp;                postfix = postfix + stuff.get(i);</b>
+<b class="nc"><i>1495</i>&nbsp;                if (i &lt; stuff.size() - 1) postfix += &quot; &quot;;</b>
+<i>1496</i>&nbsp;            }
+<b class="nc"><i>1497</i>&nbsp;            s.append(prefix + node.name + postfix + &quot;]\n&quot;);</b>
+<i>1498</i>&nbsp;        }
+<i>1499</i>&nbsp;
+<b class="nc"><i>1500</i>&nbsp;        if (node.getClipNode() != null) {</b>
+<b class="nc"><i>1501</i>&nbsp;            printDirtyOpts(s, node.getClipNode(), copy, prefix + &quot;  cl &quot;, roots);</b>
+<i>1502</i>&nbsp;        }
+<i>1503</i>&nbsp;
+<b class="nc"><i>1504</i>&nbsp;        if (node instanceof NGGroup) {</b>
+<b class="nc"><i>1505</i>&nbsp;            NGGroup g = (NGGroup)node;</b>
+<b class="nc"><i>1506</i>&nbsp;            for (int i=0; i&lt;g.getChildren().size(); i++) {</b>
+<b class="nc"><i>1507</i>&nbsp;                printDirtyOpts(s, g.getChildren().get(i), copy, prefix + &quot;  &quot;, roots);</b>
+<i>1508</i>&nbsp;            }
+<i>1509</i>&nbsp;        }
+<b class="nc"><i>1510</i>&nbsp;    }</b>
+<i>1511</i>&nbsp;
+<i>1512</i>&nbsp;    /**
+<i>1513</i>&nbsp;     * Helper method draws rectangles indicating the overdraw rectangles.
+<i>1514</i>&nbsp;     *
+<i>1515</i>&nbsp;     * @param tx The scene-&gt;parent transform.
+<i>1516</i>&nbsp;     * @param pvTx The perspective camera transform.
+<i>1517</i>&nbsp;     * @param clipBounds The bounds in scene coordinates
+<i>1518</i>&nbsp;     * @param colorBuffer A pixel array where each pixel contains a color indicating how many times
+<i>1519</i>&nbsp;     *                    it has been &quot;drawn&quot;
+<i>1520</i>&nbsp;     * @param dirtyRegionIndex the index of the dirty region we&#39;re gathering information for. This is
+<i>1521</i>&nbsp;     *                         needed so we can shift the &quot;painted&quot; field to find out if this node
+<i>1522</i>&nbsp;     *                         was drawn in this dirty region.
+<i>1523</i>&nbsp;     */
+<i>1524</i>&nbsp;    public void drawDirtyOpts(final BaseTransform tx, final GeneralTransform3D pvTx,
+<i>1525</i>&nbsp;                              Rectangle clipBounds, int[] colorBuffer, int dirtyRegionIndex) {
+<b class="nc"><i>1526</i>&nbsp;        if ((painted &amp; (1 &lt;&lt; (dirtyRegionIndex * 2))) != 0) {</b>
+<i>1527</i>&nbsp;            // Transforming the content bounds (which includes the clip) to screen coordinates
+<b class="nc"><i>1528</i>&nbsp;            tx.copy().deriveWithConcatenation(getTransform()).transform(contentBounds, TEMP_BOUNDS);</b>
+<b class="nc"><i>1529</i>&nbsp;            if (pvTx != null) pvTx.transform(TEMP_BOUNDS, TEMP_BOUNDS);</b>
+<b class="nc"><i>1530</i>&nbsp;            RectBounds bounds = new RectBounds();</b>
+<b class="nc"><i>1531</i>&nbsp;            TEMP_BOUNDS.flattenInto(bounds);</b>
+<i>1532</i>&nbsp;
+<i>1533</i>&nbsp;            // Adjust the bounds so that they are relative to the clip. The colorBuffer is sized
+<i>1534</i>&nbsp;            // exactly the same as the clip, and the elements of the colorBuffer represent the
+<i>1535</i>&nbsp;            // pixels inside the clip. However the bounds of this node may overlap the clip in
+<i>1536</i>&nbsp;            // some manner, so we adjust them such that x, y, w, h will be the adjusted bounds.
+<b class="nc"><i>1537</i>&nbsp;            assert clipBounds.width * clipBounds.height == colorBuffer.length;</b>
+<b class="nc"><i>1538</i>&nbsp;            bounds.intersectWith(clipBounds);</b>
+<b class="nc"><i>1539</i>&nbsp;            int x = (int) bounds.getMinX() - clipBounds.x;</b>
+<b class="nc"><i>1540</i>&nbsp;            int y = (int) bounds.getMinY() - clipBounds.y;</b>
+<b class="nc"><i>1541</i>&nbsp;            int w = (int) (bounds.getWidth() + .5);</b>
+<b class="nc"><i>1542</i>&nbsp;            int h = (int) (bounds.getHeight() + .5);</b>
+<i>1543</i>&nbsp;
+<b class="nc"><i>1544</i>&nbsp;            if (w == 0 || h == 0) {</b>
+<i>1545</i>&nbsp;                // I would normally say we should never reach this point, as it means something was
+<i>1546</i>&nbsp;                // marked as painted but really couldn&#39;t have been.
+<b class="nc"><i>1547</i>&nbsp;                return;</b>
+<i>1548</i>&nbsp;            }
+<i>1549</i>&nbsp;
+<i>1550</i>&nbsp;            // x, y, w, h are 0 based and will fit within the clip, so now we can simply update
+<i>1551</i>&nbsp;            // all the pixels that fall within these bounds.
+<b class="nc"><i>1552</i>&nbsp;            for (int i = y; i &lt; y+h; i++) {</b>
+<b class="nc"><i>1553</i>&nbsp;                for (int j = x; j &lt; x+w; j++) {</b>
+<b class="nc"><i>1554</i>&nbsp;                    final int index = i * clipBounds.width + j;</b>
+<b class="nc"><i>1555</i>&nbsp;                    int color = colorBuffer[index];</b>
+<i>1556</i>&nbsp;
+<i>1557</i>&nbsp;                    // This is kind of a dirty hack. The idea is to show green if 0 or 1
+<i>1558</i>&nbsp;                    // times a pixel is drawn, Yellow for 2 or 3 times, and red for more
+<i>1559</i>&nbsp;                    // Than that. So I use 0x80007F00 as the first green color, and
+<i>1560</i>&nbsp;                    // 0x80008000 as the second green color, but their so close to the same
+<i>1561</i>&nbsp;                    // thing you probably won&#39;t be able to tell them apart, but I can tell
+<i>1562</i>&nbsp;                    // numerically they&#39;re different and increment (so I use the colors
+<i>1563</i>&nbsp;                    // as my counters).
+<b class="nc"><i>1564</i>&nbsp;                    if (color == 0) {</b>
+<b class="nc"><i>1565</i>&nbsp;                        color = 0x8007F00;</b>
+<b class="nc"><i>1566</i>&nbsp;                    } else if ((painted &amp; (3 &lt;&lt; (dirtyRegionIndex * 2))) == 3) {</b>
+<b class="nc"><i>1567</i>&nbsp;                        switch (color) {</b>
+<i>1568</i>&nbsp;                            case 0x80007F00:
+<b class="nc"><i>1569</i>&nbsp;                                color = 0x80008000;</b>
+<b class="nc"><i>1570</i>&nbsp;                                break;</b>
+<i>1571</i>&nbsp;                            case 0x80008000:
+<b class="nc"><i>1572</i>&nbsp;                                color = 0x807F7F00;</b>
+<b class="nc"><i>1573</i>&nbsp;                                break;</b>
+<i>1574</i>&nbsp;                            case 0x807F7F00:
+<b class="nc"><i>1575</i>&nbsp;                                color = 0x80808000;</b>
+<b class="nc"><i>1576</i>&nbsp;                                break;</b>
+<i>1577</i>&nbsp;                            case 0x80808000:
+<b class="nc"><i>1578</i>&nbsp;                                color = 0x807F0000;</b>
+<b class="nc"><i>1579</i>&nbsp;                                break;</b>
+<i>1580</i>&nbsp;                            default:
+<b class="nc"><i>1581</i>&nbsp;                                color = 0x80800000;</b>
+<i>1582</i>&nbsp;                        }
+<i>1583</i>&nbsp;                    }
+<b class="nc"><i>1584</i>&nbsp;                    colorBuffer[index] = color;</b>
+<i>1585</i>&nbsp;                }
+<i>1586</i>&nbsp;            }
+<i>1587</i>&nbsp;        }
+<b class="nc"><i>1588</i>&nbsp;    }</b>
+<i>1589</i>&nbsp;
+<i>1590</i>&nbsp;    /***************************************************************************
+<i>1591</i>&nbsp;     *                                                                         *
+<i>1592</i>&nbsp;     * Identifying render roots                                                *
+<i>1593</i>&nbsp;     *                                                                         *
+<i>1594</i>&nbsp;     **************************************************************************/
+<b class="fc"><i>1595</i>&nbsp;    protected static enum RenderRootResult {</b>
+<i>1596</i>&nbsp;        /**
+<i>1597</i>&nbsp;         * A Node returns NO_RENDER_ROOT when it is not a render root because
+<i>1598</i>&nbsp;         * it does not have an opaqueRegion which completely covers the area
+<i>1599</i>&nbsp;         * of the clip. Maybe the node is dirty, but outside the dirty region
+<i>1600</i>&nbsp;         * that we&#39;re currently processing. For an NGGroup, returning
+<i>1601</i>&nbsp;         * NO_RENDER_ROOT means that there is no render root (occluder) within
+<i>1602</i>&nbsp;         * this entire branch of the tree.
+<i>1603</i>&nbsp;         */
+<b class="fc"><i>1604</i>&nbsp;        NO_RENDER_ROOT,</b>
+<i>1605</i>&nbsp;        /**
+<i>1606</i>&nbsp;         * A Node returns HAS_RENDER_ROOT when its opaque region completely
+<i>1607</i>&nbsp;         * covers the clip. An NGGroup returns HAS_RENDER_ROOT when one of
+<i>1608</i>&nbsp;         * its children either returned HAS_RENDER_ROOT or HAS_RENDER_ROOT_AND_IS_CLEAN.
+<i>1609</i>&nbsp;         */
+<b class="fc"><i>1610</i>&nbsp;        HAS_RENDER_ROOT,</b>
+<i>1611</i>&nbsp;        /**
+<i>1612</i>&nbsp;         * A Node returns HAS_RENDER_ROOT_AND_IS_CLEAN when its opaque region
+<i>1613</i>&nbsp;         * completely covers the clip and the Node is, itself, clean. An NGNode
+<i>1614</i>&nbsp;         * returns HAS_RENDER_ROOT_AND_IS_CLEAN only if it had a child that
+<i>1615</i>&nbsp;         * returned HAS_RENDER_ROOT_AND_IS_CLEAN and none of its children drawn
+<i>1616</i>&nbsp;         * above the render root are dirty.
+<i>1617</i>&nbsp;         *
+<i>1618</i>&nbsp;         * This optimization allows us to recognize situations where perhaps there
+<i>1619</i>&nbsp;         * were some dirty nodes, but they are completely covered by an occluder,
+<i>1620</i>&nbsp;         * and therefore we don&#39;t actually have to draw anything.
+<i>1621</i>&nbsp;         */
+<b class="fc"><i>1622</i>&nbsp;        HAS_RENDER_ROOT_AND_IS_CLEAN,</b>
+<i>1623</i>&nbsp;    }
+<i>1624</i>&nbsp;
+<i>1625</i>&nbsp;    /**
+<i>1626</i>&nbsp;     * Called &lt;strong&gt;after&lt;/strong&gt; preCullingBits in order to get the node
+<i>1627</i>&nbsp;     * from which we should begin drawing. This is our support for occlusion culling.
+<i>1628</i>&nbsp;     * This should only be called on the root node.
+<i>1629</i>&nbsp;     *
+<i>1630</i>&nbsp;     * If no render root was found, we need to render everything from this root, so the path will contain this node.
+<i>1631</i>&nbsp;     * If no rendering is needed (everything dirty is occluded), the path will remain empty
+<i>1632</i>&nbsp;     *
+<i>1633</i>&nbsp;     * @param path node path to store the node path
+<i>1634</i>&nbsp;     */
+<i>1635</i>&nbsp;    public final void getRenderRoot(NodePath path, RectBounds dirtyRegion, int cullingIndex,
+<i>1636</i>&nbsp;                                    BaseTransform tx, GeneralTransform3D pvTx) {
+<i>1637</i>&nbsp;
+<i>1638</i>&nbsp;        // This is the main entry point, make sure to check these inputs for validity
+<b class="fc"><i>1639</i>&nbsp;        if (path == null || dirtyRegion == null || tx == null || pvTx == null) {</b>
+<b class="nc"><i>1640</i>&nbsp;            throw new NullPointerException();</b>
+<i>1641</i>&nbsp;        }
+<b class="fc"><i>1642</i>&nbsp;        if (cullingIndex &lt; -1 || cullingIndex &gt; 15) {</b>
+<b class="nc"><i>1643</i>&nbsp;            throw new IllegalArgumentException(&quot;cullingIndex cannot be &lt; -1 or &gt; 15&quot;);</b>
+<i>1644</i>&nbsp;        }
+<i>1645</i>&nbsp;
+<i>1646</i>&nbsp;        // This method must NEVER BE CALLED if the depth buffer is turned on. I don&#39;t have a good way to test
+<i>1647</i>&nbsp;        // for that because NGNode doesn&#39;t have a reference to the scene it is a part of...
+<i>1648</i>&nbsp;
+<b class="fc"><i>1649</i>&nbsp;        RenderRootResult result = computeRenderRoot(path, dirtyRegion, cullingIndex, tx, pvTx);</b>
+<b class="fc"><i>1650</i>&nbsp;        if (result == RenderRootResult.NO_RENDER_ROOT) {</b>
+<i>1651</i>&nbsp;            // We didn&#39;t find any render root, which means that no one node was large enough
+<i>1652</i>&nbsp;            // to obscure the entire dirty region (or, possibly, some combination of nodes in an
+<i>1653</i>&nbsp;            // NGGroup were not, together, large enough to do the job). So we need to render
+<i>1654</i>&nbsp;            // from the root node, which is this node.
+<b class="fc"><i>1655</i>&nbsp;            path.add(this);</b>
+<b class="fc"><i>1656</i>&nbsp;        } else if (result == RenderRootResult.HAS_RENDER_ROOT_AND_IS_CLEAN) {</b>
+<i>1657</i>&nbsp;            // We&#39;ve found a render root, and it is clean and everything above it in painter order
+<i>1658</i>&nbsp;            // is clean, so actually we have nothing to paint this time around (some stuff must
+<i>1659</i>&nbsp;            // have been dirty which is completely occluded by the render root). So we can clear
+<i>1660</i>&nbsp;            // the path, which indicates to the caller that nothing needs to be painted.
+<b class="nc"><i>1661</i>&nbsp;            path.clear();</b>
+<i>1662</i>&nbsp;        }
+<b class="fc"><i>1663</i>&nbsp;    }</b>
+<i>1664</i>&nbsp;
+<i>1665</i>&nbsp;    /**
+<i>1666</i>&nbsp;     * Searches for the last node that covers all of the specified dirty region with an opaque region,
+<i>1667</i>&nbsp;     * in this node&#39;s subtree. Such a node can serve as a rendering root as all nodes preceding the node
+<i>1668</i>&nbsp;     * will be covered by it.
+<i>1669</i>&nbsp;     *
+<i>1670</i>&nbsp;     * @param path the NodePath to populate with the path to the render root. Cannot be null.
+<i>1671</i>&nbsp;     * @param dirtyRegion the current dirty region. Cannot be null.
+<i>1672</i>&nbsp;     * @param cullingIndex index of culling information
+<i>1673</i>&nbsp;     * @param tx current transform. Cannot be null.
+<i>1674</i>&nbsp;     * @param pvTx current perspective transform. Cannot be null.
+<i>1675</i>&nbsp;     * @return The result of visiting this node.
+<i>1676</i>&nbsp;     */
+<i>1677</i>&nbsp;    RenderRootResult computeRenderRoot(NodePath path, RectBounds dirtyRegion,
+<i>1678</i>&nbsp;                                       int cullingIndex, BaseTransform tx, GeneralTransform3D pvTx) {
+<b class="fc"><i>1679</i>&nbsp;        return computeNodeRenderRoot(path, dirtyRegion, cullingIndex, tx, pvTx);</b>
+<i>1680</i>&nbsp;    }
+<i>1681</i>&nbsp;
+<b class="fc"><i>1682</i>&nbsp;    private static Point2D[] TEMP_POINTS2D_4 =</b>
+<i>1683</i>&nbsp;            new Point2D[] { new Point2D(), new Point2D(), new Point2D(), new Point2D() };
+<i>1684</i>&nbsp;
+<i>1685</i>&nbsp;    // Whether (px, py) is clockwise or counter-clockwise to a-&gt;b
+<i>1686</i>&nbsp;    private static int ccw(double px, double py, Point2D a, Point2D b) {
+<b class="nc"><i>1687</i>&nbsp;        return (int)Math.signum(((b.x - a.x) * (py - a.y)) - (b.y - a.y) * (px - a.x));</b>
+<i>1688</i>&nbsp;    }
+<i>1689</i>&nbsp;
+<i>1690</i>&nbsp;    private static boolean pointInConvexQuad(double x, double y, Point2D[] rect) {
+<b class="nc"><i>1691</i>&nbsp;        int ccw01 = ccw(x, y, rect[0], rect[1]);</b>
+<b class="nc"><i>1692</i>&nbsp;        int ccw12 = ccw(x, y, rect[1], rect[2]);</b>
+<b class="nc"><i>1693</i>&nbsp;        int ccw23 = ccw(x, y, rect[2], rect[3]);</b>
+<b class="nc"><i>1694</i>&nbsp;        int ccw31 = ccw(x, y, rect[3], rect[0]);</b>
+<i>1695</i>&nbsp;
+<i>1696</i>&nbsp;        // Possible results after this operation:
+<i>1697</i>&nbsp;        // 0 -&gt; 0 (0x0)
+<i>1698</i>&nbsp;        // 1 -&gt; 1 (0x1)
+<i>1699</i>&nbsp;        // -1 -&gt; Integer.MIN_VALUE (0x80000000)
+<b class="nc"><i>1700</i>&nbsp;        ccw01 ^= (ccw01 &gt;&gt;&gt; 1);</b>
+<b class="nc"><i>1701</i>&nbsp;        ccw12 ^= (ccw12 &gt;&gt;&gt; 1);</b>
+<b class="nc"><i>1702</i>&nbsp;        ccw23 ^= (ccw23 &gt;&gt;&gt; 1);</b>
+<b class="nc"><i>1703</i>&nbsp;        ccw31 ^= (ccw31 &gt;&gt;&gt; 1);</b>
+<i>1704</i>&nbsp;
+<b class="nc"><i>1705</i>&nbsp;        final int union = ccw01 | ccw12 | ccw23 | ccw31;</b>
+<i>1706</i>&nbsp;        // This means all ccw* were either (-1 or 0) or (1 or 0), but not all of them were 0
+<b class="nc"><i>1707</i>&nbsp;        return union == 0x80000000 || union == 0x1;</b>
+<i>1708</i>&nbsp;        // Or alternatively...
+<i>1709</i>&nbsp;//        return (union ^ (union &lt;&lt; 31)) &lt; 0;
+<i>1710</i>&nbsp;    }
+<i>1711</i>&nbsp;
+<i>1712</i>&nbsp;    /**
+<i>1713</i>&nbsp;     * Check if this node can serve as rendering root for this dirty region.
+<i>1714</i>&nbsp;     *
+<i>1715</i>&nbsp;     * @param path the NodePath to populate with the path to the render root. Cannot be null.
+<i>1716</i>&nbsp;     * @param dirtyRegion the current dirty region. Cannot be null.
+<i>1717</i>&nbsp;     * @param cullingIndex index of culling information, -1 means culling information should not be used
+<i>1718</i>&nbsp;     * @param tx current transform. Cannot be null.
+<i>1719</i>&nbsp;     * @param pvTx current perspective transform. Cannot be null.
+<i>1720</i>&nbsp;     * @return NO_RENDER_ROOT if this node does &lt;em&gt;not&lt;/em&gt; have an opaque
+<i>1721</i>&nbsp;     *         region that fills the entire dirty region. Returns HAS_RENDER_ROOT
+<i>1722</i>&nbsp;     *         if the opaque region fills the dirty region.
+<i>1723</i>&nbsp;     */
+<i>1724</i>&nbsp;    final RenderRootResult computeNodeRenderRoot(NodePath path, RectBounds dirtyRegion,
+<i>1725</i>&nbsp;                                                 int cullingIndex, BaseTransform tx, GeneralTransform3D pvTx) {
+<i>1726</i>&nbsp;
+<i>1727</i>&nbsp;        // Nodes outside of the dirty region can be excluded immediately.
+<i>1728</i>&nbsp;        // This can be used only if the culling information is provided.
+<b class="fc"><i>1729</i>&nbsp;        if (cullingIndex != -1) {</b>
+<b class="fc"><i>1730</i>&nbsp;            final int bits = cullingBits &gt;&gt; (cullingIndex * 2);</b>
+<b class="fc"><i>1731</i>&nbsp;            if ((bits &amp; DIRTY_REGION_CONTAINS_OR_INTERSECTS_NODE_BOUNDS) == 0x00) {</b>
+<b class="fc"><i>1732</i>&nbsp;                return RenderRootResult.NO_RENDER_ROOT;</b>
+<i>1733</i>&nbsp;            }
+<i>1734</i>&nbsp;        }
+<i>1735</i>&nbsp;
+<b class="fc"><i>1736</i>&nbsp;        if (!isVisible()) {</b>
+<b class="fc"><i>1737</i>&nbsp;            return RenderRootResult.NO_RENDER_ROOT;</b>
+<i>1738</i>&nbsp;        }
+<i>1739</i>&nbsp;
+<b class="fc"><i>1740</i>&nbsp;        final RectBounds opaqueRegion = getOpaqueRegion();</b>
+<b class="fc"><i>1741</i>&nbsp;        if (opaqueRegion == null) return RenderRootResult.NO_RENDER_ROOT;</b>
+<i>1742</i>&nbsp;
+<b class="fc"><i>1743</i>&nbsp;        final BaseTransform localToParentTx = getTransform();</b>
+<i>1744</i>&nbsp;
+<b class="fc"><i>1745</i>&nbsp;        BaseTransform localToSceneTx = TEMP_TRANSFORM.deriveWithNewTransform(tx).deriveWithConcatenation(localToParentTx);</b>
+<i>1746</i>&nbsp;
+<i>1747</i>&nbsp;        // Now check if the dirty region is fully contained in our opaque region. Suppose the above
+<i>1748</i>&nbsp;        // transform included a rotation about Z. In these cases, the transformed
+<i>1749</i>&nbsp;        // opaqueRegion might be some non-axis aligned quad. So what we need to do is to check
+<i>1750</i>&nbsp;        // that each corner of the dirty region lies within the (potentially rotated) quad
+<i>1751</i>&nbsp;        // of the opaqueRegion.
+<b class="fc"><i>1752</i>&nbsp;        if (checkBoundsInQuad(opaqueRegion, dirtyRegion, localToSceneTx, pvTx)) {</b>
+<i>1753</i>&nbsp;            // This node is a render root.
+<b class="fc"><i>1754</i>&nbsp;            path.add(this);</b>
+<b class="fc"><i>1755</i>&nbsp;            return isClean() ? RenderRootResult.HAS_RENDER_ROOT_AND_IS_CLEAN : RenderRootResult.HAS_RENDER_ROOT;</b>
+<i>1756</i>&nbsp;        }
+<i>1757</i>&nbsp;
+<b class="fc"><i>1758</i>&nbsp;        return RenderRootResult.NO_RENDER_ROOT;</b>
+<i>1759</i>&nbsp;    }
+<i>1760</i>&nbsp;
+<i>1761</i>&nbsp;    static boolean checkBoundsInQuad(RectBounds untransformedQuad,
+<i>1762</i>&nbsp;            RectBounds innerBounds, BaseTransform tx, GeneralTransform3D pvTx) {
+<i>1763</i>&nbsp;
+<b class="fc"><i>1764</i>&nbsp;        if (pvTx.isIdentity() &amp;&amp; (tx.getType() &amp; ~(BaseTransform.TYPE_TRANSLATION</b>
+<i>1765</i>&nbsp;                | BaseTransform.TYPE_QUADRANT_ROTATION
+<i>1766</i>&nbsp;                | BaseTransform.TYPE_MASK_SCALE)) == 0) {
+<i>1767</i>&nbsp;            // If pvTx is identity and there&#39;s simple transformation that will result in axis-aligned rectangle,
+<i>1768</i>&nbsp;            // we can do a quick test by using bound.contains()
+<b class="fc"><i>1769</i>&nbsp;            if (tx.isIdentity()) {</b>
+<b class="fc"><i>1770</i>&nbsp;                TEMP_BOUNDS.deriveWithNewBounds(untransformedQuad);</b>
+<i>1771</i>&nbsp;            } else {
+<b class="fc"><i>1772</i>&nbsp;                tx.transform(untransformedQuad, TEMP_BOUNDS);</b>
+<i>1773</i>&nbsp;            }
+<i>1774</i>&nbsp;
+<b class="fc"><i>1775</i>&nbsp;            TEMP_BOUNDS.flattenInto(TEMP_RECT_BOUNDS);</b>
+<i>1776</i>&nbsp;
+<b class="fc"><i>1777</i>&nbsp;            return TEMP_RECT_BOUNDS.contains(innerBounds);</b>
+<i>1778</i>&nbsp;        } else {
+<b class="nc"><i>1779</i>&nbsp;            TEMP_POINTS2D_4[0].setLocation(untransformedQuad.getMinX(), untransformedQuad.getMinY());</b>
+<b class="nc"><i>1780</i>&nbsp;            TEMP_POINTS2D_4[1].setLocation(untransformedQuad.getMaxX(), untransformedQuad.getMinY());</b>
+<b class="nc"><i>1781</i>&nbsp;            TEMP_POINTS2D_4[2].setLocation(untransformedQuad.getMaxX(), untransformedQuad.getMaxY());</b>
+<b class="nc"><i>1782</i>&nbsp;            TEMP_POINTS2D_4[3].setLocation(untransformedQuad.getMinX(), untransformedQuad.getMaxY());</b>
+<i>1783</i>&nbsp;
+<b class="nc"><i>1784</i>&nbsp;            for (Point2D p : TEMP_POINTS2D_4) {</b>
+<b class="nc"><i>1785</i>&nbsp;                tx.transform(p, p);</b>
+<b class="nc"><i>1786</i>&nbsp;                if (!pvTx.isIdentity()) {</b>
+<b class="nc"><i>1787</i>&nbsp;                    pvTx.transform(p, p);</b>
+<i>1788</i>&nbsp;                }
+<i>1789</i>&nbsp;            }
+<i>1790</i>&nbsp;
+<b class="nc"><i>1791</i>&nbsp;            return (pointInConvexQuad(innerBounds.getMinX(), innerBounds.getMinY(), TEMP_POINTS2D_4)</b>
+<b class="nc"><i>1792</i>&nbsp;                    &amp;&amp; pointInConvexQuad(innerBounds.getMaxX(), innerBounds.getMinY(), TEMP_POINTS2D_4)</b>
+<b class="nc"><i>1793</i>&nbsp;                    &amp;&amp; pointInConvexQuad(innerBounds.getMaxX(), innerBounds.getMaxY(), TEMP_POINTS2D_4)</b>
+<b class="nc"><i>1794</i>&nbsp;                    &amp;&amp; pointInConvexQuad(innerBounds.getMinX(), innerBounds.getMaxY(), TEMP_POINTS2D_4));</b>
+<i>1795</i>&nbsp;        }
+<i>1796</i>&nbsp;    }
+<i>1797</i>&nbsp;
+<i>1798</i>&nbsp;    /**
+<i>1799</i>&nbsp;     * Invalidates any cached representation of the opaque region for this node. On the next
+<i>1800</i>&nbsp;     * call to getOpaqueRegion, the opaque region will be recalculated. Any changes to state
+<i>1801</i>&nbsp;     * which is used in the {@link #hasOpaqueRegion()} call must invoke this method
+<i>1802</i>&nbsp;     * or the opaque region calculations will be wrong.
+<i>1803</i>&nbsp;     */
+<i>1804</i>&nbsp;    protected final void invalidateOpaqueRegion() {
+<b class="fc"><i>1805</i>&nbsp;        opaqueRegionInvalid = true;</b>
+<b class="fc"><i>1806</i>&nbsp;        if (isClip) parent.invalidateOpaqueRegion();</b>
+<b class="fc"><i>1807</i>&nbsp;    }</b>
+<i>1808</i>&nbsp;
+<i>1809</i>&nbsp;    /**
+<i>1810</i>&nbsp;     * This method exists only for the sake of testing.
+<i>1811</i>&nbsp;     * @return value of opaqueRegionInvalid
+<i>1812</i>&nbsp;     */
+<i>1813</i>&nbsp;    final boolean isOpaqueRegionInvalid() {
+<b class="nc"><i>1814</i>&nbsp;        return opaqueRegionInvalid;</b>
+<i>1815</i>&nbsp;    }
+<i>1816</i>&nbsp;
+<i>1817</i>&nbsp;    /**
+<i>1818</i>&nbsp;     * Gets the opaque region for this node, if there is one, or returns null.
+<i>1819</i>&nbsp;     * @return The opaque region for this node, or null.
+<i>1820</i>&nbsp;     */
+<i>1821</i>&nbsp;    public final RectBounds getOpaqueRegion() {
+<i>1822</i>&nbsp;        // Note that when we invalidate the opaqueRegion of an NGNode, we don&#39;t
+<i>1823</i>&nbsp;        // walk up the tree or communicate with the parents (unlike dirty flags).
+<i>1824</i>&nbsp;        // An NGGroup does not compute an opaqueRegion based on the union of opaque
+<i>1825</i>&nbsp;        // regions of its children (although this is a fine idea to consider!). See RT-32441
+<i>1826</i>&nbsp;        // If we ever fix RT-32441, we must be sure to handle the case of a Group being used
+<i>1827</i>&nbsp;        // as a clip node (such that invalidating a child on the group invalidates the
+<i>1828</i>&nbsp;        // opaque region of every node up to the root).
+<i>1829</i>&nbsp;
+<i>1830</i>&nbsp;        // Because the Effect classes have no reference to NGNode, they cannot tell the
+<i>1831</i>&nbsp;        // NGNode to invalidate the opaque region whenever properties on the Effect that
+<i>1832</i>&nbsp;        // would impact the opaqueRegion change. As a result, when an Effect is specified
+<i>1833</i>&nbsp;        // on the NGNode, we will always treat it as if it were invalid. A more invasive
+<i>1834</i>&nbsp;        // (but better) change would be to give Effect the ability to invalidate the
+<i>1835</i>&nbsp;        // NGNode&#39;s opaque region when needed.
+<b class="fc"><i>1836</i>&nbsp;        if (opaqueRegionInvalid || getEffect() != null) {</b>
+<b class="fc"><i>1837</i>&nbsp;            opaqueRegionInvalid = false;</b>
+<b class="fc"><i>1838</i>&nbsp;            if (supportsOpaqueRegions() &amp;&amp; hasOpaqueRegion()) {</b>
+<b class="fc"><i>1839</i>&nbsp;                opaqueRegion = computeOpaqueRegion(opaqueRegion == null ? new RectBounds() : opaqueRegion);</b>
+<i>1840</i>&nbsp;                // If we got a null result then we encountered an error condition where somebody
+<i>1841</i>&nbsp;                // claimed supportsOpaqueRegions and hasOpaqueRegion, but then they
+<i>1842</i>&nbsp;                // returned null! This should never happen, so we have an assert here. However since
+<i>1843</i>&nbsp;                // assertions are disabled at runtime and we want to avoid the NPE, we also perform
+<i>1844</i>&nbsp;                // a null check.
+<b class="fc"><i>1845</i>&nbsp;                assert opaqueRegion != null;</b>
+<b class="fc"><i>1846</i>&nbsp;                if (opaqueRegion == null) {</b>
+<b class="nc"><i>1847</i>&nbsp;                    return null;</b>
+<i>1848</i>&nbsp;                }
+<i>1849</i>&nbsp;                // If there is a clip, then we need to determine the opaque region of the clip, and
+<i>1850</i>&nbsp;                // intersect that with our existing opaque region. For example, if I had a rectangle
+<i>1851</i>&nbsp;                // with a circle for its clip (centered over the rectangle), then the result needs to
+<i>1852</i>&nbsp;                // be the circle&#39;s opaque region.
+<b class="fc"><i>1853</i>&nbsp;                final NGNode clip = getClipNode();</b>
+<b class="fc"><i>1854</i>&nbsp;                if (clip != null) {</b>
+<b class="nc"><i>1855</i>&nbsp;                    final RectBounds clipOpaqueRegion = clip.getOpaqueRegion();</b>
+<i>1856</i>&nbsp;                    // Technically a flip/quadrant rotation is allowed as well, but we don&#39;t have a convenient
+<i>1857</i>&nbsp;                    // way to do that yet.
+<b class="nc"><i>1858</i>&nbsp;                    if (clipOpaqueRegion == null || (clip.getTransform().getType() &amp; ~(BaseTransform.TYPE_TRANSLATION | BaseTransform.TYPE_MASK_SCALE)) != 0) {</b>
+<i>1859</i>&nbsp;                        // RT-25095: If this node has a clip who&#39;s opaque region cannot be determined, then
+<i>1860</i>&nbsp;                        // we cannot determine any opaque region for this node (in fact, it might not have one).
+<i>1861</i>&nbsp;                        // Also, if the transform is something other than identity, scale, or translate then
+<i>1862</i>&nbsp;                        // we&#39;re just going to bail (sorry, rotate, maybe next time!)
+<b class="nc"><i>1863</i>&nbsp;                        return opaqueRegion = null;</b>
+<i>1864</i>&nbsp;                    }
+<i>1865</i>&nbsp;                    // We have to take into account any transform specified on the clip to put
+<i>1866</i>&nbsp;                    // it into the same coordinate system as this node
+<b class="nc"><i>1867</i>&nbsp;                    final BaseBounds b = clip.getTransform().transform(clipOpaqueRegion, TEMP_BOUNDS);</b>
+<b class="nc"><i>1868</i>&nbsp;                    b.flattenInto(TEMP_RECT_BOUNDS);</b>
+<b class="nc"><i>1869</i>&nbsp;                    opaqueRegion.intersectWith(TEMP_RECT_BOUNDS);</b>
+<i>1870</i>&nbsp;
+<i>1871</i>&nbsp;                }
+<b class="fc"><i>1872</i>&nbsp;            } else {</b>
+<i>1873</i>&nbsp;                // The opaqueRegion may have been non-null in the past, but there isn&#39;t an opaque region now,
+<i>1874</i>&nbsp;                // so we will nuke it to save some memory
+<b class="fc"><i>1875</i>&nbsp;                opaqueRegion = null;</b>
+<i>1876</i>&nbsp;            }
+<i>1877</i>&nbsp;        }
+<i>1878</i>&nbsp;
+<b class="fc"><i>1879</i>&nbsp;        return opaqueRegion;</b>
+<i>1880</i>&nbsp;    }
+<i>1881</i>&nbsp;
+<i>1882</i>&nbsp;    /**
+<i>1883</i>&nbsp;     * Gets whether this NGNode supports opaque regions at all. Most node types do not,
+<i>1884</i>&nbsp;     * but some do. If an NGNode subclass is written to support opaque regions, it must override
+<i>1885</i>&nbsp;     * this method to return true. The subclass must then also override the computeDirtyRegion method
+<i>1886</i>&nbsp;     * to return the dirty region, or null if the node in its current state doesn&#39;t have one.
+<i>1887</i>&nbsp;     * This method is intended to be immutable.
+<i>1888</i>&nbsp;     *
+<i>1889</i>&nbsp;     * @return Whether this NGNode implementation supports opaque regions. This could also have been
+<i>1890</i>&nbsp;     *         implemented via an interface that some NGNodes implemented, but then we&#39;d have instanceof
+<i>1891</i>&nbsp;     *         checks which I&#39;d rather avoid.
+<i>1892</i>&nbsp;     */
+<b class="fc"><i>1893</i>&nbsp;    protected boolean supportsOpaqueRegions() { return false; }</b>
+<i>1894</i>&nbsp;
+<i>1895</i>&nbsp;    /**
+<i>1896</i>&nbsp;     * Called only on NGNode subclasses which override {@link #supportsOpaqueRegions()} to return
+<i>1897</i>&nbsp;     * true, this method will return whether or not this NGNode is in a state where it has
+<i>1898</i>&nbsp;     * an opaque region to actually return. If this method returns true, a subsequent call to
+<i>1899</i>&nbsp;     * {@link #computeOpaqueRegion(com.sun.javafx.geom.RectBounds)} &lt;strong&gt;must&lt;/strong&gt; return
+<i>1900</i>&nbsp;     * a non-null result. Any state used in the computation of this method, when it changes, must
+<i>1901</i>&nbsp;     * result in a call to {@link #invalidateOpaqueRegion()}.
+<i>1902</i>&nbsp;     *
+<i>1903</i>&nbsp;     * @return Whether this NGNode currently has an opaque region.
+<i>1904</i>&nbsp;     */
+<i>1905</i>&nbsp;    protected boolean hasOpaqueRegion() {
+<b class="fc"><i>1906</i>&nbsp;        final NGNode clip = getClipNode();</b>
+<b class="fc"><i>1907</i>&nbsp;        final Effect effect = getEffect();</b>
+<b class="fc"><i>1908</i>&nbsp;        return (effect == null || !effect.reducesOpaquePixels()) &amp;&amp;</b>
+<b class="fc"><i>1909</i>&nbsp;               getOpacity() == 1f &amp;&amp;</b>
+<i>1910</i>&nbsp;               (nodeBlendMode == null || nodeBlendMode == Blend.Mode.SRC_OVER) &amp;&amp;
+<i>1911</i>&nbsp;               (clip == null ||
+<b class="fc"><i>1912</i>&nbsp;               (clip.supportsOpaqueRegions() &amp;&amp; clip.hasOpaqueRegion()));</b>
+<i>1913</i>&nbsp;    }
+<i>1914</i>&nbsp;
+<i>1915</i>&nbsp;    /**
+<i>1916</i>&nbsp;     * Computes and returns the opaque region for this node. This method
+<i>1917</i>&nbsp;     * @param opaqueRegion
+<i>1918</i>&nbsp;     * @return
+<i>1919</i>&nbsp;     */
+<i>1920</i>&nbsp;    protected RectBounds computeOpaqueRegion(RectBounds opaqueRegion) {
+<b class="nc"><i>1921</i>&nbsp;        return null;</b>
+<i>1922</i>&nbsp;    }
+<i>1923</i>&nbsp;
+<i>1924</i>&nbsp;    /**
+<i>1925</i>&nbsp;     * Returns whether a clip represented by this node can be rendered using
+<i>1926</i>&nbsp;     * axis aligned rect clip. The default implementation returns false,
+<i>1927</i>&nbsp;     * specific subclasses should override to return true when appropriate.
+<i>1928</i>&nbsp;     *
+<i>1929</i>&nbsp;     * @return whether this rectangle is axis aligned when rendered given node&#39;s
+<i>1930</i>&nbsp;     * and rendering transform
+<i>1931</i>&nbsp;     */
+<i>1932</i>&nbsp;    protected boolean isRectClip(BaseTransform xform, boolean permitRoundedRectangle) {
+<b class="nc"><i>1933</i>&nbsp;        return false;</b>
+<i>1934</i>&nbsp;    }
+<i>1935</i>&nbsp;
+<i>1936</i>&nbsp;    /***************************************************************************
+<i>1937</i>&nbsp;     *                                                                         *
+<i>1938</i>&nbsp;     * Rendering                                                               *
+<i>1939</i>&nbsp;     *                                                                         *
+<i>1940</i>&nbsp;     **************************************************************************/
+<i>1941</i>&nbsp;
+<i>1942</i>&nbsp;    /**
+<i>1943</i>&nbsp;     * Render the tree of nodes to the specified G (graphics) object
+<i>1944</i>&nbsp;     * descending from this node as the root. This method is designed to avoid
+<i>1945</i>&nbsp;     * generated trash as much as possible while descending through the
+<i>1946</i>&nbsp;     * render graph while rendering. This is the appropriate method both to
+<i>1947</i>&nbsp;     * initiate painting of an entire scene, and for a branch. The NGGroup
+<i>1948</i>&nbsp;     * implementation must call this method on each child, not doRender directly.
+<i>1949</i>&nbsp;     *
+<i>1950</i>&nbsp;     * @param g The graphics object we&#39;re rendering to. This must never be null.
+<i>1951</i>&nbsp;     */
+<i>1952</i>&nbsp;    public final void render(Graphics g) {
+<b class="fc"><i>1953</i>&nbsp;        if (PULSE_LOGGING_ENABLED) {</b>
+<b class="nc"><i>1954</i>&nbsp;            PulseLogger.incrementCounter(&quot;Nodes visited during render&quot;);</b>
+<i>1955</i>&nbsp;        }
+<i>1956</i>&nbsp;        // Clear the visuals changed flag
+<b class="fc"><i>1957</i>&nbsp;        clearDirty();</b>
+<i>1958</i>&nbsp;        // If it isn&#39;t visible, then punt
+<b class="fc"><i>1959</i>&nbsp;        if (!visible || opacity == 0f) return;</b>
+<i>1960</i>&nbsp;
+<i>1961</i>&nbsp;        // We know that we are going to render this node, so we call the
+<i>1962</i>&nbsp;        // doRender method, which subclasses implement to do the actual
+<i>1963</i>&nbsp;        // rendering work.
+<b class="fc"><i>1964</i>&nbsp;        doRender(g);</b>
+<b class="fc"><i>1965</i>&nbsp;    }</b>
+<i>1966</i>&nbsp;
+<i>1967</i>&nbsp;    /**
+<i>1968</i>&nbsp;     * Called on every render pulse for all nodes in case they have render-time
+<i>1969</i>&nbsp;     * operations that must be completed on a pulse, but were not otherwise
+<i>1970</i>&nbsp;     * rendered by the ordinary damage management logic.
+<i>1971</i>&nbsp;     * The graphics argument will be the graphics that was used to render the
+<i>1972</i>&nbsp;     * scene if it is available, but may be null for cases when the scene
+<i>1973</i>&nbsp;     * required no visible updates and thus no back buffer graphics was
+<i>1974</i>&nbsp;     * actually obtained.  Implementors must have a backup plan for that
+<i>1975</i>&nbsp;     * case when the Graphics object is null.
+<i>1976</i>&nbsp;     *
+<i>1977</i>&nbsp;     * @param gOptional the Graphics object that was used to render the
+<i>1978</i>&nbsp;     *                  Scene, or null
+<i>1979</i>&nbsp;     */
+<i>1980</i>&nbsp;    public void renderForcedContent(Graphics gOptional) {
+<b class="fc"><i>1981</i>&nbsp;    }</b>
+<i>1982</i>&nbsp;
+<i>1983</i>&nbsp;    // This node requires 2D graphics state for rendering
+<i>1984</i>&nbsp;    boolean isShape3D() {
+<b class="fc"><i>1985</i>&nbsp;        return false;</b>
+<i>1986</i>&nbsp;    }
+<i>1987</i>&nbsp;
+<i>1988</i>&nbsp;    /**
+<i>1989</i>&nbsp;     * Invoked only by the final render method. Implementations
+<i>1990</i>&nbsp;     * of this method should make sure to save &amp; restore the transform state.
+<i>1991</i>&nbsp;     */
+<i>1992</i>&nbsp;    protected void doRender(Graphics g) {
+<i>1993</i>&nbsp;
+<b class="fc"><i>1994</i>&nbsp;        g.setState3D(isShape3D());</b>
+<i>1995</i>&nbsp;
+<b class="fc"><i>1996</i>&nbsp;        boolean preCullingTurnedOff = false;</b>
+<b class="fc"><i>1997</i>&nbsp;        if (PrismSettings.dirtyOptsEnabled) {</b>
+<b class="fc"><i>1998</i>&nbsp;            if (g.hasPreCullingBits()) {</b>
+<i>1999</i>&nbsp;                //preculling bits available
+<b class="fc"><i>2000</i>&nbsp;                final int bits = cullingBits &gt;&gt; (g.getClipRectIndex() * 2);</b>
+<b class="fc"><i>2001</i>&nbsp;                if ((bits &amp; DIRTY_REGION_CONTAINS_OR_INTERSECTS_NODE_BOUNDS) == 0) {</b>
+<i>2002</i>&nbsp;                    // If no culling bits are set for this region, this group
+<i>2003</i>&nbsp;                    // does not intersect (nor is covered by) the region
+<b class="fc"><i>2004</i>&nbsp;                    return;</b>
+<b class="fc"><i>2005</i>&nbsp;                } else if ((bits &amp; DIRTY_REGION_CONTAINS_NODE_BOUNDS) != 0) {</b>
+<i>2006</i>&nbsp;                    // When this group is fully covered by the region,
+<i>2007</i>&nbsp;                    // turn off the culling checks in the subtree, as everything
+<i>2008</i>&nbsp;                    // gets rendered
+<b class="fc"><i>2009</i>&nbsp;                    g.setHasPreCullingBits(false);</b>
+<b class="fc"><i>2010</i>&nbsp;                    preCullingTurnedOff = true;</b>
+<i>2011</i>&nbsp;                }
+<i>2012</i>&nbsp;            }
+<i>2013</i>&nbsp;        }
+<i>2014</i>&nbsp;
+<i>2015</i>&nbsp;        // save current depth test state
+<b class="fc"><i>2016</i>&nbsp;        boolean prevDepthTest = g.isDepthTest();</b>
+<i>2017</i>&nbsp;
+<i>2018</i>&nbsp;        // Apply Depth test for this node
+<i>2019</i>&nbsp;        // (note that this will only be used if we have a depth buffer for the
+<i>2020</i>&nbsp;        // surface to which we are rendering)
+<b class="fc"><i>2021</i>&nbsp;        g.setDepthTest(isDepthTest());</b>
+<i>2022</i>&nbsp;
+<i>2023</i>&nbsp;        // save current transform state
+<b class="fc"><i>2024</i>&nbsp;        BaseTransform prevXform = g.getTransformNoClone();</b>
+<i>2025</i>&nbsp;
+<b class="fc"><i>2026</i>&nbsp;        double mxx = prevXform.getMxx();</b>
+<b class="fc"><i>2027</i>&nbsp;        double mxy = prevXform.getMxy();</b>
+<b class="fc"><i>2028</i>&nbsp;        double mxz = prevXform.getMxz();</b>
+<b class="fc"><i>2029</i>&nbsp;        double mxt = prevXform.getMxt();</b>
+<i>2030</i>&nbsp;
+<b class="fc"><i>2031</i>&nbsp;        double myx = prevXform.getMyx();</b>
+<b class="fc"><i>2032</i>&nbsp;        double myy = prevXform.getMyy();</b>
+<b class="fc"><i>2033</i>&nbsp;        double myz = prevXform.getMyz();</b>
+<b class="fc"><i>2034</i>&nbsp;        double myt = prevXform.getMyt();</b>
+<i>2035</i>&nbsp;
+<b class="fc"><i>2036</i>&nbsp;        double mzx = prevXform.getMzx();</b>
+<b class="fc"><i>2037</i>&nbsp;        double mzy = prevXform.getMzy();</b>
+<b class="fc"><i>2038</i>&nbsp;        double mzz = prevXform.getMzz();</b>
+<b class="fc"><i>2039</i>&nbsp;        double mzt = prevXform.getMzt();</b>
+<i>2040</i>&nbsp;
+<i>2041</i>&nbsp;        // filters are applied in the following order:
+<i>2042</i>&nbsp;        //   transform
+<i>2043</i>&nbsp;        //   blend mode
+<i>2044</i>&nbsp;        //   opacity
+<i>2045</i>&nbsp;        //   cache
+<i>2046</i>&nbsp;        //   clip
+<i>2047</i>&nbsp;        //   effect
+<i>2048</i>&nbsp;        // The clip must be below the cache filter, as this is expected in the
+<i>2049</i>&nbsp;        // CacheFilter in order to apply scrolling optimization
+<b class="fc"><i>2050</i>&nbsp;        g.transform(getTransform());</b>
+<i>2051</i>&nbsp;        // Try to keep track of whether this node was *really* painted. Still an
+<i>2052</i>&nbsp;        // approximation, but somewhat more accurate (at least it doesn&#39;t include
+<i>2053</i>&nbsp;        // groups which don&#39;t paint anything themselves).
+<b class="fc"><i>2054</i>&nbsp;        boolean p = false;</b>
+<i>2055</i>&nbsp;        // NOTE: Opt out 2D operations on 3D Shapes, which are not yet handled by Prism
+<b class="fc"><i>2056</i>&nbsp;        if (!isShape3D() &amp;&amp; g instanceof ReadbackGraphics &amp;&amp; needsBlending()) {</b>
+<b class="nc"><i>2057</i>&nbsp;            renderNodeBlendMode(g);</b>
+<b class="nc"><i>2058</i>&nbsp;            p = true;</b>
+<b class="fc"><i>2059</i>&nbsp;        } else if (!isShape3D() &amp;&amp; getOpacity() &lt; 1f) {</b>
+<b class="fc"><i>2060</i>&nbsp;            renderOpacity(g);</b>
+<b class="fc"><i>2061</i>&nbsp;            p = true;</b>
+<b class="fc"><i>2062</i>&nbsp;        } else if (!isShape3D() &amp;&amp; getCacheFilter() != null) {</b>
+<b class="nc"><i>2063</i>&nbsp;            renderCached(g);</b>
+<b class="nc"><i>2064</i>&nbsp;            p = true;</b>
+<b class="fc"><i>2065</i>&nbsp;        } else if (!isShape3D() &amp;&amp; getClipNode() != null) {</b>
+<b class="fc"><i>2066</i>&nbsp;            renderClip(g);</b>
+<b class="fc"><i>2067</i>&nbsp;            p = true;</b>
+<b class="fc"><i>2068</i>&nbsp;        } else if (!isShape3D() &amp;&amp; getEffectFilter() != null &amp;&amp; effectsSupported) {</b>
+<b class="fc"><i>2069</i>&nbsp;            renderEffect(g);</b>
+<b class="fc"><i>2070</i>&nbsp;            p = true;</b>
+<i>2071</i>&nbsp;        } else {
+<b class="fc"><i>2072</i>&nbsp;            renderContent(g);</b>
+<b class="fc"><i>2073</i>&nbsp;            if (PrismSettings.showOverdraw) {</b>
+<b class="nc"><i>2074</i>&nbsp;                p = this instanceof NGRegion || !(this instanceof NGGroup);</b>
+<i>2075</i>&nbsp;            }
+<i>2076</i>&nbsp;        }
+<i>2077</i>&nbsp;
+<b class="fc"><i>2078</i>&nbsp;        if (preCullingTurnedOff) {</b>
+<b class="fc"><i>2079</i>&nbsp;            g.setHasPreCullingBits(true);</b>
+<i>2080</i>&nbsp;        }
+<i>2081</i>&nbsp;
+<i>2082</i>&nbsp;        // restore previous transform state
+<b class="fc"><i>2083</i>&nbsp;        g.setTransform3D(mxx, mxy, mxz, mxt,</b>
+<i>2084</i>&nbsp;                         myx, myy, myz, myt,
+<i>2085</i>&nbsp;                         mzx, mzy, mzz, mzt);
+<i>2086</i>&nbsp;
+<i>2087</i>&nbsp;        // restore previous depth test state
+<b class="fc"><i>2088</i>&nbsp;        g.setDepthTest(prevDepthTest);</b>
+<i>2089</i>&nbsp;
+<b class="fc"><i>2090</i>&nbsp;        if (PULSE_LOGGING_ENABLED) {</b>
+<b class="nc"><i>2091</i>&nbsp;            PulseLogger.incrementCounter(&quot;Nodes rendered&quot;);</b>
+<i>2092</i>&nbsp;        }
+<i>2093</i>&nbsp;
+<i>2094</i>&nbsp;        // Used for debug purposes. This is not entirely accurate, as it doesn&#39;t measure the
+<i>2095</i>&nbsp;        // number of times this node drew to the pixels, and in some cases reports a node as
+<i>2096</i>&nbsp;        // having been drawn even when it didn&#39;t lay down any pixels. We&#39;d need to integrate
+<i>2097</i>&nbsp;        // with our shaders or do something much more invasive to get better data here.
+<b class="fc"><i>2098</i>&nbsp;        if (PrismSettings.showOverdraw) {</b>
+<b class="nc"><i>2099</i>&nbsp;            if (p) {</b>
+<b class="nc"><i>2100</i>&nbsp;                painted |= 3 &lt;&lt; (g.getClipRectIndex() * 2);</b>
+<i>2101</i>&nbsp;            } else {
+<b class="nc"><i>2102</i>&nbsp;                painted |= 1 &lt;&lt; (g.getClipRectIndex() * 2);</b>
+<i>2103</i>&nbsp;            }
+<i>2104</i>&nbsp;        }
+<b class="fc"><i>2105</i>&nbsp;    }</b>
+<i>2106</i>&nbsp;
+<i>2107</i>&nbsp;    /**
+<i>2108</i>&nbsp;     * Return true if this node has a blend mode that requires special
+<i>2109</i>&nbsp;     * processing.
+<i>2110</i>&nbsp;     * Regular nodes can handle null or SRC_OVER just by rendering into
+<i>2111</i>&nbsp;     * the existing buffer.
+<i>2112</i>&nbsp;     * Groups override this since they must collect their children into
+<i>2113</i>&nbsp;     * a single rendering pass if their mode is explicitly SRC_OVER.
+<i>2114</i>&nbsp;     * @return true if this node needs special blending support
+<i>2115</i>&nbsp;     */
+<i>2116</i>&nbsp;    protected boolean needsBlending() {
+<b class="fc"><i>2117</i>&nbsp;        Blend.Mode mode = getNodeBlendMode();</b>
+<b class="fc"><i>2118</i>&nbsp;        return (mode != null &amp;&amp; mode != Blend.Mode.SRC_OVER);</b>
+<i>2119</i>&nbsp;    }
+<i>2120</i>&nbsp;
+<i>2121</i>&nbsp;    private void renderNodeBlendMode(Graphics g) {
+<i>2122</i>&nbsp;        // The following is safe; curXform will not be mutated below
+<b class="nc"><i>2123</i>&nbsp;        BaseTransform curXform = g.getTransformNoClone();</b>
+<i>2124</i>&nbsp;
+<b class="nc"><i>2125</i>&nbsp;        BaseBounds clipBounds = getClippedBounds(new RectBounds(), curXform);</b>
+<b class="nc"><i>2126</i>&nbsp;        if (clipBounds.isEmpty()) {</b>
+<b class="nc"><i>2127</i>&nbsp;            clearDirtyTree();</b>
+<b class="nc"><i>2128</i>&nbsp;            return;</b>
+<i>2129</i>&nbsp;        }
+<i>2130</i>&nbsp;
+<b class="nc"><i>2131</i>&nbsp;        if (!isReadbackSupported(g)) {</b>
+<b class="nc"><i>2132</i>&nbsp;            if (getOpacity() &lt; 1f) {</b>
+<b class="nc"><i>2133</i>&nbsp;                renderOpacity(g);</b>
+<b class="nc"><i>2134</i>&nbsp;            } else if (getClipNode() != null) {</b>
+<b class="nc"><i>2135</i>&nbsp;                renderClip(g);</b>
+<i>2136</i>&nbsp;            } else {
+<b class="nc"><i>2137</i>&nbsp;                renderContent(g);</b>
+<i>2138</i>&nbsp;            }
+<b class="nc"><i>2139</i>&nbsp;            return;</b>
+<i>2140</i>&nbsp;        }
+<i>2141</i>&nbsp;
+<i>2142</i>&nbsp;        // TODO: optimize this (RT-26936)
+<i>2143</i>&nbsp;        // Extract clip bounds
+<b class="nc"><i>2144</i>&nbsp;        Rectangle clipRect = new Rectangle(clipBounds);</b>
+<b class="nc"><i>2145</i>&nbsp;        clipRect.intersectWith(PrEffectHelper.getGraphicsClipNoClone(g));</b>
+<i>2146</i>&nbsp;
+<i>2147</i>&nbsp;        // render the node content into the first offscreen image
+<b class="nc"><i>2148</i>&nbsp;        FilterContext fctx = getFilterContext(g);</b>
+<b class="nc"><i>2149</i>&nbsp;        PrDrawable contentImg = (PrDrawable)</b>
+<b class="nc"><i>2150</i>&nbsp;            Effect.getCompatibleImage(fctx, clipRect.width, clipRect.height);</b>
+<b class="nc"><i>2151</i>&nbsp;        if (contentImg == null) {</b>
+<b class="nc"><i>2152</i>&nbsp;            clearDirtyTree();</b>
+<b class="nc"><i>2153</i>&nbsp;            return;</b>
+<i>2154</i>&nbsp;        }
+<b class="nc"><i>2155</i>&nbsp;        Graphics gContentImg = contentImg.createGraphics();</b>
+<b class="nc"><i>2156</i>&nbsp;        gContentImg.setHasPreCullingBits(g.hasPreCullingBits());</b>
+<b class="nc"><i>2157</i>&nbsp;        gContentImg.setClipRectIndex(g.getClipRectIndex());</b>
+<b class="nc"><i>2158</i>&nbsp;        gContentImg.translate(-clipRect.x, -clipRect.y);</b>
+<b class="nc"><i>2159</i>&nbsp;        gContentImg.transform(curXform);</b>
+<b class="nc"><i>2160</i>&nbsp;        if (getOpacity() &lt; 1f) {</b>
+<b class="nc"><i>2161</i>&nbsp;            renderOpacity(gContentImg);</b>
+<b class="nc"><i>2162</i>&nbsp;        } else if (getCacheFilter() != null) {</b>
+<b class="nc"><i>2163</i>&nbsp;            renderCached(gContentImg);</b>
+<b class="nc"><i>2164</i>&nbsp;        } else if (getClipNode() != null) {</b>
+<b class="nc"><i>2165</i>&nbsp;            renderClip(g);</b>
+<b class="nc"><i>2166</i>&nbsp;        } else if (getEffectFilter() != null) {</b>
+<b class="nc"><i>2167</i>&nbsp;            renderEffect(gContentImg);</b>
+<i>2168</i>&nbsp;        } else {
+<b class="nc"><i>2169</i>&nbsp;            renderContent(gContentImg);</b>
+<i>2170</i>&nbsp;        }
+<i>2171</i>&nbsp;
+<i>2172</i>&nbsp;        // the above image has already been rendered in device space, so
+<i>2173</i>&nbsp;        // just translate to the node origin in device space here...
+<b class="nc"><i>2174</i>&nbsp;        RTTexture bgRTT = ((ReadbackGraphics) g).readBack(clipRect);</b>
+<b class="nc"><i>2175</i>&nbsp;        PrDrawable bgPrD = PrDrawable.create(fctx, bgRTT);</b>
+<b class="nc"><i>2176</i>&nbsp;        Blend blend = new Blend(getNodeBlendMode(),</b>
+<i>2177</i>&nbsp;                                new PassThrough(bgPrD, clipRect),
+<i>2178</i>&nbsp;                                new PassThrough(contentImg, clipRect));
+<b class="nc"><i>2179</i>&nbsp;        CompositeMode oldmode = g.getCompositeMode();</b>
+<b class="nc"><i>2180</i>&nbsp;        g.setTransform(null);</b>
+<b class="nc"><i>2181</i>&nbsp;        g.setCompositeMode(CompositeMode.SRC);</b>
+<b class="nc"><i>2182</i>&nbsp;        PrEffectHelper.render(blend, g, 0, 0, null);</b>
+<b class="nc"><i>2183</i>&nbsp;        g.setCompositeMode(oldmode);</b>
+<i>2184</i>&nbsp;        // transform state will be restored in render() method above...
+<i>2185</i>&nbsp;
+<b class="nc"><i>2186</i>&nbsp;        Effect.releaseCompatibleImage(fctx, contentImg);</b>
+<b class="nc"><i>2187</i>&nbsp;        ((ReadbackGraphics) g).releaseReadBackBuffer(bgRTT);</b>
+<b class="nc"><i>2188</i>&nbsp;    }</b>
+<i>2189</i>&nbsp;
+<i>2190</i>&nbsp;    private void renderRectClip(Graphics g, NGRectangle clipNode) {
+<b class="fc"><i>2191</i>&nbsp;        BaseBounds newClip = clipNode.getShape().getBounds();</b>
+<b class="fc"><i>2192</i>&nbsp;        if (!clipNode.getTransform().isIdentity()) {</b>
+<b class="nc"><i>2193</i>&nbsp;            newClip = clipNode.getTransform().transform(newClip, newClip);</b>
+<i>2194</i>&nbsp;        }
+<b class="fc"><i>2195</i>&nbsp;        final BaseTransform curXform = g.getTransformNoClone();</b>
+<b class="fc"><i>2196</i>&nbsp;        final Rectangle curClip = g.getClipRectNoClone();</b>
+<b class="fc"><i>2197</i>&nbsp;        newClip = curXform.transform(newClip, newClip);</b>
+<b class="fc"><i>2198</i>&nbsp;        newClip.intersectWith(PrEffectHelper.getGraphicsClipNoClone(g));</b>
+<b class="fc"><i>2199</i>&nbsp;        if (newClip.isEmpty() ||</b>
+<b class="fc"><i>2200</i>&nbsp;            newClip.getWidth() == 0 ||</b>
+<b class="fc"><i>2201</i>&nbsp;            newClip.getHeight() == 0) {</b>
+<b class="fc"><i>2202</i>&nbsp;            clearDirtyTree();</b>
+<b class="fc"><i>2203</i>&nbsp;            return;</b>
+<i>2204</i>&nbsp;        }
+<i>2205</i>&nbsp;        // REMIND: avoid garbage by changing setClipRect to accept xywh
+<b class="fc"><i>2206</i>&nbsp;        g.setClipRect(new Rectangle(newClip));</b>
+<b class="fc"><i>2207</i>&nbsp;        renderForClip(g);</b>
+<b class="fc"><i>2208</i>&nbsp;        g.setClipRect(curClip);</b>
+<b class="fc"><i>2209</i>&nbsp;        clipNode.clearDirty(); // as render() is not called on the clipNode,</b>
+<i>2210</i>&nbsp;                               // make sure the dirty flags are cleared
+<b class="fc"><i>2211</i>&nbsp;    }</b>
+<i>2212</i>&nbsp;
+<i>2213</i>&nbsp;    void renderClip(Graphics g) {
+<i>2214</i>&nbsp;        //  if clip&#39;s opacity is 0 there&#39;s nothing to render
+<b class="fc"><i>2215</i>&nbsp;        if (getClipNode().getOpacity() == 0.0) {</b>
+<b class="nc"><i>2216</i>&nbsp;            clearDirtyTree();</b>
+<b class="nc"><i>2217</i>&nbsp;            return;</b>
+<i>2218</i>&nbsp;        }
+<i>2219</i>&nbsp;
+<i>2220</i>&nbsp;        // The following is safe; curXform will not be mutated below
+<b class="fc"><i>2221</i>&nbsp;        BaseTransform curXform = g.getTransformNoClone();</b>
+<i>2222</i>&nbsp;
+<b class="fc"><i>2223</i>&nbsp;        BaseBounds clipBounds = getClippedBounds(new RectBounds(), curXform);</b>
+<b class="fc"><i>2224</i>&nbsp;        if (clipBounds.isEmpty()) {</b>
+<b class="nc"><i>2225</i>&nbsp;            clearDirtyTree();</b>
+<b class="nc"><i>2226</i>&nbsp;            return;</b>
+<i>2227</i>&nbsp;        }
+<i>2228</i>&nbsp;
+<b class="fc"><i>2229</i>&nbsp;        if (getClipNode() instanceof NGRectangle) {</b>
+<i>2230</i>&nbsp;            // optimized case for rectangular clip
+<b class="fc"><i>2231</i>&nbsp;            NGRectangle rectNode = (NGRectangle)getClipNode();</b>
+<b class="fc"><i>2232</i>&nbsp;            if (rectNode.isRectClip(curXform, false)) {</b>
+<b class="fc"><i>2233</i>&nbsp;                renderRectClip(g, rectNode);</b>
+<b class="fc"><i>2234</i>&nbsp;                return;</b>
+<i>2235</i>&nbsp;            }
+<i>2236</i>&nbsp;        }
+<i>2237</i>&nbsp;
+<i>2238</i>&nbsp;        // TODO: optimize this (RT-26936)
+<i>2239</i>&nbsp;        // Extract clip bounds
+<b class="nc"><i>2240</i>&nbsp;        Rectangle clipRect = new Rectangle(clipBounds);</b>
+<b class="nc"><i>2241</i>&nbsp;        clipRect.intersectWith(PrEffectHelper.getGraphicsClipNoClone(g));</b>
+<i>2242</i>&nbsp;
+<b class="nc"><i>2243</i>&nbsp;        if (!curXform.is2D()) {</b>
+<b class="nc"><i>2244</i>&nbsp;            Rectangle savedClip = g.getClipRect();</b>
+<b class="nc"><i>2245</i>&nbsp;            g.setClipRect(clipRect);</b>
+<b class="nc"><i>2246</i>&nbsp;            NodeEffectInput clipInput =</b>
+<b class="nc"><i>2247</i>&nbsp;                new NodeEffectInput(getClipNode(),</b>
+<i>2248</i>&nbsp;                                    NodeEffectInput.RenderType.FULL_CONTENT);
+<b class="nc"><i>2249</i>&nbsp;            NodeEffectInput nodeInput =</b>
+<i>2250</i>&nbsp;                new NodeEffectInput(this,
+<i>2251</i>&nbsp;                                    NodeEffectInput.RenderType.CLIPPED_CONTENT);
+<b class="nc"><i>2252</i>&nbsp;            Blend blend = new Blend(Blend.Mode.SRC_IN, clipInput, nodeInput);</b>
+<b class="nc"><i>2253</i>&nbsp;            PrEffectHelper.render(blend, g, 0, 0, null);</b>
+<b class="nc"><i>2254</i>&nbsp;            clipInput.flush();</b>
+<b class="nc"><i>2255</i>&nbsp;            nodeInput.flush();</b>
+<b class="nc"><i>2256</i>&nbsp;            g.setClipRect(savedClip);</b>
+<i>2257</i>&nbsp;            // There may have been some errors in the application of the
+<i>2258</i>&nbsp;            // effect and we would not know to what extent the nodes were
+<i>2259</i>&nbsp;            // rendered and cleared or left dirty.  clearDirtyTree() will
+<i>2260</i>&nbsp;            // clear both this node its clip node, and it will not recurse
+<i>2261</i>&nbsp;            // to the children unless they are still marked dirty.  It should
+<i>2262</i>&nbsp;            // be cheap if there was no problem and thorough if there was...
+<b class="nc"><i>2263</i>&nbsp;            clearDirtyTree();</b>
+<b class="nc"><i>2264</i>&nbsp;            return;</b>
+<i>2265</i>&nbsp;        }
+<i>2266</i>&nbsp;
+<i>2267</i>&nbsp;        // render the node content into the first offscreen image
+<b class="nc"><i>2268</i>&nbsp;        FilterContext fctx = getFilterContext(g);</b>
+<b class="nc"><i>2269</i>&nbsp;        PrDrawable contentImg = (PrDrawable)</b>
+<b class="nc"><i>2270</i>&nbsp;            Effect.getCompatibleImage(fctx, clipRect.width, clipRect.height);</b>
+<b class="nc"><i>2271</i>&nbsp;        if (contentImg == null) {</b>
+<b class="nc"><i>2272</i>&nbsp;            clearDirtyTree();</b>
+<b class="nc"><i>2273</i>&nbsp;            return;</b>
+<i>2274</i>&nbsp;        }
+<b class="nc"><i>2275</i>&nbsp;        Graphics gContentImg = contentImg.createGraphics();</b>
+<b class="nc"><i>2276</i>&nbsp;        gContentImg.setExtraAlpha(g.getExtraAlpha());</b>
+<b class="nc"><i>2277</i>&nbsp;        gContentImg.setHasPreCullingBits(g.hasPreCullingBits());</b>
+<b class="nc"><i>2278</i>&nbsp;        gContentImg.setClipRectIndex(g.getClipRectIndex());</b>
+<b class="nc"><i>2279</i>&nbsp;        gContentImg.translate(-clipRect.x, -clipRect.y);</b>
+<b class="nc"><i>2280</i>&nbsp;        gContentImg.transform(curXform);</b>
+<b class="nc"><i>2281</i>&nbsp;        renderForClip(gContentImg);</b>
+<i>2282</i>&nbsp;
+<i>2283</i>&nbsp;        // render the mask (clipNode) into the second offscreen image
+<b class="nc"><i>2284</i>&nbsp;        PrDrawable clipImg = (PrDrawable)</b>
+<b class="nc"><i>2285</i>&nbsp;            Effect.getCompatibleImage(fctx, clipRect.width, clipRect.height);</b>
+<b class="nc"><i>2286</i>&nbsp;        if (clipImg == null) {</b>
+<b class="nc"><i>2287</i>&nbsp;            getClipNode().clearDirtyTree();</b>
+<b class="nc"><i>2288</i>&nbsp;            Effect.releaseCompatibleImage(fctx, contentImg);</b>
+<b class="nc"><i>2289</i>&nbsp;            return;</b>
+<i>2290</i>&nbsp;        }
+<b class="nc"><i>2291</i>&nbsp;        Graphics gClipImg = clipImg.createGraphics();</b>
+<b class="nc"><i>2292</i>&nbsp;        gClipImg.translate(-clipRect.x, -clipRect.y);</b>
+<b class="nc"><i>2293</i>&nbsp;        gClipImg.transform(curXform);</b>
+<b class="nc"><i>2294</i>&nbsp;        getClipNode().render(gClipImg);</b>
+<i>2295</i>&nbsp;
+<i>2296</i>&nbsp;        // the above images have already been rendered in device space, so
+<i>2297</i>&nbsp;        // just translate to the node origin in device space here...
+<b class="nc"><i>2298</i>&nbsp;        g.setTransform(null);</b>
+<b class="nc"><i>2299</i>&nbsp;        Blend blend = new Blend(Blend.Mode.SRC_IN,</b>
+<i>2300</i>&nbsp;                                new PassThrough(clipImg, clipRect),
+<i>2301</i>&nbsp;                                new PassThrough(contentImg, clipRect));
+<b class="nc"><i>2302</i>&nbsp;        PrEffectHelper.render(blend, g, 0, 0, null);</b>
+<i>2303</i>&nbsp;        // transform state will be restored in render() method above...
+<i>2304</i>&nbsp;
+<b class="nc"><i>2305</i>&nbsp;        Effect.releaseCompatibleImage(fctx, contentImg);</b>
+<b class="nc"><i>2306</i>&nbsp;        Effect.releaseCompatibleImage(fctx, clipImg);</b>
+<b class="nc"><i>2307</i>&nbsp;    }</b>
+<i>2308</i>&nbsp;
+<i>2309</i>&nbsp;    void renderForClip(Graphics g) {
+<b class="fc"><i>2310</i>&nbsp;        if (getEffectFilter() != null) {</b>
+<b class="nc"><i>2311</i>&nbsp;            renderEffect(g);</b>
+<i>2312</i>&nbsp;        } else {
+<b class="fc"><i>2313</i>&nbsp;            renderContent(g);</b>
+<i>2314</i>&nbsp;        }
+<b class="fc"><i>2315</i>&nbsp;    }</b>
+<i>2316</i>&nbsp;
+<i>2317</i>&nbsp;    private void renderOpacity(Graphics g) {
+<b class="fc"><i>2318</i>&nbsp;        if (getEffectFilter() != null ||</b>
+<b class="fc"><i>2319</i>&nbsp;            getCacheFilter() != null ||</b>
+<b class="fc"><i>2320</i>&nbsp;            getClipNode() != null ||</b>
+<b class="fc"><i>2321</i>&nbsp;            !hasOverlappingContents())</b>
+<i>2322</i>&nbsp;        {
+<i>2323</i>&nbsp;            // if the node has a non-null effect or cached==true, we don&#39;t
+<i>2324</i>&nbsp;            // need to bother rendering to an offscreen here because the
+<i>2325</i>&nbsp;            // contents will be flattened as part of rendering the effect
+<i>2326</i>&nbsp;            // (or creating the cached image)
+<b class="nc"><i>2327</i>&nbsp;            float ea = g.getExtraAlpha();</b>
+<b class="nc"><i>2328</i>&nbsp;            g.setExtraAlpha(ea*getOpacity());</b>
+<b class="nc"><i>2329</i>&nbsp;            if (getCacheFilter() != null) {</b>
+<b class="nc"><i>2330</i>&nbsp;                renderCached(g);</b>
+<b class="nc"><i>2331</i>&nbsp;            } else if (getClipNode() != null) {</b>
+<b class="nc"><i>2332</i>&nbsp;                renderClip(g);</b>
+<b class="nc"><i>2333</i>&nbsp;            } else if (getEffectFilter() != null) {</b>
+<b class="nc"><i>2334</i>&nbsp;                renderEffect(g);</b>
+<i>2335</i>&nbsp;            } else {
+<b class="nc"><i>2336</i>&nbsp;                renderContent(g);</b>
+<i>2337</i>&nbsp;            }
+<b class="nc"><i>2338</i>&nbsp;            g.setExtraAlpha(ea);</b>
+<b class="nc"><i>2339</i>&nbsp;            return;</b>
+<i>2340</i>&nbsp;        }
+<i>2341</i>&nbsp;
+<b class="fc"><i>2342</i>&nbsp;        FilterContext fctx = getFilterContext(g);</b>
+<b class="fc"><i>2343</i>&nbsp;        BaseTransform curXform = g.getTransformNoClone();</b>
+<b class="fc"><i>2344</i>&nbsp;        BaseBounds bounds = getContentBounds(new RectBounds(), curXform);</b>
+<b class="fc"><i>2345</i>&nbsp;        Rectangle r = new Rectangle(bounds);</b>
+<b class="fc"><i>2346</i>&nbsp;        r.intersectWith(PrEffectHelper.getGraphicsClipNoClone(g));</b>
+<b class="fc"><i>2347</i>&nbsp;        PrDrawable img = (PrDrawable)</b>
+<b class="fc"><i>2348</i>&nbsp;            Effect.getCompatibleImage(fctx, r.width, r.height);</b>
+<b class="fc"><i>2349</i>&nbsp;        if (img == null) {</b>
+<b class="nc"><i>2350</i>&nbsp;            return;</b>
+<i>2351</i>&nbsp;        }
+<b class="fc"><i>2352</i>&nbsp;        Graphics gImg = img.createGraphics();</b>
+<b class="fc"><i>2353</i>&nbsp;        gImg.setHasPreCullingBits(g.hasPreCullingBits());</b>
+<b class="fc"><i>2354</i>&nbsp;        gImg.setClipRectIndex(g.getClipRectIndex());</b>
+<b class="fc"><i>2355</i>&nbsp;        gImg.translate(-r.x, -r.y);</b>
+<b class="fc"><i>2356</i>&nbsp;        gImg.transform(curXform);</b>
+<b class="fc"><i>2357</i>&nbsp;        renderContent(gImg);</b>
+<i>2358</i>&nbsp;        // img contents have already been rendered in device space, so
+<i>2359</i>&nbsp;        // just translate to the node origin in device space here...
+<b class="fc"><i>2360</i>&nbsp;        g.setTransform(null);</b>
+<b class="fc"><i>2361</i>&nbsp;        float ea = g.getExtraAlpha();</b>
+<b class="fc"><i>2362</i>&nbsp;        g.setExtraAlpha(getOpacity()*ea);</b>
+<b class="fc"><i>2363</i>&nbsp;        g.drawTexture(img.getTextureObject(), r.x, r.y, r.width, r.height);</b>
+<b class="fc"><i>2364</i>&nbsp;        g.setExtraAlpha(ea);</b>
+<i>2365</i>&nbsp;        // transform state will be restored in render() method above...
+<b class="fc"><i>2366</i>&nbsp;        Effect.releaseCompatibleImage(fctx, img);</b>
+<b class="fc"><i>2367</i>&nbsp;    }</b>
+<i>2368</i>&nbsp;
+<i>2369</i>&nbsp;    private void renderCached(Graphics g) {
+<i>2370</i>&nbsp;        // We will punt on 3D completely for caching.
+<i>2371</i>&nbsp;        // The first check is for any of its children contains a 3D Transform.
+<i>2372</i>&nbsp;        // The second check is for any of its parents and itself has a 3D Transform
+<i>2373</i>&nbsp;        // The third check is for the printing case, which doesn&#39;t use cached
+<i>2374</i>&nbsp;        // bitmaps for the screen and for which there is no cacheFilter.
+<b class="nc"><i>2375</i>&nbsp;        if (isContentBounds2D() &amp;&amp; g.getTransformNoClone().is2D() &amp;&amp;</b>
+<i>2376</i>&nbsp;                !(g instanceof com.sun.prism.PrinterGraphics)) {
+<b class="nc"><i>2377</i>&nbsp;            getCacheFilter().render(g);</b>
+<i>2378</i>&nbsp;        } else {
+<b class="nc"><i>2379</i>&nbsp;            renderContent(g);</b>
+<i>2380</i>&nbsp;        }
+<b class="nc"><i>2381</i>&nbsp;    }</b>
+<i>2382</i>&nbsp;
+<i>2383</i>&nbsp;    protected void renderEffect(Graphics g) {
+<b class="fc"><i>2384</i>&nbsp;        getEffectFilter().render(g);</b>
+<b class="fc"><i>2385</i>&nbsp;    }</b>
+<i>2386</i>&nbsp;
+<i>2387</i>&nbsp;    protected abstract void renderContent(Graphics g);
+<i>2388</i>&nbsp;
+<i>2389</i>&nbsp;    protected abstract boolean hasOverlappingContents();
+<i>2390</i>&nbsp;
+<i>2391</i>&nbsp;    /***************************************************************************
+<i>2392</i>&nbsp;     *                                                                         *
+<i>2393</i>&nbsp;     *                       Static Helper Methods.                            *
+<i>2394</i>&nbsp;     *                                                                         *
+<i>2395</i>&nbsp;     **************************************************************************/
+<i>2396</i>&nbsp;
+<i>2397</i>&nbsp;    boolean isReadbackSupported(Graphics g) {
+<b class="nc"><i>2398</i>&nbsp;        return ((g instanceof ReadbackGraphics) &amp;&amp;</b>
+<b class="nc"><i>2399</i>&nbsp;                ((ReadbackGraphics) g).canReadBack());</b>
+<i>2400</i>&nbsp;    }
+<i>2401</i>&nbsp;
+<i>2402</i>&nbsp;    /***************************************************************************
+<i>2403</i>&nbsp;     *                                                                         *
+<i>2404</i>&nbsp;     *                      Filters (Cache, Effect, etc).                      *
+<i>2405</i>&nbsp;     *                                                                         *
+<i>2406</i>&nbsp;     **************************************************************************/
+<i>2407</i>&nbsp;
+<i>2408</i>&nbsp;    static FilterContext getFilterContext(Graphics g) {
+<b class="fc"><i>2409</i>&nbsp;        Screen s = g.getAssociatedScreen();</b>
+<b class="fc"><i>2410</i>&nbsp;        if (s == null) {</b>
+<b class="nc"><i>2411</i>&nbsp;            return PrFilterContext.getPrinterContext(g.getResourceFactory());</b>
+<i>2412</i>&nbsp;        } else {
+<b class="fc"><i>2413</i>&nbsp;            return PrFilterContext.getInstance(s);</b>
+<i>2414</i>&nbsp;        }
+<i>2415</i>&nbsp;    }
+<i>2416</i>&nbsp;
+<i>2417</i>&nbsp;    /**
+<i>2418</i>&nbsp;     * A custom effect implementation that has a filter() method that
+<i>2419</i>&nbsp;     * simply wraps the given pre-rendered PrDrawable in an ImageData
+<i>2420</i>&nbsp;     * and returns that result.  This is only used by the renderClip()
+<i>2421</i>&nbsp;     * implementation so we cut some corners here (for example, we assume
+<i>2422</i>&nbsp;     * that the given PrDrawable image is already in device space).
+<i>2423</i>&nbsp;     */
+<i>2424</i>&nbsp;    private static class PassThrough extends Effect {
+<i>2425</i>&nbsp;        private PrDrawable img;
+<i>2426</i>&nbsp;        private Rectangle bounds;
+<i>2427</i>&nbsp;
+<b class="nc"><i>2428</i>&nbsp;        PassThrough(PrDrawable img, Rectangle bounds) {</b>
+<b class="nc"><i>2429</i>&nbsp;            this.img = img;</b>
+<b class="nc"><i>2430</i>&nbsp;            this.bounds = bounds;</b>
+<b class="nc"><i>2431</i>&nbsp;        }</b>
+<i>2432</i>&nbsp;
+<i>2433</i>&nbsp;        @Override
+<i>2434</i>&nbsp;        public ImageData filter(FilterContext fctx,
+<i>2435</i>&nbsp;                                BaseTransform transform,
+<i>2436</i>&nbsp;                                Rectangle outputClip,
+<i>2437</i>&nbsp;                                Object renderHelper,
+<i>2438</i>&nbsp;                                Effect defaultInput)
+<i>2439</i>&nbsp;        {
+<b class="nc"><i>2440</i>&nbsp;            img.lock();</b>
+<b class="nc"><i>2441</i>&nbsp;            ImageData id = new ImageData(fctx, img, new Rectangle(bounds));</b>
+<b class="nc"><i>2442</i>&nbsp;            id.setReusable(true);</b>
+<b class="nc"><i>2443</i>&nbsp;            return id;</b>
+<i>2444</i>&nbsp;        }
+<i>2445</i>&nbsp;
+<i>2446</i>&nbsp;        @Override
+<i>2447</i>&nbsp;        public RectBounds getBounds(BaseTransform transform,
+<i>2448</i>&nbsp;                                  Effect defaultInput)
+<i>2449</i>&nbsp;        {
+<b class="nc"><i>2450</i>&nbsp;            return new RectBounds(bounds);</b>
+<i>2451</i>&nbsp;        }
+<i>2452</i>&nbsp;
+<i>2453</i>&nbsp;        @Override
+<i>2454</i>&nbsp;        public AccelType getAccelType(FilterContext fctx) {
+<b class="nc"><i>2455</i>&nbsp;            return AccelType.INTRINSIC;</b>
+<i>2456</i>&nbsp;        }
+<i>2457</i>&nbsp;
+<i>2458</i>&nbsp;        @Override
+<i>2459</i>&nbsp;        public boolean reducesOpaquePixels() {
+<b class="nc"><i>2460</i>&nbsp;            return false;</b>
+<i>2461</i>&nbsp;        }
+<i>2462</i>&nbsp;
+<i>2463</i>&nbsp;        @Override
+<i>2464</i>&nbsp;        public DirtyRegionContainer getDirtyRegions(Effect defaultInput, DirtyRegionPool regionPool) {
+<b class="nc"><i>2465</i>&nbsp;            return null; //Never called</b>
+<i>2466</i>&nbsp;        }
+<i>2467</i>&nbsp;    }
+<i>2468</i>&nbsp;
+<i>2469</i>&nbsp;    /***************************************************************************
+<i>2470</i>&nbsp;     *                                                                         *
+<i>2471</i>&nbsp;     * Stuff                                                                   *
+<i>2472</i>&nbsp;     *                                                                         *
+<i>2473</i>&nbsp;     **************************************************************************/
+<i>2474</i>&nbsp;
+<i>2475</i>&nbsp;    public void release() {
+<b class="fc"><i>2476</i>&nbsp;    }</b>
+<i>2477</i>&nbsp;
+<i>2478</i>&nbsp;    @Override public String toString() {
+<b class="nc"><i>2479</i>&nbsp;        return name == null ? super.toString() : name;</b>
+<i>2480</i>&nbsp;    }
+<i>2481</i>&nbsp;
+<i>2482</i>&nbsp;    public void applyTransform(final BaseTransform tx, DirtyRegionContainer drc) {
+<b class="fc"><i>2483</i>&nbsp;        for (int i = 0; i &lt; drc.size(); i++) {</b>
+<b class="fc"><i>2484</i>&nbsp;            drc.setDirtyRegion(i, (RectBounds) tx.transform(drc.getDirtyRegion(i), drc.getDirtyRegion(i)));</b>
+<b class="fc"><i>2485</i>&nbsp;            if (drc.checkAndClearRegion(i)) {</b>
+<b class="nc"><i>2486</i>&nbsp;                --i;</b>
+<i>2487</i>&nbsp;            }
+<i>2488</i>&nbsp;        }
+<b class="fc"><i>2489</i>&nbsp;    }</b>
+<i>2490</i>&nbsp;
+<i>2491</i>&nbsp;    public void applyClip(final BaseBounds clipBounds, DirtyRegionContainer drc) {
+<b class="nc"><i>2492</i>&nbsp;        for (int i = 0; i &lt; drc.size(); i++) {</b>
+<b class="nc"><i>2493</i>&nbsp;            drc.getDirtyRegion(i).intersectWith(clipBounds);</b>
+<b class="nc"><i>2494</i>&nbsp;            if (drc.checkAndClearRegion(i)) {</b>
+<b class="nc"><i>2495</i>&nbsp;                --i;</b>
+<i>2496</i>&nbsp;            }
+<i>2497</i>&nbsp;        }
+<b class="nc"><i>2498</i>&nbsp;    }</b>
+<i>2499</i>&nbsp;
+<i>2500</i>&nbsp;    public void applyEffect(final EffectFilter effectFilter, DirtyRegionContainer drc, DirtyRegionPool regionPool) {
+<b class="fc"><i>2501</i>&nbsp;        Effect effect = effectFilter.getEffect();</b>
+<b class="fc"><i>2502</i>&nbsp;        EffectDirtyBoundsHelper helper = EffectDirtyBoundsHelper.getInstance();</b>
+<b class="fc"><i>2503</i>&nbsp;        helper.setInputBounds(contentBounds);</b>
+<b class="fc"><i>2504</i>&nbsp;        helper.setDirtyRegions(drc);</b>
+<b class="fc"><i>2505</i>&nbsp;        final DirtyRegionContainer effectDrc = effect.getDirtyRegions(helper, regionPool);</b>
+<b class="fc"><i>2506</i>&nbsp;        drc.deriveWithNewContainer(effectDrc);</b>
+<b class="fc"><i>2507</i>&nbsp;        regionPool.checkIn(effectDrc);</b>
+<b class="fc"><i>2508</i>&nbsp;    }</b>
+<i>2509</i>&nbsp;
+<b class="fc"><i>2510</i>&nbsp;    private static class EffectDirtyBoundsHelper extends Effect {</b>
+<i>2511</i>&nbsp;        private BaseBounds bounds;
+<b class="fc"><i>2512</i>&nbsp;        private static EffectDirtyBoundsHelper instance = null;</b>
+<i>2513</i>&nbsp;        private DirtyRegionContainer drc;
+<i>2514</i>&nbsp;
+<i>2515</i>&nbsp;        public void setInputBounds(BaseBounds inputBounds) {
+<b class="fc"><i>2516</i>&nbsp;            bounds = inputBounds;</b>
+<b class="fc"><i>2517</i>&nbsp;        }</b>
+<i>2518</i>&nbsp;
+<i>2519</i>&nbsp;        @Override
+<i>2520</i>&nbsp;        public ImageData filter(FilterContext fctx,
+<i>2521</i>&nbsp;                BaseTransform transform,
+<i>2522</i>&nbsp;                Rectangle outputClip,
+<i>2523</i>&nbsp;                Object renderHelper,
+<i>2524</i>&nbsp;                Effect defaultInput) {
+<b class="nc"><i>2525</i>&nbsp;            throw new UnsupportedOperationException();</b>
+<i>2526</i>&nbsp;        }
+<i>2527</i>&nbsp;
+<i>2528</i>&nbsp;        @Override
+<i>2529</i>&nbsp;        public BaseBounds getBounds(BaseTransform transform, Effect defaultInput) {
+<b class="nc"><i>2530</i>&nbsp;            if (bounds.getBoundsType() == BaseBounds.BoundsType.RECTANGLE) {</b>
+<b class="nc"><i>2531</i>&nbsp;                return bounds;</b>
+<i>2532</i>&nbsp;            } else {
+<i>2533</i>&nbsp;                //RT-29453 - CCE: in case we get 3D bounds we need to &quot;flatten&quot; them
+<b class="nc"><i>2534</i>&nbsp;                return new RectBounds(bounds.getMinX(), bounds.getMinY(), bounds.getMaxX(), bounds.getMaxY());</b>
+<i>2535</i>&nbsp;            }
+<i>2536</i>&nbsp;        }
+<i>2537</i>&nbsp;
+<i>2538</i>&nbsp;        @Override
+<i>2539</i>&nbsp;        public Effect.AccelType getAccelType(FilterContext fctx) {
+<b class="nc"><i>2540</i>&nbsp;            return null;</b>
+<i>2541</i>&nbsp;        }
+<i>2542</i>&nbsp;
+<i>2543</i>&nbsp;        public static EffectDirtyBoundsHelper getInstance() {
+<b class="fc"><i>2544</i>&nbsp;            if (instance == null) {</b>
+<b class="fc"><i>2545</i>&nbsp;                instance = new EffectDirtyBoundsHelper();</b>
+<i>2546</i>&nbsp;            }
+<b class="fc"><i>2547</i>&nbsp;            return instance;</b>
+<i>2548</i>&nbsp;        }
+<i>2549</i>&nbsp;
+<i>2550</i>&nbsp;        @Override
+<i>2551</i>&nbsp;        public boolean reducesOpaquePixels() {
+<b class="nc"><i>2552</i>&nbsp;            return true;</b>
+<i>2553</i>&nbsp;        }
+<i>2554</i>&nbsp;
+<i>2555</i>&nbsp;        private void setDirtyRegions(DirtyRegionContainer drc) {
+<b class="fc"><i>2556</i>&nbsp;            this.drc = drc;</b>
+<b class="fc"><i>2557</i>&nbsp;        }</b>
+<i>2558</i>&nbsp;
+<i>2559</i>&nbsp;        @Override
+<i>2560</i>&nbsp;        public DirtyRegionContainer getDirtyRegions(Effect defaultInput, DirtyRegionPool regionPool) {
+<b class="fc"><i>2561</i>&nbsp;            DirtyRegionContainer ret = regionPool.checkOut();</b>
+<b class="fc"><i>2562</i>&nbsp;            ret.deriveWithNewContainer(drc);</b>
+<i>2563</i>&nbsp;
+<b class="fc"><i>2564</i>&nbsp;            return ret;</b>
+<i>2565</i>&nbsp;        }
+<i>2566</i>&nbsp;
+<i>2567</i>&nbsp;    }
+<i>2568</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2017-12-04 21:49</div>
+</div>
+</body>
+</html>

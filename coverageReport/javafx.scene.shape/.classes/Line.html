@@ -1,0 +1,544 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: Line</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">javafx.scene.shape</a> ]
+</div>
+
+<h1>Coverage Summary for Class: Line (javafx.scene.shape)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">Line</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 23)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 124)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright (c) 2010, 2016, Oracle and/or its affiliates. All rights reserved.
+<i>3</i>&nbsp; * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+<i>4</i>&nbsp; *
+<i>5</i>&nbsp; *
+<i>6</i>&nbsp; *
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; *
+<i>11</i>&nbsp; *
+<i>12</i>&nbsp; *
+<i>13</i>&nbsp; *
+<i>14</i>&nbsp; *
+<i>15</i>&nbsp; *
+<i>16</i>&nbsp; *
+<i>17</i>&nbsp; *
+<i>18</i>&nbsp; *
+<i>19</i>&nbsp; *
+<i>20</i>&nbsp; *
+<i>21</i>&nbsp; *
+<i>22</i>&nbsp; *
+<i>23</i>&nbsp; *
+<i>24</i>&nbsp; */
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;package javafx.scene.shape;
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;import com.sun.javafx.geom.BaseBounds;
+<i>29</i>&nbsp;import com.sun.javafx.geom.Line2D;
+<i>30</i>&nbsp;import com.sun.javafx.geom.transform.BaseTransform;
+<i>31</i>&nbsp;import com.sun.javafx.scene.DirtyBits;
+<i>32</i>&nbsp;import com.sun.javafx.scene.NodeHelper;
+<i>33</i>&nbsp;import com.sun.javafx.scene.shape.LineHelper;
+<i>34</i>&nbsp;import com.sun.javafx.sg.prism.NGLine;
+<i>35</i>&nbsp;import com.sun.javafx.sg.prism.NGNode;
+<i>36</i>&nbsp;import com.sun.javafx.sg.prism.NGShape;
+<i>37</i>&nbsp;import javafx.beans.property.DoubleProperty;
+<i>38</i>&nbsp;import javafx.beans.property.DoublePropertyBase;
+<i>39</i>&nbsp;import javafx.css.StyleableProperty;
+<i>40</i>&nbsp;import javafx.scene.Node;
+<i>41</i>&nbsp;import javafx.scene.paint.Color;
+<i>42</i>&nbsp;import javafx.scene.paint.Paint;
+<i>43</i>&nbsp;
+<i>44</i>&nbsp;
+<i>45</i>&nbsp;/**
+<i>46</i>&nbsp; * This Line represents a line segment in {@code (x,y)}
+<i>47</i>&nbsp; * coordinate space. Example:
+<i>48</i>&nbsp; *
+<i>49</i>&nbsp;&lt;PRE&gt;
+<i>50</i>&nbsp;import javafx.scene.shape.*;
+<i>51</i>&nbsp;
+<i>52</i>&nbsp;Line line = new Line();
+<i>53</i>&nbsp;line.setStartX(0.0f);
+<i>54</i>&nbsp;line.setStartY(0.0f);
+<i>55</i>&nbsp;line.setEndX(100.0f);
+<i>56</i>&nbsp;line.setEndY(100.0f);
+<i>57</i>&nbsp;}
+<i>58</i>&nbsp;&lt;/PRE&gt;
+<i>59</i>&nbsp; * @since JavaFX 2.0
+<i>60</i>&nbsp; */
+<b class="nc"><i>61</i>&nbsp;public class Line extends Shape {</b>
+<i>62</i>&nbsp;    static {
+<b class="nc"><i>63</i>&nbsp;        LineHelper.setLineAccessor(new LineHelper.LineAccessor() {</b>
+<i>64</i>&nbsp;            @Override
+<i>65</i>&nbsp;            public NGNode doCreatePeer(Node node) {
+<i>66</i>&nbsp;                return ((Line) node).doCreatePeer();
+<i>67</i>&nbsp;            }
+<i>68</i>&nbsp;
+<i>69</i>&nbsp;            @Override
+<i>70</i>&nbsp;            public void doUpdatePeer(Node node) {
+<i>71</i>&nbsp;                ((Line) node).doUpdatePeer();
+<i>72</i>&nbsp;            }
+<i>73</i>&nbsp;
+<i>74</i>&nbsp;            @Override
+<i>75</i>&nbsp;            public BaseBounds doComputeGeomBounds(Node node,
+<i>76</i>&nbsp;                    BaseBounds bounds, BaseTransform tx) {
+<i>77</i>&nbsp;                return ((Line) node).doComputeGeomBounds(bounds, tx);
+<i>78</i>&nbsp;            }
+<i>79</i>&nbsp;
+<i>80</i>&nbsp;            @Override
+<i>81</i>&nbsp;            public Paint doCssGetFillInitialValue(Shape shape) {
+<i>82</i>&nbsp;                return ((Line) shape).doCssGetFillInitialValue();
+<i>83</i>&nbsp;            }
+<i>84</i>&nbsp;
+<i>85</i>&nbsp;            @Override
+<i>86</i>&nbsp;            public Paint doCssGetStrokeInitialValue(Shape shape) {
+<i>87</i>&nbsp;                return ((Line) shape).doCssGetStrokeInitialValue();
+<i>88</i>&nbsp;            }
+<i>89</i>&nbsp;
+<i>90</i>&nbsp;            @Override
+<i>91</i>&nbsp;            public com.sun.javafx.geom.Shape doConfigShape(Shape shape) {
+<i>92</i>&nbsp;                return ((Line) shape).doConfigShape();
+<i>93</i>&nbsp;            }
+<i>94</i>&nbsp;        });
+<b class="nc"><i>95</i>&nbsp;    }</b>
+<i>96</i>&nbsp;
+<b class="nc"><i>97</i>&nbsp;    private final Line2D shape = new Line2D();</b>
+<i>98</i>&nbsp;
+<i>99</i>&nbsp;    {
+<i>100</i>&nbsp;        // To initialize the class helper at the begining each constructor of this class
+<b class="nc"><i>101</i>&nbsp;        LineHelper.initHelper(this);</b>
+<i>102</i>&nbsp;
+<i>103</i>&nbsp;        // overriding default values for fill and stroke
+<i>104</i>&nbsp;        // Set through CSS property so that it appears to be a UA style rather
+<i>105</i>&nbsp;        // that a USER style so that fill and stroke can still be set from CSS.
+<b class="nc"><i>106</i>&nbsp;        ((StyleableProperty)fillProperty()).applyStyle(null, null);</b>
+<b class="nc"><i>107</i>&nbsp;        ((StyleableProperty)strokeProperty()).applyStyle(null, Color.BLACK);</b>
+<i>108</i>&nbsp;    }
+<i>109</i>&nbsp;
+<i>110</i>&nbsp;    /**
+<i>111</i>&nbsp;     * Creates an empty instance of Line.
+<i>112</i>&nbsp;     */
+<b class="nc"><i>113</i>&nbsp;    public Line() {</b>
+<b class="nc"><i>114</i>&nbsp;    }</b>
+<i>115</i>&nbsp;
+<i>116</i>&nbsp;    /**
+<i>117</i>&nbsp;     * Creates a new instance of Line.
+<i>118</i>&nbsp;     * @param startX the horizontal coordinate of the start point of the line segment
+<i>119</i>&nbsp;     * @param startY the vertical coordinate of the start point of the line segment
+<i>120</i>&nbsp;     * @param endX the horizontal coordinate of the end point of the line segment
+<i>121</i>&nbsp;     * @param endY the vertical coordinate of the end point of the line segment
+<i>122</i>&nbsp;     */
+<b class="nc"><i>123</i>&nbsp;    public Line(double startX, double startY, double endX, double endY) {</b>
+<b class="nc"><i>124</i>&nbsp;        setStartX(startX);</b>
+<b class="nc"><i>125</i>&nbsp;        setStartY(startY);</b>
+<b class="nc"><i>126</i>&nbsp;        setEndX(endX);</b>
+<b class="nc"><i>127</i>&nbsp;        setEndY(endY);</b>
+<b class="nc"><i>128</i>&nbsp;    }</b>
+<i>129</i>&nbsp;
+<i>130</i>&nbsp;    /**
+<i>131</i>&nbsp;     * The X coordinate of the start point of the line segment.
+<i>132</i>&nbsp;     *
+<i>133</i>&nbsp;     * @defaultValue 0.0
+<i>134</i>&nbsp;     */
+<b class="nc"><i>135</i>&nbsp;    private final DoubleProperty startX = new DoublePropertyBase() {</b>
+<i>136</i>&nbsp;
+<i>137</i>&nbsp;                @Override
+<i>138</i>&nbsp;                public void invalidated() {
+<i>139</i>&nbsp;                    NodeHelper.markDirty(Line.this, DirtyBits.NODE_GEOMETRY);
+<i>140</i>&nbsp;                    NodeHelper.geomChanged(Line.this);
+<i>141</i>&nbsp;                }
+<i>142</i>&nbsp;
+<i>143</i>&nbsp;                @Override
+<i>144</i>&nbsp;                public Object getBean() {
+<i>145</i>&nbsp;                    return Line.this;
+<i>146</i>&nbsp;                }
+<i>147</i>&nbsp;
+<i>148</i>&nbsp;                @Override
+<i>149</i>&nbsp;                public String getName() {
+<i>150</i>&nbsp;                    return &quot;startX&quot;;
+<i>151</i>&nbsp;                }
+<i>152</i>&nbsp;            };
+<i>153</i>&nbsp;
+<i>154</i>&nbsp;
+<i>155</i>&nbsp;    public final void setStartX(double value) {
+<b class="nc"><i>156</i>&nbsp;        startX.set(value);</b>
+<b class="nc"><i>157</i>&nbsp;    }</b>
+<i>158</i>&nbsp;
+<i>159</i>&nbsp;    public final double getStartX() {
+<b class="nc"><i>160</i>&nbsp;        return startX.get();</b>
+<i>161</i>&nbsp;    }
+<i>162</i>&nbsp;
+<i>163</i>&nbsp;    public final DoubleProperty startXProperty() {
+<b class="nc"><i>164</i>&nbsp;        return startX;</b>
+<i>165</i>&nbsp;    }
+<i>166</i>&nbsp;
+<i>167</i>&nbsp;    /**
+<i>168</i>&nbsp;     * The Y coordinate of the start point of the line segment.
+<i>169</i>&nbsp;     *
+<i>170</i>&nbsp;     * @defaultValue 0.0
+<i>171</i>&nbsp;     */
+<b class="nc"><i>172</i>&nbsp;    private final DoubleProperty startY = new DoublePropertyBase() {</b>
+<i>173</i>&nbsp;
+<i>174</i>&nbsp;                @Override
+<i>175</i>&nbsp;                public void invalidated() {
+<i>176</i>&nbsp;                    NodeHelper.markDirty(Line.this, DirtyBits.NODE_GEOMETRY);
+<i>177</i>&nbsp;                    NodeHelper.geomChanged(Line.this);
+<i>178</i>&nbsp;                }
+<i>179</i>&nbsp;
+<i>180</i>&nbsp;                @Override
+<i>181</i>&nbsp;                public Object getBean() {
+<i>182</i>&nbsp;                    return Line.this;
+<i>183</i>&nbsp;                }
+<i>184</i>&nbsp;
+<i>185</i>&nbsp;                @Override
+<i>186</i>&nbsp;                public String getName() {
+<i>187</i>&nbsp;                    return &quot;startY&quot;;
+<i>188</i>&nbsp;                }
+<i>189</i>&nbsp;            };
+<i>190</i>&nbsp;
+<i>191</i>&nbsp;
+<i>192</i>&nbsp;    public final void setStartY(double value) {
+<b class="nc"><i>193</i>&nbsp;        startY.set(value);</b>
+<b class="nc"><i>194</i>&nbsp;    }</b>
+<i>195</i>&nbsp;
+<i>196</i>&nbsp;    public final double getStartY() {
+<b class="nc"><i>197</i>&nbsp;        return startY.get();</b>
+<i>198</i>&nbsp;    }
+<i>199</i>&nbsp;
+<i>200</i>&nbsp;    public final DoubleProperty startYProperty() {
+<b class="nc"><i>201</i>&nbsp;        return startY;</b>
+<i>202</i>&nbsp;    }
+<i>203</i>&nbsp;
+<i>204</i>&nbsp;    /**
+<i>205</i>&nbsp;     * The X coordinate of the end point of the line segment.
+<i>206</i>&nbsp;     *
+<i>207</i>&nbsp;     * @defaultValue 0.0
+<i>208</i>&nbsp;     */
+<b class="nc"><i>209</i>&nbsp;    private final DoubleProperty endX = new DoublePropertyBase() {</b>
+<i>210</i>&nbsp;
+<i>211</i>&nbsp;        @Override
+<i>212</i>&nbsp;        public void invalidated() {
+<i>213</i>&nbsp;            NodeHelper.markDirty(Line.this, DirtyBits.NODE_GEOMETRY);
+<i>214</i>&nbsp;            NodeHelper.geomChanged(Line.this);
+<i>215</i>&nbsp;        }
+<i>216</i>&nbsp;
+<i>217</i>&nbsp;        @Override
+<i>218</i>&nbsp;        public Object getBean() {
+<i>219</i>&nbsp;            return Line.this;
+<i>220</i>&nbsp;        }
+<i>221</i>&nbsp;
+<i>222</i>&nbsp;        @Override
+<i>223</i>&nbsp;        public String getName() {
+<i>224</i>&nbsp;            return &quot;endX&quot;;
+<i>225</i>&nbsp;        }
+<i>226</i>&nbsp;    };
+<i>227</i>&nbsp;
+<i>228</i>&nbsp;
+<i>229</i>&nbsp;
+<i>230</i>&nbsp;    public final void setEndX(double value) {
+<b class="nc"><i>231</i>&nbsp;        endX.set(value);</b>
+<b class="nc"><i>232</i>&nbsp;    }</b>
+<i>233</i>&nbsp;
+<i>234</i>&nbsp;    public final double getEndX() {
+<b class="nc"><i>235</i>&nbsp;        return endX.get();</b>
+<i>236</i>&nbsp;    }
+<i>237</i>&nbsp;
+<i>238</i>&nbsp;    public final DoubleProperty endXProperty() {
+<b class="nc"><i>239</i>&nbsp;        return endX;</b>
+<i>240</i>&nbsp;    }
+<i>241</i>&nbsp;
+<i>242</i>&nbsp;    /**
+<i>243</i>&nbsp;     * The Y coordinate of the end point of the line segment.
+<i>244</i>&nbsp;     *
+<i>245</i>&nbsp;     * @defaultValue 0.0
+<i>246</i>&nbsp;     */
+<b class="nc"><i>247</i>&nbsp;    private final DoubleProperty endY = new DoublePropertyBase() {</b>
+<i>248</i>&nbsp;
+<i>249</i>&nbsp;        @Override
+<i>250</i>&nbsp;        public void invalidated() {
+<i>251</i>&nbsp;            NodeHelper.markDirty(Line.this, DirtyBits.NODE_GEOMETRY);
+<i>252</i>&nbsp;            NodeHelper.geomChanged(Line.this);
+<i>253</i>&nbsp;        }
+<i>254</i>&nbsp;
+<i>255</i>&nbsp;        @Override
+<i>256</i>&nbsp;        public Object getBean() {
+<i>257</i>&nbsp;            return Line.this;
+<i>258</i>&nbsp;        }
+<i>259</i>&nbsp;
+<i>260</i>&nbsp;        @Override
+<i>261</i>&nbsp;        public String getName() {
+<i>262</i>&nbsp;            return &quot;endY&quot;;
+<i>263</i>&nbsp;        }
+<i>264</i>&nbsp;    };
+<i>265</i>&nbsp;
+<i>266</i>&nbsp;    public final void setEndY(double value) {
+<b class="nc"><i>267</i>&nbsp;        endY.set(value);</b>
+<b class="nc"><i>268</i>&nbsp;    }</b>
+<i>269</i>&nbsp;
+<i>270</i>&nbsp;    public final double getEndY() {
+<b class="nc"><i>271</i>&nbsp;        return endY.get();</b>
+<i>272</i>&nbsp;    }
+<i>273</i>&nbsp;
+<i>274</i>&nbsp;    public final DoubleProperty endYProperty() {
+<b class="nc"><i>275</i>&nbsp;        return endY;</b>
+<i>276</i>&nbsp;    }
+<i>277</i>&nbsp;
+<i>278</i>&nbsp;    /*
+<i>279</i>&nbsp;     * Note: This method MUST only be called via its accessor method.
+<i>280</i>&nbsp;     */
+<i>281</i>&nbsp;    private NGNode doCreatePeer() {
+<b class="nc"><i>282</i>&nbsp;        return new NGLine();</b>
+<i>283</i>&nbsp;    }
+<i>284</i>&nbsp;
+<i>285</i>&nbsp;    /*
+<i>286</i>&nbsp;     * Note: This method MUST only be called via its accessor method.
+<i>287</i>&nbsp;     */
+<i>288</i>&nbsp;    private BaseBounds doComputeGeomBounds(BaseBounds bounds, BaseTransform tx) {
+<i>289</i>&nbsp;
+<i>290</i>&nbsp;        // Since line&#39;s only draw with strokes, if the mode is FILL or EMPTY
+<i>291</i>&nbsp;        // then we simply return empty bounds
+<b class="nc"><i>292</i>&nbsp;        if (getMode() == NGShape.Mode.FILL || getMode() == NGShape.Mode.EMPTY ||</b>
+<b class="nc"><i>293</i>&nbsp;            getStrokeType() == StrokeType.INSIDE)</b>
+<i>294</i>&nbsp;        {
+<b class="nc"><i>295</i>&nbsp;            return bounds.makeEmpty();</b>
+<i>296</i>&nbsp;        }
+<i>297</i>&nbsp;
+<b class="nc"><i>298</i>&nbsp;        double x1 = getStartX();</b>
+<b class="nc"><i>299</i>&nbsp;        double x2 = getEndX();</b>
+<b class="nc"><i>300</i>&nbsp;        double y1 = getStartY();</b>
+<b class="nc"><i>301</i>&nbsp;        double y2 = getEndY();</b>
+<i>302</i>&nbsp;        // Get the draw stroke, and figure out the bounds based on the stroke.
+<b class="nc"><i>303</i>&nbsp;        double wpad = getStrokeWidth();</b>
+<b class="nc"><i>304</i>&nbsp;        if (getStrokeType() == StrokeType.CENTERED) {</b>
+<b class="nc"><i>305</i>&nbsp;            wpad /= 2.0f;</b>
+<i>306</i>&nbsp;        }
+<i>307</i>&nbsp;        // fast path the case of AffineTransform being TRANSLATE or identity
+<b class="nc"><i>308</i>&nbsp;        if (tx.isTranslateOrIdentity()) {</b>
+<i>309</i>&nbsp;            final double xpad;
+<i>310</i>&nbsp;            final double ypad;
+<b class="nc"><i>311</i>&nbsp;            wpad = Math.max(wpad, 0.5f);</b>
+<b class="nc"><i>312</i>&nbsp;            if (tx.getType() == BaseTransform.TYPE_TRANSLATION) {</b>
+<b class="nc"><i>313</i>&nbsp;                final double ddx = tx.getMxt();</b>
+<b class="nc"><i>314</i>&nbsp;                final double ddy = tx.getMyt();</b>
+<b class="nc"><i>315</i>&nbsp;                x1 += ddx;</b>
+<b class="nc"><i>316</i>&nbsp;                y1 += ddy;</b>
+<b class="nc"><i>317</i>&nbsp;                x2 += ddx;</b>
+<b class="nc"><i>318</i>&nbsp;                y2 += ddy;</b>
+<i>319</i>&nbsp;            }
+<b class="nc"><i>320</i>&nbsp;            if (y1 == y2 &amp;&amp; x1 != x2) {</b>
+<b class="nc"><i>321</i>&nbsp;                ypad = wpad;</b>
+<b class="nc"><i>322</i>&nbsp;                xpad = (getStrokeLineCap() == StrokeLineCap.BUTT) ? 0.0f : wpad;</b>
+<b class="nc"><i>323</i>&nbsp;            } else if (x1 == x2 &amp;&amp; y1 != y2) {</b>
+<b class="nc"><i>324</i>&nbsp;                xpad = wpad;</b>
+<b class="nc"><i>325</i>&nbsp;                ypad = (getStrokeLineCap() == StrokeLineCap.BUTT) ? 0.0f : wpad;</b>
+<i>326</i>&nbsp;            } else {
+<b class="nc"><i>327</i>&nbsp;                if (getStrokeLineCap() == StrokeLineCap.SQUARE) {</b>
+<b class="nc"><i>328</i>&nbsp;                    wpad *= Math.sqrt(2);</b>
+<i>329</i>&nbsp;                }
+<b class="nc"><i>330</i>&nbsp;                xpad = ypad = wpad;</b>
+<i>331</i>&nbsp;            }
+<b class="nc"><i>332</i>&nbsp;            if (x1 &gt; x2) { final double t = x1; x1 = x2; x2 = t; }</b>
+<b class="nc"><i>333</i>&nbsp;            if (y1 &gt; y2) { final double t = y1; y1 = y2; y2 = t; }</b>
+<i>334</i>&nbsp;
+<b class="nc"><i>335</i>&nbsp;            x1 -= xpad;</b>
+<b class="nc"><i>336</i>&nbsp;            y1 -= ypad;</b>
+<b class="nc"><i>337</i>&nbsp;            x2 += xpad;</b>
+<b class="nc"><i>338</i>&nbsp;            y2 += ypad;</b>
+<b class="nc"><i>339</i>&nbsp;            bounds = bounds.deriveWithNewBounds((float)x1, (float)y1, 0.0f,</b>
+<i>340</i>&nbsp;                    (float)x2, (float)y2, 0.0f);
+<b class="nc"><i>341</i>&nbsp;            return bounds;</b>
+<i>342</i>&nbsp;        }
+<i>343</i>&nbsp;
+<b class="nc"><i>344</i>&nbsp;        double dx = x2 - x1;</b>
+<b class="nc"><i>345</i>&nbsp;        double dy = y2 - y1;</b>
+<b class="nc"><i>346</i>&nbsp;        final double len = Math.sqrt(dx * dx + dy * dy);</b>
+<b class="nc"><i>347</i>&nbsp;        if (len == 0.0f) {</b>
+<b class="nc"><i>348</i>&nbsp;            dx = wpad;</b>
+<b class="nc"><i>349</i>&nbsp;            dy = 0.0f;</b>
+<i>350</i>&nbsp;        } else {
+<b class="nc"><i>351</i>&nbsp;            dx = wpad * dx / len;</b>
+<b class="nc"><i>352</i>&nbsp;            dy = wpad * dy / len;</b>
+<i>353</i>&nbsp;        }
+<i>354</i>&nbsp;        final double ecx;
+<i>355</i>&nbsp;        final double ecy;
+<b class="nc"><i>356</i>&nbsp;        if (getStrokeLineCap() != StrokeLineCap.BUTT) {</b>
+<b class="nc"><i>357</i>&nbsp;            ecx = dx;</b>
+<b class="nc"><i>358</i>&nbsp;            ecy = dy;</b>
+<i>359</i>&nbsp;        } else {
+<b class="nc"><i>360</i>&nbsp;            ecx = ecy = 0.0f;</b>
+<i>361</i>&nbsp;        }
+<b class="nc"><i>362</i>&nbsp;        final double corners[] = new double[] {</b>
+<i>363</i>&nbsp;            x1-dy-ecx, y1+dx-ecy,
+<i>364</i>&nbsp;            x1+dy-ecx, y1-dx-ecy,
+<i>365</i>&nbsp;            x2+dy+ecx, y2-dx+ecy,
+<i>366</i>&nbsp;            x2-dy+ecx, y2+dx+ecy };
+<b class="nc"><i>367</i>&nbsp;        tx.transform(corners, 0, corners, 0, 4);</b>
+<b class="nc"><i>368</i>&nbsp;        x1 = Math.min(Math.min(corners[0], corners[2]),</b>
+<b class="nc"><i>369</i>&nbsp;                             Math.min(corners[4], corners[6]));</b>
+<b class="nc"><i>370</i>&nbsp;        y1 = Math.min(Math.min(corners[1], corners[3]),</b>
+<b class="nc"><i>371</i>&nbsp;                             Math.min(corners[5], corners[7]));</b>
+<b class="nc"><i>372</i>&nbsp;        x2 = Math.max(Math.max(corners[0], corners[2]),</b>
+<b class="nc"><i>373</i>&nbsp;                             Math.max(corners[4], corners[6]));</b>
+<b class="nc"><i>374</i>&nbsp;        y2 = Math.max(Math.max(corners[1], corners[3]),</b>
+<b class="nc"><i>375</i>&nbsp;                             Math.max(corners[5], corners[7]));</b>
+<b class="nc"><i>376</i>&nbsp;        x1 -= 0.5f;</b>
+<b class="nc"><i>377</i>&nbsp;        y1 -= 0.5f;</b>
+<b class="nc"><i>378</i>&nbsp;        x2 += 0.5f;</b>
+<b class="nc"><i>379</i>&nbsp;        y2 += 0.5f;</b>
+<b class="nc"><i>380</i>&nbsp;        bounds = bounds.deriveWithNewBounds((float)x1, (float)y1, 0.0f,</b>
+<i>381</i>&nbsp;                (float)x2, (float)y2, 0.0f);
+<b class="nc"><i>382</i>&nbsp;        return bounds;</b>
+<i>383</i>&nbsp;    }
+<i>384</i>&nbsp;
+<i>385</i>&nbsp;    /*
+<i>386</i>&nbsp;     * Note: This method MUST only be called via its accessor method.
+<i>387</i>&nbsp;     */
+<i>388</i>&nbsp;    private Line2D doConfigShape() {
+<b class="nc"><i>389</i>&nbsp;        shape.setLine((float)getStartX(), (float)getStartY(), (float)getEndX(), (float)getEndY());</b>
+<b class="nc"><i>390</i>&nbsp;        return shape;</b>
+<i>391</i>&nbsp;    }
+<i>392</i>&nbsp;
+<i>393</i>&nbsp;    /*
+<i>394</i>&nbsp;     * Note: This method MUST only be called via its accessor method.
+<i>395</i>&nbsp;     */
+<i>396</i>&nbsp;    private void doUpdatePeer() {
+<b class="nc"><i>397</i>&nbsp;        if (NodeHelper.isDirty(this, DirtyBits.NODE_GEOMETRY)) {</b>
+<b class="nc"><i>398</i>&nbsp;            NGLine peer = NodeHelper.getPeer(this);</b>
+<b class="nc"><i>399</i>&nbsp;            peer.updateLine((float)getStartX(),</b>
+<b class="nc"><i>400</i>&nbsp;                (float)getStartY(),</b>
+<b class="nc"><i>401</i>&nbsp;                (float)getEndX(),</b>
+<b class="nc"><i>402</i>&nbsp;                (float)getEndY());</b>
+<i>403</i>&nbsp;        }
+<b class="nc"><i>404</i>&nbsp;    }</b>
+<i>405</i>&nbsp;
+<i>406</i>&nbsp;    /***************************************************************************
+<i>407</i>&nbsp;     *                                                                         *
+<i>408</i>&nbsp;     *                         Stylesheet Handling                             *
+<i>409</i>&nbsp;     *                                                                         *
+<i>410</i>&nbsp;     **************************************************************************/
+<i>411</i>&nbsp;
+<i>412</i>&nbsp;    /*
+<i>413</i>&nbsp;     * Some sub-class of Shape, such as {@link Line}, override the
+<i>414</i>&nbsp;     * default value for the {@link Shape#fill} property. This allows
+<i>415</i>&nbsp;     * CSS to get the correct initial value.
+<i>416</i>&nbsp;     *
+<i>417</i>&nbsp;     * Note: This method MUST only be called via its accessor method.
+<i>418</i>&nbsp;     */
+<i>419</i>&nbsp;    private Paint doCssGetFillInitialValue() {
+<b class="nc"><i>420</i>&nbsp;        return null;</b>
+<i>421</i>&nbsp;    }
+<i>422</i>&nbsp;
+<i>423</i>&nbsp;    /**
+<i>424</i>&nbsp;     * Some sub-class of Shape, such as {@link Line}, override the
+<i>425</i>&nbsp;     * default value for the {@link Shape#stroke} property. This allows
+<i>426</i>&nbsp;     * CSS to get the correct initial value.
+<i>427</i>&nbsp;     *
+<i>428</i>&nbsp;     * Note: This method MUST only be called via its accessor method.
+<i>429</i>&nbsp;     */
+<i>430</i>&nbsp;    private Paint doCssGetStrokeInitialValue() {
+<b class="nc"><i>431</i>&nbsp;        return Color.BLACK;</b>
+<i>432</i>&nbsp;    }
+<i>433</i>&nbsp;
+<i>434</i>&nbsp;    /**
+<i>435</i>&nbsp;     * Returns a string representation of this {@code Line} object.
+<i>436</i>&nbsp;     * @return a string representation of this {@code Line} object.
+<i>437</i>&nbsp;     */
+<i>438</i>&nbsp;    @Override
+<i>439</i>&nbsp;    public String toString() {
+<b class="nc"><i>440</i>&nbsp;        final StringBuilder sb = new StringBuilder(&quot;Line[&quot;);</b>
+<i>441</i>&nbsp;
+<b class="nc"><i>442</i>&nbsp;        String id = getId();</b>
+<b class="nc"><i>443</i>&nbsp;        if (id != null) {</b>
+<b class="nc"><i>444</i>&nbsp;            sb.append(&quot;id=&quot;).append(id).append(&quot;, &quot;);</b>
+<i>445</i>&nbsp;        }
+<i>446</i>&nbsp;
+<b class="nc"><i>447</i>&nbsp;        sb.append(&quot;startX=&quot;).append(getStartX());</b>
+<b class="nc"><i>448</i>&nbsp;        sb.append(&quot;, startY=&quot;).append(getStartY());</b>
+<b class="nc"><i>449</i>&nbsp;        sb.append(&quot;, endX=&quot;).append(getEndX());</b>
+<b class="nc"><i>450</i>&nbsp;        sb.append(&quot;, endY=&quot;).append(getEndY());</b>
+<i>451</i>&nbsp;
+<b class="nc"><i>452</i>&nbsp;        Paint stroke = getStroke();</b>
+<b class="nc"><i>453</i>&nbsp;        if (stroke != null) {</b>
+<b class="nc"><i>454</i>&nbsp;            sb.append(&quot;, stroke=&quot;).append(stroke);</b>
+<b class="nc"><i>455</i>&nbsp;            sb.append(&quot;, strokeWidth=&quot;).append(getStrokeWidth());</b>
+<i>456</i>&nbsp;        }
+<i>457</i>&nbsp;
+<b class="nc"><i>458</i>&nbsp;        return sb.append(&quot;]&quot;).toString();</b>
+<i>459</i>&nbsp;    }
+<i>460</i>&nbsp;}
+<i>461</i>&nbsp;
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2017-12-04 21:49</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,534 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: Rule</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">javafx.css</a> ]
+</div>
+
+<h1>Coverage Summary for Class: Rule (javafx.css)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">Rule</td>
+<td class="coverageStat">
+  <span class="percent">
+    71.4%
+  </span>
+  <span class="absValue">
+    (10/ 14)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    45%
+  </span>
+  <span class="absValue">
+    (54/ 120)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">Rule$Observables</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (4/ 4)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (8/ 8)
+  </span>
+</td>
+  </tr>
+  <tr>
+    <td class="name">Rule$Observables$1</td>
+<td class="coverageStat">
+  <span class="percent">
+    50%
+  </span>
+  <span class="absValue">
+    (1/ 2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    6.7%
+  </span>
+  <span class="absValue">
+    (1/ 15)
+  </span>
+</td>
+  </tr>
+  <tr>
+    <td class="name">Rule$Observables$2</td>
+<td class="coverageStat">
+  <span class="percent">
+    50%
+  </span>
+  <span class="absValue">
+    (1/ 2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    5.3%
+  </span>
+  <span class="absValue">
+    (1/ 19)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    72.7%
+  </span>
+  <span class="absValue">
+    (16/ 22)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    39.5%
+  </span>
+  <span class="absValue">
+    (64/ 162)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright (c) 2011, 2017, Oracle and/or its affiliates. All rights reserved.
+<i>3</i>&nbsp; * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+<i>4</i>&nbsp; *
+<i>5</i>&nbsp; *
+<i>6</i>&nbsp; *
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; *
+<i>11</i>&nbsp; *
+<i>12</i>&nbsp; *
+<i>13</i>&nbsp; *
+<i>14</i>&nbsp; *
+<i>15</i>&nbsp; *
+<i>16</i>&nbsp; *
+<i>17</i>&nbsp; *
+<i>18</i>&nbsp; *
+<i>19</i>&nbsp; *
+<i>20</i>&nbsp; *
+<i>21</i>&nbsp; *
+<i>22</i>&nbsp; *
+<i>23</i>&nbsp; *
+<i>24</i>&nbsp; */
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;package javafx.css;
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;import javafx.collections.ListChangeListener.Change;
+<i>29</i>&nbsp;import javafx.collections.ObservableList;
+<i>30</i>&nbsp;import javafx.scene.Node;
+<i>31</i>&nbsp;
+<i>32</i>&nbsp;import com.sun.javafx.collections.TrackableObservableList;
+<i>33</i>&nbsp;
+<i>34</i>&nbsp;import java.io.ByteArrayInputStream;
+<i>35</i>&nbsp;import java.io.ByteArrayOutputStream;
+<i>36</i>&nbsp;import java.io.DataInputStream;
+<i>37</i>&nbsp;import java.io.DataOutputStream;
+<i>38</i>&nbsp;import java.io.IOException;
+<i>39</i>&nbsp;import java.util.ArrayList;
+<i>40</i>&nbsp;import java.util.List;
+<i>41</i>&nbsp;import java.util.Set;
+<i>42</i>&nbsp;
+<i>43</i>&nbsp;/*
+<i>44</i>&nbsp; * A selector is a collection of selectors and declarations.
+<i>45</i>&nbsp; *
+<i>46</i>&nbsp; * @since 9
+<i>47</i>&nbsp; */
+<b class="fc"><i>48</i>&nbsp;final public class Rule {</b>
+<i>49</i>&nbsp;
+<b class="fc"><i>50</i>&nbsp;    private List&lt;Selector&gt; selectors = null;</b>
+<i>51</i>&nbsp;
+<i>52</i>&nbsp;    /**
+<i>53</i>&nbsp;     * The list returned from this method should be treated as unmodifiable.
+<i>54</i>&nbsp;     * Tools should use {@link #getSelectors()} which tracks adds and removes.
+<i>55</i>&nbsp;     */
+<i>56</i>&nbsp;    List&lt;Selector&gt;  getUnobservedSelectorList() {
+<b class="fc"><i>57</i>&nbsp;        if (selectors == null) {</b>
+<b class="nc"><i>58</i>&nbsp;            selectors = new ArrayList&lt;Selector&gt;();</b>
+<i>59</i>&nbsp;        }
+<b class="fc"><i>60</i>&nbsp;        return selectors;</b>
+<i>61</i>&nbsp;    }
+<i>62</i>&nbsp;
+<b class="fc"><i>63</i>&nbsp;    private List&lt;Declaration&gt; declarations = null;</b>
+<i>64</i>&nbsp;    /**
+<i>65</i>&nbsp;     * The list returned from this method should be treated as unmodifiable.
+<i>66</i>&nbsp;     * Tools should use {@link #getDeclarations()} which tracks adds and removes.
+<i>67</i>&nbsp;     */
+<i>68</i>&nbsp;    List&lt;Declaration&gt; getUnobservedDeclarationList() {
+<i>69</i>&nbsp;
+<b class="fc"><i>70</i>&nbsp;        if (declarations == null &amp;&amp; serializedDecls != null) {</b>
+<i>71</i>&nbsp;
+<i>72</i>&nbsp;            try {
+<b class="fc"><i>73</i>&nbsp;                ByteArrayInputStream bis = new ByteArrayInputStream(serializedDecls);</b>
+<b class="fc"><i>74</i>&nbsp;                DataInputStream dis = new DataInputStream(bis);</b>
+<i>75</i>&nbsp;
+<b class="fc"><i>76</i>&nbsp;                short nDeclarations = dis.readShort();</b>
+<b class="fc"><i>77</i>&nbsp;                declarations = new ArrayList&lt;Declaration&gt;(nDeclarations);</b>
+<b class="fc"><i>78</i>&nbsp;                for (int i = 0; i &lt; nDeclarations; i++) {</b>
+<i>79</i>&nbsp;
+<b class="fc"><i>80</i>&nbsp;                    Declaration decl = Declaration.readBinary(bssVersion, dis, stylesheet.getStringStore());</b>
+<b class="fc"><i>81</i>&nbsp;                    decl.rule = Rule.this;</b>
+<i>82</i>&nbsp;
+<b class="fc"><i>83</i>&nbsp;                    if (stylesheet != null &amp;&amp; stylesheet.getUrl() != null) {</b>
+<b class="fc"><i>84</i>&nbsp;                        String stylesheetUrl = stylesheet.getUrl();</b>
+<b class="fc"><i>85</i>&nbsp;                        decl.fixUrl(stylesheetUrl);</b>
+<i>86</i>&nbsp;                    }
+<i>87</i>&nbsp;
+<b class="fc"><i>88</i>&nbsp;                    declarations.add(decl);</b>
+<i>89</i>&nbsp;                }
+<i>90</i>&nbsp;
+<b class="nc"><i>91</i>&nbsp;            } catch (IOException ioe) {</b>
+<b class="nc"><i>92</i>&nbsp;                declarations = new ArrayList&lt;&gt;();</b>
+<b class="nc"><i>93</i>&nbsp;                assert false; ioe.getMessage();</b>
+<i>94</i>&nbsp;
+<i>95</i>&nbsp;            } finally {
+<b class="fc"><i>96</i>&nbsp;                serializedDecls = null;</b>
+<b class="fc"><i>97</i>&nbsp;            }</b>
+<i>98</i>&nbsp;
+<i>99</i>&nbsp;        }
+<i>100</i>&nbsp;
+<b class="fc"><i>101</i>&nbsp;        return declarations;</b>
+<i>102</i>&nbsp;    }
+<i>103</i>&nbsp;
+<b class="fc"><i>104</i>&nbsp;    private Observables observables = null;</b>
+<i>105</i>&nbsp;
+<i>106</i>&nbsp;    /**
+<i>107</i>&nbsp;     * This method is to support tooling that may want to add declarations to
+<i>108</i>&nbsp;     * or remove declarations from a Rule. Changes to the list are tracked
+<i>109</i>&nbsp;     * so that added declarations are tagged as belonging to this rule, and
+<i>110</i>&nbsp;     * the rule for removed declarations is nulled out.
+<i>111</i>&nbsp;     * If the list is not going to be modified, then it is more efficient to
+<i>112</i>&nbsp;     * call {@link #getUnobservedDeclarationList()}, but the returned list
+<i>113</i>&nbsp;     * must be treated as unmodifiable.
+<i>114</i>&nbsp;     * @return a observable list of declarations
+<i>115</i>&nbsp;     */
+<i>116</i>&nbsp;    public final ObservableList&lt;Declaration&gt; getDeclarations() {
+<i>117</i>&nbsp;
+<b class="fc"><i>118</i>&nbsp;        if (observables == null) {</b>
+<b class="nc"><i>119</i>&nbsp;            observables = new Observables(this);</b>
+<i>120</i>&nbsp;        }
+<i>121</i>&nbsp;
+<b class="fc"><i>122</i>&nbsp;        return observables.getDeclarations();</b>
+<i>123</i>&nbsp;    }
+<i>124</i>&nbsp;
+<i>125</i>&nbsp;    /**
+<i>126</i>&nbsp;     * This method is to support tooling that may want to add selectors to
+<i>127</i>&nbsp;     * or remove selectors from a Rule. Changes to the list are tracked
+<i>128</i>&nbsp;     * so that added selectors are tagged as belonging to this rule, and
+<i>129</i>&nbsp;     * the rule for removed selectors is nulled out.
+<i>130</i>&nbsp;     * If the list is not going to be modified, then it is more efficient to
+<i>131</i>&nbsp;     * call {@link #getUnobservedSelectorList()}, but the returned list
+<i>132</i>&nbsp;     * must be treated as unmodifiable.
+<i>133</i>&nbsp;     * @return an observable list of selectors
+<i>134</i>&nbsp;     */
+<i>135</i>&nbsp;    public final ObservableList&lt;Selector&gt; getSelectors() {
+<i>136</i>&nbsp;
+<b class="fc"><i>137</i>&nbsp;        if (observables == null) {</b>
+<b class="fc"><i>138</i>&nbsp;            observables = new Observables(this);</b>
+<i>139</i>&nbsp;        }
+<i>140</i>&nbsp;
+<b class="fc"><i>141</i>&nbsp;        return observables.getSelectors();</b>
+<i>142</i>&nbsp;    }
+<i>143</i>&nbsp;
+<i>144</i>&nbsp;    /** The stylesheet this selector belongs to */
+<i>145</i>&nbsp;    private Stylesheet stylesheet;
+<i>146</i>&nbsp;    public Stylesheet getStylesheet() {
+<b class="nc"><i>147</i>&nbsp;        return stylesheet;</b>
+<i>148</i>&nbsp;    }
+<i>149</i>&nbsp;
+<i>150</i>&nbsp;    /* package */
+<i>151</i>&nbsp;    void setStylesheet(Stylesheet stylesheet) {
+<i>152</i>&nbsp;
+<b class="fc"><i>153</i>&nbsp;        this.stylesheet = stylesheet;</b>
+<i>154</i>&nbsp;
+<b class="fc"><i>155</i>&nbsp;        if (stylesheet != null &amp;&amp; stylesheet.getUrl() != null) {</b>
+<b class="fc"><i>156</i>&nbsp;            final String stylesheetUrl = stylesheet.getUrl();</b>
+<i>157</i>&nbsp;
+<b class="fc"><i>158</i>&nbsp;            int nDeclarations = declarations != null ? declarations.size() : 0;</b>
+<b class="fc"><i>159</i>&nbsp;            for (int d=0; d&lt;nDeclarations; d++) {</b>
+<b class="nc"><i>160</i>&nbsp;                declarations.get(d).fixUrl(stylesheetUrl);</b>
+<i>161</i>&nbsp;            }
+<i>162</i>&nbsp;        }
+<b class="fc"><i>163</i>&nbsp;    }</b>
+<i>164</i>&nbsp;
+<i>165</i>&nbsp;    public StyleOrigin getOrigin() {
+<b class="fc"><i>166</i>&nbsp;        return stylesheet != null ? stylesheet.getOrigin() : null;</b>
+<i>167</i>&nbsp;    }
+<i>168</i>&nbsp;
+<i>169</i>&nbsp;
+<b class="nc"><i>170</i>&nbsp;    Rule(List&lt;Selector&gt; selectors, List&lt;Declaration&gt; declarations) {</b>
+<i>171</i>&nbsp;
+<b class="nc"><i>172</i>&nbsp;        this.selectors = selectors;</b>
+<b class="nc"><i>173</i>&nbsp;        this.declarations = declarations;</b>
+<b class="nc"><i>174</i>&nbsp;        serializedDecls = null;</b>
+<b class="nc"><i>175</i>&nbsp;        this.bssVersion = Stylesheet.BINARY_CSS_VERSION;</b>
+<i>176</i>&nbsp;
+<b class="nc"><i>177</i>&nbsp;        int sMax = selectors != null ? selectors.size() : 0;</b>
+<b class="nc"><i>178</i>&nbsp;        for(int i = 0; i &lt; sMax; i++) {</b>
+<b class="nc"><i>179</i>&nbsp;            Selector sel = selectors.get(i);</b>
+<b class="nc"><i>180</i>&nbsp;            sel.setRule(Rule.this);</b>
+<i>181</i>&nbsp;        }
+<i>182</i>&nbsp;
+<b class="nc"><i>183</i>&nbsp;        int dMax = declarations != null ? declarations.size() : 0;</b>
+<b class="nc"><i>184</i>&nbsp;        for (int d=0; d&lt;dMax; d++) {</b>
+<b class="nc"><i>185</i>&nbsp;            Declaration decl = declarations.get(d);</b>
+<b class="nc"><i>186</i>&nbsp;            decl.rule = this;</b>
+<i>187</i>&nbsp;        }
+<b class="nc"><i>188</i>&nbsp;    }</b>
+<i>189</i>&nbsp;
+<i>190</i>&nbsp;    private byte[] serializedDecls;
+<i>191</i>&nbsp;    private final int bssVersion;
+<i>192</i>&nbsp;
+<b class="fc"><i>193</i>&nbsp;    private Rule(List&lt;Selector&gt; selectors, byte[] buf, int bssVersion) {</b>
+<i>194</i>&nbsp;
+<b class="fc"><i>195</i>&nbsp;        this.selectors = selectors;</b>
+<b class="fc"><i>196</i>&nbsp;        this.declarations = null;</b>
+<b class="fc"><i>197</i>&nbsp;        this.serializedDecls = buf;</b>
+<b class="fc"><i>198</i>&nbsp;        this.bssVersion = bssVersion;</b>
+<i>199</i>&nbsp;
+<b class="fc"><i>200</i>&nbsp;        int sMax = selectors != null ? selectors.size() : 0;</b>
+<b class="fc"><i>201</i>&nbsp;        for(int i = 0; i &lt; sMax; i++) {</b>
+<b class="fc"><i>202</i>&nbsp;            Selector sel = selectors.get(i);</b>
+<b class="fc"><i>203</i>&nbsp;            sel.setRule(Rule.this);</b>
+<i>204</i>&nbsp;        }
+<i>205</i>&nbsp;
+<b class="fc"><i>206</i>&nbsp;    }</b>
+<i>207</i>&nbsp;
+<i>208</i>&nbsp;    // Return mask of selectors that match
+<i>209</i>&nbsp;    long applies(Node node, Set&lt;PseudoClass&gt;[] triggerStates) {
+<b class="nc"><i>210</i>&nbsp;        long mask = 0;</b>
+<b class="nc"><i>211</i>&nbsp;        for (int i = 0; i &lt; selectors.size(); i++) {</b>
+<b class="nc"><i>212</i>&nbsp;            Selector sel = selectors.get(i);</b>
+<b class="nc"><i>213</i>&nbsp;            if (sel.applies(node, triggerStates, 0)) {</b>
+<b class="nc"><i>214</i>&nbsp;                mask |= 1l &lt;&lt; i;</b>
+<i>215</i>&nbsp;            }
+<i>216</i>&nbsp;        }
+<b class="nc"><i>217</i>&nbsp;        return mask;</b>
+<i>218</i>&nbsp;    }
+<i>219</i>&nbsp;
+<i>220</i>&nbsp;    /** Converts this object to a string.
+<i>221</i>&nbsp;     * @return the converted string
+<i>222</i>&nbsp;     */
+<i>223</i>&nbsp;    @Override public String toString() {
+<b class="nc"><i>224</i>&nbsp;        StringBuilder sb = new StringBuilder();</b>
+<b class="nc"><i>225</i>&nbsp;        if (selectors.size()&gt;0) {</b>
+<b class="nc"><i>226</i>&nbsp;            sb.append(selectors.get(0));</b>
+<i>227</i>&nbsp;        }
+<b class="nc"><i>228</i>&nbsp;        for (int n=1; n&lt;selectors.size(); n++) {</b>
+<b class="nc"><i>229</i>&nbsp;            sb.append(&#39;,&#39;);</b>
+<b class="nc"><i>230</i>&nbsp;            sb.append(selectors.get(n));</b>
+<i>231</i>&nbsp;        }
+<b class="nc"><i>232</i>&nbsp;        sb.append(&quot;{\n&quot;);</b>
+<b class="nc"><i>233</i>&nbsp;        int nDeclarations = declarations != null ? declarations.size() : 0;</b>
+<b class="nc"><i>234</i>&nbsp;        for (int n=0; n&lt;nDeclarations; n++) {</b>
+<b class="nc"><i>235</i>&nbsp;            sb.append(&quot;\t&quot;);</b>
+<b class="nc"><i>236</i>&nbsp;            sb.append(declarations.get(n));</b>
+<b class="nc"><i>237</i>&nbsp;            sb.append(&quot;\n&quot;);</b>
+<i>238</i>&nbsp;        }
+<b class="nc"><i>239</i>&nbsp;        sb .append(&quot;}&quot;);</b>
+<b class="nc"><i>240</i>&nbsp;        return sb.toString();</b>
+<i>241</i>&nbsp;    }
+<i>242</i>&nbsp;
+<i>243</i>&nbsp;    /*
+<i>244</i>&nbsp;     * If an authoring tool adds or removes a selector or declaration,
+<i>245</i>&nbsp;     * then the selector or declaration needs to be tweaked to know that
+<i>246</i>&nbsp;     * this is the Rule to which it belongs.
+<i>247</i>&nbsp;     */
+<b class="fc"><i>248</i>&nbsp;    private final static class Observables {</b>
+<i>249</i>&nbsp;
+<b class="fc"><i>250</i>&nbsp;        private Observables(Rule rule) {</b>
+<i>251</i>&nbsp;
+<b class="fc"><i>252</i>&nbsp;            this.rule = rule;</b>
+<i>253</i>&nbsp;
+<b class="fc"><i>254</i>&nbsp;            selectorObservableList = new TrackableObservableList&lt;Selector&gt;(rule.getUnobservedSelectorList()) {</b>
+<i>255</i>&nbsp;                @Override protected void onChanged(Change&lt;Selector&gt; c) {
+<b class="nc"><i>256</i>&nbsp;                    while (c.next()) {</b>
+<b class="nc"><i>257</i>&nbsp;                        if (c.wasAdded()) {</b>
+<b class="nc"><i>258</i>&nbsp;                            List&lt;Selector&gt; added = c.getAddedSubList();</b>
+<b class="nc"><i>259</i>&nbsp;                            for(int i = 0, max = added.size(); i &lt; max; i++) {</b>
+<b class="nc"><i>260</i>&nbsp;                                Selector sel = added.get(i);</b>
+<b class="nc"><i>261</i>&nbsp;                                sel.setRule(Observables.this.rule);</b>
+<i>262</i>&nbsp;                            }
+<i>263</i>&nbsp;                        }
+<i>264</i>&nbsp;
+<b class="nc"><i>265</i>&nbsp;                        if (c.wasRemoved()) {</b>
+<b class="nc"><i>266</i>&nbsp;                            List&lt;Selector&gt; removed = c.getAddedSubList();</b>
+<b class="nc"><i>267</i>&nbsp;                            for(int i = 0, max = removed.size(); i &lt; max; i++) {</b>
+<b class="nc"><i>268</i>&nbsp;                                Selector sel = removed.get(i);</b>
+<b class="nc"><i>269</i>&nbsp;                                if (sel.getRule() == Observables.this.rule) {</b>
+<b class="nc"><i>270</i>&nbsp;                                    sel.setRule(null);</b>
+<i>271</i>&nbsp;                                }
+<i>272</i>&nbsp;                            }
+<b class="nc"><i>273</i>&nbsp;                        }</b>
+<i>274</i>&nbsp;                    }
+<b class="nc"><i>275</i>&nbsp;                }</b>
+<i>276</i>&nbsp;            };
+<i>277</i>&nbsp;
+<b class="fc"><i>278</i>&nbsp;            declarationObservableList = new TrackableObservableList&lt;Declaration&gt;(rule.getUnobservedDeclarationList()) {</b>
+<i>279</i>&nbsp;                @Override protected void onChanged(Change&lt;Declaration&gt; c) {
+<b class="nc"><i>280</i>&nbsp;                    while (c.next()) {</b>
+<b class="nc"><i>281</i>&nbsp;                        if (c.wasAdded()) {</b>
+<b class="nc"><i>282</i>&nbsp;                            List&lt;Declaration&gt; added = c.getAddedSubList();</b>
+<b class="nc"><i>283</i>&nbsp;                            for(int i = 0, max = added.size(); i &lt; max; i++) {</b>
+<b class="nc"><i>284</i>&nbsp;                                Declaration decl = added.get(i);</b>
+<b class="nc"><i>285</i>&nbsp;                                decl.rule = Observables.this.rule;</b>
+<i>286</i>&nbsp;
+<b class="nc"><i>287</i>&nbsp;                                Stylesheet stylesheet = Observables.this.rule.stylesheet;</b>
+<b class="nc"><i>288</i>&nbsp;                                if (stylesheet != null &amp;&amp; stylesheet.getUrl() != null) {</b>
+<b class="nc"><i>289</i>&nbsp;                                    final String stylesheetUrl = stylesheet.getUrl();</b>
+<b class="nc"><i>290</i>&nbsp;                                    decl.fixUrl(stylesheetUrl);</b>
+<i>291</i>&nbsp;                                }
+<i>292</i>&nbsp;                            }
+<i>293</i>&nbsp;                        }
+<i>294</i>&nbsp;
+<b class="nc"><i>295</i>&nbsp;                        if (c.wasRemoved()) {</b>
+<b class="nc"><i>296</i>&nbsp;                            List&lt;Declaration&gt; removed = c.getRemoved();</b>
+<b class="nc"><i>297</i>&nbsp;                            for(int i = 0, max = removed.size(); i &lt; max; i++) {</b>
+<b class="nc"><i>298</i>&nbsp;                                Declaration decl = removed.get(i);</b>
+<b class="nc"><i>299</i>&nbsp;                                if (decl.rule == Observables.this.rule) {</b>
+<b class="nc"><i>300</i>&nbsp;                                    decl.rule = null;</b>
+<i>301</i>&nbsp;                                }
+<i>302</i>&nbsp;                            }
+<b class="nc"><i>303</i>&nbsp;                        }</b>
+<i>304</i>&nbsp;                    }
+<b class="nc"><i>305</i>&nbsp;                }</b>
+<i>306</i>&nbsp;            };
+<i>307</i>&nbsp;
+<b class="fc"><i>308</i>&nbsp;        }</b>
+<i>309</i>&nbsp;
+<i>310</i>&nbsp;        private ObservableList&lt;Selector&gt; getSelectors() {
+<b class="fc"><i>311</i>&nbsp;            return selectorObservableList;</b>
+<i>312</i>&nbsp;        }
+<i>313</i>&nbsp;
+<i>314</i>&nbsp;        private ObservableList&lt;Declaration&gt; getDeclarations() {
+<b class="fc"><i>315</i>&nbsp;            return declarationObservableList;</b>
+<i>316</i>&nbsp;        }
+<i>317</i>&nbsp;
+<i>318</i>&nbsp;        private final Rule rule;
+<i>319</i>&nbsp;        private final ObservableList&lt;Selector&gt; selectorObservableList;
+<i>320</i>&nbsp;        private final ObservableList&lt;Declaration&gt; declarationObservableList;
+<i>321</i>&nbsp;
+<i>322</i>&nbsp;    }
+<i>323</i>&nbsp;
+<i>324</i>&nbsp;    final void writeBinary(DataOutputStream os, StyleConverter.StringStore stringStore)
+<i>325</i>&nbsp;            throws IOException {
+<i>326</i>&nbsp;
+<b class="nc"><i>327</i>&nbsp;        final int nSelectors = this.selectors != null ? this.selectors.size() : 0;</b>
+<b class="nc"><i>328</i>&nbsp;        os.writeShort(nSelectors);</b>
+<b class="nc"><i>329</i>&nbsp;        for (int i = 0; i &lt; nSelectors; i++) {</b>
+<b class="nc"><i>330</i>&nbsp;            Selector sel = this.selectors.get(i);</b>
+<b class="nc"><i>331</i>&nbsp;            sel.writeBinary(os, stringStore);</b>
+<i>332</i>&nbsp;        }
+<i>333</i>&nbsp;
+<b class="nc"><i>334</i>&nbsp;        List&lt;Declaration&gt; decls = getUnobservedDeclarationList();</b>
+<b class="nc"><i>335</i>&nbsp;        if (decls != null) {</b>
+<i>336</i>&nbsp;
+<b class="nc"><i>337</i>&nbsp;            ByteArrayOutputStream bos = new ByteArrayOutputStream(5192);</b>
+<b class="nc"><i>338</i>&nbsp;            DataOutputStream dos = new DataOutputStream(bos);</b>
+<i>339</i>&nbsp;
+<b class="nc"><i>340</i>&nbsp;            int nDeclarations =  decls.size();</b>
+<b class="nc"><i>341</i>&nbsp;            dos.writeShort(nDeclarations);</b>
+<i>342</i>&nbsp;
+<b class="nc"><i>343</i>&nbsp;            for (int i = 0; i &lt; nDeclarations; i++) {</b>
+<b class="nc"><i>344</i>&nbsp;                Declaration decl = declarations.get(i);</b>
+<b class="nc"><i>345</i>&nbsp;                decl.writeBinary(dos, stringStore);</b>
+<i>346</i>&nbsp;            }
+<i>347</i>&nbsp;
+<b class="nc"><i>348</i>&nbsp;            os.writeInt(bos.size());</b>
+<b class="nc"><i>349</i>&nbsp;            os.write(bos.toByteArray());</b>
+<i>350</i>&nbsp;
+<b class="nc"><i>351</i>&nbsp;        } else {</b>
+<i>352</i>&nbsp;            // no declarations!
+<b class="nc"><i>353</i>&nbsp;            os.writeShort(0);</b>
+<i>354</i>&nbsp;        }
+<b class="nc"><i>355</i>&nbsp;    }</b>
+<i>356</i>&nbsp;
+<i>357</i>&nbsp;    static Rule readBinary(int bssVersion, DataInputStream is, String[] strings)
+<i>358</i>&nbsp;            throws IOException
+<i>359</i>&nbsp;    {
+<b class="fc"><i>360</i>&nbsp;        short nSelectors = is.readShort();</b>
+<b class="fc"><i>361</i>&nbsp;        List&lt;Selector&gt; selectors = new ArrayList&lt;Selector&gt;(nSelectors);</b>
+<b class="fc"><i>362</i>&nbsp;        for (int i = 0; i &lt; nSelectors; i++) {</b>
+<b class="fc"><i>363</i>&nbsp;            Selector s = Selector.readBinary(bssVersion, is, strings);</b>
+<b class="fc"><i>364</i>&nbsp;            selectors.add(s);</b>
+<i>365</i>&nbsp;        }
+<i>366</i>&nbsp;
+<b class="fc"><i>367</i>&nbsp;        if (bssVersion &lt; 4) {</b>
+<b class="nc"><i>368</i>&nbsp;            short nDeclarations = is.readShort();</b>
+<b class="nc"><i>369</i>&nbsp;            List&lt;Declaration&gt; declarations = new ArrayList&lt;Declaration&gt;(nDeclarations);</b>
+<b class="nc"><i>370</i>&nbsp;            for (int i = 0; i &lt; nDeclarations; i++) {</b>
+<b class="nc"><i>371</i>&nbsp;                Declaration d = Declaration.readBinary(bssVersion, is, strings);</b>
+<b class="nc"><i>372</i>&nbsp;                declarations.add(d);</b>
+<i>373</i>&nbsp;            }
+<i>374</i>&nbsp;
+<b class="nc"><i>375</i>&nbsp;            return new Rule(selectors, declarations);</b>
+<i>376</i>&nbsp;        }
+<i>377</i>&nbsp;
+<i>378</i>&nbsp;        // de-serialize decls into byte array
+<b class="fc"><i>379</i>&nbsp;        int nBytes = is.readInt();</b>
+<b class="fc"><i>380</i>&nbsp;        byte[] buf = new byte[nBytes];</b>
+<i>381</i>&nbsp;
+<b class="fc"><i>382</i>&nbsp;        if (nBytes &gt; 0) {</b>
+<b class="fc"><i>383</i>&nbsp;            is.readFully(buf);</b>
+<i>384</i>&nbsp;        }
+<b class="fc"><i>385</i>&nbsp;        return new Rule(selectors, buf, bssVersion);</b>
+<i>386</i>&nbsp;    }
+<i>387</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2017-12-04 21:49</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,167 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: TKClipboard</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.javafx.tk</a> ]
+</div>
+
+<h1>Coverage Summary for Class: TKClipboard (com.sun.javafx.tk)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+</tr>
+<tr>
+  <td class="name">TKClipboard</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright (c) 2011, 2013, Oracle and/or its affiliates. All rights reserved.
+<i>3</i>&nbsp; * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+<i>4</i>&nbsp; *
+<i>5</i>&nbsp; *
+<i>6</i>&nbsp; *
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; *
+<i>11</i>&nbsp; *
+<i>12</i>&nbsp; *
+<i>13</i>&nbsp; *
+<i>14</i>&nbsp; *
+<i>15</i>&nbsp; *
+<i>16</i>&nbsp; *
+<i>17</i>&nbsp; *
+<i>18</i>&nbsp; *
+<i>19</i>&nbsp; *
+<i>20</i>&nbsp; *
+<i>21</i>&nbsp; *
+<i>22</i>&nbsp; *
+<i>23</i>&nbsp; *
+<i>24</i>&nbsp; */
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;package com.sun.javafx.tk;
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;import java.security.AccessControlContext;
+<i>29</i>&nbsp;import java.util.Set;
+<i>30</i>&nbsp;import javafx.scene.image.Image;
+<i>31</i>&nbsp;
+<i>32</i>&nbsp;import javafx.scene.input.DataFormat;
+<i>33</i>&nbsp;import javafx.scene.input.TransferMode;
+<i>34</i>&nbsp;import javafx.util.Pair;
+<i>35</i>&nbsp;
+<i>36</i>&nbsp;/**
+<i>37</i>&nbsp; * We use this interface to represent the PG peer for the public Clipboard
+<i>38</i>&nbsp; * and Dragboard APIs, so that we don&#39;t leak the QuantumClipboard to
+<i>39</i>&nbsp; * callers (and so forth).
+<i>40</i>&nbsp; */
+<i>41</i>&nbsp;public interface TKClipboard {
+<i>42</i>&nbsp;
+<i>43</i>&nbsp;    /**
+<i>44</i>&nbsp;     * This method is used to set security context of the Stage.
+<i>45</i>&nbsp;     */
+<i>46</i>&nbsp;    public void setSecurityContext(AccessControlContext ctx);
+<i>47</i>&nbsp;
+<i>48</i>&nbsp;    /**
+<i>49</i>&nbsp;     * Gets the set of DataFormat types on this Clipboard instance which have
+<i>50</i>&nbsp;     * associated data registered on the clipboard. This set will always
+<i>51</i>&nbsp;     * be non-null and immutable. If the Clipboard is subsequently modifed,
+<i>52</i>&nbsp;     * this returned set is not updated.
+<i>53</i>&nbsp;     *
+<i>54</i>&nbsp;     * @return A non-null immutable set of content types.
+<i>55</i>&nbsp;     */
+<i>56</i>&nbsp;    public Set&lt;DataFormat&gt; getContentTypes();
+<i>57</i>&nbsp;
+<i>58</i>&nbsp;    /**
+<i>59</i>&nbsp;     * Puts the specified content onto the clipboard. Note that all existing content is
+<i>60</i>&nbsp;     * cleared from the clipboard prior to the specified content being added.
+<i>61</i>&nbsp;     * A &lt;code&gt;NullPointerException&lt;/code&gt; is thrown if either the &lt;code&gt;DataFormat&lt;/code&gt;
+<i>62</i>&nbsp;     * or the &lt;code&gt;Object&lt;/code&gt; data in the content &lt;code&gt;Pair&lt;/code&gt; is null.
+<i>63</i>&nbsp;     *
+<i>64</i>&nbsp;     * @param content The content to put on the clipboard.
+<i>65</i>&nbsp;     * @return True if successful, false if the content fails to be added.
+<i>66</i>&nbsp;     */
+<i>67</i>&nbsp;    public boolean putContent(Pair&lt;DataFormat, Object&gt;... content);
+<i>68</i>&nbsp;
+<i>69</i>&nbsp;    /**
+<i>70</i>&nbsp;     * Returns the content stored in this clipboard of the given type, or null
+<i>71</i>&nbsp;     * if there is no content with this type.
+<i>72</i>&nbsp;     * @return The content associated with this type, or null if there is none
+<i>73</i>&nbsp;     */
+<i>74</i>&nbsp;    public Object getContent(DataFormat dataFormat);
+<i>75</i>&nbsp;
+<i>76</i>&nbsp;    /**
+<i>77</i>&nbsp;     * Tests whether there is any content on this clipboard of the given DataFormat type.
+<i>78</i>&nbsp;     * @return true if there is content on this clipboard for this type
+<i>79</i>&nbsp;     */
+<i>80</i>&nbsp;    public boolean hasContent(DataFormat dataFormat);
+<i>81</i>&nbsp;
+<i>82</i>&nbsp;    // for DnD
+<i>83</i>&nbsp;    public Set&lt;TransferMode&gt; getTransferModes();
+<i>84</i>&nbsp;
+<i>85</i>&nbsp;    /**
+<i>86</i>&nbsp;     * Sets the visual representation of data being transfered in a drag and drop gesture.
+<i>87</i>&nbsp;     * @param image image to use for the drag view
+<i>88</i>&nbsp;     */
+<i>89</i>&nbsp;    public void setDragView(Image image);
+<i>90</i>&nbsp;
+<i>91</i>&nbsp;    /**
+<i>92</i>&nbsp;     * Sets the x position of the cursor of the drag view image.
+<i>93</i>&nbsp;     * @param offsetX x position of the cursor over the image
+<i>94</i>&nbsp;     */
+<i>95</i>&nbsp;    public void setDragViewOffsetX(double offsetX);
+<i>96</i>&nbsp;
+<i>97</i>&nbsp;    /**
+<i>98</i>&nbsp;     * Sets the y position of the cursor of the drag view image.
+<i>99</i>&nbsp;     * @param offsetY x position of the cursor over the image
+<i>100</i>&nbsp;     */
+<i>101</i>&nbsp;    public void setDragViewOffsetY(double offsetY);
+<i>102</i>&nbsp;
+<i>103</i>&nbsp;    /**
+<i>104</i>&nbsp;     * Gets the image used as a drag view.
+<i>105</i>&nbsp;     * @return the image used as a drag view
+<i>106</i>&nbsp;     */
+<i>107</i>&nbsp;    public Image getDragView();
+<i>108</i>&nbsp;
+<i>109</i>&nbsp;    /**
+<i>110</i>&nbsp;     * Gets the x position of the cursor of the drag view image.
+<i>111</i>&nbsp;     * @return x position of the cursor over the image
+<i>112</i>&nbsp;     */
+<i>113</i>&nbsp;    public double getDragViewOffsetX();
+<i>114</i>&nbsp;
+<i>115</i>&nbsp;    /**
+<i>116</i>&nbsp;     * Gets the y position of the cursor of the drag view image.
+<i>117</i>&nbsp;     * @return y position of the cursor over the image
+<i>118</i>&nbsp;     */
+<i>119</i>&nbsp;    public double getDragViewOffsetY();
+<i>120</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2017-12-04 21:49</div>
+</div>
+</body>
+</html>

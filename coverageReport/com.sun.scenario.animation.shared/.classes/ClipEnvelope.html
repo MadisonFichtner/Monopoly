@@ -1,0 +1,208 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: ClipEnvelope</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.scenario.animation.shared</a> ]
+</div>
+
+<h1>Coverage Summary for Class: ClipEnvelope (com.sun.scenario.animation.shared)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">ClipEnvelope</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (9/ 9)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    91.2%
+  </span>
+  <span class="absValue">
+    (31/ 34)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright (c) 2008, 2013, Oracle and/or its affiliates. All rights reserved.
+<i>3</i>&nbsp; * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+<i>4</i>&nbsp; *
+<i>5</i>&nbsp; *
+<i>6</i>&nbsp; *
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; *
+<i>11</i>&nbsp; *
+<i>12</i>&nbsp; *
+<i>13</i>&nbsp; *
+<i>14</i>&nbsp; *
+<i>15</i>&nbsp; *
+<i>16</i>&nbsp; *
+<i>17</i>&nbsp; *
+<i>18</i>&nbsp; *
+<i>19</i>&nbsp; *
+<i>20</i>&nbsp; *
+<i>21</i>&nbsp; *
+<i>22</i>&nbsp; *
+<i>23</i>&nbsp; *
+<i>24</i>&nbsp; */
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;package com.sun.scenario.animation.shared;
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;import javafx.animation.Animation;
+<i>29</i>&nbsp;import javafx.util.Duration;
+<i>30</i>&nbsp;import com.sun.javafx.animation.TickCalculation;
+<i>31</i>&nbsp;
+<i>32</i>&nbsp;/**
+<i>33</i>&nbsp; * An instance of ClipEnvelope handles the loop-part of a clip.
+<i>34</i>&nbsp; *
+<i>35</i>&nbsp; * The functionality to react on a pulse-signal from the timer is implemented in
+<i>36</i>&nbsp; * two classes: ClipEnvelope and ClipCore. ClipEnvelope is responsible for the
+<i>37</i>&nbsp; * &quot;loop-part&quot; (keeping track of the number of cycles, handling the direction of
+<i>38</i>&nbsp; * the clip etc.). ClipCore takes care of the inner part (interpolating the
+<i>39</i>&nbsp; * values, triggering the action-functions, ...)
+<i>40</i>&nbsp; *
+<i>41</i>&nbsp; * Both classes have an abstract public definition and can only be created using
+<i>42</i>&nbsp; * the factory method create(). The intent is to provide a general
+<i>43</i>&nbsp; * implementation plus eventually some fast-track implementations for common use
+<i>44</i>&nbsp; * cases.
+<i>45</i>&nbsp; */
+<i>46</i>&nbsp;
+<i>47</i>&nbsp;public abstract class ClipEnvelope {
+<i>48</i>&nbsp;
+<i>49</i>&nbsp;    protected static final long INDEFINITE = Long.MAX_VALUE;
+<i>50</i>&nbsp;    protected static final double EPSILON = 1e-12;
+<i>51</i>&nbsp;
+<i>52</i>&nbsp;    protected Animation animation;
+<b class="fc"><i>53</i>&nbsp;    protected double rate = 1;</b>
+<b class="fc"><i>54</i>&nbsp;    protected long cycleTicks = 0;</b>
+<i>55</i>&nbsp;
+<i>56</i>&nbsp;    // internal state-variables used by all implementations
+<b class="fc"><i>57</i>&nbsp;    protected long deltaTicks = 0;</b>
+<b class="fc"><i>58</i>&nbsp;    protected long ticks = 0;</b>
+<b class="fc"><i>59</i>&nbsp;    protected double currentRate = rate;</b>
+<b class="fc"><i>60</i>&nbsp;    protected boolean inTimePulse = false;</b>
+<b class="fc"><i>61</i>&nbsp;    protected boolean aborted = false;</b>
+<i>62</i>&nbsp;
+<b class="fc"><i>63</i>&nbsp;    protected ClipEnvelope(Animation animation) {</b>
+<b class="fc"><i>64</i>&nbsp;        this.animation = animation;</b>
+<b class="fc"><i>65</i>&nbsp;        if (animation != null) {</b>
+<b class="fc"><i>66</i>&nbsp;            final Duration cycleDuration = animation.getCycleDuration();</b>
+<b class="fc"><i>67</i>&nbsp;            cycleTicks = TickCalculation.fromDuration(cycleDuration);</b>
+<b class="fc"><i>68</i>&nbsp;            rate = animation.getRate();</b>
+<i>69</i>&nbsp;        }
+<b class="fc"><i>70</i>&nbsp;    }</b>
+<i>71</i>&nbsp;
+<i>72</i>&nbsp;    public static ClipEnvelope create(Animation animation) {
+<b class="fc"><i>73</i>&nbsp;        if ((animation.getCycleCount() == 1) || (animation.getCycleDuration().isIndefinite())) {</b>
+<b class="fc"><i>74</i>&nbsp;            return new SingleLoopClipEnvelope(animation);</b>
+<b class="fc"><i>75</i>&nbsp;        } else if (animation.getCycleCount() == Animation.INDEFINITE) {</b>
+<b class="fc"><i>76</i>&nbsp;            return new InfiniteClipEnvelope(animation);</b>
+<i>77</i>&nbsp;        } else {
+<b class="nc"><i>78</i>&nbsp;            return new FiniteClipEnvelope(animation);</b>
+<i>79</i>&nbsp;        }
+<i>80</i>&nbsp;    }
+<i>81</i>&nbsp;
+<i>82</i>&nbsp;    public abstract ClipEnvelope setCycleDuration(Duration cycleDuration);
+<i>83</i>&nbsp;    public abstract void setRate(double rate);
+<i>84</i>&nbsp;    public abstract void setAutoReverse(boolean autoReverse);
+<i>85</i>&nbsp;    public abstract ClipEnvelope setCycleCount(int cycleCount);
+<i>86</i>&nbsp;
+<i>87</i>&nbsp;    protected void updateCycleTicks(Duration cycleDuration) {
+<b class="fc"><i>88</i>&nbsp;        cycleTicks = TickCalculation.fromDuration(cycleDuration);</b>
+<b class="fc"><i>89</i>&nbsp;    }</b>
+<i>90</i>&nbsp;
+<i>91</i>&nbsp;    public boolean wasSynched() {
+<b class="fc"><i>92</i>&nbsp;        return cycleTicks != 0;</b>
+<i>93</i>&nbsp;    }
+<i>94</i>&nbsp;
+<i>95</i>&nbsp;    public void start() {
+<b class="fc"><i>96</i>&nbsp;        setCurrentRate(calculateCurrentRate());</b>
+<b class="fc"><i>97</i>&nbsp;        deltaTicks = ticks;</b>
+<b class="fc"><i>98</i>&nbsp;    }</b>
+<i>99</i>&nbsp;
+<i>100</i>&nbsp;    public abstract void timePulse(long currentTick);
+<i>101</i>&nbsp;
+<i>102</i>&nbsp;    public abstract void jumpTo(long ticks);
+<i>103</i>&nbsp;
+<i>104</i>&nbsp;    public void abortCurrentPulse() {
+<b class="fc"><i>105</i>&nbsp;        if (inTimePulse) {</b>
+<b class="nc"><i>106</i>&nbsp;            aborted = true;</b>
+<b class="nc"><i>107</i>&nbsp;            inTimePulse = false;</b>
+<i>108</i>&nbsp;        }
+<b class="fc"><i>109</i>&nbsp;    }</b>
+<i>110</i>&nbsp;
+<i>111</i>&nbsp;    protected abstract double calculateCurrentRate();
+<i>112</i>&nbsp;
+<i>113</i>&nbsp;    protected void setCurrentRate(double currentRate) {
+<b class="fc"><i>114</i>&nbsp;        this.currentRate = currentRate;</b>
+<b class="fc"><i>115</i>&nbsp;        AnimationAccessor.getDefault().setCurrentRate(animation, currentRate);</b>
+<b class="fc"><i>116</i>&nbsp;    }</b>
+<i>117</i>&nbsp;
+<i>118</i>&nbsp;    protected static long checkBounds(long value, long max) {
+<b class="fc"><i>119</i>&nbsp;        return Math.max(0L, Math.min(value, max));</b>
+<i>120</i>&nbsp;    }
+<i>121</i>&nbsp;
+<i>122</i>&nbsp;    public double getCurrentRate() {
+<b class="fc"><i>123</i>&nbsp;        return currentRate;</b>
+<i>124</i>&nbsp;    }
+<i>125</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2017-12-04 21:49</div>
+</div>
+</body>
+</html>

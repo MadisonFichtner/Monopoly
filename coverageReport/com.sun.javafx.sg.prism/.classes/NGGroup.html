@@ -1,0 +1,589 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: NGGroup</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.javafx.sg.prism</a> ]
+</div>
+
+<h1>Coverage Summary for Class: NGGroup (com.sun.javafx.sg.prism)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">NGGroup</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    63.6%
+  </span>
+  <span class="absValue">
+    (14/ 22)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    57.8%
+  </span>
+  <span class="absValue">
+    (122/ 211)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright (c) 2011, 2016, Oracle and/or its affiliates. All rights reserved.
+<i>3</i>&nbsp; * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+<i>4</i>&nbsp; *
+<i>5</i>&nbsp; *
+<i>6</i>&nbsp; *
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; *
+<i>11</i>&nbsp; *
+<i>12</i>&nbsp; *
+<i>13</i>&nbsp; *
+<i>14</i>&nbsp; *
+<i>15</i>&nbsp; *
+<i>16</i>&nbsp; *
+<i>17</i>&nbsp; *
+<i>18</i>&nbsp; *
+<i>19</i>&nbsp; *
+<i>20</i>&nbsp; *
+<i>21</i>&nbsp; *
+<i>22</i>&nbsp; *
+<i>23</i>&nbsp; *
+<i>24</i>&nbsp; */
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;package com.sun.javafx.sg.prism;
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;import java.util.ArrayList;
+<i>29</i>&nbsp;import java.util.Collections;
+<i>30</i>&nbsp;import java.util.List;
+<i>31</i>&nbsp;import com.sun.javafx.geom.DirtyRegionContainer;
+<i>32</i>&nbsp;import com.sun.javafx.geom.RectBounds;
+<i>33</i>&nbsp;import com.sun.javafx.geom.Rectangle;
+<i>34</i>&nbsp;import com.sun.javafx.geom.transform.BaseTransform;
+<i>35</i>&nbsp;import com.sun.javafx.geom.transform.GeneralTransform3D;
+<i>36</i>&nbsp;import com.sun.javafx.scene.NodeHelper;
+<i>37</i>&nbsp;import com.sun.prism.Graphics;
+<i>38</i>&nbsp;import com.sun.scenario.effect.Blend;
+<i>39</i>&nbsp;import com.sun.scenario.effect.Blend.Mode;
+<i>40</i>&nbsp;import com.sun.scenario.effect.FilterContext;
+<i>41</i>&nbsp;import com.sun.scenario.effect.ImageData;
+<i>42</i>&nbsp;import com.sun.scenario.effect.impl.prism.PrDrawable;
+<i>43</i>&nbsp;import com.sun.scenario.effect.impl.prism.PrEffectHelper;
+<i>44</i>&nbsp;import javafx.scene.Node;
+<i>45</i>&nbsp;
+<i>46</i>&nbsp;/**
+<i>47</i>&nbsp; */
+<b class="fc"><i>48</i>&nbsp;public class NGGroup extends NGNode {</b>
+<i>49</i>&nbsp;    /**
+<i>50</i>&nbsp;     * The blend mode to use with this group.
+<i>51</i>&nbsp;     */
+<b class="fc"><i>52</i>&nbsp;    private Blend.Mode blendMode = Blend.Mode.SRC_OVER;</b>
+<i>53</i>&nbsp;    // NOTE I need a special array list here where all nodes added can have
+<i>54</i>&nbsp;    // their parent set correctly, and all nodes removed have it cleared correctly.
+<i>55</i>&nbsp;    // Actually, if a node is removed, I probably don&#39;t have to worry about
+<i>56</i>&nbsp;    // clearing it because as soon as it is added to another parent it will be set
+<i>57</i>&nbsp;    // and there is no magic listener foo going on here.
+<b class="fc"><i>58</i>&nbsp;    private List&lt;NGNode&gt; children = new ArrayList&lt;&gt;(1);</b>
+<b class="fc"><i>59</i>&nbsp;    private List&lt;NGNode&gt; unmod = Collections.unmodifiableList(children);</b>
+<i>60</i>&nbsp;    private List&lt;NGNode&gt; removed;
+<i>61</i>&nbsp;
+<i>62</i>&nbsp;    /**
+<i>63</i>&nbsp;     * The viewOrderChildren is a list children sorted in decreasing viewOrder
+<i>64</i>&nbsp;     * order if it is not empty. Its size should always be equal to
+<i>65</i>&nbsp;     * children.size(). If viewOrderChildren is empty it implies that the
+<i>66</i>&nbsp;     * rendering order of the children is the same as the order in the children
+<i>67</i>&nbsp;     * list.
+<i>68</i>&nbsp;     */
+<b class="fc"><i>69</i>&nbsp;    private final List&lt;NGNode&gt; viewOrderChildren = new ArrayList&lt;&gt;(1);</b>
+<i>70</i>&nbsp;
+<i>71</i>&nbsp;    /**
+<i>72</i>&nbsp;     * This mask has all bits that mark that a region intersects this group.
+<i>73</i>&nbsp;     * Which means it looks like this: 00010101010101010101010101010101 (first bit for sign)
+<i>74</i>&nbsp;     */
+<i>75</i>&nbsp;    private static final int REGION_INTERSECTS_MASK = 0x15555555;
+<i>76</i>&nbsp;
+<i>77</i>&nbsp;    /***************************************************************************
+<i>78</i>&nbsp;     *                                                                         *
+<i>79</i>&nbsp;     * Implementation of the PGGroup interface                                 *
+<i>80</i>&nbsp;     *                                                                         *
+<i>81</i>&nbsp;     **************************************************************************/
+<i>82</i>&nbsp;
+<i>83</i>&nbsp;    /**
+<i>84</i>&nbsp;     * Gets an unmodifiable list of the current children on this group
+<i>85</i>&nbsp;     */
+<b class="fc"><i>86</i>&nbsp;    public List&lt;NGNode&gt; getChildren() { return unmod; }</b>
+<i>87</i>&nbsp;
+<i>88</i>&nbsp;    /**
+<i>89</i>&nbsp;     * Adds a node to the given index. An index of -1 means &quot;append&quot;, for legacy
+<i>90</i>&nbsp;     * reasons (it was easier than asking for the number of children, iirc).
+<i>91</i>&nbsp;     * @param index -1, or &lt;= node.size()
+<i>92</i>&nbsp;     * @param node
+<i>93</i>&nbsp;     */
+<i>94</i>&nbsp;    public void add(int index, NGNode node) {
+<i>95</i>&nbsp;        // Validate the arguments
+<b class="fc"><i>96</i>&nbsp;        if ((index &lt; -1) || (index &gt; children.size())) {</b>
+<b class="nc"><i>97</i>&nbsp;            throw new IndexOutOfBoundsException(&quot;invalid index&quot;);</b>
+<i>98</i>&nbsp;        }
+<i>99</i>&nbsp;
+<i>100</i>&nbsp;        // NOTE: We used to do checks here to make sure that a node
+<i>101</i>&nbsp;        // being added didn&#39;t already have another parent listed as
+<i>102</i>&nbsp;        // its parent. Now we just silently accept them. The FX side
+<i>103</i>&nbsp;        // is already doing this check, and implementing this check
+<i>104</i>&nbsp;        // properly would require that the &quot;clear&quot; implementation visit
+<i>105</i>&nbsp;        // all nodes and clear this flag, which is really just wasted work.
+<b class="fc"><i>106</i>&nbsp;        NGNode child = node;</b>
+<i>107</i>&nbsp;
+<i>108</i>&nbsp;        // When a new node is added, we need to make sure the new node has this
+<i>109</i>&nbsp;        // group registered as its parent. We also need to make sure I invalidate
+<i>110</i>&nbsp;        // this group&#39;s cache and mark it dirty. Note that we don&#39;t have to worry
+<i>111</i>&nbsp;        // about notifying the other parent that it has lost a node: the FX
+<i>112</i>&nbsp;        // scene graph will be sure to send a &quot;remove&quot; notification to the other
+<i>113</i>&nbsp;        // parent, so we don&#39;t have to be concerned with the other parent
+<i>114</i>&nbsp;        // having to be marked dirty or whatnot.
+<b class="fc"><i>115</i>&nbsp;        child.setParent(this);</b>
+<b class="fc"><i>116</i>&nbsp;        childDirty = true;</b>
+<b class="fc"><i>117</i>&nbsp;        if (index == -1) {</b>
+<b class="nc"><i>118</i>&nbsp;            children.add(node);</b>
+<i>119</i>&nbsp;        } else {
+<b class="fc"><i>120</i>&nbsp;            children.add(index, node);</b>
+<i>121</i>&nbsp;        }
+<b class="fc"><i>122</i>&nbsp;        child.markDirty();</b>
+<b class="fc"><i>123</i>&nbsp;        markTreeDirtyNoIncrement();</b>
+<b class="fc"><i>124</i>&nbsp;        geometryChanged();</b>
+<b class="fc"><i>125</i>&nbsp;    }</b>
+<i>126</i>&nbsp;
+<i>127</i>&nbsp;    public void clearFrom(int fromIndex) {
+<b class="fc"><i>128</i>&nbsp;        if (fromIndex &lt; children.size()) {</b>
+<b class="fc"><i>129</i>&nbsp;            children.subList(fromIndex, children.size()).clear();</b>
+<b class="fc"><i>130</i>&nbsp;            geometryChanged();</b>
+<b class="fc"><i>131</i>&nbsp;            childDirty = true;</b>
+<b class="fc"><i>132</i>&nbsp;            markTreeDirtyNoIncrement();</b>
+<i>133</i>&nbsp;        }
+<b class="fc"><i>134</i>&nbsp;    }</b>
+<i>135</i>&nbsp;
+<i>136</i>&nbsp;    public List&lt;NGNode&gt; getRemovedChildren() {
+<b class="fc"><i>137</i>&nbsp;        return removed;</b>
+<i>138</i>&nbsp;    }
+<i>139</i>&nbsp;
+<i>140</i>&nbsp;    public void addToRemoved(NGNode n) {
+<b class="nc"><i>141</i>&nbsp;        if (removed == null) removed = new ArrayList&lt;&gt;();</b>
+<b class="nc"><i>142</i>&nbsp;        if (dirtyChildrenAccumulated &gt; DIRTY_CHILDREN_ACCUMULATED_THRESHOLD) {</b>
+<b class="nc"><i>143</i>&nbsp;            return;</b>
+<i>144</i>&nbsp;        }
+<i>145</i>&nbsp;
+<b class="nc"><i>146</i>&nbsp;        removed.add(n);</b>
+<b class="nc"><i>147</i>&nbsp;        dirtyChildrenAccumulated++;</b>
+<i>148</i>&nbsp;
+<b class="nc"><i>149</i>&nbsp;        if (dirtyChildrenAccumulated &gt; DIRTY_CHILDREN_ACCUMULATED_THRESHOLD) {</b>
+<b class="nc"><i>150</i>&nbsp;            removed.clear(); //no need to store anything in this case</b>
+<i>151</i>&nbsp;        }
+<b class="nc"><i>152</i>&nbsp;    }</b>
+<i>153</i>&nbsp;
+<i>154</i>&nbsp;    @Override
+<i>155</i>&nbsp;    protected void clearDirty() {
+<b class="fc"><i>156</i>&nbsp;        super.clearDirty();</b>
+<b class="fc"><i>157</i>&nbsp;        if (removed != null) removed.clear();</b>
+<b class="fc"><i>158</i>&nbsp;    }</b>
+<i>159</i>&nbsp;
+<i>160</i>&nbsp;    public void remove(NGNode node) {
+<i>161</i>&nbsp;        // We just remove the node and mark this group as being dirty. Really, if we
+<i>162</i>&nbsp;        // supported sub-regions within the group, we&#39;d only have to mark the
+<i>163</i>&nbsp;        // sub-region that had been occupied by the node as dirty, but we do not
+<i>164</i>&nbsp;        // as yet have this optimization (mostly because we didn&#39;t have it in
+<i>165</i>&nbsp;        // Scenario, mostly because it was hard to optimize correctly).
+<b class="nc"><i>166</i>&nbsp;        children.remove(node);</b>
+<b class="nc"><i>167</i>&nbsp;        geometryChanged();</b>
+<b class="nc"><i>168</i>&nbsp;        childDirty = true;</b>
+<b class="nc"><i>169</i>&nbsp;        markTreeDirtyNoIncrement();</b>
+<b class="nc"><i>170</i>&nbsp;    }</b>
+<i>171</i>&nbsp;
+<i>172</i>&nbsp;    public void remove(int index) {
+<b class="nc"><i>173</i>&nbsp;        children.remove(index);</b>
+<b class="nc"><i>174</i>&nbsp;        geometryChanged();</b>
+<b class="nc"><i>175</i>&nbsp;        childDirty = true;</b>
+<b class="nc"><i>176</i>&nbsp;        markTreeDirtyNoIncrement();</b>
+<b class="nc"><i>177</i>&nbsp;    }</b>
+<i>178</i>&nbsp;
+<i>179</i>&nbsp;    public void clear() {
+<b class="nc"><i>180</i>&nbsp;        children.clear();</b>
+<b class="nc"><i>181</i>&nbsp;        childDirty = false;</b>
+<b class="nc"><i>182</i>&nbsp;        geometryChanged();</b>
+<b class="nc"><i>183</i>&nbsp;        markTreeDirtyNoIncrement();</b>
+<b class="nc"><i>184</i>&nbsp;    }</b>
+<i>185</i>&nbsp;
+<i>186</i>&nbsp;    // Call this method if children view order is needed for rendering.
+<i>187</i>&nbsp;    // The returned list should be treated as read only.
+<i>188</i>&nbsp;    private List&lt;NGNode&gt; getOrderedChildren() {
+<b class="fc"><i>189</i>&nbsp;        if (!viewOrderChildren.isEmpty()) {</b>
+<b class="nc"><i>190</i>&nbsp;            return viewOrderChildren;</b>
+<i>191</i>&nbsp;        }
+<b class="fc"><i>192</i>&nbsp;        return children;</b>
+<i>193</i>&nbsp;    }
+<i>194</i>&nbsp;
+<i>195</i>&nbsp;    // NOTE: This method is called on the FX application thread with the
+<i>196</i>&nbsp;    // RenderLock held.
+<i>197</i>&nbsp;    public void setViewOrderChildren(List&lt;Node&gt; sortedChildren) {
+<b class="fc"><i>198</i>&nbsp;        viewOrderChildren.clear();</b>
+<b class="fc"><i>199</i>&nbsp;        for (Node child : sortedChildren) {</b>
+<b class="nc"><i>200</i>&nbsp;            NGNode childPeer = NodeHelper.getPeer(child);</b>
+<b class="nc"><i>201</i>&nbsp;            viewOrderChildren.add(childPeer);</b>
+<b class="nc"><i>202</i>&nbsp;        }</b>
+<i>203</i>&nbsp;
+<i>204</i>&nbsp;        // Mark visual dirty
+<b class="fc"><i>205</i>&nbsp;        visualsChanged();</b>
+<b class="fc"><i>206</i>&nbsp;    }</b>
+<i>207</i>&nbsp;
+<i>208</i>&nbsp;    /**
+<i>209</i>&nbsp;     * Set by the FX scene graph.
+<i>210</i>&nbsp;     * @param blendMode cannot be null
+<i>211</i>&nbsp;     */
+<i>212</i>&nbsp;    public void setBlendMode(Object blendMode) {
+<i>213</i>&nbsp;        // Verify the arguments
+<b class="nc"><i>214</i>&nbsp;        if (blendMode == null) {</b>
+<b class="nc"><i>215</i>&nbsp;            throw new IllegalArgumentException(&quot;Mode must be non-null&quot;);</b>
+<i>216</i>&nbsp;        }
+<i>217</i>&nbsp;        // If the blend mode has changed, mark this node as dirty and
+<i>218</i>&nbsp;        // invalidate its cache
+<b class="nc"><i>219</i>&nbsp;        if (this.blendMode != blendMode) {</b>
+<b class="nc"><i>220</i>&nbsp;            this.blendMode = (Blend.Mode)blendMode;</b>
+<b class="nc"><i>221</i>&nbsp;            visualsChanged();</b>
+<i>222</i>&nbsp;        }
+<b class="nc"><i>223</i>&nbsp;    }</b>
+<i>224</i>&nbsp;
+<i>225</i>&nbsp;    @Override
+<i>226</i>&nbsp;    public void renderForcedContent(Graphics gOptional) {
+<b class="fc"><i>227</i>&nbsp;        List&lt;NGNode&gt; orderedChildren = getOrderedChildren();</b>
+<b class="fc"><i>228</i>&nbsp;        if (orderedChildren == null) {</b>
+<b class="nc"><i>229</i>&nbsp;            return;</b>
+<i>230</i>&nbsp;        }
+<b class="fc"><i>231</i>&nbsp;        for (int i = 0; i &lt; orderedChildren.size(); i++) {</b>
+<b class="fc"><i>232</i>&nbsp;            orderedChildren.get(i).renderForcedContent(gOptional);</b>
+<i>233</i>&nbsp;        }
+<b class="fc"><i>234</i>&nbsp;    }</b>
+<i>235</i>&nbsp;
+<i>236</i>&nbsp;    @Override
+<i>237</i>&nbsp;    protected void renderContent(Graphics g) {
+<b class="fc"><i>238</i>&nbsp;        List&lt;NGNode&gt; orderedChildren = getOrderedChildren();</b>
+<b class="fc"><i>239</i>&nbsp;        if (orderedChildren == null) {</b>
+<b class="nc"><i>240</i>&nbsp;            return;</b>
+<i>241</i>&nbsp;        }
+<i>242</i>&nbsp;
+<b class="fc"><i>243</i>&nbsp;        NodePath renderRoot = g.getRenderRoot();</b>
+<b class="fc"><i>244</i>&nbsp;        int startPos = 0;</b>
+<b class="fc"><i>245</i>&nbsp;        if (renderRoot != null) {</b>
+<b class="fc"><i>246</i>&nbsp;            if (renderRoot.hasNext()) {</b>
+<b class="fc"><i>247</i>&nbsp;                renderRoot.next();</b>
+<b class="fc"><i>248</i>&nbsp;                startPos = orderedChildren.indexOf(renderRoot.getCurrentNode());</b>
+<i>249</i>&nbsp;
+<b class="fc"><i>250</i>&nbsp;                for (int i = 0; i &lt; startPos; ++i) {</b>
+<b class="fc"><i>251</i>&nbsp;                    orderedChildren.get(i).clearDirtyTree();</b>
+<i>252</i>&nbsp;                }
+<i>253</i>&nbsp;            } else {
+<b class="fc"><i>254</i>&nbsp;                g.setRenderRoot(null);</b>
+<i>255</i>&nbsp;            }
+<i>256</i>&nbsp;        }
+<i>257</i>&nbsp;
+<b class="fc"><i>258</i>&nbsp;        if (blendMode == Blend.Mode.SRC_OVER ||</b>
+<b class="nc"><i>259</i>&nbsp;                orderedChildren.size() &lt; 2) {  // Blend modes only work &quot;between&quot; siblings</b>
+<i>260</i>&nbsp;
+<b class="fc"><i>261</i>&nbsp;            for (int i = startPos; i &lt; orderedChildren.size(); i++) {</b>
+<i>262</i>&nbsp;                NGNode child;
+<i>263</i>&nbsp;                try {
+<b class="fc"><i>264</i>&nbsp;                    child = orderedChildren.get(i);</b>
+<b class="nc"><i>265</i>&nbsp;                } catch (Exception e) {</b>
+<b class="nc"><i>266</i>&nbsp;                    child = null;</b>
+<b class="fc"><i>267</i>&nbsp;                }</b>
+<i>268</i>&nbsp;                // minimal protection against concurrent update of the list.
+<b class="fc"><i>269</i>&nbsp;                if (child != null) {</b>
+<b class="fc"><i>270</i>&nbsp;                    child.render(g);</b>
+<i>271</i>&nbsp;                }
+<i>272</i>&nbsp;            }
+<b class="fc"><i>273</i>&nbsp;            return;</b>
+<i>274</i>&nbsp;        }
+<i>275</i>&nbsp;
+<b class="nc"><i>276</i>&nbsp;        Blend b = new Blend(blendMode, null, null);</b>
+<b class="nc"><i>277</i>&nbsp;        FilterContext fctx = getFilterContext(g);</b>
+<i>278</i>&nbsp;
+<b class="nc"><i>279</i>&nbsp;        ImageData bot = null;</b>
+<b class="nc"><i>280</i>&nbsp;        boolean idValid = true;</b>
+<i>281</i>&nbsp;        do {
+<i>282</i>&nbsp;            // TODO: probably don&#39;t need to wrap the transform here... (RT-26981)
+<b class="nc"><i>283</i>&nbsp;            BaseTransform transform = g.getTransformNoClone().copy();</b>
+<b class="nc"><i>284</i>&nbsp;            if (bot != null) {</b>
+<b class="nc"><i>285</i>&nbsp;                bot.unref();</b>
+<b class="nc"><i>286</i>&nbsp;                bot = null;</b>
+<i>287</i>&nbsp;            }
+<b class="nc"><i>288</i>&nbsp;            Rectangle rclip = PrEffectHelper.getGraphicsClipNoClone(g);</b>
+<b class="nc"><i>289</i>&nbsp;            for (int i = startPos; i &lt; orderedChildren.size(); i++) {</b>
+<b class="nc"><i>290</i>&nbsp;                NGNode child = orderedChildren.get(i);</b>
+<b class="nc"><i>291</i>&nbsp;                ImageData top = NodeEffectInput.</b>
+<b class="nc"><i>292</i>&nbsp;                    getImageDataForNode(fctx, child, false, transform, rclip);</b>
+<b class="nc"><i>293</i>&nbsp;                if (bot == null) {</b>
+<b class="nc"><i>294</i>&nbsp;                    bot = top;</b>
+<i>295</i>&nbsp;                } else {
+<b class="nc"><i>296</i>&nbsp;                    ImageData newbot =</b>
+<b class="nc"><i>297</i>&nbsp;                        b.filterImageDatas(fctx, transform, rclip, null, bot, top);</b>
+<b class="nc"><i>298</i>&nbsp;                    bot.unref();</b>
+<b class="nc"><i>299</i>&nbsp;                    top.unref();</b>
+<b class="nc"><i>300</i>&nbsp;                    bot = newbot;</b>
+<i>301</i>&nbsp;                }
+<i>302</i>&nbsp;            }
+<b class="nc"><i>303</i>&nbsp;            if (bot != null &amp;&amp; (idValid = bot.validate(fctx))) {</b>
+<b class="nc"><i>304</i>&nbsp;                Rectangle r = bot.getUntransformedBounds();</b>
+<b class="nc"><i>305</i>&nbsp;                PrDrawable botimg = (PrDrawable)bot.getUntransformedImage();</b>
+<b class="nc"><i>306</i>&nbsp;                g.setTransform(bot.getTransform());</b>
+<b class="nc"><i>307</i>&nbsp;                g.drawTexture(botimg.getTextureObject(),</b>
+<i>308</i>&nbsp;                        r.x, r.y, r.width, r.height);
+<i>309</i>&nbsp;            }
+<b class="nc"><i>310</i>&nbsp;        } while (bot == null || !idValid);</b>
+<i>311</i>&nbsp;
+<b class="nc"><i>312</i>&nbsp;        if (bot != null) {</b>
+<b class="nc"><i>313</i>&nbsp;            bot.unref();</b>
+<i>314</i>&nbsp;        }
+<b class="nc"><i>315</i>&nbsp;    }</b>
+<i>316</i>&nbsp;
+<i>317</i>&nbsp;    @Override
+<i>318</i>&nbsp;    protected boolean hasOverlappingContents() {
+<b class="nc"><i>319</i>&nbsp;        if (blendMode != Mode.SRC_OVER) {</b>
+<i>320</i>&nbsp;            // All other modes are flattened so there are no overlapping issues
+<b class="nc"><i>321</i>&nbsp;            return false;</b>
+<i>322</i>&nbsp;        }
+<b class="nc"><i>323</i>&nbsp;        List&lt;NGNode&gt; orderedChildren = getOrderedChildren();</b>
+<b class="nc"><i>324</i>&nbsp;        int n = (orderedChildren == null ? 0 : orderedChildren.size());</b>
+<b class="nc"><i>325</i>&nbsp;        if (n == 1) {</b>
+<b class="nc"><i>326</i>&nbsp;            return orderedChildren.get(0).hasOverlappingContents();</b>
+<i>327</i>&nbsp;        }
+<b class="nc"><i>328</i>&nbsp;        return (n != 0);</b>
+<i>329</i>&nbsp;    }
+<i>330</i>&nbsp;
+<i>331</i>&nbsp;    public boolean isEmpty() {
+<b class="nc"><i>332</i>&nbsp;        return children == null || children.isEmpty();</b>
+<i>333</i>&nbsp;    }
+<i>334</i>&nbsp;
+<i>335</i>&nbsp;    @Override
+<i>336</i>&nbsp;    protected boolean hasVisuals() {
+<b class="fc"><i>337</i>&nbsp;        return false;</b>
+<i>338</i>&nbsp;    }
+<i>339</i>&nbsp;
+<i>340</i>&nbsp;
+<i>341</i>&nbsp;    @Override
+<i>342</i>&nbsp;    protected boolean needsBlending() {
+<b class="fc"><i>343</i>&nbsp;        Blend.Mode mode = getNodeBlendMode();</b>
+<i>344</i>&nbsp;        // TODO: If children are all SRC_OVER then we can pass on SRC_OVER too
+<i>345</i>&nbsp;        // (RT-26981)
+<b class="fc"><i>346</i>&nbsp;        return (mode != null);</b>
+<i>347</i>&nbsp;    }
+<i>348</i>&nbsp;
+<i>349</i>&nbsp;    /***************************************************************************
+<i>350</i>&nbsp;     *                                                                         *
+<i>351</i>&nbsp;     *                     Culling Related Methods                             *
+<i>352</i>&nbsp;     *                                                                         *
+<i>353</i>&nbsp;     **************************************************************************/
+<i>354</i>&nbsp;    @Override
+<i>355</i>&nbsp;    protected RenderRootResult computeRenderRoot(NodePath path, RectBounds dirtyRegion, int cullingIndex, BaseTransform tx,
+<i>356</i>&nbsp;                                       GeneralTransform3D pvTx) {
+<i>357</i>&nbsp;
+<i>358</i>&nbsp;        // If the NGGroup is completely outside the culling area, then we don&#39;t have to traverse down
+<i>359</i>&nbsp;        // to the children yo.
+<b class="fc"><i>360</i>&nbsp;        if (cullingIndex != -1) {</b>
+<b class="fc"><i>361</i>&nbsp;            final int bits = cullingBits &gt;&gt; (cullingIndex*2);</b>
+<b class="fc"><i>362</i>&nbsp;            if ((bits &amp; DIRTY_REGION_CONTAINS_OR_INTERSECTS_NODE_BOUNDS) == 0) {</b>
+<b class="fc"><i>363</i>&nbsp;                return RenderRootResult.NO_RENDER_ROOT;</b>
+<i>364</i>&nbsp;            }
+<b class="fc"><i>365</i>&nbsp;            if ((bits &amp; DIRTY_REGION_CONTAINS_NODE_BOUNDS) != 0) {</b>
+<b class="fc"><i>366</i>&nbsp;                cullingIndex = -1; // Do not check culling in children,</b>
+<i>367</i>&nbsp;                                   // as culling bits are not set for fully interior groups
+<i>368</i>&nbsp;            }
+<i>369</i>&nbsp;        }
+<i>370</i>&nbsp;
+<b class="fc"><i>371</i>&nbsp;        if (!isVisible()) {</b>
+<b class="fc"><i>372</i>&nbsp;            return RenderRootResult.NO_RENDER_ROOT;</b>
+<i>373</i>&nbsp;        }
+<i>374</i>&nbsp;
+<b class="fc"><i>375</i>&nbsp;        if (getOpacity() != 1.0 || (getEffect() != null &amp;&amp; getEffect().reducesOpaquePixels()) || needsBlending()) {</b>
+<b class="fc"><i>376</i>&nbsp;            return RenderRootResult.NO_RENDER_ROOT;</b>
+<i>377</i>&nbsp;        }
+<i>378</i>&nbsp;
+<b class="fc"><i>379</i>&nbsp;        if (getClipNode() != null) {</b>
+<b class="fc"><i>380</i>&nbsp;            final NGNode clip = getClipNode();</b>
+<b class="fc"><i>381</i>&nbsp;            RectBounds clipBounds = clip.getOpaqueRegion();</b>
+<b class="fc"><i>382</i>&nbsp;            if (clipBounds == null) {</b>
+<b class="nc"><i>383</i>&nbsp;                return RenderRootResult.NO_RENDER_ROOT;</b>
+<i>384</i>&nbsp;            }
+<b class="fc"><i>385</i>&nbsp;            TEMP_TRANSFORM.deriveWithNewTransform(tx).deriveWithConcatenation(getTransform()).deriveWithConcatenation(clip.getTransform());</b>
+<b class="fc"><i>386</i>&nbsp;            if (!checkBoundsInQuad(clipBounds, dirtyRegion, TEMP_TRANSFORM, pvTx)) {</b>
+<b class="fc"><i>387</i>&nbsp;                return RenderRootResult.NO_RENDER_ROOT;</b>
+<i>388</i>&nbsp;            }
+<i>389</i>&nbsp;        }
+<i>390</i>&nbsp;
+<i>391</i>&nbsp;        // An NGGroup itself never draws pixels, so we don&#39;t have to call super. Just visit
+<i>392</i>&nbsp;        // each child, starting with the top-most.
+<b class="fc"><i>393</i>&nbsp;        double mxx = tx.getMxx();</b>
+<b class="fc"><i>394</i>&nbsp;        double mxy = tx.getMxy();</b>
+<b class="fc"><i>395</i>&nbsp;        double mxz = tx.getMxz();</b>
+<b class="fc"><i>396</i>&nbsp;        double mxt = tx.getMxt();</b>
+<i>397</i>&nbsp;
+<b class="fc"><i>398</i>&nbsp;        double myx = tx.getMyx();</b>
+<b class="fc"><i>399</i>&nbsp;        double myy = tx.getMyy();</b>
+<b class="fc"><i>400</i>&nbsp;        double myz = tx.getMyz();</b>
+<b class="fc"><i>401</i>&nbsp;        double myt = tx.getMyt();</b>
+<i>402</i>&nbsp;
+<b class="fc"><i>403</i>&nbsp;        double mzx = tx.getMzx();</b>
+<b class="fc"><i>404</i>&nbsp;        double mzy = tx.getMzy();</b>
+<b class="fc"><i>405</i>&nbsp;        double mzz = tx.getMzz();</b>
+<b class="fc"><i>406</i>&nbsp;        double mzt = tx.getMzt();</b>
+<b class="fc"><i>407</i>&nbsp;        final BaseTransform chTx = tx.deriveWithConcatenation(getTransform());</b>
+<i>408</i>&nbsp;
+<i>409</i>&nbsp;        // We need to keep a reference to the result of calling computeRenderRoot on each child
+<b class="fc"><i>410</i>&nbsp;        RenderRootResult result = RenderRootResult.NO_RENDER_ROOT;</b>
+<i>411</i>&nbsp;        // True if every child _after_ the the found render root is clean
+<b class="fc"><i>412</i>&nbsp;        boolean followingChildrenClean = true;</b>
+<i>413</i>&nbsp;        // Iterate over all children, looking for a render root.
+<b class="fc"><i>414</i>&nbsp;        List&lt;NGNode&gt; orderedChildren = getOrderedChildren();</b>
+<b class="fc"><i>415</i>&nbsp;        for (int resultIdx = orderedChildren.size() - 1; resultIdx &gt;= 0; resultIdx--) {</b>
+<i>416</i>&nbsp;            // Get the render root result from the child
+<b class="fc"><i>417</i>&nbsp;            final NGNode child = orderedChildren.get(resultIdx);</b>
+<b class="fc"><i>418</i>&nbsp;            result = child.computeRenderRoot(path, dirtyRegion, cullingIndex, chTx, pvTx);</b>
+<i>419</i>&nbsp;            // Update this flag, which if true means that this child and all subsequent children
+<i>420</i>&nbsp;            // of this group are all clean.
+<b class="fc"><i>421</i>&nbsp;            followingChildrenClean &amp;= child.isClean();</b>
+<i>422</i>&nbsp;
+<b class="fc"><i>423</i>&nbsp;            if (result == RenderRootResult.HAS_RENDER_ROOT) {</b>
+<i>424</i>&nbsp;                // If we have a render root and it is dirty, then we don&#39;t really care whether
+<i>425</i>&nbsp;                // followingChildrenClean is true or false, we just add this group to the
+<i>426</i>&nbsp;                // path and we&#39;re done.
+<b class="fc"><i>427</i>&nbsp;                path.add(this);</b>
+<b class="fc"><i>428</i>&nbsp;                break;</b>
+<b class="fc"><i>429</i>&nbsp;            } else if (result == RenderRootResult.HAS_RENDER_ROOT_AND_IS_CLEAN) {</b>
+<b class="nc"><i>430</i>&nbsp;                path.add(this);</b>
+<i>431</i>&nbsp;                // If we have a result which is itself reporting that it is clean, but
+<i>432</i>&nbsp;                // we have some following children which are dirty, then we need to
+<i>433</i>&nbsp;                // switch the result for this Group to be HAS_RENDER_ROOT.
+<b class="nc"><i>434</i>&nbsp;                if (!followingChildrenClean) {</b>
+<b class="nc"><i>435</i>&nbsp;                    result = RenderRootResult.HAS_RENDER_ROOT;</b>
+<i>436</i>&nbsp;                }
+<i>437</i>&nbsp;                break;
+<i>438</i>&nbsp;            }
+<i>439</i>&nbsp;        }
+<i>440</i>&nbsp;        // restore previous transform state
+<b class="fc"><i>441</i>&nbsp;        tx.restoreTransform(mxx, mxy, mxz, mxt, myx, myy, myz, myt, mzx, mzy, mzz, mzt);</b>
+<b class="fc"><i>442</i>&nbsp;        return result;</b>
+<i>443</i>&nbsp;    }
+<i>444</i>&nbsp;
+<i>445</i>&nbsp;    @Override
+<i>446</i>&nbsp;    protected void markCullRegions(
+<i>447</i>&nbsp;            DirtyRegionContainer drc,
+<i>448</i>&nbsp;            int cullingRegionsBitsOfParent,
+<i>449</i>&nbsp;            BaseTransform tx,
+<i>450</i>&nbsp;            GeneralTransform3D pvTx) {
+<i>451</i>&nbsp;
+<i>452</i>&nbsp;        //set culling bits for this group first.
+<b class="fc"><i>453</i>&nbsp;        super.markCullRegions(drc, cullingRegionsBitsOfParent, tx, pvTx);</b>
+<i>454</i>&nbsp;
+<i>455</i>&nbsp;        //cullingRegionsBits == 0 group is outside all dirty regions
+<i>456</i>&nbsp;        // we can cull all children otherwise check children.
+<i>457</i>&nbsp;        // If none of the regions intersect this group, skip pre-culling
+<b class="fc"><i>458</i>&nbsp;        if (cullingBits == -1 || (cullingBits != 0 &amp;&amp; (cullingBits &amp; REGION_INTERSECTS_MASK) != 0)) {</b>
+<i>459</i>&nbsp;            //save current transform
+<b class="fc"><i>460</i>&nbsp;            double mxx = tx.getMxx();</b>
+<b class="fc"><i>461</i>&nbsp;            double mxy = tx.getMxy();</b>
+<b class="fc"><i>462</i>&nbsp;            double mxz = tx.getMxz();</b>
+<b class="fc"><i>463</i>&nbsp;            double mxt = tx.getMxt();</b>
+<i>464</i>&nbsp;
+<b class="fc"><i>465</i>&nbsp;            double myx = tx.getMyx();</b>
+<b class="fc"><i>466</i>&nbsp;            double myy = tx.getMyy();</b>
+<b class="fc"><i>467</i>&nbsp;            double myz = tx.getMyz();</b>
+<b class="fc"><i>468</i>&nbsp;            double myt = tx.getMyt();</b>
+<i>469</i>&nbsp;
+<b class="fc"><i>470</i>&nbsp;            double mzx = tx.getMzx();</b>
+<b class="fc"><i>471</i>&nbsp;            double mzy = tx.getMzy();</b>
+<b class="fc"><i>472</i>&nbsp;            double mzz = tx.getMzz();</b>
+<b class="fc"><i>473</i>&nbsp;            double mzt = tx.getMzt();</b>
+<b class="fc"><i>474</i>&nbsp;            BaseTransform chTx = tx.deriveWithConcatenation(getTransform());</b>
+<i>475</i>&nbsp;
+<i>476</i>&nbsp;            NGNode child;
+<b class="fc"><i>477</i>&nbsp;            List&lt;NGNode&gt; orderedChildren = getOrderedChildren();</b>
+<b class="fc"><i>478</i>&nbsp;            for (int chldIdx = 0; chldIdx &lt; orderedChildren.size(); chldIdx++) {</b>
+<b class="fc"><i>479</i>&nbsp;                child = orderedChildren.get(chldIdx);</b>
+<b class="fc"><i>480</i>&nbsp;                child.markCullRegions(</b>
+<i>481</i>&nbsp;                        drc,
+<i>482</i>&nbsp;                        cullingBits,
+<i>483</i>&nbsp;                        chTx,
+<i>484</i>&nbsp;                        pvTx);
+<i>485</i>&nbsp;            }
+<i>486</i>&nbsp;            // restore previous transform state
+<b class="fc"><i>487</i>&nbsp;            tx.restoreTransform(mxx, mxy, mxz, mxt, myx, myy, myz, myt, mzx, mzy, mzz, mzt);</b>
+<i>488</i>&nbsp;        }
+<b class="fc"><i>489</i>&nbsp;    }</b>
+<i>490</i>&nbsp;
+<i>491</i>&nbsp;    @Override
+<i>492</i>&nbsp;    public void drawDirtyOpts(final BaseTransform tx, final GeneralTransform3D pvTx,
+<i>493</i>&nbsp;                              Rectangle clipBounds, int[] countBuffer, int dirtyRegionIndex) {
+<b class="nc"><i>494</i>&nbsp;        super.drawDirtyOpts(tx, pvTx, clipBounds, countBuffer, dirtyRegionIndex);</b>
+<i>495</i>&nbsp;        // Not really efficient but this code is only executed during debug. This makes sure
+<i>496</i>&nbsp;        // that the source transform (tx) is not modified.
+<b class="nc"><i>497</i>&nbsp;        BaseTransform clone = tx.copy();</b>
+<b class="nc"><i>498</i>&nbsp;        clone = clone.deriveWithConcatenation(getTransform());</b>
+<b class="nc"><i>499</i>&nbsp;        List&lt;NGNode&gt; orderedChildren = getOrderedChildren();</b>
+<b class="nc"><i>500</i>&nbsp;        for (int childIndex = 0; childIndex &lt; orderedChildren.size(); childIndex++) {</b>
+<b class="nc"><i>501</i>&nbsp;            final NGNode child = orderedChildren.get(childIndex);</b>
+<b class="nc"><i>502</i>&nbsp;            child.drawDirtyOpts(clone, pvTx, clipBounds, countBuffer, dirtyRegionIndex);</b>
+<i>503</i>&nbsp;        }
+<b class="nc"><i>504</i>&nbsp;    }</b>
+<i>505</i>&nbsp;
+<i>506</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2017-12-04 21:49</div>
+</div>
+</body>
+</html>

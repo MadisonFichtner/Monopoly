@@ -1,0 +1,329 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: TimelineClipCore</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.scenario.animation.shared</a> ]
+</div>
+
+<h1>Coverage Summary for Class: TimelineClipCore (com.sun.scenario.animation.shared)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">TimelineClipCore</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (11/ 11)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    76.5%
+  </span>
+  <span class="absValue">
+    (75/ 98)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright (c) 2008, 2015, Oracle and/or its affiliates. All rights reserved.
+<i>3</i>&nbsp; * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+<i>4</i>&nbsp; *
+<i>5</i>&nbsp; *
+<i>6</i>&nbsp; *
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; *
+<i>11</i>&nbsp; *
+<i>12</i>&nbsp; *
+<i>13</i>&nbsp; *
+<i>14</i>&nbsp; *
+<i>15</i>&nbsp; *
+<i>16</i>&nbsp; *
+<i>17</i>&nbsp; *
+<i>18</i>&nbsp; *
+<i>19</i>&nbsp; *
+<i>20</i>&nbsp; *
+<i>21</i>&nbsp; *
+<i>22</i>&nbsp; *
+<i>23</i>&nbsp; *
+<i>24</i>&nbsp; */
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;package com.sun.scenario.animation.shared;
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;import java.util.Arrays;
+<i>29</i>&nbsp;import java.util.Collection;
+<i>30</i>&nbsp;import java.util.Comparator;
+<i>31</i>&nbsp;import javafx.animation.Animation.Status;
+<i>32</i>&nbsp;import javafx.animation.KeyFrame;
+<i>33</i>&nbsp;import javafx.animation.Timeline;
+<i>34</i>&nbsp;import javafx.event.ActionEvent;
+<i>35</i>&nbsp;import javafx.event.EventHandler;
+<i>36</i>&nbsp;import javafx.util.Duration;
+<i>37</i>&nbsp;import com.sun.javafx.animation.TickCalculation;
+<i>38</i>&nbsp;
+<i>39</i>&nbsp;/**
+<i>40</i>&nbsp; * An instance of ClipCore handles the core part of a clip.
+<i>41</i>&nbsp; *
+<i>42</i>&nbsp; * The functionality to react on a pulse-signal from the timer is implemented in
+<i>43</i>&nbsp; * two classes: ClipEnvelope and ClipCore. ClipEnvelope is responsible for the
+<i>44</i>&nbsp; * &quot;loop-part&quot; (keeping track of the number of cycles, handling the direction of
+<i>45</i>&nbsp; * the clip etc.). ClipCore takes care of the inner part (interpolating the
+<i>46</i>&nbsp; * values, triggering the action-functions, ...)
+<i>47</i>&nbsp; *
+<i>48</i>&nbsp; * Both classes have an abstract public definition and can only be created using
+<i>49</i>&nbsp; * the factory method create(). The intend is to provide a general
+<i>50</i>&nbsp; * implementation plus eventually some fast-track implementations for common use
+<i>51</i>&nbsp; * cases.
+<i>52</i>&nbsp; */
+<i>53</i>&nbsp;
+<i>54</i>&nbsp;// @@OPT
+<i>55</i>&nbsp;// - Use known information (kf) in visitKeyFrame to set values?
+<i>56</i>&nbsp;
+<i>57</i>&nbsp;public class TimelineClipCore {
+<i>58</i>&nbsp;
+<i>59</i>&nbsp;    private static final int UNDEFINED_KEYFRAME = -1;
+<i>60</i>&nbsp;
+<i>61</i>&nbsp;    /**
+<i>62</i>&nbsp;     * Note: this comparator imposes orderings that are inconsistent with
+<i>63</i>&nbsp;     * equals.
+<i>64</i>&nbsp;     */
+<b class="fc"><i>65</i>&nbsp;    private static final Comparator&lt;KeyFrame&gt; KEY_FRAME_COMPARATOR = (kf1, kf2) -&gt; kf1.getTime().compareTo(kf2.getTime());</b>
+<i>66</i>&nbsp;
+<i>67</i>&nbsp;    // The owner of this ClipCore
+<i>68</i>&nbsp;    Timeline timeline;
+<i>69</i>&nbsp;
+<i>70</i>&nbsp;    // The sorted list of keyframes
+<b class="fc"><i>71</i>&nbsp;    private KeyFrame[] keyFrames = new KeyFrame[0];</b>
+<b class="fc"><i>72</i>&nbsp;    private long[] keyFrameTicks = new long[0];</b>
+<i>73</i>&nbsp;    // If there are no KeyFrames with onFinished handler then we can skip frames
+<i>74</i>&nbsp;    // This works because KeyFrame.onFinished is final
+<b class="fc"><i>75</i>&nbsp;    private boolean canSkipFrames = true;</b>
+<i>76</i>&nbsp;
+<i>77</i>&nbsp;    private ClipInterpolator clipInterpolator;
+<i>78</i>&nbsp;
+<b class="fc"><i>79</i>&nbsp;    public TimelineClipCore(Timeline timeline) {</b>
+<b class="fc"><i>80</i>&nbsp;        this.timeline = timeline;</b>
+<b class="fc"><i>81</i>&nbsp;        this.clipInterpolator = ClipInterpolator.create(keyFrames, keyFrameTicks);</b>
+<b class="fc"><i>82</i>&nbsp;    }</b>
+<i>83</i>&nbsp;
+<i>84</i>&nbsp;    /**
+<i>85</i>&nbsp;     * Changes the keyframes.
+<i>86</i>&nbsp;     */
+<i>87</i>&nbsp;    public Duration setKeyFrames(Collection&lt;KeyFrame&gt; keyFrames) {
+<b class="fc"><i>88</i>&nbsp;        final int n = keyFrames.size();</b>
+<b class="fc"><i>89</i>&nbsp;        final KeyFrame[] sortedKeyFrames = new KeyFrame[n];</b>
+<b class="fc"><i>90</i>&nbsp;        keyFrames.toArray(sortedKeyFrames);</b>
+<b class="fc"><i>91</i>&nbsp;        Arrays.sort(sortedKeyFrames, KEY_FRAME_COMPARATOR);</b>
+<i>92</i>&nbsp;
+<b class="fc"><i>93</i>&nbsp;        canSkipFrames = true;</b>
+<b class="fc"><i>94</i>&nbsp;        this.keyFrames = sortedKeyFrames;</b>
+<b class="fc"><i>95</i>&nbsp;        keyFrameTicks = new long[n];</b>
+<b class="fc"><i>96</i>&nbsp;        for (int i = 0; i &lt; n; ++i) {</b>
+<b class="fc"><i>97</i>&nbsp;            keyFrameTicks[i] = TickCalculation.fromDuration(this.keyFrames[i].getTime());</b>
+<b class="fc"><i>98</i>&nbsp;            if (canSkipFrames &amp;&amp; this.keyFrames[i].getOnFinished() != null) {</b>
+<b class="fc"><i>99</i>&nbsp;                canSkipFrames = false;</b>
+<i>100</i>&nbsp;            }
+<i>101</i>&nbsp;        }
+<b class="fc"><i>102</i>&nbsp;        clipInterpolator = clipInterpolator.setKeyFrames(sortedKeyFrames, keyFrameTicks);</b>
+<b class="fc"><i>103</i>&nbsp;        return (n == 0) ? Duration.ZERO</b>
+<b class="fc"><i>104</i>&nbsp;                : sortedKeyFrames[n-1].getTime();</b>
+<i>105</i>&nbsp;    }
+<i>106</i>&nbsp;
+<i>107</i>&nbsp;    public void notifyCurrentRateChanged() {
+<i>108</i>&nbsp;        // special case: if clip is toggled while stopped, we want to revisit
+<i>109</i>&nbsp;        // all key frames
+<b class="fc"><i>110</i>&nbsp;        if (timeline.getStatus() != Status.RUNNING) {</b>
+<b class="nc"><i>111</i>&nbsp;            clearLastKeyFrame();</b>
+<i>112</i>&nbsp;        }
+<b class="fc"><i>113</i>&nbsp;    }</b>
+<i>114</i>&nbsp;
+<i>115</i>&nbsp;    /**
+<i>116</i>&nbsp;     * This method is called if while visiting a keyframe of a timeline the time
+<i>117</i>&nbsp;     * or rate are changed, or if the timeline is stopped. In these cases
+<i>118</i>&nbsp;     * visiting the keyframes must be aborted.
+<i>119</i>&nbsp;     */
+<i>120</i>&nbsp;    public void abort() {
+<b class="fc"><i>121</i>&nbsp;        aborted = true;</b>
+<b class="fc"><i>122</i>&nbsp;    }</b>
+<i>123</i>&nbsp;
+<b class="fc"><i>124</i>&nbsp;    private boolean aborted = false;</b>
+<i>125</i>&nbsp;
+<i>126</i>&nbsp;    // The index of the keyframe that was visited last
+<b class="fc"><i>127</i>&nbsp;    private int lastKF = UNDEFINED_KEYFRAME;</b>
+<i>128</i>&nbsp;
+<i>129</i>&nbsp;    // The position where clip currently stands
+<b class="fc"><i>130</i>&nbsp;    private long curTicks = 0;</b>
+<i>131</i>&nbsp;
+<i>132</i>&nbsp;    private void clearLastKeyFrame() {
+<b class="fc"><i>133</i>&nbsp;        lastKF = UNDEFINED_KEYFRAME;</b>
+<b class="fc"><i>134</i>&nbsp;    }</b>
+<i>135</i>&nbsp;
+<i>136</i>&nbsp;    public void jumpTo(long ticks, boolean forceJump) {
+<b class="fc"><i>137</i>&nbsp;        lastKF = UNDEFINED_KEYFRAME;</b>
+<b class="fc"><i>138</i>&nbsp;        curTicks = ticks;</b>
+<b class="fc"><i>139</i>&nbsp;        if (timeline.getStatus() != Status.STOPPED || forceJump) {</b>
+<b class="fc"><i>140</i>&nbsp;            if (forceJump) {</b>
+<b class="nc"><i>141</i>&nbsp;                clipInterpolator.validate(false);</b>
+<i>142</i>&nbsp;            }
+<b class="fc"><i>143</i>&nbsp;            clipInterpolator.interpolate(ticks);</b>
+<i>144</i>&nbsp;        }
+<b class="fc"><i>145</i>&nbsp;    }</b>
+<i>146</i>&nbsp;
+<i>147</i>&nbsp;    public void start(boolean forceSync) {
+<b class="fc"><i>148</i>&nbsp;        clearLastKeyFrame();</b>
+<b class="fc"><i>149</i>&nbsp;        clipInterpolator.validate(forceSync);</b>
+<b class="fc"><i>150</i>&nbsp;        if (curTicks &gt; 0) {</b>
+<b class="nc"><i>151</i>&nbsp;            clipInterpolator.interpolate(curTicks);</b>
+<i>152</i>&nbsp;        }
+<b class="fc"><i>153</i>&nbsp;    }</b>
+<i>154</i>&nbsp;
+<i>155</i>&nbsp;    /**
+<i>156</i>&nbsp;     * Called to visit all keyframes within a specified time-interval.
+<i>157</i>&nbsp;     */
+<i>158</i>&nbsp;    public void playTo(long ticks) {
+<b class="fc"><i>159</i>&nbsp;        if (canSkipFrames) {</b>
+<b class="nc"><i>160</i>&nbsp;            clearLastKeyFrame();</b>
+<b class="nc"><i>161</i>&nbsp;            setTime(ticks);</b>
+<b class="nc"><i>162</i>&nbsp;            clipInterpolator.interpolate(ticks);</b>
+<b class="nc"><i>163</i>&nbsp;            return;</b>
+<i>164</i>&nbsp;        }
+<b class="fc"><i>165</i>&nbsp;        aborted = false;</b>
+<b class="fc"><i>166</i>&nbsp;        final boolean forward = curTicks &lt;= ticks;</b>
+<i>167</i>&nbsp;
+<b class="fc"><i>168</i>&nbsp;        if (forward) {</b>
+<b class="fc"><i>169</i>&nbsp;            final int fromKF = (lastKF == UNDEFINED_KEYFRAME) ? 0</b>
+<b class="fc"><i>170</i>&nbsp;                    : (keyFrameTicks[lastKF] &lt;= curTicks) ? lastKF + 1</b>
+<b class="nc"><i>171</i>&nbsp;                            : lastKF;</b>
+<b class="fc"><i>172</i>&nbsp;            final int toKF = keyFrames.length;</b>
+<b class="fc"><i>173</i>&nbsp;            for (int fi = fromKF; fi &lt; toKF; fi++) {</b>
+<b class="fc"><i>174</i>&nbsp;                final long kfTicks = keyFrameTicks[fi];</b>
+<b class="fc"><i>175</i>&nbsp;                if (kfTicks &gt; ticks) {</b>
+<b class="fc"><i>176</i>&nbsp;                    lastKF = fi - 1;</b>
+<b class="fc"><i>177</i>&nbsp;                    break;</b>
+<i>178</i>&nbsp;                }
+<b class="fc"><i>179</i>&nbsp;                if (kfTicks &gt;= curTicks) {</b>
+<b class="fc"><i>180</i>&nbsp;                    visitKeyFrame(fi, kfTicks);</b>
+<b class="fc"><i>181</i>&nbsp;                    if (aborted) {</b>
+<b class="nc"><i>182</i>&nbsp;                        break;</b>
+<i>183</i>&nbsp;                    }
+<i>184</i>&nbsp;                }
+<i>185</i>&nbsp;            }
+<b class="fc"><i>186</i>&nbsp;        } else {</b>
+<b class="nc"><i>187</i>&nbsp;            final int fromKF = (lastKF == UNDEFINED_KEYFRAME) ? keyFrames.length - 1</b>
+<b class="nc"><i>188</i>&nbsp;                    : (keyFrameTicks[lastKF] &gt;= curTicks) ? lastKF - 1</b>
+<b class="nc"><i>189</i>&nbsp;                            : lastKF;</b>
+<b class="nc"><i>190</i>&nbsp;            for (int fi = fromKF; fi &gt;= 0; fi--) {</b>
+<b class="nc"><i>191</i>&nbsp;                final long kfTicks = keyFrameTicks[fi];</b>
+<b class="nc"><i>192</i>&nbsp;                if (kfTicks &lt; ticks) {</b>
+<b class="nc"><i>193</i>&nbsp;                    lastKF = fi + 1;</b>
+<b class="nc"><i>194</i>&nbsp;                    break;</b>
+<i>195</i>&nbsp;                }
+<b class="nc"><i>196</i>&nbsp;                if (kfTicks &lt;= curTicks) {</b>
+<b class="nc"><i>197</i>&nbsp;                    visitKeyFrame(fi, kfTicks);</b>
+<b class="nc"><i>198</i>&nbsp;                    if (aborted) {</b>
+<b class="nc"><i>199</i>&nbsp;                        break;</b>
+<i>200</i>&nbsp;                    }
+<i>201</i>&nbsp;                }
+<i>202</i>&nbsp;            }
+<i>203</i>&nbsp;        }
+<b class="fc"><i>204</i>&nbsp;        if (!aborted</b>
+<i>205</i>&nbsp;                &amp;&amp; ((lastKF == UNDEFINED_KEYFRAME)
+<i>206</i>&nbsp;                        || keyFrameTicks[lastKF] != ticks || (keyFrames[lastKF]
+<b class="fc"><i>207</i>&nbsp;                        .getOnFinished() == null))) {</b>
+<b class="fc"><i>208</i>&nbsp;            setTime(ticks);</b>
+<b class="fc"><i>209</i>&nbsp;            clipInterpolator.interpolate(ticks);</b>
+<i>210</i>&nbsp;        }
+<b class="fc"><i>211</i>&nbsp;    }</b>
+<i>212</i>&nbsp;
+<i>213</i>&nbsp;    private void setTime(long ticks) {
+<b class="fc"><i>214</i>&nbsp;        curTicks = ticks;</b>
+<b class="fc"><i>215</i>&nbsp;        AnimationAccessor.getDefault().setCurrentTicks(timeline, ticks);</b>
+<b class="fc"><i>216</i>&nbsp;    }</b>
+<i>217</i>&nbsp;
+<i>218</i>&nbsp;    /**
+<i>219</i>&nbsp;     * Visit a single keyframe.
+<i>220</i>&nbsp;     *
+<i>221</i>&nbsp;     * @param kfIndex
+<i>222</i>&nbsp;     *            the index of the keyframe in the keyframe-array
+<i>223</i>&nbsp;     * @param kfTicks
+<i>224</i>&nbsp;     *            the time of that keyframe
+<i>225</i>&nbsp;     */
+<i>226</i>&nbsp;    private void visitKeyFrame(int kfIndex, long kfTicks) {
+<b class="fc"><i>227</i>&nbsp;        if (kfIndex != lastKF) { // suppress double visiting on toggle for</b>
+<i>228</i>&nbsp;                                 // autoReverse
+<b class="fc"><i>229</i>&nbsp;            lastKF = kfIndex;</b>
+<i>230</i>&nbsp;
+<b class="fc"><i>231</i>&nbsp;            final KeyFrame kf = keyFrames[kfIndex];</b>
+<b class="fc"><i>232</i>&nbsp;            final EventHandler&lt;ActionEvent&gt; onFinished = kf.getOnFinished();</b>
+<i>233</i>&nbsp;
+<b class="fc"><i>234</i>&nbsp;            if (onFinished != null) {</b>
+<i>235</i>&nbsp;                // visit the action of this keyframe
+<b class="fc"><i>236</i>&nbsp;                setTime(kfTicks);</b>
+<b class="fc"><i>237</i>&nbsp;                clipInterpolator.interpolate(kfTicks);</b>
+<i>238</i>&nbsp;                try {
+<b class="fc"><i>239</i>&nbsp;                    onFinished.handle(new ActionEvent(kf, null));</b>
+<b class="nc"><i>240</i>&nbsp;                } catch (Throwable ex) {</b>
+<b class="nc"><i>241</i>&nbsp;                    Thread.currentThread().getUncaughtExceptionHandler().uncaughtException(Thread.currentThread(), ex);</b>
+<b class="fc"><i>242</i>&nbsp;                }</b>
+<i>243</i>&nbsp;            }
+<i>244</i>&nbsp;        }
+<b class="fc"><i>245</i>&nbsp;    }</b>
+<i>246</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2017-12-04 21:49</div>
+</div>
+</body>
+</html>

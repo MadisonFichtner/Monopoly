@@ -1,0 +1,273 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: Color</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.prism.paint</a> ]
+</div>
+
+<h1>Coverage Summary for Class: Color (com.sun.prism.paint)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">Color</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    81.2%
+  </span>
+  <span class="absValue">
+    (13/ 16)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    70.2%
+  </span>
+  <span class="absValue">
+    (33/ 47)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright (c) 2009, 2013, Oracle and/or its affiliates. All rights reserved.
+<i>3</i>&nbsp; * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+<i>4</i>&nbsp; *
+<i>5</i>&nbsp; *
+<i>6</i>&nbsp; *
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; *
+<i>11</i>&nbsp; *
+<i>12</i>&nbsp; *
+<i>13</i>&nbsp; *
+<i>14</i>&nbsp; *
+<i>15</i>&nbsp; *
+<i>16</i>&nbsp; *
+<i>17</i>&nbsp; *
+<i>18</i>&nbsp; *
+<i>19</i>&nbsp; *
+<i>20</i>&nbsp; *
+<i>21</i>&nbsp; *
+<i>22</i>&nbsp; *
+<i>23</i>&nbsp; *
+<i>24</i>&nbsp; */
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;package com.sun.prism.paint;
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;import com.sun.prism.paint.Paint.Type;
+<i>29</i>&nbsp;import java.nio.ByteBuffer;
+<i>30</i>&nbsp;
+<i>31</i>&nbsp;/**
+<i>32</i>&nbsp; * An immutable color, represented by four floating point values.
+<i>33</i>&nbsp; * The color components should be provided in non-premultiplied format.
+<i>34</i>&nbsp; */
+<i>35</i>&nbsp;public final class Color extends Paint {
+<i>36</i>&nbsp;
+<b class="fc"><i>37</i>&nbsp;    public static final Color WHITE       = new Color(1f, 1f, 1f, 1f);</b>
+<b class="fc"><i>38</i>&nbsp;    public static final Color BLACK       = new Color(0f, 0f, 0f, 1f);</b>
+<b class="fc"><i>39</i>&nbsp;    public static final Color RED         = new Color(1f, 0f, 0f, 1f);</b>
+<b class="fc"><i>40</i>&nbsp;    public static final Color GREEN       = new Color(0f, 1f, 0f, 1f);</b>
+<b class="fc"><i>41</i>&nbsp;    public static final Color BLUE        = new Color(0f, 0f, 1f, 1f);</b>
+<b class="fc"><i>42</i>&nbsp;    public static final Color TRANSPARENT = new Color(0f, 0f, 0f, 0f);</b>
+<i>43</i>&nbsp;
+<i>44</i>&nbsp;    private final int argb;
+<i>45</i>&nbsp;    private final float r;
+<i>46</i>&nbsp;    private final float g;
+<i>47</i>&nbsp;    private final float b;
+<i>48</i>&nbsp;    private final float a;
+<i>49</i>&nbsp;
+<i>50</i>&nbsp;    /**
+<i>51</i>&nbsp;     * Constructs a new {@code Color} instance.
+<i>52</i>&nbsp;     * The color components should be provided in non-premultiplied format.
+<i>53</i>&nbsp;     */
+<i>54</i>&nbsp;    public Color(float r, float g, float b, float a) {
+<b class="fc"><i>55</i>&nbsp;        super(Type.COLOR, false, false);</b>
+<b class="fc"><i>56</i>&nbsp;        int ia = (int)(255.0 * a);</b>
+<b class="fc"><i>57</i>&nbsp;        int ir = (int)(255.0 * r * a);</b>
+<b class="fc"><i>58</i>&nbsp;        int ig = (int)(255.0 * g * a);</b>
+<b class="fc"><i>59</i>&nbsp;        int ib = (int)(255.0 * b * a);</b>
+<b class="fc"><i>60</i>&nbsp;        this.argb = (ia &lt;&lt; 24) |(ir &lt;&lt; 16) | (ig &lt;&lt; 8) | (ib &lt;&lt; 0);</b>
+<b class="fc"><i>61</i>&nbsp;        this.r = r;</b>
+<b class="fc"><i>62</i>&nbsp;        this.g = g;</b>
+<b class="fc"><i>63</i>&nbsp;        this.b = b;</b>
+<b class="fc"><i>64</i>&nbsp;        this.a = a;</b>
+<b class="fc"><i>65</i>&nbsp;    }</b>
+<i>66</i>&nbsp;
+<i>67</i>&nbsp;    /**
+<i>68</i>&nbsp;     * Returns this color value (in premultiplied form) packed into an integer
+<i>69</i>&nbsp;     * in ARGB order.
+<i>70</i>&nbsp;     */
+<i>71</i>&nbsp;    public int getIntArgbPre() {
+<b class="fc"><i>72</i>&nbsp;        return argb;</b>
+<i>73</i>&nbsp;    }
+<i>74</i>&nbsp;
+<i>75</i>&nbsp;    /**
+<i>76</i>&nbsp;     * Stores the color components (in premultiplied form) of this
+<i>77</i>&nbsp;     * {@code Color} object into a byte array in RGBA order.
+<i>78</i>&nbsp;     */
+<i>79</i>&nbsp;    public void putRgbaPreBytes(byte[] arr, int offset) {
+<b class="nc"><i>80</i>&nbsp;        arr[offset+0] = (byte)((argb &gt;&gt; 16) &amp; 0xff);</b>
+<b class="nc"><i>81</i>&nbsp;        arr[offset+1] = (byte)((argb &gt;&gt;  8) &amp; 0xff);</b>
+<b class="nc"><i>82</i>&nbsp;        arr[offset+2] = (byte)((argb      ) &amp; 0xff);</b>
+<b class="nc"><i>83</i>&nbsp;        arr[offset+3] = (byte)((argb &gt;&gt; 24) &amp; 0xff);</b>
+<b class="nc"><i>84</i>&nbsp;    }</b>
+<i>85</i>&nbsp;
+<i>86</i>&nbsp;    /**
+<i>87</i>&nbsp;     * Stores the color components (in premultiplied form) of this
+<i>88</i>&nbsp;     * {@code Color} object into the given ByteBuffer in BGRA order.
+<i>89</i>&nbsp;     */
+<i>90</i>&nbsp;    public void putBgraPreBytes(ByteBuffer buf) {
+<b class="fc"><i>91</i>&nbsp;        buf.put((byte)((argb      ) &amp; 0xff));</b>
+<b class="fc"><i>92</i>&nbsp;        buf.put((byte)((argb &gt;&gt;  8) &amp; 0xff));</b>
+<b class="fc"><i>93</i>&nbsp;        buf.put((byte)((argb &gt;&gt; 16) &amp; 0xff));</b>
+<b class="fc"><i>94</i>&nbsp;        buf.put((byte)((argb &gt;&gt; 24) &amp; 0xff));</b>
+<b class="fc"><i>95</i>&nbsp;    }</b>
+<i>96</i>&nbsp;
+<i>97</i>&nbsp;    /**
+<i>98</i>&nbsp;     * Returns the red component of this {@code Color} in
+<i>99</i>&nbsp;     * non-premultiplied form.
+<i>100</i>&nbsp;     */
+<i>101</i>&nbsp;    public float getRed() {
+<b class="fc"><i>102</i>&nbsp;        return r;</b>
+<i>103</i>&nbsp;    }
+<i>104</i>&nbsp;
+<i>105</i>&nbsp;    /**
+<i>106</i>&nbsp;     * Returns the red component of this {@code Color} in
+<i>107</i>&nbsp;     * premultiplied form.
+<i>108</i>&nbsp;     */
+<i>109</i>&nbsp;    public float getRedPremult() {
+<b class="fc"><i>110</i>&nbsp;        return r*a;</b>
+<i>111</i>&nbsp;    }
+<i>112</i>&nbsp;
+<i>113</i>&nbsp;    /**
+<i>114</i>&nbsp;     * Returns the green component of this {@code Color} in
+<i>115</i>&nbsp;     * non-premultiplied form.
+<i>116</i>&nbsp;     */
+<i>117</i>&nbsp;    public float getGreen() {
+<b class="fc"><i>118</i>&nbsp;        return g;</b>
+<i>119</i>&nbsp;    }
+<i>120</i>&nbsp;
+<i>121</i>&nbsp;    /**
+<i>122</i>&nbsp;     * Returns the green component of this {@code Color} in
+<i>123</i>&nbsp;     * premultiplied form.
+<i>124</i>&nbsp;     */
+<i>125</i>&nbsp;    public float getGreenPremult() {
+<b class="fc"><i>126</i>&nbsp;        return g*a;</b>
+<i>127</i>&nbsp;    }
+<i>128</i>&nbsp;
+<i>129</i>&nbsp;    /**
+<i>130</i>&nbsp;     * Returns the blue component of this {@code Color} in
+<i>131</i>&nbsp;     * non-premultiplied form.
+<i>132</i>&nbsp;     */
+<i>133</i>&nbsp;    public float getBlue() {
+<b class="fc"><i>134</i>&nbsp;        return b;</b>
+<i>135</i>&nbsp;    }
+<i>136</i>&nbsp;
+<i>137</i>&nbsp;    /**
+<i>138</i>&nbsp;     * Returns the blue component of this {@code Color} in
+<i>139</i>&nbsp;     * premultiplied form.
+<i>140</i>&nbsp;     */
+<i>141</i>&nbsp;    public float getBluePremult() {
+<b class="fc"><i>142</i>&nbsp;        return b*a;</b>
+<i>143</i>&nbsp;    }
+<i>144</i>&nbsp;
+<i>145</i>&nbsp;    /**
+<i>146</i>&nbsp;     * Returns the alpha component of this {@code Color}.
+<i>147</i>&nbsp;     */
+<i>148</i>&nbsp;    public float getAlpha() {
+<b class="fc"><i>149</i>&nbsp;        return a;</b>
+<i>150</i>&nbsp;    }
+<i>151</i>&nbsp;
+<i>152</i>&nbsp;    @Override
+<i>153</i>&nbsp;    public boolean isOpaque() {
+<b class="fc"><i>154</i>&nbsp;        return a &gt;= 1f;</b>
+<i>155</i>&nbsp;    }
+<i>156</i>&nbsp;
+<i>157</i>&nbsp;    @Override
+<i>158</i>&nbsp;    public boolean equals(Object obj) {
+<b class="fc"><i>159</i>&nbsp;        if (!(obj instanceof Color)) {</b>
+<b class="fc"><i>160</i>&nbsp;            return false;</b>
+<i>161</i>&nbsp;        }
+<i>162</i>&nbsp;
+<b class="nc"><i>163</i>&nbsp;        final Color other = (Color) obj;</b>
+<b class="nc"><i>164</i>&nbsp;        return</b>
+<i>165</i>&nbsp;            this.r == other.r &amp;&amp;
+<i>166</i>&nbsp;            this.g == other.g &amp;&amp;
+<i>167</i>&nbsp;            this.b == other.b &amp;&amp;
+<i>168</i>&nbsp;            this.a == other.a;
+<i>169</i>&nbsp;    }
+<i>170</i>&nbsp;
+<i>171</i>&nbsp;    @Override
+<i>172</i>&nbsp;    public int hashCode() {
+<b class="nc"><i>173</i>&nbsp;        int hash = 3;</b>
+<b class="nc"><i>174</i>&nbsp;        hash = 53 * hash + Float.floatToIntBits(this.r);</b>
+<b class="nc"><i>175</i>&nbsp;        hash = 53 * hash + Float.floatToIntBits(this.g);</b>
+<b class="nc"><i>176</i>&nbsp;        hash = 53 * hash + Float.floatToIntBits(this.b);</b>
+<b class="nc"><i>177</i>&nbsp;        hash = 53 * hash + Float.floatToIntBits(this.a);</b>
+<b class="nc"><i>178</i>&nbsp;        return hash;</b>
+<i>179</i>&nbsp;    }
+<i>180</i>&nbsp;
+<i>181</i>&nbsp;    @Override
+<i>182</i>&nbsp;    public String toString() {
+<b class="nc"><i>183</i>&nbsp;        return &quot;Color[&quot; +</b>
+<i>184</i>&nbsp;            &quot;r=&quot; + r +
+<i>185</i>&nbsp;            &quot;, g=&quot; + g +
+<i>186</i>&nbsp;            &quot;, b=&quot; + b +
+<i>187</i>&nbsp;            &quot;, a=&quot; + a +
+<i>188</i>&nbsp;            &quot;]&quot;;
+<i>189</i>&nbsp;    }
+<i>190</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2017-12-04 21:49</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,1248 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: LabeledSkinBase</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">javafx.scene.control.skin</a> ]
+</div>
+
+<h1>Coverage Summary for Class: LabeledSkinBase (javafx.scene.control.skin)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">LabeledSkinBase</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    64.3%
+  </span>
+  <span class="absValue">
+    (27/ 42)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    51.1%
+  </span>
+  <span class="absValue">
+    (245/ 479)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright (c) 2010, 2016, Oracle and/or its affiliates. All rights reserved.
+<i>3</i>&nbsp; * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+<i>4</i>&nbsp; *
+<i>5</i>&nbsp; *
+<i>6</i>&nbsp; *
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; *
+<i>11</i>&nbsp; *
+<i>12</i>&nbsp; *
+<i>13</i>&nbsp; *
+<i>14</i>&nbsp; *
+<i>15</i>&nbsp; *
+<i>16</i>&nbsp; *
+<i>17</i>&nbsp; *
+<i>18</i>&nbsp; *
+<i>19</i>&nbsp; *
+<i>20</i>&nbsp; *
+<i>21</i>&nbsp; *
+<i>22</i>&nbsp; *
+<i>23</i>&nbsp; *
+<i>24</i>&nbsp; */
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;package javafx.scene.control.skin;
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;import com.sun.javafx.scene.control.LabeledText;
+<i>29</i>&nbsp;import com.sun.javafx.scene.control.behavior.TextBinding;
+<i>30</i>&nbsp;import com.sun.javafx.scene.control.skin.Utils;
+<i>31</i>&nbsp;import javafx.application.Platform;
+<i>32</i>&nbsp;import javafx.beans.InvalidationListener;
+<i>33</i>&nbsp;import javafx.geometry.HPos;
+<i>34</i>&nbsp;import javafx.geometry.NodeOrientation;
+<i>35</i>&nbsp;import javafx.geometry.Orientation;
+<i>36</i>&nbsp;import javafx.geometry.Pos;
+<i>37</i>&nbsp;import javafx.geometry.VPos;
+<i>38</i>&nbsp;import javafx.scene.AccessibleAttribute;
+<i>39</i>&nbsp;import javafx.scene.Node;
+<i>40</i>&nbsp;import javafx.scene.Scene;
+<i>41</i>&nbsp;import javafx.scene.control.Accordion;
+<i>42</i>&nbsp;import javafx.scene.control.ContentDisplay;
+<i>43</i>&nbsp;import javafx.scene.control.Control;
+<i>44</i>&nbsp;import javafx.scene.control.Label;
+<i>45</i>&nbsp;import javafx.scene.control.Labeled;
+<i>46</i>&nbsp;import javafx.scene.control.OverrunStyle;
+<i>47</i>&nbsp;import javafx.scene.control.SkinBase;
+<i>48</i>&nbsp;import javafx.scene.image.ImageView;
+<i>49</i>&nbsp;import javafx.scene.input.KeyCombination;
+<i>50</i>&nbsp;import javafx.scene.input.Mnemonic;
+<i>51</i>&nbsp;import javafx.scene.shape.Line;
+<i>52</i>&nbsp;import javafx.scene.shape.Rectangle;
+<i>53</i>&nbsp;import javafx.scene.text.Font;
+<i>54</i>&nbsp;
+<i>55</i>&nbsp;import static javafx.scene.control.ContentDisplay.BOTTOM;
+<i>56</i>&nbsp;import static javafx.scene.control.ContentDisplay.LEFT;
+<i>57</i>&nbsp;import static javafx.scene.control.ContentDisplay.RIGHT;
+<i>58</i>&nbsp;import static javafx.scene.control.ContentDisplay.TOP;
+<i>59</i>&nbsp;import static javafx.scene.control.OverrunStyle.CLIP;
+<i>60</i>&nbsp;
+<i>61</i>&nbsp;/**
+<i>62</i>&nbsp; * Default skin implementation for controls extends {@link Labeled}.
+<i>63</i>&nbsp; *
+<i>64</i>&nbsp; * @see Labeled
+<i>65</i>&nbsp; * @since 9
+<i>66</i>&nbsp; */
+<i>67</i>&nbsp;public abstract class LabeledSkinBase&lt;C extends Labeled&gt; extends SkinBase&lt;C&gt; {
+<i>68</i>&nbsp;
+<i>69</i>&nbsp;    /***************************************************************************
+<i>70</i>&nbsp;     *                                                                         *
+<i>71</i>&nbsp;     * Private fields                                                          *
+<i>72</i>&nbsp;     *                                                                         *
+<i>73</i>&nbsp;     **************************************************************************/
+<i>74</i>&nbsp;
+<i>75</i>&nbsp;    /**
+<i>76</i>&nbsp;     *  The Text node used to display the text. This is package only
+<i>77</i>&nbsp;     *  for the sake of testing!
+<i>78</i>&nbsp;     */
+<i>79</i>&nbsp;    LabeledText text;
+<i>80</i>&nbsp;
+<i>81</i>&nbsp;    /**
+<i>82</i>&nbsp;     * Indicates that the text content is invalid and needs to be updated.
+<i>83</i>&nbsp;     * This is package private only for the sake of testing.
+<i>84</i>&nbsp;     */
+<b class="fc"><i>85</i>&nbsp;    boolean invalidText = true;</b>
+<i>86</i>&nbsp;
+<i>87</i>&nbsp;    /**
+<i>88</i>&nbsp;     * A reference to the last-known graphic on the Labeled. This reference
+<i>89</i>&nbsp;     * is kept so that we can remove listeners from the old graphic later
+<i>90</i>&nbsp;     */
+<i>91</i>&nbsp;    Node graphic;
+<i>92</i>&nbsp;
+<i>93</i>&nbsp;    /**
+<i>94</i>&nbsp;     * The cached full width of the non-truncated text. We only want to
+<i>95</i>&nbsp;     * recompute this if the text has itself changed, or if the font has changed.
+<i>96</i>&nbsp;     * This is package private ONLY FOR THE SAKE OF TESTING
+<i>97</i>&nbsp;     */
+<b class="fc"><i>98</i>&nbsp;    double textWidth = Double.NEGATIVE_INFINITY;</b>
+<i>99</i>&nbsp;
+<i>100</i>&nbsp;    /**
+<i>101</i>&nbsp;     * The cached width of the ellipsis string. This will be recomputed
+<i>102</i>&nbsp;     * if the font or the ellipsisString property have changed.
+<i>103</i>&nbsp;     * This is package private ONLY FOR THE SAKE OF TESTING
+<i>104</i>&nbsp;     */
+<b class="fc"><i>105</i>&nbsp;    double ellipsisWidth = Double.NEGATIVE_INFINITY;</b>
+<i>106</i>&nbsp;
+<i>107</i>&nbsp;    /**
+<i>108</i>&nbsp;     * A listener which is applied to the graphic whenever the graphic is set
+<i>109</i>&nbsp;     * and is visible within the labeled. For example, if there is a graphic
+<i>110</i>&nbsp;     * defined on the Labeled but the ContentDisplay is set to TEXT_ONLY, then
+<i>111</i>&nbsp;     * we will not bother installing this listener on the graphic. In all
+<i>112</i>&nbsp;     * other cases, if the graphic is defined, it will have this listener
+<i>113</i>&nbsp;     * added to it, which ensures that if the graphic&#39;s layout bounds change,
+<i>114</i>&nbsp;     * we end up performing a layout and potentially update the visible text.
+<i>115</i>&nbsp;     *
+<i>116</i>&nbsp;     * This is package private ONLY FOR THE SAKE OF TESTING
+<i>117</i>&nbsp;     */
+<b class="fc"><i>118</i>&nbsp;    final InvalidationListener graphicPropertyChangedListener = valueModel -&gt; {</b>
+<b class="nc"><i>119</i>&nbsp;        invalidText = true;</b>
+<b class="nc"><i>120</i>&nbsp;        if (getSkinnable() != null) getSkinnable().requestLayout();</b>
+<b class="nc"><i>121</i>&nbsp;    };</b>
+<i>122</i>&nbsp;
+<i>123</i>&nbsp;    private Rectangle textClip;
+<i>124</i>&nbsp;    private double wrapWidth;
+<i>125</i>&nbsp;    private double wrapHeight;
+<i>126</i>&nbsp;
+<i>127</i>&nbsp;    private TextBinding bindings;
+<i>128</i>&nbsp;    private Line mnemonic_underscore;
+<i>129</i>&nbsp;
+<b class="fc"><i>130</i>&nbsp;    private boolean containsMnemonic = false;</b>
+<b class="fc"><i>131</i>&nbsp;    private Scene mnemonicScene = null;</b>
+<i>132</i>&nbsp;    private KeyCombination mnemonicCode;
+<i>133</i>&nbsp;    // needs to be an object, as MenuItem isn&#39;t a node
+<b class="fc"><i>134</i>&nbsp;    private Node labeledNode = null;</b>
+<i>135</i>&nbsp;
+<i>136</i>&nbsp;
+<i>137</i>&nbsp;
+<i>138</i>&nbsp;    /***************************************************************************
+<i>139</i>&nbsp;     *                                                                         *
+<i>140</i>&nbsp;     * Constructors                                                            *
+<i>141</i>&nbsp;     *                                                                         *
+<i>142</i>&nbsp;     **************************************************************************/
+<i>143</i>&nbsp;
+<i>144</i>&nbsp;    /**
+<i>145</i>&nbsp;     * Constructor for LabeledSkinBase. The Labeled must be specified, and cannot be null.
+<i>146</i>&nbsp;     * At the conclusion of the constructor call, the skin will be marked as
+<i>147</i>&nbsp;     * needsLayout, and will be fully configured based on the current state of
+<i>148</i>&nbsp;     * the labeled. Any subsequent changes to the Labeled will be handled via
+<i>149</i>&nbsp;     * listeners and applied appropriately.
+<i>150</i>&nbsp;     *
+<i>151</i>&nbsp;     * @param labeled The labeled that this skin should be installed onto.
+<i>152</i>&nbsp;     */
+<i>153</i>&nbsp;    public LabeledSkinBase(final C labeled) {
+<b class="fc"><i>154</i>&nbsp;        super(labeled);</b>
+<i>155</i>&nbsp;
+<i>156</i>&nbsp;        // Configure the Text node with all of the attributes from the
+<i>157</i>&nbsp;        // Labeled which apply to it.
+<b class="fc"><i>158</i>&nbsp;        text = new LabeledText(labeled);</b>
+<i>159</i>&nbsp;
+<b class="fc"><i>160</i>&nbsp;        updateChildren();</b>
+<i>161</i>&nbsp;
+<i>162</i>&nbsp;        // Labels do not block the mouse by default, unlike most other UI Controls.
+<i>163</i>&nbsp;        //consumeMouseEvents(false);
+<i>164</i>&nbsp;
+<i>165</i>&nbsp;        // Register listeners
+<i>166</i>&nbsp;        /*
+<i>167</i>&nbsp;         * There are basically 2 things to worry about in each of these handlers
+<i>168</i>&nbsp;         *  1) Update the Text node
+<i>169</i>&nbsp;         *  2) Have the text metrics changed?
+<i>170</i>&nbsp;         *
+<i>171</i>&nbsp;         * If the metrics have changed, we need to request a layout and invalidate
+<i>172</i>&nbsp;         * the text so that we recompute the display text on next read.
+<i>173</i>&nbsp;         */
+<b class="fc"><i>174</i>&nbsp;        registerChangeListener(labeled.ellipsisStringProperty(), o -&gt; {</b>
+<b class="nc"><i>175</i>&nbsp;            textMetricsChanged();</b>
+<b class="nc"><i>176</i>&nbsp;            invalidateWidths();</b>
+<b class="nc"><i>177</i>&nbsp;            ellipsisWidth = Double.NEGATIVE_INFINITY;</b>
+<b class="nc"><i>178</i>&nbsp;        });</b>
+<b class="fc"><i>179</i>&nbsp;        registerChangeListener(labeled.widthProperty(), o -&gt; {</b>
+<b class="fc"><i>180</i>&nbsp;            updateWrappingWidth();</b>
+<b class="fc"><i>181</i>&nbsp;            invalidText = true;</b>
+<i>182</i>&nbsp;            // No requestLayout() because Control will force a layout
+<b class="fc"><i>183</i>&nbsp;        });</b>
+<b class="fc"><i>184</i>&nbsp;        registerChangeListener(labeled.heightProperty(), o -&gt; {</b>
+<b class="fc"><i>185</i>&nbsp;            invalidText = true;</b>
+<i>186</i>&nbsp;            // No requestLayout() because Control will force a layout
+<b class="fc"><i>187</i>&nbsp;        });</b>
+<b class="fc"><i>188</i>&nbsp;        registerChangeListener(labeled.fontProperty(), o -&gt; {</b>
+<b class="nc"><i>189</i>&nbsp;            textMetricsChanged();</b>
+<b class="nc"><i>190</i>&nbsp;            invalidateWidths();</b>
+<b class="nc"><i>191</i>&nbsp;            ellipsisWidth = Double.NEGATIVE_INFINITY;</b>
+<b class="nc"><i>192</i>&nbsp;        });</b>
+<b class="fc"><i>193</i>&nbsp;        registerChangeListener(labeled.graphicProperty(), o -&gt; {</b>
+<b class="nc"><i>194</i>&nbsp;            updateChildren();</b>
+<b class="nc"><i>195</i>&nbsp;            textMetricsChanged();</b>
+<b class="nc"><i>196</i>&nbsp;        });</b>
+<b class="fc"><i>197</i>&nbsp;        registerChangeListener(labeled.contentDisplayProperty(), o -&gt; {</b>
+<b class="nc"><i>198</i>&nbsp;            updateChildren();</b>
+<b class="nc"><i>199</i>&nbsp;            textMetricsChanged();</b>
+<b class="nc"><i>200</i>&nbsp;        });</b>
+<b class="fc"><i>201</i>&nbsp;        registerChangeListener(labeled.labelPaddingProperty(), o -&gt; textMetricsChanged());</b>
+<b class="fc"><i>202</i>&nbsp;        registerChangeListener(labeled.graphicTextGapProperty(), o -&gt; textMetricsChanged());</b>
+<b class="fc"><i>203</i>&nbsp;        registerChangeListener(labeled.alignmentProperty(), o -&gt; {</b>
+<i>204</i>&nbsp;            // Doesn&#39;t involve text metrics because if the text is too long, then
+<i>205</i>&nbsp;            // it will already have fit all available width and a change to hpos
+<i>206</i>&nbsp;            // has no effect. Or it is too short (i.e. it all fits) and we don&#39;t
+<i>207</i>&nbsp;            // have to worry about truncation. So just call request layout.
+<i>208</i>&nbsp;            // Doesn&#39;t involve text metrics because if the text is too long, then
+<i>209</i>&nbsp;            // it will already have fit all available height and a change to vpos
+<i>210</i>&nbsp;            // has no effect. Or it is too short (i.e. it all fits) and we don&#39;t
+<i>211</i>&nbsp;            // have to worry about truncation. So just call request layout.
+<b class="nc"><i>212</i>&nbsp;            getSkinnable().requestLayout();</b>
+<b class="nc"><i>213</i>&nbsp;        });</b>
+<b class="fc"><i>214</i>&nbsp;        registerChangeListener(labeled.mnemonicParsingProperty(), o -&gt; {</b>
+<b class="nc"><i>215</i>&nbsp;            containsMnemonic = false;</b>
+<b class="nc"><i>216</i>&nbsp;            textMetricsChanged();</b>
+<b class="nc"><i>217</i>&nbsp;        });</b>
+<b class="fc"><i>218</i>&nbsp;        registerChangeListener(labeled.textProperty(), o -&gt; {</b>
+<b class="fc"><i>219</i>&nbsp;            updateChildren();</b>
+<b class="fc"><i>220</i>&nbsp;            textMetricsChanged();</b>
+<b class="fc"><i>221</i>&nbsp;            invalidateWidths();</b>
+<b class="fc"><i>222</i>&nbsp;        });</b>
+<b class="fc"><i>223</i>&nbsp;        registerChangeListener(labeled.textAlignmentProperty(), o -&gt; { /* NO-OP */ });</b>
+<b class="fc"><i>224</i>&nbsp;        registerChangeListener(labeled.textOverrunProperty(), o -&gt; textMetricsChanged());</b>
+<b class="fc"><i>225</i>&nbsp;        registerChangeListener(labeled.wrapTextProperty(), o -&gt; {</b>
+<b class="nc"><i>226</i>&nbsp;            updateWrappingWidth();</b>
+<b class="nc"><i>227</i>&nbsp;            textMetricsChanged();</b>
+<b class="nc"><i>228</i>&nbsp;        });</b>
+<b class="fc"><i>229</i>&nbsp;        registerChangeListener(labeled.underlineProperty(), o -&gt; textMetricsChanged());</b>
+<b class="fc"><i>230</i>&nbsp;        registerChangeListener(labeled.lineSpacingProperty(), o -&gt; textMetricsChanged());</b>
+<b class="fc"><i>231</i>&nbsp;        registerChangeListener(labeled.sceneProperty(), o -&gt; sceneChanged());</b>
+<b class="fc"><i>232</i>&nbsp;    }</b>
+<i>233</i>&nbsp;
+<i>234</i>&nbsp;
+<i>235</i>&nbsp;
+<i>236</i>&nbsp;    /***************************************************************************
+<i>237</i>&nbsp;     *                                                                         *
+<i>238</i>&nbsp;     * Public API                                                              *
+<i>239</i>&nbsp;     *                                                                         *
+<i>240</i>&nbsp;     **************************************************************************/
+<i>241</i>&nbsp;
+<i>242</i>&nbsp;    /**
+<i>243</i>&nbsp;     * Updates the children managed by LabeledSkinBase, which can be the Labeled
+<i>244</i>&nbsp;     * graphic and/or a Text node. Only those nodes which actually must
+<i>245</i>&nbsp;     * be used are used. For example, with a ContentDisplay of
+<i>246</i>&nbsp;     * GRAPHIC_ONLY the text node is not added, and with a ContentDisplay
+<i>247</i>&nbsp;     * of TEXT_ONLY, the graphic is not added.
+<i>248</i>&nbsp;     */
+<i>249</i>&nbsp;    protected void updateChildren() {
+<b class="fc"><i>250</i>&nbsp;        final Labeled labeled = getSkinnable();</b>
+<i>251</i>&nbsp;        // Only in some situations do we want to have the graphicPropertyChangedListener
+<i>252</i>&nbsp;        // installed. Since updateChildren() is not called much, we&#39;ll just remove it always
+<i>253</i>&nbsp;        // and reinstall it later if it is necessary to do so.
+<b class="fc"><i>254</i>&nbsp;        if (graphic != null) {</b>
+<b class="nc"><i>255</i>&nbsp;            graphic.layoutBoundsProperty().removeListener(graphicPropertyChangedListener);</b>
+<i>256</i>&nbsp;        }
+<i>257</i>&nbsp;        // Now update the graphic (since it may have changed)
+<b class="fc"><i>258</i>&nbsp;        graphic = labeled.getGraphic();</b>
+<i>259</i>&nbsp;
+<i>260</i>&nbsp;        // RT-19851 Only setMouseTransparent(true) for an ImageView.  This allows the button
+<i>261</i>&nbsp;        // to be picked regardless of the changing images on top of it.
+<b class="fc"><i>262</i>&nbsp;        if (graphic instanceof ImageView) {</b>
+<b class="nc"><i>263</i>&nbsp;            graphic.setMouseTransparent(true);</b>
+<i>264</i>&nbsp;        }
+<i>265</i>&nbsp;
+<i>266</i>&nbsp;        // Now update the children (and add the graphicPropertyChangedListener as necessary)
+<b class="fc"><i>267</i>&nbsp;        if (isIgnoreGraphic()) {</b>
+<b class="fc"><i>268</i>&nbsp;            if (labeled.getContentDisplay() == ContentDisplay.GRAPHIC_ONLY) {</b>
+<b class="nc"><i>269</i>&nbsp;                getChildren().clear();</b>
+<i>270</i>&nbsp;            } else {
+<b class="fc"><i>271</i>&nbsp;                getChildren().setAll(text);</b>
+<i>272</i>&nbsp;            }
+<i>273</i>&nbsp;        } else {
+<b class="nc"><i>274</i>&nbsp;            graphic.layoutBoundsProperty().addListener(graphicPropertyChangedListener);</b>
+<b class="nc"><i>275</i>&nbsp;            if (isIgnoreText()) {</b>
+<b class="nc"><i>276</i>&nbsp;                getChildren().setAll(graphic);</b>
+<i>277</i>&nbsp;            } else {
+<b class="nc"><i>278</i>&nbsp;                getChildren().setAll(graphic, text);</b>
+<i>279</i>&nbsp;            }
+<i>280</i>&nbsp;        }
+<b class="fc"><i>281</i>&nbsp;    }</b>
+<i>282</i>&nbsp;
+<i>283</i>&nbsp;    /**
+<i>284</i>&nbsp;     * Compute and return the minimum width of this Labeled. The minimum width is
+<i>285</i>&nbsp;     * the smaller of the width of &quot;...&quot; and the width with the actual text.
+<i>286</i>&nbsp;     * In this way, if the text width itself is smaller than the ellipsis then
+<i>287</i>&nbsp;     * we should use that as the min width, otherwise the ellipsis needs to be the
+<i>288</i>&nbsp;     * min width.
+<i>289</i>&nbsp;     * &lt;p&gt;
+<i>290</i>&nbsp;     * We use the same calculation here regardless of whether we are talking
+<i>291</i>&nbsp;     * about a single or multiline labeled. So a multiline labeled may find that
+<i>292</i>&nbsp;     * the width of the &quot;...&quot; is as small as it will ever get.
+<i>293</i>&nbsp;     */
+<i>294</i>&nbsp;    @Override protected double computeMinWidth(double height, double topInset, double rightInset, double bottomInset, double leftInset) {
+<b class="fc"><i>295</i>&nbsp;        return computeMinLabeledPartWidth(height, topInset, rightInset, bottomInset, leftInset);</b>
+<i>296</i>&nbsp;    }
+<i>297</i>&nbsp;
+<i>298</i>&nbsp;    /** {@inheritDoc} */
+<i>299</i>&nbsp;    @Override protected double computeMinHeight(double width, double topInset, double rightInset, double bottomInset, double leftInset) {
+<b class="fc"><i>300</i>&nbsp;        return computeMinLabeledPartHeight(width, topInset, rightInset, bottomInset, leftInset);</b>
+<i>301</i>&nbsp;    }
+<i>302</i>&nbsp;
+<i>303</i>&nbsp;    /** {@inheritDoc} */
+<i>304</i>&nbsp;    @Override protected double computePrefWidth(double height, double topInset, double rightInset, double bottomInset, double leftInset) {
+<i>305</i>&nbsp;        // Get the preferred width of the text
+<b class="fc"><i>306</i>&nbsp;        final Labeled labeled = getSkinnable();</b>
+<b class="fc"><i>307</i>&nbsp;        final Font font = text.getFont();</b>
+<b class="fc"><i>308</i>&nbsp;        final String string = labeled.getText();</b>
+<b class="fc"><i>309</i>&nbsp;        boolean emptyText = string == null || string.isEmpty();</b>
+<b class="fc"><i>310</i>&nbsp;        double widthPadding = leftInset + leftLabelPadding() +</b>
+<b class="fc"><i>311</i>&nbsp;                rightInset + rightLabelPadding();</b>
+<i>312</i>&nbsp;
+<b class="fc"><i>313</i>&nbsp;        double textWidth = emptyText ? 0 : Utils.computeTextWidth(font, string, 0);</b>
+<i>314</i>&nbsp;
+<i>315</i>&nbsp;        // Fix for RT-39889
+<b class="fc"><i>316</i>&nbsp;        double graphicWidth = graphic == null ? 0.0 :</b>
+<b class="nc"><i>317</i>&nbsp;                Utils.boundedSize(graphic.prefWidth(-1), graphic.minWidth(-1), graphic.maxWidth(-1));</b>
+<i>318</i>&nbsp;
+<i>319</i>&nbsp;        // Now add on the graphic, gap, and padding as appropriate
+<b class="fc"><i>320</i>&nbsp;        if (isIgnoreGraphic()) {</b>
+<b class="fc"><i>321</i>&nbsp;            return textWidth + widthPadding;</b>
+<b class="nc"><i>322</i>&nbsp;        } else if (isIgnoreText()) {</b>
+<b class="nc"><i>323</i>&nbsp;            return graphicWidth + widthPadding;</b>
+<b class="nc"><i>324</i>&nbsp;        } else if (labeled.getContentDisplay() == ContentDisplay.LEFT</b>
+<b class="nc"><i>325</i>&nbsp;                || labeled.getContentDisplay() == ContentDisplay.RIGHT) {</b>
+<b class="nc"><i>326</i>&nbsp;            return textWidth + labeled.getGraphicTextGap() + graphicWidth + widthPadding;</b>
+<i>327</i>&nbsp;        } else {
+<b class="nc"><i>328</i>&nbsp;            return Math.max(textWidth, graphicWidth) + widthPadding;</b>
+<i>329</i>&nbsp;        }
+<i>330</i>&nbsp;    }
+<i>331</i>&nbsp;
+<i>332</i>&nbsp;    /** {@inheritDoc} */
+<i>333</i>&nbsp;    @Override protected double computePrefHeight(double width, double topInset, double rightInset, double bottomInset, double leftInset) {
+<b class="fc"><i>334</i>&nbsp;        final Labeled labeled = getSkinnable();</b>
+<b class="fc"><i>335</i>&nbsp;        final Font font = text.getFont();</b>
+<b class="fc"><i>336</i>&nbsp;        final ContentDisplay contentDisplay = labeled.getContentDisplay();</b>
+<b class="fc"><i>337</i>&nbsp;        final double gap = labeled.getGraphicTextGap();</b>
+<b class="fc"><i>338</i>&nbsp;        width -= leftInset + leftLabelPadding() +</b>
+<b class="fc"><i>339</i>&nbsp;                rightInset + rightLabelPadding();</b>
+<i>340</i>&nbsp;
+<b class="fc"><i>341</i>&nbsp;        String str = labeled.getText();</b>
+<b class="fc"><i>342</i>&nbsp;        if (str != null &amp;&amp; str.endsWith(&quot;\n&quot;)) {</b>
+<i>343</i>&nbsp;            // Strip ending newline so we don&#39;t count another row.
+<b class="nc"><i>344</i>&nbsp;            str = str.substring(0, str.length() - 1);</b>
+<i>345</i>&nbsp;        }
+<i>346</i>&nbsp;
+<b class="fc"><i>347</i>&nbsp;        double textWidth = width;</b>
+<b class="fc"><i>348</i>&nbsp;        if (!isIgnoreGraphic() &amp;&amp;</b>
+<i>349</i>&nbsp;                (contentDisplay == LEFT || contentDisplay == RIGHT)) {
+<b class="nc"><i>350</i>&nbsp;            textWidth -= (graphic.prefWidth(-1) + gap);</b>
+<i>351</i>&nbsp;        }
+<i>352</i>&nbsp;
+<i>353</i>&nbsp;        // TODO figure out how to cache this effectively.
+<b class="fc"><i>354</i>&nbsp;        final double textHeight = Utils.computeTextHeight(font, str,</b>
+<b class="fc"><i>355</i>&nbsp;                labeled.isWrapText() ? textWidth : 0,</b>
+<b class="fc"><i>356</i>&nbsp;                labeled.getLineSpacing(), text.getBoundsType());</b>
+<i>357</i>&nbsp;
+<i>358</i>&nbsp;        // Now we want to add on the graphic if necessary!
+<b class="fc"><i>359</i>&nbsp;        double h = textHeight;</b>
+<b class="fc"><i>360</i>&nbsp;        if (!isIgnoreGraphic()) {</b>
+<b class="nc"><i>361</i>&nbsp;            final Node graphic = labeled.getGraphic();</b>
+<b class="nc"><i>362</i>&nbsp;            if (contentDisplay == TOP || contentDisplay == BOTTOM) {</b>
+<b class="nc"><i>363</i>&nbsp;                h = graphic.prefHeight(width) + gap + textHeight;</b>
+<i>364</i>&nbsp;            } else {
+<b class="nc"><i>365</i>&nbsp;                h = Math.max(textHeight, graphic.prefHeight(width));</b>
+<i>366</i>&nbsp;            }
+<i>367</i>&nbsp;        }
+<i>368</i>&nbsp;
+<b class="fc"><i>369</i>&nbsp;        return topInset + h + bottomInset + topLabelPadding() + bottomLabelPadding();</b>
+<i>370</i>&nbsp;    }
+<i>371</i>&nbsp;
+<i>372</i>&nbsp;    /** {@inheritDoc} */
+<i>373</i>&nbsp;    @Override protected double computeMaxWidth(double height, double topInset, double rightInset, double bottomInset, double leftInset) {
+<b class="fc"><i>374</i>&nbsp;        return getSkinnable().prefWidth(height);</b>
+<i>375</i>&nbsp;    }
+<i>376</i>&nbsp;
+<i>377</i>&nbsp;    /** {@inheritDoc} */
+<i>378</i>&nbsp;    @Override protected double computeMaxHeight(double width, double topInset, double rightInset, double bottomInset, double leftInset) {
+<b class="fc"><i>379</i>&nbsp;        return getSkinnable().prefHeight(width);</b>
+<i>380</i>&nbsp;    }
+<i>381</i>&nbsp;
+<i>382</i>&nbsp;    /** {@inheritDoc} */
+<i>383</i>&nbsp;    @Override public double computeBaselineOffset(double topInset, double rightInset, double bottomInset, double leftInset) {
+<b class="nc"><i>384</i>&nbsp;        double textBaselineOffset = text.getBaselineOffset();</b>
+<b class="nc"><i>385</i>&nbsp;        double h = textBaselineOffset;</b>
+<b class="nc"><i>386</i>&nbsp;        final Labeled labeled = getSkinnable();</b>
+<b class="nc"><i>387</i>&nbsp;        final Node g = labeled.getGraphic();</b>
+<b class="nc"><i>388</i>&nbsp;        if (!isIgnoreGraphic()) {</b>
+<b class="nc"><i>389</i>&nbsp;            ContentDisplay contentDisplay = labeled.getContentDisplay();</b>
+<b class="nc"><i>390</i>&nbsp;            if (contentDisplay == ContentDisplay.TOP) {</b>
+<b class="nc"><i>391</i>&nbsp;                h = g.prefHeight(-1) + labeled.getGraphicTextGap() + textBaselineOffset;</b>
+<b class="nc"><i>392</i>&nbsp;            } else if (contentDisplay == ContentDisplay.LEFT || contentDisplay == RIGHT) {</b>
+<b class="nc"><i>393</i>&nbsp;                h = textBaselineOffset + (g.prefHeight(-1) - text.prefHeight(-1)) / 2;</b>
+<i>394</i>&nbsp;            }
+<i>395</i>&nbsp;        }
+<i>396</i>&nbsp;
+<b class="nc"><i>397</i>&nbsp;        return topInset + topLabelPadding() + h;</b>
+<i>398</i>&nbsp;    }
+<i>399</i>&nbsp;
+<i>400</i>&nbsp;    /**
+<i>401</i>&nbsp;     * The Layout algorithm works like this:
+<i>402</i>&nbsp;     *
+<i>403</i>&nbsp;     *  - Get the labeled w/h, graphic w/h, text w/h
+<i>404</i>&nbsp;     *  - Compute content w/h based on graphicVPos, graphicHPos,
+<i>405</i>&nbsp;     *    graphicTextGap, and graphic w/h and text w/h
+<i>406</i>&nbsp;     *  - (Note that the text content has been pre-truncated where
+<i>407</i>&nbsp;     *    necessary)
+<i>408</i>&nbsp;     *  - compute content x/y based on content w/h and labeled w/h
+<i>409</i>&nbsp;     *    and the labeled&#39;s hpos and vpos
+<i>410</i>&nbsp;     *  - position the graphic and text
+<i>411</i>&nbsp;     */
+<i>412</i>&nbsp;    @Override protected void layoutChildren(final double x, final double y,
+<i>413</i>&nbsp;                                            final double w, final double h) {
+<b class="fc"><i>414</i>&nbsp;        layoutLabelInArea(x, y, w, h);</b>
+<b class="fc"><i>415</i>&nbsp;    }</b>
+<i>416</i>&nbsp;
+<i>417</i>&nbsp;    /**
+<i>418</i>&nbsp;     * Performs the actual layout of the label content within the area given.
+<i>419</i>&nbsp;     * This method is called by subclasses that override layoutChildren().
+<i>420</i>&nbsp;     *
+<i>421</i>&nbsp;     * @param x The x position of the label part of the control, inside padding
+<i>422</i>&nbsp;     *
+<i>423</i>&nbsp;     * @param y The y position of the label part of the control, inside padding
+<i>424</i>&nbsp;     *
+<i>425</i>&nbsp;     * @param w The width of the label part of the control, not including padding
+<i>426</i>&nbsp;     *
+<i>427</i>&nbsp;     * @param h The height of the label part of the control, not including padding
+<i>428</i>&nbsp;     */
+<i>429</i>&nbsp;    protected void layoutLabelInArea(double x, double y, double w, double h) {
+<b class="fc"><i>430</i>&nbsp;        layoutLabelInArea(x, y, w, h, null);</b>
+<b class="fc"><i>431</i>&nbsp;    }</b>
+<i>432</i>&nbsp;
+<i>433</i>&nbsp;    /**
+<i>434</i>&nbsp;     * Performs the actual layout of the label content within the area given.
+<i>435</i>&nbsp;     * This method is called by subclasses that override layoutChildren().
+<i>436</i>&nbsp;     *
+<i>437</i>&nbsp;     * @param x The x position of the label part of the control, inside padding
+<i>438</i>&nbsp;     *
+<i>439</i>&nbsp;     * @param y The y position of the label part of the control, inside padding
+<i>440</i>&nbsp;     *
+<i>441</i>&nbsp;     * @param w The width of the label part of the control, not including padding
+<i>442</i>&nbsp;     *
+<i>443</i>&nbsp;     * @param h The height of the label part of the control, not including padding
+<i>444</i>&nbsp;     *
+<i>445</i>&nbsp;     * @param alignment The alignment of the label part of the control within the given area. If null, then the control&#39;s alignment will be used.
+<i>446</i>&nbsp;     */
+<i>447</i>&nbsp;    protected void layoutLabelInArea(double x, double y, double w, double h, Pos alignment) {
+<i>448</i>&nbsp;        // References to essential labeled state
+<b class="fc"><i>449</i>&nbsp;        final Labeled labeled = getSkinnable();</b>
+<b class="fc"><i>450</i>&nbsp;        final ContentDisplay contentDisplay = labeled.getContentDisplay();</b>
+<i>451</i>&nbsp;
+<b class="fc"><i>452</i>&nbsp;        if (alignment == null) {</b>
+<b class="fc"><i>453</i>&nbsp;            alignment = labeled.getAlignment();</b>
+<i>454</i>&nbsp;        }
+<i>455</i>&nbsp;
+<b class="fc"><i>456</i>&nbsp;        final HPos hpos = alignment == null ? HPos.LEFT   : alignment.getHpos();</b>
+<b class="fc"><i>457</i>&nbsp;        final VPos vpos = alignment == null ? VPos.CENTER : alignment.getVpos();</b>
+<i>458</i>&nbsp;
+<i>459</i>&nbsp;        // Figure out whether we should ignore the Graphic, and/or
+<i>460</i>&nbsp;        // ignore the Text
+<b class="fc"><i>461</i>&nbsp;        final boolean ignoreGraphic = isIgnoreGraphic();</b>
+<b class="fc"><i>462</i>&nbsp;        final boolean ignoreText = isIgnoreText();</b>
+<i>463</i>&nbsp;
+<b class="fc"><i>464</i>&nbsp;        x += leftLabelPadding();</b>
+<b class="fc"><i>465</i>&nbsp;        y += topLabelPadding();</b>
+<b class="fc"><i>466</i>&nbsp;        w -= leftLabelPadding() + rightLabelPadding();</b>
+<b class="fc"><i>467</i>&nbsp;        h -= topLabelPadding() + bottomLabelPadding();</b>
+<i>468</i>&nbsp;
+<i>469</i>&nbsp;        // Compute some standard useful numbers for the graphic, text, and gap
+<i>470</i>&nbsp;        double graphicWidth;
+<i>471</i>&nbsp;        double graphicHeight;
+<i>472</i>&nbsp;        double textWidth;
+<i>473</i>&nbsp;        double textHeight;
+<i>474</i>&nbsp;
+<b class="fc"><i>475</i>&nbsp;        if (ignoreGraphic) {</b>
+<b class="fc"><i>476</i>&nbsp;            graphicWidth = graphicHeight = 0;</b>
+<b class="nc"><i>477</i>&nbsp;        } else if (ignoreText) {</b>
+<b class="nc"><i>478</i>&nbsp;            if (graphic.isResizable()) {</b>
+<b class="nc"><i>479</i>&nbsp;                Orientation contentBias = graphic.getContentBias();</b>
+<b class="nc"><i>480</i>&nbsp;                if (contentBias == Orientation.HORIZONTAL) {</b>
+<b class="nc"><i>481</i>&nbsp;                    graphicWidth  = Utils.boundedSize(w, graphic.minWidth(-1), graphic.maxWidth(-1));</b>
+<b class="nc"><i>482</i>&nbsp;                    graphicHeight = Utils.boundedSize(h, graphic.minHeight(graphicWidth), graphic.maxHeight(graphicWidth));</b>
+<b class="nc"><i>483</i>&nbsp;                } else if (contentBias == Orientation.VERTICAL) {</b>
+<b class="nc"><i>484</i>&nbsp;                    graphicHeight = Utils.boundedSize(h, graphic.minHeight(-1), graphic.maxHeight(-1));</b>
+<b class="nc"><i>485</i>&nbsp;                    graphicWidth  = Utils.boundedSize(w, graphic.minWidth(graphicHeight), graphic.maxWidth(graphicHeight));</b>
+<i>486</i>&nbsp;                } else {
+<b class="nc"><i>487</i>&nbsp;                    graphicWidth  = Utils.boundedSize(w, graphic.minWidth(-1), graphic.maxWidth(-1));</b>
+<b class="nc"><i>488</i>&nbsp;                    graphicHeight = Utils.boundedSize(h, graphic.minHeight(-1), graphic.maxHeight(-1));</b>
+<i>489</i>&nbsp;                }
+<b class="nc"><i>490</i>&nbsp;                graphic.resize(graphicWidth, graphicHeight);</b>
+<b class="nc"><i>491</i>&nbsp;            } else {</b>
+<b class="nc"><i>492</i>&nbsp;                graphicWidth = graphic.getLayoutBounds().getWidth();</b>
+<b class="nc"><i>493</i>&nbsp;                graphicHeight = graphic.getLayoutBounds().getHeight();</b>
+<i>494</i>&nbsp;            }
+<i>495</i>&nbsp;        } else {
+<b class="nc"><i>496</i>&nbsp;            graphic.autosize(); // We have to do this before getting metrics</b>
+<b class="nc"><i>497</i>&nbsp;            graphicWidth = graphic.getLayoutBounds().getWidth();</b>
+<b class="nc"><i>498</i>&nbsp;            graphicHeight = graphic.getLayoutBounds().getHeight();</b>
+<i>499</i>&nbsp;        }
+<i>500</i>&nbsp;
+<b class="fc"><i>501</i>&nbsp;        if (ignoreText) {</b>
+<b class="fc"><i>502</i>&nbsp;            textWidth  = textHeight = 0;</b>
+<b class="fc"><i>503</i>&nbsp;            text.setText(&quot;&quot;);</b>
+<i>504</i>&nbsp;        } else {
+<b class="fc"><i>505</i>&nbsp;            updateDisplayedText(w, h); // Have to do this just in case it needs to be recomputed</b>
+<b class="fc"><i>506</i>&nbsp;            textWidth  = snapSizeX(Math.min(text.getLayoutBounds().getWidth(),  wrapWidth));</b>
+<b class="fc"><i>507</i>&nbsp;            textHeight = snapSizeY(Math.min(text.getLayoutBounds().getHeight(), wrapHeight));</b>
+<i>508</i>&nbsp;        }
+<i>509</i>&nbsp;
+<b class="fc"><i>510</i>&nbsp;        final double gap = (ignoreText || ignoreGraphic) ? 0 : labeled.getGraphicTextGap();</b>
+<i>511</i>&nbsp;
+<i>512</i>&nbsp;        // Figure out the contentWidth and contentHeight. This is the width
+<i>513</i>&nbsp;        // and height of the Labeled and Graphic together, not the available
+<i>514</i>&nbsp;        // content area (which would be a different calculation).
+<b class="fc"><i>515</i>&nbsp;        double contentWidth = Math.max(graphicWidth, textWidth);</b>
+<b class="fc"><i>516</i>&nbsp;        double contentHeight = Math.max(graphicHeight, textHeight);</b>
+<b class="fc"><i>517</i>&nbsp;        if (contentDisplay == ContentDisplay.TOP || contentDisplay == ContentDisplay.BOTTOM) {</b>
+<b class="nc"><i>518</i>&nbsp;            contentHeight = graphicHeight + gap + textHeight;</b>
+<b class="fc"><i>519</i>&nbsp;        } else if (contentDisplay == ContentDisplay.LEFT || contentDisplay == ContentDisplay.RIGHT) {</b>
+<b class="fc"><i>520</i>&nbsp;            contentWidth = graphicWidth + gap + textWidth;</b>
+<i>521</i>&nbsp;        }
+<i>522</i>&nbsp;
+<i>523</i>&nbsp;        // Now we want to compute the x/y location to place the content at.
+<i>524</i>&nbsp;
+<i>525</i>&nbsp;        // Compute the contentX position based on hpos and the space available
+<i>526</i>&nbsp;        double contentX;
+<b class="fc"><i>527</i>&nbsp;        if (hpos == HPos.LEFT) {</b>
+<b class="fc"><i>528</i>&nbsp;            contentX = x;</b>
+<b class="fc"><i>529</i>&nbsp;        } else if (hpos == HPos.RIGHT) {</b>
+<b class="nc"><i>530</i>&nbsp;            contentX = x + (w - contentWidth);</b>
+<i>531</i>&nbsp;        } else {
+<i>532</i>&nbsp;            // TODO Baseline may not be handled correctly
+<i>533</i>&nbsp;            // may have been CENTER or null, treat as center
+<b class="fc"><i>534</i>&nbsp;            contentX = (x + ((w - contentWidth) / 2.0));</b>
+<i>535</i>&nbsp;        }
+<i>536</i>&nbsp;
+<i>537</i>&nbsp;        // Compute the contentY position based on vpos and the space available
+<i>538</i>&nbsp;        double contentY;
+<b class="fc"><i>539</i>&nbsp;        if (vpos == VPos.TOP) {</b>
+<b class="fc"><i>540</i>&nbsp;            contentY = y;</b>
+<b class="fc"><i>541</i>&nbsp;        } else if (vpos == VPos.BOTTOM) {</b>
+<b class="nc"><i>542</i>&nbsp;            contentY = (y + (h - contentHeight));</b>
+<i>543</i>&nbsp;        } else {
+<i>544</i>&nbsp;            // TODO Baseline may not be handled correctly
+<i>545</i>&nbsp;            // may have been CENTER, BASELINE, or null, treat as center
+<b class="fc"><i>546</i>&nbsp;            contentY = (y + ((h - contentHeight) / 2.0));</b>
+<i>547</i>&nbsp;        }
+<i>548</i>&nbsp;
+<b class="fc"><i>549</i>&nbsp;        double preMnemonicWidth = 0.0;</b>
+<b class="fc"><i>550</i>&nbsp;        double mnemonicWidth = 0.0;</b>
+<b class="fc"><i>551</i>&nbsp;        double mnemonicHeight = 0.0;</b>
+<b class="fc"><i>552</i>&nbsp;        if (containsMnemonic) {</b>
+<b class="nc"><i>553</i>&nbsp;            final Font font = text.getFont();</b>
+<b class="nc"><i>554</i>&nbsp;            String preSt = bindings.getText();</b>
+<b class="nc"><i>555</i>&nbsp;            preMnemonicWidth = Utils.computeTextWidth(font, preSt.substring(0, bindings.getMnemonicIndex()), 0);</b>
+<b class="nc"><i>556</i>&nbsp;            mnemonicWidth = Utils.computeTextWidth(font, preSt.substring(bindings.getMnemonicIndex(), bindings.getMnemonicIndex() + 1), 0);</b>
+<b class="nc"><i>557</i>&nbsp;            mnemonicHeight = Utils.computeTextHeight(font, &quot;_&quot;, 0, text.getBoundsType());</b>
+<i>558</i>&nbsp;        }
+<i>559</i>&nbsp;
+<i>560</i>&nbsp;
+<i>561</i>&nbsp;        // Now to position the graphic and text. At this point I know the
+<i>562</i>&nbsp;        // contentX and contentY locations (including the padding and whatnot
+<i>563</i>&nbsp;        // that was defined on the Labeled). I also know the content width and
+<i>564</i>&nbsp;        // height. So now I just need to lay out the graphic and text within
+<i>565</i>&nbsp;        // that content x/y/w/h area.
+<b class="fc"><i>566</i>&nbsp;        if ((!ignoreGraphic || !ignoreText) &amp;&amp; !text.isManaged()) {</b>
+<b class="fc"><i>567</i>&nbsp;            text.setManaged(true);</b>
+<i>568</i>&nbsp;        }
+<i>569</i>&nbsp;
+<b class="fc"><i>570</i>&nbsp;        if (ignoreGraphic &amp;&amp; ignoreText) {</b>
+<i>571</i>&nbsp;            // There might be a text node as a child, or a graphic node as
+<i>572</i>&nbsp;            // a child. However we don&#39;t have to do anything for the graphic
+<i>573</i>&nbsp;            // node because the only way it can be a child and still have
+<i>574</i>&nbsp;            // ignoreGraphic true is if it is unmanaged. Text however might
+<i>575</i>&nbsp;            // be a child but still not matter, in which case we will just
+<i>576</i>&nbsp;            // stop managing it (although really I wish it just wasn&#39;t here
+<i>577</i>&nbsp;            // all all in that case)
+<b class="fc"><i>578</i>&nbsp;            if (text.isManaged()) {</b>
+<b class="fc"><i>579</i>&nbsp;                text.setManaged(false);</b>
+<i>580</i>&nbsp;            }
+<b class="fc"><i>581</i>&nbsp;            text.relocate(snapPositionX(contentX), snapPositionY(contentY));</b>
+<b class="fc"><i>582</i>&nbsp;        } else if (ignoreGraphic) {</b>
+<i>583</i>&nbsp;            // Since I only have to position the text, it goes at the
+<i>584</i>&nbsp;            // contentX/contentY location. Note that positionNode will
+<i>585</i>&nbsp;            // adjust the text based on the text&#39;s minX/minY so no need to
+<i>586</i>&nbsp;            // worry about that here
+<b class="fc"><i>587</i>&nbsp;            text.relocate(snapPositionX(contentX), snapPositionY(contentY));</b>
+<b class="fc"><i>588</i>&nbsp;            if (containsMnemonic) {</b>
+<b class="nc"><i>589</i>&nbsp;                mnemonic_underscore.setEndX(mnemonicWidth-2.0);</b>
+<b class="nc"><i>590</i>&nbsp;                mnemonic_underscore.relocate(contentX+preMnemonicWidth, contentY+mnemonicHeight-1);</b>
+<i>591</i>&nbsp;            }
+<i>592</i>&nbsp;
+<b class="nc"><i>593</i>&nbsp;        } else if (ignoreText) {</b>
+<i>594</i>&nbsp;            // there isn&#39;t text to display, so we need to position it
+<i>595</i>&nbsp;            // such that it doesn&#39;t affect the content area (although when
+<i>596</i>&nbsp;            // there is a graphic, the text isn&#39;t even in the scene)
+<b class="nc"><i>597</i>&nbsp;            text.relocate(snapPositionX(contentX), snapPositionY(contentY));</b>
+<b class="nc"><i>598</i>&nbsp;            graphic.relocate(snapPositionX(contentX), snapPositionY(contentY));</b>
+<b class="nc"><i>599</i>&nbsp;            if (containsMnemonic) {</b>
+<b class="nc"><i>600</i>&nbsp;                mnemonic_underscore.setEndX(mnemonicWidth);</b>
+<b class="nc"><i>601</i>&nbsp;                mnemonic_underscore.setStrokeWidth(mnemonicHeight/10.0);</b>
+<b class="nc"><i>602</i>&nbsp;                mnemonic_underscore.relocate(contentX+preMnemonicWidth, contentY+mnemonicHeight-1);</b>
+<i>603</i>&nbsp;
+<i>604</i>&nbsp;            }
+<i>605</i>&nbsp;        } else {
+<i>606</i>&nbsp;            // There is both text and a graphic, so I need to position them
+<i>607</i>&nbsp;            // relative to each other
+<b class="nc"><i>608</i>&nbsp;            double graphicX = 0;</b>
+<b class="nc"><i>609</i>&nbsp;            double graphicY = 0;</b>
+<b class="nc"><i>610</i>&nbsp;            double textX = 0;</b>
+<b class="nc"><i>611</i>&nbsp;            double textY = 0;</b>
+<i>612</i>&nbsp;
+<b class="nc"><i>613</i>&nbsp;            if (contentDisplay == ContentDisplay.TOP) {</b>
+<b class="nc"><i>614</i>&nbsp;                graphicX = contentX + ((contentWidth - graphicWidth) / 2.0);</b>
+<b class="nc"><i>615</i>&nbsp;                textX = contentX + ((contentWidth - textWidth) / 2.0);</b>
+<i>616</i>&nbsp;                // The graphic is above the text, so it is positioned at
+<i>617</i>&nbsp;                // graphicY and the text below it.
+<b class="nc"><i>618</i>&nbsp;                graphicY = contentY;</b>
+<b class="nc"><i>619</i>&nbsp;                textY = graphicY + graphicHeight + gap;</b>
+<b class="nc"><i>620</i>&nbsp;            } else if (contentDisplay == ContentDisplay.RIGHT) {</b>
+<i>621</i>&nbsp;                // The graphic is to the right of the text
+<b class="nc"><i>622</i>&nbsp;                textX = contentX;</b>
+<b class="nc"><i>623</i>&nbsp;                graphicX = textX + textWidth + gap;</b>
+<b class="nc"><i>624</i>&nbsp;                graphicY = contentY + ((contentHeight - graphicHeight) / 2.0);</b>
+<b class="nc"><i>625</i>&nbsp;                textY = contentY + ((contentHeight - textHeight) / 2.0);</b>
+<b class="nc"><i>626</i>&nbsp;            } else if (contentDisplay == ContentDisplay.BOTTOM) {</b>
+<b class="nc"><i>627</i>&nbsp;                graphicX = contentX + ((contentWidth - graphicWidth) / 2.0);</b>
+<b class="nc"><i>628</i>&nbsp;                textX = contentX + ((contentWidth - textWidth) / 2.0);</b>
+<i>629</i>&nbsp;                // The graphic is below the text
+<b class="nc"><i>630</i>&nbsp;                textY = contentY;</b>
+<b class="nc"><i>631</i>&nbsp;                graphicY = textY + textHeight + gap;</b>
+<b class="nc"><i>632</i>&nbsp;            } else if (contentDisplay == ContentDisplay.LEFT) {</b>
+<i>633</i>&nbsp;                // The graphic is to the left of the text, so the graphicX is
+<i>634</i>&nbsp;                // simply the contentX and the textX is to the right of it.
+<b class="nc"><i>635</i>&nbsp;                graphicX = contentX;</b>
+<b class="nc"><i>636</i>&nbsp;                textX = graphicX + graphicWidth + gap;</b>
+<b class="nc"><i>637</i>&nbsp;                graphicY = contentY + ((contentHeight - graphicHeight) / 2.0);</b>
+<b class="nc"><i>638</i>&nbsp;                textY = contentY + ((contentHeight - textHeight) / 2.0);</b>
+<b class="nc"><i>639</i>&nbsp;            } else if (contentDisplay == ContentDisplay.CENTER) {</b>
+<b class="nc"><i>640</i>&nbsp;                graphicX = contentX + ((contentWidth - graphicWidth) / 2.0);</b>
+<b class="nc"><i>641</i>&nbsp;                textX = contentX + ((contentWidth - textWidth) / 2.0);</b>
+<b class="nc"><i>642</i>&nbsp;                graphicY = contentY + ((contentHeight - graphicHeight) / 2.0);</b>
+<b class="nc"><i>643</i>&nbsp;                textY = contentY + ((contentHeight - textHeight) / 2.0);</b>
+<i>644</i>&nbsp;            }
+<b class="nc"><i>645</i>&nbsp;            text.relocate(snapPositionX(textX), snapPositionY(textY));</b>
+<b class="nc"><i>646</i>&nbsp;            if (containsMnemonic) {</b>
+<b class="nc"><i>647</i>&nbsp;                mnemonic_underscore.setEndX(mnemonicWidth);</b>
+<b class="nc"><i>648</i>&nbsp;                mnemonic_underscore.setStrokeWidth(mnemonicHeight/10.0);</b>
+<b class="nc"><i>649</i>&nbsp;                mnemonic_underscore.relocate(snapPositionX(textX+preMnemonicWidth), snapPositionY(textY+mnemonicHeight-1));</b>
+<i>650</i>&nbsp;            }
+<b class="nc"><i>651</i>&nbsp;            graphic.relocate(snapPositionX(graphicX), snapPositionY(graphicY));</b>
+<i>652</i>&nbsp;        }
+<i>653</i>&nbsp;
+<i>654</i>&nbsp;        /**
+<i>655</i>&nbsp;         * check if the label text overflows it&#39;s bounds.
+<i>656</i>&nbsp;         * If there&#39;s an overflow, and no text clip then
+<i>657</i>&nbsp;         * we&#39;ll clip it.
+<i>658</i>&nbsp;         * If there is no overflow, and the label text has a
+<i>659</i>&nbsp;         * clip, then remove it.
+<i>660</i>&nbsp;         */
+<b class="fc"><i>661</i>&nbsp;        if ((text != null) &amp;&amp;</b>
+<b class="fc"><i>662</i>&nbsp;                ((text.getLayoutBounds().getHeight() &gt; wrapHeight) ||</b>
+<b class="fc"><i>663</i>&nbsp;                        (text.getLayoutBounds().getWidth() &gt; wrapWidth))) {</b>
+<i>664</i>&nbsp;
+<b class="fc"><i>665</i>&nbsp;            if (textClip == null) {</b>
+<b class="fc"><i>666</i>&nbsp;                textClip = new Rectangle();</b>
+<i>667</i>&nbsp;            }
+<i>668</i>&nbsp;
+<b class="fc"><i>669</i>&nbsp;            if (labeled.getEffectiveNodeOrientation() == NodeOrientation.LEFT_TO_RIGHT) {</b>
+<b class="fc"><i>670</i>&nbsp;                textClip.setX(text.getLayoutBounds().getMinX());</b>
+<i>671</i>&nbsp;            } else {
+<b class="nc"><i>672</i>&nbsp;                textClip.setX(text.getLayoutBounds().getMaxX() - wrapWidth);</b>
+<i>673</i>&nbsp;            }
+<b class="fc"><i>674</i>&nbsp;            textClip.setY(text.getLayoutBounds().getMinY());</b>
+<b class="fc"><i>675</i>&nbsp;            textClip.setWidth(wrapWidth);</b>
+<b class="fc"><i>676</i>&nbsp;            textClip.setHeight(wrapHeight);</b>
+<b class="fc"><i>677</i>&nbsp;            if (text.getClip() == null) {</b>
+<b class="fc"><i>678</i>&nbsp;                text.setClip(textClip);</b>
+<i>679</i>&nbsp;            }
+<i>680</i>&nbsp;        }
+<i>681</i>&nbsp;        else {
+<i>682</i>&nbsp;            /**
+<i>683</i>&nbsp;             * content fits inside bounds, no need
+<i>684</i>&nbsp;             * for a clip
+<i>685</i>&nbsp;             */
+<b class="fc"><i>686</i>&nbsp;            if (text.getClip() != null) {</b>
+<b class="fc"><i>687</i>&nbsp;                text.setClip(null);</b>
+<i>688</i>&nbsp;            }
+<i>689</i>&nbsp;        }
+<b class="fc"><i>690</i>&nbsp;    }</b>
+<i>691</i>&nbsp;
+<i>692</i>&nbsp;    /** {@inheritDoc} */
+<i>693</i>&nbsp;    @Override protected Object queryAccessibleAttribute(AccessibleAttribute attribute, Object... parameters) {
+<b class="nc"><i>694</i>&nbsp;        switch (attribute) {</b>
+<i>695</i>&nbsp;            case TEXT: {
+<b class="nc"><i>696</i>&nbsp;                Labeled labeled = getSkinnable();</b>
+<b class="nc"><i>697</i>&nbsp;                String accText = labeled.getAccessibleText();</b>
+<b class="nc"><i>698</i>&nbsp;                if (accText != null &amp;&amp; !accText.isEmpty()) return accText;</b>
+<i>699</i>&nbsp;
+<i>700</i>&nbsp;                /* Use the text in the binding if available to handle mnemonics */
+<b class="nc"><i>701</i>&nbsp;                if (bindings != null) {</b>
+<b class="nc"><i>702</i>&nbsp;                    String text = bindings.getText();</b>
+<b class="nc"><i>703</i>&nbsp;                    if (text != null &amp;&amp; !text.isEmpty()) return text;</b>
+<i>704</i>&nbsp;                }
+<i>705</i>&nbsp;                /* Avoid the content in text.getText() as it can contain ellipses
+<i>706</i>&nbsp;                 * for clipping
+<i>707</i>&nbsp;                 */
+<b class="nc"><i>708</i>&nbsp;                String text = labeled.getText();</b>
+<b class="nc"><i>709</i>&nbsp;                if (text != null &amp;&amp; !text.isEmpty()) return text;</b>
+<i>710</i>&nbsp;
+<i>711</i>&nbsp;                /* Use the graphic as last resource. Note that this implementation
+<i>712</i>&nbsp;                 * does not attempt to combine the label and graphics if both
+<i>713</i>&nbsp;                 * are being displayed
+<i>714</i>&nbsp;                 */
+<b class="nc"><i>715</i>&nbsp;                if (graphic != null) {</b>
+<b class="nc"><i>716</i>&nbsp;                    Object result = graphic.queryAccessibleAttribute(AccessibleAttribute.TEXT);</b>
+<b class="nc"><i>717</i>&nbsp;                    if (result != null) return result;</b>
+<i>718</i>&nbsp;                }
+<b class="nc"><i>719</i>&nbsp;                return null;</b>
+<i>720</i>&nbsp;            }
+<i>721</i>&nbsp;            case MNEMONIC: {
+<b class="nc"><i>722</i>&nbsp;                if (bindings != null) {</b>
+<b class="nc"><i>723</i>&nbsp;                    return bindings.getMnemonic();</b>
+<i>724</i>&nbsp;                }
+<b class="nc"><i>725</i>&nbsp;                return null;</b>
+<i>726</i>&nbsp;            }
+<b class="nc"><i>727</i>&nbsp;            default: return super.queryAccessibleAttribute(attribute, parameters);</b>
+<i>728</i>&nbsp;        }
+<i>729</i>&nbsp;    }
+<i>730</i>&nbsp;
+<i>731</i>&nbsp;
+<i>732</i>&nbsp;
+<i>733</i>&nbsp;    /***************************************************************************
+<i>734</i>&nbsp;     *                                                                         *
+<i>735</i>&nbsp;     * Private implementation                                                  *
+<i>736</i>&nbsp;     *                                                                         *
+<i>737</i>&nbsp;     **************************************************************************/
+<i>738</i>&nbsp;
+<i>739</i>&nbsp;    private double computeMinLabeledPartWidth(double height, double topInset, double rightInset, double bottomInset, double leftInset) {
+<i>740</i>&nbsp;        // First compute the minTextWidth by checking the width of the string
+<i>741</i>&nbsp;        // made by the ellipsis &quot;...&quot;, and then by checking the width of the
+<i>742</i>&nbsp;        // string made up by labeled.text. We want the smaller of the two.
+<b class="fc"><i>743</i>&nbsp;        final Labeled labeled = getSkinnable();</b>
+<b class="fc"><i>744</i>&nbsp;        final ContentDisplay contentDisplay = labeled.getContentDisplay();</b>
+<b class="fc"><i>745</i>&nbsp;        final double gap = labeled.getGraphicTextGap();</b>
+<b class="fc"><i>746</i>&nbsp;        double minTextWidth = 0;</b>
+<i>747</i>&nbsp;
+<b class="fc"><i>748</i>&nbsp;        final Font font = text.getFont();</b>
+<b class="fc"><i>749</i>&nbsp;        OverrunStyle truncationStyle = labeled.getTextOverrun();</b>
+<b class="fc"><i>750</i>&nbsp;        String ellipsisString = labeled.getEllipsisString();</b>
+<b class="fc"><i>751</i>&nbsp;        final String string = labeled.getText();</b>
+<b class="fc"><i>752</i>&nbsp;        final boolean emptyText = string == null || string.isEmpty();</b>
+<i>753</i>&nbsp;
+<b class="fc"><i>754</i>&nbsp;        if (!emptyText) {</b>
+<i>755</i>&nbsp;            // We only want to recompute the full text width if the font or text changed
+<b class="fc"><i>756</i>&nbsp;            if (truncationStyle == CLIP) {</b>
+<b class="nc"><i>757</i>&nbsp;                if (textWidth == Double.NEGATIVE_INFINITY) {</b>
+<i>758</i>&nbsp;                    // Show at minimum the first character
+<b class="nc"><i>759</i>&nbsp;                    textWidth = Utils.computeTextWidth(font, string.substring(0, 1), 0);</b>
+<i>760</i>&nbsp;                }
+<b class="nc"><i>761</i>&nbsp;                minTextWidth = textWidth;</b>
+<i>762</i>&nbsp;            } else {
+<b class="fc"><i>763</i>&nbsp;                if (textWidth == Double.NEGATIVE_INFINITY) {</b>
+<b class="fc"><i>764</i>&nbsp;                    textWidth = Utils.computeTextWidth(font, string, 0);</b>
+<i>765</i>&nbsp;                }
+<i>766</i>&nbsp;                // We only want to recompute the ellipsis width if the font has changed
+<b class="fc"><i>767</i>&nbsp;                if (ellipsisWidth == Double.NEGATIVE_INFINITY) {</b>
+<b class="fc"><i>768</i>&nbsp;                    ellipsisWidth = Utils.computeTextWidth(font, ellipsisString, 0);</b>
+<i>769</i>&nbsp;                }
+<b class="fc"><i>770</i>&nbsp;                minTextWidth = Math.min(textWidth, ellipsisWidth);</b>
+<i>771</i>&nbsp;            }
+<i>772</i>&nbsp;        }
+<i>773</i>&nbsp;
+<i>774</i>&nbsp;        // Now inspect the graphic and the hpos to determine the the minWidth
+<b class="fc"><i>775</i>&nbsp;        final Node graphic = labeled.getGraphic();</b>
+<i>776</i>&nbsp;        double width;
+<b class="fc"><i>777</i>&nbsp;        if (isIgnoreGraphic()) {</b>
+<b class="fc"><i>778</i>&nbsp;            width = minTextWidth;</b>
+<b class="nc"><i>779</i>&nbsp;        } else if (isIgnoreText()) {</b>
+<b class="nc"><i>780</i>&nbsp;            width = graphic.minWidth(-1);</b>
+<b class="nc"><i>781</i>&nbsp;        } else if (contentDisplay == LEFT || contentDisplay == RIGHT){</b>
+<b class="nc"><i>782</i>&nbsp;            width = (minTextWidth + graphic.minWidth(-1) + gap);</b>
+<i>783</i>&nbsp;        } else {
+<b class="nc"><i>784</i>&nbsp;            width = Math.max(minTextWidth, graphic.minWidth(-1));</b>
+<i>785</i>&nbsp;        }
+<i>786</i>&nbsp;
+<b class="fc"><i>787</i>&nbsp;        return width + leftInset + leftLabelPadding() +</b>
+<b class="fc"><i>788</i>&nbsp;                rightInset + rightLabelPadding();</b>
+<i>789</i>&nbsp;    }
+<i>790</i>&nbsp;
+<i>791</i>&nbsp;    private double computeMinLabeledPartHeight(double width, double topInset, double rightInset, double bottomInset, double leftInset) {
+<b class="fc"><i>792</i>&nbsp;        final Labeled labeled = getSkinnable();</b>
+<b class="fc"><i>793</i>&nbsp;        final Font font = text.getFont();</b>
+<i>794</i>&nbsp;
+<b class="fc"><i>795</i>&nbsp;        String str = labeled.getText();</b>
+<b class="fc"><i>796</i>&nbsp;        if (str != null &amp;&amp; str.length() &gt; 0) {</b>
+<b class="fc"><i>797</i>&nbsp;            int newlineIndex = str.indexOf(&#39;\n&#39;);</b>
+<b class="fc"><i>798</i>&nbsp;            if (newlineIndex &gt;= 0) {</b>
+<b class="nc"><i>799</i>&nbsp;                str = str.substring(0, newlineIndex);</b>
+<i>800</i>&nbsp;            }
+<i>801</i>&nbsp;        }
+<i>802</i>&nbsp;
+<i>803</i>&nbsp;        // TODO figure out how to cache this effectively.
+<i>804</i>&nbsp;        // Base minimum height on one line (ignoring wrapping here).
+<b class="fc"><i>805</i>&nbsp;        double s = labeled.getLineSpacing();</b>
+<b class="fc"><i>806</i>&nbsp;        final double textHeight = Utils.computeTextHeight(font, str, 0, s, text.getBoundsType());</b>
+<i>807</i>&nbsp;
+<b class="fc"><i>808</i>&nbsp;        double h = textHeight;</b>
+<i>809</i>&nbsp;
+<i>810</i>&nbsp;        // Now we want to add on the graphic if necessary!
+<b class="fc"><i>811</i>&nbsp;        if (!isIgnoreGraphic()) {</b>
+<b class="nc"><i>812</i>&nbsp;            final Node graphic = labeled.getGraphic();</b>
+<b class="nc"><i>813</i>&nbsp;            if (labeled.getContentDisplay() == ContentDisplay.TOP</b>
+<b class="nc"><i>814</i>&nbsp;                    || labeled.getContentDisplay() == ContentDisplay.BOTTOM) {</b>
+<b class="nc"><i>815</i>&nbsp;                h = graphic.minHeight(width) + labeled.getGraphicTextGap() + textHeight;</b>
+<i>816</i>&nbsp;            } else {
+<b class="nc"><i>817</i>&nbsp;                h = Math.max(textHeight, graphic.minHeight(width));</b>
+<i>818</i>&nbsp;            }
+<i>819</i>&nbsp;        }
+<i>820</i>&nbsp;
+<b class="fc"><i>821</i>&nbsp;        return topInset + h + bottomInset + topLabelPadding() - bottomLabelPadding();</b>
+<i>822</i>&nbsp;    }
+<i>823</i>&nbsp;
+<i>824</i>&nbsp;    double topLabelPadding() {
+<b class="fc"><i>825</i>&nbsp;        return snapSizeY(getSkinnable().getLabelPadding().getTop());</b>
+<i>826</i>&nbsp;    }
+<i>827</i>&nbsp;
+<i>828</i>&nbsp;    double bottomLabelPadding() {
+<b class="fc"><i>829</i>&nbsp;        return snapSizeY(getSkinnable().getLabelPadding().getBottom());</b>
+<i>830</i>&nbsp;    }
+<i>831</i>&nbsp;
+<i>832</i>&nbsp;    double leftLabelPadding() {
+<b class="fc"><i>833</i>&nbsp;        return snapSizeX(getSkinnable().getLabelPadding().getLeft());</b>
+<i>834</i>&nbsp;    }
+<i>835</i>&nbsp;
+<i>836</i>&nbsp;    double rightLabelPadding() {
+<b class="fc"><i>837</i>&nbsp;        return snapSizeX(getSkinnable().getLabelPadding().getRight());</b>
+<i>838</i>&nbsp;    }
+<i>839</i>&nbsp;
+<i>840</i>&nbsp;
+<i>841</i>&nbsp;    /**
+<i>842</i>&nbsp;     * Called whenever some state has changed that affects the text metrics.
+<i>843</i>&nbsp;     * Changes here will involve invalidating the display text so the next
+<i>844</i>&nbsp;     * call to updateDisplayedText computes a new value, and call requestLayout.
+<i>845</i>&nbsp;     */
+<i>846</i>&nbsp;    private void textMetricsChanged() {
+<b class="fc"><i>847</i>&nbsp;        invalidText = true;</b>
+<b class="fc"><i>848</i>&nbsp;        getSkinnable().requestLayout();</b>
+<b class="fc"><i>849</i>&nbsp;    }</b>
+<i>850</i>&nbsp;
+<i>851</i>&nbsp;    /*
+<i>852</i>&nbsp;    ** The Label is a mnemonic, and it&#39;s target node
+<i>853</i>&nbsp;    ** has changed, but it&#39;s label hasn&#39;t so just
+<i>854</i>&nbsp;    ** swap them over, and tidy up.
+<i>855</i>&nbsp;    */
+<i>856</i>&nbsp;    void mnemonicTargetChanged() {
+<b class="nc"><i>857</i>&nbsp;        if (containsMnemonic == true) {</b>
+<i>858</i>&nbsp;            /*
+<i>859</i>&nbsp;            ** was there previously a labelFor
+<i>860</i>&nbsp;            */
+<b class="nc"><i>861</i>&nbsp;            removeMnemonic();</b>
+<i>862</i>&nbsp;
+<i>863</i>&nbsp;            /*
+<i>864</i>&nbsp;            ** is there a new labelFor
+<i>865</i>&nbsp;            */
+<b class="nc"><i>866</i>&nbsp;            Control control = getSkinnable();</b>
+<b class="nc"><i>867</i>&nbsp;            if (control instanceof Label) {</b>
+<b class="nc"><i>868</i>&nbsp;                labeledNode = ((Label)control).getLabelFor();</b>
+<b class="nc"><i>869</i>&nbsp;                addMnemonic();</b>
+<i>870</i>&nbsp;            }
+<i>871</i>&nbsp;            else {
+<b class="nc"><i>872</i>&nbsp;                labeledNode = null;</b>
+<i>873</i>&nbsp;            }
+<i>874</i>&nbsp;        }
+<b class="nc"><i>875</i>&nbsp;    }</b>
+<i>876</i>&nbsp;
+<i>877</i>&nbsp;    private void sceneChanged() {
+<b class="nc"><i>878</i>&nbsp;        final Labeled labeled = getSkinnable();</b>
+<b class="nc"><i>879</i>&nbsp;        Scene scene = labeled.getScene();</b>
+<i>880</i>&nbsp;
+<b class="nc"><i>881</i>&nbsp;        if (scene != null &amp;&amp; containsMnemonic) {</b>
+<b class="nc"><i>882</i>&nbsp;            addMnemonic();</b>
+<i>883</i>&nbsp;        }
+<i>884</i>&nbsp;
+<b class="nc"><i>885</i>&nbsp;    }</b>
+<i>886</i>&nbsp;
+<i>887</i>&nbsp;    /**
+<i>888</i>&nbsp;     * Marks minWidth as being invalid and in need of recomputation.
+<i>889</i>&nbsp;     */
+<i>890</i>&nbsp;    private void invalidateWidths() {
+<b class="fc"><i>891</i>&nbsp;        textWidth = Double.NEGATIVE_INFINITY;</b>
+<b class="fc"><i>892</i>&nbsp;    }</b>
+<i>893</i>&nbsp;
+<i>894</i>&nbsp;    /**
+<i>895</i>&nbsp;     * Updates the content of the underlying Text node. This method should
+<i>896</i>&nbsp;     * only be called when necessary. If the invalidText flag is not set, then
+<i>897</i>&nbsp;     * the method is a no-op. This care is taken because recomputing the
+<i>898</i>&nbsp;     * text to display is an expensive operation. Package private ONLY FOR THE
+<i>899</i>&nbsp;     * SAKE OF TESTING.
+<i>900</i>&nbsp;     */
+<i>901</i>&nbsp;    void updateDisplayedText() {
+<b class="nc"><i>902</i>&nbsp;        updateDisplayedText(-1, -1);</b>
+<b class="nc"><i>903</i>&nbsp;    }</b>
+<i>904</i>&nbsp;
+<i>905</i>&nbsp;    private void updateDisplayedText(double w, double h) {
+<b class="fc"><i>906</i>&nbsp;        if (invalidText) {</b>
+<b class="fc"><i>907</i>&nbsp;            final Labeled labeled = getSkinnable();</b>
+<b class="fc"><i>908</i>&nbsp;            String s = labeled.getText();</b>
+<i>909</i>&nbsp;
+<b class="fc"><i>910</i>&nbsp;            int mnemonicIndex = -1;</b>
+<i>911</i>&nbsp;
+<i>912</i>&nbsp;            /*
+<i>913</i>&nbsp;            ** if there&#39;s a valid string then parse it
+<i>914</i>&nbsp;            */
+<b class="fc"><i>915</i>&nbsp;            if (s != null &amp;&amp; s.length() &gt; 0) {</b>
+<b class="fc"><i>916</i>&nbsp;                bindings = new TextBinding(s);</b>
+<i>917</i>&nbsp;
+<b class="fc"><i>918</i>&nbsp;                if (!com.sun.javafx.PlatformUtil.isMac() &amp;&amp; getSkinnable().isMnemonicParsing() == true) {</b>
+<i>919</i>&nbsp;                    /*
+<i>920</i>&nbsp;                    ** the Labeled has a MnemonicParsing property,
+<i>921</i>&nbsp;                    ** if set true, then auto-parsing will check for
+<i>922</i>&nbsp;                    ** a mnemonic
+<i>923</i>&nbsp;                    */
+<b class="nc"><i>924</i>&nbsp;                    if (labeled instanceof Label) {</b>
+<i>925</i>&nbsp;                        // buttons etc
+<b class="nc"><i>926</i>&nbsp;                        labeledNode = ((Label)labeled).getLabelFor();</b>
+<i>927</i>&nbsp;                    } else {
+<b class="nc"><i>928</i>&nbsp;                        labeledNode = labeled;</b>
+<i>929</i>&nbsp;                    }
+<i>930</i>&nbsp;
+<b class="nc"><i>931</i>&nbsp;                    if (labeledNode == null) {</b>
+<b class="nc"><i>932</i>&nbsp;                        labeledNode = labeled;</b>
+<i>933</i>&nbsp;                    }
+<b class="nc"><i>934</i>&nbsp;                    mnemonicIndex = bindings.getMnemonicIndex() ;</b>
+<i>935</i>&nbsp;                }
+<i>936</i>&nbsp;            }
+<i>937</i>&nbsp;
+<i>938</i>&nbsp;            /*
+<i>939</i>&nbsp;            ** we were previously a mnemonic
+<i>940</i>&nbsp;            */
+<b class="fc"><i>941</i>&nbsp;            if (containsMnemonic) {</b>
+<i>942</i>&nbsp;                /*
+<i>943</i>&nbsp;                ** are we no longer a mnemonic, or have we changed code?
+<i>944</i>&nbsp;                */
+<b class="nc"><i>945</i>&nbsp;                if (mnemonicScene != null) {</b>
+<b class="nc"><i>946</i>&nbsp;                    if (mnemonicIndex == -1 ||</b>
+<b class="nc"><i>947</i>&nbsp;                            (bindings != null &amp;&amp; !bindings.getMnemonicKeyCombination().equals(mnemonicCode))) {</b>
+<b class="nc"><i>948</i>&nbsp;                        removeMnemonic();</b>
+<b class="nc"><i>949</i>&nbsp;                        containsMnemonic = false;</b>
+<i>950</i>&nbsp;                    }
+<i>951</i>&nbsp;                }
+<i>952</i>&nbsp;            }
+<i>953</i>&nbsp;            else {
+<i>954</i>&nbsp;                /*
+<i>955</i>&nbsp;                ** this can happen if mnemonic parsing is
+<i>956</i>&nbsp;                ** disabled on a previously valid mnemonic
+<i>957</i>&nbsp;                */
+<b class="fc"><i>958</i>&nbsp;                removeMnemonic();</b>
+<i>959</i>&nbsp;            }
+<i>960</i>&nbsp;
+<i>961</i>&nbsp;            /*
+<i>962</i>&nbsp;            ** check we have a labeled
+<i>963</i>&nbsp;            */
+<b class="fc"><i>964</i>&nbsp;            if (s != null &amp;&amp; s.length() &gt; 0) {</b>
+<b class="fc"><i>965</i>&nbsp;                if (mnemonicIndex &gt;= 0 &amp;&amp; containsMnemonic == false) {</b>
+<b class="nc"><i>966</i>&nbsp;                    containsMnemonic = true;</b>
+<b class="nc"><i>967</i>&nbsp;                    mnemonicCode = bindings.getMnemonicKeyCombination();</b>
+<b class="nc"><i>968</i>&nbsp;                    addMnemonic();</b>
+<i>969</i>&nbsp;                }
+<i>970</i>&nbsp;            }
+<i>971</i>&nbsp;
+<b class="fc"><i>972</i>&nbsp;            if (containsMnemonic == true) {</b>
+<b class="nc"><i>973</i>&nbsp;                s = bindings.getText();</b>
+<b class="nc"><i>974</i>&nbsp;                if (mnemonic_underscore == null) {</b>
+<b class="nc"><i>975</i>&nbsp;                    mnemonic_underscore = new Line();</b>
+<b class="nc"><i>976</i>&nbsp;                    mnemonic_underscore.setStartX(0.0f);</b>
+<b class="nc"><i>977</i>&nbsp;                    mnemonic_underscore.setStartY(0.0f);</b>
+<b class="nc"><i>978</i>&nbsp;                    mnemonic_underscore.setEndY(0.0f);</b>
+<b class="nc"><i>979</i>&nbsp;                    mnemonic_underscore.getStyleClass().clear();</b>
+<b class="nc"><i>980</i>&nbsp;                    mnemonic_underscore.getStyleClass().setAll(&quot;mnemonic-underline&quot;);</b>
+<i>981</i>&nbsp;                }
+<b class="nc"><i>982</i>&nbsp;                if (!getChildren().contains(mnemonic_underscore)) {</b>
+<b class="nc"><i>983</i>&nbsp;                    getChildren().add(mnemonic_underscore);</b>
+<i>984</i>&nbsp;                }
+<i>985</i>&nbsp;            } else {
+<i>986</i>&nbsp;                /*
+<i>987</i>&nbsp;                ** we don&#39;t need a mnemonic....
+<i>988</i>&nbsp;                */
+<b class="fc"><i>989</i>&nbsp;                if (getSkinnable().isMnemonicParsing() == true &amp;&amp; com.sun.javafx.PlatformUtil.isMac() &amp;&amp; bindings != null) {</b>
+<b class="nc"><i>990</i>&nbsp;                    s = bindings.getText();</b>
+<i>991</i>&nbsp;                }
+<i>992</i>&nbsp;                else {
+<b class="fc"><i>993</i>&nbsp;                    s = labeled.getText();</b>
+<i>994</i>&nbsp;                }
+<b class="fc"><i>995</i>&nbsp;                if (mnemonic_underscore != null) {</b>
+<b class="nc"><i>996</i>&nbsp;                    if (getChildren().contains(mnemonic_underscore)) {</b>
+<b class="nc"><i>997</i>&nbsp;                        Platform.runLater(() -&gt; {</b>
+<b class="nc"><i>998</i>&nbsp;                              getChildren().remove(mnemonic_underscore);</b>
+<b class="nc"><i>999</i>&nbsp;                              mnemonic_underscore = null;</b>
+<b class="nc"><i>1000</i>&nbsp;                        });</b>
+<i>1001</i>&nbsp;                    }
+<i>1002</i>&nbsp;                }
+<i>1003</i>&nbsp;            }
+<i>1004</i>&nbsp;
+<b class="fc"><i>1005</i>&nbsp;            int len = s != null ? s.length() : 0;</b>
+<b class="fc"><i>1006</i>&nbsp;            boolean multiline = false;</b>
+<i>1007</i>&nbsp;
+<b class="fc"><i>1008</i>&nbsp;            if (s != null &amp;&amp; len &gt; 0) {</b>
+<b class="fc"><i>1009</i>&nbsp;                int i = s.indexOf(&#39;\n&#39;);</b>
+<b class="fc"><i>1010</i>&nbsp;                if (i &gt; -1 &amp;&amp; i &lt; len - 1) {</b>
+<i>1011</i>&nbsp;                    // Multiline text with embedded newlines - not
+<i>1012</i>&nbsp;                    // taking into account a potential trailing newline.
+<b class="nc"><i>1013</i>&nbsp;                    multiline = true;</b>
+<i>1014</i>&nbsp;                }
+<i>1015</i>&nbsp;            }
+<i>1016</i>&nbsp;
+<i>1017</i>&nbsp;            String result;
+<b class="fc"><i>1018</i>&nbsp;            boolean horizontalPosition =</b>
+<b class="fc"><i>1019</i>&nbsp;                    (labeled.getContentDisplay() == ContentDisplay.LEFT ||</b>
+<b class="nc"><i>1020</i>&nbsp;                    labeled.getContentDisplay() == ContentDisplay.RIGHT);</b>
+<i>1021</i>&nbsp;
+<b class="fc"><i>1022</i>&nbsp;            double availableWidth = labeled.getWidth() - snappedLeftInset() - leftLabelPadding() -</b>
+<b class="fc"><i>1023</i>&nbsp;                                    snappedRightInset() - rightLabelPadding();</b>
+<b class="fc"><i>1024</i>&nbsp;            availableWidth = Math.max(availableWidth, 0);</b>
+<i>1025</i>&nbsp;
+<b class="fc"><i>1026</i>&nbsp;            if (w == -1) {</b>
+<b class="nc"><i>1027</i>&nbsp;                w = availableWidth;</b>
+<i>1028</i>&nbsp;            }
+<b class="fc"><i>1029</i>&nbsp;            double minW = Math.min(computeMinLabeledPartWidth(-1, snappedTopInset() , snappedRightInset(), snappedBottomInset(), snappedLeftInset()), availableWidth);</b>
+<b class="fc"><i>1030</i>&nbsp;            if (horizontalPosition &amp;&amp; !isIgnoreGraphic()) {</b>
+<b class="nc"><i>1031</i>&nbsp;                double graphicW = (labeled.getGraphic().getLayoutBounds().getWidth() + labeled.getGraphicTextGap());</b>
+<b class="nc"><i>1032</i>&nbsp;                w -= graphicW;</b>
+<b class="nc"><i>1033</i>&nbsp;                minW -= graphicW;</b>
+<i>1034</i>&nbsp;            }
+<b class="fc"><i>1035</i>&nbsp;            wrapWidth = Math.max(minW, w);</b>
+<i>1036</i>&nbsp;
+<b class="fc"><i>1037</i>&nbsp;            boolean verticalPosition =</b>
+<b class="fc"><i>1038</i>&nbsp;                    (labeled.getContentDisplay() == ContentDisplay.TOP ||</b>
+<b class="fc"><i>1039</i>&nbsp;                    labeled.getContentDisplay() == ContentDisplay.BOTTOM);</b>
+<i>1040</i>&nbsp;
+<b class="fc"><i>1041</i>&nbsp;            double availableHeight = labeled.getHeight() - snappedTopInset() - topLabelPadding() -</b>
+<b class="fc"><i>1042</i>&nbsp;                                     snappedBottomInset() - bottomLabelPadding();</b>
+<b class="fc"><i>1043</i>&nbsp;            availableHeight = Math.max(availableHeight, 0);</b>
+<i>1044</i>&nbsp;
+<b class="fc"><i>1045</i>&nbsp;            if (h == -1) {</b>
+<b class="nc"><i>1046</i>&nbsp;                h = availableHeight;</b>
+<i>1047</i>&nbsp;            }
+<b class="fc"><i>1048</i>&nbsp;            double minH = Math.min(computeMinLabeledPartHeight(wrapWidth, snappedTopInset() , snappedRightInset(), snappedBottomInset(), snappedLeftInset()), availableHeight);</b>
+<b class="fc"><i>1049</i>&nbsp;            if (verticalPosition &amp;&amp; labeled.getGraphic() != null) {</b>
+<b class="nc"><i>1050</i>&nbsp;                double graphicH = labeled.getGraphic().getLayoutBounds().getHeight() + labeled.getGraphicTextGap();</b>
+<b class="nc"><i>1051</i>&nbsp;                h -= graphicH;</b>
+<b class="nc"><i>1052</i>&nbsp;                minH -= graphicH;</b>
+<i>1053</i>&nbsp;            }
+<b class="fc"><i>1054</i>&nbsp;            wrapHeight = Math.max(minH, h);</b>
+<i>1055</i>&nbsp;
+<b class="fc"><i>1056</i>&nbsp;            updateWrappingWidth();</b>
+<i>1057</i>&nbsp;
+<b class="fc"><i>1058</i>&nbsp;            Font font = text.getFont();</b>
+<b class="fc"><i>1059</i>&nbsp;            OverrunStyle truncationStyle = labeled.getTextOverrun();</b>
+<b class="fc"><i>1060</i>&nbsp;            String ellipsisString = labeled.getEllipsisString();</b>
+<i>1061</i>&nbsp;
+<b class="fc"><i>1062</i>&nbsp;            if (labeled.isWrapText()) {</b>
+<b class="nc"><i>1063</i>&nbsp;                result = Utils.computeClippedWrappedText(font, s, wrapWidth, wrapHeight, truncationStyle, ellipsisString, text.getBoundsType());</b>
+<b class="fc"><i>1064</i>&nbsp;            } else if (multiline) {</b>
+<b class="nc"><i>1065</i>&nbsp;                StringBuilder sb = new StringBuilder();</b>
+<i>1066</i>&nbsp;
+<b class="nc"><i>1067</i>&nbsp;                String[] splits = s.split(&quot;\n&quot;);</b>
+<b class="nc"><i>1068</i>&nbsp;                for (int i = 0; i &lt; splits.length; i++) {</b>
+<b class="nc"><i>1069</i>&nbsp;                    sb.append(Utils.computeClippedText(font, splits[i], wrapWidth, truncationStyle, ellipsisString));</b>
+<b class="nc"><i>1070</i>&nbsp;                    if (i &lt; splits.length - 1) {</b>
+<b class="nc"><i>1071</i>&nbsp;                        sb.append(&#39;\n&#39;);</b>
+<i>1072</i>&nbsp;                    }
+<i>1073</i>&nbsp;                }
+<i>1074</i>&nbsp;
+<i>1075</i>&nbsp;                // TODO: Consider what to do in the case where vertical space is
+<i>1076</i>&nbsp;                // limited and the last visible line isn&#39;t already truncated
+<i>1077</i>&nbsp;                // with a trailing ellipsis. What if the style calls for leading
+<i>1078</i>&nbsp;                // or center ellipses? We could possibly add an additional
+<i>1079</i>&nbsp;                // trailing ellipsis to the last visible line, like this:
+<i>1080</i>&nbsp;
+<i>1081</i>&nbsp;                // +--------------------------------+
+<i>1082</i>&nbsp;                // |  This is some long text with multiple lines\n
+<i>1083</i>&nbsp;                // |  where more than one exceed the|width\n
+<i>1084</i>&nbsp;                // |  and wrapText is false, and all|lines\n
+<i>1085</i>&nbsp;                // +--don&#39;t fit.--------------------+
+<i>1086</i>&nbsp;                //
+<i>1087</i>&nbsp;                // +--------------------------------+
+<i>1088</i>&nbsp;                // |  This is some...multiple lines |
+<i>1089</i>&nbsp;                // |  where more t...ceed the width |
+<i>1090</i>&nbsp;                // |  and wrapText...d all lines... |
+<i>1091</i>&nbsp;                // +--------------------------------+
+<i>1092</i>&nbsp;
+<b class="nc"><i>1093</i>&nbsp;                result = sb.toString();</b>
+<b class="nc"><i>1094</i>&nbsp;            } else {</b>
+<b class="fc"><i>1095</i>&nbsp;                result = Utils.computeClippedText(font, s, wrapWidth, truncationStyle, ellipsisString);</b>
+<i>1096</i>&nbsp;            }
+<i>1097</i>&nbsp;
+<b class="fc"><i>1098</i>&nbsp;            if (result != null &amp;&amp; result.endsWith(&quot;\n&quot;)) {</b>
+<i>1099</i>&nbsp;                // Strip ending newline so we don&#39;t display another row.
+<b class="nc"><i>1100</i>&nbsp;                result = result.substring(0, result.length() - 1);</b>
+<i>1101</i>&nbsp;            }
+<i>1102</i>&nbsp;
+<b class="fc"><i>1103</i>&nbsp;            text.setText(result);</b>
+<b class="fc"><i>1104</i>&nbsp;            updateWrappingWidth();</b>
+<b class="fc"><i>1105</i>&nbsp;            invalidText = false;</b>
+<i>1106</i>&nbsp;        }
+<b class="fc"><i>1107</i>&nbsp;    }</b>
+<i>1108</i>&nbsp;
+<i>1109</i>&nbsp;    private void addMnemonic() {
+<b class="nc"><i>1110</i>&nbsp;        if (labeledNode != null) {</b>
+<b class="nc"><i>1111</i>&nbsp;            mnemonicScene = labeledNode.getScene();</b>
+<b class="nc"><i>1112</i>&nbsp;            if (mnemonicScene != null) {</b>
+<b class="nc"><i>1113</i>&nbsp;                mnemonicScene.addMnemonic(new Mnemonic(labeledNode, mnemonicCode));</b>
+<i>1114</i>&nbsp;            }
+<i>1115</i>&nbsp;        }
+<b class="nc"><i>1116</i>&nbsp;    }</b>
+<i>1117</i>&nbsp;
+<i>1118</i>&nbsp;
+<i>1119</i>&nbsp;    private void removeMnemonic() {
+<b class="fc"><i>1120</i>&nbsp;        if (mnemonicScene != null &amp;&amp; labeledNode != null) {</b>
+<b class="nc"><i>1121</i>&nbsp;            mnemonicScene.removeMnemonic(new Mnemonic(labeledNode, mnemonicCode));</b>
+<b class="nc"><i>1122</i>&nbsp;            mnemonicScene = null;</b>
+<i>1123</i>&nbsp;        }
+<b class="fc"><i>1124</i>&nbsp;    }</b>
+<i>1125</i>&nbsp;
+<i>1126</i>&nbsp;    /**
+<i>1127</i>&nbsp;     * Updates the wrapping width of the text node. Although changing the font
+<i>1128</i>&nbsp;     * does affect the metrics used for text layout, this method does not
+<i>1129</i>&nbsp;     * call requestLayout or invalidate the text, since it may be called
+<i>1130</i>&nbsp;     * from the constructor and such work would be duplicative and wasted.
+<i>1131</i>&nbsp;     */
+<i>1132</i>&nbsp;    private void updateWrappingWidth() {
+<b class="fc"><i>1133</i>&nbsp;        final Labeled labeled = getSkinnable();</b>
+<b class="fc"><i>1134</i>&nbsp;        text.setWrappingWidth(0);</b>
+<b class="fc"><i>1135</i>&nbsp;        if (labeled.isWrapText()) {</b>
+<i>1136</i>&nbsp;            // Note that the wrapping width needs to be set to zero before
+<i>1137</i>&nbsp;            // getting the text&#39;s real preferred width.
+<b class="nc"><i>1138</i>&nbsp;            double w = Math.min(text.prefWidth(-1), wrapWidth);</b>
+<b class="nc"><i>1139</i>&nbsp;            text.setWrappingWidth(w);</b>
+<i>1140</i>&nbsp;        }
+<b class="fc"><i>1141</i>&nbsp;    }</b>
+<i>1142</i>&nbsp;
+<i>1143</i>&nbsp;    /**
+<i>1144</i>&nbsp;     * Gets whether for various computations we can ignore the presence of the graphic
+<i>1145</i>&nbsp;     * (or lack thereof).
+<i>1146</i>&nbsp;     * @return
+<i>1147</i>&nbsp;     */
+<i>1148</i>&nbsp;    boolean isIgnoreGraphic() {
+<b class="fc"><i>1149</i>&nbsp;        return (graphic == null ||</b>
+<b class="nc"><i>1150</i>&nbsp;                !graphic.isManaged() ||</b>
+<b class="nc"><i>1151</i>&nbsp;                getSkinnable().getContentDisplay() == ContentDisplay.TEXT_ONLY);</b>
+<i>1152</i>&nbsp;    }
+<i>1153</i>&nbsp;
+<i>1154</i>&nbsp;    /**
+<i>1155</i>&nbsp;     * Gets whether for various computations we can ignore the presence of the text.
+<i>1156</i>&nbsp;     * @return
+<i>1157</i>&nbsp;     */
+<i>1158</i>&nbsp;    boolean isIgnoreText() {
+<b class="fc"><i>1159</i>&nbsp;        final Labeled labeled = getSkinnable();</b>
+<b class="fc"><i>1160</i>&nbsp;        final String txt = labeled.getText();</b>
+<b class="fc"><i>1161</i>&nbsp;        return (txt == null ||</b>
+<b class="fc"><i>1162</i>&nbsp;                txt.equals(&quot;&quot;) ||</b>
+<b class="fc"><i>1163</i>&nbsp;                labeled.getContentDisplay() == ContentDisplay.GRAPHIC_ONLY);</b>
+<i>1164</i>&nbsp;    }
+<i>1165</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2017-12-04 21:49</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,158 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: ReadOnlyStringPropertyBase</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">javafx.beans.property</a> ]
+</div>
+
+<h1>Coverage Summary for Class: ReadOnlyStringPropertyBase (javafx.beans.property)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">ReadOnlyStringPropertyBase</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 6)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 11)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright (c) 2011, 2013, Oracle and/or its affiliates. All rights reserved.
+<i>3</i>&nbsp; * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+<i>4</i>&nbsp; *
+<i>5</i>&nbsp; *
+<i>6</i>&nbsp; *
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; *
+<i>11</i>&nbsp; *
+<i>12</i>&nbsp; *
+<i>13</i>&nbsp; *
+<i>14</i>&nbsp; *
+<i>15</i>&nbsp; *
+<i>16</i>&nbsp; *
+<i>17</i>&nbsp; *
+<i>18</i>&nbsp; *
+<i>19</i>&nbsp; *
+<i>20</i>&nbsp; *
+<i>21</i>&nbsp; *
+<i>22</i>&nbsp; *
+<i>23</i>&nbsp; *
+<i>24</i>&nbsp; */
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;package javafx.beans.property;
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;import javafx.beans.InvalidationListener;
+<i>29</i>&nbsp;import javafx.beans.value.ChangeListener;
+<i>30</i>&nbsp;
+<i>31</i>&nbsp;import com.sun.javafx.binding.ExpressionHelper;
+<i>32</i>&nbsp;
+<i>33</i>&nbsp;/**
+<i>34</i>&nbsp; * Base class for all readonly properties wrapping a {@code String}. This class provides a default
+<i>35</i>&nbsp; * implementation to attach listener.
+<i>36</i>&nbsp; *
+<i>37</i>&nbsp; * @see ReadOnlyStringProperty
+<i>38</i>&nbsp; * @since JavaFX 2.0
+<i>39</i>&nbsp; */
+<b class="nc"><i>40</i>&nbsp;public abstract class ReadOnlyStringPropertyBase extends ReadOnlyStringProperty {</b>
+<i>41</i>&nbsp;
+<i>42</i>&nbsp;    ExpressionHelper&lt;String&gt; helper;
+<i>43</i>&nbsp;
+<i>44</i>&nbsp;    @Override
+<i>45</i>&nbsp;    public void addListener(InvalidationListener listener) {
+<b class="nc"><i>46</i>&nbsp;        helper = ExpressionHelper.addListener(helper, this, listener);</b>
+<b class="nc"><i>47</i>&nbsp;    }</b>
+<i>48</i>&nbsp;
+<i>49</i>&nbsp;    @Override
+<i>50</i>&nbsp;    public void removeListener(InvalidationListener listener) {
+<b class="nc"><i>51</i>&nbsp;        helper = ExpressionHelper.removeListener(helper, listener);</b>
+<b class="nc"><i>52</i>&nbsp;    }</b>
+<i>53</i>&nbsp;
+<i>54</i>&nbsp;    @Override
+<i>55</i>&nbsp;    public void addListener(ChangeListener&lt;? super String&gt; listener) {
+<b class="nc"><i>56</i>&nbsp;        helper = ExpressionHelper.addListener(helper, this, listener);</b>
+<b class="nc"><i>57</i>&nbsp;    }</b>
+<i>58</i>&nbsp;
+<i>59</i>&nbsp;    @Override
+<i>60</i>&nbsp;    public void removeListener(ChangeListener&lt;? super String&gt; listener) {
+<b class="nc"><i>61</i>&nbsp;        helper = ExpressionHelper.removeListener(helper, listener);</b>
+<b class="nc"><i>62</i>&nbsp;    }</b>
+<i>63</i>&nbsp;
+<i>64</i>&nbsp;    /**
+<i>65</i>&nbsp;     * Sends notifications to all attached
+<i>66</i>&nbsp;     * {@link javafx.beans.InvalidationListener InvalidationListeners} and
+<i>67</i>&nbsp;     * {@link javafx.beans.value.ChangeListener ChangeListeners}.
+<i>68</i>&nbsp;     *
+<i>69</i>&nbsp;     * This method needs to be called, if the value of this property changes.
+<i>70</i>&nbsp;     */
+<i>71</i>&nbsp;    protected void fireValueChangedEvent() {
+<b class="nc"><i>72</i>&nbsp;        ExpressionHelper.fireValueChangedEvent(helper);</b>
+<b class="nc"><i>73</i>&nbsp;    }</b>
+<i>74</i>&nbsp;
+<i>75</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2017-12-04 21:49</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,157 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: PPStoPSWDisplacementMapPeer</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.scenario.effect.impl.prism.ps</a> ]
+</div>
+
+<h1>Coverage Summary for Class: PPStoPSWDisplacementMapPeer (com.sun.scenario.effect.impl.prism.ps)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">PPStoPSWDisplacementMapPeer</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 13)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright (c) 2012, 2014, Oracle and/or its affiliates. All rights reserved.
+<i>3</i>&nbsp; * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+<i>4</i>&nbsp; *
+<i>5</i>&nbsp; *
+<i>6</i>&nbsp; *
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; *
+<i>11</i>&nbsp; *
+<i>12</i>&nbsp; *
+<i>13</i>&nbsp; *
+<i>14</i>&nbsp; *
+<i>15</i>&nbsp; *
+<i>16</i>&nbsp; *
+<i>17</i>&nbsp; *
+<i>18</i>&nbsp; *
+<i>19</i>&nbsp; *
+<i>20</i>&nbsp; *
+<i>21</i>&nbsp; *
+<i>22</i>&nbsp; *
+<i>23</i>&nbsp; *
+<i>24</i>&nbsp; */
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;package com.sun.scenario.effect.impl.prism.ps;
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;import com.sun.javafx.geom.Rectangle;
+<i>29</i>&nbsp;import com.sun.javafx.geom.transform.BaseTransform;
+<i>30</i>&nbsp;import com.sun.prism.RTTexture;
+<i>31</i>&nbsp;import com.sun.scenario.effect.Effect;
+<i>32</i>&nbsp;import com.sun.scenario.effect.FilterContext;
+<i>33</i>&nbsp;import com.sun.scenario.effect.ImageData;
+<i>34</i>&nbsp;import com.sun.scenario.effect.impl.Renderer;
+<i>35</i>&nbsp;import com.sun.scenario.effect.impl.EffectPeer;
+<i>36</i>&nbsp;import com.sun.scenario.effect.impl.prism.PrDrawable;
+<i>37</i>&nbsp;import com.sun.scenario.effect.impl.prism.PrRenderer;
+<i>38</i>&nbsp;import com.sun.scenario.effect.impl.prism.PrTexture;
+<i>39</i>&nbsp;import com.sun.scenario.effect.impl.state.RenderState;
+<i>40</i>&nbsp;
+<i>41</i>&nbsp;public class PPStoPSWDisplacementMapPeer extends EffectPeer  {
+<i>42</i>&nbsp;    PrRenderer softwareRenderer;
+<i>43</i>&nbsp;    EffectPeer softwarePeer;
+<i>44</i>&nbsp;
+<i>45</i>&nbsp;    public PPStoPSWDisplacementMapPeer(FilterContext fctx, Renderer r, String shaderName) {
+<b class="nc"><i>46</i>&nbsp;        super(fctx, r, shaderName);</b>
+<b class="nc"><i>47</i>&nbsp;        softwareRenderer = (PrRenderer) Renderer.getRenderer(fctx);</b>
+<b class="nc"><i>48</i>&nbsp;        softwarePeer = softwareRenderer.getPeerInstance(fctx, &quot;DisplacementMap&quot;, 0);</b>
+<b class="nc"><i>49</i>&nbsp;    }</b>
+<i>50</i>&nbsp;
+<i>51</i>&nbsp;    @Override
+<i>52</i>&nbsp;    public ImageData filter(Effect effect,
+<i>53</i>&nbsp;                            RenderState rstate,
+<i>54</i>&nbsp;                            BaseTransform transform,
+<i>55</i>&nbsp;                            Rectangle outputClip,
+<i>56</i>&nbsp;                            ImageData... inputs)
+<i>57</i>&nbsp;    {
+<b class="nc"><i>58</i>&nbsp;        ImageData input = inputs[0];</b>
+<b class="nc"><i>59</i>&nbsp;        PrTexture srcTex = (PrTexture) input.getUntransformedImage();</b>
+<b class="nc"><i>60</i>&nbsp;        RTTexture srcRT = (RTTexture) srcTex.getTextureObject();</b>
+<i>61</i>&nbsp;        // The software renderer produces drawables that also implement HeapImage
+<b class="nc"><i>62</i>&nbsp;        PrDrawable srcDrawable = softwareRenderer.createDrawable(srcRT);</b>
+<b class="nc"><i>63</i>&nbsp;        ImageData heapinput = new ImageData(getFilterContext(), srcDrawable,</b>
+<b class="nc"><i>64</i>&nbsp;                                            input.getUntransformedBounds());</b>
+<b class="nc"><i>65</i>&nbsp;        heapinput = heapinput.transform(input.getTransform());</b>
+<i>66</i>&nbsp;
+<i>67</i>&nbsp;        // The software peer will return a PrDrawable that can produce a
+<i>68</i>&nbsp;        // prism Texture on demand as needed.
+<b class="nc"><i>69</i>&nbsp;        ImageData ret = softwarePeer.filter(effect, rstate, transform, outputClip, heapinput);</b>
+<i>70</i>&nbsp;        // Note that heapinput should not be unref()ed since it shares the
+<i>71</i>&nbsp;        // rtt with input/srcTex and we do not want it to dispose the rtt.
+<b class="nc"><i>72</i>&nbsp;        return ret;</b>
+<i>73</i>&nbsp;    }
+<i>74</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2017-12-04 21:49</div>
+</div>
+</body>
+</html>

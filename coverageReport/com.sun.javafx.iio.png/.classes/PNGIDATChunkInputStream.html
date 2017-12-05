@@ -1,0 +1,230 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: PNGIDATChunkInputStream</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.javafx.iio.png</a> ]
+</div>
+
+<h1>Coverage Summary for Class: PNGIDATChunkInputStream (com.sun.javafx.iio.png)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">PNGIDATChunkInputStream</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    42.9%
+  </span>
+  <span class="absValue">
+    (3/ 7)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    73.5%
+  </span>
+  <span class="absValue">
+    (36/ 49)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright (c) 2009, 2014, Oracle and/or its affiliates. All rights reserved.
+<i>3</i>&nbsp; * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+<i>4</i>&nbsp; *
+<i>5</i>&nbsp; *
+<i>6</i>&nbsp; *
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; *
+<i>11</i>&nbsp; *
+<i>12</i>&nbsp; *
+<i>13</i>&nbsp; *
+<i>14</i>&nbsp; *
+<i>15</i>&nbsp; *
+<i>16</i>&nbsp; *
+<i>17</i>&nbsp; *
+<i>18</i>&nbsp; *
+<i>19</i>&nbsp; *
+<i>20</i>&nbsp; *
+<i>21</i>&nbsp; *
+<i>22</i>&nbsp; *
+<i>23</i>&nbsp; *
+<i>24</i>&nbsp; */
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;package com.sun.javafx.iio.png;
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;import com.sun.javafx.iio.common.ImageTools;
+<i>29</i>&nbsp;import java.io.DataInputStream;
+<i>30</i>&nbsp;import java.io.EOFException;
+<i>31</i>&nbsp;import java.io.IOException;
+<i>32</i>&nbsp;import java.io.InputStream;
+<i>33</i>&nbsp;
+<i>34</i>&nbsp;/**
+<i>35</i>&nbsp; * A stream which exposes only the IDAT chunk data content of a PNG stream.
+<i>36</i>&nbsp; *
+<i>37</i>&nbsp; * &lt;p&gt;Once all IDAT chunks have been read, the &lt;code&gt;read()&lt;/code&gt; methods will
+<i>38</i>&nbsp; * return &lt;code&gt;-1&lt;/code&gt; and &lt;code&gt;isFoundAllIDATChunks()&lt;/code&gt;
+<i>39</i>&nbsp; * &lt;code&gt;true&lt;/code&gt;. Once &lt;code&gt;isFoundAllIDATChunks()&lt;/code&gt; returns
+<i>40</i>&nbsp; * &lt;code&gt;true&lt;/code&gt;, the length and type of the first chunk after the last
+<i>41</i>&nbsp; * IDAT chunk may be found by calling &lt;code&gt;getNextChunkLength()&lt;/code&gt; and
+<i>42</i>&nbsp; * &lt;code&gt;getNextChunkType()&lt;/code&gt;, respectively. The source stream will at
+<i>43</i>&nbsp; * this point be positioned at the first byte of the data field after the last
+<i>44</i>&nbsp; * IDAT chunk (which could be the first byte of the CRC code if the length is
+<i>45</i>&nbsp; * zero).&lt;/p&gt;
+<i>46</i>&nbsp; */
+<i>47</i>&nbsp;public class PNGIDATChunkInputStream extends InputStream {
+<i>48</i>&nbsp;
+<i>49</i>&nbsp;    static final int IDAT_TYPE = 0x49444154;
+<i>50</i>&nbsp;
+<i>51</i>&nbsp;    private DataInputStream source;
+<b class="fc"><i>52</i>&nbsp;    private int numBytesAvailable = 0;</b>
+<b class="fc"><i>53</i>&nbsp;    private boolean foundAllIDATChunks = false;</b>
+<b class="fc"><i>54</i>&nbsp;    private int nextChunkLength = 0;</b>
+<b class="fc"><i>55</i>&nbsp;    private int nextChunkType = 0;</b>
+<i>56</i>&nbsp;
+<i>57</i>&nbsp;    /**
+<i>58</i>&nbsp;     * Create the stream.
+<i>59</i>&nbsp;     *
+<i>60</i>&nbsp;     * @param input stream positioned at the beginning of the data field of the
+<i>61</i>&nbsp;     * first IDAT chunk in the PNG stream.
+<i>62</i>&nbsp;     * @param firstIDATChunkLength the length of the data field of the first
+<i>63</i>&nbsp;     * IDAT chunk.
+<i>64</i>&nbsp;     */
+<b class="fc"><i>65</i>&nbsp;    PNGIDATChunkInputStream(DataInputStream input, int firstIDATChunkLength) throws IOException {</b>
+<b class="fc"><i>66</i>&nbsp;        if (firstIDATChunkLength &lt; 0) {</b>
+<b class="nc"><i>67</i>&nbsp;            throw new IOException(&quot;Invalid chunk length&quot;);</b>
+<i>68</i>&nbsp;        }
+<b class="fc"><i>69</i>&nbsp;        this.source = input;</b>
+<b class="fc"><i>70</i>&nbsp;        this.numBytesAvailable = firstIDATChunkLength;</b>
+<b class="fc"><i>71</i>&nbsp;    }</b>
+<i>72</i>&nbsp;
+<i>73</i>&nbsp;    private void nextChunk() throws IOException {
+<b class="fc"><i>74</i>&nbsp;        if (!foundAllIDATChunks) {</b>
+<b class="fc"><i>75</i>&nbsp;            ImageTools.skipFully(source, 4); // CRC</b>
+<b class="fc"><i>76</i>&nbsp;            int chunkLength = source.readInt();</b>
+<b class="fc"><i>77</i>&nbsp;            if (chunkLength &lt; 0) {</b>
+<b class="nc"><i>78</i>&nbsp;                throw new IOException(&quot;Invalid chunk length&quot;);</b>
+<i>79</i>&nbsp;            }
+<b class="fc"><i>80</i>&nbsp;            int chunkType = source.readInt();</b>
+<b class="fc"><i>81</i>&nbsp;            if (chunkType == IDAT_TYPE) {</b>
+<b class="fc"><i>82</i>&nbsp;                numBytesAvailable += chunkLength;</b>
+<i>83</i>&nbsp;            } else {
+<b class="fc"><i>84</i>&nbsp;                foundAllIDATChunks = true;</b>
+<b class="fc"><i>85</i>&nbsp;                nextChunkLength = chunkLength;</b>
+<b class="fc"><i>86</i>&nbsp;                nextChunkType = chunkType;</b>
+<i>87</i>&nbsp;            }
+<i>88</i>&nbsp;        }
+<b class="fc"><i>89</i>&nbsp;    }</b>
+<i>90</i>&nbsp;
+<i>91</i>&nbsp;    boolean isFoundAllIDATChunks() {
+<b class="nc"><i>92</i>&nbsp;        return foundAllIDATChunks;</b>
+<i>93</i>&nbsp;    }
+<i>94</i>&nbsp;
+<i>95</i>&nbsp;    int getNextChunkLength() {
+<b class="nc"><i>96</i>&nbsp;        return nextChunkLength;</b>
+<i>97</i>&nbsp;    }
+<i>98</i>&nbsp;
+<i>99</i>&nbsp;    int getNextChunkType() {
+<b class="nc"><i>100</i>&nbsp;        return nextChunkType;</b>
+<i>101</i>&nbsp;    }
+<i>102</i>&nbsp;
+<i>103</i>&nbsp;    @Override
+<i>104</i>&nbsp;    public int read() throws IOException {
+<b class="nc"><i>105</i>&nbsp;        if (numBytesAvailable == 0) {</b>
+<b class="nc"><i>106</i>&nbsp;            nextChunk();</b>
+<i>107</i>&nbsp;        }
+<i>108</i>&nbsp;
+<b class="nc"><i>109</i>&nbsp;        if (numBytesAvailable == 0) {</b>
+<b class="nc"><i>110</i>&nbsp;            return -1;</b>
+<i>111</i>&nbsp;        } else {
+<b class="nc"><i>112</i>&nbsp;            --numBytesAvailable;</b>
+<b class="nc"><i>113</i>&nbsp;            return source.read();</b>
+<i>114</i>&nbsp;        }
+<i>115</i>&nbsp;    }
+<i>116</i>&nbsp;
+<i>117</i>&nbsp;    @Override
+<i>118</i>&nbsp;    public int read(byte[] b, int off, int len) throws IOException {
+<b class="fc"><i>119</i>&nbsp;        if (numBytesAvailable == 0) {</b>
+<b class="fc"><i>120</i>&nbsp;            nextChunk();</b>
+<b class="fc"><i>121</i>&nbsp;            if (numBytesAvailable == 0) {</b>
+<b class="nc"><i>122</i>&nbsp;                return -1;</b>
+<i>123</i>&nbsp;            }
+<i>124</i>&nbsp;        }
+<i>125</i>&nbsp;
+<b class="fc"><i>126</i>&nbsp;        int totalRead = 0;</b>
+<b class="fc"><i>127</i>&nbsp;        while (numBytesAvailable &gt; 0 &amp;&amp; len &gt; 0) {</b>
+<b class="fc"><i>128</i>&nbsp;            int numToRead = len &lt; numBytesAvailable ? len : numBytesAvailable;</b>
+<i>129</i>&nbsp;
+<b class="fc"><i>130</i>&nbsp;            int numRead = source.read(b, off, numToRead);</b>
+<b class="fc"><i>131</i>&nbsp;            if (numRead == -1) {</b>
+<b class="nc"><i>132</i>&nbsp;                throw new EOFException();</b>
+<i>133</i>&nbsp;            }
+<i>134</i>&nbsp;
+<b class="fc"><i>135</i>&nbsp;            numBytesAvailable -= numRead;</b>
+<b class="fc"><i>136</i>&nbsp;            off += numRead;</b>
+<b class="fc"><i>137</i>&nbsp;            len -= numRead;</b>
+<b class="fc"><i>138</i>&nbsp;            totalRead += numRead;</b>
+<b class="fc"><i>139</i>&nbsp;            if (numBytesAvailable == 0 &amp;&amp; len &gt; 0) {</b>
+<b class="fc"><i>140</i>&nbsp;                nextChunk();</b>
+<i>141</i>&nbsp;            }
+<b class="fc"><i>142</i>&nbsp;        }</b>
+<i>143</i>&nbsp;
+<b class="fc"><i>144</i>&nbsp;        return totalRead;</b>
+<i>145</i>&nbsp;    }
+<i>146</i>&nbsp;}
+<i>147</i>&nbsp;
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2017-12-04 21:49</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,484 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: GaussianShadow</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.scenario.effect</a> ]
+</div>
+
+<h1>Coverage Summary for Class: GaussianShadow (com.sun.scenario.effect)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">GaussianShadow</td>
+<td class="coverageStat">
+  <span class="percent">
+    63.3%
+  </span>
+  <span class="absValue">
+    (19/ 30)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    62%
+  </span>
+  <span class="absValue">
+    (49/ 79)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">GaussianShadow$1</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    64.5%
+  </span>
+  <span class="absValue">
+    (20/ 31)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    62.5%
+  </span>
+  <span class="absValue">
+    (50/ 80)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright (c) 2008, 2014, Oracle and/or its affiliates. All rights reserved.
+<i>3</i>&nbsp; * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+<i>4</i>&nbsp; *
+<i>5</i>&nbsp; *
+<i>6</i>&nbsp; *
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; *
+<i>11</i>&nbsp; *
+<i>12</i>&nbsp; *
+<i>13</i>&nbsp; *
+<i>14</i>&nbsp; *
+<i>15</i>&nbsp; *
+<i>16</i>&nbsp; *
+<i>17</i>&nbsp; *
+<i>18</i>&nbsp; *
+<i>19</i>&nbsp; *
+<i>20</i>&nbsp; *
+<i>21</i>&nbsp; *
+<i>22</i>&nbsp; *
+<i>23</i>&nbsp; *
+<i>24</i>&nbsp; */
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;package com.sun.scenario.effect;
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;import com.sun.javafx.geom.BaseBounds;
+<i>29</i>&nbsp;import com.sun.javafx.geom.DirtyRegionContainer;
+<i>30</i>&nbsp;import com.sun.javafx.geom.DirtyRegionPool;
+<i>31</i>&nbsp;import com.sun.javafx.geom.RectBounds;
+<i>32</i>&nbsp;import com.sun.javafx.geom.Rectangle;
+<i>33</i>&nbsp;import com.sun.javafx.geom.transform.BaseTransform;
+<i>34</i>&nbsp;import com.sun.scenario.effect.impl.Renderer;
+<i>35</i>&nbsp;import com.sun.scenario.effect.impl.state.GaussianShadowState;
+<i>36</i>&nbsp;import com.sun.scenario.effect.impl.state.LinearConvolveKernel;
+<i>37</i>&nbsp;
+<i>38</i>&nbsp;/**
+<i>39</i>&nbsp; * A blurred shadow effect using a Gaussian convolution kernel, with a
+<i>40</i>&nbsp; * configurable radius and shadow color.  Only the alpha channel of the
+<i>41</i>&nbsp; * input is used to create the shadow effect.  The alpha value of each
+<i>42</i>&nbsp; * pixel from the result of the blur operation is modulated with the
+<i>43</i>&nbsp; * specified shadow color to produce the resulting image.
+<i>44</i>&nbsp; */
+<i>45</i>&nbsp;public class GaussianShadow extends AbstractShadow {
+<i>46</i>&nbsp;
+<b class="fc"><i>47</i>&nbsp;    private GaussianShadowState state = new GaussianShadowState();</b>
+<i>48</i>&nbsp;
+<i>49</i>&nbsp;    /**
+<i>50</i>&nbsp;     * Constructs a new {@code GaussianShadow} effect with the default radius
+<i>51</i>&nbsp;     * (10.0) and the default color ({@code Color4f.BLACK}), using the
+<i>52</i>&nbsp;     * default input for source data.
+<i>53</i>&nbsp;     * This is a shorthand equivalent to:
+<i>54</i>&nbsp;     * &lt;pre&gt;
+<i>55</i>&nbsp;     *     new GaussianShadow(10f, Color4f.BLACK, DefaultInput)
+<i>56</i>&nbsp;     * &lt;/pre&gt;
+<i>57</i>&nbsp;     */
+<i>58</i>&nbsp;    public GaussianShadow() {
+<b class="nc"><i>59</i>&nbsp;        this(10f);</b>
+<b class="nc"><i>60</i>&nbsp;    }</b>
+<i>61</i>&nbsp;
+<i>62</i>&nbsp;    /**
+<i>63</i>&nbsp;     * Constructs a new {@code GaussianShadow} effect with the given radius
+<i>64</i>&nbsp;     * and the default color ({@code Color4f.BLACK}), using the
+<i>65</i>&nbsp;     * default input for source data.
+<i>66</i>&nbsp;     * This is a shorthand equivalent to:
+<i>67</i>&nbsp;     * &lt;pre&gt;
+<i>68</i>&nbsp;     *     new GaussianShadow(radius, Color4f.BLACK, DefaultInput)
+<i>69</i>&nbsp;     * &lt;/pre&gt;
+<i>70</i>&nbsp;     *
+<i>71</i>&nbsp;     * @param radius the radius of the Gaussian kernel
+<i>72</i>&nbsp;     * @throws IllegalArgumentException if {@code radius} is outside the
+<i>73</i>&nbsp;     * allowable range
+<i>74</i>&nbsp;     */
+<i>75</i>&nbsp;    public GaussianShadow(float radius) {
+<b class="nc"><i>76</i>&nbsp;        this(radius, Color4f.BLACK);</b>
+<b class="nc"><i>77</i>&nbsp;    }</b>
+<i>78</i>&nbsp;
+<i>79</i>&nbsp;    /**
+<i>80</i>&nbsp;     * Constructs a new {@code GaussianShadow} effect with the given radius
+<i>81</i>&nbsp;     * and color, using the default input for source data.
+<i>82</i>&nbsp;     * This is a shorthand equivalent to:
+<i>83</i>&nbsp;     * &lt;pre&gt;
+<i>84</i>&nbsp;     *     new GaussianShadow(radius, color, DefaultInput)
+<i>85</i>&nbsp;     * &lt;/pre&gt;
+<i>86</i>&nbsp;     *
+<i>87</i>&nbsp;     * @param radius the radius of the Gaussian kernel
+<i>88</i>&nbsp;     * @param color the shadow {@code Color4f}
+<i>89</i>&nbsp;     * @throws IllegalArgumentException if {@code radius} is outside the
+<i>90</i>&nbsp;     * allowable range
+<i>91</i>&nbsp;     */
+<i>92</i>&nbsp;    public GaussianShadow(float radius, Color4f color) {
+<b class="nc"><i>93</i>&nbsp;        this(radius, color, DefaultInput);</b>
+<b class="nc"><i>94</i>&nbsp;    }</b>
+<i>95</i>&nbsp;
+<i>96</i>&nbsp;    /**
+<i>97</i>&nbsp;     * Constructs a new {@code GaussianShadow} effect with the given
+<i>98</i>&nbsp;     * radius and color.
+<i>99</i>&nbsp;     *
+<i>100</i>&nbsp;     * @param radius the radius of the Gaussian kernel
+<i>101</i>&nbsp;     * @param color the shadow {@code Color4f}
+<i>102</i>&nbsp;     * @param input the single input {@code Effect}
+<i>103</i>&nbsp;     * @throws IllegalArgumentException if {@code radius} is outside the
+<i>104</i>&nbsp;     * allowable range, or if {@code color} is null
+<i>105</i>&nbsp;     */
+<i>106</i>&nbsp;    public GaussianShadow(float radius, Color4f color, Effect input) {
+<b class="fc"><i>107</i>&nbsp;        super(input);</b>
+<b class="fc"><i>108</i>&nbsp;        state.setRadius(radius);</b>
+<b class="fc"><i>109</i>&nbsp;        state.setShadowColor(color);</b>
+<b class="fc"><i>110</i>&nbsp;    }</b>
+<i>111</i>&nbsp;
+<i>112</i>&nbsp;
+<i>113</i>&nbsp;    @Override
+<i>114</i>&nbsp;    LinearConvolveKernel getState() {
+<b class="fc"><i>115</i>&nbsp;        return state;</b>
+<i>116</i>&nbsp;    }
+<i>117</i>&nbsp;
+<i>118</i>&nbsp;    @Override
+<i>119</i>&nbsp;    public AccelType getAccelType(FilterContext fctx) {
+<b class="nc"><i>120</i>&nbsp;        return Renderer.getRenderer(fctx).getAccelType();</b>
+<i>121</i>&nbsp;    }
+<i>122</i>&nbsp;
+<i>123</i>&nbsp;    /**
+<i>124</i>&nbsp;     * Returns the input for this {@code Effect}.
+<i>125</i>&nbsp;     *
+<i>126</i>&nbsp;     * @return the input for this {@code Effect}
+<i>127</i>&nbsp;     */
+<i>128</i>&nbsp;    public final Effect getInput() {
+<b class="fc"><i>129</i>&nbsp;        return getInputs().get(0);</b>
+<i>130</i>&nbsp;    }
+<i>131</i>&nbsp;
+<i>132</i>&nbsp;    /**
+<i>133</i>&nbsp;     * Sets the input for this {@code Effect} to a specific {@code Effect}
+<i>134</i>&nbsp;     * or to the default input if {@code input} is {@code null}.
+<i>135</i>&nbsp;     *
+<i>136</i>&nbsp;     * @param input the input for this {@code Effect}
+<i>137</i>&nbsp;     */
+<i>138</i>&nbsp;    public void setInput(Effect input) {
+<b class="fc"><i>139</i>&nbsp;        setInput(0, input);</b>
+<b class="fc"><i>140</i>&nbsp;    }</b>
+<i>141</i>&nbsp;
+<i>142</i>&nbsp;    /**
+<i>143</i>&nbsp;     * Returns the radius of the Gaussian kernel.
+<i>144</i>&nbsp;     *
+<i>145</i>&nbsp;     * @return the radius of the Gaussian kernel
+<i>146</i>&nbsp;     */
+<i>147</i>&nbsp;    public float getRadius() {
+<b class="nc"><i>148</i>&nbsp;        return state.getRadius();</b>
+<i>149</i>&nbsp;    }
+<i>150</i>&nbsp;
+<i>151</i>&nbsp;    /**
+<i>152</i>&nbsp;     * Sets the radius of the Gaussian kernel.
+<i>153</i>&nbsp;     * &lt;pre&gt;
+<i>154</i>&nbsp;     *       Min:   0.0
+<i>155</i>&nbsp;     *       Max: 127.0
+<i>156</i>&nbsp;     *   Default:  10.0
+<i>157</i>&nbsp;     *  Identity:   0.0
+<i>158</i>&nbsp;     * &lt;/pre&gt;
+<i>159</i>&nbsp;     *
+<i>160</i>&nbsp;     * @param radius the radius of the Gaussian kernel
+<i>161</i>&nbsp;     * @throws IllegalArgumentException if {@code radius} is outside the
+<i>162</i>&nbsp;     * allowable range
+<i>163</i>&nbsp;     */
+<i>164</i>&nbsp;    public void setRadius(float radius) {
+<b class="nc"><i>165</i>&nbsp;        float old = state.getRadius();</b>
+<b class="nc"><i>166</i>&nbsp;        state.setRadius(radius);</b>
+<b class="nc"><i>167</i>&nbsp;    }</b>
+<i>168</i>&nbsp;
+<i>169</i>&nbsp;    /**
+<i>170</i>&nbsp;     * Returns the horizontal radius of the Gaussian kernel.
+<i>171</i>&nbsp;     *
+<i>172</i>&nbsp;     * @return the horizontal radius of the Gaussian kernel
+<i>173</i>&nbsp;     */
+<i>174</i>&nbsp;    public float getHRadius() {
+<b class="fc"><i>175</i>&nbsp;        return state.getHRadius();</b>
+<i>176</i>&nbsp;    }
+<i>177</i>&nbsp;
+<i>178</i>&nbsp;    /**
+<i>179</i>&nbsp;     * Sets the horizontal radius of the Gaussian kernel.
+<i>180</i>&nbsp;     * &lt;pre&gt;
+<i>181</i>&nbsp;     *       Min:   0.0
+<i>182</i>&nbsp;     *       Max: 127.0
+<i>183</i>&nbsp;     *   Default:  10.0
+<i>184</i>&nbsp;     *  Identity:   0.0
+<i>185</i>&nbsp;     * &lt;/pre&gt;
+<i>186</i>&nbsp;     *
+<i>187</i>&nbsp;     * @param hradius the horizontal radius of the Gaussian kernel
+<i>188</i>&nbsp;     * @throws IllegalArgumentException if {@code radius} is outside the
+<i>189</i>&nbsp;     * allowable range
+<i>190</i>&nbsp;     */
+<i>191</i>&nbsp;    public void setHRadius(float hradius) {
+<b class="fc"><i>192</i>&nbsp;        float old = state.getHRadius();</b>
+<b class="fc"><i>193</i>&nbsp;        state.setHRadius(hradius);</b>
+<b class="fc"><i>194</i>&nbsp;    }</b>
+<i>195</i>&nbsp;
+<i>196</i>&nbsp;    /**
+<i>197</i>&nbsp;     * Returns the vertical radius of the Gaussian kernel.
+<i>198</i>&nbsp;     *
+<i>199</i>&nbsp;     * @return the vertical radius of the Gaussian kernel
+<i>200</i>&nbsp;     */
+<i>201</i>&nbsp;    public float getVRadius() {
+<b class="fc"><i>202</i>&nbsp;        return state.getVRadius();</b>
+<i>203</i>&nbsp;    }
+<i>204</i>&nbsp;
+<i>205</i>&nbsp;    /**
+<i>206</i>&nbsp;     * Sets the vertical radius of the Gaussian kernel.
+<i>207</i>&nbsp;     * &lt;pre&gt;
+<i>208</i>&nbsp;     *       Min:   0.0
+<i>209</i>&nbsp;     *       Max: 127.0
+<i>210</i>&nbsp;     *   Default:  10.0
+<i>211</i>&nbsp;     *  Identity:   0.0
+<i>212</i>&nbsp;     * &lt;/pre&gt;
+<i>213</i>&nbsp;     *
+<i>214</i>&nbsp;     * @param vradius the vertical radius of the Gaussian kernel
+<i>215</i>&nbsp;     * @throws IllegalArgumentException if {@code radius} is outside the
+<i>216</i>&nbsp;     * allowable range
+<i>217</i>&nbsp;     */
+<i>218</i>&nbsp;    public void setVRadius(float vradius) {
+<b class="fc"><i>219</i>&nbsp;        float old = state.getVRadius();</b>
+<b class="fc"><i>220</i>&nbsp;        state.setVRadius(vradius);</b>
+<b class="fc"><i>221</i>&nbsp;    }</b>
+<i>222</i>&nbsp;
+<i>223</i>&nbsp;    /**
+<i>224</i>&nbsp;     * Gets the spread of the shadow effect.
+<i>225</i>&nbsp;     *
+<i>226</i>&nbsp;     * @return the spread of the shadow effect
+<i>227</i>&nbsp;     */
+<i>228</i>&nbsp;    public float getSpread() {
+<b class="fc"><i>229</i>&nbsp;        return state.getSpread();</b>
+<i>230</i>&nbsp;    }
+<i>231</i>&nbsp;
+<i>232</i>&nbsp;    /**
+<i>233</i>&nbsp;     * Sets the spread of the shadow effect.
+<i>234</i>&nbsp;     * The spread is the portion of the radius where the contribution of
+<i>235</i>&nbsp;     * the source material will be 100%.
+<i>236</i>&nbsp;     * The remaining portion of the radius will have a contribution
+<i>237</i>&nbsp;     * controlled by the Gaussian kernel.
+<i>238</i>&nbsp;     * A spread of {@code 0.0} will result in a pure Gaussian distribution
+<i>239</i>&nbsp;     * of the shadow.
+<i>240</i>&nbsp;     * A spread of {@code 1.0} will result in a solid growth outward of the
+<i>241</i>&nbsp;     * source material opacity to the limit of the radius with a very sharp
+<i>242</i>&nbsp;     * cutoff to transparency at the radius.
+<i>243</i>&nbsp;     * &lt;pre&gt;
+<i>244</i>&nbsp;     *       Min: 0.0
+<i>245</i>&nbsp;     *       Max: 1.0
+<i>246</i>&nbsp;     *   Default: 0.0
+<i>247</i>&nbsp;     *  Identity: 0.0
+<i>248</i>&nbsp;     * &lt;/pre&gt;
+<i>249</i>&nbsp;     *
+<i>250</i>&nbsp;     * @param spread the spread of the shadow effect
+<i>251</i>&nbsp;     * @throws IllegalArgumentException if {@code spread} is outside the
+<i>252</i>&nbsp;     * allowable range
+<i>253</i>&nbsp;     */
+<i>254</i>&nbsp;    public void setSpread(float spread) {
+<b class="fc"><i>255</i>&nbsp;        float old = state.getSpread();</b>
+<b class="fc"><i>256</i>&nbsp;        state.setSpread(spread);</b>
+<b class="fc"><i>257</i>&nbsp;    }</b>
+<i>258</i>&nbsp;
+<i>259</i>&nbsp;    /**
+<i>260</i>&nbsp;     * Returns the shadow color.
+<i>261</i>&nbsp;     *
+<i>262</i>&nbsp;     * @return the shadow color
+<i>263</i>&nbsp;     */
+<i>264</i>&nbsp;    public Color4f getColor() {
+<b class="fc"><i>265</i>&nbsp;        return state.getShadowColor();</b>
+<i>266</i>&nbsp;    }
+<i>267</i>&nbsp;
+<i>268</i>&nbsp;    /**
+<i>269</i>&nbsp;     * Sets the shadow color.
+<i>270</i>&nbsp;     * &lt;pre&gt;
+<i>271</i>&nbsp;     *       Min: n/a
+<i>272</i>&nbsp;     *       Max: n/a
+<i>273</i>&nbsp;     *   Default: Color4f.BLACK
+<i>274</i>&nbsp;     *  Identity: n/a
+<i>275</i>&nbsp;     * &lt;/pre&gt;
+<i>276</i>&nbsp;     *
+<i>277</i>&nbsp;     * @param color the shadow color
+<i>278</i>&nbsp;     * @throws IllegalArgumentException if {@code color} is null
+<i>279</i>&nbsp;     */
+<i>280</i>&nbsp;    public void setColor(Color4f color) {
+<b class="fc"><i>281</i>&nbsp;        Color4f old = state.getShadowColor();</b>
+<b class="fc"><i>282</i>&nbsp;        state.setShadowColor(color);</b>
+<b class="fc"><i>283</i>&nbsp;    }</b>
+<i>284</i>&nbsp;
+<i>285</i>&nbsp;    public float getGaussianRadius() {
+<b class="nc"><i>286</i>&nbsp;        return getRadius();</b>
+<i>287</i>&nbsp;    }
+<i>288</i>&nbsp;
+<i>289</i>&nbsp;    public float getGaussianWidth() {
+<b class="fc"><i>290</i>&nbsp;        return getHRadius() * 2.0f + 1.0f;</b>
+<i>291</i>&nbsp;    }
+<i>292</i>&nbsp;
+<i>293</i>&nbsp;    public float getGaussianHeight() {
+<b class="fc"><i>294</i>&nbsp;        return getVRadius() * 2.0f + 1.0f;</b>
+<i>295</i>&nbsp;    }
+<i>296</i>&nbsp;
+<i>297</i>&nbsp;    public void setGaussianRadius(float r) {
+<b class="nc"><i>298</i>&nbsp;        setRadius(r);</b>
+<b class="nc"><i>299</i>&nbsp;    }</b>
+<i>300</i>&nbsp;
+<i>301</i>&nbsp;    public void setGaussianWidth(float w) {
+<b class="fc"><i>302</i>&nbsp;        setHRadius(w &lt; 1.0f ? 0.0f : ((w - 1.0f) / 2.0f));</b>
+<b class="fc"><i>303</i>&nbsp;    }</b>
+<i>304</i>&nbsp;
+<i>305</i>&nbsp;    public void setGaussianHeight(float h) {
+<b class="fc"><i>306</i>&nbsp;        setVRadius(h &lt; 1.0f ? 0.0f : ((h - 1.0f) / 2.0f));</b>
+<b class="fc"><i>307</i>&nbsp;    }</b>
+<i>308</i>&nbsp;
+<i>309</i>&nbsp;    public ShadowMode getMode() {
+<b class="fc"><i>310</i>&nbsp;        return ShadowMode.GAUSSIAN;</b>
+<i>311</i>&nbsp;    }
+<i>312</i>&nbsp;
+<i>313</i>&nbsp;    public AbstractShadow implFor(ShadowMode mode) {
+<b class="fc"><i>314</i>&nbsp;        int passes = 0;</b>
+<b class="fc"><i>315</i>&nbsp;        switch (mode) {</b>
+<i>316</i>&nbsp;            case GAUSSIAN:
+<b class="fc"><i>317</i>&nbsp;                return this;</b>
+<i>318</i>&nbsp;            case ONE_PASS_BOX:
+<b class="nc"><i>319</i>&nbsp;                passes = 1;</b>
+<b class="nc"><i>320</i>&nbsp;                break;</b>
+<i>321</i>&nbsp;            case TWO_PASS_BOX:
+<b class="fc"><i>322</i>&nbsp;                passes = 2;</b>
+<b class="fc"><i>323</i>&nbsp;                break;</b>
+<i>324</i>&nbsp;            case THREE_PASS_BOX:
+<b class="nc"><i>325</i>&nbsp;                passes = 3;</b>
+<i>326</i>&nbsp;                break;
+<i>327</i>&nbsp;        }
+<b class="fc"><i>328</i>&nbsp;        BoxShadow box = new BoxShadow();</b>
+<b class="fc"><i>329</i>&nbsp;        box.setInput(getInput());</b>
+<b class="fc"><i>330</i>&nbsp;        box.setGaussianWidth(getGaussianWidth());</b>
+<b class="fc"><i>331</i>&nbsp;        box.setGaussianHeight(getGaussianHeight());</b>
+<b class="fc"><i>332</i>&nbsp;        box.setColor(getColor());</b>
+<b class="fc"><i>333</i>&nbsp;        box.setPasses(passes);</b>
+<b class="fc"><i>334</i>&nbsp;        box.setSpread(getSpread());</b>
+<b class="fc"><i>335</i>&nbsp;        return box;</b>
+<i>336</i>&nbsp;    }
+<i>337</i>&nbsp;
+<i>338</i>&nbsp;    @Override
+<i>339</i>&nbsp;    public BaseBounds getBounds(BaseTransform transform, Effect defaultInput) {
+<b class="nc"><i>340</i>&nbsp;        BaseBounds r = super.getBounds(null, defaultInput);</b>
+<b class="nc"><i>341</i>&nbsp;        int hpad = state.getPad(0);</b>
+<b class="nc"><i>342</i>&nbsp;        int vpad = state.getPad(1);</b>
+<b class="nc"><i>343</i>&nbsp;        RectBounds ret = new RectBounds(r.getMinX(), r.getMinY(), r.getMaxX(), r.getMaxY());</b>
+<b class="nc"><i>344</i>&nbsp;        ret.grow(hpad, vpad);</b>
+<b class="nc"><i>345</i>&nbsp;        return transformBounds(transform, ret);</b>
+<i>346</i>&nbsp;    }
+<i>347</i>&nbsp;
+<i>348</i>&nbsp;    @Override
+<i>349</i>&nbsp;    public Rectangle getResultBounds(BaseTransform transform,
+<i>350</i>&nbsp;                                     Rectangle outputClip,
+<i>351</i>&nbsp;                                     ImageData... inputDatas)
+<i>352</i>&nbsp;    {
+<b class="nc"><i>353</i>&nbsp;        Rectangle r = super.getResultBounds(transform, outputClip, inputDatas);</b>
+<b class="nc"><i>354</i>&nbsp;        int hpad = state.getPad(0);</b>
+<b class="nc"><i>355</i>&nbsp;        int vpad = state.getPad(1);</b>
+<b class="nc"><i>356</i>&nbsp;        Rectangle ret = new Rectangle(r);</b>
+<b class="nc"><i>357</i>&nbsp;        ret.grow(hpad, vpad);</b>
+<b class="nc"><i>358</i>&nbsp;        return ret;</b>
+<i>359</i>&nbsp;    }
+<i>360</i>&nbsp;
+<i>361</i>&nbsp;    @Override
+<i>362</i>&nbsp;    public boolean reducesOpaquePixels() {
+<b class="nc"><i>363</i>&nbsp;        return true;</b>
+<i>364</i>&nbsp;    }
+<i>365</i>&nbsp;
+<i>366</i>&nbsp;    @Override
+<i>367</i>&nbsp;    public DirtyRegionContainer getDirtyRegions(Effect defaultInput, DirtyRegionPool regionPool) {
+<b class="fc"><i>368</i>&nbsp;        Effect di = getDefaultedInput(0, defaultInput);</b>
+<b class="fc"><i>369</i>&nbsp;        DirtyRegionContainer drc = di.getDirtyRegions(defaultInput, regionPool);</b>
+<i>370</i>&nbsp;
+<b class="fc"><i>371</i>&nbsp;        drc.grow(state.getPad(0), state.getPad(1));</b>
+<i>372</i>&nbsp;
+<b class="fc"><i>373</i>&nbsp;        return drc;</b>
+<i>374</i>&nbsp;    }
+<i>375</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2017-12-04 21:49</div>
+</div>
+</body>
+</html>

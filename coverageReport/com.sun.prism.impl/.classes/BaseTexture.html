@@ -1,0 +1,485 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: BaseTexture</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.prism.impl</a> ]
+</div>
+
+<h1>Coverage Summary for Class: BaseTexture (com.sun.prism.impl)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">BaseTexture</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    73.7%
+  </span>
+  <span class="absValue">
+    (28/ 38)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    50.4%
+  </span>
+  <span class="absValue">
+    (70/ 139)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright (c) 2009, 2014, Oracle and/or its affiliates. All rights reserved.
+<i>3</i>&nbsp; * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+<i>4</i>&nbsp; *
+<i>5</i>&nbsp; *
+<i>6</i>&nbsp; *
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; *
+<i>11</i>&nbsp; *
+<i>12</i>&nbsp; *
+<i>13</i>&nbsp; *
+<i>14</i>&nbsp; *
+<i>15</i>&nbsp; *
+<i>16</i>&nbsp; *
+<i>17</i>&nbsp; *
+<i>18</i>&nbsp; *
+<i>19</i>&nbsp; *
+<i>20</i>&nbsp; *
+<i>21</i>&nbsp; *
+<i>22</i>&nbsp; *
+<i>23</i>&nbsp; *
+<i>24</i>&nbsp; */
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;package com.sun.prism.impl;
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;import com.sun.prism.Image;
+<i>29</i>&nbsp;import com.sun.prism.PixelFormat;
+<i>30</i>&nbsp;import com.sun.prism.Texture;
+<i>31</i>&nbsp;import java.nio.Buffer;
+<i>32</i>&nbsp;
+<i>33</i>&nbsp;public abstract class BaseTexture&lt;T extends ManagedResource&gt; implements Texture {
+<i>34</i>&nbsp;
+<i>35</i>&nbsp;    protected final T resource;
+<i>36</i>&nbsp;
+<i>37</i>&nbsp;    private final PixelFormat format;
+<i>38</i>&nbsp;    private final int physicalWidth;
+<i>39</i>&nbsp;    private final int physicalHeight;
+<i>40</i>&nbsp;    private final int contentX;
+<i>41</i>&nbsp;    private final int contentY;
+<i>42</i>&nbsp;    protected int contentWidth;
+<i>43</i>&nbsp;    protected int contentHeight;
+<i>44</i>&nbsp;
+<i>45</i>&nbsp;    //maximum possible user pixels of a texture (in case of POW2 texture allocation size)
+<i>46</i>&nbsp;    //currently only matters with RTT&#39;s
+<i>47</i>&nbsp;    private final int maxContentWidth;
+<i>48</i>&nbsp;    private final int maxContentHeight;
+<i>49</i>&nbsp;
+<i>50</i>&nbsp;    // We do not provide a default wrapMode because it is so dependent on
+<i>51</i>&nbsp;    // how the texture will be used.
+<i>52</i>&nbsp;    private final WrapMode wrapMode;
+<i>53</i>&nbsp;    private final boolean useMipmap;
+<b class="fc"><i>54</i>&nbsp;    private boolean linearFiltering = true;</b>
+<i>55</i>&nbsp;    private int lastImageSerial;
+<i>56</i>&nbsp;
+<b class="nc"><i>57</i>&nbsp;    protected BaseTexture(BaseTexture&lt;T&gt; sharedTex, WrapMode newMode, boolean useMipmap) {</b>
+<b class="nc"><i>58</i>&nbsp;        this.resource = sharedTex.resource;</b>
+<b class="nc"><i>59</i>&nbsp;        this.format = sharedTex.format;</b>
+<b class="nc"><i>60</i>&nbsp;        this.wrapMode = newMode;</b>
+<b class="nc"><i>61</i>&nbsp;        this.physicalWidth = sharedTex.physicalWidth;</b>
+<b class="nc"><i>62</i>&nbsp;        this.physicalHeight = sharedTex.physicalHeight;</b>
+<b class="nc"><i>63</i>&nbsp;        this.contentX = sharedTex.contentX;</b>
+<b class="nc"><i>64</i>&nbsp;        this.contentY = sharedTex.contentY;</b>
+<b class="nc"><i>65</i>&nbsp;        this.contentWidth = sharedTex.contentWidth;</b>
+<b class="nc"><i>66</i>&nbsp;        this.contentHeight = sharedTex.contentHeight;</b>
+<b class="nc"><i>67</i>&nbsp;        this.maxContentWidth = sharedTex.maxContentWidth;</b>
+<b class="nc"><i>68</i>&nbsp;        this.maxContentHeight = sharedTex.maxContentHeight;</b>
+<b class="nc"><i>69</i>&nbsp;        this.useMipmap = useMipmap;</b>
+<b class="nc"><i>70</i>&nbsp;    }</b>
+<i>71</i>&nbsp;
+<i>72</i>&nbsp;    protected BaseTexture(T resource,
+<i>73</i>&nbsp;                          PixelFormat format, WrapMode wrapMode,
+<i>74</i>&nbsp;                          int width, int height)
+<i>75</i>&nbsp;    {
+<b class="nc"><i>76</i>&nbsp;        this(resource, format, wrapMode, width, height, 0, 0, width, height, false);</b>
+<b class="nc"><i>77</i>&nbsp;    }</b>
+<i>78</i>&nbsp;
+<i>79</i>&nbsp;    protected BaseTexture(T resource,
+<i>80</i>&nbsp;                          PixelFormat format, WrapMode wrapMode,
+<i>81</i>&nbsp;                          int physicalWidth, int physicalHeight,
+<i>82</i>&nbsp;                          int contentX, int contentY,
+<i>83</i>&nbsp;                          int contentWidth, int contentHeight, boolean useMipmap)
+<b class="nc"><i>84</i>&nbsp;    {</b>
+<b class="nc"><i>85</i>&nbsp;        this.resource = resource;</b>
+<b class="nc"><i>86</i>&nbsp;        this.format = format;</b>
+<b class="nc"><i>87</i>&nbsp;        this.wrapMode = wrapMode;</b>
+<b class="nc"><i>88</i>&nbsp;        this.physicalWidth = physicalWidth;</b>
+<b class="nc"><i>89</i>&nbsp;        this.physicalHeight = physicalHeight;</b>
+<b class="nc"><i>90</i>&nbsp;        this.contentX = contentX;</b>
+<b class="nc"><i>91</i>&nbsp;        this.contentY = contentY;</b>
+<b class="nc"><i>92</i>&nbsp;        this.contentWidth = contentWidth;</b>
+<b class="nc"><i>93</i>&nbsp;        this.contentHeight = contentHeight;</b>
+<b class="nc"><i>94</i>&nbsp;        this.maxContentWidth = physicalWidth;</b>
+<b class="nc"><i>95</i>&nbsp;        this.maxContentHeight = physicalHeight;</b>
+<b class="nc"><i>96</i>&nbsp;        this.useMipmap = useMipmap;</b>
+<b class="nc"><i>97</i>&nbsp;    }</b>
+<i>98</i>&nbsp;
+<i>99</i>&nbsp;    protected BaseTexture(T resource,
+<i>100</i>&nbsp;                          PixelFormat format, WrapMode wrapMode,
+<i>101</i>&nbsp;                          int physicalWidth, int physicalHeight,
+<i>102</i>&nbsp;                          int contentX, int contentY,
+<i>103</i>&nbsp;                          int contentWidth, int contentHeight,
+<i>104</i>&nbsp;                          int maxContentWidth, int maxContentHeight, boolean useMipmap)
+<b class="fc"><i>105</i>&nbsp;    {</b>
+<b class="fc"><i>106</i>&nbsp;        this.resource = resource;</b>
+<b class="fc"><i>107</i>&nbsp;        this.format = format;</b>
+<b class="fc"><i>108</i>&nbsp;        this.wrapMode = wrapMode;</b>
+<b class="fc"><i>109</i>&nbsp;        this.physicalWidth = physicalWidth;</b>
+<b class="fc"><i>110</i>&nbsp;        this.physicalHeight = physicalHeight;</b>
+<b class="fc"><i>111</i>&nbsp;        this.contentX = contentX;</b>
+<b class="fc"><i>112</i>&nbsp;        this.contentY = contentY;</b>
+<b class="fc"><i>113</i>&nbsp;        this.contentWidth = contentWidth;</b>
+<b class="fc"><i>114</i>&nbsp;        this.contentHeight = contentHeight;</b>
+<b class="fc"><i>115</i>&nbsp;        this.maxContentWidth = maxContentWidth;</b>
+<b class="fc"><i>116</i>&nbsp;        this.maxContentHeight = maxContentHeight;</b>
+<b class="fc"><i>117</i>&nbsp;        this.useMipmap = useMipmap;</b>
+<b class="fc"><i>118</i>&nbsp;    }</b>
+<i>119</i>&nbsp;
+<i>120</i>&nbsp;    @Override
+<i>121</i>&nbsp;    public final PixelFormat getPixelFormat() {
+<b class="fc"><i>122</i>&nbsp;        return format;</b>
+<i>123</i>&nbsp;    }
+<i>124</i>&nbsp;
+<i>125</i>&nbsp;    @Override
+<i>126</i>&nbsp;    public final int getPhysicalWidth() {
+<b class="fc"><i>127</i>&nbsp;        return physicalWidth;</b>
+<i>128</i>&nbsp;    }
+<i>129</i>&nbsp;
+<i>130</i>&nbsp;    @Override
+<i>131</i>&nbsp;    public final int getPhysicalHeight() {
+<b class="fc"><i>132</i>&nbsp;        return physicalHeight;</b>
+<i>133</i>&nbsp;    }
+<i>134</i>&nbsp;
+<i>135</i>&nbsp;    @Override
+<i>136</i>&nbsp;    public final int getContentX() {
+<b class="fc"><i>137</i>&nbsp;        return contentX;</b>
+<i>138</i>&nbsp;    }
+<i>139</i>&nbsp;
+<i>140</i>&nbsp;    @Override
+<i>141</i>&nbsp;    public final int getContentY() {
+<b class="fc"><i>142</i>&nbsp;        return contentY;</b>
+<i>143</i>&nbsp;    }
+<i>144</i>&nbsp;
+<i>145</i>&nbsp;    @Override
+<i>146</i>&nbsp;    public final int getContentWidth() {
+<b class="fc"><i>147</i>&nbsp;        return contentWidth;</b>
+<i>148</i>&nbsp;    }
+<i>149</i>&nbsp;
+<i>150</i>&nbsp;    @Override
+<i>151</i>&nbsp;    public final int getContentHeight() {
+<b class="fc"><i>152</i>&nbsp;        return contentHeight;</b>
+<i>153</i>&nbsp;    }
+<i>154</i>&nbsp;
+<i>155</i>&nbsp;    @Override
+<i>156</i>&nbsp;    public int getMaxContentWidth() {
+<b class="fc"><i>157</i>&nbsp;        return maxContentWidth;</b>
+<i>158</i>&nbsp;    }
+<i>159</i>&nbsp;
+<i>160</i>&nbsp;    @Override
+<i>161</i>&nbsp;    public int getMaxContentHeight() {
+<b class="fc"><i>162</i>&nbsp;        return maxContentHeight;</b>
+<i>163</i>&nbsp;    }
+<i>164</i>&nbsp;
+<i>165</i>&nbsp;    @Override
+<i>166</i>&nbsp;    public void setContentWidth(int contentW) {
+<b class="nc"><i>167</i>&nbsp;        if (contentW &gt; maxContentWidth) {</b>
+<b class="nc"><i>168</i>&nbsp;            throw new IllegalArgumentException(&quot;ContentWidth must be less than or &quot;</b>
+<i>169</i>&nbsp;                    + &quot;equal to maxContentWidth&quot;);
+<i>170</i>&nbsp;        }
+<b class="nc"><i>171</i>&nbsp;        contentWidth = contentW;</b>
+<b class="nc"><i>172</i>&nbsp;    }</b>
+<i>173</i>&nbsp;
+<i>174</i>&nbsp;    @Override
+<i>175</i>&nbsp;    public void setContentHeight(int contentH) {
+<b class="nc"><i>176</i>&nbsp;        if (contentH &gt; maxContentHeight) {</b>
+<b class="nc"><i>177</i>&nbsp;            throw new IllegalArgumentException(&quot;ContentWidth must be less than or &quot;</b>
+<i>178</i>&nbsp;                    + &quot;equal to maxContentHeight&quot;);
+<i>179</i>&nbsp;        }
+<b class="nc"><i>180</i>&nbsp;        contentHeight = contentH;</b>
+<b class="nc"><i>181</i>&nbsp;   }</b>
+<i>182</i>&nbsp;
+<i>183</i>&nbsp;    @Override
+<i>184</i>&nbsp;    public final WrapMode getWrapMode() {
+<b class="fc"><i>185</i>&nbsp;        return wrapMode;</b>
+<i>186</i>&nbsp;    }
+<i>187</i>&nbsp;
+<i>188</i>&nbsp;    @Override
+<i>189</i>&nbsp;    public boolean getUseMipmap() {
+<b class="nc"><i>190</i>&nbsp;        return useMipmap;</b>
+<i>191</i>&nbsp;    }
+<i>192</i>&nbsp;
+<i>193</i>&nbsp;    @Override
+<i>194</i>&nbsp;    public Texture getSharedTexture(WrapMode altMode) {
+<b class="nc"><i>195</i>&nbsp;        assertLocked();</b>
+<b class="nc"><i>196</i>&nbsp;        if (wrapMode == altMode) {</b>
+<b class="nc"><i>197</i>&nbsp;            lock();</b>
+<b class="nc"><i>198</i>&nbsp;            return this;</b>
+<i>199</i>&nbsp;        }
+<b class="nc"><i>200</i>&nbsp;        switch (altMode) {</b>
+<i>201</i>&nbsp;            case REPEAT:
+<b class="nc"><i>202</i>&nbsp;                if (wrapMode != WrapMode.CLAMP_TO_EDGE) {</b>
+<b class="nc"><i>203</i>&nbsp;                    return null;</b>
+<i>204</i>&nbsp;                }
+<i>205</i>&nbsp;                break;
+<i>206</i>&nbsp;            case CLAMP_TO_EDGE:
+<b class="nc"><i>207</i>&nbsp;                if (wrapMode != WrapMode.REPEAT) {</b>
+<b class="nc"><i>208</i>&nbsp;                    return null;</b>
+<i>209</i>&nbsp;                }
+<i>210</i>&nbsp;                break;
+<i>211</i>&nbsp;            default:
+<b class="nc"><i>212</i>&nbsp;                return null;</b>
+<i>213</i>&nbsp;        }
+<b class="nc"><i>214</i>&nbsp;        Texture altTex = createSharedTexture(altMode);</b>
+<b class="nc"><i>215</i>&nbsp;        altTex.lock();</b>
+<b class="nc"><i>216</i>&nbsp;        return altTex;</b>
+<i>217</i>&nbsp;    }
+<i>218</i>&nbsp;
+<i>219</i>&nbsp;    /**
+<i>220</i>&nbsp;     * Create a new version of this texture which shares the same
+<i>221</i>&nbsp;     * {@code ManagedResource} reference.
+<i>222</i>&nbsp;     * The lock counts for the shared resource reference are not
+<i>223</i>&nbsp;     * changed in the processing of this method.
+<i>224</i>&nbsp;     *
+<i>225</i>&nbsp;     * @param newMode the {@code WrapMode} to use for the new texture.
+<i>226</i>&nbsp;     * @return a new {@code Texture} object sharing the underlying resource.
+<i>227</i>&nbsp;     */
+<i>228</i>&nbsp;    protected abstract Texture createSharedTexture(WrapMode newMode);
+<i>229</i>&nbsp;
+<i>230</i>&nbsp;    @Override
+<i>231</i>&nbsp;    public final boolean getLinearFiltering() {
+<b class="fc"><i>232</i>&nbsp;        return linearFiltering;</b>
+<i>233</i>&nbsp;    }
+<i>234</i>&nbsp;
+<i>235</i>&nbsp;    @Override
+<i>236</i>&nbsp;    public void setLinearFiltering(boolean linear) {
+<b class="fc"><i>237</i>&nbsp;        this.linearFiltering = linear;</b>
+<b class="fc"><i>238</i>&nbsp;    }</b>
+<i>239</i>&nbsp;
+<i>240</i>&nbsp;    @Override
+<i>241</i>&nbsp;    public final int getLastImageSerial() {
+<b class="fc"><i>242</i>&nbsp;        return lastImageSerial;</b>
+<i>243</i>&nbsp;    }
+<i>244</i>&nbsp;
+<i>245</i>&nbsp;    @Override
+<i>246</i>&nbsp;    public final void setLastImageSerial(int serial) {
+<b class="fc"><i>247</i>&nbsp;        lastImageSerial = serial;</b>
+<b class="fc"><i>248</i>&nbsp;    }</b>
+<i>249</i>&nbsp;
+<i>250</i>&nbsp;    @Override
+<i>251</i>&nbsp;    public final void lock() {
+<b class="fc"><i>252</i>&nbsp;        resource.lock();</b>
+<b class="fc"><i>253</i>&nbsp;    }</b>
+<i>254</i>&nbsp;
+<i>255</i>&nbsp;    @Override
+<i>256</i>&nbsp;    public final boolean isLocked() {
+<b class="fc"><i>257</i>&nbsp;        return resource.isLocked();</b>
+<i>258</i>&nbsp;    }
+<i>259</i>&nbsp;
+<i>260</i>&nbsp;    @Override
+<i>261</i>&nbsp;    public final int getLockCount() {
+<b class="nc"><i>262</i>&nbsp;        return resource.getLockCount();</b>
+<i>263</i>&nbsp;    }
+<i>264</i>&nbsp;
+<i>265</i>&nbsp;    @Override
+<i>266</i>&nbsp;    public final void assertLocked() {
+<b class="fc"><i>267</i>&nbsp;        resource.assertLocked();</b>
+<b class="fc"><i>268</i>&nbsp;    }</b>
+<i>269</i>&nbsp;
+<i>270</i>&nbsp;    @Override
+<i>271</i>&nbsp;    public final void unlock() {
+<b class="fc"><i>272</i>&nbsp;        resource.unlock();</b>
+<b class="fc"><i>273</i>&nbsp;    }</b>
+<i>274</i>&nbsp;
+<i>275</i>&nbsp;    @Override
+<i>276</i>&nbsp;    public final void makePermanent() {
+<b class="fc"><i>277</i>&nbsp;        resource.makePermanent();</b>
+<b class="fc"><i>278</i>&nbsp;    }</b>
+<i>279</i>&nbsp;
+<i>280</i>&nbsp;    @Override
+<i>281</i>&nbsp;    public final void contentsUseful() {
+<b class="fc"><i>282</i>&nbsp;        resource.contentsUseful();</b>
+<b class="fc"><i>283</i>&nbsp;    }</b>
+<i>284</i>&nbsp;
+<i>285</i>&nbsp;    @Override
+<i>286</i>&nbsp;    public final void contentsNotUseful() {
+<b class="nc"><i>287</i>&nbsp;        resource.contentsNotUseful();</b>
+<b class="nc"><i>288</i>&nbsp;    }</b>
+<i>289</i>&nbsp;
+<i>290</i>&nbsp;    @Override
+<i>291</i>&nbsp;    public final boolean isSurfaceLost() {
+<b class="fc"><i>292</i>&nbsp;        return !resource.isValid();</b>
+<i>293</i>&nbsp;    }
+<i>294</i>&nbsp;
+<i>295</i>&nbsp;    @Override
+<i>296</i>&nbsp;    public final void dispose() {
+<b class="fc"><i>297</i>&nbsp;        resource.dispose();</b>
+<b class="fc"><i>298</i>&nbsp;    }</b>
+<i>299</i>&nbsp;
+<i>300</i>&nbsp;    @Override
+<i>301</i>&nbsp;    public void update(Image img) {
+<b class="nc"><i>302</i>&nbsp;        update(img, 0, 0);</b>
+<b class="nc"><i>303</i>&nbsp;    }</b>
+<i>304</i>&nbsp;
+<i>305</i>&nbsp;    @Override
+<i>306</i>&nbsp;    public void update(Image img, int dstx, int dsty) {
+<b class="fc"><i>307</i>&nbsp;        update(img, dstx, dsty, img.getWidth(), img.getHeight());</b>
+<b class="fc"><i>308</i>&nbsp;    }</b>
+<i>309</i>&nbsp;
+<i>310</i>&nbsp;    @Override
+<i>311</i>&nbsp;    public void update(Image img, int dstx, int dsty, int w, int h) {
+<b class="fc"><i>312</i>&nbsp;        update(img, dstx, dsty, w, h, false);</b>
+<b class="fc"><i>313</i>&nbsp;    }</b>
+<i>314</i>&nbsp;
+<i>315</i>&nbsp;    @Override
+<i>316</i>&nbsp;    public void update(Image img, int dstx, int dsty, int srcw, int srch,
+<i>317</i>&nbsp;                       boolean skipFlush)
+<i>318</i>&nbsp;    {
+<b class="fc"><i>319</i>&nbsp;        Buffer pbuffer = img.getPixelBuffer();</b>
+<b class="fc"><i>320</i>&nbsp;        int pos = pbuffer.position();</b>
+<b class="fc"><i>321</i>&nbsp;        update(pbuffer, img.getPixelFormat(),</b>
+<b class="fc"><i>322</i>&nbsp;               dstx, dsty, img.getMinX(), img.getMinY(),</b>
+<b class="fc"><i>323</i>&nbsp;               srcw, srch, img.getScanlineStride(),</b>
+<i>324</i>&nbsp;               skipFlush);
+<b class="fc"><i>325</i>&nbsp;        pbuffer.position(pos);</b>
+<b class="fc"><i>326</i>&nbsp;    }</b>
+<i>327</i>&nbsp;
+<i>328</i>&nbsp;    protected void checkUpdateParams(Buffer buf, PixelFormat fmt,
+<i>329</i>&nbsp;                                     int dstx, int dsty,
+<i>330</i>&nbsp;                                     int srcx, int srcy,
+<i>331</i>&nbsp;                                     int srcw, int srch,
+<i>332</i>&nbsp;                                     int srcscan)
+<i>333</i>&nbsp;    {
+<b class="fc"><i>334</i>&nbsp;        if (format == PixelFormat.MULTI_YCbCr_420) {</b>
+<b class="nc"><i>335</i>&nbsp;            throw new IllegalArgumentException(&quot;MULTI_YCbCr_420 requires multitexturing&quot;);</b>
+<i>336</i>&nbsp;        }
+<b class="fc"><i>337</i>&nbsp;        if (buf == null) {</b>
+<b class="nc"><i>338</i>&nbsp;            throw new IllegalArgumentException(&quot;Pixel buffer must be non-null&quot;);</b>
+<i>339</i>&nbsp;        }
+<b class="fc"><i>340</i>&nbsp;        if (fmt != format) {</b>
+<b class="nc"><i>341</i>&nbsp;            throw new IllegalArgumentException(</b>
+<i>342</i>&nbsp;                &quot;Image format (&quot; + fmt + &quot;) &quot; +
+<i>343</i>&nbsp;                &quot;must match texture format (&quot; + format + &quot;)&quot;);
+<i>344</i>&nbsp;        }
+<b class="fc"><i>345</i>&nbsp;        if (dstx &lt; 0 || dsty &lt; 0) {</b>
+<b class="nc"><i>346</i>&nbsp;            throw new IllegalArgumentException(</b>
+<i>347</i>&nbsp;                &quot;dstx (&quot; + dstx + &quot;) and dsty (&quot; + dsty + &quot;) must be &gt;= 0&quot;);
+<i>348</i>&nbsp;        }
+<b class="fc"><i>349</i>&nbsp;        if (srcx &lt; 0 || srcy &lt; 0) {</b>
+<b class="nc"><i>350</i>&nbsp;            throw new IllegalArgumentException(</b>
+<i>351</i>&nbsp;                &quot;srcx (&quot; + srcx + &quot;) and srcy (&quot; + srcy + &quot;) must be &gt;= 0&quot;);
+<i>352</i>&nbsp;        }
+<b class="fc"><i>353</i>&nbsp;        if (srcw &lt;= 0 || srch &lt;= 0) {</b>
+<b class="nc"><i>354</i>&nbsp;            throw new IllegalArgumentException(</b>
+<i>355</i>&nbsp;                &quot;srcw (&quot; + srcw + &quot;) and srch (&quot; + srch + &quot;) must be &gt; 0&quot;);
+<i>356</i>&nbsp;        }
+<b class="fc"><i>357</i>&nbsp;        int bytesPerPixel = fmt.getBytesPerPixelUnit();</b>
+<b class="fc"><i>358</i>&nbsp;        if (srcscan % bytesPerPixel != 0) {</b>
+<b class="nc"><i>359</i>&nbsp;            throw new IllegalArgumentException(</b>
+<i>360</i>&nbsp;                &quot;srcscan (&quot; + srcscan + &quot;) &quot; +
+<i>361</i>&nbsp;                &quot;must be a multiple of the pixel stride (&quot; + bytesPerPixel + &quot;)&quot;);
+<i>362</i>&nbsp;        }
+<b class="fc"><i>363</i>&nbsp;        if (srcw &gt; srcscan / bytesPerPixel) {</b>
+<b class="nc"><i>364</i>&nbsp;            throw new IllegalArgumentException(</b>
+<i>365</i>&nbsp;                &quot;srcw (&quot; + srcw + &quot;) &quot; +
+<i>366</i>&nbsp;                &quot;must be &lt;= srcscan/bytesPerPixel (&quot;
+<i>367</i>&nbsp;                + (srcscan/bytesPerPixel) + &quot;)&quot;);
+<i>368</i>&nbsp;        }
+<b class="fc"><i>369</i>&nbsp;        if (dstx+srcw &gt; contentWidth || dsty+srch &gt; contentHeight) {</b>
+<b class="nc"><i>370</i>&nbsp;            throw new IllegalArgumentException(</b>
+<i>371</i>&nbsp;                &quot;Destination region &quot; +
+<i>372</i>&nbsp;                &quot;(x=&quot; + dstx + &quot;, y=&quot; + dsty +
+<i>373</i>&nbsp;                &quot;, w=&quot; + srcw + &quot;, h=&quot; + srch + &quot;) &quot; +
+<i>374</i>&nbsp;                &quot;must fit within texture content bounds &quot; +
+<i>375</i>&nbsp;                &quot;(contentWidth=&quot; + contentWidth +
+<i>376</i>&nbsp;                &quot;, contentHeight=&quot; + contentHeight + &quot;)&quot;);
+<i>377</i>&nbsp;        }
+<b class="fc"><i>378</i>&nbsp;        int bytesNeeded =</b>
+<i>379</i>&nbsp;            (srcx * bytesPerPixel) + (srcy * srcscan) +
+<i>380</i>&nbsp;            ((srch-1) * srcscan) + (srcw * bytesPerPixel);
+<b class="fc"><i>381</i>&nbsp;        int elemsNeeded = bytesNeeded / format.getDataType().getSizeInBytes();</b>
+<b class="fc"><i>382</i>&nbsp;        if (elemsNeeded &gt; buf.remaining()) {</b>
+<b class="nc"><i>383</i>&nbsp;            throw new IllegalArgumentException(</b>
+<i>384</i>&nbsp;                &quot;Upload requires &quot; + elemsNeeded + &quot; elements, but only &quot; +
+<b class="nc"><i>385</i>&nbsp;                buf.remaining() + &quot; elements remain in the buffer&quot;);</b>
+<i>386</i>&nbsp;        }
+<b class="fc"><i>387</i>&nbsp;    }</b>
+<i>388</i>&nbsp;
+<i>389</i>&nbsp;    @Override
+<i>390</i>&nbsp;    public String toString() {
+<b class="nc"><i>391</i>&nbsp;        return super.toString() + &quot; [format=&quot;+format+</b>
+<i>392</i>&nbsp;            &quot; physicalWidth=&quot;+physicalWidth+
+<i>393</i>&nbsp;            &quot; physicalHeight=&quot;+physicalHeight+
+<i>394</i>&nbsp;            &quot; contentX=&quot;+contentX+
+<i>395</i>&nbsp;            &quot; contentY=&quot;+contentY+
+<i>396</i>&nbsp;            &quot; contentWidth=&quot;+contentWidth+
+<i>397</i>&nbsp;            &quot; contentHeight=&quot;+contentHeight+
+<i>398</i>&nbsp;            &quot; wrapMode=&quot;+wrapMode+
+<i>399</i>&nbsp;            &quot; linearFiltering=&quot;+linearFiltering+
+<i>400</i>&nbsp;            &quot;]&quot;;
+<i>401</i>&nbsp;    }
+<i>402</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2017-12-04 21:49</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,492 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: DWGlyphLayout</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.javafx.font.directwrite</a> ]
+</div>
+
+<h1>Coverage Summary for Class: DWGlyphLayout (com.sun.javafx.font.directwrite)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">DWGlyphLayout</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    11.1%
+  </span>
+  <span class="absValue">
+    (1/ 9)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0.4%
+  </span>
+  <span class="absValue">
+    (1/ 231)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright (c) 2013, 2014, Oracle and/or its affiliates. All rights reserved.
+<i>3</i>&nbsp; * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+<i>4</i>&nbsp; *
+<i>5</i>&nbsp; *
+<i>6</i>&nbsp; *
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; *
+<i>11</i>&nbsp; *
+<i>12</i>&nbsp; *
+<i>13</i>&nbsp; *
+<i>14</i>&nbsp; *
+<i>15</i>&nbsp; *
+<i>16</i>&nbsp; *
+<i>17</i>&nbsp; *
+<i>18</i>&nbsp; *
+<i>19</i>&nbsp; *
+<i>20</i>&nbsp; *
+<i>21</i>&nbsp; *
+<i>22</i>&nbsp; *
+<i>23</i>&nbsp; *
+<i>24</i>&nbsp; */
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;package com.sun.javafx.font.directwrite;
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;import java.util.Arrays;
+<i>29</i>&nbsp;
+<i>30</i>&nbsp;import com.sun.javafx.font.CompositeFontResource;
+<i>31</i>&nbsp;import com.sun.javafx.font.FontResource;
+<i>32</i>&nbsp;import com.sun.javafx.font.FontStrike;
+<i>33</i>&nbsp;import com.sun.javafx.font.PGFont;
+<i>34</i>&nbsp;import com.sun.javafx.font.PrismFontFactory;
+<i>35</i>&nbsp;import com.sun.javafx.scene.text.TextSpan;
+<i>36</i>&nbsp;import com.sun.javafx.text.GlyphLayout;
+<i>37</i>&nbsp;import com.sun.javafx.text.PrismTextLayout;
+<i>38</i>&nbsp;import com.sun.javafx.text.TextRun;
+<i>39</i>&nbsp;
+<b class="fc"><i>40</i>&nbsp;public class DWGlyphLayout extends GlyphLayout {</b>
+<i>41</i>&nbsp;
+<i>42</i>&nbsp;    private static final String LOCALE = &quot;en-us&quot;;
+<i>43</i>&nbsp;
+<i>44</i>&nbsp;    @Override
+<i>45</i>&nbsp;    protected TextRun addTextRun(PrismTextLayout layout, char[] chars, int start,
+<i>46</i>&nbsp;                                 int length, PGFont font, TextSpan span, byte level) {
+<i>47</i>&nbsp;
+<b class="nc"><i>48</i>&nbsp;        IDWriteFactory factory = DWFactory.getDWriteFactory();</b>
+<b class="nc"><i>49</i>&nbsp;        IDWriteTextAnalyzer analyzer = factory.CreateTextAnalyzer();</b>
+<b class="nc"><i>50</i>&nbsp;        if (analyzer == null) {</b>
+<b class="nc"><i>51</i>&nbsp;            return new TextRun(start, length, level, false, 0, span, 0, false);</b>
+<i>52</i>&nbsp;        }
+<i>53</i>&nbsp;
+<b class="nc"><i>54</i>&nbsp;        int dir = (level &amp; 1) != 0 ? OS.DWRITE_READING_DIRECTION_RIGHT_TO_LEFT :</b>
+<b class="nc"><i>55</i>&nbsp;                                     OS.DWRITE_READING_DIRECTION_LEFT_TO_RIGHT;</b>
+<b class="nc"><i>56</i>&nbsp;        JFXTextAnalysisSink sink = OS.NewJFXTextAnalysisSink(chars, start, length, LOCALE, dir);</b>
+<b class="nc"><i>57</i>&nbsp;        if (sink == null) {</b>
+<b class="nc"><i>58</i>&nbsp;            return new TextRun(start, length, level, false, 0, span, 0, false);</b>
+<i>59</i>&nbsp;        }
+<b class="nc"><i>60</i>&nbsp;        sink.AddRef();</b>
+<i>61</i>&nbsp;
+<b class="nc"><i>62</i>&nbsp;        TextRun textRun = null;</b>
+<b class="nc"><i>63</i>&nbsp;        int hr = analyzer.AnalyzeScript(sink, 0, length, sink);</b>
+<b class="nc"><i>64</i>&nbsp;        if (hr == OS.S_OK) {</b>
+<b class="nc"><i>65</i>&nbsp;            while (sink.Next()) {</b>
+<b class="nc"><i>66</i>&nbsp;                int runStart = sink.GetStart();</b>
+<b class="nc"><i>67</i>&nbsp;                int runLength = sink.GetLength();</b>
+<b class="nc"><i>68</i>&nbsp;                DWRITE_SCRIPT_ANALYSIS analysis = sink.GetAnalysis();</b>
+<b class="nc"><i>69</i>&nbsp;                textRun = new TextRun(start + runStart, runLength, level, true,</b>
+<i>70</i>&nbsp;                                      analysis.script, span,
+<i>71</i>&nbsp;                                      analysis.shapes, false);
+<b class="nc"><i>72</i>&nbsp;                layout.addTextRun(textRun);</b>
+<b class="nc"><i>73</i>&nbsp;            }</b>
+<i>74</i>&nbsp;        }
+<i>75</i>&nbsp;
+<b class="nc"><i>76</i>&nbsp;        analyzer.Release();</b>
+<b class="nc"><i>77</i>&nbsp;        sink.Release();</b>
+<b class="nc"><i>78</i>&nbsp;        return textRun;</b>
+<i>79</i>&nbsp;    }
+<i>80</i>&nbsp;
+<i>81</i>&nbsp;    public void layout(TextRun run, PGFont font, FontStrike strike, char[] text) {
+<i>82</i>&nbsp;
+<b class="nc"><i>83</i>&nbsp;        int slot = 0;</b>
+<b class="nc"><i>84</i>&nbsp;        FontResource fr = font.getFontResource();</b>
+<b class="nc"><i>85</i>&nbsp;        boolean composite = fr instanceof CompositeFontResource;</b>
+<b class="nc"><i>86</i>&nbsp;        if (composite) {</b>
+<b class="nc"><i>87</i>&nbsp;            slot = getInitialSlot(fr);</b>
+<b class="nc"><i>88</i>&nbsp;            fr = ((CompositeFontResource)fr).getSlotResource(slot);</b>
+<i>89</i>&nbsp;        }
+<b class="nc"><i>90</i>&nbsp;        IDWriteFontFace face = ((DWFontFile)fr).getFontFace();</b>
+<b class="nc"><i>91</i>&nbsp;        if (face == null) return;</b>
+<i>92</i>&nbsp;
+<b class="nc"><i>93</i>&nbsp;        IDWriteFactory factory = DWFactory.getDWriteFactory();</b>
+<b class="nc"><i>94</i>&nbsp;        IDWriteTextAnalyzer analyzer = factory.CreateTextAnalyzer();</b>
+<b class="nc"><i>95</i>&nbsp;        if (analyzer == null) return;</b>
+<i>96</i>&nbsp;
+<i>97</i>&nbsp;        /* ignore typographic feature for now */
+<b class="nc"><i>98</i>&nbsp;        long[] features = null;</b>
+<b class="nc"><i>99</i>&nbsp;        int[] featuresRangeLengths = null;</b>
+<b class="nc"><i>100</i>&nbsp;        int featuresCount = 0;</b>
+<i>101</i>&nbsp;
+<b class="nc"><i>102</i>&nbsp;        int length = run.getLength();</b>
+<b class="nc"><i>103</i>&nbsp;        short[] clusterMap = new short[length];</b>
+<b class="nc"><i>104</i>&nbsp;        short[] textProps = new short[length];</b>
+<b class="nc"><i>105</i>&nbsp;        int maxGlyphs = (length * 3 / 2) + 16;</b>
+<b class="nc"><i>106</i>&nbsp;        short[] glyphs = new short[maxGlyphs];</b>
+<b class="nc"><i>107</i>&nbsp;        short[] glyphProps = new short[maxGlyphs];</b>
+<b class="nc"><i>108</i>&nbsp;        int[] retGlyphcount = new int[1];</b>
+<b class="nc"><i>109</i>&nbsp;        boolean rtl = !run.isLeftToRight();</b>
+<i>110</i>&nbsp;
+<b class="nc"><i>111</i>&nbsp;        DWRITE_SCRIPT_ANALYSIS analysis = new DWRITE_SCRIPT_ANALYSIS();</b>
+<b class="nc"><i>112</i>&nbsp;        analysis.script = (short)run.getScript();</b>
+<b class="nc"><i>113</i>&nbsp;        analysis.shapes = run.getSlot();</b>
+<i>114</i>&nbsp;
+<b class="nc"><i>115</i>&nbsp;        int start = run.getStart();</b>
+<b class="nc"><i>116</i>&nbsp;        int hr = analyzer.GetGlyphs(text, start, length, face, false, rtl, analysis, null,</b>
+<i>117</i>&nbsp;                                    0, features, featuresRangeLengths, featuresCount,
+<i>118</i>&nbsp;                                    maxGlyphs, clusterMap, textProps, glyphs, glyphProps, retGlyphcount);
+<i>119</i>&nbsp;
+<b class="nc"><i>120</i>&nbsp;        if (hr == OS.E_NOT_SUFFICIENT_BUFFER) {</b>
+<i>121</i>&nbsp;            /* double the buffer size and try again */
+<b class="nc"><i>122</i>&nbsp;            maxGlyphs *= 2;</b>
+<b class="nc"><i>123</i>&nbsp;            glyphs = new short[maxGlyphs];</b>
+<b class="nc"><i>124</i>&nbsp;            glyphProps = new short[maxGlyphs];</b>
+<b class="nc"><i>125</i>&nbsp;            hr = analyzer.GetGlyphs(text, start, length, face, false, rtl, analysis, null,</b>
+<i>126</i>&nbsp;                                    0, features, featuresRangeLengths, featuresCount,
+<i>127</i>&nbsp;                                    maxGlyphs, clusterMap, textProps, glyphs, glyphProps, retGlyphcount);
+<i>128</i>&nbsp;        }
+<i>129</i>&nbsp;
+<b class="nc"><i>130</i>&nbsp;        if (hr != OS.S_OK) {</b>
+<b class="nc"><i>131</i>&nbsp;            analyzer.Release();</b>
+<b class="nc"><i>132</i>&nbsp;            return;</b>
+<i>133</i>&nbsp;        }
+<b class="nc"><i>134</i>&nbsp;        int glyphCount = retGlyphcount[0];</b>
+<i>135</i>&nbsp;
+<i>136</i>&nbsp;        /* Adjust glyphs &amp; checking for missing glyphs */
+<b class="nc"><i>137</i>&nbsp;        int step = rtl ? -1 : 1;</b>
+<i>138</i>&nbsp;        int i, j;
+<b class="nc"><i>139</i>&nbsp;        int[] iglyphs = new int[glyphCount];</b>
+<b class="nc"><i>140</i>&nbsp;        int slotMask = slot &lt;&lt; 24;</b>
+<b class="nc"><i>141</i>&nbsp;        boolean missingGlyph = false;</b>
+<b class="nc"><i>142</i>&nbsp;        i = 0; j = rtl ? glyphCount - 1 : 0;</b>
+<b class="nc"><i>143</i>&nbsp;        while (i &lt; glyphCount) {</b>
+<b class="nc"><i>144</i>&nbsp;            if (glyphs[i] == 0) {</b>
+<b class="nc"><i>145</i>&nbsp;                missingGlyph = true;</b>
+<b class="nc"><i>146</i>&nbsp;                if (composite) break;</b>
+<i>147</i>&nbsp;            }
+<b class="nc"><i>148</i>&nbsp;            iglyphs[i] = glyphs[j] | slotMask;</b>
+<b class="nc"><i>149</i>&nbsp;            i++;</b>
+<b class="nc"><i>150</i>&nbsp;            j+=step;</b>
+<i>151</i>&nbsp;        }
+<b class="nc"><i>152</i>&nbsp;        if (missingGlyph &amp;&amp; composite) {</b>
+<b class="nc"><i>153</i>&nbsp;            analyzer.Release();</b>
+<b class="nc"><i>154</i>&nbsp;            renderShape(text, run, font, slot);</b>
+<b class="nc"><i>155</i>&nbsp;            return;</b>
+<i>156</i>&nbsp;        }
+<i>157</i>&nbsp;
+<b class="nc"><i>158</i>&nbsp;        float size = font.getSize();</b>
+<b class="nc"><i>159</i>&nbsp;        float[] advances = new float[glyphCount];</b>
+<b class="nc"><i>160</i>&nbsp;        float[] offsets = new float[glyphCount * 2];</b>
+<b class="nc"><i>161</i>&nbsp;        analyzer.GetGlyphPlacements(text, clusterMap, textProps, start, length, glyphs,</b>
+<i>162</i>&nbsp;                                    glyphProps, glyphCount, face, size, false, rtl,
+<i>163</i>&nbsp;                                    analysis, null, features, featuresRangeLengths,
+<i>164</i>&nbsp;                                    featuresCount, advances, offsets);
+<b class="nc"><i>165</i>&nbsp;        analyzer.Release();</b>
+<i>166</i>&nbsp;
+<b class="nc"><i>167</i>&nbsp;        float[] pos = getPositions(advances, offsets, glyphCount, rtl);</b>
+<b class="nc"><i>168</i>&nbsp;        int[] indices = getIndices(clusterMap, glyphCount, rtl);</b>
+<b class="nc"><i>169</i>&nbsp;        run.shape(glyphCount, iglyphs, pos, indices);</b>
+<b class="nc"><i>170</i>&nbsp;    }</b>
+<i>171</i>&nbsp;
+<i>172</i>&nbsp;    private float[] getPositions(float[] advances, float[] offsets, int glyphCount, boolean rtl) {
+<b class="nc"><i>173</i>&nbsp;        float[] pos = new float[glyphCount * 2 + 2];</b>
+<b class="nc"><i>174</i>&nbsp;        int i = 0;</b>
+<b class="nc"><i>175</i>&nbsp;        int j = rtl ? glyphCount - 1 : 0;</b>
+<b class="nc"><i>176</i>&nbsp;        int step = rtl ? -1 : 1;</b>
+<b class="nc"><i>177</i>&nbsp;        float x = 0;</b>
+<b class="nc"><i>178</i>&nbsp;        while (i &lt; pos.length - 2) {</b>
+<b class="nc"><i>179</i>&nbsp;            int g = j &lt;&lt; 1;</b>
+<b class="nc"><i>180</i>&nbsp;            pos[i++] = (rtl ? -offsets[g] : offsets[g]) + x;</b>
+<b class="nc"><i>181</i>&nbsp;            pos[i++] = -offsets[g + 1];</b>
+<b class="nc"><i>182</i>&nbsp;            x += advances[j];</b>
+<b class="nc"><i>183</i>&nbsp;            j+=step;</b>
+<b class="nc"><i>184</i>&nbsp;        }</b>
+<b class="nc"><i>185</i>&nbsp;        pos[i++] = x;</b>
+<b class="nc"><i>186</i>&nbsp;        pos[i++] = 0;</b>
+<b class="nc"><i>187</i>&nbsp;        return pos;</b>
+<i>188</i>&nbsp;    }
+<i>189</i>&nbsp;
+<i>190</i>&nbsp;    private int[] getIndices(short[] clusterMap, int glyphCount, boolean rtl) {
+<i>191</i>&nbsp;        /* The cluster map array produced by DirectWrite is character offset
+<i>192</i>&nbsp;         * to glyph index mapping. TextRun internally requires a glyph index
+<i>193</i>&nbsp;         * to character offset map table. */
+<b class="nc"><i>194</i>&nbsp;        int[] indices = new int[glyphCount];</b>
+<b class="nc"><i>195</i>&nbsp;        Arrays.fill(indices, -1);</b>
+<b class="nc"><i>196</i>&nbsp;        for (int i = 0; i &lt; clusterMap.length; i++) {</b>
+<b class="nc"><i>197</i>&nbsp;            int index = clusterMap[i];</b>
+<i>198</i>&nbsp;            /* keep character offset for the first glyph in the cluster */
+<b class="nc"><i>199</i>&nbsp;            if (0 &lt;= index &amp;&amp; index &lt; glyphCount &amp;&amp; indices[index] == -1) {</b>
+<b class="nc"><i>200</i>&nbsp;                indices[index] = i;</b>
+<i>201</i>&nbsp;            }
+<i>202</i>&nbsp;        }
+<b class="nc"><i>203</i>&nbsp;        if (indices.length &gt; 0) {</b>
+<b class="nc"><i>204</i>&nbsp;            if (indices[0] == -1) indices[0] = 0;</b>
+<i>205</i>&nbsp;            /* use the character offset of the preceding element */
+<b class="nc"><i>206</i>&nbsp;            for (int i = 1; i &lt; indices.length; i++) {</b>
+<b class="nc"><i>207</i>&nbsp;                if (indices[i] == -1) indices[i] = indices[i - 1];</b>
+<i>208</i>&nbsp;            }
+<i>209</i>&nbsp;        }
+<i>210</i>&nbsp;
+<b class="nc"><i>211</i>&nbsp;        if (rtl) {</b>
+<i>212</i>&nbsp;            /* Flip the array for RTL */
+<b class="nc"><i>213</i>&nbsp;            for (int i = 0; i &lt; indices.length / 2; i++) {</b>
+<b class="nc"><i>214</i>&nbsp;                int tmp = indices[i];</b>
+<b class="nc"><i>215</i>&nbsp;                indices[i] = indices[indices.length - i - 1];</b>
+<b class="nc"><i>216</i>&nbsp;                indices[indices.length - i - 1] = tmp;</b>
+<i>217</i>&nbsp;            }
+<i>218</i>&nbsp;        }
+<b class="nc"><i>219</i>&nbsp;        return indices;</b>
+<i>220</i>&nbsp;    }
+<i>221</i>&nbsp;
+<i>222</i>&nbsp;    private String getName(IDWriteLocalizedStrings localizedStrings) {
+<b class="nc"><i>223</i>&nbsp;        if (localizedStrings == null) return null;</b>
+<b class="nc"><i>224</i>&nbsp;        int index = localizedStrings.FindLocaleName(LOCALE);</b>
+<b class="nc"><i>225</i>&nbsp;        String name = null;</b>
+<b class="nc"><i>226</i>&nbsp;        if (index &gt;= 0) {</b>
+<b class="nc"><i>227</i>&nbsp;            int size = localizedStrings.GetStringLength(index);</b>
+<b class="nc"><i>228</i>&nbsp;            name = localizedStrings.GetString(index, size);</b>
+<i>229</i>&nbsp;        }
+<b class="nc"><i>230</i>&nbsp;        localizedStrings.Release();</b>
+<b class="nc"><i>231</i>&nbsp;        return name;</b>
+<i>232</i>&nbsp;    }
+<i>233</i>&nbsp;
+<i>234</i>&nbsp;    private FontResource checkFontResource(FontResource fr, String psName,
+<i>235</i>&nbsp;                                           String win32Name) {
+<b class="nc"><i>236</i>&nbsp;        if (fr == null) return null;</b>
+<i>237</i>&nbsp;
+<i>238</i>&nbsp;        /* Postscript name is only available on newer version of DirectWrite */
+<b class="nc"><i>239</i>&nbsp;        if (psName != null) {</b>
+<b class="nc"><i>240</i>&nbsp;            if (psName.equals(fr.getPSName())) return fr;</b>
+<i>241</i>&nbsp;            /* In some case the postscript name returned by DirectWrite
+<i>242</i>&nbsp;             * and Prism are different. For example, Leelawadee Bold is
+<i>243</i>&nbsp;             * reported as Leelawadee-Bold by DirectWrite and LeelawadeeBold
+<i>244</i>&nbsp;             * by JFX. */
+<i>245</i>&nbsp;        }
+<i>246</i>&nbsp;
+<b class="nc"><i>247</i>&nbsp;        if (win32Name != null) {</b>
+<b class="nc"><i>248</i>&nbsp;            if (win32Name.equals(fr.getFullName())) return fr;</b>
+<i>249</i>&nbsp;            /* JFX generally omits the style name in the full name for regular
+<i>250</i>&nbsp;             * style. */
+<b class="nc"><i>251</i>&nbsp;            String name = fr.getFamilyName() + &quot; &quot; + fr.getStyleName();</b>
+<b class="nc"><i>252</i>&nbsp;            if (win32Name.equals(name)) return fr;</b>
+<i>253</i>&nbsp;        }
+<b class="nc"><i>254</i>&nbsp;        return null;</b>
+<i>255</i>&nbsp;    }
+<i>256</i>&nbsp;
+<i>257</i>&nbsp;    private int getFontSlot(IDWriteFontFace face, CompositeFontResource composite,
+<i>258</i>&nbsp;                            String primaryFont, int slot) {
+<b class="nc"><i>259</i>&nbsp;        if (face == null) return -1;</b>
+<b class="nc"><i>260</i>&nbsp;        IDWriteFontCollection collection = DWFactory.getFontCollection();</b>
+<b class="nc"><i>261</i>&nbsp;        PrismFontFactory prismFactory = PrismFontFactory.getFontFactory();</b>
+<i>262</i>&nbsp;
+<i>263</i>&nbsp;
+<i>264</i>&nbsp;        /* Collecting information about the font */
+<b class="nc"><i>265</i>&nbsp;        IDWriteFont font = collection.GetFontFromFontFace(face);</b>
+<b class="nc"><i>266</i>&nbsp;        if (font == null) return -1;</b>
+<b class="nc"><i>267</i>&nbsp;        IDWriteFontFamily fallbackFamily = font.GetFontFamily();</b>
+<b class="nc"><i>268</i>&nbsp;        String family = getName(fallbackFamily.GetFamilyNames());</b>
+<b class="nc"><i>269</i>&nbsp;        fallbackFamily.Release();</b>
+<b class="nc"><i>270</i>&nbsp;        boolean italic = font.GetStyle() != OS.DWRITE_FONT_STYLE_NORMAL;</b>
+<b class="nc"><i>271</i>&nbsp;        boolean bold = font.GetWeight() &gt; OS.DWRITE_FONT_WEIGHT_NORMAL;</b>
+<b class="nc"><i>272</i>&nbsp;        int simulation = font.GetSimulations();</b>
+<b class="nc"><i>273</i>&nbsp;        int info = OS.DWRITE_INFORMATIONAL_STRING_POSTSCRIPT_NAME;</b>
+<b class="nc"><i>274</i>&nbsp;        String psName = getName(font.GetInformationalStrings(info));</b>
+<b class="nc"><i>275</i>&nbsp;        info = OS.DWRITE_INFORMATIONAL_STRING_WIN32_FAMILY_NAMES;</b>
+<b class="nc"><i>276</i>&nbsp;        String win32Family = getName(font.GetInformationalStrings(info));</b>
+<b class="nc"><i>277</i>&nbsp;        info = OS.DWRITE_INFORMATIONAL_STRING_WIN32_SUBFAMILY_NAMES;</b>
+<b class="nc"><i>278</i>&nbsp;        String win32SubFamily = getName(font.GetInformationalStrings(info));</b>
+<b class="nc"><i>279</i>&nbsp;        String win32Name = win32Family + &quot; &quot; + win32SubFamily;</b>
+<i>280</i>&nbsp;
+<b class="nc"><i>281</i>&nbsp;        if (PrismFontFactory.debugFonts) {</b>
+<b class="nc"><i>282</i>&nbsp;            String styleName = getName(font.GetFaceNames());</b>
+<b class="nc"><i>283</i>&nbsp;            System.err.println(&quot;Mapping IDWriteFont=\&quot;&quot; + (family + &quot; &quot; + styleName) +</b>
+<i>284</i>&nbsp;                               &quot;\&quot; Postscript name=\&quot;&quot; + psName +
+<i>285</i>&nbsp;                               &quot;\&quot; Win32 name=\&quot;&quot; + win32Name + &quot;\&quot;&quot;);
+<i>286</i>&nbsp;        }
+<b class="nc"><i>287</i>&nbsp;        font.Release();</b>
+<i>288</i>&nbsp;
+<i>289</i>&nbsp;        /* Map the IDWriteFont to a Prism font and check */
+<b class="nc"><i>290</i>&nbsp;        FontResource fr = prismFactory.getFontResource(family, bold, italic, false);</b>
+<b class="nc"><i>291</i>&nbsp;        fr = checkFontResource(fr, psName, win32Name);</b>
+<b class="nc"><i>292</i>&nbsp;        if (fr == null) {</b>
+<i>293</i>&nbsp;            /* The most common case for the lookup to fail is due to font
+<i>294</i>&nbsp;             * simulations. */
+<b class="nc"><i>295</i>&nbsp;            italic &amp;= (simulation &amp; OS.DWRITE_FONT_SIMULATIONS_OBLIQUE) == 0;</b>
+<b class="nc"><i>296</i>&nbsp;            bold &amp;= (simulation &amp; OS.DWRITE_FONT_SIMULATIONS_BOLD) == 0;</b>
+<b class="nc"><i>297</i>&nbsp;            fr = prismFactory.getFontResource(family, bold, italic, false);</b>
+<b class="nc"><i>298</i>&nbsp;            fr = checkFontResource(fr, psName, win32Name);</b>
+<i>299</i>&nbsp;        }
+<b class="nc"><i>300</i>&nbsp;        if (fr == null) {</b>
+<i>301</i>&nbsp;            /* Look up by name */
+<b class="nc"><i>302</i>&nbsp;            fr = prismFactory.getFontResource(win32Name, null, false);</b>
+<b class="nc"><i>303</i>&nbsp;            fr = checkFontResource(fr, psName, win32Name);</b>
+<i>304</i>&nbsp;        }
+<b class="nc"><i>305</i>&nbsp;        if (fr == null) {</b>
+<b class="nc"><i>306</i>&nbsp;            if (PrismFontFactory.debugFonts) {</b>
+<b class="nc"><i>307</i>&nbsp;                System.err.println(&quot;\t**** Failed to map IDWriteFont to Prism ****&quot;);</b>
+<i>308</i>&nbsp;            }
+<b class="nc"><i>309</i>&nbsp;            return -1;</b>
+<i>310</i>&nbsp;        }
+<i>311</i>&nbsp;
+<b class="nc"><i>312</i>&nbsp;        String fallbackName = fr.getFullName();</b>
+<b class="nc"><i>313</i>&nbsp;        if (!primaryFont.equalsIgnoreCase(fallbackName)) {</b>
+<b class="nc"><i>314</i>&nbsp;            slot = composite.getSlotForFont(fallbackName);</b>
+<i>315</i>&nbsp;        }
+<b class="nc"><i>316</i>&nbsp;        if (PrismFontFactory.debugFonts) {</b>
+<b class="nc"><i>317</i>&nbsp;            System.err.println(&quot;\tFallback full name=\&quot;&quot;+ fallbackName +</b>
+<b class="nc"><i>318</i>&nbsp;                               &quot;\&quot; Postscript name=\&quot;&quot; + fr.getPSName() +</b>
+<b class="nc"><i>319</i>&nbsp;                               &quot;\&quot; Style name=\&quot;&quot; + fr.getStyleName() +</b>
+<i>320</i>&nbsp;                               &quot;\&quot; slot=&quot; + slot);
+<i>321</i>&nbsp;        }
+<b class="nc"><i>322</i>&nbsp;        return slot;</b>
+<i>323</i>&nbsp;    }
+<i>324</i>&nbsp;
+<i>325</i>&nbsp;    private void renderShape(char[] text, TextRun run, PGFont font, int baseSlot) {
+<b class="nc"><i>326</i>&nbsp;        CompositeFontResource composite = (CompositeFontResource)font.getFontResource();</b>
+<b class="nc"><i>327</i>&nbsp;        FontResource fr = composite.getSlotResource(baseSlot);</b>
+<b class="nc"><i>328</i>&nbsp;        String family = fr.getFamilyName();</b>
+<b class="nc"><i>329</i>&nbsp;        String fullName = fr.getFullName();</b>
+<b class="nc"><i>330</i>&nbsp;        int weight = fr.isBold() ? OS.DWRITE_FONT_WEIGHT_BOLD :</b>
+<b class="nc"><i>331</i>&nbsp;                                   OS.DWRITE_FONT_WEIGHT_NORMAL;</b>
+<b class="nc"><i>332</i>&nbsp;        int stretch = OS.DWRITE_FONT_STRETCH_NORMAL;</b>
+<b class="nc"><i>333</i>&nbsp;        int style = fr.isItalic() ? OS.DWRITE_FONT_STYLE_ITALIC :</b>
+<b class="nc"><i>334</i>&nbsp;                                    OS.DWRITE_FONT_STYLE_NORMAL;</b>
+<b class="nc"><i>335</i>&nbsp;        float size = font.getSize();</b>
+<i>336</i>&nbsp;
+<i>337</i>&nbsp;        /* zero is not a valid size for IDWriteTextFormat */
+<b class="nc"><i>338</i>&nbsp;        float fontsize = size &gt; 0 ? size : 1;</b>
+<i>339</i>&nbsp;
+<b class="nc"><i>340</i>&nbsp;        IDWriteFactory factory = DWFactory.getDWriteFactory();</b>
+<i>341</i>&nbsp;        /* Note this collection is not correct for embedded fonts,
+<i>342</i>&nbsp;         * currently this is not a problem since embedded fonts do
+<i>343</i>&nbsp;         * not have fallbacks.
+<i>344</i>&nbsp;         */
+<b class="nc"><i>345</i>&nbsp;        IDWriteFontCollection collection = DWFactory.getFontCollection();</b>
+<i>346</i>&nbsp;
+<b class="nc"><i>347</i>&nbsp;        IDWriteTextFormat format = factory.CreateTextFormat(family,</b>
+<i>348</i>&nbsp;                                                            collection,
+<i>349</i>&nbsp;                                                            weight,
+<i>350</i>&nbsp;                                                            style,
+<i>351</i>&nbsp;                                                            stretch,
+<i>352</i>&nbsp;                                                            fontsize,
+<i>353</i>&nbsp;                                                            LOCALE);
+<b class="nc"><i>354</i>&nbsp;        if (format == null) return;</b>
+<i>355</i>&nbsp;
+<b class="nc"><i>356</i>&nbsp;        int start = run.getStart();</b>
+<b class="nc"><i>357</i>&nbsp;        int length = run.getLength();</b>
+<b class="nc"><i>358</i>&nbsp;        IDWriteTextLayout layout = factory.CreateTextLayout(text, start, length, format, 100000, 100000);</b>
+<b class="nc"><i>359</i>&nbsp;        if (layout != null) {</b>
+<b class="nc"><i>360</i>&nbsp;            JFXTextRenderer renderer = OS.NewJFXTextRenderer();</b>
+<b class="nc"><i>361</i>&nbsp;            if (renderer != null) {</b>
+<b class="nc"><i>362</i>&nbsp;                renderer.AddRef();</b>
+<i>363</i>&nbsp;
+<i>364</i>&nbsp;                /* Use renderer to produce glyph information */
+<b class="nc"><i>365</i>&nbsp;                layout.Draw(0, renderer, 0, 0);</b>
+<i>366</i>&nbsp;
+<i>367</i>&nbsp;                /* Read data from renderer */
+<b class="nc"><i>368</i>&nbsp;                int glyphCount = renderer.GetTotalGlyphCount();</b>
+<b class="nc"><i>369</i>&nbsp;                int[] glyphs = new int[glyphCount];</b>
+<b class="nc"><i>370</i>&nbsp;                float[] advances = new float[glyphCount];</b>
+<b class="nc"><i>371</i>&nbsp;                float[] offsets = new float[glyphCount * 2];</b>
+<b class="nc"><i>372</i>&nbsp;                short[] clusterMap = new short[length];</b>
+<b class="nc"><i>373</i>&nbsp;                int glyphStart = 0;</b>
+<b class="nc"><i>374</i>&nbsp;                int textStart = 0;</b>
+<b class="nc"><i>375</i>&nbsp;                while (renderer.Next()) {</b>
+<b class="nc"><i>376</i>&nbsp;                    IDWriteFontFace fallback = renderer.GetFontFace();</b>
+<b class="nc"><i>377</i>&nbsp;                    int slot = getFontSlot(fallback, composite, fullName, baseSlot);</b>
+<b class="nc"><i>378</i>&nbsp;                    if (slot &gt;= 0) {</b>
+<b class="nc"><i>379</i>&nbsp;                        renderer.GetGlyphIndices(glyphs, glyphStart, slot &lt;&lt; 24);</b>
+<b class="nc"><i>380</i>&nbsp;                        renderer.GetGlyphOffsets(offsets, glyphStart * 2);</b>
+<i>381</i>&nbsp;                    }
+<b class="nc"><i>382</i>&nbsp;                    if (size &gt; 0) {</b>
+<i>383</i>&nbsp;                        /* Keep advances to zero if font size is zero */
+<b class="nc"><i>384</i>&nbsp;                        renderer.GetGlyphAdvances(advances, glyphStart);</b>
+<i>385</i>&nbsp;                    }
+<b class="nc"><i>386</i>&nbsp;                    renderer.GetClusterMap(clusterMap, textStart, glyphStart);</b>
+<b class="nc"><i>387</i>&nbsp;                    glyphStart += renderer.GetGlyphCount();</b>
+<b class="nc"><i>388</i>&nbsp;                    textStart += renderer.GetLength();</b>
+<b class="nc"><i>389</i>&nbsp;                }</b>
+<b class="nc"><i>390</i>&nbsp;                renderer.Release();</b>
+<i>391</i>&nbsp;
+<i>392</i>&nbsp;                /* Converting data to be used by the JavaFX run */
+<b class="nc"><i>393</i>&nbsp;                boolean rtl = !run.isLeftToRight();</b>
+<b class="nc"><i>394</i>&nbsp;                if (rtl) {</b>
+<b class="nc"><i>395</i>&nbsp;                    for (int i = 0; i &lt; glyphCount / 2; i++) {</b>
+<b class="nc"><i>396</i>&nbsp;                        int tmp = glyphs[i];</b>
+<b class="nc"><i>397</i>&nbsp;                        glyphs[i] = glyphs[glyphCount - i - 1];</b>
+<b class="nc"><i>398</i>&nbsp;                        glyphs[glyphCount - i - 1] = tmp;</b>
+<i>399</i>&nbsp;                    }
+<i>400</i>&nbsp;                }
+<b class="nc"><i>401</i>&nbsp;                float[] pos = getPositions(advances, offsets, glyphCount, rtl);</b>
+<b class="nc"><i>402</i>&nbsp;                int[] indices = getIndices(clusterMap, glyphCount, rtl);</b>
+<b class="nc"><i>403</i>&nbsp;                run.shape(glyphCount, glyphs, pos, indices);</b>
+<i>404</i>&nbsp;            }
+<b class="nc"><i>405</i>&nbsp;            layout.Release();</b>
+<i>406</i>&nbsp;        }
+<b class="nc"><i>407</i>&nbsp;        format.Release();</b>
+<b class="nc"><i>408</i>&nbsp;    }</b>
+<i>409</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2017-12-04 21:49</div>
+</div>
+</body>
+</html>

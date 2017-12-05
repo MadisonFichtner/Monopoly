@@ -1,0 +1,153 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: MaskTextureGraphics</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.prism</a> ]
+</div>
+
+<h1>Coverage Summary for Class: MaskTextureGraphics (com.sun.prism)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+</tr>
+<tr>
+  <td class="name">MaskTextureGraphics</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright (c) 2013, Oracle and/or its affiliates. All rights reserved.
+<i>3</i>&nbsp; * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+<i>4</i>&nbsp; *
+<i>5</i>&nbsp; *
+<i>6</i>&nbsp; *
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; *
+<i>11</i>&nbsp; *
+<i>12</i>&nbsp; *
+<i>13</i>&nbsp; *
+<i>14</i>&nbsp; *
+<i>15</i>&nbsp; *
+<i>16</i>&nbsp; *
+<i>17</i>&nbsp; *
+<i>18</i>&nbsp; *
+<i>19</i>&nbsp; *
+<i>20</i>&nbsp; *
+<i>21</i>&nbsp; *
+<i>22</i>&nbsp; *
+<i>23</i>&nbsp; *
+<i>24</i>&nbsp; */
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;package com.sun.prism;
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;/*
+<i>29</i>&nbsp; * For now, this interface works on RTTextures simply because the only use
+<i>30</i>&nbsp; * case that currently uses these methods has RTTextures to provide and
+<i>31</i>&nbsp; * because the J2D pipeline has only implemented these methods for the
+<i>32</i>&nbsp; * underlying pixel format that it uses for RTTextures and so handing it an
+<i>33</i>&nbsp; * arbitrary texture that may potentially use another format may not succeed.
+<i>34</i>&nbsp; */
+<i>35</i>&nbsp;public interface MaskTextureGraphics extends Graphics {
+<i>36</i>&nbsp;    /**
+<i>37</i>&nbsp;     * Apply a mask to the pixels of an image and render the results onto
+<i>38</i>&nbsp;     * the destination in device space.
+<i>39</i>&nbsp;     * All coordinates specify pixel coordinates and are integers to reinforce
+<i>40</i>&nbsp;     * the fact that these are pixel operations, not coordinate rendering
+<i>41</i>&nbsp;     * operations.
+<i>42</i>&nbsp;     * &lt;p&gt;
+<i>43</i>&nbsp;     * The image texture is combined with the mask texture by multiplying the
+<i>44</i>&nbsp;     * pixels in the image texture by the alpha in the mask texture and then
+<i>45</i>&nbsp;     * the result is applied to the destination using the current compositing
+<i>46</i>&nbsp;     * rule (which should likely be SrcOver in most cases).
+<i>47</i>&nbsp;     * &lt;pre&gt;
+<i>48</i>&nbsp;     *     dst.argb = (img.argb * mask.a) Composite dst.argb
+<i>49</i>&nbsp;     * &lt;/pre&gt;
+<i>50</i>&nbsp;     *
+<i>51</i>&nbsp;     * @param imgtex  the texture containing the source image pixels
+<i>52</i>&nbsp;     * @param masktex the texture containing the mask pixels, only the
+<i>53</i>&nbsp;     *                alpha channel is used from this texture
+<i>54</i>&nbsp;     * @param dx the X coordinate of the UL destination pixel
+<i>55</i>&nbsp;     * @param dy the Y coordinate of the UL destination pixel
+<i>56</i>&nbsp;     * @param dw the width of the pixel regions to be combined
+<i>57</i>&nbsp;     * @param dh the height of the pixel regions to be combined
+<i>58</i>&nbsp;     * @param ix the X coordinate of the UL pixel in the image texture
+<i>59</i>&nbsp;     * @param iy the Y coordinate of the UL pixel in the image texture
+<i>60</i>&nbsp;     * @param mx the X coordinate of the UL pixel in the mask texture
+<i>61</i>&nbsp;     * @param my the Y coordinate of the UL pixel in the mask texture
+<i>62</i>&nbsp;     */
+<i>63</i>&nbsp;    public void drawPixelsMasked(RTTexture imgtex, RTTexture masktex,
+<i>64</i>&nbsp;                                 int dx, int dy, int dw, int dh,
+<i>65</i>&nbsp;                                 int ix, int iy, int mx, int my);
+<i>66</i>&nbsp;
+<i>67</i>&nbsp;    /**
+<i>68</i>&nbsp;     * Use a mask to determine which pixels of an image are to be rendered
+<i>69</i>&nbsp;     * onto the destination in device space.
+<i>70</i>&nbsp;     * All coordinates specify pixel coordinates and are integers to reinforce
+<i>71</i>&nbsp;     * the fact that these are pixel operations, not coordinate rendering
+<i>72</i>&nbsp;     * operations.
+<i>73</i>&nbsp;     * &lt;p&gt;
+<i>74</i>&nbsp;     * The mask texture controls the contribution of source and destination
+<i>75</i>&nbsp;     * pixels in the resulting output.
+<i>76</i>&nbsp;     * Note that a simple multiply of the source texture by the mask texture
+<i>77</i>&nbsp;     * may not produce the correct masking operation for the case where a
+<i>78</i>&nbsp;     * non-SrcOver blending mode is in use.
+<i>79</i>&nbsp;     * In those conditions, it is more accurate to first compute the result
+<i>80</i>&nbsp;     * of blending the source into the destination and to then use this
+<i>81</i>&nbsp;     * method to choose how much of the result should be taken from the
+<i>82</i>&nbsp;     * results of the blending and how much should remain the original
+<i>83</i>&nbsp;     * destination pixel value.
+<i>84</i>&nbsp;     * Mathematically, the mask alpha controls a linear interpolation
+<i>85</i>&nbsp;     * between the image and destination pixels.
+<i>86</i>&nbsp;     * &lt;pre&gt;
+<i>87</i>&nbsp;     *     dst.argb = (mask.a * img.argb) + ((1 - mask.a) * dst.argb)
+<i>88</i>&nbsp;     * &lt;/pre&gt;
+<i>89</i>&nbsp;     * Note that the current composite mode is ignored during this operation.
+<i>90</i>&nbsp;     *
+<i>91</i>&nbsp;     * @param imgtex  the texture containing the source image pixels
+<i>92</i>&nbsp;     * @param masktex the texture containing the mask pixels, only the
+<i>93</i>&nbsp;     *                alpha channel is used from this texture
+<i>94</i>&nbsp;     * @param dx the X coordinate of the UL destination pixel
+<i>95</i>&nbsp;     * @param dy the Y coordinate of the UL destination pixel
+<i>96</i>&nbsp;     * @param dw the width of the pixel regions to be combined
+<i>97</i>&nbsp;     * @param dh the height of the pixel regions to be combined
+<i>98</i>&nbsp;     * @param ix the X coordinate of the UL pixel in the image texture
+<i>99</i>&nbsp;     * @param iy the Y coordinate of the UL pixel in the image texture
+<i>100</i>&nbsp;     * @param mx the X coordinate of the UL pixel in the mask texture
+<i>101</i>&nbsp;     * @param my the Y coordinate of the UL pixel in the mask texture
+<i>102</i>&nbsp;     */
+<i>103</i>&nbsp;    public void maskInterpolatePixels(RTTexture imgtex, RTTexture masktex,
+<i>104</i>&nbsp;                                      int dx, int dy, int dw, int dh,
+<i>105</i>&nbsp;                                      int ix, int iy, int mx, int my);
+<i>106</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2017-12-04 21:49</div>
+</div>
+</body>
+</html>

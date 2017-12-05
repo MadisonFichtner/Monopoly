@@ -1,0 +1,109 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: Presentable</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.prism</a> ]
+</div>
+
+<h1>Coverage Summary for Class: Presentable (com.sun.prism)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+</tr>
+<tr>
+  <td class="name">Presentable</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright (c) 2009, 2016, Oracle and/or its affiliates. All rights reserved.
+<i>3</i>&nbsp; * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+<i>4</i>&nbsp; *
+<i>5</i>&nbsp; *
+<i>6</i>&nbsp; *
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; *
+<i>11</i>&nbsp; *
+<i>12</i>&nbsp; *
+<i>13</i>&nbsp; *
+<i>14</i>&nbsp; *
+<i>15</i>&nbsp; *
+<i>16</i>&nbsp; *
+<i>17</i>&nbsp; *
+<i>18</i>&nbsp; *
+<i>19</i>&nbsp; *
+<i>20</i>&nbsp; *
+<i>21</i>&nbsp; *
+<i>22</i>&nbsp; *
+<i>23</i>&nbsp; *
+<i>24</i>&nbsp; */
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;package com.sun.prism;
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;import com.sun.javafx.geom.Rectangle;
+<i>29</i>&nbsp;
+<i>30</i>&nbsp;public interface Presentable extends RenderTarget {
+<i>31</i>&nbsp;    /**
+<i>32</i>&nbsp;     * Locks any underlying resources needed for a createGraphics/prepare/present
+<i>33</i>&nbsp;     * sequence and returns a boolean indicating if the presentable needs to be
+<i>34</i>&nbsp;     * recreated.
+<i>35</i>&nbsp;     * If the method returns true and the Presentable implements
+<i>36</i>&nbsp;     * {@link GraphicsResource} then its {@code dispose()} method will be
+<i>37</i>&nbsp;     * called prior to recreating a new {@code Presentable} object and
+<i>38</i>&nbsp;     * so no resource should need to be locked in that case.
+<i>39</i>&nbsp;     * The resources will be unlocked in either {@link #prepare()} or
+<i>40</i>&nbsp;     * {@link #present()}.
+<i>41</i>&nbsp;     *
+<i>42</i>&nbsp;     * @param pState The presentation state for the upcoming pulse
+<i>43</i>&nbsp;     * @return true if the caller should recreate the Presentable
+<i>44</i>&nbsp;     */
+<i>45</i>&nbsp;    public boolean lockResources(PresentableState pState);
+<i>46</i>&nbsp;
+<i>47</i>&nbsp;    /**
+<i>48</i>&nbsp;     * display the indicated region to the user.
+<i>49</i>&nbsp;     * @param dirtyregion display region or null for full area
+<i>50</i>&nbsp;     * @return true if the provided region was successfully displayed,
+<i>51</i>&nbsp;     * false otherwise
+<i>52</i>&nbsp;     */
+<i>53</i>&nbsp;    public boolean prepare(Rectangle dirtyregion);
+<i>54</i>&nbsp;
+<i>55</i>&nbsp;    /**
+<i>56</i>&nbsp;     * present the prepared region to the user.
+<i>57</i>&nbsp;     */
+<i>58</i>&nbsp;    public boolean present();
+<i>59</i>&nbsp;
+<i>60</i>&nbsp;    public float getPixelScaleFactorX();
+<i>61</i>&nbsp;    public float getPixelScaleFactorY();
+<i>62</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2017-12-04 21:49</div>
+</div>
+</body>
+</html>

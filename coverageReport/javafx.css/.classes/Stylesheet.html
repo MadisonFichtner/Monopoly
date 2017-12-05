@@ -1,0 +1,472 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: Stylesheet</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">javafx.css</a> ]
+</div>
+
+<h1>Coverage Summary for Class: Stylesheet (javafx.css)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">Stylesheet</td>
+<td class="coverageStat">
+  <span class="percent">
+    56.2%
+  </span>
+  <span class="absValue">
+    (9/ 16)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    33.3%
+  </span>
+  <span class="absValue">
+    (40/ 120)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">Stylesheet$1</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (2/ 2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    66.7%
+  </span>
+  <span class="absValue">
+    (8/ 12)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    61.1%
+  </span>
+  <span class="absValue">
+    (11/ 18)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    36.4%
+  </span>
+  <span class="absValue">
+    (48/ 132)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright (c) 2010, 2017, Oracle and/or its affiliates. All rights reserved.
+<i>3</i>&nbsp; * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+<i>4</i>&nbsp; *
+<i>5</i>&nbsp; *
+<i>6</i>&nbsp; *
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; *
+<i>11</i>&nbsp; *
+<i>12</i>&nbsp; *
+<i>13</i>&nbsp; *
+<i>14</i>&nbsp; *
+<i>15</i>&nbsp; *
+<i>16</i>&nbsp; *
+<i>17</i>&nbsp; *
+<i>18</i>&nbsp; *
+<i>19</i>&nbsp; *
+<i>20</i>&nbsp; *
+<i>21</i>&nbsp; *
+<i>22</i>&nbsp; *
+<i>23</i>&nbsp; *
+<i>24</i>&nbsp; */
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;package javafx.css;
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;import javafx.css.StyleConverter.StringStore;
+<i>29</i>&nbsp;
+<i>30</i>&nbsp;import javafx.collections.ListChangeListener.Change;
+<i>31</i>&nbsp;import javafx.collections.ObservableList;
+<i>32</i>&nbsp;
+<i>33</i>&nbsp;import com.sun.javafx.collections.TrackableObservableList;
+<i>34</i>&nbsp;import com.sun.javafx.css.FontFaceImpl;
+<i>35</i>&nbsp;
+<i>36</i>&nbsp;import java.io.BufferedInputStream;
+<i>37</i>&nbsp;import java.io.ByteArrayOutputStream;
+<i>38</i>&nbsp;import java.io.DataInputStream;
+<i>39</i>&nbsp;import java.io.DataOutputStream;
+<i>40</i>&nbsp;import java.io.File;
+<i>41</i>&nbsp;import java.io.FileNotFoundException;
+<i>42</i>&nbsp;import java.io.FileOutputStream;
+<i>43</i>&nbsp;import java.io.IOException;
+<i>44</i>&nbsp;import java.net.URI;
+<i>45</i>&nbsp;import java.net.URL;
+<i>46</i>&nbsp;import java.util.ArrayList;
+<i>47</i>&nbsp;import java.util.List;
+<i>48</i>&nbsp;
+<i>49</i>&nbsp;/**
+<i>50</i>&nbsp; * A stylesheet which can apply properties to a tree of objects.  A stylesheet
+<i>51</i>&nbsp; * is a collection of zero or more {@link Rule Rules}, each of which is applied
+<i>52</i>&nbsp; * to each object in the tree.  Typically the selector will examine the object to
+<i>53</i>&nbsp; * determine whether or not it is applicable, and if so it will apply certain
+<i>54</i>&nbsp; * property values to the object.
+<i>55</i>&nbsp; *
+<i>56</i>&nbsp; * @since 9
+<i>57</i>&nbsp; */
+<i>58</i>&nbsp;public class Stylesheet {
+<i>59</i>&nbsp;
+<i>60</i>&nbsp;    /**
+<i>61</i>&nbsp;     * Version number of binary CSS format. The value is incremented whenever the format of the
+<i>62</i>&nbsp;     * binary stream changes. This number does not correlate with JavaFX versions.
+<i>63</i>&nbsp;     * Version 5: persist @font-face
+<i>64</i>&nbsp;     * Version 6: converter classes moved to public package
+<i>65</i>&nbsp;     */
+<i>66</i>&nbsp;    final static int BINARY_CSS_VERSION = 6;
+<i>67</i>&nbsp;
+<i>68</i>&nbsp;    private final String url;
+<i>69</i>&nbsp;    /** The URL from which the stylesheet was loaded.
+<i>70</i>&nbsp;     * @return The URL from which the stylesheet was loaded, or null if
+<i>71</i>&nbsp;     *         the stylesheet was created from an inline style.
+<i>72</i>&nbsp;     */
+<i>73</i>&nbsp;    public String getUrl() {
+<b class="fc"><i>74</i>&nbsp;        return url;</b>
+<i>75</i>&nbsp;    }
+<i>76</i>&nbsp;
+<i>77</i>&nbsp;    /**
+<i>78</i>&nbsp;     * True if this style came from user stylesheet, we need to know this so
+<i>79</i>&nbsp;     * that we can make user important styles have higher priority than
+<i>80</i>&nbsp;     * author styles
+<i>81</i>&nbsp;     */
+<b class="fc"><i>82</i>&nbsp;    private StyleOrigin origin = StyleOrigin.AUTHOR;</b>
+<i>83</i>&nbsp;    public StyleOrigin getOrigin() {
+<b class="fc"><i>84</i>&nbsp;        return origin;</b>
+<i>85</i>&nbsp;    }
+<i>86</i>&nbsp;    public void setOrigin(StyleOrigin origin) {
+<b class="fc"><i>87</i>&nbsp;        this.origin = origin;</b>
+<b class="fc"><i>88</i>&nbsp;    }</b>
+<i>89</i>&nbsp;
+<i>90</i>&nbsp;    /** All the rules contained in the stylesheet in the order they are in the file */
+<b class="fc"><i>91</i>&nbsp;    private final ObservableList&lt;Rule&gt; rules = new TrackableObservableList&lt;Rule&gt;() {</b>
+<i>92</i>&nbsp;
+<i>93</i>&nbsp;        @Override protected void onChanged(Change&lt;Rule&gt; c) {
+<b class="fc"><i>94</i>&nbsp;            c.reset();</b>
+<b class="fc"><i>95</i>&nbsp;            while (c.next()) {</b>
+<b class="fc"><i>96</i>&nbsp;                if (c.wasAdded()) {</b>
+<b class="fc"><i>97</i>&nbsp;                    for(Rule rule : c.getAddedSubList()) {</b>
+<b class="fc"><i>98</i>&nbsp;                        rule.setStylesheet(Stylesheet.this);</b>
+<b class="fc"><i>99</i>&nbsp;                    }</b>
+<b class="nc"><i>100</i>&nbsp;                } else if (c.wasRemoved()) {</b>
+<b class="nc"><i>101</i>&nbsp;                    for (Rule rule : c.getRemoved()) {</b>
+<b class="nc"><i>102</i>&nbsp;                        if (rule.getStylesheet() == Stylesheet.this) rule.setStylesheet(null);</b>
+<b class="nc"><i>103</i>&nbsp;                    }</b>
+<i>104</i>&nbsp;                }
+<i>105</i>&nbsp;            }
+<b class="fc"><i>106</i>&nbsp;        }</b>
+<i>107</i>&nbsp;    };
+<i>108</i>&nbsp;
+<i>109</i>&nbsp;    /** List of all font faces */
+<b class="fc"><i>110</i>&nbsp;    private final List&lt;FontFace&gt; fontFaces = new ArrayList&lt;FontFace&gt;();</b>
+<i>111</i>&nbsp;
+<i>112</i>&nbsp;    /**
+<i>113</i>&nbsp;     * Constructs a stylesheet with the base URI defaulting to the root
+<i>114</i>&nbsp;     * path of the application.
+<i>115</i>&nbsp;     */
+<i>116</i>&nbsp;    Stylesheet() {
+<i>117</i>&nbsp;
+<i>118</i>&nbsp;//        ClassLoader cl = Thread.currentThread().getContextClassLoader();
+<i>119</i>&nbsp;//        this.url = (cl != null) ? cl.getResource(&quot;&quot;) : null;
+<i>120</i>&nbsp;        //
+<i>121</i>&nbsp;        // RT-17344
+<i>122</i>&nbsp;        // The above code is unreliable. The getResource call is intended
+<i>123</i>&nbsp;        // to return the root path of the Application instance, but it sometimes
+<i>124</i>&nbsp;        // returns null. Here, we&#39;ll set url to null and then when a url is
+<i>125</i>&nbsp;        // resolved, the url path can be used in the getResource call. For
+<i>126</i>&nbsp;        // example, if the css is -fx-image: url(&quot;images/duke.png&quot;), we can
+<i>127</i>&nbsp;        // do cl.getResouce(&quot;images/duke.png&quot;) in URLConverter
+<i>128</i>&nbsp;        //
+<i>129</i>&nbsp;
+<b class="nc"><i>130</i>&nbsp;        this(null);</b>
+<b class="nc"><i>131</i>&nbsp;    }</b>
+<i>132</i>&nbsp;
+<i>133</i>&nbsp;    /**
+<i>134</i>&nbsp;     * Constructs a Stylesheet using the given URL as the base URI. The
+<i>135</i>&nbsp;     * parameter may not be null.
+<i>136</i>&nbsp;     * @param url
+<i>137</i>&nbsp;     */
+<b class="fc"><i>138</i>&nbsp;    Stylesheet(String url) {</b>
+<i>139</i>&nbsp;
+<b class="fc"><i>140</i>&nbsp;        this.url = url;</b>
+<i>141</i>&nbsp;
+<b class="fc"><i>142</i>&nbsp;    }</b>
+<i>143</i>&nbsp;
+<i>144</i>&nbsp;    public List&lt;Rule&gt; getRules() {
+<b class="fc"><i>145</i>&nbsp;        return rules;</b>
+<i>146</i>&nbsp;    }
+<i>147</i>&nbsp;
+<i>148</i>&nbsp;    public List&lt;FontFace&gt; getFontFaces() {
+<b class="fc"><i>149</i>&nbsp;        return fontFaces;</b>
+<i>150</i>&nbsp;    }
+<i>151</i>&nbsp;
+<i>152</i>&nbsp;    @Override public boolean equals(Object obj) {
+<b class="nc"><i>153</i>&nbsp;        if (this == obj) return true;</b>
+<b class="nc"><i>154</i>&nbsp;        if (obj instanceof Stylesheet) {</b>
+<b class="nc"><i>155</i>&nbsp;            Stylesheet other = (Stylesheet)obj;</b>
+<i>156</i>&nbsp;
+<b class="nc"><i>157</i>&nbsp;            if (this.url == null &amp;&amp; other.url == null) {</b>
+<b class="nc"><i>158</i>&nbsp;                return true;</b>
+<b class="nc"><i>159</i>&nbsp;            } else if (this.url == null || other.url == null) {</b>
+<b class="nc"><i>160</i>&nbsp;                return false;</b>
+<i>161</i>&nbsp;            } else {
+<b class="nc"><i>162</i>&nbsp;                return this.url.equals(other.url);</b>
+<i>163</i>&nbsp;            }
+<i>164</i>&nbsp;        }
+<b class="nc"><i>165</i>&nbsp;        return false;</b>
+<i>166</i>&nbsp;    }
+<i>167</i>&nbsp;
+<i>168</i>&nbsp;    @Override public int hashCode() {
+<b class="nc"><i>169</i>&nbsp;        int hash = 7;</b>
+<b class="nc"><i>170</i>&nbsp;        hash = 13 * hash + (this.url != null ? this.url.hashCode() : 0);</b>
+<b class="nc"><i>171</i>&nbsp;        return hash;</b>
+<i>172</i>&nbsp;    }
+<i>173</i>&nbsp;
+<i>174</i>&nbsp;    /** Returns a string representation of this object. */
+<i>175</i>&nbsp;    @Override public String toString() {
+<b class="nc"><i>176</i>&nbsp;        StringBuilder sbuf = new StringBuilder();</b>
+<b class="nc"><i>177</i>&nbsp;        sbuf.append(&quot;/* &quot;);</b>
+<b class="nc"><i>178</i>&nbsp;        if (url != null) sbuf.append(url);</b>
+<b class="nc"><i>179</i>&nbsp;        if (rules.isEmpty()) {</b>
+<b class="nc"><i>180</i>&nbsp;            sbuf.append(&quot; */&quot;);</b>
+<i>181</i>&nbsp;        } else {
+<b class="nc"><i>182</i>&nbsp;            sbuf.append(&quot; */\n&quot;);</b>
+<b class="nc"><i>183</i>&nbsp;            for(int r=0; r&lt;rules.size(); r++) {</b>
+<b class="nc"><i>184</i>&nbsp;                sbuf.append(rules.get(r));</b>
+<b class="nc"><i>185</i>&nbsp;                sbuf.append(&#39;\n&#39;);</b>
+<i>186</i>&nbsp;            }
+<i>187</i>&nbsp;        }
+<b class="nc"><i>188</i>&nbsp;        return sbuf.toString();</b>
+<i>189</i>&nbsp;    }
+<i>190</i>&nbsp;
+<i>191</i>&nbsp;    // protected for unit testing
+<i>192</i>&nbsp;    final void writeBinary(final DataOutputStream os, final StringStore stringStore)
+<i>193</i>&nbsp;        throws IOException
+<i>194</i>&nbsp;    {
+<i>195</i>&nbsp;        // Note: url is not written since it depends on runtime environment.
+<b class="nc"><i>196</i>&nbsp;        int index = stringStore.addString(origin.name());</b>
+<b class="nc"><i>197</i>&nbsp;        os.writeShort(index);</b>
+<b class="nc"><i>198</i>&nbsp;        os.writeShort(rules.size());</b>
+<b class="nc"><i>199</i>&nbsp;        for (Rule r : rules) r.writeBinary(os,stringStore);</b>
+<i>200</i>&nbsp;
+<i>201</i>&nbsp;        // Version 5 adds persistence of FontFace
+<b class="nc"><i>202</i>&nbsp;        List&lt;FontFace&gt; fontFaceList = getFontFaces();</b>
+<b class="nc"><i>203</i>&nbsp;        int nFontFaces = fontFaceList != null ? fontFaceList.size() : 0;</b>
+<b class="nc"><i>204</i>&nbsp;        os.writeShort(nFontFaces);</b>
+<i>205</i>&nbsp;
+<b class="nc"><i>206</i>&nbsp;        for(int n=0; n&lt;nFontFaces; n++) {</b>
+<b class="nc"><i>207</i>&nbsp;            FontFace fontFace = fontFaceList.get(n);</b>
+<b class="nc"><i>208</i>&nbsp;            if (fontFace instanceof FontFaceImpl) {</b>
+<b class="nc"><i>209</i>&nbsp;                ((FontFaceImpl)fontFace).writeBinary(os, stringStore);</b>
+<i>210</i>&nbsp;            }
+<i>211</i>&nbsp;        }
+<b class="nc"><i>212</i>&nbsp;    }</b>
+<i>213</i>&nbsp;
+<i>214</i>&nbsp;    // protected for unit testing
+<i>215</i>&nbsp;    final void readBinary(int bssVersion, DataInputStream is, String[] strings)
+<i>216</i>&nbsp;        throws IOException
+<i>217</i>&nbsp;    {
+<b class="fc"><i>218</i>&nbsp;        this.stringStore = strings;</b>
+<b class="fc"><i>219</i>&nbsp;        final int index = is.readShort();</b>
+<b class="fc"><i>220</i>&nbsp;        this.setOrigin(StyleOrigin.valueOf(strings[index]));</b>
+<b class="fc"><i>221</i>&nbsp;        final int nRules = is.readShort();</b>
+<b class="fc"><i>222</i>&nbsp;        List&lt;Rule&gt; persistedRules = new ArrayList&lt;Rule&gt;(nRules);</b>
+<b class="fc"><i>223</i>&nbsp;        for (int n=0; n&lt;nRules; n++) {</b>
+<b class="fc"><i>224</i>&nbsp;            persistedRules.add(Rule.readBinary(bssVersion,is,strings));</b>
+<i>225</i>&nbsp;        }
+<b class="fc"><i>226</i>&nbsp;        this.rules.addAll(persistedRules);</b>
+<i>227</i>&nbsp;
+<b class="fc"><i>228</i>&nbsp;        if (bssVersion &gt;= 5) {</b>
+<b class="fc"><i>229</i>&nbsp;            List&lt;FontFace&gt; fontFaceList = this.getFontFaces();</b>
+<b class="fc"><i>230</i>&nbsp;            int nFontFaces = is.readShort();</b>
+<b class="fc"><i>231</i>&nbsp;            for (int n=0; n&lt;nFontFaces; n++) {</b>
+<b class="nc"><i>232</i>&nbsp;                FontFace fontFace = FontFaceImpl.readBinary(bssVersion, is, strings);</b>
+<b class="nc"><i>233</i>&nbsp;                fontFaceList.add(fontFace);</b>
+<i>234</i>&nbsp;            }
+<i>235</i>&nbsp;        }
+<b class="fc"><i>236</i>&nbsp;    }</b>
+<i>237</i>&nbsp;
+<i>238</i>&nbsp;    private String[] stringStore;
+<b class="fc"><i>239</i>&nbsp;    final String[] getStringStore() { return stringStore; }</b>
+<i>240</i>&nbsp;
+<i>241</i>&nbsp;    /** Load a binary stylesheet file from a input stream.
+<i>242</i>&nbsp;     * @param url the URL from which the stylesheet will be loaded
+<i>243</i>&nbsp;     * @return the constructed stylesheet
+<i>244</i>&nbsp;     * @throws java.io.IOException the exception
+<i>245</i>&nbsp;     */
+<i>246</i>&nbsp;    public static Stylesheet loadBinary(URL url) throws IOException {
+<i>247</i>&nbsp;
+<b class="fc"><i>248</i>&nbsp;        if (url == null) return null;</b>
+<i>249</i>&nbsp;
+<b class="fc"><i>250</i>&nbsp;        Stylesheet stylesheet = null;</b>
+<i>251</i>&nbsp;
+<b class="fc"><i>252</i>&nbsp;        try (DataInputStream dataInputStream =</b>
+<b class="fc"><i>253</i>&nbsp;                     new DataInputStream(new BufferedInputStream(url.openStream(), 40 * 1024))) {</b>
+<i>254</i>&nbsp;
+<i>255</i>&nbsp;            // read file version
+<b class="fc"><i>256</i>&nbsp;            final int bssVersion = dataInputStream.readShort();</b>
+<b class="fc"><i>257</i>&nbsp;            if (bssVersion &gt; Stylesheet.BINARY_CSS_VERSION) {</b>
+<b class="nc"><i>258</i>&nbsp;                throw new IOException(url.toString() + &quot; wrong binary CSS version: &quot;</b>
+<i>259</i>&nbsp;                        + bssVersion + &quot;. Expected version less than or equal to&quot; +
+<i>260</i>&nbsp;                        Stylesheet.BINARY_CSS_VERSION);
+<i>261</i>&nbsp;            }
+<i>262</i>&nbsp;            // read strings
+<b class="fc"><i>263</i>&nbsp;            final String[] strings = StringStore.readBinary(dataInputStream);</b>
+<i>264</i>&nbsp;            // read binary data
+<b class="fc"><i>265</i>&nbsp;            stylesheet = new Stylesheet(url.toExternalForm());</b>
+<i>266</i>&nbsp;
+<i>267</i>&nbsp;            try {
+<i>268</i>&nbsp;
+<b class="fc"><i>269</i>&nbsp;                dataInputStream.mark(Integer.MAX_VALUE);</b>
+<b class="fc"><i>270</i>&nbsp;                stylesheet.readBinary(bssVersion, dataInputStream, strings);</b>
+<i>271</i>&nbsp;
+<b class="nc"><i>272</i>&nbsp;            } catch (Exception e) {</b>
+<i>273</i>&nbsp;
+<b class="nc"><i>274</i>&nbsp;                stylesheet = new Stylesheet(url.toExternalForm());</b>
+<i>275</i>&nbsp;
+<b class="nc"><i>276</i>&nbsp;                dataInputStream.reset();</b>
+<i>277</i>&nbsp;
+<b class="nc"><i>278</i>&nbsp;                if (bssVersion == 2) {</b>
+<i>279</i>&nbsp;                    // RT-31022
+<b class="nc"><i>280</i>&nbsp;                    stylesheet.readBinary(3, dataInputStream, strings);</b>
+<i>281</i>&nbsp;                } else {
+<b class="nc"><i>282</i>&nbsp;                    stylesheet.readBinary(Stylesheet.BINARY_CSS_VERSION, dataInputStream, strings);</b>
+<i>283</i>&nbsp;                }
+<b class="fc"><i>284</i>&nbsp;            }</b>
+<i>285</i>&nbsp;
+<b class="fc"><i>286</i>&nbsp;        } catch (FileNotFoundException fnfe) {</b>
+<i>287</i>&nbsp;            // This comes from url.openStream() and is expected.
+<i>288</i>&nbsp;            // It just means that the .bss file doesn&#39;t exist.
+<b class="fc"><i>289</i>&nbsp;        }</b>
+<i>290</i>&nbsp;
+<i>291</i>&nbsp;        // return stylesheet
+<b class="fc"><i>292</i>&nbsp;        return stylesheet;</b>
+<i>293</i>&nbsp;    }
+<i>294</i>&nbsp;
+<i>295</i>&nbsp;    /**
+<i>296</i>&nbsp;     * Convert the .css file referenced by urlIn to binary format and write to urlOut.
+<i>297</i>&nbsp;     * @param source is the JavaFX .css file to convert
+<i>298</i>&nbsp;     * @param destination is the file to which the binary conversion is written
+<i>299</i>&nbsp;     * @throws IOException the exception
+<i>300</i>&nbsp;     * @throws IllegalArgumentException if either parameter is null, if source and destination are the same,
+<i>301</i>&nbsp;     * if source cannot be read, or if destination cannot be written.
+<i>302</i>&nbsp;     */
+<i>303</i>&nbsp;    public static void convertToBinary(File source, File destination) throws IOException {
+<i>304</i>&nbsp;
+<b class="nc"><i>305</i>&nbsp;        if (source == null || destination == null) {</b>
+<b class="nc"><i>306</i>&nbsp;            throw new IllegalArgumentException(&quot;parameters may not be null&quot;);</b>
+<i>307</i>&nbsp;        }
+<i>308</i>&nbsp;
+<b class="nc"><i>309</i>&nbsp;        if (source.getAbsolutePath().equals(destination.getAbsolutePath())) {</b>
+<b class="nc"><i>310</i>&nbsp;            throw new IllegalArgumentException(&quot;source and destination may not be the same&quot;);</b>
+<i>311</i>&nbsp;        }
+<i>312</i>&nbsp;
+<b class="nc"><i>313</i>&nbsp;        if (source.canRead() == false) {</b>
+<b class="nc"><i>314</i>&nbsp;            throw new IllegalArgumentException(&quot;cannot read source file&quot;);</b>
+<i>315</i>&nbsp;        }
+<i>316</i>&nbsp;
+<b class="nc"><i>317</i>&nbsp;        if (destination.exists() ? (destination.canWrite() == false) : (destination.createNewFile() == false)) {</b>
+<b class="nc"><i>318</i>&nbsp;            throw new IllegalArgumentException(&quot;cannot write destination file&quot;);</b>
+<i>319</i>&nbsp;        }
+<i>320</i>&nbsp;
+<b class="nc"><i>321</i>&nbsp;        URI sourceURI = source.toURI();</b>
+<b class="nc"><i>322</i>&nbsp;        Stylesheet stylesheet = new CssParser().parse(sourceURI.toURL());</b>
+<i>323</i>&nbsp;
+<i>324</i>&nbsp;        // first write all the css binary data into the buffer and collect strings on way
+<b class="nc"><i>325</i>&nbsp;        ByteArrayOutputStream baos = new ByteArrayOutputStream();</b>
+<b class="nc"><i>326</i>&nbsp;        DataOutputStream dos = new DataOutputStream(baos);</b>
+<b class="nc"><i>327</i>&nbsp;        StringStore stringStore = new StringStore();</b>
+<b class="nc"><i>328</i>&nbsp;        stylesheet.writeBinary(dos, stringStore);</b>
+<b class="nc"><i>329</i>&nbsp;        dos.flush();</b>
+<b class="nc"><i>330</i>&nbsp;        dos.close();</b>
+<i>331</i>&nbsp;
+<b class="nc"><i>332</i>&nbsp;        FileOutputStream fos = new FileOutputStream(destination);</b>
+<b class="nc"><i>333</i>&nbsp;        DataOutputStream os = new DataOutputStream(fos);</b>
+<i>334</i>&nbsp;
+<i>335</i>&nbsp;        // write file version
+<b class="nc"><i>336</i>&nbsp;        os.writeShort(BINARY_CSS_VERSION);</b>
+<i>337</i>&nbsp;
+<i>338</i>&nbsp;        // write strings
+<b class="nc"><i>339</i>&nbsp;        stringStore.writeBinary(os);</b>
+<i>340</i>&nbsp;
+<i>341</i>&nbsp;        // write binary css
+<b class="nc"><i>342</i>&nbsp;        os.write(baos.toByteArray());</b>
+<b class="nc"><i>343</i>&nbsp;        os.flush();</b>
+<b class="nc"><i>344</i>&nbsp;        os.close();</b>
+<b class="nc"><i>345</i>&nbsp;    }</b>
+<i>346</i>&nbsp;
+<i>347</i>&nbsp;    // Add the rules from the other stylesheet to this one
+<i>348</i>&nbsp;    void importStylesheet(Stylesheet importedStylesheet) {
+<b class="nc"><i>349</i>&nbsp;        if (importedStylesheet == null) return;</b>
+<i>350</i>&nbsp;
+<b class="nc"><i>351</i>&nbsp;        List&lt;Rule&gt; rulesToImport = importedStylesheet.getRules();</b>
+<b class="nc"><i>352</i>&nbsp;        if (rulesToImport == null || rulesToImport.isEmpty()) return;</b>
+<i>353</i>&nbsp;
+<b class="nc"><i>354</i>&nbsp;        List&lt;Rule&gt; importedRules = new ArrayList&lt;&gt;(rulesToImport.size());</b>
+<b class="nc"><i>355</i>&nbsp;        for (Rule rule : rulesToImport) {</b>
+<b class="nc"><i>356</i>&nbsp;            List&lt;Selector&gt; selectors = rule.getSelectors();</b>
+<b class="nc"><i>357</i>&nbsp;            List&lt;Declaration&gt; declarations = rule.getUnobservedDeclarationList();</b>
+<b class="nc"><i>358</i>&nbsp;            importedRules.add(new Rule(selectors, declarations));</b>
+<b class="nc"><i>359</i>&nbsp;        }</b>
+<i>360</i>&nbsp;
+<b class="nc"><i>361</i>&nbsp;        rules.addAll(importedRules);</b>
+<b class="nc"><i>362</i>&nbsp;    }</b>
+<i>363</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2017-12-04 21:49</div>
+</div>
+</body>
+</html>

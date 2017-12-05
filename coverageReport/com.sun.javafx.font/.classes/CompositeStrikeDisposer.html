@@ -1,0 +1,143 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: CompositeStrikeDisposer</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.javafx.font</a> ]
+</div>
+
+<h1>Coverage Summary for Class: CompositeStrikeDisposer (com.sun.javafx.font)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">CompositeStrikeDisposer</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    50%
+  </span>
+  <span class="absValue">
+    (1/ 2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    38.5%
+  </span>
+  <span class="absValue">
+    (5/ 13)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright (c) 2013, Oracle and/or its affiliates. All rights reserved.
+<i>3</i>&nbsp; * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+<i>4</i>&nbsp; *
+<i>5</i>&nbsp; *
+<i>6</i>&nbsp; *
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; *
+<i>11</i>&nbsp; *
+<i>12</i>&nbsp; *
+<i>13</i>&nbsp; *
+<i>14</i>&nbsp; *
+<i>15</i>&nbsp; *
+<i>16</i>&nbsp; *
+<i>17</i>&nbsp; *
+<i>18</i>&nbsp; *
+<i>19</i>&nbsp; *
+<i>20</i>&nbsp; *
+<i>21</i>&nbsp; *
+<i>22</i>&nbsp; *
+<i>23</i>&nbsp; *
+<i>24</i>&nbsp; */
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;package com.sun.javafx.font;
+<i>27</i>&nbsp;import java.lang.ref.WeakReference;
+<i>28</i>&nbsp;
+<i>29</i>&nbsp;import com.sun.javafx.font.DisposerRecord;
+<i>30</i>&nbsp;import com.sun.javafx.font.FontResource;
+<i>31</i>&nbsp;import com.sun.javafx.font.FontStrikeDesc;
+<i>32</i>&nbsp;
+<i>33</i>&nbsp;class CompositeStrikeDisposer implements DisposerRecord {
+<i>34</i>&nbsp;
+<i>35</i>&nbsp;    FontResource fontResource;
+<i>36</i>&nbsp;    FontStrikeDesc desc;
+<b class="fc"><i>37</i>&nbsp;    boolean disposed = false;</b>
+<i>38</i>&nbsp;
+<b class="fc"><i>39</i>&nbsp;    public CompositeStrikeDisposer(FontResource font, FontStrikeDesc desc) {</b>
+<b class="fc"><i>40</i>&nbsp;        this.fontResource = font;</b>
+<b class="fc"><i>41</i>&nbsp;        this.desc = desc;</b>
+<b class="fc"><i>42</i>&nbsp;    }</b>
+<i>43</i>&nbsp;
+<i>44</i>&nbsp;    public synchronized void dispose() {
+<b class="nc"><i>45</i>&nbsp;        if (!disposed) {</b>
+<i>46</i>&nbsp;            // Careful here. The original strike we are collecting
+<i>47</i>&nbsp;            // may now be superseded in the map, so only remove
+<i>48</i>&nbsp;            // the desc if the value reference has been cleared
+<b class="nc"><i>49</i>&nbsp;            WeakReference ref = fontResource.getStrikeMap().get(desc);</b>
+<b class="nc"><i>50</i>&nbsp;            if (ref != null) {</b>
+<b class="nc"><i>51</i>&nbsp;                Object o = ref.get();</b>
+<b class="nc"><i>52</i>&nbsp;                if (o == null) {</b>
+<b class="nc"><i>53</i>&nbsp;                    fontResource.getStrikeMap().remove(desc);</b>
+<i>54</i>&nbsp;                }
+<i>55</i>&nbsp;            }
+<i>56</i>&nbsp;
+<b class="nc"><i>57</i>&nbsp;            disposed = true;</b>
+<i>58</i>&nbsp;        }
+<b class="nc"><i>59</i>&nbsp;    }</b>
+<i>60</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2017-12-04 21:49</div>
+</div>
+</body>
+</html>

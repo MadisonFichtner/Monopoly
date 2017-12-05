@@ -1,0 +1,501 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: EffectPeer</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.scenario.effect.impl</a> ]
+</div>
+
+<h1>Coverage Summary for Class: EffectPeer (com.sun.scenario.effect.impl)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">EffectPeer</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    53.3%
+  </span>
+  <span class="absValue">
+    (16/ 30)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    57.7%
+  </span>
+  <span class="absValue">
+    (45/ 78)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright (c) 2008, 2014, Oracle and/or its affiliates. All rights reserved.
+<i>3</i>&nbsp; * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+<i>4</i>&nbsp; *
+<i>5</i>&nbsp; *
+<i>6</i>&nbsp; *
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; *
+<i>11</i>&nbsp; *
+<i>12</i>&nbsp; *
+<i>13</i>&nbsp; *
+<i>14</i>&nbsp; *
+<i>15</i>&nbsp; *
+<i>16</i>&nbsp; *
+<i>17</i>&nbsp; *
+<i>18</i>&nbsp; *
+<i>19</i>&nbsp; *
+<i>20</i>&nbsp; *
+<i>21</i>&nbsp; *
+<i>22</i>&nbsp; *
+<i>23</i>&nbsp; *
+<i>24</i>&nbsp; */
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;package com.sun.scenario.effect.impl;
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;import com.sun.scenario.effect.Effect;
+<i>29</i>&nbsp;import com.sun.scenario.effect.Effect.AccelType;
+<i>30</i>&nbsp;import com.sun.scenario.effect.FilterContext;
+<i>31</i>&nbsp;import com.sun.scenario.effect.ImageData;
+<i>32</i>&nbsp;import com.sun.javafx.geom.Rectangle;
+<i>33</i>&nbsp;import com.sun.javafx.geom.transform.BaseTransform;
+<i>34</i>&nbsp;import com.sun.javafx.geom.transform.NoninvertibleTransformException;
+<i>35</i>&nbsp;import com.sun.scenario.effect.impl.state.RenderState;
+<i>36</i>&nbsp;
+<i>37</i>&nbsp;/**
+<i>38</i>&nbsp; * The abstract base class for all {@code Effect} implementation peers.
+<i>39</i>&nbsp; *
+<i>40</i>&nbsp; * @param &lt;T&gt; an optional subclass of RenderState that can be assumed as the
+<i>41</i>&nbsp; *            return value for the getRenderState() method
+<i>42</i>&nbsp; */
+<i>43</i>&nbsp;public abstract class EffectPeer&lt;T extends RenderState&gt; {
+<i>44</i>&nbsp;
+<i>45</i>&nbsp;    private final FilterContext fctx;
+<i>46</i>&nbsp;    private final Renderer renderer;
+<i>47</i>&nbsp;    private final String uniqueName;
+<i>48</i>&nbsp;    private Effect effect;
+<i>49</i>&nbsp;    private T renderState;
+<i>50</i>&nbsp;    private int pass;
+<i>51</i>&nbsp;
+<b class="fc"><i>52</i>&nbsp;    protected EffectPeer(FilterContext fctx, Renderer renderer, String uniqueName) {</b>
+<b class="fc"><i>53</i>&nbsp;        if (fctx == null) {</b>
+<b class="nc"><i>54</i>&nbsp;            throw new IllegalArgumentException(&quot;FilterContext must be non-null&quot;);</b>
+<i>55</i>&nbsp;        }
+<b class="fc"><i>56</i>&nbsp;        this.fctx = fctx;</b>
+<b class="fc"><i>57</i>&nbsp;        this.renderer = renderer;</b>
+<b class="fc"><i>58</i>&nbsp;        this.uniqueName = uniqueName;</b>
+<b class="fc"><i>59</i>&nbsp;    }</b>
+<i>60</i>&nbsp;
+<i>61</i>&nbsp;    public boolean isImageDataCompatible(ImageData id) {
+<b class="nc"><i>62</i>&nbsp;        return getRenderer().isImageDataCompatible(id);</b>
+<i>63</i>&nbsp;    }
+<i>64</i>&nbsp;
+<i>65</i>&nbsp;    public abstract ImageData filter(Effect effect,
+<i>66</i>&nbsp;                                     T renderState,
+<i>67</i>&nbsp;                                     BaseTransform transform,
+<i>68</i>&nbsp;                                     Rectangle outputClip,
+<i>69</i>&nbsp;                                     ImageData... inputs);
+<i>70</i>&nbsp;
+<i>71</i>&nbsp;    /**
+<i>72</i>&nbsp;     * Disposes resources associated with this peer.
+<i>73</i>&nbsp;     * Warning: may be called from the rendering thread.
+<i>74</i>&nbsp;     */
+<i>75</i>&nbsp;    public void dispose() {
+<b class="nc"><i>76</i>&nbsp;    }</b>
+<i>77</i>&nbsp;
+<i>78</i>&nbsp;    public AccelType getAccelType() {
+<b class="nc"><i>79</i>&nbsp;        return renderer.getAccelType();</b>
+<i>80</i>&nbsp;    }
+<i>81</i>&nbsp;
+<i>82</i>&nbsp;    protected final FilterContext getFilterContext() {
+<b class="fc"><i>83</i>&nbsp;        return fctx;</b>
+<i>84</i>&nbsp;    }
+<i>85</i>&nbsp;
+<i>86</i>&nbsp;    protected Renderer getRenderer() {
+<b class="fc"><i>87</i>&nbsp;        return renderer;</b>
+<i>88</i>&nbsp;    }
+<i>89</i>&nbsp;
+<i>90</i>&nbsp;    /**
+<i>91</i>&nbsp;     * Returns the unique name of this peer.  This value can be used as
+<i>92</i>&nbsp;     * the key value in a hashmap of cached peer instances.  In the case
+<i>93</i>&nbsp;     * of hardware peers, this value is typically the name of the shader that
+<i>94</i>&nbsp;     * is used by the peer.
+<i>95</i>&nbsp;     *
+<i>96</i>&nbsp;     * @return the unique name of this peer
+<i>97</i>&nbsp;     */
+<i>98</i>&nbsp;    public String getUniqueName() {
+<b class="fc"><i>99</i>&nbsp;        return uniqueName;</b>
+<i>100</i>&nbsp;    }
+<i>101</i>&nbsp;
+<i>102</i>&nbsp;    protected Effect getEffect() {
+<b class="nc"><i>103</i>&nbsp;        return effect;</b>
+<i>104</i>&nbsp;    }
+<i>105</i>&nbsp;
+<i>106</i>&nbsp;    protected void setEffect(Effect effect) {
+<b class="fc"><i>107</i>&nbsp;        this.effect = effect;</b>
+<b class="fc"><i>108</i>&nbsp;    }</b>
+<i>109</i>&nbsp;
+<i>110</i>&nbsp;    protected T getRenderState() {
+<b class="fc"><i>111</i>&nbsp;        return renderState;</b>
+<i>112</i>&nbsp;    }
+<i>113</i>&nbsp;
+<i>114</i>&nbsp;    protected void setRenderState(T renderState) {
+<b class="fc"><i>115</i>&nbsp;        this.renderState = renderState;</b>
+<b class="fc"><i>116</i>&nbsp;    }</b>
+<i>117</i>&nbsp;
+<i>118</i>&nbsp;    public final int getPass() {
+<b class="nc"><i>119</i>&nbsp;        return pass;</b>
+<i>120</i>&nbsp;    }
+<i>121</i>&nbsp;
+<i>122</i>&nbsp;    public void setPass(int pass) {
+<b class="fc"><i>123</i>&nbsp;        this.pass = pass;</b>
+<b class="fc"><i>124</i>&nbsp;    }</b>
+<i>125</i>&nbsp;
+<i>126</i>&nbsp;    // NOTE: this input(Native)Bounds stuff is unpleasant, but we somehow
+<i>127</i>&nbsp;    // need to provide access to the native surface bounds for various glue
+<i>128</i>&nbsp;    // methods (e.g. getKvals())
+<i>129</i>&nbsp;
+<b class="fc"><i>130</i>&nbsp;    private final Rectangle[] inputBounds = new Rectangle[2];</b>
+<i>131</i>&nbsp;    /**
+<i>132</i>&nbsp;     * Returns the &quot;valid&quot; bounds of the source image for the given input.
+<i>133</i>&nbsp;     * Since Effect implementations try to recycle temporary Images, it is
+<i>134</i>&nbsp;     * quite possible that the input bounds returned by this method will
+<i>135</i>&nbsp;     * differ from the size of the associated input Image.  For example,
+<i>136</i>&nbsp;     * this method may return (0, 0, 210, 180) even though the associated
+<i>137</i>&nbsp;     * Image has dimensions of 230x200 pixels.  Pixels in the input Image
+<i>138</i>&nbsp;     * outside these &quot;valid&quot; bounds are undefined and should be avoided.
+<i>139</i>&nbsp;     *
+<i>140</i>&nbsp;     * @param inputIndex the index of the source input
+<i>141</i>&nbsp;     * @return the valid bounds of the source Image
+<i>142</i>&nbsp;     */
+<i>143</i>&nbsp;    protected final Rectangle getInputBounds(int inputIndex) {
+<b class="nc"><i>144</i>&nbsp;        return inputBounds[inputIndex];</b>
+<i>145</i>&nbsp;    }
+<i>146</i>&nbsp;    protected final void setInputBounds(int inputIndex, Rectangle r) {
+<b class="fc"><i>147</i>&nbsp;        inputBounds[inputIndex] = r;</b>
+<b class="fc"><i>148</i>&nbsp;    }</b>
+<i>149</i>&nbsp;
+<b class="fc"><i>150</i>&nbsp;    private final BaseTransform[] inputTransforms = new BaseTransform[2];</b>
+<i>151</i>&nbsp;    protected final BaseTransform getInputTransform(int inputIndex) {
+<b class="nc"><i>152</i>&nbsp;        return inputTransforms[inputIndex];</b>
+<i>153</i>&nbsp;    }
+<i>154</i>&nbsp;    protected final void setInputTransform(int inputIndex, BaseTransform tx) {
+<b class="fc"><i>155</i>&nbsp;        inputTransforms[inputIndex] = tx;</b>
+<b class="fc"><i>156</i>&nbsp;    }</b>
+<i>157</i>&nbsp;
+<b class="fc"><i>158</i>&nbsp;    private final Rectangle[] inputNativeBounds = new Rectangle[2];</b>
+<i>159</i>&nbsp;    /**
+<i>160</i>&nbsp;     * Returns the bounds of the native surface for the given input.
+<i>161</i>&nbsp;     * It is quite possible that the input native bounds returned by this
+<i>162</i>&nbsp;     * method will differ from the size of the associated input (Java-level)
+<i>163</i>&nbsp;     * Image.  This is common for the OGL and D3D backends of Java 2D,
+<i>164</i>&nbsp;     * where on older hardware the dimensions of a VRAM surface (e.g. texture)
+<i>165</i>&nbsp;     * must be a power of two.  For example, this method may return
+<i>166</i>&nbsp;     * (0, 0, 256, 256) even though the associated (Volatile)Image has
+<i>167</i>&nbsp;     * dimensions of 230x200 pixels.
+<i>168</i>&nbsp;     * &lt;p&gt;
+<i>169</i>&nbsp;     * This method is useful in cases where it is necessary to access
+<i>170</i>&nbsp;     * adjacent pixels in a native surface.  For example, the horizontal
+<i>171</i>&nbsp;     * distance between two texel centers of a native surface can be
+<i>172</i>&nbsp;     * calculated as (1f/inputNativeBounds.width); for the vertical distance,
+<i>173</i>&nbsp;     * (1f/inputNativeBounds.height).
+<i>174</i>&nbsp;     *
+<i>175</i>&nbsp;     * @param inputIndex the index of the source input
+<i>176</i>&nbsp;     * @return the native surface bounds
+<i>177</i>&nbsp;     */
+<i>178</i>&nbsp;    protected final Rectangle getInputNativeBounds(int inputIndex) {
+<b class="nc"><i>179</i>&nbsp;        return inputNativeBounds[inputIndex];</b>
+<i>180</i>&nbsp;    }
+<i>181</i>&nbsp;    protected final void setInputNativeBounds(int inputIndex, Rectangle r) {
+<b class="fc"><i>182</i>&nbsp;        inputNativeBounds[inputIndex] = r;</b>
+<b class="fc"><i>183</i>&nbsp;    }</b>
+<i>184</i>&nbsp;
+<i>185</i>&nbsp;    public Rectangle getResultBounds(BaseTransform transform,
+<i>186</i>&nbsp;                                     Rectangle outputClip,
+<i>187</i>&nbsp;                                     ImageData... inputDatas)
+<i>188</i>&nbsp;    {
+<b class="nc"><i>189</i>&nbsp;        return getEffect().getResultBounds(transform, outputClip, inputDatas);</b>
+<i>190</i>&nbsp;    }
+<i>191</i>&nbsp;
+<i>192</i>&nbsp;    /**
+<i>193</i>&nbsp;     * Returns an array of four floats that represent the mapping of the
+<i>194</i>&nbsp;     * data for the specified input to the given effect area.
+<i>195</i>&nbsp;     * The interpretation of the returned values is entirely dependent on
+<i>196</i>&nbsp;     * the algorithm of the pixel shader, but typical values are in the
+<i>197</i>&nbsp;     * &quot;unit&quot; coordinate space of the destination effect area, where
+<i>198</i>&nbsp;     * {@code (0,0)} is at the upper-left corner, and {@code (1,1)} is at
+<i>199</i>&nbsp;     * the lower-right corner.
+<i>200</i>&nbsp;     * The returned array contains the values in order (x1, y1, x2, y2).
+<i>201</i>&nbsp;     * &lt;p&gt;
+<i>202</i>&nbsp;     * The default implementation converts the logical destination effect
+<i>203</i>&nbsp;     * region into the coordinate space of the native surface of the
+<i>204</i>&nbsp;     * specified source input according to the
+<i>205</i>&nbsp;     * {@link getSourceRegion(Rectangle, Rectangle, Rectangle)} method.
+<i>206</i>&nbsp;     * &lt;p&gt;
+<i>207</i>&nbsp;     * Subclasses can override this method to provide more sophisticated
+<i>208</i>&nbsp;     * positioning behavior.
+<i>209</i>&nbsp;     *
+<i>210</i>&nbsp;     * @param inputIndex the index of the source input
+<i>211</i>&nbsp;     * @return an array of four float values
+<i>212</i>&nbsp;     */
+<i>213</i>&nbsp;    protected float[] getSourceRegion(int inputIndex)
+<i>214</i>&nbsp;    {
+<b class="nc"><i>215</i>&nbsp;        return getSourceRegion(getInputBounds(inputIndex),</b>
+<b class="nc"><i>216</i>&nbsp;                               getInputNativeBounds(inputIndex),</b>
+<b class="nc"><i>217</i>&nbsp;                               getDestBounds());</b>
+<i>218</i>&nbsp;    }
+<i>219</i>&nbsp;
+<i>220</i>&nbsp;    /**
+<i>221</i>&nbsp;     * Returns an array of four floats that represent the mapping of the
+<i>222</i>&nbsp;     * specified source region for the specified effect area.
+<i>223</i>&nbsp;     * The returned values are in the &quot;unit&quot; coordinate space of the source
+<i>224</i>&nbsp;     * native surface, where (0,0) is at the upper-left corner, and (1,1)
+<i>225</i>&nbsp;     * is at the lower-right corner.
+<i>226</i>&nbsp;     * For example, if the native input surface (i.e. texture) is 256x256
+<i>227</i>&nbsp;     * pixels, and the effect output region is at the same coordinates as
+<i>228</i>&nbsp;     * the input region and is 200x200, this method will
+<i>229</i>&nbsp;     * return (0, 0, 200/256, 220/256).
+<i>230</i>&nbsp;     * The returned array contains the values in order (x1, y1, x2, y2).
+<i>231</i>&nbsp;     * &lt;p&gt;
+<i>232</i>&nbsp;     * Subclasses can override this method to provide more sophisticated
+<i>233</i>&nbsp;     * positioning behavior.
+<i>234</i>&nbsp;     *
+<i>235</i>&nbsp;     * @param srcBounds the logical bounds of the input data
+<i>236</i>&nbsp;     * @param srcNativeBounds the actual dimensions of the input image
+<i>237</i>&nbsp;     *                        containing the input data in its upper left
+<i>238</i>&nbsp;     * @param dstBounds the logical bounds of the resulting effect output
+<i>239</i>&nbsp;     * @return an array of four float values
+<i>240</i>&nbsp;     */
+<i>241</i>&nbsp;    static float[] getSourceRegion(Rectangle srcBounds,
+<i>242</i>&nbsp;                                   Rectangle srcNativeBounds,
+<i>243</i>&nbsp;                                   Rectangle dstBounds)
+<i>244</i>&nbsp;    {
+<b class="nc"><i>245</i>&nbsp;        float x1 = dstBounds.x - srcBounds.x;</b>
+<b class="nc"><i>246</i>&nbsp;        float y1 = dstBounds.y - srcBounds.y;</b>
+<b class="nc"><i>247</i>&nbsp;        float x2 = x1 + dstBounds.width;</b>
+<b class="nc"><i>248</i>&nbsp;        float y2 = y1 + dstBounds.height;</b>
+<b class="nc"><i>249</i>&nbsp;        float sw = srcNativeBounds.width;</b>
+<b class="nc"><i>250</i>&nbsp;        float sh = srcNativeBounds.height;</b>
+<b class="nc"><i>251</i>&nbsp;        return new float[] {x1 / sw, y1 / sh, x2 / sw, y2 / sh};</b>
+<i>252</i>&nbsp;    }
+<i>253</i>&nbsp;
+<i>254</i>&nbsp;    /**
+<i>255</i>&nbsp;     * Returns either 4 or 8 source texture coordinates depending on the
+<i>256</i>&nbsp;     * transform being applied to the source.
+<i>257</i>&nbsp;     * &lt;p&gt;
+<i>258</i>&nbsp;     * If the mapping is rectilinear then 4 floats are returned.  The
+<i>259</i>&nbsp;     * texture coordinates are thus mapped using the following table:
+<i>260</i>&nbsp;     * &lt;pre&gt;
+<i>261</i>&nbsp;     *     dx1,dy1 =&gt; ret[0], ret[1]
+<i>262</i>&nbsp;     *     dx2,dy1 =&gt; ret[2], ret[1]
+<i>263</i>&nbsp;     *     dx1,dy2 =&gt; ret[0], ret[3]
+<i>264</i>&nbsp;     *     dx2,dy2 =&gt; ret[2], ret[3]
+<i>265</i>&nbsp;     * &lt;/pre&gt;
+<i>266</i>&nbsp;     * If the mapping is non-rectilinear then 8 floats are returned and
+<i>267</i>&nbsp;     * the texture coordinates are mapped using the following table (note
+<i>268</i>&nbsp;     * that the dx1,dy1 and dx2,dy2 mappings are still from the same
+<i>269</i>&nbsp;     * indices as in the 4 float return value):
+<i>270</i>&nbsp;     * &lt;pre&gt;
+<i>271</i>&nbsp;     *     dx1,dy1 =&gt; ret[0], ret[1]
+<i>272</i>&nbsp;     *     dx2,dy1 =&gt; ret[4], ret[5]
+<i>273</i>&nbsp;     *     dx1,dy2 =&gt; ret[6], ret[7]
+<i>274</i>&nbsp;     *     dx2,dy2 =&gt; ret[2], ret[3]
+<i>275</i>&nbsp;     * &lt;/pre&gt;
+<i>276</i>&nbsp;     * The default implementation of this method simply calls the static
+<i>277</i>&nbsp;     * method {@link getTextureCoordinates(float[],float,float,float,float,Rectangle,BaseTransform)}.
+<i>278</i>&nbsp;     *
+<i>279</i>&nbsp;     * @param inputIndex the index of the input whose texture coordinates
+<i>280</i>&nbsp;     *                   are being queried
+<i>281</i>&nbsp;     * @param coords An array that can hold up to 8 floats for returning
+<i>282</i>&nbsp;     *               the texture coordinates.
+<i>283</i>&nbsp;     * @param srcX The X coordinate of the origin of the source texture
+<i>284</i>&nbsp;     *             in the untransformed coordinate space.
+<i>285</i>&nbsp;     * @param srcY The Y coordinate of the origin of the source texture
+<i>286</i>&nbsp;     *             in the untransformed coordinate space.
+<i>287</i>&nbsp;     * @param srcNativeWidth the native width of the source texture
+<i>288</i>&nbsp;     * @param srcNativeHeight the native height of the source texture
+<i>289</i>&nbsp;     * @param dstBounds the output bounds that the texture is
+<i>290</i>&nbsp;     *                  being stretched over
+<i>291</i>&nbsp;     * @param transform the transform to be implicitly applied to the
+<i>292</i>&nbsp;     *                  source texture as it is mapped onto the destination
+<i>293</i>&nbsp;     * @return the number of texture coordinates stored in the {@code coords}
+<i>294</i>&nbsp;     *         array (either 4 or 8)
+<i>295</i>&nbsp;     */
+<i>296</i>&nbsp;    public int getTextureCoordinates(int inputIndex, float coords[],
+<i>297</i>&nbsp;                                     float srcX, float srcY,
+<i>298</i>&nbsp;                                     float srcNativeWidth,
+<i>299</i>&nbsp;                                     float srcNativeHeight,
+<i>300</i>&nbsp;                                     Rectangle dstBounds,
+<i>301</i>&nbsp;                                     BaseTransform transform)
+<i>302</i>&nbsp;    {
+<b class="fc"><i>303</i>&nbsp;        return getTextureCoordinates(coords,</b>
+<i>304</i>&nbsp;                                     srcX, srcY,
+<i>305</i>&nbsp;                                     srcNativeWidth, srcNativeHeight,
+<i>306</i>&nbsp;                                     dstBounds, transform);
+<i>307</i>&nbsp;    }
+<i>308</i>&nbsp;
+<i>309</i>&nbsp;    /**
+<i>310</i>&nbsp;     * Returns either 4 or 8 source texture coordinates depending on the
+<i>311</i>&nbsp;     * transform being applied to the source.
+<i>312</i>&nbsp;     * &lt;p&gt;
+<i>313</i>&nbsp;     * If the mapping is rectilinear then 4 floats are returned.  The
+<i>314</i>&nbsp;     * texture coordinates are thus mapped using the following table:
+<i>315</i>&nbsp;     * &lt;pre&gt;
+<i>316</i>&nbsp;     *     dx1,dy1 =&gt; ret[0], ret[1]
+<i>317</i>&nbsp;     *     dx2,dy1 =&gt; ret[2], ret[1]
+<i>318</i>&nbsp;     *     dx1,dy2 =&gt; ret[0], ret[3]
+<i>319</i>&nbsp;     *     dx2,dy2 =&gt; ret[2], ret[3]
+<i>320</i>&nbsp;     * &lt;/pre&gt;
+<i>321</i>&nbsp;     * If the mapping is non-rectilinear then 8 floats are returned and
+<i>322</i>&nbsp;     * the texture coordinates are mapped using the following table (note
+<i>323</i>&nbsp;     * that the dx1,dy1 and dx2,dy2 mappings are still from the same
+<i>324</i>&nbsp;     * indices as in the 4 float return value):
+<i>325</i>&nbsp;     * &lt;pre&gt;
+<i>326</i>&nbsp;     *     dx1,dy1 =&gt; ret[0], ret[1]
+<i>327</i>&nbsp;     *     dx2,dy1 =&gt; ret[4], ret[5]
+<i>328</i>&nbsp;     *     dx1,dy2 =&gt; ret[6], ret[7]
+<i>329</i>&nbsp;     *     dx2,dy2 =&gt; ret[2], ret[3]
+<i>330</i>&nbsp;     * &lt;/pre&gt;
+<i>331</i>&nbsp;     *
+<i>332</i>&nbsp;     * @param coords An array that can hold up to 8 floats for returning
+<i>333</i>&nbsp;     *               the texture coordinates.
+<i>334</i>&nbsp;     * @param srcX The X coordinate of the origin of the source texture
+<i>335</i>&nbsp;     *             in the untransformed coordinate space.
+<i>336</i>&nbsp;     * @param srcY The Y coordinate of the origin of the source texture
+<i>337</i>&nbsp;     *             in the untransformed coordinate space.
+<i>338</i>&nbsp;     * @param srcNativeWidth the native width of the source texture
+<i>339</i>&nbsp;     * @param srcNativeHeight the native height of the source texture
+<i>340</i>&nbsp;     * @param dstBounds the output bounds that the texture is
+<i>341</i>&nbsp;     *                  being stretched over
+<i>342</i>&nbsp;     * @param transform the transform to be implicitly applied to the
+<i>343</i>&nbsp;     *                  source texture as it is mapped onto the destination
+<i>344</i>&nbsp;     * @return the number of texture coordinates stored in the {@code coords}
+<i>345</i>&nbsp;     *         array (either 4 or 8)
+<i>346</i>&nbsp;     */
+<i>347</i>&nbsp;    public static int getTextureCoordinates(float coords[],
+<i>348</i>&nbsp;                                            float srcX, float srcY,
+<i>349</i>&nbsp;                                            float srcNativeWidth,
+<i>350</i>&nbsp;                                            float srcNativeHeight,
+<i>351</i>&nbsp;                                            Rectangle dstBounds,
+<i>352</i>&nbsp;                                            BaseTransform transform)
+<i>353</i>&nbsp;    {
+<b class="fc"><i>354</i>&nbsp;        coords[0] = dstBounds.x;</b>
+<b class="fc"><i>355</i>&nbsp;        coords[1] = dstBounds.y;</b>
+<b class="fc"><i>356</i>&nbsp;        coords[2] = coords[0] + dstBounds.width;</b>
+<b class="fc"><i>357</i>&nbsp;        coords[3] = coords[1] + dstBounds.height;</b>
+<i>358</i>&nbsp;        int numCoords;
+<b class="fc"><i>359</i>&nbsp;        if (transform.isTranslateOrIdentity()) {</b>
+<b class="fc"><i>360</i>&nbsp;            srcX += (float) transform.getMxt();</b>
+<b class="fc"><i>361</i>&nbsp;            srcY += (float) transform.getMyt();</b>
+<b class="fc"><i>362</i>&nbsp;            numCoords = 4;</b>
+<i>363</i>&nbsp;        } else {
+<b class="nc"><i>364</i>&nbsp;            coords[4] = coords[2];</b>
+<b class="nc"><i>365</i>&nbsp;            coords[5] = coords[1];</b>
+<b class="nc"><i>366</i>&nbsp;            coords[6] = coords[0];</b>
+<b class="nc"><i>367</i>&nbsp;            coords[7] = coords[3];</b>
+<b class="nc"><i>368</i>&nbsp;            numCoords = 8;</b>
+<i>369</i>&nbsp;            try {
+<b class="nc"><i>370</i>&nbsp;                transform.inverseTransform(coords, 0, coords, 0, 4);</b>
+<b class="nc"><i>371</i>&nbsp;            } catch (NoninvertibleTransformException e) {</b>
+<b class="nc"><i>372</i>&nbsp;                coords[0] = coords[1] = coords[2] = coords[4] = 0f;</b>
+<b class="nc"><i>373</i>&nbsp;                return 4;</b>
+<b class="nc"><i>374</i>&nbsp;            }</b>
+<i>375</i>&nbsp;        }
+<b class="fc"><i>376</i>&nbsp;        for (int i = 0; i &lt; numCoords; i += 2) {</b>
+<b class="fc"><i>377</i>&nbsp;            coords[i  ] = (coords[i  ] - srcX) / srcNativeWidth;</b>
+<b class="fc"><i>378</i>&nbsp;            coords[i+1] = (coords[i+1] - srcY) / srcNativeHeight;</b>
+<i>379</i>&nbsp;        }
+<b class="fc"><i>380</i>&nbsp;        return numCoords;</b>
+<i>381</i>&nbsp;    }
+<i>382</i>&nbsp;
+<i>383</i>&nbsp;    private Rectangle destBounds;
+<i>384</i>&nbsp;    protected final void setDestBounds(Rectangle r) {
+<b class="fc"><i>385</i>&nbsp;        destBounds = r;</b>
+<b class="fc"><i>386</i>&nbsp;    }</b>
+<i>387</i>&nbsp;    protected final Rectangle getDestBounds() {
+<b class="fc"><i>388</i>&nbsp;        return destBounds;</b>
+<i>389</i>&nbsp;    }
+<i>390</i>&nbsp;
+<b class="fc"><i>391</i>&nbsp;    private final Rectangle destNativeBounds = new Rectangle();</b>
+<i>392</i>&nbsp;    protected final Rectangle getDestNativeBounds() {
+<b class="nc"><i>393</i>&nbsp;        return destNativeBounds;</b>
+<i>394</i>&nbsp;    }
+<i>395</i>&nbsp;    protected final void setDestNativeBounds(int w, int h) {
+<b class="fc"><i>396</i>&nbsp;        destNativeBounds.width = w;</b>
+<b class="fc"><i>397</i>&nbsp;        destNativeBounds.height = h;</b>
+<b class="fc"><i>398</i>&nbsp;    }</b>
+<i>399</i>&nbsp;
+<i>400</i>&nbsp;    protected Object getSamplerData(int i) {
+<b class="nc"><i>401</i>&nbsp;        return null;</b>
+<i>402</i>&nbsp;    }
+<i>403</i>&nbsp;
+<i>404</i>&nbsp;    /**
+<i>405</i>&nbsp;     * Returns true if the native coordinate system has its origin at
+<i>406</i>&nbsp;     * the upper-left corner of the destination surface; otherwise, returns
+<i>407</i>&nbsp;     * false, indicating that the origin is at the lower-left corner.
+<i>408</i>&nbsp;     * &lt;p&gt;
+<i>409</i>&nbsp;     * This method may be useful in determining the direction of adjacent
+<i>410</i>&nbsp;     * pixels in an OpenGL surface (since many OpenGL methods take parameters
+<i>411</i>&nbsp;     * assuming a lower-left origin).
+<i>412</i>&nbsp;     *
+<i>413</i>&nbsp;     * @return true if the coordinate system has an upper-left origin
+<i>414</i>&nbsp;     */
+<i>415</i>&nbsp;    protected boolean isOriginUpperLeft() {
+<b class="nc"><i>416</i>&nbsp;        return (getAccelType() != Effect.AccelType.OPENGL);</b>
+<i>417</i>&nbsp;    }
+<i>418</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2017-12-04 21:49</div>
+</div>
+</body>
+</html>

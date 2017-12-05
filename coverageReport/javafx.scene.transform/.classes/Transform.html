@@ -1,0 +1,3165 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: Transform</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">javafx.scene.transform</a> ]
+</div>
+
+<h1>Coverage Summary for Class: Transform (javafx.scene.transform)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">Transform</td>
+<td class="coverageStat">
+  <span class="percent">
+    3.2%
+  </span>
+  <span class="absValue">
+    (3/ 94)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    1.2%
+  </span>
+  <span class="absValue">
+    (7/ 572)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">Transform$1</td>
+<td class="coverageStat">
+  <span class="percent">
+    33.3%
+  </span>
+  <span class="absValue">
+    (3/ 9)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    33.3%
+  </span>
+  <span class="absValue">
+    (4/ 12)
+  </span>
+</td>
+  </tr>
+  <tr>
+    <td class="name">Transform$2</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 4)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 4)
+  </span>
+</td>
+  </tr>
+  <tr>
+    <td class="name">Transform$3</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 4)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 4)
+  </span>
+</td>
+  </tr>
+  <tr>
+    <td class="name">Transform$4</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 4)
+  </span>
+</td>
+  </tr>
+  <tr>
+    <td class="name">Transform$ImmutableTransform</td>
+<td class="coverageStat">
+  <span class="percent">
+    41%
+  </span>
+  <span class="absValue">
+    (16/ 39)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    15.8%
+  </span>
+  <span class="absValue">
+    (42/ 265)
+  </span>
+</td>
+  </tr>
+  <tr>
+    <td class="name">Transform$LazyBooleanProperty</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 7)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 17)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    13.8%
+  </span>
+  <span class="absValue">
+    (22/ 159)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    6%
+  </span>
+  <span class="absValue">
+    (53/ 878)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright (c) 2011, 2017, Oracle and/or its affiliates. All rights reserved.
+<i>3</i>&nbsp; * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+<i>4</i>&nbsp; *
+<i>5</i>&nbsp; *
+<i>6</i>&nbsp; *
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; *
+<i>11</i>&nbsp; *
+<i>12</i>&nbsp; *
+<i>13</i>&nbsp; *
+<i>14</i>&nbsp; *
+<i>15</i>&nbsp; *
+<i>16</i>&nbsp; *
+<i>17</i>&nbsp; *
+<i>18</i>&nbsp; *
+<i>19</i>&nbsp; *
+<i>20</i>&nbsp; *
+<i>21</i>&nbsp; *
+<i>22</i>&nbsp; *
+<i>23</i>&nbsp; *
+<i>24</i>&nbsp; */
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;package javafx.scene.transform;
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;import java.util.Iterator;
+<i>29</i>&nbsp;
+<i>30</i>&nbsp;import com.sun.javafx.geometry.BoundsUtils;
+<i>31</i>&nbsp;import javafx.event.EventDispatchChain;
+<i>32</i>&nbsp;
+<i>33</i>&nbsp;import javafx.scene.Node;
+<i>34</i>&nbsp;
+<i>35</i>&nbsp;import com.sun.javafx.util.WeakReferenceQueue;
+<i>36</i>&nbsp;import com.sun.javafx.binding.ExpressionHelper;
+<i>37</i>&nbsp;import com.sun.javafx.event.EventHandlerManager;
+<i>38</i>&nbsp;import com.sun.javafx.geom.transform.Affine3D;
+<i>39</i>&nbsp;import com.sun.javafx.geom.transform.BaseTransform;
+<i>40</i>&nbsp;import com.sun.javafx.scene.NodeHelper;
+<i>41</i>&nbsp;import com.sun.javafx.scene.transform.TransformHelper;
+<i>42</i>&nbsp;import com.sun.javafx.scene.transform.TransformUtils;
+<i>43</i>&nbsp;import java.lang.ref.SoftReference;
+<i>44</i>&nbsp;import javafx.beans.InvalidationListener;
+<i>45</i>&nbsp;import javafx.beans.property.ObjectProperty;
+<i>46</i>&nbsp;import javafx.beans.property.ReadOnlyBooleanProperty;
+<i>47</i>&nbsp;import javafx.beans.property.SimpleObjectProperty;
+<i>48</i>&nbsp;import javafx.beans.value.ChangeListener;
+<i>49</i>&nbsp;import javafx.event.Event;
+<i>50</i>&nbsp;import javafx.event.EventHandler;
+<i>51</i>&nbsp;import javafx.event.EventTarget;
+<i>52</i>&nbsp;import javafx.event.EventType;
+<i>53</i>&nbsp;import javafx.geometry.Bounds;
+<i>54</i>&nbsp;import javafx.geometry.Point2D;
+<i>55</i>&nbsp;import javafx.geometry.Point3D;
+<i>56</i>&nbsp;
+<i>57</i>&nbsp;// PENDING_DOC_REVIEW of this whole class
+<i>58</i>&nbsp;/**
+<i>59</i>&nbsp; * This class is a base class for different affine transformations.
+<i>60</i>&nbsp; * It provides factory methods for the simple transformations - rotating,
+<i>61</i>&nbsp; * scaling, shearing, and translation. It allows to get the transformation
+<i>62</i>&nbsp; * matrix elements for any transform.
+<i>63</i>&nbsp; *
+<i>64</i>&nbsp; * &lt;p&gt;Example:&lt;/p&gt;
+<i>65</i>&nbsp; *
+<i>66</i>&nbsp; * &lt;pre&gt;{@code
+<i>67</i>&nbsp; *  Rectangle rect = new Rectangle(50,50, Color.RED);
+<i>68</i>&nbsp; *  rect.getTransforms().add(new Rotate(45,0,0)); //rotate by 45 degrees
+<i>69</i>&nbsp; * }&lt;/pre&gt;
+<i>70</i>&nbsp; * @since JavaFX 2.0
+<i>71</i>&nbsp; */
+<b class="fc"><i>72</i>&nbsp;public abstract class Transform implements Cloneable, EventTarget {</b>
+<i>73</i>&nbsp;
+<i>74</i>&nbsp;    static {
+<i>75</i>&nbsp;        // This is used by classes in different packages to get access to
+<i>76</i>&nbsp;        // private and package private methods.
+<b class="fc"><i>77</i>&nbsp;        TransformHelper.setTransformAccessor(new TransformHelper.TransformAccessor() {</b>
+<i>78</i>&nbsp;
+<i>79</i>&nbsp;            @Override
+<i>80</i>&nbsp;            public void add(Transform transform, Node node) {
+<b class="nc"><i>81</i>&nbsp;                transform.add(node);</b>
+<b class="nc"><i>82</i>&nbsp;            }</b>
+<i>83</i>&nbsp;
+<i>84</i>&nbsp;            @Override
+<i>85</i>&nbsp;            public void remove(Transform transform, Node node) {
+<b class="nc"><i>86</i>&nbsp;                transform.remove(node);</b>
+<b class="nc"><i>87</i>&nbsp;            }</b>
+<i>88</i>&nbsp;
+<i>89</i>&nbsp;            @Override
+<i>90</i>&nbsp;            public void apply(Transform transform, Affine3D affine3D) {
+<b class="fc"><i>91</i>&nbsp;                transform.apply(affine3D);</b>
+<b class="fc"><i>92</i>&nbsp;            }</b>
+<i>93</i>&nbsp;
+<i>94</i>&nbsp;            @Override
+<i>95</i>&nbsp;            public BaseTransform derive(Transform transform, BaseTransform baseTransform) {
+<b class="nc"><i>96</i>&nbsp;                return transform.derive(baseTransform);</b>
+<i>97</i>&nbsp;            }
+<i>98</i>&nbsp;
+<i>99</i>&nbsp;            @Override
+<i>100</i>&nbsp;            public Transform createImmutableTransform() {
+<b class="nc"><i>101</i>&nbsp;                return Transform.createImmutableTransform();</b>
+<i>102</i>&nbsp;            }
+<i>103</i>&nbsp;
+<i>104</i>&nbsp;            @Override
+<i>105</i>&nbsp;            public Transform createImmutableTransform(
+<i>106</i>&nbsp;                    double mxx, double mxy, double mxz, double tx,
+<i>107</i>&nbsp;                    double myx, double myy, double myz, double ty,
+<i>108</i>&nbsp;                    double mzx, double mzy, double mzz, double tz) {
+<b class="nc"><i>109</i>&nbsp;                return Transform.createImmutableTransform(mxx, mxy, mxz, tx,</b>
+<i>110</i>&nbsp;                        myx, myy, myz, ty, mzx, mzy, mzz, tz);
+<i>111</i>&nbsp;            }
+<i>112</i>&nbsp;
+<i>113</i>&nbsp;            @Override
+<i>114</i>&nbsp;            public Transform createImmutableTransform(Transform transform,
+<i>115</i>&nbsp;                    double mxx, double mxy, double mxz, double tx,
+<i>116</i>&nbsp;                    double myx, double myy, double myz, double ty,
+<i>117</i>&nbsp;                    double mzx, double mzy, double mzz, double tz) {
+<b class="fc"><i>118</i>&nbsp;                return Transform.createImmutableTransform(transform,</b>
+<i>119</i>&nbsp;                        mxx, mxy, mxz, tx, myx, myy, myz, ty, mzx, mzy, mzz, tz);
+<i>120</i>&nbsp;            }
+<i>121</i>&nbsp;
+<i>122</i>&nbsp;            @Override
+<i>123</i>&nbsp;            public Transform createImmutableTransform(Transform transform,
+<i>124</i>&nbsp;                    Transform left, Transform right) {
+<b class="nc"><i>125</i>&nbsp;                return Transform.createImmutableTransform(transform, left, right);</b>
+<i>126</i>&nbsp;            }
+<i>127</i>&nbsp;        });
+<b class="fc"><i>128</i>&nbsp;    }</b>
+<i>129</i>&nbsp;
+<i>130</i>&nbsp;    /* *************************************************************************
+<i>131</i>&nbsp;     *                                                                         *
+<i>132</i>&nbsp;     *                            Factories                                    *
+<i>133</i>&nbsp;     *                                                                         *
+<i>134</i>&nbsp;     **************************************************************************/
+<i>135</i>&nbsp;
+<i>136</i>&nbsp;    /**
+<i>137</i>&nbsp;     * Returns a new {@code Affine} object from 12 number
+<i>138</i>&nbsp;     * values representing the 6 specifiable entries of the 3x4
+<i>139</i>&nbsp;     * Affine transformation matrix.
+<i>140</i>&nbsp;     *
+<i>141</i>&nbsp;     * @param mxx the X coordinate scaling element of the 3x4 matrix
+<i>142</i>&nbsp;     * @param myx the Y coordinate shearing element of the 3x4 matrix
+<i>143</i>&nbsp;     * @param mxy the X coordinate shearing element of the 3x4 matrix
+<i>144</i>&nbsp;     * @param myy the Y coordinate scaling element of the 3x4 matrix
+<i>145</i>&nbsp;     * @param tx the X coordinate translation element of the 3x4 matrix
+<i>146</i>&nbsp;     * @param ty the Y coordinate translation element of the 3x4 matrix
+<i>147</i>&nbsp;     * @return a new {@code Affine} object derived from specified parameters
+<i>148</i>&nbsp;     */
+<i>149</i>&nbsp;    public static Affine affine(
+<i>150</i>&nbsp;        double mxx, double myx, double mxy, double myy, double tx, double ty) {
+<b class="nc"><i>151</i>&nbsp;        final Affine affine = new Affine();</b>
+<b class="nc"><i>152</i>&nbsp;        affine.setMxx(mxx);</b>
+<b class="nc"><i>153</i>&nbsp;        affine.setMxy(mxy);</b>
+<b class="nc"><i>154</i>&nbsp;        affine.setTx(tx);</b>
+<b class="nc"><i>155</i>&nbsp;        affine.setMyx(myx);</b>
+<b class="nc"><i>156</i>&nbsp;        affine.setMyy(myy);</b>
+<b class="nc"><i>157</i>&nbsp;        affine.setTy(ty);</b>
+<b class="nc"><i>158</i>&nbsp;        return affine;</b>
+<i>159</i>&nbsp;    }
+<i>160</i>&nbsp;
+<i>161</i>&nbsp;
+<i>162</i>&nbsp;    /**
+<i>163</i>&nbsp;     * Returns a new {@code Affine} object from 12 number
+<i>164</i>&nbsp;     * values representing the 12 specifiable entries of the 3x4
+<i>165</i>&nbsp;     * Affine transformation matrix.
+<i>166</i>&nbsp;     *
+<i>167</i>&nbsp;     * @param mxx the X coordinate scaling element of the 3x4 matrix
+<i>168</i>&nbsp;     * @param mxy the XY element of the 3x4 matrix
+<i>169</i>&nbsp;     * @param mxz the XZ element of the 3x4 matrix
+<i>170</i>&nbsp;     * @param tx the X coordinate translation element of the 3x4 matrix
+<i>171</i>&nbsp;     * @param myx the YX element of the 3x4 matrix
+<i>172</i>&nbsp;     * @param myy the Y coordinate scaling element of the 3x4 matrix
+<i>173</i>&nbsp;     * @param myz the YZ element of the 3x4 matrix
+<i>174</i>&nbsp;     * @param ty the Y coordinate translation element of the 3x4 matrix
+<i>175</i>&nbsp;     * @param mzx the ZX element of the 3x4 matrix
+<i>176</i>&nbsp;     * @param mzy the ZY element of the 3x4 matrix
+<i>177</i>&nbsp;     * @param mzz the Z coordinate scaling element of the 3x4 matrix
+<i>178</i>&nbsp;     * @param tz the Z coordinate translation element of the 3x4 matrix
+<i>179</i>&nbsp;     * @return a new {@code Affine} object derived from specified parameters
+<i>180</i>&nbsp;     */
+<i>181</i>&nbsp;    public static Affine affine(
+<i>182</i>&nbsp;        double mxx, double mxy, double mxz, double tx,
+<i>183</i>&nbsp;        double myx, double myy, double myz, double ty,
+<i>184</i>&nbsp;        double mzx, double mzy, double mzz, double tz) {
+<b class="nc"><i>185</i>&nbsp;        final Affine affine = new Affine();</b>
+<b class="nc"><i>186</i>&nbsp;        affine.setMxx(mxx);</b>
+<b class="nc"><i>187</i>&nbsp;        affine.setMxy(mxy);</b>
+<b class="nc"><i>188</i>&nbsp;        affine.setMxz(mxz);</b>
+<b class="nc"><i>189</i>&nbsp;        affine.setTx(tx);</b>
+<b class="nc"><i>190</i>&nbsp;        affine.setMyx(myx);</b>
+<b class="nc"><i>191</i>&nbsp;        affine.setMyy(myy);</b>
+<b class="nc"><i>192</i>&nbsp;        affine.setMyz(myz);</b>
+<b class="nc"><i>193</i>&nbsp;        affine.setTy(ty);</b>
+<b class="nc"><i>194</i>&nbsp;        affine.setMzx(mzx);</b>
+<b class="nc"><i>195</i>&nbsp;        affine.setMzy(mzy);</b>
+<b class="nc"><i>196</i>&nbsp;        affine.setMzz(mzz);</b>
+<b class="nc"><i>197</i>&nbsp;        affine.setTz(tz);</b>
+<b class="nc"><i>198</i>&nbsp;        return affine;</b>
+<i>199</i>&nbsp;    }
+<i>200</i>&nbsp;
+<i>201</i>&nbsp;
+<i>202</i>&nbsp;    /**
+<i>203</i>&nbsp;     * Returns a {@code Translate} object representing a translation transformation.
+<i>204</i>&nbsp;     * &lt;p&gt;
+<i>205</i>&nbsp;     * This is equivalent to:
+<i>206</i>&nbsp;     * &lt;pre&gt;
+<i>207</i>&nbsp;     *    new Translate(x, y);
+<i>208</i>&nbsp;     * &lt;/pre&gt;
+<i>209</i>&nbsp;     * @param x the translate x value
+<i>210</i>&nbsp;     * @param y the translate y value
+<i>211</i>&nbsp;     * @return the Translate object representing a translation transformation
+<i>212</i>&nbsp;     */
+<i>213</i>&nbsp;    public static Translate translate(double x, double y) {
+<b class="nc"><i>214</i>&nbsp;        final Translate translate = new Translate();</b>
+<b class="nc"><i>215</i>&nbsp;        translate.setX(x);</b>
+<b class="nc"><i>216</i>&nbsp;        translate.setY(y);</b>
+<b class="nc"><i>217</i>&nbsp;        return translate;</b>
+<i>218</i>&nbsp;    }
+<i>219</i>&nbsp;
+<i>220</i>&nbsp;
+<i>221</i>&nbsp;    /**
+<i>222</i>&nbsp;     * Returns a {@code Rotate} object that rotates coordinates around a pivot
+<i>223</i>&nbsp;     * point.
+<i>224</i>&nbsp;     * &lt;p&gt;
+<i>225</i>&nbsp;     * This is equivalent to:
+<i>226</i>&nbsp;     * &lt;pre&gt;
+<i>227</i>&nbsp;     *    new Rotate(angle, pivotX, pivotY);
+<i>228</i>&nbsp;     * &lt;/pre&gt;
+<i>229</i>&nbsp;     * @param angle the rotation angle
+<i>230</i>&nbsp;     * @param pivotX the pivot x value
+<i>231</i>&nbsp;     * @param pivotY the pivot y value
+<i>232</i>&nbsp;     * @return the Rotate object that rotates coordinates around a pivot point
+<i>233</i>&nbsp;     */
+<i>234</i>&nbsp;    public static Rotate rotate(double angle, double pivotX, double pivotY) {
+<b class="nc"><i>235</i>&nbsp;        final Rotate rotate = new Rotate();</b>
+<b class="nc"><i>236</i>&nbsp;        rotate.setAngle(angle);</b>
+<b class="nc"><i>237</i>&nbsp;        rotate.setPivotX(pivotX);</b>
+<b class="nc"><i>238</i>&nbsp;        rotate.setPivotY(pivotY);</b>
+<b class="nc"><i>239</i>&nbsp;        return rotate;</b>
+<i>240</i>&nbsp;    }
+<i>241</i>&nbsp;
+<i>242</i>&nbsp;
+<i>243</i>&nbsp;    /**
+<i>244</i>&nbsp;     * Returns a {@code Scale} object representing a scaling transformation.
+<i>245</i>&nbsp;     * &lt;p&gt;
+<i>246</i>&nbsp;     * This is equivalent to:
+<i>247</i>&nbsp;     * &lt;pre&gt;
+<i>248</i>&nbsp;     *    new Scale(x, y);
+<i>249</i>&nbsp;     * &lt;/pre&gt;
+<i>250</i>&nbsp;     * @param x the scale x value
+<i>251</i>&nbsp;     * @param y the scale y value
+<i>252</i>&nbsp;     * @return the Scale object representing a scaling transformation
+<i>253</i>&nbsp;     */
+<i>254</i>&nbsp;    public static Scale scale(double x, double y) {
+<b class="nc"><i>255</i>&nbsp;        final Scale scale = new Scale();</b>
+<b class="nc"><i>256</i>&nbsp;        scale.setX(x);</b>
+<b class="nc"><i>257</i>&nbsp;        scale.setY(y);</b>
+<b class="nc"><i>258</i>&nbsp;        return scale;</b>
+<i>259</i>&nbsp;    }
+<i>260</i>&nbsp;
+<i>261</i>&nbsp;
+<i>262</i>&nbsp;    /**
+<i>263</i>&nbsp;     * Returns a {@code Scale} object representing a scaling transformation.
+<i>264</i>&nbsp;     * The returned scale operation will be about the given pivot point.
+<i>265</i>&nbsp;     * &lt;p&gt;
+<i>266</i>&nbsp;     * This is equivalent to:
+<i>267</i>&nbsp;     * &lt;pre&gt;
+<i>268</i>&nbsp;     *    new Scale(x, y, pivotX, pivotY);
+<i>269</i>&nbsp;     * &lt;/pre&gt;
+<i>270</i>&nbsp;     * @param x the scale x value
+<i>271</i>&nbsp;     * @param y the scale y value
+<i>272</i>&nbsp;     * @param pivotX the pivot x value
+<i>273</i>&nbsp;     * @param pivotY the pivot y value
+<i>274</i>&nbsp;     * @return the Scale object representing a scaling transformation
+<i>275</i>&nbsp;     */
+<i>276</i>&nbsp;    public static Scale scale(double x, double y, double pivotX, double pivotY) {
+<b class="nc"><i>277</i>&nbsp;        final Scale scale = new Scale();</b>
+<b class="nc"><i>278</i>&nbsp;        scale.setX(x);</b>
+<b class="nc"><i>279</i>&nbsp;        scale.setY(y);</b>
+<b class="nc"><i>280</i>&nbsp;        scale.setPivotX(pivotX);</b>
+<b class="nc"><i>281</i>&nbsp;        scale.setPivotY(pivotY);</b>
+<b class="nc"><i>282</i>&nbsp;        return scale;</b>
+<i>283</i>&nbsp;    }
+<i>284</i>&nbsp;
+<i>285</i>&nbsp;
+<i>286</i>&nbsp;    /**
+<i>287</i>&nbsp;     * Returns a {@code Shear} object representing a shearing transformation.
+<i>288</i>&nbsp;     * &lt;p&gt;
+<i>289</i>&nbsp;     * This is equivalent to:
+<i>290</i>&nbsp;     * &lt;pre&gt;
+<i>291</i>&nbsp;     *    new Shear(x, y);
+<i>292</i>&nbsp;     * &lt;/pre&gt;
+<i>293</i>&nbsp;     * @param x the shear x value
+<i>294</i>&nbsp;     * @param y the shear y value
+<i>295</i>&nbsp;     * @return the Shear object representing a shearing transformation
+<i>296</i>&nbsp;     */
+<i>297</i>&nbsp;    public static Shear shear(double x, double y) {
+<b class="nc"><i>298</i>&nbsp;        final Shear shear = new Shear();</b>
+<b class="nc"><i>299</i>&nbsp;        shear.setX(x);</b>
+<b class="nc"><i>300</i>&nbsp;        shear.setY(y);</b>
+<b class="nc"><i>301</i>&nbsp;        return shear;</b>
+<i>302</i>&nbsp;    }
+<i>303</i>&nbsp;
+<i>304</i>&nbsp;    /**
+<i>305</i>&nbsp;     * Returns a {@code Shear} object representing a shearing transformation.
+<i>306</i>&nbsp;     * &lt;p&gt;
+<i>307</i>&nbsp;     * This is equivalent to:
+<i>308</i>&nbsp;     * &lt;pre&gt;
+<i>309</i>&nbsp;     *    new Shear(x, y, pivotX, pivotY);
+<i>310</i>&nbsp;     * &lt;/pre&gt;
+<i>311</i>&nbsp;     * @param x the shear x value
+<i>312</i>&nbsp;     * @param y the shear y value
+<i>313</i>&nbsp;     * @param pivotX the pivot x value
+<i>314</i>&nbsp;     * @param pivotY the pivot y value
+<i>315</i>&nbsp;     * @return the Shear object representing a shearing transformation
+<i>316</i>&nbsp;     */
+<i>317</i>&nbsp;    public static Shear shear(double x, double y, double pivotX, double pivotY) {
+<b class="nc"><i>318</i>&nbsp;        final Shear shear = new Shear();</b>
+<b class="nc"><i>319</i>&nbsp;        shear.setX(x);</b>
+<b class="nc"><i>320</i>&nbsp;        shear.setY(y);</b>
+<b class="nc"><i>321</i>&nbsp;        shear.setPivotX(pivotX);</b>
+<b class="nc"><i>322</i>&nbsp;        shear.setPivotY(pivotY);</b>
+<b class="nc"><i>323</i>&nbsp;        return shear;</b>
+<i>324</i>&nbsp;    }
+<i>325</i>&nbsp;
+<i>326</i>&nbsp;    /**
+<i>327</i>&nbsp;     * For transforms with expensive inversion we cache the inverted matrix
+<i>328</i>&nbsp;     * once it is needed and computed for some operation.
+<i>329</i>&nbsp;     */
+<b class="fc"><i>330</i>&nbsp;    private SoftReference&lt;Transform&gt; inverseCache = null;</b>
+<i>331</i>&nbsp;
+<b class="fc"><i>332</i>&nbsp;    private WeakReferenceQueue nodes = new WeakReferenceQueue();</b>
+<i>333</i>&nbsp;
+<i>334</i>&nbsp;    /* *************************************************************************
+<i>335</i>&nbsp;     *                                                                         *
+<i>336</i>&nbsp;     *                         Element getters                                 *
+<i>337</i>&nbsp;     *                                                                         *
+<i>338</i>&nbsp;     **************************************************************************/
+<i>339</i>&nbsp;
+<i>340</i>&nbsp;    /**
+<i>341</i>&nbsp;     * Gets the X coordinate scaling element of the 3x4 matrix.
+<i>342</i>&nbsp;     *
+<i>343</i>&nbsp;     * @return the X coordinate scaling element of the 3x4 matrix
+<i>344</i>&nbsp;     * @since JavaFX 2.2
+<i>345</i>&nbsp;     */
+<i>346</i>&nbsp;    public  double getMxx() {
+<b class="nc"><i>347</i>&nbsp;        return 1.0;</b>
+<i>348</i>&nbsp;    }
+<i>349</i>&nbsp;
+<i>350</i>&nbsp;    /**
+<i>351</i>&nbsp;     * Gets the XY coordinate element of the 3x4 matrix.
+<i>352</i>&nbsp;     *
+<i>353</i>&nbsp;     * @return the XY coordinate element of the 3x4 matrix
+<i>354</i>&nbsp;     * @since JavaFX 2.2
+<i>355</i>&nbsp;     */
+<i>356</i>&nbsp;    public  double getMxy() {
+<b class="nc"><i>357</i>&nbsp;        return 0.0;</b>
+<i>358</i>&nbsp;    }
+<i>359</i>&nbsp;
+<i>360</i>&nbsp;    /**
+<i>361</i>&nbsp;     * Gets the XZ coordinate element of the 3x4 matrix.
+<i>362</i>&nbsp;     *
+<i>363</i>&nbsp;     * @return the XZ coordinate element of the 3x4 matrix
+<i>364</i>&nbsp;     * @since JavaFX 2.2
+<i>365</i>&nbsp;     */
+<i>366</i>&nbsp;    public  double getMxz() {
+<b class="nc"><i>367</i>&nbsp;        return 0.0;</b>
+<i>368</i>&nbsp;    }
+<i>369</i>&nbsp;
+<i>370</i>&nbsp;    /**
+<i>371</i>&nbsp;     * Gets the X coordinate translation element of the 3x4 matrix.
+<i>372</i>&nbsp;     *
+<i>373</i>&nbsp;     * @return the X coordinate translation element of the 3x4 matrix
+<i>374</i>&nbsp;     * @since JavaFX 2.2
+<i>375</i>&nbsp;     */
+<i>376</i>&nbsp;    public  double getTx() {
+<b class="nc"><i>377</i>&nbsp;        return 0.0;</b>
+<i>378</i>&nbsp;    }
+<i>379</i>&nbsp;
+<i>380</i>&nbsp;    /**
+<i>381</i>&nbsp;     * Gets the YX coordinate element of the 3x4 matrix.
+<i>382</i>&nbsp;     *
+<i>383</i>&nbsp;     * @return the YX coordinate element of the 3x4 matrix
+<i>384</i>&nbsp;     * @since JavaFX 2.2
+<i>385</i>&nbsp;     */
+<i>386</i>&nbsp;    public  double getMyx() {
+<b class="nc"><i>387</i>&nbsp;        return 0.0;</b>
+<i>388</i>&nbsp;    }
+<i>389</i>&nbsp;
+<i>390</i>&nbsp;    /**
+<i>391</i>&nbsp;     * Gets the Y coordinate scaling element of the 3x4 matrix.
+<i>392</i>&nbsp;     *
+<i>393</i>&nbsp;     * @return the Y coordinate scaling element of the 3x4 matrix
+<i>394</i>&nbsp;     * @since JavaFX 2.2
+<i>395</i>&nbsp;     */
+<i>396</i>&nbsp;    public  double getMyy() {
+<b class="nc"><i>397</i>&nbsp;        return 1.0;</b>
+<i>398</i>&nbsp;    }
+<i>399</i>&nbsp;
+<i>400</i>&nbsp;    /**
+<i>401</i>&nbsp;     * Gets the YZ coordinate element of the 3x4 matrix.
+<i>402</i>&nbsp;     *
+<i>403</i>&nbsp;     * @return the YZ coordinate element of the 3x4 matrix
+<i>404</i>&nbsp;     * @since JavaFX 2.2
+<i>405</i>&nbsp;     */
+<i>406</i>&nbsp;    public  double getMyz() {
+<b class="nc"><i>407</i>&nbsp;        return 0.0;</b>
+<i>408</i>&nbsp;    }
+<i>409</i>&nbsp;
+<i>410</i>&nbsp;    /**
+<i>411</i>&nbsp;     * Gets the Y coordinate translation element of the 3x4 matrix.
+<i>412</i>&nbsp;     *
+<i>413</i>&nbsp;     * @return the Y coordinate translation element of the 3x4 matrix
+<i>414</i>&nbsp;     * @since JavaFX 2.2
+<i>415</i>&nbsp;     */
+<i>416</i>&nbsp;    public  double getTy() {
+<b class="nc"><i>417</i>&nbsp;        return 0.0;</b>
+<i>418</i>&nbsp;    }
+<i>419</i>&nbsp;
+<i>420</i>&nbsp;    /**
+<i>421</i>&nbsp;     * Gets the ZX coordinate element of the 3x4 matrix.
+<i>422</i>&nbsp;     *
+<i>423</i>&nbsp;     * @return the ZX coordinate element of the 3x4 matrix
+<i>424</i>&nbsp;     * @since JavaFX 2.2
+<i>425</i>&nbsp;     */
+<i>426</i>&nbsp;    public  double getMzx() {
+<b class="nc"><i>427</i>&nbsp;        return 0.0;</b>
+<i>428</i>&nbsp;    }
+<i>429</i>&nbsp;
+<i>430</i>&nbsp;    /**
+<i>431</i>&nbsp;     * Gets the ZY coordinate element of the 3x4 matrix.
+<i>432</i>&nbsp;     *
+<i>433</i>&nbsp;     * @return the ZY coordinate element of the 3x4 matrix
+<i>434</i>&nbsp;     * @since JavaFX 2.2
+<i>435</i>&nbsp;     */
+<i>436</i>&nbsp;    public  double getMzy() {
+<b class="nc"><i>437</i>&nbsp;        return 0.0;</b>
+<i>438</i>&nbsp;    }
+<i>439</i>&nbsp;
+<i>440</i>&nbsp;    /**
+<i>441</i>&nbsp;     * Gets the Z coordinate scaling element of the 3x4 matrix.
+<i>442</i>&nbsp;     *
+<i>443</i>&nbsp;     * @return the Z coordinate scaling element of the 3x4 matrix
+<i>444</i>&nbsp;     * @since JavaFX 2.2
+<i>445</i>&nbsp;     */
+<i>446</i>&nbsp;    public  double getMzz() {
+<b class="nc"><i>447</i>&nbsp;        return 1.0;</b>
+<i>448</i>&nbsp;    }
+<i>449</i>&nbsp;
+<i>450</i>&nbsp;    /**
+<i>451</i>&nbsp;     * Gets the Z coordinate translation element of the 3x4 matrix.
+<i>452</i>&nbsp;     *
+<i>453</i>&nbsp;     * @return the Z coordinate translation element of the 3x4 matrix
+<i>454</i>&nbsp;     * @since JavaFX 2.2
+<i>455</i>&nbsp;     */
+<i>456</i>&nbsp;    public  double getTz() {
+<b class="nc"><i>457</i>&nbsp;        return 0.0;</b>
+<i>458</i>&nbsp;    }
+<i>459</i>&nbsp;
+<i>460</i>&nbsp;    /**
+<i>461</i>&nbsp;     * Gets the specified element of the transformation matrix.
+<i>462</i>&nbsp;     * @param type type of matrix to get the value from
+<i>463</i>&nbsp;     * @param row zero-based row number
+<i>464</i>&nbsp;     * @param column zero-based column number
+<i>465</i>&nbsp;     * @return value of the specified transformation matrix element
+<i>466</i>&nbsp;     * @throws IllegalArgumentException if a 2D matrix type is requested for
+<i>467</i>&nbsp;     *         a 3D transform
+<i>468</i>&nbsp;     * @throws IndexOutOfBoundsException if the indices are not within
+<i>469</i>&nbsp;     *         the specified matrix type
+<i>470</i>&nbsp;     * @throws NullPointerException if the specified {@code type} is null
+<i>471</i>&nbsp;     * @since JavaFX 8.0
+<i>472</i>&nbsp;     */
+<i>473</i>&nbsp;    public double getElement(MatrixType type, int row, int column) {
+<b class="nc"><i>474</i>&nbsp;        if (row &lt; 0 || row &gt;= type.rows() || column &lt; 0 || column &gt;= type.columns()) {</b>
+<b class="nc"><i>475</i>&nbsp;            throw new IndexOutOfBoundsException(&quot;Index outside of affine &quot;</b>
+<i>476</i>&nbsp;                    + &quot;matrix &quot; + type + &quot;: [&quot; + row + &quot;, &quot; + column + &quot;]&quot;);
+<i>477</i>&nbsp;        }
+<b class="nc"><i>478</i>&nbsp;        switch(type) {</b>
+<i>479</i>&nbsp;            case MT_2D_2x3:
+<i>480</i>&nbsp;                // fall-through
+<i>481</i>&nbsp;            case MT_2D_3x3:
+<b class="nc"><i>482</i>&nbsp;                if (!isType2D()) {</b>
+<b class="nc"><i>483</i>&nbsp;                    throw new IllegalArgumentException(&quot;Cannot access 2D matrix &quot;</b>
+<i>484</i>&nbsp;                            + &quot;of a 3D transform&quot;);
+<i>485</i>&nbsp;                }
+<b class="nc"><i>486</i>&nbsp;                switch(row) {</b>
+<i>487</i>&nbsp;                    case 0:
+<b class="nc"><i>488</i>&nbsp;                        switch(column) {</b>
+<b class="nc"><i>489</i>&nbsp;                            case 0: return getMxx();</b>
+<b class="nc"><i>490</i>&nbsp;                            case 1: return getMxy();</b>
+<b class="nc"><i>491</i>&nbsp;                            case 2: return getTx();</b>
+<i>492</i>&nbsp;                        }
+<i>493</i>&nbsp;                    case 1:
+<b class="nc"><i>494</i>&nbsp;                        switch(column) {</b>
+<b class="nc"><i>495</i>&nbsp;                            case 0: return getMyx();</b>
+<b class="nc"><i>496</i>&nbsp;                            case 1: return getMyy();</b>
+<b class="nc"><i>497</i>&nbsp;                            case 2: return getTy();</b>
+<i>498</i>&nbsp;                        }
+<i>499</i>&nbsp;                    case 2:
+<b class="nc"><i>500</i>&nbsp;                        switch(column) {</b>
+<b class="nc"><i>501</i>&nbsp;                            case 0: return 0.0;</b>
+<b class="nc"><i>502</i>&nbsp;                            case 1: return 0.0;</b>
+<b class="nc"><i>503</i>&nbsp;                            case 2: return 1.0;</b>
+<i>504</i>&nbsp;                        }
+<i>505</i>&nbsp;                }
+<b class="nc"><i>506</i>&nbsp;                break;</b>
+<i>507</i>&nbsp;            case MT_3D_3x4:
+<i>508</i>&nbsp;                // fall-through
+<i>509</i>&nbsp;            case MT_3D_4x4:
+<b class="nc"><i>510</i>&nbsp;                switch(row) {</b>
+<i>511</i>&nbsp;                    case 0:
+<b class="nc"><i>512</i>&nbsp;                        switch(column) {</b>
+<b class="nc"><i>513</i>&nbsp;                            case 0: return getMxx();</b>
+<b class="nc"><i>514</i>&nbsp;                            case 1: return getMxy();</b>
+<b class="nc"><i>515</i>&nbsp;                            case 2: return getMxz();</b>
+<b class="nc"><i>516</i>&nbsp;                            case 3: return getTx();</b>
+<i>517</i>&nbsp;                        }
+<i>518</i>&nbsp;                    case 1:
+<b class="nc"><i>519</i>&nbsp;                        switch(column) {</b>
+<b class="nc"><i>520</i>&nbsp;                            case 0: return getMyx();</b>
+<b class="nc"><i>521</i>&nbsp;                            case 1: return getMyy();</b>
+<b class="nc"><i>522</i>&nbsp;                            case 2: return getMyz();</b>
+<b class="nc"><i>523</i>&nbsp;                            case 3: return getTy();</b>
+<i>524</i>&nbsp;                        }
+<i>525</i>&nbsp;                    case 2:
+<b class="nc"><i>526</i>&nbsp;                        switch(column) {</b>
+<b class="nc"><i>527</i>&nbsp;                            case 0: return getMzx();</b>
+<b class="nc"><i>528</i>&nbsp;                            case 1: return getMzy();</b>
+<b class="nc"><i>529</i>&nbsp;                            case 2: return getMzz();</b>
+<b class="nc"><i>530</i>&nbsp;                            case 3: return getTz();</b>
+<i>531</i>&nbsp;                        }
+<i>532</i>&nbsp;                    case 3:
+<b class="nc"><i>533</i>&nbsp;                        switch(column) {</b>
+<b class="nc"><i>534</i>&nbsp;                            case 0: return 0.0;</b>
+<b class="nc"><i>535</i>&nbsp;                            case 1: return 0.0;</b>
+<b class="nc"><i>536</i>&nbsp;                            case 2: return 0.0;</b>
+<b class="nc"><i>537</i>&nbsp;                            case 3: return 1.0;</b>
+<i>538</i>&nbsp;                        }
+<i>539</i>&nbsp;                }
+<i>540</i>&nbsp;                break;
+<i>541</i>&nbsp;        }
+<i>542</i>&nbsp;        // cannot reach here
+<b class="nc"><i>543</i>&nbsp;        throw new InternalError(&quot;Unsupported matrix type &quot; + type);</b>
+<i>544</i>&nbsp;    }
+<i>545</i>&nbsp;
+<i>546</i>&nbsp;    /* *************************************************************************
+<i>547</i>&nbsp;     *                                                                         *
+<i>548</i>&nbsp;     *                           State getters                                 *
+<i>549</i>&nbsp;     *                                                                         *
+<i>550</i>&nbsp;     **************************************************************************/
+<i>551</i>&nbsp;
+<i>552</i>&nbsp;    /**
+<i>553</i>&nbsp;     * Computes if this transform is currently a 2D transform (has no effect
+<i>554</i>&nbsp;     * in the direction of Z axis).
+<i>555</i>&nbsp;     * Used by the subclasses to effectively provide value of the type2D
+<i>556</i>&nbsp;     * property.
+<i>557</i>&nbsp;     * @return true if this transform is currently 2D-only
+<i>558</i>&nbsp;     */
+<i>559</i>&nbsp;    boolean computeIs2D() {
+<b class="nc"><i>560</i>&nbsp;        return getMxz() == 0.0 &amp;&amp; getMzx() == 0.0 &amp;&amp; getMzy() == 0.0 &amp;&amp;</b>
+<b class="nc"><i>561</i>&nbsp;                    getMzz() == 1.0 &amp;&amp; getTz() == 0.0;</b>
+<i>562</i>&nbsp;    }
+<i>563</i>&nbsp;
+<i>564</i>&nbsp;    /**
+<i>565</i>&nbsp;     * Computes if this transform is currently an identity (has
+<i>566</i>&nbsp;     * no effect in any direction).
+<i>567</i>&nbsp;     * Used by the subclasses to effectively provide value of the identity
+<i>568</i>&nbsp;     * property.
+<i>569</i>&nbsp;     * @return true if this transform is currently an identity transform
+<i>570</i>&nbsp;     */
+<i>571</i>&nbsp;    boolean computeIsIdentity() {
+<b class="nc"><i>572</i>&nbsp;        return</b>
+<b class="nc"><i>573</i>&nbsp;            getMxx() == 1.0 &amp;&amp; getMxy() == 0.0 &amp;&amp; getMxz() == 0.0 &amp;&amp; getTx() == 0.0 &amp;&amp;</b>
+<b class="nc"><i>574</i>&nbsp;            getMyx() == 0.0 &amp;&amp; getMyy() == 1.0 &amp;&amp; getMyz() == 0.0 &amp;&amp; getTy() == 0.0 &amp;&amp;</b>
+<b class="nc"><i>575</i>&nbsp;            getMzx() == 0.0 &amp;&amp; getMzy() == 0.0 &amp;&amp; getMzz() == 1.0 &amp;&amp; getTz() == 0.0;</b>
+<i>576</i>&nbsp;    }
+<i>577</i>&nbsp;
+<i>578</i>&nbsp;    /**
+<i>579</i>&nbsp;     * Computes determinant of the transformation matrix.
+<i>580</i>&nbsp;     * Among other things, determinant can be used for testing this transform&#39;s
+<i>581</i>&nbsp;     * invertibility - it is invertible if determinant is not equal to zero.
+<i>582</i>&nbsp;     * @return Determinant of the transformation matrix
+<i>583</i>&nbsp;     * @since JavaFX 8.0
+<i>584</i>&nbsp;     */
+<i>585</i>&nbsp;    public double determinant() {
+<b class="nc"><i>586</i>&nbsp;        final double myx = getMyx();</b>
+<b class="nc"><i>587</i>&nbsp;        final double myy = getMyy();</b>
+<b class="nc"><i>588</i>&nbsp;        final double myz = getMyz();</b>
+<b class="nc"><i>589</i>&nbsp;        final double mzx = getMzx();</b>
+<b class="nc"><i>590</i>&nbsp;        final double mzy = getMzy();</b>
+<b class="nc"><i>591</i>&nbsp;        final double mzz = getMzz();</b>
+<i>592</i>&nbsp;
+<b class="nc"><i>593</i>&nbsp;        return (getMxx() * (myy * mzz - mzy * myz) +</b>
+<b class="nc"><i>594</i>&nbsp;                getMxy() * (myz * mzx - mzz * myx) +</b>
+<b class="nc"><i>595</i>&nbsp;                getMxz() * (myx * mzy - mzx * myy));</b>
+<i>596</i>&nbsp;    }
+<i>597</i>&nbsp;
+<i>598</i>&nbsp;    /**
+<i>599</i>&nbsp;     * Determines if this is currently a 2D transform.
+<i>600</i>&nbsp;     * Transform is 2D if it has no effect along the Z axis.
+<i>601</i>&nbsp;     * @since JavaFX 8.0
+<i>602</i>&nbsp;     */
+<i>603</i>&nbsp;    private LazyBooleanProperty type2D;
+<i>604</i>&nbsp;
+<i>605</i>&nbsp;    public final boolean isType2D() {
+<b class="nc"><i>606</i>&nbsp;        return type2D == null ? computeIs2D() : type2D.get();</b>
+<i>607</i>&nbsp;    }
+<i>608</i>&nbsp;
+<i>609</i>&nbsp;    public final ReadOnlyBooleanProperty type2DProperty() {
+<b class="nc"><i>610</i>&nbsp;        if (type2D == null) {</b>
+<b class="nc"><i>611</i>&nbsp;            type2D = new LazyBooleanProperty() {</b>
+<i>612</i>&nbsp;
+<i>613</i>&nbsp;                @Override
+<i>614</i>&nbsp;                protected boolean computeValue() {
+<b class="nc"><i>615</i>&nbsp;                    return computeIs2D();</b>
+<i>616</i>&nbsp;                }
+<i>617</i>&nbsp;
+<i>618</i>&nbsp;                @Override
+<i>619</i>&nbsp;                public Object getBean() {
+<b class="nc"><i>620</i>&nbsp;                    return Transform.this;</b>
+<i>621</i>&nbsp;                }
+<i>622</i>&nbsp;
+<i>623</i>&nbsp;                @Override
+<i>624</i>&nbsp;                public String getName() {
+<b class="nc"><i>625</i>&nbsp;                    return &quot;type2D&quot;;</b>
+<i>626</i>&nbsp;                }
+<i>627</i>&nbsp;            };
+<i>628</i>&nbsp;        }
+<b class="nc"><i>629</i>&nbsp;        return type2D;</b>
+<i>630</i>&nbsp;    }
+<i>631</i>&nbsp;
+<i>632</i>&nbsp;    /**
+<i>633</i>&nbsp;     * Determines if this is currently an identity transform.
+<i>634</i>&nbsp;     * Identity transform has no effect on the transformed nodes.
+<i>635</i>&nbsp;     * @since JavaFX 8.0
+<i>636</i>&nbsp;     */
+<i>637</i>&nbsp;    private LazyBooleanProperty identity;
+<i>638</i>&nbsp;
+<i>639</i>&nbsp;    public final boolean isIdentity() {
+<b class="nc"><i>640</i>&nbsp;        return identity == null ? computeIsIdentity() : identity.get();</b>
+<i>641</i>&nbsp;    }
+<i>642</i>&nbsp;
+<i>643</i>&nbsp;    public final ReadOnlyBooleanProperty identityProperty() {
+<b class="nc"><i>644</i>&nbsp;        if (identity == null) {</b>
+<b class="nc"><i>645</i>&nbsp;            identity = new LazyBooleanProperty() {</b>
+<i>646</i>&nbsp;
+<i>647</i>&nbsp;                @Override
+<i>648</i>&nbsp;                protected boolean computeValue() {
+<b class="nc"><i>649</i>&nbsp;                    return computeIsIdentity();</b>
+<i>650</i>&nbsp;                }
+<i>651</i>&nbsp;
+<i>652</i>&nbsp;                @Override
+<i>653</i>&nbsp;                public Object getBean() {
+<b class="nc"><i>654</i>&nbsp;                    return Transform.this;</b>
+<i>655</i>&nbsp;                }
+<i>656</i>&nbsp;
+<i>657</i>&nbsp;                @Override
+<i>658</i>&nbsp;                public String getName() {
+<b class="nc"><i>659</i>&nbsp;                    return &quot;identity&quot;;</b>
+<i>660</i>&nbsp;                }
+<i>661</i>&nbsp;            };
+<i>662</i>&nbsp;        }
+<b class="nc"><i>663</i>&nbsp;        return identity;</b>
+<i>664</i>&nbsp;    }
+<i>665</i>&nbsp;
+<i>666</i>&nbsp;    /**
+<i>667</i>&nbsp;     * Lazily computed read-only boolean property implementation.
+<i>668</i>&nbsp;     * Used for type2D and identity properties.
+<i>669</i>&nbsp;     */
+<b class="nc"><i>670</i>&nbsp;    private static abstract class LazyBooleanProperty</b>
+<i>671</i>&nbsp;            extends ReadOnlyBooleanProperty {
+<i>672</i>&nbsp;
+<i>673</i>&nbsp;        private ExpressionHelper&lt;Boolean&gt; helper;
+<i>674</i>&nbsp;        private boolean valid;
+<i>675</i>&nbsp;        private boolean value;
+<i>676</i>&nbsp;
+<i>677</i>&nbsp;        @Override
+<i>678</i>&nbsp;        public void addListener(InvalidationListener listener) {
+<b class="nc"><i>679</i>&nbsp;            helper = ExpressionHelper.addListener(helper, this, listener);</b>
+<b class="nc"><i>680</i>&nbsp;        }</b>
+<i>681</i>&nbsp;
+<i>682</i>&nbsp;        @Override
+<i>683</i>&nbsp;        public void removeListener(InvalidationListener listener) {
+<b class="nc"><i>684</i>&nbsp;            helper = ExpressionHelper.removeListener(helper, listener);</b>
+<b class="nc"><i>685</i>&nbsp;        }</b>
+<i>686</i>&nbsp;
+<i>687</i>&nbsp;        @Override
+<i>688</i>&nbsp;        public void addListener(ChangeListener&lt;? super Boolean&gt; listener) {
+<b class="nc"><i>689</i>&nbsp;            helper = ExpressionHelper.addListener(helper, this, listener);</b>
+<b class="nc"><i>690</i>&nbsp;        }</b>
+<i>691</i>&nbsp;
+<i>692</i>&nbsp;        @Override
+<i>693</i>&nbsp;        public void removeListener(ChangeListener&lt;? super Boolean&gt; listener) {
+<b class="nc"><i>694</i>&nbsp;            helper = ExpressionHelper.removeListener(helper, listener);</b>
+<b class="nc"><i>695</i>&nbsp;        }</b>
+<i>696</i>&nbsp;
+<i>697</i>&nbsp;        @Override
+<i>698</i>&nbsp;        public boolean get() {
+<b class="nc"><i>699</i>&nbsp;            if (!valid) {</b>
+<b class="nc"><i>700</i>&nbsp;                value = computeValue();</b>
+<b class="nc"><i>701</i>&nbsp;                valid = true;</b>
+<i>702</i>&nbsp;            }
+<i>703</i>&nbsp;
+<b class="nc"><i>704</i>&nbsp;            return value;</b>
+<i>705</i>&nbsp;        }
+<i>706</i>&nbsp;
+<i>707</i>&nbsp;        public void invalidate() {
+<b class="nc"><i>708</i>&nbsp;            if (valid) {</b>
+<b class="nc"><i>709</i>&nbsp;                valid = false;</b>
+<b class="nc"><i>710</i>&nbsp;                ExpressionHelper.fireValueChangedEvent(helper);</b>
+<i>711</i>&nbsp;            }
+<b class="nc"><i>712</i>&nbsp;        }</b>
+<i>713</i>&nbsp;
+<i>714</i>&nbsp;        protected abstract boolean computeValue();
+<i>715</i>&nbsp;    }
+<i>716</i>&nbsp;
+<i>717</i>&nbsp;    /**
+<i>718</i>&nbsp;     * Transforms the specified point by this transform and by the specified
+<i>719</i>&nbsp;     * transform and returns distance of the result points. Used for similarTo
+<i>720</i>&nbsp;     * method. Has to be used only for 2D transforms (otherwise throws an
+<i>721</i>&nbsp;     * exception).
+<i>722</i>&nbsp;     * @param t the other transform
+<i>723</i>&nbsp;     * @param x point&#39;s X coordinate
+<i>724</i>&nbsp;     * @param y point&#39;s Y coordinate
+<i>725</i>&nbsp;     * @return distance of the transformed points
+<i>726</i>&nbsp;     */
+<i>727</i>&nbsp;    private double transformDiff(Transform t, double x, double y) {
+<b class="nc"><i>728</i>&nbsp;        final Point2D byThis = transform(x, y);</b>
+<b class="nc"><i>729</i>&nbsp;        final Point2D byOther = t.transform(x, y);</b>
+<b class="nc"><i>730</i>&nbsp;        return byThis.distance(byOther);</b>
+<i>731</i>&nbsp;    }
+<i>732</i>&nbsp;
+<i>733</i>&nbsp;    /**
+<i>734</i>&nbsp;     * Transforms the specified point by this transform and by the specified
+<i>735</i>&nbsp;     * transform and returns distance of the result points. Used for similarTo
+<i>736</i>&nbsp;     * method.
+<i>737</i>&nbsp;     * @param t the other transform
+<i>738</i>&nbsp;     * @param x point&#39;s X coordinate
+<i>739</i>&nbsp;     * @param y point&#39;s Y coordinate
+<i>740</i>&nbsp;     * @param z point&#39;s Z coordinate
+<i>741</i>&nbsp;     * @return distance of the transformed points
+<i>742</i>&nbsp;     */
+<i>743</i>&nbsp;    private double transformDiff(Transform t, double x, double y, double z) {
+<b class="nc"><i>744</i>&nbsp;        final Point3D byThis = transform(x, y, z);</b>
+<b class="nc"><i>745</i>&nbsp;        final Point3D byOther = t.transform(x, y, z);</b>
+<b class="nc"><i>746</i>&nbsp;        return byThis.distance(byOther);</b>
+<i>747</i>&nbsp;    }
+<i>748</i>&nbsp;
+<i>749</i>&nbsp;    /**
+<i>750</i>&nbsp;     * Checks if this transform is similar to the specified transform.
+<i>751</i>&nbsp;     * The two transforms are considered similar if any point from
+<i>752</i>&nbsp;     * {@code range} is transformed by them to points that are no farther
+<i>753</i>&nbsp;     * than {@code maxDelta} from each other.
+<i>754</i>&nbsp;     * @param transform transform to be compared to this transform
+<i>755</i>&nbsp;     * @param range region of interest on which the two transforms are compared
+<i>756</i>&nbsp;     * @param maxDelta maximum allowed distance for the results of transforming
+<i>757</i>&nbsp;     *                 any single point from {@code range} by the two transforms
+<i>758</i>&nbsp;     * @return true if the transforms are similar according to the specified
+<i>759</i>&nbsp;     *              criteria
+<i>760</i>&nbsp;     * @throws NullPointerException if the specified {@code transform}
+<i>761</i>&nbsp;     *         or {@code range} is null
+<i>762</i>&nbsp;     * @since JavaFX 8.0
+<i>763</i>&nbsp;     */
+<i>764</i>&nbsp;    public boolean similarTo(Transform transform, Bounds range, double maxDelta) {
+<i>765</i>&nbsp;
+<i>766</i>&nbsp;        double cornerX, cornerY, cornerZ;
+<i>767</i>&nbsp;
+<b class="nc"><i>768</i>&nbsp;        if (isType2D() &amp;&amp; transform.isType2D()) {</b>
+<b class="nc"><i>769</i>&nbsp;            cornerX = range.getMinX();</b>
+<b class="nc"><i>770</i>&nbsp;            cornerY = range.getMinY();</b>
+<i>771</i>&nbsp;
+<b class="nc"><i>772</i>&nbsp;            if (transformDiff(transform, cornerX, cornerY) &gt; maxDelta) {</b>
+<b class="nc"><i>773</i>&nbsp;                return false;</b>
+<i>774</i>&nbsp;            }
+<i>775</i>&nbsp;
+<b class="nc"><i>776</i>&nbsp;            cornerY = range.getMaxY();</b>
+<b class="nc"><i>777</i>&nbsp;            if (transformDiff(transform, cornerX, cornerY) &gt; maxDelta) {</b>
+<b class="nc"><i>778</i>&nbsp;                return false;</b>
+<i>779</i>&nbsp;            }
+<i>780</i>&nbsp;
+<b class="nc"><i>781</i>&nbsp;            cornerX = range.getMaxX();</b>
+<b class="nc"><i>782</i>&nbsp;            cornerY = range.getMinY();</b>
+<b class="nc"><i>783</i>&nbsp;            if (transformDiff(transform, cornerX, cornerY) &gt; maxDelta) {</b>
+<b class="nc"><i>784</i>&nbsp;                return false;</b>
+<i>785</i>&nbsp;            }
+<i>786</i>&nbsp;
+<b class="nc"><i>787</i>&nbsp;            cornerY = range.getMaxY();</b>
+<b class="nc"><i>788</i>&nbsp;            if (transformDiff(transform, cornerX, cornerY) &gt; maxDelta) {</b>
+<b class="nc"><i>789</i>&nbsp;                return false;</b>
+<i>790</i>&nbsp;            }
+<i>791</i>&nbsp;
+<b class="nc"><i>792</i>&nbsp;            return true;</b>
+<i>793</i>&nbsp;        }
+<i>794</i>&nbsp;
+<b class="nc"><i>795</i>&nbsp;        cornerX = range.getMinX();</b>
+<b class="nc"><i>796</i>&nbsp;        cornerY = range.getMinY();</b>
+<b class="nc"><i>797</i>&nbsp;        cornerZ = range.getMinZ();</b>
+<b class="nc"><i>798</i>&nbsp;        if (transformDiff(transform, cornerX, cornerY, cornerZ) &gt; maxDelta) {</b>
+<b class="nc"><i>799</i>&nbsp;            return false;</b>
+<i>800</i>&nbsp;        }
+<i>801</i>&nbsp;
+<b class="nc"><i>802</i>&nbsp;        cornerY = range.getMaxY();</b>
+<b class="nc"><i>803</i>&nbsp;        if (transformDiff(transform, cornerX, cornerY, cornerZ) &gt; maxDelta) {</b>
+<b class="nc"><i>804</i>&nbsp;            return false;</b>
+<i>805</i>&nbsp;        }
+<i>806</i>&nbsp;
+<b class="nc"><i>807</i>&nbsp;        cornerX = range.getMaxX();</b>
+<b class="nc"><i>808</i>&nbsp;        cornerY = range.getMinY();</b>
+<b class="nc"><i>809</i>&nbsp;        if (transformDiff(transform, cornerX, cornerY, cornerZ) &gt; maxDelta) {</b>
+<b class="nc"><i>810</i>&nbsp;            return false;</b>
+<i>811</i>&nbsp;        }
+<i>812</i>&nbsp;
+<b class="nc"><i>813</i>&nbsp;        cornerY = range.getMaxY();</b>
+<b class="nc"><i>814</i>&nbsp;        if (transformDiff(transform, cornerX, cornerY, cornerZ) &gt; maxDelta) {</b>
+<b class="nc"><i>815</i>&nbsp;            return false;</b>
+<i>816</i>&nbsp;        }
+<i>817</i>&nbsp;
+<b class="nc"><i>818</i>&nbsp;        if (range.getDepth() != 0.0) {</b>
+<b class="nc"><i>819</i>&nbsp;            cornerX = range.getMinX();</b>
+<b class="nc"><i>820</i>&nbsp;            cornerY = range.getMinY();</b>
+<b class="nc"><i>821</i>&nbsp;            cornerZ = range.getMaxZ();</b>
+<b class="nc"><i>822</i>&nbsp;            if (transformDiff(transform, cornerX, cornerY, cornerZ) &gt; maxDelta) {</b>
+<b class="nc"><i>823</i>&nbsp;                return false;</b>
+<i>824</i>&nbsp;            }
+<i>825</i>&nbsp;
+<b class="nc"><i>826</i>&nbsp;            cornerY = range.getMaxY();</b>
+<b class="nc"><i>827</i>&nbsp;            if (transformDiff(transform, cornerX, cornerY, cornerZ) &gt; maxDelta) {</b>
+<b class="nc"><i>828</i>&nbsp;                return false;</b>
+<i>829</i>&nbsp;            }
+<i>830</i>&nbsp;
+<b class="nc"><i>831</i>&nbsp;            cornerX = range.getMaxX();</b>
+<b class="nc"><i>832</i>&nbsp;            cornerY = range.getMinY();</b>
+<b class="nc"><i>833</i>&nbsp;            if (transformDiff(transform, cornerX, cornerY, cornerZ) &gt; maxDelta) {</b>
+<b class="nc"><i>834</i>&nbsp;                return false;</b>
+<i>835</i>&nbsp;            }
+<i>836</i>&nbsp;
+<b class="nc"><i>837</i>&nbsp;            cornerY = range.getMaxY();</b>
+<b class="nc"><i>838</i>&nbsp;            if (transformDiff(transform, cornerX, cornerY, cornerZ) &gt; maxDelta) {</b>
+<b class="nc"><i>839</i>&nbsp;                return false;</b>
+<i>840</i>&nbsp;            }
+<i>841</i>&nbsp;        }
+<i>842</i>&nbsp;
+<b class="nc"><i>843</i>&nbsp;        return true;</b>
+<i>844</i>&nbsp;    }
+<i>845</i>&nbsp;
+<i>846</i>&nbsp;    /* *************************************************************************
+<i>847</i>&nbsp;     *                                                                         *
+<i>848</i>&nbsp;     *                           Array getters                                 *
+<i>849</i>&nbsp;     *                                                                         *
+<i>850</i>&nbsp;     **************************************************************************/
+<i>851</i>&nbsp;
+<i>852</i>&nbsp;    /**
+<i>853</i>&nbsp;     * Core of the toArray implementation for the 2D case.
+<i>854</i>&nbsp;     * All of the checks has been made by the enclosing method as well as
+<i>855</i>&nbsp;     * the constant elements filled, this method only fills the varying
+<i>856</i>&nbsp;     * elements to the array. Used by subclasses to fill
+<i>857</i>&nbsp;     * the elements efficiently.
+<i>858</i>&nbsp;     * @param array array to be filled with the 6 2D elements
+<i>859</i>&nbsp;     */
+<i>860</i>&nbsp;    void fill2DArray(double[] array) {
+<b class="nc"><i>861</i>&nbsp;        array[0] = getMxx();</b>
+<b class="nc"><i>862</i>&nbsp;        array[1] = getMxy();</b>
+<b class="nc"><i>863</i>&nbsp;        array[2] = getTx();</b>
+<b class="nc"><i>864</i>&nbsp;        array[3] = getMyx();</b>
+<b class="nc"><i>865</i>&nbsp;        array[4] = getMyy();</b>
+<b class="nc"><i>866</i>&nbsp;        array[5] = getTy();</b>
+<b class="nc"><i>867</i>&nbsp;    }</b>
+<i>868</i>&nbsp;
+<i>869</i>&nbsp;    /**
+<i>870</i>&nbsp;     * Core of the toArray implementation for the 3D case.
+<i>871</i>&nbsp;     * All of the checks has been made by the enclosing method as well as
+<i>872</i>&nbsp;     * the constant elements filled, this method only fills the varying
+<i>873</i>&nbsp;     * elements to the array. Used by subclasses to fill
+<i>874</i>&nbsp;     * the elements efficiently.
+<i>875</i>&nbsp;     * @param array array to be filled with the 12 3D elements
+<i>876</i>&nbsp;     */
+<i>877</i>&nbsp;    void fill3DArray(double[] array) {
+<b class="nc"><i>878</i>&nbsp;        array[0] = getMxx();</b>
+<b class="nc"><i>879</i>&nbsp;        array[1] = getMxy();</b>
+<b class="nc"><i>880</i>&nbsp;        array[2] = getMxz();</b>
+<b class="nc"><i>881</i>&nbsp;        array[3] = getTx();</b>
+<b class="nc"><i>882</i>&nbsp;        array[4] = getMyx();</b>
+<b class="nc"><i>883</i>&nbsp;        array[5] = getMyy();</b>
+<b class="nc"><i>884</i>&nbsp;        array[6] = getMyz();</b>
+<b class="nc"><i>885</i>&nbsp;        array[7] = getTy();</b>
+<b class="nc"><i>886</i>&nbsp;        array[8] = getMzx();</b>
+<b class="nc"><i>887</i>&nbsp;        array[9] = getMzy();</b>
+<b class="nc"><i>888</i>&nbsp;        array[10] = getMzz();</b>
+<b class="nc"><i>889</i>&nbsp;        array[11] = getTz();</b>
+<b class="nc"><i>890</i>&nbsp;    }</b>
+<i>891</i>&nbsp;
+<i>892</i>&nbsp;    /**
+<i>893</i>&nbsp;     * Returns an array containing the flattened transformation matrix.
+<i>894</i>&nbsp;     * If the requested matrix type fits in the specified array, it is returned
+<i>895</i>&nbsp;     * therein. Otherwise, a new array is created.
+<i>896</i>&nbsp;     * @param type matrix type to be filled in the array
+<i>897</i>&nbsp;     * @param array array into which the elements of the matrix are to be
+<i>898</i>&nbsp;     *              stored, if it is non-null and big enough; otherwise,
+<i>899</i>&nbsp;     *              a new array is created for this purpose.
+<i>900</i>&nbsp;     * @return an array containing the elements of the requested matrix type
+<i>901</i>&nbsp;     *         representing this transform
+<i>902</i>&nbsp;     * @throws IllegalArgumentException if a 2D matrix type is requested for
+<i>903</i>&nbsp;     *         a 3D transform
+<i>904</i>&nbsp;     * @throws NullPointerException if the specified {@code type} is null
+<i>905</i>&nbsp;     * @since JavaFX 8.0
+<i>906</i>&nbsp;     */
+<i>907</i>&nbsp;    public double[] toArray(MatrixType type, double[] array) {
+<b class="nc"><i>908</i>&nbsp;        checkRequestedMAT(type);</b>
+<i>909</i>&nbsp;
+<b class="nc"><i>910</i>&nbsp;        if (array == null || array.length &lt; type.elements()) {</b>
+<b class="nc"><i>911</i>&nbsp;            array = new double[type.elements()];</b>
+<i>912</i>&nbsp;        }
+<i>913</i>&nbsp;
+<b class="nc"><i>914</i>&nbsp;        switch (type) {</b>
+<i>915</i>&nbsp;            case MT_2D_3x3:
+<b class="nc"><i>916</i>&nbsp;                array[6] = 0.0;</b>
+<b class="nc"><i>917</i>&nbsp;                array[7] = 0.0;</b>
+<b class="nc"><i>918</i>&nbsp;                array[8] = 1.0;</b>
+<i>919</i>&nbsp;                // fall-through
+<i>920</i>&nbsp;            case MT_2D_2x3:
+<b class="nc"><i>921</i>&nbsp;                fill2DArray(array);</b>
+<b class="nc"><i>922</i>&nbsp;                break;</b>
+<i>923</i>&nbsp;            case MT_3D_4x4:
+<b class="nc"><i>924</i>&nbsp;                array[12] = 0.0;</b>
+<b class="nc"><i>925</i>&nbsp;                array[13] = 0.0;</b>
+<b class="nc"><i>926</i>&nbsp;                array[14] = 0.0;</b>
+<b class="nc"><i>927</i>&nbsp;                array[15] = 1.0;</b>
+<i>928</i>&nbsp;                // fall-through
+<i>929</i>&nbsp;            case MT_3D_3x4:
+<b class="nc"><i>930</i>&nbsp;                fill3DArray(array);</b>
+<b class="nc"><i>931</i>&nbsp;                break;</b>
+<i>932</i>&nbsp;            default:
+<b class="nc"><i>933</i>&nbsp;                throw new InternalError(&quot;Unsupported matrix type &quot; + type);</b>
+<i>934</i>&nbsp;        }
+<i>935</i>&nbsp;
+<b class="nc"><i>936</i>&nbsp;        return array;</b>
+<i>937</i>&nbsp;    }
+<i>938</i>&nbsp;
+<i>939</i>&nbsp;    /**
+<i>940</i>&nbsp;     * Returns an array containing the flattened transformation matrix.
+<i>941</i>&nbsp;     * @param type matrix type to be filled in the array
+<i>942</i>&nbsp;     * @return an array containing the elements of the requested matrix type
+<i>943</i>&nbsp;     *         representing this transform
+<i>944</i>&nbsp;     * @throws IllegalArgumentException if a 2D matrix type is requested for
+<i>945</i>&nbsp;     *         a 3D transform
+<i>946</i>&nbsp;     * @throws NullPointerException if the specified {@code type} is null
+<i>947</i>&nbsp;     * @since JavaFX 8.0
+<i>948</i>&nbsp;     */
+<i>949</i>&nbsp;    public double[] toArray(MatrixType type) {
+<b class="nc"><i>950</i>&nbsp;        return toArray(type, null);</b>
+<i>951</i>&nbsp;    }
+<i>952</i>&nbsp;
+<i>953</i>&nbsp;    /**
+<i>954</i>&nbsp;     * Returns an array containing a row of the transformation matrix.
+<i>955</i>&nbsp;     * If the row of the requested matrix type fits in the specified array,
+<i>956</i>&nbsp;     * it is returned therein. Otherwise, a new array is created.
+<i>957</i>&nbsp;     * @param type matrix type whose row is to be filled in the array
+<i>958</i>&nbsp;     * @param row zero-based index of the row
+<i>959</i>&nbsp;     * @param array array into which the elements of the row are to be
+<i>960</i>&nbsp;     *              stored, if it is non-null and big enough; otherwise,
+<i>961</i>&nbsp;     *              a new array is created for this purpose.
+<i>962</i>&nbsp;     * @return an array containing the requested row of the requested matrix
+<i>963</i>&nbsp;     *         type representing this transform
+<i>964</i>&nbsp;     * @throws IllegalArgumentException if a 2D matrix type is requested for
+<i>965</i>&nbsp;     *         a 3D transform
+<i>966</i>&nbsp;     * @throws IndexOutOfBoundsException if the {@code row} index is not within
+<i>967</i>&nbsp;     *         the number of rows of the specified matrix type
+<i>968</i>&nbsp;     * @throws NullPointerException if the specified {@code type} is null
+<i>969</i>&nbsp;     * @since JavaFX 8.0
+<i>970</i>&nbsp;     */
+<i>971</i>&nbsp;    public double[] row(MatrixType type, int row, double[] array) {
+<i>972</i>&nbsp;
+<b class="nc"><i>973</i>&nbsp;        checkRequestedMAT(type);</b>
+<i>974</i>&nbsp;
+<b class="nc"><i>975</i>&nbsp;        if (row &lt; 0 || row &gt;= type.rows()) {</b>
+<b class="nc"><i>976</i>&nbsp;            throw new IndexOutOfBoundsException(</b>
+<i>977</i>&nbsp;                    &quot;Cannot get row &quot; + row + &quot; from &quot; + type);
+<i>978</i>&nbsp;        }
+<i>979</i>&nbsp;
+<b class="nc"><i>980</i>&nbsp;        if (array == null || array.length &lt; type.columns()) {</b>
+<b class="nc"><i>981</i>&nbsp;            array = new double[type.columns()];</b>
+<i>982</i>&nbsp;        }
+<i>983</i>&nbsp;
+<b class="nc"><i>984</i>&nbsp;        switch(type) {</b>
+<i>985</i>&nbsp;            case MT_2D_2x3:
+<i>986</i>&nbsp;            case MT_2D_3x3:
+<b class="nc"><i>987</i>&nbsp;                switch (row) {</b>
+<i>988</i>&nbsp;                    case 0:
+<b class="nc"><i>989</i>&nbsp;                        array[0] = getMxx();</b>
+<b class="nc"><i>990</i>&nbsp;                        array[1] = getMxy();</b>
+<b class="nc"><i>991</i>&nbsp;                        array[2] = getTx();</b>
+<b class="nc"><i>992</i>&nbsp;                        break;</b>
+<i>993</i>&nbsp;                    case 1:
+<b class="nc"><i>994</i>&nbsp;                        array[0] = getMyx();</b>
+<b class="nc"><i>995</i>&nbsp;                        array[1] = getMyy();</b>
+<b class="nc"><i>996</i>&nbsp;                        array[2] = getTy();</b>
+<b class="nc"><i>997</i>&nbsp;                        break;</b>
+<i>998</i>&nbsp;                    case 2:
+<b class="nc"><i>999</i>&nbsp;                        array[0] = 0.0;</b>
+<b class="nc"><i>1000</i>&nbsp;                        array[1] = 0.0;</b>
+<b class="nc"><i>1001</i>&nbsp;                        array[2] = 1.0;</b>
+<i>1002</i>&nbsp;                        break;
+<i>1003</i>&nbsp;                }
+<b class="nc"><i>1004</i>&nbsp;                break;</b>
+<i>1005</i>&nbsp;            case MT_3D_3x4:
+<i>1006</i>&nbsp;            case MT_3D_4x4:
+<b class="nc"><i>1007</i>&nbsp;                switch (row) {</b>
+<i>1008</i>&nbsp;                    case 0:
+<b class="nc"><i>1009</i>&nbsp;                        array[0] = getMxx();</b>
+<b class="nc"><i>1010</i>&nbsp;                        array[1] = getMxy();</b>
+<b class="nc"><i>1011</i>&nbsp;                        array[2] = getMxz();</b>
+<b class="nc"><i>1012</i>&nbsp;                        array[3] = getTx();</b>
+<b class="nc"><i>1013</i>&nbsp;                        break;</b>
+<i>1014</i>&nbsp;                    case 1:
+<b class="nc"><i>1015</i>&nbsp;                        array[0] = getMyx();</b>
+<b class="nc"><i>1016</i>&nbsp;                        array[1] = getMyy();</b>
+<b class="nc"><i>1017</i>&nbsp;                        array[2] = getMyz();</b>
+<b class="nc"><i>1018</i>&nbsp;                        array[3] = getTy();</b>
+<b class="nc"><i>1019</i>&nbsp;                        break;</b>
+<i>1020</i>&nbsp;                    case 2:
+<b class="nc"><i>1021</i>&nbsp;                        array[0] = getMzx();</b>
+<b class="nc"><i>1022</i>&nbsp;                        array[1] = getMzy();</b>
+<b class="nc"><i>1023</i>&nbsp;                        array[2] = getMzz();</b>
+<b class="nc"><i>1024</i>&nbsp;                        array[3] = getTz();</b>
+<b class="nc"><i>1025</i>&nbsp;                        break;</b>
+<i>1026</i>&nbsp;                    case 3:
+<b class="nc"><i>1027</i>&nbsp;                        array[0] = 0.0;</b>
+<b class="nc"><i>1028</i>&nbsp;                        array[1] = 0.0;</b>
+<b class="nc"><i>1029</i>&nbsp;                        array[2] = 0.0;</b>
+<b class="nc"><i>1030</i>&nbsp;                        array[3] = 1.0;</b>
+<i>1031</i>&nbsp;                        break;
+<i>1032</i>&nbsp;                }
+<b class="nc"><i>1033</i>&nbsp;                break;</b>
+<i>1034</i>&nbsp;            default:
+<b class="nc"><i>1035</i>&nbsp;                throw new InternalError(&quot;Unsupported row &quot; + row + &quot; of &quot; + type);</b>
+<i>1036</i>&nbsp;        }
+<b class="nc"><i>1037</i>&nbsp;        return array;</b>
+<i>1038</i>&nbsp;    }
+<i>1039</i>&nbsp;
+<i>1040</i>&nbsp;    /**
+<i>1041</i>&nbsp;     * Returns an array containing a row of the transformation matrix.
+<i>1042</i>&nbsp;     * @param type matrix type whose row is to be filled in the array
+<i>1043</i>&nbsp;     * @param row zero-based index of the row
+<i>1044</i>&nbsp;     * @return an array containing the requested row of the requested matrix
+<i>1045</i>&nbsp;     *         type representing this transform
+<i>1046</i>&nbsp;     * @throws IllegalArgumentException if a 2D matrix type is requested for
+<i>1047</i>&nbsp;     *         a 3D transform
+<i>1048</i>&nbsp;     * @throws IndexOutOfBoundsException if the {@code row} index is not within
+<i>1049</i>&nbsp;     *         the number of rows of the specified matrix type
+<i>1050</i>&nbsp;     * @throws NullPointerException if the specified {@code type} is null
+<i>1051</i>&nbsp;     * @since JavaFX 8.0
+<i>1052</i>&nbsp;     */
+<i>1053</i>&nbsp;    public double[] row(MatrixType type, int row) {
+<b class="nc"><i>1054</i>&nbsp;        return row(type, row, null);</b>
+<i>1055</i>&nbsp;    }
+<i>1056</i>&nbsp;
+<i>1057</i>&nbsp;    /**
+<i>1058</i>&nbsp;     * Returns an array containing a column of the transformation matrix.
+<i>1059</i>&nbsp;     * If the column of the requested matrix type fits in the specified array,
+<i>1060</i>&nbsp;     * it is returned therein. Otherwise, a new array is created.
+<i>1061</i>&nbsp;     * @param type matrix type whose column is to be filled in the array
+<i>1062</i>&nbsp;     * @param column zero-based index of the column
+<i>1063</i>&nbsp;     * @param array array into which the elements of the column are to be
+<i>1064</i>&nbsp;     *              stored, if it is non-null and big enough; otherwise,
+<i>1065</i>&nbsp;     *              a new array is created for this purpose.
+<i>1066</i>&nbsp;     * @return an array containing the requested column of the requested matrix
+<i>1067</i>&nbsp;     *         type representing this transform
+<i>1068</i>&nbsp;     * @throws IllegalArgumentException if a 2D matrix type is requested for
+<i>1069</i>&nbsp;     *         a 3D transform
+<i>1070</i>&nbsp;     * @throws IndexOutOfBoundsException if the {@code column} index
+<i>1071</i>&nbsp;     *         is not within the number of columns of the specified matrix type
+<i>1072</i>&nbsp;     * @throws NullPointerException if the specified {@code type} is null
+<i>1073</i>&nbsp;     * @since JavaFX 8.0
+<i>1074</i>&nbsp;     */
+<i>1075</i>&nbsp;    public double[] column(MatrixType type, int column, double[] array) {
+<i>1076</i>&nbsp;
+<b class="nc"><i>1077</i>&nbsp;        checkRequestedMAT(type);</b>
+<i>1078</i>&nbsp;
+<b class="nc"><i>1079</i>&nbsp;        if (column &lt; 0 || column &gt;= type.columns()) {</b>
+<b class="nc"><i>1080</i>&nbsp;            throw new IndexOutOfBoundsException(</b>
+<i>1081</i>&nbsp;                    &quot;Cannot get row &quot; + column + &quot; from &quot; + type);
+<i>1082</i>&nbsp;        }
+<i>1083</i>&nbsp;
+<b class="nc"><i>1084</i>&nbsp;        if (array == null || array.length &lt; type.rows()) {</b>
+<b class="nc"><i>1085</i>&nbsp;            array = new double[type.rows()];</b>
+<i>1086</i>&nbsp;        }
+<i>1087</i>&nbsp;
+<b class="nc"><i>1088</i>&nbsp;        switch(type) {</b>
+<i>1089</i>&nbsp;            case MT_2D_2x3:
+<b class="nc"><i>1090</i>&nbsp;                switch (column) {</b>
+<i>1091</i>&nbsp;                    case 0:
+<b class="nc"><i>1092</i>&nbsp;                        array[0] = getMxx();</b>
+<b class="nc"><i>1093</i>&nbsp;                        array[1] = getMyx();</b>
+<b class="nc"><i>1094</i>&nbsp;                        break;</b>
+<i>1095</i>&nbsp;                    case 1:
+<b class="nc"><i>1096</i>&nbsp;                        array[0] = getMxy();</b>
+<b class="nc"><i>1097</i>&nbsp;                        array[1] = getMyy();</b>
+<b class="nc"><i>1098</i>&nbsp;                        break;</b>
+<i>1099</i>&nbsp;                    case 2:
+<b class="nc"><i>1100</i>&nbsp;                        array[0] = getTx();</b>
+<b class="nc"><i>1101</i>&nbsp;                        array[1] = getTy();</b>
+<i>1102</i>&nbsp;                        break;
+<i>1103</i>&nbsp;                }
+<b class="nc"><i>1104</i>&nbsp;                break;</b>
+<i>1105</i>&nbsp;            case MT_2D_3x3:
+<b class="nc"><i>1106</i>&nbsp;                switch (column) {</b>
+<i>1107</i>&nbsp;                    case 0:
+<b class="nc"><i>1108</i>&nbsp;                        array[0] = getMxx();</b>
+<b class="nc"><i>1109</i>&nbsp;                        array[1] = getMyx();</b>
+<b class="nc"><i>1110</i>&nbsp;                        array[2] = 0.0;</b>
+<b class="nc"><i>1111</i>&nbsp;                        break;</b>
+<i>1112</i>&nbsp;                    case 1:
+<b class="nc"><i>1113</i>&nbsp;                        array[0] = getMxy();</b>
+<b class="nc"><i>1114</i>&nbsp;                        array[1] = getMyy();</b>
+<b class="nc"><i>1115</i>&nbsp;                        array[2] = 0.0;</b>
+<b class="nc"><i>1116</i>&nbsp;                        break;</b>
+<i>1117</i>&nbsp;                    case 2:
+<b class="nc"><i>1118</i>&nbsp;                        array[0] = getTx();</b>
+<b class="nc"><i>1119</i>&nbsp;                        array[1] = getTy();</b>
+<b class="nc"><i>1120</i>&nbsp;                        array[2] = 1.0;</b>
+<i>1121</i>&nbsp;                        break;
+<i>1122</i>&nbsp;                }
+<b class="nc"><i>1123</i>&nbsp;                break;</b>
+<i>1124</i>&nbsp;            case MT_3D_3x4:
+<b class="nc"><i>1125</i>&nbsp;                switch (column) {</b>
+<i>1126</i>&nbsp;                    case 0:
+<b class="nc"><i>1127</i>&nbsp;                        array[0] = getMxx();</b>
+<b class="nc"><i>1128</i>&nbsp;                        array[1] = getMyx();</b>
+<b class="nc"><i>1129</i>&nbsp;                        array[2] = getMzx();</b>
+<b class="nc"><i>1130</i>&nbsp;                        break;</b>
+<i>1131</i>&nbsp;                    case 1:
+<b class="nc"><i>1132</i>&nbsp;                        array[0] = getMxy();</b>
+<b class="nc"><i>1133</i>&nbsp;                        array[1] = getMyy();</b>
+<b class="nc"><i>1134</i>&nbsp;                        array[2] = getMzy();</b>
+<b class="nc"><i>1135</i>&nbsp;                        break;</b>
+<i>1136</i>&nbsp;                    case 2:
+<b class="nc"><i>1137</i>&nbsp;                        array[0] = getMxz();</b>
+<b class="nc"><i>1138</i>&nbsp;                        array[1] = getMyz();</b>
+<b class="nc"><i>1139</i>&nbsp;                        array[2] = getMzz();</b>
+<b class="nc"><i>1140</i>&nbsp;                        break;</b>
+<i>1141</i>&nbsp;                    case 3:
+<b class="nc"><i>1142</i>&nbsp;                        array[0] = getTx();</b>
+<b class="nc"><i>1143</i>&nbsp;                        array[1] = getTy();</b>
+<b class="nc"><i>1144</i>&nbsp;                        array[2] = getTz();</b>
+<i>1145</i>&nbsp;                        break;
+<i>1146</i>&nbsp;                }
+<b class="nc"><i>1147</i>&nbsp;                break;</b>
+<i>1148</i>&nbsp;            case MT_3D_4x4:
+<b class="nc"><i>1149</i>&nbsp;                switch (column) {</b>
+<i>1150</i>&nbsp;                    case 0:
+<b class="nc"><i>1151</i>&nbsp;                        array[0] = getMxx();</b>
+<b class="nc"><i>1152</i>&nbsp;                        array[1] = getMyx();</b>
+<b class="nc"><i>1153</i>&nbsp;                        array[2] = getMzx();</b>
+<b class="nc"><i>1154</i>&nbsp;                        array[3] = 0.0;</b>
+<b class="nc"><i>1155</i>&nbsp;                        break;</b>
+<i>1156</i>&nbsp;                    case 1:
+<b class="nc"><i>1157</i>&nbsp;                        array[0] = getMxy();</b>
+<b class="nc"><i>1158</i>&nbsp;                        array[1] = getMyy();</b>
+<b class="nc"><i>1159</i>&nbsp;                        array[2] = getMzy();</b>
+<b class="nc"><i>1160</i>&nbsp;                        array[3] = 0.0;</b>
+<b class="nc"><i>1161</i>&nbsp;                        break;</b>
+<i>1162</i>&nbsp;                    case 2:
+<b class="nc"><i>1163</i>&nbsp;                        array[0] = getMxz();</b>
+<b class="nc"><i>1164</i>&nbsp;                        array[1] = getMyz();</b>
+<b class="nc"><i>1165</i>&nbsp;                        array[2] = getMzz();</b>
+<b class="nc"><i>1166</i>&nbsp;                        array[3] = 0.0;</b>
+<b class="nc"><i>1167</i>&nbsp;                        break;</b>
+<i>1168</i>&nbsp;                    case 3:
+<b class="nc"><i>1169</i>&nbsp;                        array[0] = getTx();</b>
+<b class="nc"><i>1170</i>&nbsp;                        array[1] = getTy();</b>
+<b class="nc"><i>1171</i>&nbsp;                        array[2] = getTz();</b>
+<b class="nc"><i>1172</i>&nbsp;                        array[3] = 1.0;</b>
+<i>1173</i>&nbsp;                        break;
+<i>1174</i>&nbsp;                }
+<b class="nc"><i>1175</i>&nbsp;                break;</b>
+<i>1176</i>&nbsp;            default:
+<b class="nc"><i>1177</i>&nbsp;                throw new InternalError(&quot;Unsupported column &quot; + column + &quot; of &quot;</b>
+<i>1178</i>&nbsp;                        + type);
+<i>1179</i>&nbsp;        }
+<b class="nc"><i>1180</i>&nbsp;        return array;</b>
+<i>1181</i>&nbsp;    }
+<i>1182</i>&nbsp;
+<i>1183</i>&nbsp;    /**
+<i>1184</i>&nbsp;     * Returns an array containing a column of the transformation matrix.
+<i>1185</i>&nbsp;     * @param type matrix type whose column is to be filled in the array
+<i>1186</i>&nbsp;     * @param column zero-based index of the column
+<i>1187</i>&nbsp;     * @return an array containing the requested column of the requested matrix
+<i>1188</i>&nbsp;     *         type representing this transform
+<i>1189</i>&nbsp;     * @throws IllegalArgumentException if a 2D matrix type is requested for
+<i>1190</i>&nbsp;     *         a 3D transform
+<i>1191</i>&nbsp;     * @throws IndexOutOfBoundsException if the {@code column} index
+<i>1192</i>&nbsp;     *         is not within the number of columns of the specified matrix type
+<i>1193</i>&nbsp;     * @throws NullPointerException if the specified {@code type} is null
+<i>1194</i>&nbsp;     * @since JavaFX 8.0
+<i>1195</i>&nbsp;     */
+<i>1196</i>&nbsp;    public double[] column(MatrixType type, int column) {
+<b class="nc"><i>1197</i>&nbsp;        return column(type, column, null);</b>
+<i>1198</i>&nbsp;    }
+<i>1199</i>&nbsp;
+<i>1200</i>&nbsp;    /* *************************************************************************
+<i>1201</i>&nbsp;     *                                                                         *
+<i>1202</i>&nbsp;     *                         Transform creators                              *
+<i>1203</i>&nbsp;     *                                                                         *
+<i>1204</i>&nbsp;     **************************************************************************/
+<i>1205</i>&nbsp;
+<i>1206</i>&nbsp;    /**
+<i>1207</i>&nbsp;     * Returns the concatenation of this transform and the specified transform.
+<i>1208</i>&nbsp;     * Applying the resulting transform to a node has the same effect as
+<i>1209</i>&nbsp;     * adding the two transforms to its {@code getTransforms()} list,
+<i>1210</i>&nbsp;     * {@code this} transform first and the specified {@code transform} second.
+<i>1211</i>&nbsp;     * @param transform transform to be concatenated with this transform
+<i>1212</i>&nbsp;     * @return The concatenated transform
+<i>1213</i>&nbsp;     * @throws NullPointerException if the specified {@code transform} is null
+<i>1214</i>&nbsp;     * @since JavaFX 8.0
+<i>1215</i>&nbsp;     */
+<i>1216</i>&nbsp;    public Transform createConcatenation(Transform transform) {
+<b class="nc"><i>1217</i>&nbsp;        final double txx = transform.getMxx();</b>
+<b class="nc"><i>1218</i>&nbsp;        final double txy = transform.getMxy();</b>
+<b class="nc"><i>1219</i>&nbsp;        final double txz = transform.getMxz();</b>
+<b class="nc"><i>1220</i>&nbsp;        final double ttx = transform.getTx();</b>
+<b class="nc"><i>1221</i>&nbsp;        final double tyx = transform.getMyx();</b>
+<b class="nc"><i>1222</i>&nbsp;        final double tyy = transform.getMyy();</b>
+<b class="nc"><i>1223</i>&nbsp;        final double tyz = transform.getMyz();</b>
+<b class="nc"><i>1224</i>&nbsp;        final double tty = transform.getTy();</b>
+<b class="nc"><i>1225</i>&nbsp;        final double tzx = transform.getMzx();</b>
+<b class="nc"><i>1226</i>&nbsp;        final double tzy = transform.getMzy();</b>
+<b class="nc"><i>1227</i>&nbsp;        final double tzz = transform.getMzz();</b>
+<b class="nc"><i>1228</i>&nbsp;        final double ttz = transform.getTz();</b>
+<b class="nc"><i>1229</i>&nbsp;        return new Affine(</b>
+<b class="nc"><i>1230</i>&nbsp;            (getMxx() * txx + getMxy() * tyx + getMxz() * tzx),</b>
+<b class="nc"><i>1231</i>&nbsp;            (getMxx() * txy + getMxy() * tyy + getMxz() * tzy),</b>
+<b class="nc"><i>1232</i>&nbsp;            (getMxx() * txz + getMxy() * tyz + getMxz() * tzz),</b>
+<b class="nc"><i>1233</i>&nbsp;            (getMxx() * ttx + getMxy() * tty + getMxz() * ttz + getTx()),</b>
+<b class="nc"><i>1234</i>&nbsp;            (getMyx() * txx + getMyy() * tyx + getMyz() * tzx),</b>
+<b class="nc"><i>1235</i>&nbsp;            (getMyx() * txy + getMyy() * tyy + getMyz() * tzy),</b>
+<b class="nc"><i>1236</i>&nbsp;            (getMyx() * txz + getMyy() * tyz + getMyz() * tzz),</b>
+<b class="nc"><i>1237</i>&nbsp;            (getMyx() * ttx + getMyy() * tty + getMyz() * ttz + getTy()),</b>
+<b class="nc"><i>1238</i>&nbsp;            (getMzx() * txx + getMzy() * tyx + getMzz() * tzx),</b>
+<b class="nc"><i>1239</i>&nbsp;            (getMzx() * txy + getMzy() * tyy + getMzz() * tzy),</b>
+<b class="nc"><i>1240</i>&nbsp;            (getMzx() * txz + getMzy() * tyz + getMzz() * tzz),</b>
+<b class="nc"><i>1241</i>&nbsp;            (getMzx() * ttx + getMzy() * tty + getMzz() * ttz + getTz()));</b>
+<i>1242</i>&nbsp;    }
+<i>1243</i>&nbsp;
+<i>1244</i>&nbsp;    /**
+<i>1245</i>&nbsp;     * Returns the inverse transform of this transform.
+<i>1246</i>&nbsp;     * @return the inverse transform
+<i>1247</i>&nbsp;     * @throws NonInvertibleTransformException if this transform
+<i>1248</i>&nbsp;     *         cannot be inverted
+<i>1249</i>&nbsp;     * @since JavaFX 8.0
+<i>1250</i>&nbsp;     */
+<i>1251</i>&nbsp;    public Transform createInverse() throws NonInvertibleTransformException {
+<b class="nc"><i>1252</i>&nbsp;        return getInverseCache().clone();</b>
+<i>1253</i>&nbsp;    }
+<i>1254</i>&nbsp;
+<i>1255</i>&nbsp;    /**
+<i>1256</i>&nbsp;     * Returns a deep copy of this transform.
+<i>1257</i>&nbsp;     * @return a copy of this transform
+<i>1258</i>&nbsp;     * @since JavaFX 8.0
+<i>1259</i>&nbsp;     */
+<i>1260</i>&nbsp;    @Override
+<i>1261</i>&nbsp;    public Transform clone() {
+<b class="nc"><i>1262</i>&nbsp;        return TransformUtils.immutableTransform(this);</b>
+<i>1263</i>&nbsp;    }
+<i>1264</i>&nbsp;
+<i>1265</i>&nbsp;    /* *************************************************************************
+<i>1266</i>&nbsp;     *                                                                         *
+<i>1267</i>&nbsp;     *                     Transform, Inverse Transform                        *
+<i>1268</i>&nbsp;     *                                                                         *
+<i>1269</i>&nbsp;     **************************************************************************/
+<i>1270</i>&nbsp;
+<i>1271</i>&nbsp;    /**
+<i>1272</i>&nbsp;     * Transforms the specified point by this transform.
+<i>1273</i>&nbsp;     * This method can be used only for 2D transforms.
+<i>1274</i>&nbsp;     * @param x the X coordinate of the point
+<i>1275</i>&nbsp;     * @param y the Y coordinate of the point
+<i>1276</i>&nbsp;     * @return the transformed point
+<i>1277</i>&nbsp;     * @throws IllegalStateException if this is a 3D transform
+<i>1278</i>&nbsp;     * @since JavaFX 8.0
+<i>1279</i>&nbsp;     */
+<i>1280</i>&nbsp;    public Point2D transform(double x, double y) {
+<b class="nc"><i>1281</i>&nbsp;        ensureCanTransform2DPoint();</b>
+<i>1282</i>&nbsp;
+<b class="nc"><i>1283</i>&nbsp;        return new Point2D(</b>
+<b class="nc"><i>1284</i>&nbsp;            getMxx() * x + getMxy() * y + getTx(),</b>
+<b class="nc"><i>1285</i>&nbsp;            getMyx() * x + getMyy() * y + getTy());</b>
+<i>1286</i>&nbsp;    }
+<i>1287</i>&nbsp;
+<i>1288</i>&nbsp;    /**
+<i>1289</i>&nbsp;     * Transforms the specified point by this transform.
+<i>1290</i>&nbsp;     * This method can be used only for 2D transforms.
+<i>1291</i>&nbsp;     * @param point the point to be transformed
+<i>1292</i>&nbsp;     * @return the transformed point
+<i>1293</i>&nbsp;     * @throws IllegalStateException if this is a 3D transform
+<i>1294</i>&nbsp;     * @throws NullPointerException if the specified {@code point} is null
+<i>1295</i>&nbsp;     * @since JavaFX 8.0
+<i>1296</i>&nbsp;     */
+<i>1297</i>&nbsp;    public Point2D transform(Point2D point) {
+<b class="nc"><i>1298</i>&nbsp;        return transform(point.getX(), point.getY());</b>
+<i>1299</i>&nbsp;    }
+<i>1300</i>&nbsp;
+<i>1301</i>&nbsp;    /**
+<i>1302</i>&nbsp;     * Transforms the specified point by this transform.
+<i>1303</i>&nbsp;     * @param x the X coordinate of the point
+<i>1304</i>&nbsp;     * @param y the Y coordinate of the point
+<i>1305</i>&nbsp;     * @param z the Z coordinate of the point
+<i>1306</i>&nbsp;     * @return the transformed point
+<i>1307</i>&nbsp;     * @since JavaFX 8.0
+<i>1308</i>&nbsp;     */
+<i>1309</i>&nbsp;    public Point3D transform(double x, double y, double z) {
+<b class="nc"><i>1310</i>&nbsp;        return new Point3D(</b>
+<b class="nc"><i>1311</i>&nbsp;            getMxx() * x + getMxy() * y + getMxz() * z + getTx(),</b>
+<b class="nc"><i>1312</i>&nbsp;            getMyx() * x + getMyy() * y + getMyz() * z + getTy(),</b>
+<b class="nc"><i>1313</i>&nbsp;            getMzx() * x + getMzy() * y + getMzz() * z + getTz());</b>
+<i>1314</i>&nbsp;    }
+<i>1315</i>&nbsp;
+<i>1316</i>&nbsp;    /**
+<i>1317</i>&nbsp;     * Transforms the specified point by this transform.
+<i>1318</i>&nbsp;     * @param point the point to be transformed
+<i>1319</i>&nbsp;     * @return the transformed point
+<i>1320</i>&nbsp;     * @throws NullPointerException if the specified {@code point} is null
+<i>1321</i>&nbsp;     * @since JavaFX 8.0
+<i>1322</i>&nbsp;     */
+<i>1323</i>&nbsp;    public Point3D transform(Point3D point) {
+<b class="nc"><i>1324</i>&nbsp;        return transform(point.getX(), point.getY(), point.getZ());</b>
+<i>1325</i>&nbsp;    }
+<i>1326</i>&nbsp;
+<i>1327</i>&nbsp;    /**
+<i>1328</i>&nbsp;     * Transforms the specified bounds by this transform.
+<i>1329</i>&nbsp;     * @param bounds the bounds to be transformed
+<i>1330</i>&nbsp;     * @return the transformed bounds
+<i>1331</i>&nbsp;     * @since JavaFX 8.0
+<i>1332</i>&nbsp;     */
+<i>1333</i>&nbsp;    public Bounds transform(Bounds bounds) {
+<b class="nc"><i>1334</i>&nbsp;        if (isType2D() &amp;&amp; (bounds.getMinZ() == 0) &amp;&amp; (bounds.getMaxZ() == 0)) {</b>
+<b class="nc"><i>1335</i>&nbsp;            Point2D p1 = transform(bounds.getMinX(), bounds.getMinY());</b>
+<b class="nc"><i>1336</i>&nbsp;            Point2D p2 = transform(bounds.getMaxX(), bounds.getMinY());</b>
+<b class="nc"><i>1337</i>&nbsp;            Point2D p3 = transform(bounds.getMaxX(), bounds.getMaxY());</b>
+<b class="nc"><i>1338</i>&nbsp;            Point2D p4 = transform(bounds.getMinX(), bounds.getMaxY());</b>
+<i>1339</i>&nbsp;
+<b class="nc"><i>1340</i>&nbsp;            return BoundsUtils.createBoundingBox(p1, p2, p3, p4);</b>
+<i>1341</i>&nbsp;        }
+<b class="nc"><i>1342</i>&nbsp;        Point3D p1 = transform(bounds.getMinX(), bounds.getMinY(), bounds.getMinZ());</b>
+<b class="nc"><i>1343</i>&nbsp;        Point3D p2 = transform(bounds.getMinX(), bounds.getMinY(), bounds.getMaxZ());</b>
+<b class="nc"><i>1344</i>&nbsp;        Point3D p3 = transform(bounds.getMinX(), bounds.getMaxY(), bounds.getMinZ());</b>
+<b class="nc"><i>1345</i>&nbsp;        Point3D p4 = transform(bounds.getMinX(), bounds.getMaxY(), bounds.getMaxZ());</b>
+<b class="nc"><i>1346</i>&nbsp;        Point3D p5 = transform(bounds.getMaxX(), bounds.getMaxY(), bounds.getMinZ());</b>
+<b class="nc"><i>1347</i>&nbsp;        Point3D p6 = transform(bounds.getMaxX(), bounds.getMaxY(), bounds.getMaxZ());</b>
+<b class="nc"><i>1348</i>&nbsp;        Point3D p7 = transform(bounds.getMaxX(), bounds.getMinY(), bounds.getMinZ());</b>
+<b class="nc"><i>1349</i>&nbsp;        Point3D p8 = transform(bounds.getMaxX(), bounds.getMinY(), bounds.getMaxZ());</b>
+<i>1350</i>&nbsp;
+<b class="nc"><i>1351</i>&nbsp;        return BoundsUtils.createBoundingBox(p1, p2, p3, p4, p5, p6, p7, p8);</b>
+<i>1352</i>&nbsp;    }
+<i>1353</i>&nbsp;
+<i>1354</i>&nbsp;    /**
+<i>1355</i>&nbsp;     * Core of the transform2DPoints method.
+<i>1356</i>&nbsp;     * All the checks has been performed and the care of the overlaps has been
+<i>1357</i>&nbsp;     * taken by the enclosing method, this method only transforms the points
+<i>1358</i>&nbsp;     * and fills them to the array. Used by the subclasses to perform
+<i>1359</i>&nbsp;     * the transform efficiently.
+<i>1360</i>&nbsp;     */
+<i>1361</i>&nbsp;    void transform2DPointsImpl(double[] srcPts, int srcOff,
+<i>1362</i>&nbsp;            double[] dstPts, int dstOff, int numPts) {
+<b class="nc"><i>1363</i>&nbsp;        final double xx = getMxx();</b>
+<b class="nc"><i>1364</i>&nbsp;        final double xy = getMxy();</b>
+<b class="nc"><i>1365</i>&nbsp;        final double tx = getTx();</b>
+<b class="nc"><i>1366</i>&nbsp;        final double yx = getMyx();</b>
+<b class="nc"><i>1367</i>&nbsp;        final double yy = getMyy();</b>
+<b class="nc"><i>1368</i>&nbsp;        final double ty = getTy();</b>
+<i>1369</i>&nbsp;
+<b class="nc"><i>1370</i>&nbsp;        while (--numPts &gt;= 0) {</b>
+<b class="nc"><i>1371</i>&nbsp;            final double x = srcPts[srcOff++];</b>
+<b class="nc"><i>1372</i>&nbsp;            final double y = srcPts[srcOff++];</b>
+<i>1373</i>&nbsp;
+<b class="nc"><i>1374</i>&nbsp;            dstPts[dstOff++] = xx * x + xy * y + tx;</b>
+<b class="nc"><i>1375</i>&nbsp;            dstPts[dstOff++] = yx * x + yy * y + ty;</b>
+<b class="nc"><i>1376</i>&nbsp;        }</b>
+<b class="nc"><i>1377</i>&nbsp;    }</b>
+<i>1378</i>&nbsp;
+<i>1379</i>&nbsp;    /**
+<i>1380</i>&nbsp;     * Core of the transform3DPoints method.
+<i>1381</i>&nbsp;     * All the checks has been performed and the care of the overlaps has been
+<i>1382</i>&nbsp;     * taken by the enclosing method, this method only transforms the points
+<i>1383</i>&nbsp;     * and fills them to the array. Used by the subclasses to perform
+<i>1384</i>&nbsp;     * the transform efficiently.
+<i>1385</i>&nbsp;     */
+<i>1386</i>&nbsp;    void transform3DPointsImpl(double[] srcPts, int srcOff,
+<i>1387</i>&nbsp;            double[] dstPts, int dstOff, int numPts) {
+<i>1388</i>&nbsp;
+<b class="nc"><i>1389</i>&nbsp;        final double xx = getMxx();</b>
+<b class="nc"><i>1390</i>&nbsp;        final double xy = getMxy();</b>
+<b class="nc"><i>1391</i>&nbsp;        final double xz = getMxz();</b>
+<b class="nc"><i>1392</i>&nbsp;        final double tx = getTx();</b>
+<b class="nc"><i>1393</i>&nbsp;        final double yx = getMyx();</b>
+<b class="nc"><i>1394</i>&nbsp;        final double yy = getMyy();</b>
+<b class="nc"><i>1395</i>&nbsp;        final double yz = getMyz();</b>
+<b class="nc"><i>1396</i>&nbsp;        final double ty = getTy();</b>
+<b class="nc"><i>1397</i>&nbsp;        final double zx = getMzx();</b>
+<b class="nc"><i>1398</i>&nbsp;        final double zy = getMzy();</b>
+<b class="nc"><i>1399</i>&nbsp;        final double zz = getMzz();</b>
+<b class="nc"><i>1400</i>&nbsp;        final double tz = getTz();</b>
+<i>1401</i>&nbsp;
+<b class="nc"><i>1402</i>&nbsp;        while (--numPts &gt;= 0) {</b>
+<b class="nc"><i>1403</i>&nbsp;            final double x = srcPts[srcOff++];</b>
+<b class="nc"><i>1404</i>&nbsp;            final double y = srcPts[srcOff++];</b>
+<b class="nc"><i>1405</i>&nbsp;            final double z = srcPts[srcOff++];</b>
+<i>1406</i>&nbsp;
+<b class="nc"><i>1407</i>&nbsp;            dstPts[dstOff++] = xx * x + xy * y + xz * z + tx;</b>
+<b class="nc"><i>1408</i>&nbsp;            dstPts[dstOff++] = yx * x + yy * y + yz * z + ty;</b>
+<b class="nc"><i>1409</i>&nbsp;            dstPts[dstOff++] = zx * x + zy * y + zz * z + tz;</b>
+<b class="nc"><i>1410</i>&nbsp;        }</b>
+<b class="nc"><i>1411</i>&nbsp;    }</b>
+<i>1412</i>&nbsp;
+<i>1413</i>&nbsp;    /**
+<i>1414</i>&nbsp;     * Transforms an array of coordinates by this transform.
+<i>1415</i>&nbsp;     * The two coordinate array sections can be exactly the same or
+<i>1416</i>&nbsp;     * can be overlapping sections of the same array without affecting the
+<i>1417</i>&nbsp;     * validity of the results.
+<i>1418</i>&nbsp;     * This method ensures that no source coordinates are overwritten by a
+<i>1419</i>&nbsp;     * previous operation before they can be transformed.
+<i>1420</i>&nbsp;     * The coordinates are stored in the arrays starting at the specified
+<i>1421</i>&nbsp;     * offset in the order &lt;code&gt;[x0, y0, x1, y1, ..., xn, yn]&lt;/code&gt;.
+<i>1422</i>&nbsp;     * This method can be used only for 2D transforms.
+<i>1423</i>&nbsp;     * @param srcPts the array containing the source point coordinates.
+<i>1424</i>&nbsp;     * Each point is stored as a pair of x,&amp;nbsp;y coordinates.
+<i>1425</i>&nbsp;     * @param srcOff the offset to the first point to be transformed
+<i>1426</i>&nbsp;     * in the source array
+<i>1427</i>&nbsp;     * @param dstPts the array into which the transformed point coordinates
+<i>1428</i>&nbsp;     * are returned.  Each point is stored as a pair of x,&amp;nbsp;y
+<i>1429</i>&nbsp;     * coordinates.
+<i>1430</i>&nbsp;     * @param dstOff the offset to the location of the first
+<i>1431</i>&nbsp;     * transformed point that is stored in the destination array
+<i>1432</i>&nbsp;     * @param numPts the number of points to be transformed
+<i>1433</i>&nbsp;     * @throws IllegalStateException if this is a 3D transform
+<i>1434</i>&nbsp;     * @throws NullPointerException if {@code srcPts} or (@code dstPts} is null
+<i>1435</i>&nbsp;     * @since JavaFX 8.0
+<i>1436</i>&nbsp;     */
+<i>1437</i>&nbsp;    public void transform2DPoints(double[] srcPts, int srcOff,
+<i>1438</i>&nbsp;                          double[] dstPts, int dstOff,
+<i>1439</i>&nbsp;                          int numPts) {
+<i>1440</i>&nbsp;
+<b class="nc"><i>1441</i>&nbsp;        if (srcPts == null || dstPts == null) {</b>
+<b class="nc"><i>1442</i>&nbsp;            throw new NullPointerException();</b>
+<i>1443</i>&nbsp;        }
+<i>1444</i>&nbsp;
+<b class="nc"><i>1445</i>&nbsp;        if (!isType2D()) {</b>
+<b class="nc"><i>1446</i>&nbsp;            throw new IllegalStateException(&quot;Cannot transform 2D points &quot;</b>
+<i>1447</i>&nbsp;                    + &quot;with a 3D transform&quot;);
+<i>1448</i>&nbsp;        }
+<i>1449</i>&nbsp;
+<i>1450</i>&nbsp;        // deal with overlapping arrays
+<b class="nc"><i>1451</i>&nbsp;        srcOff = getFixedSrcOffset(srcPts, srcOff, dstPts, dstOff, numPts, 2);</b>
+<i>1452</i>&nbsp;
+<i>1453</i>&nbsp;        // do the transformations
+<b class="nc"><i>1454</i>&nbsp;        transform2DPointsImpl(srcPts, srcOff, dstPts, dstOff, numPts);</b>
+<b class="nc"><i>1455</i>&nbsp;    }</b>
+<i>1456</i>&nbsp;
+<i>1457</i>&nbsp;    /**
+<i>1458</i>&nbsp;     * Transforms an array of floating point coordinates by this transform.
+<i>1459</i>&nbsp;     * The three coordinate array sections can be exactly the same or
+<i>1460</i>&nbsp;     * can be overlapping sections of the same array without affecting the
+<i>1461</i>&nbsp;     * validity of the results.
+<i>1462</i>&nbsp;     * This method ensures that no source coordinates are overwritten by a
+<i>1463</i>&nbsp;     * previous operation before they can be transformed.
+<i>1464</i>&nbsp;     * The coordinates are stored in the arrays starting at the specified
+<i>1465</i>&nbsp;     * offset in the order &lt;code&gt;[x0, y0, z0, x1, y1, z1, ..., xn, yn, zn]&lt;/code&gt;.
+<i>1466</i>&nbsp;     * @param srcPts the array containing the source point coordinates.
+<i>1467</i>&nbsp;     * Each point is stored as a tiplet of x,&amp;nbsp;y,&amp;nbsp;z coordinates.
+<i>1468</i>&nbsp;     * @param srcOff the offset to the first point to be transformed
+<i>1469</i>&nbsp;     * in the source array
+<i>1470</i>&nbsp;     * @param dstPts the array into which the transformed point coordinates
+<i>1471</i>&nbsp;     * are returned.  Each point is stored as a triplet of x,&amp;nbsp;y,&amp;nbsp;z
+<i>1472</i>&nbsp;     * coordinates.
+<i>1473</i>&nbsp;     * @param dstOff the offset to the location of the first
+<i>1474</i>&nbsp;     * transformed point that is stored in the destination array
+<i>1475</i>&nbsp;     * @param numPts the number of points to be transformed
+<i>1476</i>&nbsp;     * @throws NullPointerException if {@code srcPts} or (@code dstPts} is null
+<i>1477</i>&nbsp;     * @since JavaFX 8.0
+<i>1478</i>&nbsp;     */
+<i>1479</i>&nbsp;    public void transform3DPoints(double[] srcPts, int srcOff,
+<i>1480</i>&nbsp;                          double[] dstPts, int dstOff,
+<i>1481</i>&nbsp;                          int numPts) {
+<i>1482</i>&nbsp;
+<b class="nc"><i>1483</i>&nbsp;        if (srcPts == null || dstPts == null) {</b>
+<b class="nc"><i>1484</i>&nbsp;            throw new NullPointerException();</b>
+<i>1485</i>&nbsp;        }
+<i>1486</i>&nbsp;
+<i>1487</i>&nbsp;        // deal with overlapping arrays
+<b class="nc"><i>1488</i>&nbsp;        srcOff = getFixedSrcOffset(srcPts, srcOff, dstPts, dstOff, numPts, 3);</b>
+<i>1489</i>&nbsp;
+<i>1490</i>&nbsp;        // do the transformations
+<b class="nc"><i>1491</i>&nbsp;        transform3DPointsImpl(srcPts, srcOff, dstPts, dstOff, numPts);</b>
+<b class="nc"><i>1492</i>&nbsp;    }</b>
+<i>1493</i>&nbsp;
+<i>1494</i>&nbsp;    /**
+<i>1495</i>&nbsp;     * Transforms the relative magnitude vector by this transform.
+<i>1496</i>&nbsp;     * The vector is transformed without applying the translation components
+<i>1497</i>&nbsp;     * of the affine transformation matrix.
+<i>1498</i>&nbsp;     * This method can be used only for a 2D transform.
+<i>1499</i>&nbsp;     * @param x vector magnitude in the direction of the X axis
+<i>1500</i>&nbsp;     * @param y vector magnitude in the direction of the Y axis
+<i>1501</i>&nbsp;     * @return the transformed relative magnitude vector represented
+<i>1502</i>&nbsp;     *         by a {@code Point2D} instance
+<i>1503</i>&nbsp;     * @throws IllegalStateException if this is a 3D transform
+<i>1504</i>&nbsp;     * @since JavaFX 8.0
+<i>1505</i>&nbsp;     */
+<i>1506</i>&nbsp;    public Point2D deltaTransform(double x, double y) {
+<b class="nc"><i>1507</i>&nbsp;        ensureCanTransform2DPoint();</b>
+<i>1508</i>&nbsp;
+<b class="nc"><i>1509</i>&nbsp;        return new Point2D(</b>
+<b class="nc"><i>1510</i>&nbsp;            getMxx() * x + getMxy() * y,</b>
+<b class="nc"><i>1511</i>&nbsp;            getMyx() * x + getMyy() * y);</b>
+<i>1512</i>&nbsp;    }
+<i>1513</i>&nbsp;
+<i>1514</i>&nbsp;    /**
+<i>1515</i>&nbsp;     * Transforms the relative magnitude vector represented by the specified
+<i>1516</i>&nbsp;     * {@code Point2D} instance by this transform.
+<i>1517</i>&nbsp;     * The vector is transformed without applying the translation components
+<i>1518</i>&nbsp;     * of the affine transformation matrix.
+<i>1519</i>&nbsp;     * This method can be used only for a 2D transform.
+<i>1520</i>&nbsp;     * @param point the relative magnitude vector
+<i>1521</i>&nbsp;     * @return the transformed relative magnitude vector represented
+<i>1522</i>&nbsp;     *         by a {@code Point2D} instance
+<i>1523</i>&nbsp;     * @throws IllegalStateException if this is a 3D transform
+<i>1524</i>&nbsp;     * @throws NullPointerException if the specified {@code point} is null
+<i>1525</i>&nbsp;     * @since JavaFX 8.0
+<i>1526</i>&nbsp;     */
+<i>1527</i>&nbsp;    public Point2D deltaTransform(Point2D point) {
+<b class="nc"><i>1528</i>&nbsp;        return deltaTransform(point.getX(), point.getY());</b>
+<i>1529</i>&nbsp;    }
+<i>1530</i>&nbsp;
+<i>1531</i>&nbsp;    /**
+<i>1532</i>&nbsp;     * Transforms the relative magnitude vector by this transform.
+<i>1533</i>&nbsp;     * The vector is transformed without applying the translation components
+<i>1534</i>&nbsp;     * of the affine transformation matrix.
+<i>1535</i>&nbsp;     * @param x vector magnitude in the direction of the X axis
+<i>1536</i>&nbsp;     * @param y vector magnitude in the direction of the Y axis
+<i>1537</i>&nbsp;     * @param z vector magnitude in the direction of the Z axis
+<i>1538</i>&nbsp;     * @return the transformed relative magnitude vector represented
+<i>1539</i>&nbsp;     *         by a {@code Point3D} instance
+<i>1540</i>&nbsp;     * @since JavaFX 8.0
+<i>1541</i>&nbsp;     */
+<i>1542</i>&nbsp;    public Point3D deltaTransform(double x, double y, double z) {
+<b class="nc"><i>1543</i>&nbsp;        return new Point3D(</b>
+<b class="nc"><i>1544</i>&nbsp;            getMxx() * x + getMxy() * y + getMxz() * z,</b>
+<b class="nc"><i>1545</i>&nbsp;            getMyx() * x + getMyy() * y + getMyz() * z,</b>
+<b class="nc"><i>1546</i>&nbsp;            getMzx() * x + getMzy() * y + getMzz() * z);</b>
+<i>1547</i>&nbsp;    }
+<i>1548</i>&nbsp;
+<i>1549</i>&nbsp;    /**
+<i>1550</i>&nbsp;     * Transforms the relative magnitude vector represented by the specified
+<i>1551</i>&nbsp;     * {@code Point3D} instance by this transform.
+<i>1552</i>&nbsp;     * The vector is transformed without applying the translation components
+<i>1553</i>&nbsp;     * of the affine transformation matrix.
+<i>1554</i>&nbsp;     * @param point the relative magnitude vector
+<i>1555</i>&nbsp;     * @return the transformed relative magnitude vector represented
+<i>1556</i>&nbsp;     *         by a {@code Point3D} instance
+<i>1557</i>&nbsp;     * @throws NullPointerException if the specified {@code point} is null
+<i>1558</i>&nbsp;     * @since JavaFX 8.0
+<i>1559</i>&nbsp;     */
+<i>1560</i>&nbsp;    public Point3D deltaTransform(Point3D point) {
+<b class="nc"><i>1561</i>&nbsp;        return deltaTransform(point.getX(), point.getY(), point.getZ());</b>
+<i>1562</i>&nbsp;    }
+<i>1563</i>&nbsp;
+<i>1564</i>&nbsp;    /**
+<i>1565</i>&nbsp;     * Transforms the specified point by the inverse of this transform.
+<i>1566</i>&nbsp;     * This method can be used only for 2D transforms.
+<i>1567</i>&nbsp;     * @param x the X coordinate of the point
+<i>1568</i>&nbsp;     * @param y the Y coordinate of the point
+<i>1569</i>&nbsp;     * @return the inversely transformed point
+<i>1570</i>&nbsp;     * @throws IllegalStateException if this is a 3D transform
+<i>1571</i>&nbsp;     * @throws NonInvertibleTransformException if this transform
+<i>1572</i>&nbsp;     *         cannot be inverted
+<i>1573</i>&nbsp;     * @since JavaFX 8.0
+<i>1574</i>&nbsp;     */
+<i>1575</i>&nbsp;    public Point2D inverseTransform(double x, double y)
+<i>1576</i>&nbsp;            throws NonInvertibleTransformException {
+<i>1577</i>&nbsp;
+<b class="nc"><i>1578</i>&nbsp;        ensureCanTransform2DPoint();</b>
+<i>1579</i>&nbsp;
+<b class="nc"><i>1580</i>&nbsp;        return getInverseCache().transform(x, y);</b>
+<i>1581</i>&nbsp;    }
+<i>1582</i>&nbsp;
+<i>1583</i>&nbsp;    /**
+<i>1584</i>&nbsp;     * Transforms the specified point by the inverse of this transform.
+<i>1585</i>&nbsp;     * This method can be used only for 2D transforms.
+<i>1586</i>&nbsp;     * @param point the point to be transformed
+<i>1587</i>&nbsp;     * @return the inversely transformed point
+<i>1588</i>&nbsp;     * @throws IllegalStateException if this is a 3D transform
+<i>1589</i>&nbsp;     * @throws NonInvertibleTransformException if this transform
+<i>1590</i>&nbsp;     *         cannot be inverted
+<i>1591</i>&nbsp;     * @throws NullPointerException if the specified {@code point} is null
+<i>1592</i>&nbsp;     * @since JavaFX 8.0
+<i>1593</i>&nbsp;     */
+<i>1594</i>&nbsp;    public Point2D inverseTransform(Point2D point)
+<i>1595</i>&nbsp;            throws NonInvertibleTransformException {
+<b class="nc"><i>1596</i>&nbsp;        return inverseTransform(point.getX(), point.getY());</b>
+<i>1597</i>&nbsp;    }
+<i>1598</i>&nbsp;
+<i>1599</i>&nbsp;    /**
+<i>1600</i>&nbsp;     * Transforms the specified point by the inverse of this transform.
+<i>1601</i>&nbsp;     * @param x the X coordinate of the point
+<i>1602</i>&nbsp;     * @param y the Y coordinate of the point
+<i>1603</i>&nbsp;     * @param z the Z coordinate of the point
+<i>1604</i>&nbsp;     * @return the inversely transformed point
+<i>1605</i>&nbsp;     * @throws NonInvertibleTransformException if this transform
+<i>1606</i>&nbsp;     *         cannot be inverted
+<i>1607</i>&nbsp;     * @since JavaFX 8.0
+<i>1608</i>&nbsp;     */
+<i>1609</i>&nbsp;    public Point3D inverseTransform(double x, double y, double z)
+<i>1610</i>&nbsp;            throws NonInvertibleTransformException {
+<i>1611</i>&nbsp;
+<b class="nc"><i>1612</i>&nbsp;        return getInverseCache().transform(x, y, z);</b>
+<i>1613</i>&nbsp;    }
+<i>1614</i>&nbsp;
+<i>1615</i>&nbsp;    /**
+<i>1616</i>&nbsp;     * Transforms the specified point by the inverse of this transform.
+<i>1617</i>&nbsp;     * @param point the point to be transformed
+<i>1618</i>&nbsp;     * @return the inversely transformed point
+<i>1619</i>&nbsp;     * @throws NonInvertibleTransformException if this transform
+<i>1620</i>&nbsp;     *         cannot be inverted
+<i>1621</i>&nbsp;     * @throws NullPointerException if the specified {@code point} is null
+<i>1622</i>&nbsp;     * @since JavaFX 8.0
+<i>1623</i>&nbsp;     */
+<i>1624</i>&nbsp;    public Point3D inverseTransform(Point3D point)
+<i>1625</i>&nbsp;            throws NonInvertibleTransformException {
+<b class="nc"><i>1626</i>&nbsp;        return inverseTransform(point.getX(), point.getY(), point.getZ());</b>
+<i>1627</i>&nbsp;    }
+<i>1628</i>&nbsp;
+<i>1629</i>&nbsp;    /**
+<i>1630</i>&nbsp;     * Transforms the specified bounds by the inverse of this transform.
+<i>1631</i>&nbsp;     * @param bounds the bounds to be transformed
+<i>1632</i>&nbsp;     * @return the inversely transformed bounds
+<i>1633</i>&nbsp;     * @throws NonInvertibleTransformException if this transform
+<i>1634</i>&nbsp;     *         cannot be inverted
+<i>1635</i>&nbsp;     * @throws NullPointerException if the specified {@code bounds} is null
+<i>1636</i>&nbsp;     * @since JavaFX 8.0
+<i>1637</i>&nbsp;     */
+<i>1638</i>&nbsp;    public Bounds inverseTransform(Bounds bounds)
+<i>1639</i>&nbsp;            throws NonInvertibleTransformException {
+<b class="nc"><i>1640</i>&nbsp;        if (isType2D() &amp;&amp; (bounds.getMinZ() == 0) &amp;&amp; (bounds.getMaxZ() == 0)) {</b>
+<b class="nc"><i>1641</i>&nbsp;            Point2D p1 = inverseTransform(bounds.getMinX(), bounds.getMinY());</b>
+<b class="nc"><i>1642</i>&nbsp;            Point2D p2 = inverseTransform(bounds.getMaxX(), bounds.getMinY());</b>
+<b class="nc"><i>1643</i>&nbsp;            Point2D p3 = inverseTransform(bounds.getMaxX(), bounds.getMaxY());</b>
+<b class="nc"><i>1644</i>&nbsp;            Point2D p4 = inverseTransform(bounds.getMinX(), bounds.getMaxY());</b>
+<i>1645</i>&nbsp;
+<b class="nc"><i>1646</i>&nbsp;            return BoundsUtils.createBoundingBox(p1, p2, p3, p4);</b>
+<i>1647</i>&nbsp;        }
+<b class="nc"><i>1648</i>&nbsp;        Point3D p1 = inverseTransform(bounds.getMinX(), bounds.getMinY(), bounds.getMinZ());</b>
+<b class="nc"><i>1649</i>&nbsp;        Point3D p2 = inverseTransform(bounds.getMinX(), bounds.getMinY(), bounds.getMaxZ());</b>
+<b class="nc"><i>1650</i>&nbsp;        Point3D p3 = inverseTransform(bounds.getMinX(), bounds.getMaxY(), bounds.getMinZ());</b>
+<b class="nc"><i>1651</i>&nbsp;        Point3D p4 = inverseTransform(bounds.getMinX(), bounds.getMaxY(), bounds.getMaxZ());</b>
+<b class="nc"><i>1652</i>&nbsp;        Point3D p5 = inverseTransform(bounds.getMaxX(), bounds.getMaxY(), bounds.getMinZ());</b>
+<b class="nc"><i>1653</i>&nbsp;        Point3D p6 = inverseTransform(bounds.getMaxX(), bounds.getMaxY(), bounds.getMaxZ());</b>
+<b class="nc"><i>1654</i>&nbsp;        Point3D p7 = inverseTransform(bounds.getMaxX(), bounds.getMinY(), bounds.getMinZ());</b>
+<b class="nc"><i>1655</i>&nbsp;        Point3D p8 = inverseTransform(bounds.getMaxX(), bounds.getMinY(), bounds.getMaxZ());</b>
+<i>1656</i>&nbsp;
+<b class="nc"><i>1657</i>&nbsp;        return BoundsUtils.createBoundingBox(p1, p2, p3, p4, p5, p6, p7, p8);</b>
+<i>1658</i>&nbsp;
+<i>1659</i>&nbsp;    }
+<i>1660</i>&nbsp;
+<i>1661</i>&nbsp;    /**
+<i>1662</i>&nbsp;     * Core of the inverseTransform2DPoints method.
+<i>1663</i>&nbsp;     * All the checks has been performed and the care of the overlaps has been
+<i>1664</i>&nbsp;     * taken by the enclosing method, this method only transforms the points
+<i>1665</i>&nbsp;     * and fills them to the array. Used by the subclasses to perform
+<i>1666</i>&nbsp;     * the transform efficiently.
+<i>1667</i>&nbsp;     */
+<i>1668</i>&nbsp;    void inverseTransform2DPointsImpl(double[] srcPts, int srcOff,
+<i>1669</i>&nbsp;            double[] dstPts, int dstOff, int numPts)
+<i>1670</i>&nbsp;            throws NonInvertibleTransformException {
+<i>1671</i>&nbsp;
+<b class="nc"><i>1672</i>&nbsp;        getInverseCache().transform2DPointsImpl(srcPts, srcOff,</b>
+<i>1673</i>&nbsp;                dstPts, dstOff, numPts);
+<b class="nc"><i>1674</i>&nbsp;    }</b>
+<i>1675</i>&nbsp;
+<i>1676</i>&nbsp;    /**
+<i>1677</i>&nbsp;     * Core of the inverseTransform3DPoints method.
+<i>1678</i>&nbsp;     * All the checks has been performed and the care of the overlaps has been
+<i>1679</i>&nbsp;     * taken by the enclosing method, this method only transforms the points
+<i>1680</i>&nbsp;     * and fills them to the array. Used by the subclasses to perform
+<i>1681</i>&nbsp;     * the transform efficiently.
+<i>1682</i>&nbsp;     */
+<i>1683</i>&nbsp;    void inverseTransform3DPointsImpl(double[] srcPts, int srcOff,
+<i>1684</i>&nbsp;            double[] dstPts, int dstOff, int numPts)
+<i>1685</i>&nbsp;            throws NonInvertibleTransformException {
+<i>1686</i>&nbsp;
+<b class="nc"><i>1687</i>&nbsp;        getInverseCache().transform3DPointsImpl(srcPts, srcOff,</b>
+<i>1688</i>&nbsp;                dstPts, dstOff, numPts);
+<b class="nc"><i>1689</i>&nbsp;    }</b>
+<i>1690</i>&nbsp;
+<i>1691</i>&nbsp;    /**
+<i>1692</i>&nbsp;     * Transforms an array of coordinates by the inverse of this transform.
+<i>1693</i>&nbsp;     * The two coordinate array sections can be exactly the same or
+<i>1694</i>&nbsp;     * can be overlapping sections of the same array without affecting the
+<i>1695</i>&nbsp;     * validity of the results.
+<i>1696</i>&nbsp;     * This method ensures that no source coordinates are overwritten by a
+<i>1697</i>&nbsp;     * previous operation before they can be transformed.
+<i>1698</i>&nbsp;     * The coordinates are stored in the arrays starting at the specified
+<i>1699</i>&nbsp;     * offset in the order &lt;code&gt;[x0, y0, x1, y1, ..., xn, yn]&lt;/code&gt;.
+<i>1700</i>&nbsp;     * This method can be used only for 2D transforms.
+<i>1701</i>&nbsp;     * @param srcPts the array containing the source point coordinates.
+<i>1702</i>&nbsp;     * Each point is stored as a pair of x,&amp;nbsp;y coordinates.
+<i>1703</i>&nbsp;     * @param srcOff the offset to the first point to be transformed
+<i>1704</i>&nbsp;     * in the source array
+<i>1705</i>&nbsp;     * @param dstPts the array into which the transformed point coordinates
+<i>1706</i>&nbsp;     * are returned.  Each point is stored as a pair of x,&amp;nbsp;y
+<i>1707</i>&nbsp;     * coordinates.
+<i>1708</i>&nbsp;     * @param dstOff the offset to the location of the first
+<i>1709</i>&nbsp;     * transformed point that is stored in the destination array
+<i>1710</i>&nbsp;     * @param numPts the number of points to be transformed
+<i>1711</i>&nbsp;     * @throws IllegalStateException if this is a 3D transform
+<i>1712</i>&nbsp;     * @throws NonInvertibleTransformException if this transform
+<i>1713</i>&nbsp;     *         cannot be inverted
+<i>1714</i>&nbsp;     * @throws NullPointerException if {@code srcPts} or (@code dstPts} is null
+<i>1715</i>&nbsp;     * @since JavaFX 8.0
+<i>1716</i>&nbsp;     */
+<i>1717</i>&nbsp;    public void inverseTransform2DPoints(double[] srcPts, int srcOff,
+<i>1718</i>&nbsp;                          double[] dstPts, int dstOff,
+<i>1719</i>&nbsp;                          int numPts) throws NonInvertibleTransformException{
+<i>1720</i>&nbsp;
+<b class="nc"><i>1721</i>&nbsp;        if (srcPts == null || dstPts == null) {</b>
+<b class="nc"><i>1722</i>&nbsp;            throw new NullPointerException();</b>
+<i>1723</i>&nbsp;        }
+<i>1724</i>&nbsp;
+<b class="nc"><i>1725</i>&nbsp;        if (!isType2D()) {</b>
+<b class="nc"><i>1726</i>&nbsp;            throw new IllegalStateException(&quot;Cannot transform 2D points &quot;</b>
+<i>1727</i>&nbsp;                    + &quot;with a 3D transform&quot;);
+<i>1728</i>&nbsp;        }
+<i>1729</i>&nbsp;
+<i>1730</i>&nbsp;        // deal with overlapping arrays
+<b class="nc"><i>1731</i>&nbsp;        srcOff = getFixedSrcOffset(srcPts, srcOff, dstPts, dstOff, numPts, 2);</b>
+<i>1732</i>&nbsp;
+<i>1733</i>&nbsp;        // do the transformations
+<b class="nc"><i>1734</i>&nbsp;        inverseTransform2DPointsImpl(srcPts, srcOff, dstPts, dstOff, numPts);</b>
+<b class="nc"><i>1735</i>&nbsp;    }</b>
+<i>1736</i>&nbsp;
+<i>1737</i>&nbsp;    /**
+<i>1738</i>&nbsp;     * Transforms an array of floating point coordinates by the inverse
+<i>1739</i>&nbsp;     * of this transform.
+<i>1740</i>&nbsp;     * The three coordinate array sections can be exactly the same or
+<i>1741</i>&nbsp;     * can be overlapping sections of the same array without affecting the
+<i>1742</i>&nbsp;     * validity of the results.
+<i>1743</i>&nbsp;     * This method ensures that no source coordinates are overwritten by a
+<i>1744</i>&nbsp;     * previous operation before they can be transformed.
+<i>1745</i>&nbsp;     * The coordinates are stored in the arrays starting at the specified
+<i>1746</i>&nbsp;     * offset in the order &lt;code&gt;[x0, y0, z0, x1, y1, z1, ..., xn, yn, zn]&lt;/code&gt;.
+<i>1747</i>&nbsp;     * @param srcPts the array containing the source point coordinates.
+<i>1748</i>&nbsp;     * Each point is stored as a triplet of x,&amp;nbsp;y,&amp;nbsp;z coordinates.
+<i>1749</i>&nbsp;     * @param srcOff the offset to the first point to be transformed
+<i>1750</i>&nbsp;     * in the source array
+<i>1751</i>&nbsp;     * @param dstPts the array into which the transformed point coordinates
+<i>1752</i>&nbsp;     * are returned.  Each point is stored as a triplet of x,&amp;nbsp;y,&amp;nbsp;z
+<i>1753</i>&nbsp;     * coordinates.
+<i>1754</i>&nbsp;     * @param dstOff the offset to the location of the first
+<i>1755</i>&nbsp;     * transformed point that is stored in the destination array
+<i>1756</i>&nbsp;     * @param numPts the number of points to be transformed
+<i>1757</i>&nbsp;     * @throws NonInvertibleTransformException if this transform
+<i>1758</i>&nbsp;     *         cannot be inverted
+<i>1759</i>&nbsp;     * @throws NullPointerException if {@code srcPts} or (@code dstPts} is null
+<i>1760</i>&nbsp;     * @since JavaFX 8.0
+<i>1761</i>&nbsp;     */
+<i>1762</i>&nbsp;    public void inverseTransform3DPoints(double[] srcPts, int srcOff,
+<i>1763</i>&nbsp;                          double[] dstPts, int dstOff,
+<i>1764</i>&nbsp;                          int numPts) throws NonInvertibleTransformException {
+<i>1765</i>&nbsp;
+<b class="nc"><i>1766</i>&nbsp;        if (srcPts == null || dstPts == null) {</b>
+<b class="nc"><i>1767</i>&nbsp;            throw new NullPointerException();</b>
+<i>1768</i>&nbsp;        }
+<i>1769</i>&nbsp;
+<i>1770</i>&nbsp;        // deal with overlapping arrays
+<b class="nc"><i>1771</i>&nbsp;        srcOff = getFixedSrcOffset(srcPts, srcOff, dstPts, dstOff, numPts, 3);</b>
+<i>1772</i>&nbsp;
+<i>1773</i>&nbsp;        // do the transformations
+<b class="nc"><i>1774</i>&nbsp;        inverseTransform3DPointsImpl(srcPts, srcOff, dstPts, dstOff, numPts);</b>
+<b class="nc"><i>1775</i>&nbsp;    }</b>
+<i>1776</i>&nbsp;
+<i>1777</i>&nbsp;    /**
+<i>1778</i>&nbsp;     * Transforms the relative magnitude vector by the inverse of this transform.
+<i>1779</i>&nbsp;     * The vector is transformed without applying the translation components
+<i>1780</i>&nbsp;     * of the affine transformation matrix.
+<i>1781</i>&nbsp;     * This method can be used only for a 2D transform.
+<i>1782</i>&nbsp;     * @param x vector magnitude in the direction of the X axis
+<i>1783</i>&nbsp;     * @param y vector magnitude in the direction of the Y axis
+<i>1784</i>&nbsp;     * @return the inversely transformed relative magnitude vector represented
+<i>1785</i>&nbsp;     *         by a {@code Point2D} instance
+<i>1786</i>&nbsp;     * @throws IllegalStateException if this is a 3D transform
+<i>1787</i>&nbsp;     * @throws NonInvertibleTransformException if this transform
+<i>1788</i>&nbsp;     *         cannot be inverted
+<i>1789</i>&nbsp;     * @since JavaFX 8.0
+<i>1790</i>&nbsp;     */
+<i>1791</i>&nbsp;    public Point2D inverseDeltaTransform(double x, double y)
+<i>1792</i>&nbsp;            throws NonInvertibleTransformException {
+<i>1793</i>&nbsp;
+<b class="nc"><i>1794</i>&nbsp;        ensureCanTransform2DPoint();</b>
+<i>1795</i>&nbsp;
+<b class="nc"><i>1796</i>&nbsp;        return getInverseCache().deltaTransform(x, y);</b>
+<i>1797</i>&nbsp;    }
+<i>1798</i>&nbsp;
+<i>1799</i>&nbsp;    /**
+<i>1800</i>&nbsp;     * Transforms the relative magnitude vector represented by the specified
+<i>1801</i>&nbsp;     * {@code Point2D} instance by the inverse of this transform.
+<i>1802</i>&nbsp;     * The vector is transformed without applying the translation components
+<i>1803</i>&nbsp;     * of the affine transformation matrix.
+<i>1804</i>&nbsp;     * This method can be used only for a 2D transform.
+<i>1805</i>&nbsp;     * @param point the relative magnitude vector
+<i>1806</i>&nbsp;     * @return the inversely transformed relative magnitude vector represented
+<i>1807</i>&nbsp;     *         by a {@code Point2D} instance
+<i>1808</i>&nbsp;     * @throws IllegalStateException if this is a 3D transform
+<i>1809</i>&nbsp;     * @throws NonInvertibleTransformException if this transform
+<i>1810</i>&nbsp;     *         cannot be inverted
+<i>1811</i>&nbsp;     * @throws NullPointerException if the specified {@code point} is null
+<i>1812</i>&nbsp;     * @since JavaFX 8.0
+<i>1813</i>&nbsp;     */
+<i>1814</i>&nbsp;    public Point2D inverseDeltaTransform(Point2D point)
+<i>1815</i>&nbsp;            throws NonInvertibleTransformException {
+<b class="nc"><i>1816</i>&nbsp;        return inverseDeltaTransform(point.getX(), point.getY());</b>
+<i>1817</i>&nbsp;    }
+<i>1818</i>&nbsp;
+<i>1819</i>&nbsp;    /**
+<i>1820</i>&nbsp;     * Transforms the relative magnitude vector by the inverse of this transform.
+<i>1821</i>&nbsp;     * The vector is transformed without applying the translation components
+<i>1822</i>&nbsp;     * of the affine transformation matrix.
+<i>1823</i>&nbsp;     * @param x vector magnitude in the direction of the X axis
+<i>1824</i>&nbsp;     * @param y vector magnitude in the direction of the Y axis
+<i>1825</i>&nbsp;     * @param z vector magnitude in the direction of the Z axis
+<i>1826</i>&nbsp;     * @return the inversely transformed relative magnitude vector represented
+<i>1827</i>&nbsp;     *         by a {@code Point3D} instance
+<i>1828</i>&nbsp;     * @throws NonInvertibleTransformException if this transform
+<i>1829</i>&nbsp;     *         cannot be inverted
+<i>1830</i>&nbsp;     * @since JavaFX 8.0
+<i>1831</i>&nbsp;     */
+<i>1832</i>&nbsp;    public Point3D inverseDeltaTransform(double x, double y, double z)
+<i>1833</i>&nbsp;            throws NonInvertibleTransformException {
+<i>1834</i>&nbsp;
+<b class="nc"><i>1835</i>&nbsp;        return getInverseCache().deltaTransform(x, y, z);</b>
+<i>1836</i>&nbsp;    }
+<i>1837</i>&nbsp;
+<i>1838</i>&nbsp;    /**
+<i>1839</i>&nbsp;     * Transforms the relative magnitude vector represented by the specified
+<i>1840</i>&nbsp;     * {@code Point3D} instance by the inverse of this transform.
+<i>1841</i>&nbsp;     * The vector is transformed without applying the translation components
+<i>1842</i>&nbsp;     * of the affine transformation matrix.
+<i>1843</i>&nbsp;     * @param point the relative magnitude vector
+<i>1844</i>&nbsp;     * @return the inversely transformed relative magnitude vector represented
+<i>1845</i>&nbsp;     *         by a {@code Point3D} instance
+<i>1846</i>&nbsp;     * @throws NonInvertibleTransformException if this transform
+<i>1847</i>&nbsp;     *         cannot be inverted
+<i>1848</i>&nbsp;     * @throws NullPointerException if the specified {@code point} is null
+<i>1849</i>&nbsp;     * @since JavaFX 8.0
+<i>1850</i>&nbsp;     */
+<i>1851</i>&nbsp;    public Point3D inverseDeltaTransform(Point3D point)
+<i>1852</i>&nbsp;            throws NonInvertibleTransformException {
+<b class="nc"><i>1853</i>&nbsp;        return inverseDeltaTransform(point.getX(), point.getY(), point.getZ());</b>
+<i>1854</i>&nbsp;    }
+<i>1855</i>&nbsp;
+<i>1856</i>&nbsp;    /**
+<i>1857</i>&nbsp;     * Helper method for transforming arrays of points that deals with
+<i>1858</i>&nbsp;     * overlapping arrays.
+<i>1859</i>&nbsp;     * @return the (if necessary fixed) srcOff
+<i>1860</i>&nbsp;     */
+<i>1861</i>&nbsp;    private int getFixedSrcOffset(double[] srcPts, int srcOff,
+<i>1862</i>&nbsp;            double[] dstPts, int dstOff,
+<i>1863</i>&nbsp;            int numPts, int dimensions) {
+<i>1864</i>&nbsp;
+<b class="nc"><i>1865</i>&nbsp;        if (dstPts == srcPts &amp;&amp;</b>
+<i>1866</i>&nbsp;            dstOff &gt; srcOff &amp;&amp; dstOff &lt; srcOff + numPts * dimensions)
+<i>1867</i>&nbsp;        {
+<i>1868</i>&nbsp;            // If the arrays overlap partially with the destination higher
+<i>1869</i>&nbsp;            // than the source and we transform the coordinates normally
+<i>1870</i>&nbsp;            // we would overwrite some of the later source coordinates
+<i>1871</i>&nbsp;            // with results of previous transformations.
+<i>1872</i>&nbsp;            // To get around this we use arraycopy to copy the points
+<i>1873</i>&nbsp;            // to their final destination with correct overwrite
+<i>1874</i>&nbsp;            // handling and then transform them in place in the new
+<i>1875</i>&nbsp;            // safer location.
+<b class="nc"><i>1876</i>&nbsp;            System.arraycopy(srcPts, srcOff, dstPts, dstOff, numPts * dimensions);</b>
+<b class="nc"><i>1877</i>&nbsp;            return dstOff;</b>
+<i>1878</i>&nbsp;        }
+<i>1879</i>&nbsp;
+<b class="nc"><i>1880</i>&nbsp;        return srcOff;</b>
+<i>1881</i>&nbsp;    }
+<i>1882</i>&nbsp;
+<i>1883</i>&nbsp;    /* *************************************************************************
+<i>1884</i>&nbsp;     *                                                                         *
+<i>1885</i>&nbsp;     *                         Event Dispatch                                  *
+<i>1886</i>&nbsp;     *                                                                         *
+<i>1887</i>&nbsp;     **************************************************************************/
+<i>1888</i>&nbsp;
+<i>1889</i>&nbsp;    private EventHandlerManager internalEventDispatcher;
+<i>1890</i>&nbsp;    private EventHandlerManager getInternalEventDispatcher() {
+<b class="nc"><i>1891</i>&nbsp;        if (internalEventDispatcher == null) {</b>
+<b class="nc"><i>1892</i>&nbsp;            internalEventDispatcher = new EventHandlerManager(this);</b>
+<i>1893</i>&nbsp;        }
+<b class="nc"><i>1894</i>&nbsp;        return internalEventDispatcher;</b>
+<i>1895</i>&nbsp;    }
+<i>1896</i>&nbsp;    private ObjectProperty&lt;EventHandler&lt;? super TransformChangedEvent&gt;&gt;
+<i>1897</i>&nbsp;            onTransformChanged;
+<i>1898</i>&nbsp;
+<i>1899</i>&nbsp;    @Override
+<i>1900</i>&nbsp;    public EventDispatchChain buildEventDispatchChain(EventDispatchChain tail) {
+<b class="nc"><i>1901</i>&nbsp;        return internalEventDispatcher == null</b>
+<b class="nc"><i>1902</i>&nbsp;                ? tail : tail.append(getInternalEventDispatcher());</b>
+<i>1903</i>&nbsp;    }
+<i>1904</i>&nbsp;
+<i>1905</i>&nbsp;    /**
+<i>1906</i>&nbsp;     * &lt;p&gt;
+<i>1907</i>&nbsp;     * Registers an event handler to this transform. Any event filters are first
+<i>1908</i>&nbsp;     * processed, then the specified onFoo event handlers, and finally any
+<i>1909</i>&nbsp;     * event handlers registered by this method.
+<i>1910</i>&nbsp;     * &lt;/p&gt;&lt;p&gt;
+<i>1911</i>&nbsp;     * Currently the only event delivered to a {@code Transform} is the
+<i>1912</i>&nbsp;     * {@code TransformChangedEvent} with it&#39;s single type
+<i>1913</i>&nbsp;     * {@code TRANSFORM_CHANGED}.
+<i>1914</i>&nbsp;     * &lt;/p&gt;
+<i>1915</i>&nbsp;     *
+<i>1916</i>&nbsp;     * @param &lt;T&gt; the specific event class of the handler
+<i>1917</i>&nbsp;     * @param eventType the type of the events to receive by the handler
+<i>1918</i>&nbsp;     * @param eventHandler the handler to register
+<i>1919</i>&nbsp;     * @throws NullPointerException if the event type or handler is null
+<i>1920</i>&nbsp;     * @since JavaFX 8.0
+<i>1921</i>&nbsp;     */
+<i>1922</i>&nbsp;    public final &lt;T extends Event&gt; void addEventHandler(
+<i>1923</i>&nbsp;            final EventType&lt;T&gt; eventType,
+<i>1924</i>&nbsp;            final EventHandler&lt;? super T&gt; eventHandler) {
+<b class="nc"><i>1925</i>&nbsp;        getInternalEventDispatcher()</b>
+<b class="nc"><i>1926</i>&nbsp;                .addEventHandler(eventType, eventHandler);</b>
+<i>1927</i>&nbsp;        // need to validate all properties to get the change events
+<b class="nc"><i>1928</i>&nbsp;        validate();</b>
+<b class="nc"><i>1929</i>&nbsp;    }</b>
+<i>1930</i>&nbsp;
+<i>1931</i>&nbsp;    /**
+<i>1932</i>&nbsp;     * Unregisters a previously registered event handler from this transform.
+<i>1933</i>&nbsp;     * One handler might have been registered for different event types, so the
+<i>1934</i>&nbsp;     * caller needs to specify the particular event type from which to
+<i>1935</i>&nbsp;     * unregister the handler.
+<i>1936</i>&nbsp;     *
+<i>1937</i>&nbsp;     * @param &lt;T&gt; the specific event class of the handler
+<i>1938</i>&nbsp;     * @param eventType the event type from which to unregister
+<i>1939</i>&nbsp;     * @param eventHandler the handler to unregister
+<i>1940</i>&nbsp;     * @throws NullPointerException if the event type or handler is null
+<i>1941</i>&nbsp;     * @since JavaFX 8.0
+<i>1942</i>&nbsp;     */
+<i>1943</i>&nbsp;    public final &lt;T extends Event&gt; void removeEventHandler(
+<i>1944</i>&nbsp;            final EventType&lt;T&gt; eventType,
+<i>1945</i>&nbsp;            final EventHandler&lt;? super T&gt; eventHandler) {
+<b class="nc"><i>1946</i>&nbsp;        getInternalEventDispatcher()</b>
+<b class="nc"><i>1947</i>&nbsp;                .removeEventHandler(eventType, eventHandler);</b>
+<b class="nc"><i>1948</i>&nbsp;    }</b>
+<i>1949</i>&nbsp;
+<i>1950</i>&nbsp;    /**
+<i>1951</i>&nbsp;     * &lt;p&gt;
+<i>1952</i>&nbsp;     * Registers an event filter to this transform. Registered event filters get
+<i>1953</i>&nbsp;     * an event before any associated event handlers.
+<i>1954</i>&nbsp;     * &lt;/p&gt;&lt;p&gt;
+<i>1955</i>&nbsp;     * Currently the only event delivered to a {@code Transform} is the
+<i>1956</i>&nbsp;     * {@code TransformChangedEvent} with it&#39;s single type
+<i>1957</i>&nbsp;     * {@code TRANSFORM_CHANGED}.
+<i>1958</i>&nbsp;     * &lt;p&gt;
+<i>1959</i>&nbsp;     *
+<i>1960</i>&nbsp;     * @param &lt;T&gt; the specific event class of the filter
+<i>1961</i>&nbsp;     * @param eventType the type of the events to receive by the filter
+<i>1962</i>&nbsp;     * @param eventFilter the filter to register
+<i>1963</i>&nbsp;     * @throws NullPointerException if the event type or filter is null
+<i>1964</i>&nbsp;     * @since JavaFX 8.0
+<i>1965</i>&nbsp;     */
+<i>1966</i>&nbsp;    public final &lt;T extends Event&gt; void addEventFilter(
+<i>1967</i>&nbsp;            final EventType&lt;T&gt; eventType,
+<i>1968</i>&nbsp;            final EventHandler&lt;? super T&gt; eventFilter) {
+<b class="nc"><i>1969</i>&nbsp;        getInternalEventDispatcher()</b>
+<b class="nc"><i>1970</i>&nbsp;                .addEventFilter(eventType, eventFilter);</b>
+<i>1971</i>&nbsp;        // need to validate all properties to get the change events
+<b class="nc"><i>1972</i>&nbsp;        validate();</b>
+<b class="nc"><i>1973</i>&nbsp;    }</b>
+<i>1974</i>&nbsp;
+<i>1975</i>&nbsp;    /**
+<i>1976</i>&nbsp;     * Unregisters a previously registered event filter from this transform. One
+<i>1977</i>&nbsp;     * filter might have been registered for different event types, so the
+<i>1978</i>&nbsp;     * caller needs to specify the particular event type from which to
+<i>1979</i>&nbsp;     * unregister the filter.
+<i>1980</i>&nbsp;     *
+<i>1981</i>&nbsp;     * @param &lt;T&gt; the specific event class of the filter
+<i>1982</i>&nbsp;     * @param eventType the event type from which to unregister
+<i>1983</i>&nbsp;     * @param eventFilter the filter to unregister
+<i>1984</i>&nbsp;     * @throws NullPointerException if the event type or filter is null
+<i>1985</i>&nbsp;     * @since JavaFX 8.0
+<i>1986</i>&nbsp;     */
+<i>1987</i>&nbsp;    public final &lt;T extends Event&gt; void removeEventFilter(
+<i>1988</i>&nbsp;            final EventType&lt;T&gt; eventType,
+<i>1989</i>&nbsp;            final EventHandler&lt;? super T&gt; eventFilter) {
+<b class="nc"><i>1990</i>&nbsp;        getInternalEventDispatcher()</b>
+<b class="nc"><i>1991</i>&nbsp;                .removeEventFilter(eventType, eventFilter);</b>
+<b class="nc"><i>1992</i>&nbsp;    }</b>
+<i>1993</i>&nbsp;
+<i>1994</i>&nbsp;    /**
+<i>1995</i>&nbsp;     * Sets the onTransformChanged event handler which is called whenever
+<i>1996</i>&nbsp;     * the transform changes any of its parameters.
+<i>1997</i>&nbsp;     *
+<i>1998</i>&nbsp;     * @param value the event handler, can be null to clear it
+<i>1999</i>&nbsp;     * @since JavaFX 8.0
+<i>2000</i>&nbsp;     */
+<i>2001</i>&nbsp;    public final void setOnTransformChanged(
+<i>2002</i>&nbsp;            EventHandler&lt;? super TransformChangedEvent&gt; value) {
+<b class="nc"><i>2003</i>&nbsp;        onTransformChangedProperty().set(value);</b>
+<i>2004</i>&nbsp;        // need to validate all properties to get the change events
+<b class="nc"><i>2005</i>&nbsp;        validate();</b>
+<b class="nc"><i>2006</i>&nbsp;    }</b>
+<i>2007</i>&nbsp;
+<i>2008</i>&nbsp;    /**
+<i>2009</i>&nbsp;     * Gets the onTransformChanged event handler.
+<i>2010</i>&nbsp;     * @return the event handler previously set by {@code setOnTransformChanged}
+<i>2011</i>&nbsp;     * method, null if the handler is not set.
+<i>2012</i>&nbsp;     * @since JavaFX 8.0
+<i>2013</i>&nbsp;     */
+<i>2014</i>&nbsp;    public final EventHandler&lt;? super TransformChangedEvent&gt; getOnTransformChanged() {
+<b class="nc"><i>2015</i>&nbsp;        return (onTransformChanged == null) ? null : onTransformChanged.get();</b>
+<i>2016</i>&nbsp;    }
+<i>2017</i>&nbsp;
+<i>2018</i>&nbsp;    /**
+<i>2019</i>&nbsp;     * The onTransformChanged event handler is called whenever the transform
+<i>2020</i>&nbsp;     * changes any of its parameters.
+<i>2021</i>&nbsp;     * @return the onTransformChanged event handler
+<i>2022</i>&nbsp;     * @since JavaFX 8.0
+<i>2023</i>&nbsp;     */
+<i>2024</i>&nbsp;    public final ObjectProperty&lt;EventHandler&lt;? super TransformChangedEvent&gt;&gt;
+<i>2025</i>&nbsp;            onTransformChangedProperty() {
+<b class="nc"><i>2026</i>&nbsp;        if (onTransformChanged == null) {</b>
+<i>2027</i>&nbsp;
+<b class="nc"><i>2028</i>&nbsp;            onTransformChanged = new SimpleObjectProperty&lt;EventHandler</b>
+<b class="nc"><i>2029</i>&nbsp;                    &lt;? super TransformChangedEvent&gt;&gt;(this, &quot;onTransformChanged&quot;) {</b>
+<i>2030</i>&nbsp;
+<i>2031</i>&nbsp;                @Override protected void invalidated() {
+<b class="nc"><i>2032</i>&nbsp;                    getInternalEventDispatcher().setEventHandler(</b>
+<b class="nc"><i>2033</i>&nbsp;                            TransformChangedEvent.TRANSFORM_CHANGED, get());</b>
+<b class="nc"><i>2034</i>&nbsp;                }</b>
+<i>2035</i>&nbsp;            };
+<i>2036</i>&nbsp;        }
+<i>2037</i>&nbsp;
+<b class="nc"><i>2038</i>&nbsp;        return onTransformChanged;</b>
+<i>2039</i>&nbsp;    }
+<i>2040</i>&nbsp;
+<i>2041</i>&nbsp;    /* *************************************************************************
+<i>2042</i>&nbsp;     *                                                                         *
+<i>2043</i>&nbsp;     *                    Internal implementation stuff                        *
+<i>2044</i>&nbsp;     *                                                                         *
+<i>2045</i>&nbsp;     **************************************************************************/
+<i>2046</i>&nbsp;
+<i>2047</i>&nbsp;    /**
+<i>2048</i>&nbsp;     * Makes sure the specified matrix type can be requested from this transform.
+<i>2049</i>&nbsp;     * Is used for convenience in various methods that accept
+<i>2050</i>&nbsp;     * the MatrixType argument.
+<i>2051</i>&nbsp;     * @param type matrix type to check
+<i>2052</i>&nbsp;     * @throws IllegalArgumentException if this is a 3D transform and
+<i>2053</i>&nbsp;     *                                  a 2D type is requested
+<i>2054</i>&nbsp;     */
+<i>2055</i>&nbsp;    void checkRequestedMAT(MatrixType type) throws IllegalArgumentException{
+<b class="nc"><i>2056</i>&nbsp;        if (type.is2D() &amp;&amp; !isType2D()) {</b>
+<b class="nc"><i>2057</i>&nbsp;            throw new IllegalArgumentException(&quot;Cannot access 2D matrix &quot;</b>
+<i>2058</i>&nbsp;                    + &quot;for a 3D transform&quot;);
+<i>2059</i>&nbsp;        }
+<b class="nc"><i>2060</i>&nbsp;    }</b>
+<i>2061</i>&nbsp;
+<i>2062</i>&nbsp;    /**
+<i>2063</i>&nbsp;     * Makes sure this is a 2D transform.
+<i>2064</i>&nbsp;     * Is used for convenience in various 2D point transformation methods.
+<i>2065</i>&nbsp;     * @throws IllegalStateException if this is a 2D transform
+<i>2066</i>&nbsp;     */
+<i>2067</i>&nbsp;    void ensureCanTransform2DPoint() throws IllegalStateException {
+<b class="nc"><i>2068</i>&nbsp;        if (!isType2D()) {</b>
+<b class="nc"><i>2069</i>&nbsp;            throw new IllegalStateException(&quot;Cannot transform 2D point &quot;</b>
+<i>2070</i>&nbsp;                    + &quot;with a 3D transform&quot;);
+<i>2071</i>&nbsp;        }
+<b class="nc"><i>2072</i>&nbsp;    }</b>
+<i>2073</i>&nbsp;
+<i>2074</i>&nbsp;    /**
+<i>2075</i>&nbsp;     * Needed for the proper delivery of the TransformChangedEvent.
+<i>2076</i>&nbsp;     * If the members are invalid, the transformChanged() notification
+<i>2077</i>&nbsp;     * is not called and the event is not delivered. To avoid that
+<i>2078</i>&nbsp;     * we need to manually validate all properties. Subclasses validate
+<i>2079</i>&nbsp;     * their specific properties.
+<i>2080</i>&nbsp;     */
+<i>2081</i>&nbsp;    void validate() {
+<b class="nc"><i>2082</i>&nbsp;        getMxx(); getMxy(); getMxz(); getTx();</b>
+<b class="nc"><i>2083</i>&nbsp;        getMyx(); getMyy(); getMyz(); getTy();</b>
+<b class="nc"><i>2084</i>&nbsp;        getMzx(); getMzy(); getMzz(); getTz();</b>
+<b class="nc"><i>2085</i>&nbsp;    }</b>
+<i>2086</i>&nbsp;
+<i>2087</i>&nbsp;    abstract void apply(Affine3D t);
+<i>2088</i>&nbsp;
+<i>2089</i>&nbsp;    abstract BaseTransform derive(BaseTransform t);
+<i>2090</i>&nbsp;
+<i>2091</i>&nbsp;    void add(final Node node) {
+<b class="nc"><i>2092</i>&nbsp;        nodes.add(node);</b>
+<b class="nc"><i>2093</i>&nbsp;    }</b>
+<i>2094</i>&nbsp;
+<i>2095</i>&nbsp;    void remove(final Node node) {
+<b class="nc"><i>2096</i>&nbsp;        nodes.remove(node);</b>
+<b class="nc"><i>2097</i>&nbsp;    }</b>
+<i>2098</i>&nbsp;
+<i>2099</i>&nbsp;    /**
+<i>2100</i>&nbsp;     * This method must be called by all transforms whenever any of their
+<i>2101</i>&nbsp;     * parameters changes. It is typically called when any of the transform&#39;s
+<i>2102</i>&nbsp;     * properties is invalidated (it is OK to skip the call if an invalid
+<i>2103</i>&nbsp;     * property is set).
+<i>2104</i>&nbsp;     * @since JavaFX 8.0
+<i>2105</i>&nbsp;     */
+<i>2106</i>&nbsp;    protected void transformChanged() {
+<b class="nc"><i>2107</i>&nbsp;        inverseCache = null;</b>
+<b class="nc"><i>2108</i>&nbsp;        final Iterator iterator = nodes.iterator();</b>
+<b class="nc"><i>2109</i>&nbsp;        while (iterator.hasNext()) {</b>
+<b class="nc"><i>2110</i>&nbsp;            NodeHelper.transformsChanged(((Node) iterator.next()));</b>
+<i>2111</i>&nbsp;        }
+<i>2112</i>&nbsp;
+<b class="nc"><i>2113</i>&nbsp;        if (type2D != null) {</b>
+<b class="nc"><i>2114</i>&nbsp;            type2D.invalidate();</b>
+<i>2115</i>&nbsp;        }
+<i>2116</i>&nbsp;
+<b class="nc"><i>2117</i>&nbsp;        if (identity != null) {</b>
+<b class="nc"><i>2118</i>&nbsp;            identity.invalidate();</b>
+<i>2119</i>&nbsp;        }
+<i>2120</i>&nbsp;
+<b class="nc"><i>2121</i>&nbsp;        if (internalEventDispatcher != null) {</b>
+<i>2122</i>&nbsp;            // need to validate all properties for the event to be fired next time
+<b class="nc"><i>2123</i>&nbsp;            validate();</b>
+<b class="nc"><i>2124</i>&nbsp;            Event.fireEvent(this, new TransformChangedEvent(this, this));</b>
+<i>2125</i>&nbsp;        }
+<b class="nc"><i>2126</i>&nbsp;    }</b>
+<i>2127</i>&nbsp;
+<i>2128</i>&nbsp;    /**
+<i>2129</i>&nbsp;     * Visitor from {@code Affine} class which provides an efficient
+<i>2130</i>&nbsp;     * {@code append} operation for the subclasses.
+<i>2131</i>&nbsp;     * @param a {@code Affine} instance to append to
+<i>2132</i>&nbsp;     */
+<i>2133</i>&nbsp;    void appendTo(Affine a) {
+<b class="nc"><i>2134</i>&nbsp;        a.append(getMxx(), getMxy(), getMxz(), getTx(),</b>
+<b class="nc"><i>2135</i>&nbsp;                 getMyx(), getMyy(), getMyz(), getTy(),</b>
+<b class="nc"><i>2136</i>&nbsp;                 getMzx(), getMzy(), getMzz(), getTz());</b>
+<b class="nc"><i>2137</i>&nbsp;    }</b>
+<i>2138</i>&nbsp;
+<i>2139</i>&nbsp;    /**
+<i>2140</i>&nbsp;     * Visitor from {@code Affine} class which provides an efficient
+<i>2141</i>&nbsp;     * {@code prepend} operation for the subclasses.
+<i>2142</i>&nbsp;     * @param a {@code Affine} instance to prepend to
+<i>2143</i>&nbsp;     */
+<i>2144</i>&nbsp;    void prependTo(Affine a) {
+<b class="nc"><i>2145</i>&nbsp;        a.prepend(getMxx(), getMxy(), getMxz(), getTx(),</b>
+<b class="nc"><i>2146</i>&nbsp;                  getMyx(), getMyy(), getMyz(), getTy(),</b>
+<b class="nc"><i>2147</i>&nbsp;                  getMzx(), getMzy(), getMzz(), getTz());</b>
+<b class="nc"><i>2148</i>&nbsp;    }</b>
+<i>2149</i>&nbsp;
+<i>2150</i>&nbsp;    /**
+<i>2151</i>&nbsp;     * &lt;p&gt;
+<i>2152</i>&nbsp;     * Gets the inverse transform cache.
+<i>2153</i>&nbsp;     * &lt;/p&gt;&lt;p&gt;
+<i>2154</i>&nbsp;     * Computing the inverse transform is generally an expensive operation,
+<i>2155</i>&nbsp;     * so once it is needed we cache the result (throwing it away when the
+<i>2156</i>&nbsp;     * transform changes). The subclasses may avoid using the cache if their
+<i>2157</i>&nbsp;     * inverse can be computed quickly on the fly.
+<i>2158</i>&nbsp;     * &lt;/p&gt;&lt;p&gt;
+<i>2159</i>&nbsp;     * This method computes the inverse if the cache is not valid.
+<i>2160</i>&nbsp;     * &lt;/p&gt;
+<i>2161</i>&nbsp;     * @return the cached inverse transformation
+<i>2162</i>&nbsp;     * @throws NonInvertibleTransformException if this transform
+<i>2163</i>&nbsp;     *         cannot be inverted
+<i>2164</i>&nbsp;     */
+<i>2165</i>&nbsp;    private Transform getInverseCache() throws NonInvertibleTransformException {
+<b class="nc"><i>2166</i>&nbsp;        if (inverseCache == null || inverseCache.get() == null) {</b>
+<b class="nc"><i>2167</i>&nbsp;            Affine inv = new Affine(</b>
+<b class="nc"><i>2168</i>&nbsp;                    getMxx(), getMxy(), getMxz(), getTx(),</b>
+<b class="nc"><i>2169</i>&nbsp;                    getMyx(), getMyy(), getMyz(), getTy(),</b>
+<b class="nc"><i>2170</i>&nbsp;                    getMzx(), getMzy(), getMzz(), getTz());</b>
+<b class="nc"><i>2171</i>&nbsp;            inv.invert();</b>
+<b class="nc"><i>2172</i>&nbsp;            inverseCache = new SoftReference&lt;Transform&gt;(inv);</b>
+<b class="nc"><i>2173</i>&nbsp;            return inv;</b>
+<i>2174</i>&nbsp;        }
+<i>2175</i>&nbsp;
+<b class="nc"><i>2176</i>&nbsp;        return inverseCache.get();</b>
+<i>2177</i>&nbsp;    }
+<i>2178</i>&nbsp;
+<i>2179</i>&nbsp;    /**
+<i>2180</i>&nbsp;     * Used only by tests to emulate garbage collecting the soft references
+<i>2181</i>&nbsp;     */
+<i>2182</i>&nbsp;    void clearInverseCache() {
+<b class="nc"><i>2183</i>&nbsp;        if (inverseCache != null) {</b>
+<b class="nc"><i>2184</i>&nbsp;            inverseCache.clear();</b>
+<i>2185</i>&nbsp;        }
+<b class="nc"><i>2186</i>&nbsp;    }</b>
+<i>2187</i>&nbsp;
+<i>2188</i>&nbsp;    /**************************************************************************
+<i>2189</i>&nbsp;     *  ImmutableTransform Class and supporting methods
+<i>2190</i>&nbsp;     **************************************************************************/
+<i>2191</i>&nbsp;
+<i>2192</i>&nbsp;    static Transform createImmutableTransform() {
+<b class="nc"><i>2193</i>&nbsp;        return new ImmutableTransform();</b>
+<i>2194</i>&nbsp;    }
+<i>2195</i>&nbsp;
+<i>2196</i>&nbsp;    static Transform createImmutableTransform(
+<i>2197</i>&nbsp;            double mxx, double mxy, double mxz, double tx,
+<i>2198</i>&nbsp;            double myx, double myy, double myz, double ty,
+<i>2199</i>&nbsp;            double mzx, double mzy, double mzz, double tz) {
+<b class="nc"><i>2200</i>&nbsp;        return new ImmutableTransform(</b>
+<i>2201</i>&nbsp;                mxx, mxy, mxz, tx,
+<i>2202</i>&nbsp;                myx, myy, myz, ty,
+<i>2203</i>&nbsp;                mzx, mzy, mzz, tz);
+<i>2204</i>&nbsp;    }
+<i>2205</i>&nbsp;
+<i>2206</i>&nbsp;    static Transform createImmutableTransform(Transform transform,
+<i>2207</i>&nbsp;            double mxx, double mxy, double mxz, double tx,
+<i>2208</i>&nbsp;            double myx, double myy, double myz, double ty,
+<i>2209</i>&nbsp;            double mzx, double mzy, double mzz, double tz) {
+<b class="fc"><i>2210</i>&nbsp;        if (transform == null) {</b>
+<b class="fc"><i>2211</i>&nbsp;            return new ImmutableTransform(</b>
+<i>2212</i>&nbsp;                    mxx, mxy, mxz, tx,
+<i>2213</i>&nbsp;                    myx, myy, myz, ty,
+<i>2214</i>&nbsp;                    mzx, mzy, mzz, tz);
+<i>2215</i>&nbsp;        }
+<b class="nc"><i>2216</i>&nbsp;        ((Transform.ImmutableTransform) transform).setToTransform(</b>
+<i>2217</i>&nbsp;                mxx, mxy, mxz, tx,
+<i>2218</i>&nbsp;                myx, myy, myz, ty,
+<i>2219</i>&nbsp;                mzx, mzy, mzz, tz);
+<b class="nc"><i>2220</i>&nbsp;        return transform;</b>
+<i>2221</i>&nbsp;    }
+<i>2222</i>&nbsp;
+<i>2223</i>&nbsp;    static Transform createImmutableTransform(Transform transform,
+<i>2224</i>&nbsp;            Transform left, Transform right) {
+<b class="nc"><i>2225</i>&nbsp;        if (transform == null) {</b>
+<b class="nc"><i>2226</i>&nbsp;            transform = new ImmutableTransform();</b>
+<i>2227</i>&nbsp;        }
+<b class="nc"><i>2228</i>&nbsp;        ((Transform.ImmutableTransform) transform).setToConcatenation(</b>
+<i>2229</i>&nbsp;                (ImmutableTransform) left, (ImmutableTransform) right);
+<b class="nc"><i>2230</i>&nbsp;        return transform;</b>
+<i>2231</i>&nbsp;    }
+<i>2232</i>&nbsp;
+<i>2233</i>&nbsp;    /**
+<i>2234</i>&nbsp;     * Immutable transformation with performance optimizations based on Affine.
+<i>2235</i>&nbsp;     *
+<i>2236</i>&nbsp;     * From user&#39;s perspective, this transform is immutable. However, we can
+<i>2237</i>&nbsp;     * modify it internally. This allows for reusing instances that were
+<i>2238</i>&nbsp;     * not handed to users. The caller is responsible for not modifying
+<i>2239</i>&nbsp;     * user-visible instances.
+<i>2240</i>&nbsp;     *
+<i>2241</i>&nbsp;     * Note: can&#39;t override Transform&#39;s package private methods so they cannot
+<i>2242</i>&nbsp;     * be optimized. Currently not a big deal.
+<i>2243</i>&nbsp;     */
+<b class="nc"><i>2244</i>&nbsp;    static class ImmutableTransform extends Transform {</b>
+<i>2245</i>&nbsp;
+<i>2246</i>&nbsp;        private static final int APPLY_IDENTITY = 0;
+<i>2247</i>&nbsp;        private static final int APPLY_TRANSLATE = 1;
+<i>2248</i>&nbsp;        private static final int APPLY_SCALE = 2;
+<i>2249</i>&nbsp;        private static final int APPLY_SHEAR = 4;
+<i>2250</i>&nbsp;        private static final int APPLY_NON_3D = 0;
+<i>2251</i>&nbsp;        private static final int APPLY_3D_COMPLEX = 4;
+<i>2252</i>&nbsp;        private transient int state2d;
+<i>2253</i>&nbsp;        private transient int state3d;
+<i>2254</i>&nbsp;
+<i>2255</i>&nbsp;        private double xx;
+<i>2256</i>&nbsp;        private double xy;
+<i>2257</i>&nbsp;        private double xz;
+<i>2258</i>&nbsp;        private double yx;
+<i>2259</i>&nbsp;        private double yy;
+<i>2260</i>&nbsp;        private double yz;
+<i>2261</i>&nbsp;        private double zx;
+<i>2262</i>&nbsp;        private double zy;
+<i>2263</i>&nbsp;        private double zz;
+<i>2264</i>&nbsp;        private double xt;
+<i>2265</i>&nbsp;        private double yt;
+<i>2266</i>&nbsp;        private double zt;
+<i>2267</i>&nbsp;
+<b class="nc"><i>2268</i>&nbsp;        ImmutableTransform() {</b>
+<b class="nc"><i>2269</i>&nbsp;            xx = yy = zz = 1.0;</b>
+<b class="nc"><i>2270</i>&nbsp;        }</b>
+<i>2271</i>&nbsp;
+<i>2272</i>&nbsp;        ImmutableTransform(Transform transform) {
+<b class="nc"><i>2273</i>&nbsp;            this(transform.getMxx(), transform.getMxy(), transform.getMxz(),</b>
+<b class="nc"><i>2274</i>&nbsp;                                                                 transform.getTx(),</b>
+<b class="nc"><i>2275</i>&nbsp;                 transform.getMyx(), transform.getMyy(), transform.getMyz(),</b>
+<b class="nc"><i>2276</i>&nbsp;                                                                 transform.getTy(),</b>
+<b class="nc"><i>2277</i>&nbsp;                 transform.getMzx(), transform.getMzy(), transform.getMzz(),</b>
+<b class="nc"><i>2278</i>&nbsp;                                                                 transform.getTz());</b>
+<b class="nc"><i>2279</i>&nbsp;        }</b>
+<i>2280</i>&nbsp;
+<i>2281</i>&nbsp;        ImmutableTransform(double mxx, double mxy, double mxz, double tx,
+<i>2282</i>&nbsp;                      double myx, double myy, double myz, double ty,
+<b class="fc"><i>2283</i>&nbsp;                      double mzx, double mzy, double mzz, double tz) {</b>
+<b class="fc"><i>2284</i>&nbsp;            xx = mxx;</b>
+<b class="fc"><i>2285</i>&nbsp;            xy = mxy;</b>
+<b class="fc"><i>2286</i>&nbsp;            xz = mxz;</b>
+<b class="fc"><i>2287</i>&nbsp;            xt = tx;</b>
+<i>2288</i>&nbsp;
+<b class="fc"><i>2289</i>&nbsp;            yx = myx;</b>
+<b class="fc"><i>2290</i>&nbsp;            yy = myy;</b>
+<b class="fc"><i>2291</i>&nbsp;            yz = myz;</b>
+<b class="fc"><i>2292</i>&nbsp;            yt = ty;</b>
+<i>2293</i>&nbsp;
+<b class="fc"><i>2294</i>&nbsp;            zx = mzx;</b>
+<b class="fc"><i>2295</i>&nbsp;            zy = mzy;</b>
+<b class="fc"><i>2296</i>&nbsp;            zz = mzz;</b>
+<b class="fc"><i>2297</i>&nbsp;            zt = tz;</b>
+<i>2298</i>&nbsp;
+<b class="fc"><i>2299</i>&nbsp;            updateState();</b>
+<b class="fc"><i>2300</i>&nbsp;        }</b>
+<i>2301</i>&nbsp;
+<i>2302</i>&nbsp;        // Beware: this is modifying immutable transform!
+<i>2303</i>&nbsp;        // It is private and it is there just for the purpose of reusing
+<i>2304</i>&nbsp;        // instances not given to users
+<i>2305</i>&nbsp;        private void setToTransform(double mxx, double mxy, double mxz, double tx,
+<i>2306</i>&nbsp;                                    double myx, double myy, double myz, double ty,
+<i>2307</i>&nbsp;                                    double mzx, double mzy, double mzz, double tz)
+<i>2308</i>&nbsp;        {
+<b class="nc"><i>2309</i>&nbsp;            xx = mxx;</b>
+<b class="nc"><i>2310</i>&nbsp;            xy = mxy;</b>
+<b class="nc"><i>2311</i>&nbsp;            xz = mxz;</b>
+<b class="nc"><i>2312</i>&nbsp;            xt = tx;</b>
+<b class="nc"><i>2313</i>&nbsp;            yx = myx;</b>
+<b class="nc"><i>2314</i>&nbsp;            yy = myy;</b>
+<b class="nc"><i>2315</i>&nbsp;            yz = myz;</b>
+<b class="nc"><i>2316</i>&nbsp;            yt = ty;</b>
+<b class="nc"><i>2317</i>&nbsp;            zx = mzx;</b>
+<b class="nc"><i>2318</i>&nbsp;            zy = mzy;</b>
+<b class="nc"><i>2319</i>&nbsp;            zz = mzz;</b>
+<b class="nc"><i>2320</i>&nbsp;            zt = tz;</b>
+<b class="nc"><i>2321</i>&nbsp;            updateState();</b>
+<b class="nc"><i>2322</i>&nbsp;        }</b>
+<i>2323</i>&nbsp;
+<i>2324</i>&nbsp;        // Beware: this is modifying immutable transform!
+<i>2325</i>&nbsp;        // It is private and it is there just for the purpose of reusing
+<i>2326</i>&nbsp;        // instances not given to users
+<i>2327</i>&nbsp;        private void setToConcatenation(ImmutableTransform left, ImmutableTransform right) {
+<b class="nc"><i>2328</i>&nbsp;            if (left.state3d == APPLY_NON_3D &amp;&amp; right.state3d == APPLY_NON_3D) {</b>
+<b class="nc"><i>2329</i>&nbsp;                xx = left.xx * right.xx + left.xy * right.yx;</b>
+<b class="nc"><i>2330</i>&nbsp;                xy = left.xx * right.xy + left.xy * right.yy;</b>
+<b class="nc"><i>2331</i>&nbsp;                xt = left.xx * right.xt + left.xy * right.yt + left.xt;</b>
+<b class="nc"><i>2332</i>&nbsp;                yx = left.yx * right.xx + left.yy * right.yx;</b>
+<b class="nc"><i>2333</i>&nbsp;                yy = left.yx * right.xy + left.yy * right.yy;</b>
+<b class="nc"><i>2334</i>&nbsp;                yt = left.yx * right.xt + left.yy * right.yt + left.yt;</b>
+<b class="nc"><i>2335</i>&nbsp;                if (state3d != APPLY_NON_3D) {</b>
+<b class="nc"><i>2336</i>&nbsp;                    xz = yz = zx = zy = zt = 0.0;</b>
+<b class="nc"><i>2337</i>&nbsp;                    zz = 1.0;</b>
+<b class="nc"><i>2338</i>&nbsp;                    state3d = APPLY_NON_3D;</b>
+<i>2339</i>&nbsp;                }
+<b class="nc"><i>2340</i>&nbsp;                updateState2D();</b>
+<i>2341</i>&nbsp;            } else {
+<b class="nc"><i>2342</i>&nbsp;                xx = left.xx * right.xx + left.xy * right.yx + left.xz * right.zx;</b>
+<b class="nc"><i>2343</i>&nbsp;                xy = left.xx * right.xy + left.xy * right.yy + left.xz * right.zy;</b>
+<b class="nc"><i>2344</i>&nbsp;                xz = left.xx * right.xz + left.xy * right.yz + left.xz * right.zz;</b>
+<b class="nc"><i>2345</i>&nbsp;                xt = left.xx * right.xt + left.xy * right.yt + left.xz * right.zt + left.xt;</b>
+<b class="nc"><i>2346</i>&nbsp;                yx = left.yx * right.xx + left.yy * right.yx + left.yz * right.zx;</b>
+<b class="nc"><i>2347</i>&nbsp;                yy = left.yx * right.xy + left.yy * right.yy + left.yz * right.zy;</b>
+<b class="nc"><i>2348</i>&nbsp;                yz = left.yx * right.xz + left.yy * right.yz + left.yz * right.zz;</b>
+<b class="nc"><i>2349</i>&nbsp;                yt = left.yx * right.xt + left.yy * right.yt + left.yz * right.zt + left.yt;</b>
+<b class="nc"><i>2350</i>&nbsp;                zx = left.zx * right.xx + left.zy * right.yx + left.zz * right.zx;</b>
+<b class="nc"><i>2351</i>&nbsp;                zy = left.zx * right.xy + left.zy * right.yy + left.zz * right.zy;</b>
+<b class="nc"><i>2352</i>&nbsp;                zz = left.zx * right.xz + left.zy * right.yz + left.zz * right.zz;</b>
+<b class="nc"><i>2353</i>&nbsp;                zt = left.zx * right.xt + left.zy * right.yt + left.zz * right.zt + left.zt;</b>
+<b class="nc"><i>2354</i>&nbsp;                updateState();</b>
+<i>2355</i>&nbsp;            }
+<i>2356</i>&nbsp;            // could be further optimized using the states, but that would
+<i>2357</i>&nbsp;            // require a lot of code (see Affine and all its append* methods)
+<b class="nc"><i>2358</i>&nbsp;        }</b>
+<i>2359</i>&nbsp;
+<i>2360</i>&nbsp;        @Override
+<i>2361</i>&nbsp;        public double getMxx() {
+<b class="fc"><i>2362</i>&nbsp;            return xx;</b>
+<i>2363</i>&nbsp;        }
+<i>2364</i>&nbsp;
+<i>2365</i>&nbsp;        @Override
+<i>2366</i>&nbsp;        public double getMxy() {
+<b class="fc"><i>2367</i>&nbsp;            return xy;</b>
+<i>2368</i>&nbsp;        }
+<i>2369</i>&nbsp;
+<i>2370</i>&nbsp;        @Override
+<i>2371</i>&nbsp;        public double getMxz() {
+<b class="fc"><i>2372</i>&nbsp;            return xz;</b>
+<i>2373</i>&nbsp;        }
+<i>2374</i>&nbsp;
+<i>2375</i>&nbsp;        @Override
+<i>2376</i>&nbsp;        public double getTx() {
+<b class="fc"><i>2377</i>&nbsp;            return xt;</b>
+<i>2378</i>&nbsp;        }
+<i>2379</i>&nbsp;
+<i>2380</i>&nbsp;        @Override
+<i>2381</i>&nbsp;        public double getMyx() {
+<b class="fc"><i>2382</i>&nbsp;            return yx;</b>
+<i>2383</i>&nbsp;        }
+<i>2384</i>&nbsp;
+<i>2385</i>&nbsp;        @Override
+<i>2386</i>&nbsp;        public double getMyy() {
+<b class="fc"><i>2387</i>&nbsp;            return yy;</b>
+<i>2388</i>&nbsp;        }
+<i>2389</i>&nbsp;
+<i>2390</i>&nbsp;        @Override
+<i>2391</i>&nbsp;        public double getMyz() {
+<b class="fc"><i>2392</i>&nbsp;            return yz;</b>
+<i>2393</i>&nbsp;        }
+<i>2394</i>&nbsp;
+<i>2395</i>&nbsp;        @Override
+<i>2396</i>&nbsp;        public double getTy() {
+<b class="fc"><i>2397</i>&nbsp;            return yt;</b>
+<i>2398</i>&nbsp;        }
+<i>2399</i>&nbsp;
+<i>2400</i>&nbsp;        @Override
+<i>2401</i>&nbsp;        public double getMzx() {
+<b class="fc"><i>2402</i>&nbsp;            return zx;</b>
+<i>2403</i>&nbsp;        }
+<i>2404</i>&nbsp;
+<i>2405</i>&nbsp;        @Override
+<i>2406</i>&nbsp;        public double getMzy() {
+<b class="fc"><i>2407</i>&nbsp;            return zy;</b>
+<i>2408</i>&nbsp;        }
+<i>2409</i>&nbsp;
+<i>2410</i>&nbsp;        @Override
+<i>2411</i>&nbsp;        public double getMzz() {
+<b class="fc"><i>2412</i>&nbsp;            return zz;</b>
+<i>2413</i>&nbsp;        }
+<i>2414</i>&nbsp;
+<i>2415</i>&nbsp;        @Override
+<i>2416</i>&nbsp;        public double getTz() {
+<b class="fc"><i>2417</i>&nbsp;            return zt;</b>
+<i>2418</i>&nbsp;        }
+<i>2419</i>&nbsp;
+<i>2420</i>&nbsp;    /* *************************************************************************
+<i>2421</i>&nbsp;     *                                                                         *
+<i>2422</i>&nbsp;     *                           State getters                                 *
+<i>2423</i>&nbsp;     *                                                                         *
+<i>2424</i>&nbsp;     **************************************************************************/
+<i>2425</i>&nbsp;
+<i>2426</i>&nbsp;        @Override
+<i>2427</i>&nbsp;        public double determinant() {
+<b class="nc"><i>2428</i>&nbsp;            switch(state3d) {</b>
+<i>2429</i>&nbsp;                default:
+<b class="nc"><i>2430</i>&nbsp;                    stateError();</b>
+<i>2431</i>&nbsp;                    // cannot reach
+<i>2432</i>&nbsp;                case APPLY_NON_3D:
+<b class="nc"><i>2433</i>&nbsp;                    switch (state2d) {</b>
+<i>2434</i>&nbsp;                        default:
+<b class="nc"><i>2435</i>&nbsp;                            stateError();</b>
+<i>2436</i>&nbsp;                            // cannot reach
+<i>2437</i>&nbsp;                        case APPLY_SHEAR | APPLY_SCALE | APPLY_TRANSLATE:
+<i>2438</i>&nbsp;                        case APPLY_SHEAR | APPLY_SCALE:
+<b class="nc"><i>2439</i>&nbsp;                            return xx * yy - xy * yx;</b>
+<i>2440</i>&nbsp;                        case APPLY_SHEAR | APPLY_TRANSLATE:
+<i>2441</i>&nbsp;                        case APPLY_SHEAR:
+<b class="nc"><i>2442</i>&nbsp;                            return -(xy* yx);</b>
+<i>2443</i>&nbsp;                        case APPLY_SCALE | APPLY_TRANSLATE:
+<i>2444</i>&nbsp;                        case APPLY_SCALE:
+<b class="nc"><i>2445</i>&nbsp;                            return xx * yy;</b>
+<i>2446</i>&nbsp;                        case APPLY_TRANSLATE:
+<i>2447</i>&nbsp;                        case APPLY_IDENTITY:
+<b class="nc"><i>2448</i>&nbsp;                            return 1.0;</b>
+<i>2449</i>&nbsp;                    }
+<i>2450</i>&nbsp;                case APPLY_TRANSLATE:
+<b class="nc"><i>2451</i>&nbsp;                    return 1.0;</b>
+<i>2452</i>&nbsp;                case APPLY_SCALE:
+<i>2453</i>&nbsp;                case APPLY_SCALE | APPLY_TRANSLATE:
+<b class="nc"><i>2454</i>&nbsp;                    return xx * yy * zz;</b>
+<i>2455</i>&nbsp;                case APPLY_3D_COMPLEX:
+<b class="nc"><i>2456</i>&nbsp;                    return (xx* (yy * zz - zy * yz) +</b>
+<i>2457</i>&nbsp;                            xy* (yz * zx - zz * yx) +
+<i>2458</i>&nbsp;                            xz* (yx * zy - zx * yy));
+<i>2459</i>&nbsp;            }
+<i>2460</i>&nbsp;        }
+<i>2461</i>&nbsp;
+<i>2462</i>&nbsp;        @Override
+<i>2463</i>&nbsp;        public Transform createConcatenation(Transform transform) {
+<b class="nc"><i>2464</i>&nbsp;            javafx.scene.transform.Affine a = new Affine(this);</b>
+<b class="nc"><i>2465</i>&nbsp;            a.append(transform);</b>
+<b class="nc"><i>2466</i>&nbsp;            return a;</b>
+<i>2467</i>&nbsp;        }
+<i>2468</i>&nbsp;
+<i>2469</i>&nbsp;        @Override
+<i>2470</i>&nbsp;        public javafx.scene.transform.Affine createInverse() throws NonInvertibleTransformException {
+<b class="nc"><i>2471</i>&nbsp;            javafx.scene.transform.Affine t = new Affine(this);</b>
+<b class="nc"><i>2472</i>&nbsp;            t.invert();</b>
+<b class="nc"><i>2473</i>&nbsp;            return t;</b>
+<i>2474</i>&nbsp;        }
+<i>2475</i>&nbsp;
+<i>2476</i>&nbsp;        @Override
+<i>2477</i>&nbsp;        public Transform clone() {
+<b class="nc"><i>2478</i>&nbsp;            return new ImmutableTransform(this);</b>
+<i>2479</i>&nbsp;        }
+<i>2480</i>&nbsp;
+<i>2481</i>&nbsp;        /* *************************************************************************
+<i>2482</i>&nbsp;         *                                                                         *
+<i>2483</i>&nbsp;         *                     Transform, Inverse Transform                        *
+<i>2484</i>&nbsp;         *                                                                         *
+<i>2485</i>&nbsp;         **************************************************************************/
+<i>2486</i>&nbsp;
+<i>2487</i>&nbsp;        @Override
+<i>2488</i>&nbsp;        public Point2D transform(double x, double y) {
+<b class="nc"><i>2489</i>&nbsp;            ensureCanTransform2DPoint();</b>
+<i>2490</i>&nbsp;
+<b class="nc"><i>2491</i>&nbsp;            switch (state2d) {</b>
+<i>2492</i>&nbsp;                default:
+<b class="nc"><i>2493</i>&nbsp;                    stateError();</b>
+<i>2494</i>&nbsp;                    // cannot reach
+<i>2495</i>&nbsp;                case APPLY_SHEAR | APPLY_SCALE | APPLY_TRANSLATE:
+<b class="nc"><i>2496</i>&nbsp;                    return new Point2D(</b>
+<i>2497</i>&nbsp;                        xx * x + xy * y + xt,
+<i>2498</i>&nbsp;                        yx * x + yy * y + yt);
+<i>2499</i>&nbsp;                case APPLY_SHEAR | APPLY_SCALE:
+<b class="nc"><i>2500</i>&nbsp;                    return new Point2D(</b>
+<i>2501</i>&nbsp;                        xx * x + xy * y,
+<i>2502</i>&nbsp;                        yx * x + yy * y);
+<i>2503</i>&nbsp;                case APPLY_SHEAR | APPLY_TRANSLATE:
+<b class="nc"><i>2504</i>&nbsp;                    return new Point2D(</b>
+<i>2505</i>&nbsp;                            xy * y + xt,
+<i>2506</i>&nbsp;                            yx * x + yt);
+<i>2507</i>&nbsp;                case APPLY_SHEAR:
+<b class="nc"><i>2508</i>&nbsp;                    return new Point2D(xy * y, yx * x);</b>
+<i>2509</i>&nbsp;                case APPLY_SCALE | APPLY_TRANSLATE:
+<b class="nc"><i>2510</i>&nbsp;                    return new Point2D(</b>
+<i>2511</i>&nbsp;                            xx * x + xt,
+<i>2512</i>&nbsp;                            yy * y + yt);
+<i>2513</i>&nbsp;                case APPLY_SCALE:
+<b class="nc"><i>2514</i>&nbsp;                    return new Point2D(xx * x, yy * y);</b>
+<i>2515</i>&nbsp;                case APPLY_TRANSLATE:
+<b class="nc"><i>2516</i>&nbsp;                    return new Point2D(x + xt, y + yt);</b>
+<i>2517</i>&nbsp;                case APPLY_IDENTITY:
+<b class="nc"><i>2518</i>&nbsp;                    return new Point2D(x, y);</b>
+<i>2519</i>&nbsp;            }
+<i>2520</i>&nbsp;        }
+<i>2521</i>&nbsp;
+<i>2522</i>&nbsp;        @Override
+<i>2523</i>&nbsp;        public Point3D transform(double x, double y, double z) {
+<b class="nc"><i>2524</i>&nbsp;            switch (state3d) {</b>
+<i>2525</i>&nbsp;                default:
+<b class="nc"><i>2526</i>&nbsp;                    stateError();</b>
+<i>2527</i>&nbsp;                    // cannot reach
+<i>2528</i>&nbsp;                case APPLY_NON_3D:
+<b class="nc"><i>2529</i>&nbsp;                    switch (state2d) {</b>
+<i>2530</i>&nbsp;                        default:
+<b class="nc"><i>2531</i>&nbsp;                            stateError();</b>
+<i>2532</i>&nbsp;                            // cannot reach
+<i>2533</i>&nbsp;                        case APPLY_SHEAR | APPLY_SCALE | APPLY_TRANSLATE:
+<b class="nc"><i>2534</i>&nbsp;                            return new Point3D(</b>
+<i>2535</i>&nbsp;                                xx * x + xy * y + xt,
+<i>2536</i>&nbsp;                                yx * x + yy * y + yt, z);
+<i>2537</i>&nbsp;                        case APPLY_SHEAR | APPLY_SCALE:
+<b class="nc"><i>2538</i>&nbsp;                            return new Point3D(</b>
+<i>2539</i>&nbsp;                                xx * x + xy * y,
+<i>2540</i>&nbsp;                                yx * x + yy * y, z);
+<i>2541</i>&nbsp;                        case APPLY_SHEAR | APPLY_TRANSLATE:
+<b class="nc"><i>2542</i>&nbsp;                            return new Point3D(</b>
+<i>2543</i>&nbsp;                                    xy * y + xt, yx * x + yt,
+<i>2544</i>&nbsp;                                    z);
+<i>2545</i>&nbsp;                        case APPLY_SHEAR:
+<b class="nc"><i>2546</i>&nbsp;                            return new Point3D(xy * y, yx * x, z);</b>
+<i>2547</i>&nbsp;                        case APPLY_SCALE | APPLY_TRANSLATE:
+<b class="nc"><i>2548</i>&nbsp;                            return new Point3D(</b>
+<i>2549</i>&nbsp;                                    xx * x + xt, yy * y + yt,
+<i>2550</i>&nbsp;                                    z);
+<i>2551</i>&nbsp;                        case APPLY_SCALE:
+<b class="nc"><i>2552</i>&nbsp;                            return new Point3D(xx * x, yy * y, z);</b>
+<i>2553</i>&nbsp;                        case APPLY_TRANSLATE:
+<b class="nc"><i>2554</i>&nbsp;                            return new Point3D(x + xt, y + yt, z);</b>
+<i>2555</i>&nbsp;                        case APPLY_IDENTITY:
+<b class="nc"><i>2556</i>&nbsp;                            return new Point3D(x, y, z);</b>
+<i>2557</i>&nbsp;                    }
+<i>2558</i>&nbsp;                case APPLY_TRANSLATE:
+<b class="nc"><i>2559</i>&nbsp;                    return new Point3D(x + xt, y + yt, z + zt);</b>
+<i>2560</i>&nbsp;                case APPLY_SCALE:
+<b class="nc"><i>2561</i>&nbsp;                    return new Point3D(xx * x, yy * y, zz * z);</b>
+<i>2562</i>&nbsp;                case APPLY_SCALE | APPLY_TRANSLATE:
+<b class="nc"><i>2563</i>&nbsp;                    return new Point3D(</b>
+<i>2564</i>&nbsp;                            xx * x + xt,
+<i>2565</i>&nbsp;                            yy * y + yt,
+<i>2566</i>&nbsp;                            zz * z + zt);
+<i>2567</i>&nbsp;                case APPLY_3D_COMPLEX:
+<b class="nc"><i>2568</i>&nbsp;                    return new Point3D(</b>
+<i>2569</i>&nbsp;                        xx * x + xy * y + xz * z + xt,
+<i>2570</i>&nbsp;                        yx * x + yy * y + yz * z + yt,
+<i>2571</i>&nbsp;                        zx * x + zy * y + zz * z + zt);
+<i>2572</i>&nbsp;            }
+<i>2573</i>&nbsp;        }
+<i>2574</i>&nbsp;
+<i>2575</i>&nbsp;        @Override
+<i>2576</i>&nbsp;        public Point2D deltaTransform(double x, double y) {
+<b class="nc"><i>2577</i>&nbsp;            ensureCanTransform2DPoint();</b>
+<i>2578</i>&nbsp;
+<b class="nc"><i>2579</i>&nbsp;            switch (state2d) {</b>
+<i>2580</i>&nbsp;                default:
+<b class="nc"><i>2581</i>&nbsp;                    stateError();</b>
+<i>2582</i>&nbsp;                    // cannot reach
+<i>2583</i>&nbsp;                case APPLY_SHEAR | APPLY_SCALE | APPLY_TRANSLATE:
+<i>2584</i>&nbsp;                case APPLY_SHEAR | APPLY_SCALE:
+<b class="nc"><i>2585</i>&nbsp;                    return new Point2D(</b>
+<i>2586</i>&nbsp;                        xx * x + xy * y,
+<i>2587</i>&nbsp;                        yx * x + yy * y);
+<i>2588</i>&nbsp;                case APPLY_SHEAR | APPLY_TRANSLATE:
+<i>2589</i>&nbsp;                case APPLY_SHEAR:
+<b class="nc"><i>2590</i>&nbsp;                    return new Point2D(xy * y, yx * x);</b>
+<i>2591</i>&nbsp;                case APPLY_SCALE | APPLY_TRANSLATE:
+<i>2592</i>&nbsp;                case APPLY_SCALE:
+<b class="nc"><i>2593</i>&nbsp;                    return new Point2D(xx * x, yy * y);</b>
+<i>2594</i>&nbsp;                case APPLY_TRANSLATE:
+<i>2595</i>&nbsp;                case APPLY_IDENTITY:
+<b class="nc"><i>2596</i>&nbsp;                    return new Point2D(x, y);</b>
+<i>2597</i>&nbsp;            }
+<i>2598</i>&nbsp;        }
+<i>2599</i>&nbsp;
+<i>2600</i>&nbsp;        @Override
+<i>2601</i>&nbsp;        public Point3D deltaTransform(double x, double y, double z) {
+<b class="nc"><i>2602</i>&nbsp;            switch (state3d) {</b>
+<i>2603</i>&nbsp;                default:
+<b class="nc"><i>2604</i>&nbsp;                    stateError();</b>
+<i>2605</i>&nbsp;                    // cannot reach
+<i>2606</i>&nbsp;                case APPLY_NON_3D:
+<b class="nc"><i>2607</i>&nbsp;                    switch (state2d) {</b>
+<i>2608</i>&nbsp;                        default:
+<b class="nc"><i>2609</i>&nbsp;                            stateError();</b>
+<i>2610</i>&nbsp;                            // cannot reach
+<i>2611</i>&nbsp;                        case APPLY_SHEAR | APPLY_SCALE | APPLY_TRANSLATE:
+<i>2612</i>&nbsp;                        case APPLY_SHEAR | APPLY_SCALE:
+<b class="nc"><i>2613</i>&nbsp;                            return new Point3D(</b>
+<i>2614</i>&nbsp;                                xx * x + xy * y,
+<i>2615</i>&nbsp;                                yx * x + yy * y, z);
+<i>2616</i>&nbsp;                        case APPLY_SHEAR | APPLY_TRANSLATE:
+<i>2617</i>&nbsp;                        case APPLY_SHEAR:
+<b class="nc"><i>2618</i>&nbsp;                            return new Point3D(xy * y, yx * x, z);</b>
+<i>2619</i>&nbsp;                        case APPLY_SCALE | APPLY_TRANSLATE:
+<i>2620</i>&nbsp;                        case APPLY_SCALE:
+<b class="nc"><i>2621</i>&nbsp;                            return new Point3D(xx * x, yy * y, z);</b>
+<i>2622</i>&nbsp;                        case APPLY_TRANSLATE:
+<i>2623</i>&nbsp;                        case APPLY_IDENTITY:
+<b class="nc"><i>2624</i>&nbsp;                            return new Point3D(x, y, z);</b>
+<i>2625</i>&nbsp;                    }
+<i>2626</i>&nbsp;                case APPLY_TRANSLATE:
+<b class="nc"><i>2627</i>&nbsp;                    return new Point3D(x, y, z);</b>
+<i>2628</i>&nbsp;                case APPLY_SCALE:
+<i>2629</i>&nbsp;                case APPLY_SCALE | APPLY_TRANSLATE:
+<b class="nc"><i>2630</i>&nbsp;                    return new Point3D(xx * x, yy * y, zz * z);</b>
+<i>2631</i>&nbsp;                case APPLY_3D_COMPLEX:
+<b class="nc"><i>2632</i>&nbsp;                    return new Point3D(</b>
+<i>2633</i>&nbsp;                        xx * x + xy * y + xz * z,
+<i>2634</i>&nbsp;                        yx * x + yy * y + yz * z,
+<i>2635</i>&nbsp;                        zx * x + zy * y + zz * z);
+<i>2636</i>&nbsp;            }
+<i>2637</i>&nbsp;        }
+<i>2638</i>&nbsp;
+<i>2639</i>&nbsp;        @Override
+<i>2640</i>&nbsp;        public Point2D inverseTransform(double x, double y)
+<i>2641</i>&nbsp;                throws NonInvertibleTransformException {
+<b class="nc"><i>2642</i>&nbsp;            ensureCanTransform2DPoint();</b>
+<i>2643</i>&nbsp;
+<b class="nc"><i>2644</i>&nbsp;            switch (state2d) {</b>
+<i>2645</i>&nbsp;                default:
+<b class="nc"><i>2646</i>&nbsp;                    return super.inverseTransform(x, y);</b>
+<i>2647</i>&nbsp;                case APPLY_SHEAR | APPLY_TRANSLATE:
+<b class="nc"><i>2648</i>&nbsp;                    if (xy == 0.0 || yx == 0.0) {</b>
+<b class="nc"><i>2649</i>&nbsp;                        throw new NonInvertibleTransformException(&quot;Determinant is 0&quot;);</b>
+<i>2650</i>&nbsp;                    }
+<b class="nc"><i>2651</i>&nbsp;                    return new Point2D(</b>
+<i>2652</i>&nbsp;                            (1.0 / yx) * y - yt / yx,
+<i>2653</i>&nbsp;                            (1.0 / xy) * x - xt / xy);
+<i>2654</i>&nbsp;                case APPLY_SHEAR:
+<b class="nc"><i>2655</i>&nbsp;                    if (xy == 0.0 || yx == 0.0) {</b>
+<b class="nc"><i>2656</i>&nbsp;                        throw new NonInvertibleTransformException(&quot;Determinant is 0&quot;);</b>
+<i>2657</i>&nbsp;                    }
+<b class="nc"><i>2658</i>&nbsp;                    return new Point2D((1.0 / yx) * y, (1.0 / xy) * x);</b>
+<i>2659</i>&nbsp;                case APPLY_SCALE | APPLY_TRANSLATE:
+<b class="nc"><i>2660</i>&nbsp;                    if (xx == 0.0 || yy == 0.0) {</b>
+<b class="nc"><i>2661</i>&nbsp;                        throw new NonInvertibleTransformException(&quot;Determinant is 0&quot;);</b>
+<i>2662</i>&nbsp;                    }
+<b class="nc"><i>2663</i>&nbsp;                    return new Point2D(</b>
+<i>2664</i>&nbsp;                            (1.0 / xx) * x - xt / xx,
+<i>2665</i>&nbsp;                            (1.0 / yy) * y - yt / yy);
+<i>2666</i>&nbsp;                case APPLY_SCALE:
+<b class="nc"><i>2667</i>&nbsp;                    if (xx == 0.0 || yy == 0.0) {</b>
+<b class="nc"><i>2668</i>&nbsp;                        throw new NonInvertibleTransformException(&quot;Determinant is 0&quot;);</b>
+<i>2669</i>&nbsp;                    }
+<b class="nc"><i>2670</i>&nbsp;                    return new Point2D((1.0 / xx) * x, (1.0 / yy) * y);</b>
+<i>2671</i>&nbsp;                case APPLY_TRANSLATE:
+<b class="nc"><i>2672</i>&nbsp;                    return new Point2D(x - xt, y - yt);</b>
+<i>2673</i>&nbsp;                case APPLY_IDENTITY:
+<b class="nc"><i>2674</i>&nbsp;                    return new Point2D(x, y);</b>
+<i>2675</i>&nbsp;            }
+<i>2676</i>&nbsp;        }
+<i>2677</i>&nbsp;
+<i>2678</i>&nbsp;        @Override
+<i>2679</i>&nbsp;        public Point3D inverseTransform(double x, double y, double z)
+<i>2680</i>&nbsp;                throws NonInvertibleTransformException {
+<b class="nc"><i>2681</i>&nbsp;            switch(state3d) {</b>
+<i>2682</i>&nbsp;                default:
+<b class="nc"><i>2683</i>&nbsp;                    stateError();</b>
+<i>2684</i>&nbsp;                    // cannot reach
+<i>2685</i>&nbsp;                case APPLY_NON_3D:
+<b class="nc"><i>2686</i>&nbsp;                    switch (state2d) {</b>
+<i>2687</i>&nbsp;                        default:
+<b class="nc"><i>2688</i>&nbsp;                            return super.inverseTransform(x, y, z);</b>
+<i>2689</i>&nbsp;                        case APPLY_SHEAR | APPLY_TRANSLATE:
+<b class="nc"><i>2690</i>&nbsp;                            if (xy == 0.0 || yx == 0.0) {</b>
+<b class="nc"><i>2691</i>&nbsp;                                throw new NonInvertibleTransformException(</b>
+<i>2692</i>&nbsp;                                        &quot;Determinant is 0&quot;);
+<i>2693</i>&nbsp;                            }
+<b class="nc"><i>2694</i>&nbsp;                            return new Point3D(</b>
+<i>2695</i>&nbsp;                                    (1.0 / yx) * y - yt / yx,
+<i>2696</i>&nbsp;                                    (1.0 / xy) * x - xt / xy, z);
+<i>2697</i>&nbsp;                        case APPLY_SHEAR:
+<b class="nc"><i>2698</i>&nbsp;                            if (xy == 0.0 || yx == 0.0) {</b>
+<b class="nc"><i>2699</i>&nbsp;                                throw new NonInvertibleTransformException(</b>
+<i>2700</i>&nbsp;                                        &quot;Determinant is 0&quot;);
+<i>2701</i>&nbsp;                            }
+<b class="nc"><i>2702</i>&nbsp;                            return new Point3D(</b>
+<i>2703</i>&nbsp;                                    (1.0 / yx) * y,
+<i>2704</i>&nbsp;                                    (1.0 / xy) * x, z);
+<i>2705</i>&nbsp;                        case APPLY_SCALE | APPLY_TRANSLATE:
+<b class="nc"><i>2706</i>&nbsp;                            if (xx == 0.0 || yy == 0.0) {</b>
+<b class="nc"><i>2707</i>&nbsp;                                throw new NonInvertibleTransformException(</b>
+<i>2708</i>&nbsp;                                        &quot;Determinant is 0&quot;);
+<i>2709</i>&nbsp;                            }
+<b class="nc"><i>2710</i>&nbsp;                            return new Point3D(</b>
+<i>2711</i>&nbsp;                                    (1.0 / xx) * x - xt / xx,
+<i>2712</i>&nbsp;                                    (1.0 / yy) * y - yt / yy, z);
+<i>2713</i>&nbsp;                        case APPLY_SCALE:
+<b class="nc"><i>2714</i>&nbsp;                            if (xx == 0.0 || yy == 0.0) {</b>
+<b class="nc"><i>2715</i>&nbsp;                                throw new NonInvertibleTransformException(</b>
+<i>2716</i>&nbsp;                                        &quot;Determinant is 0&quot;);
+<i>2717</i>&nbsp;                            }
+<b class="nc"><i>2718</i>&nbsp;                            return new Point3D((1.0 / xx) * x, (1.0 / yy) * y, z);</b>
+<i>2719</i>&nbsp;                        case APPLY_TRANSLATE:
+<b class="nc"><i>2720</i>&nbsp;                            return new Point3D(x - xt, y - yt, z);</b>
+<i>2721</i>&nbsp;                        case APPLY_IDENTITY:
+<b class="nc"><i>2722</i>&nbsp;                            return new Point3D(x, y, z);</b>
+<i>2723</i>&nbsp;                    }
+<i>2724</i>&nbsp;                case APPLY_TRANSLATE:
+<b class="nc"><i>2725</i>&nbsp;                    return new Point3D(x - xt, y - yt, z - zt);</b>
+<i>2726</i>&nbsp;                case APPLY_SCALE:
+<b class="nc"><i>2727</i>&nbsp;                    if (xx == 0.0 || yy == 0.0 || zz == 0.0) {</b>
+<b class="nc"><i>2728</i>&nbsp;                        throw new NonInvertibleTransformException(&quot;Determinant is 0&quot;);</b>
+<i>2729</i>&nbsp;                    }
+<b class="nc"><i>2730</i>&nbsp;                    return new Point3D(</b>
+<i>2731</i>&nbsp;                            (1.0 / xx) * x,
+<i>2732</i>&nbsp;                            (1.0 / yy) * y,
+<i>2733</i>&nbsp;                            (1.0 / zz) * z);
+<i>2734</i>&nbsp;                case APPLY_SCALE | APPLY_TRANSLATE:
+<b class="nc"><i>2735</i>&nbsp;                    if (xx == 0.0 || yy == 0.0 || zz == 0.0) {</b>
+<b class="nc"><i>2736</i>&nbsp;                        throw new NonInvertibleTransformException(&quot;Determinant is 0&quot;);</b>
+<i>2737</i>&nbsp;                    }
+<b class="nc"><i>2738</i>&nbsp;                    return new Point3D(</b>
+<i>2739</i>&nbsp;                            (1.0 / xx) * x - xt / xx,
+<i>2740</i>&nbsp;                            (1.0 / yy) * y - yt / yy,
+<i>2741</i>&nbsp;                            (1.0 / zz) * z - zt / zz);
+<i>2742</i>&nbsp;                case APPLY_3D_COMPLEX:
+<b class="nc"><i>2743</i>&nbsp;                    return super.inverseTransform(x, y, z);</b>
+<i>2744</i>&nbsp;            }
+<i>2745</i>&nbsp;        }
+<i>2746</i>&nbsp;
+<i>2747</i>&nbsp;        @Override
+<i>2748</i>&nbsp;        public Point2D inverseDeltaTransform(double x, double y)
+<i>2749</i>&nbsp;                throws NonInvertibleTransformException {
+<b class="nc"><i>2750</i>&nbsp;            ensureCanTransform2DPoint();</b>
+<i>2751</i>&nbsp;
+<b class="nc"><i>2752</i>&nbsp;            switch (state2d) {</b>
+<i>2753</i>&nbsp;                default:
+<b class="nc"><i>2754</i>&nbsp;                    return super.inverseDeltaTransform(x, y);</b>
+<i>2755</i>&nbsp;                case APPLY_SHEAR | APPLY_TRANSLATE:
+<i>2756</i>&nbsp;                case APPLY_SHEAR:
+<b class="nc"><i>2757</i>&nbsp;                    if (xy == 0.0 || yx == 0.0) {</b>
+<b class="nc"><i>2758</i>&nbsp;                        throw new NonInvertibleTransformException(&quot;Determinant is 0&quot;);</b>
+<i>2759</i>&nbsp;                    }
+<b class="nc"><i>2760</i>&nbsp;                    return new Point2D((1.0 / yx) * y, (1.0 / xy) * x);</b>
+<i>2761</i>&nbsp;                case APPLY_SCALE | APPLY_TRANSLATE:
+<i>2762</i>&nbsp;                case APPLY_SCALE:
+<b class="nc"><i>2763</i>&nbsp;                    if (xx == 0.0 || yy == 0.0) {</b>
+<b class="nc"><i>2764</i>&nbsp;                        throw new NonInvertibleTransformException(&quot;Determinant is 0&quot;);</b>
+<i>2765</i>&nbsp;                    }
+<b class="nc"><i>2766</i>&nbsp;                    return new Point2D((1.0 / xx) * x, (1.0 / yy) * y);</b>
+<i>2767</i>&nbsp;                case APPLY_TRANSLATE:
+<i>2768</i>&nbsp;                case APPLY_IDENTITY:
+<b class="nc"><i>2769</i>&nbsp;                    return new Point2D(x, y);</b>
+<i>2770</i>&nbsp;            }
+<i>2771</i>&nbsp;        }
+<i>2772</i>&nbsp;
+<i>2773</i>&nbsp;        @Override
+<i>2774</i>&nbsp;        public Point3D inverseDeltaTransform(double x, double y, double z)
+<i>2775</i>&nbsp;                throws NonInvertibleTransformException {
+<b class="nc"><i>2776</i>&nbsp;            switch(state3d) {</b>
+<i>2777</i>&nbsp;                default:
+<b class="nc"><i>2778</i>&nbsp;                    stateError();</b>
+<i>2779</i>&nbsp;                    // cannot reach
+<i>2780</i>&nbsp;                case APPLY_NON_3D:
+<b class="nc"><i>2781</i>&nbsp;                    switch (state2d) {</b>
+<i>2782</i>&nbsp;                        default:
+<b class="nc"><i>2783</i>&nbsp;                            return super.inverseDeltaTransform(x, y, z);</b>
+<i>2784</i>&nbsp;                        case APPLY_SHEAR | APPLY_TRANSLATE:
+<i>2785</i>&nbsp;                        case APPLY_SHEAR:
+<b class="nc"><i>2786</i>&nbsp;                            if (xy == 0.0 || yx == 0.0) {</b>
+<b class="nc"><i>2787</i>&nbsp;                                throw new NonInvertibleTransformException(</b>
+<i>2788</i>&nbsp;                                        &quot;Determinant is 0&quot;);
+<i>2789</i>&nbsp;                            }
+<b class="nc"><i>2790</i>&nbsp;                            return new Point3D(</b>
+<i>2791</i>&nbsp;                                    (1.0 / yx) * y,
+<i>2792</i>&nbsp;                                    (1.0 / xy) * x, z);
+<i>2793</i>&nbsp;                        case APPLY_SCALE | APPLY_TRANSLATE:
+<i>2794</i>&nbsp;                        case APPLY_SCALE:
+<b class="nc"><i>2795</i>&nbsp;                            if (xx == 0.0 || yy == 0.0) {</b>
+<b class="nc"><i>2796</i>&nbsp;                                throw new NonInvertibleTransformException(</b>
+<i>2797</i>&nbsp;                                        &quot;Determinant is 0&quot;);
+<i>2798</i>&nbsp;                            }
+<b class="nc"><i>2799</i>&nbsp;                            return new Point3D(</b>
+<i>2800</i>&nbsp;                                    (1.0 / xx) * x,
+<i>2801</i>&nbsp;                                    (1.0 / yy) * y, z);
+<i>2802</i>&nbsp;                        case APPLY_TRANSLATE:
+<i>2803</i>&nbsp;                        case APPLY_IDENTITY:
+<b class="nc"><i>2804</i>&nbsp;                            return new Point3D(x, y, z);</b>
+<i>2805</i>&nbsp;                    }
+<i>2806</i>&nbsp;
+<i>2807</i>&nbsp;                case APPLY_TRANSLATE:
+<b class="nc"><i>2808</i>&nbsp;                    return new Point3D(x, y, z);</b>
+<i>2809</i>&nbsp;                case APPLY_SCALE | APPLY_TRANSLATE:
+<i>2810</i>&nbsp;                case APPLY_SCALE:
+<b class="nc"><i>2811</i>&nbsp;                    if (xx == 0.0 || yy == 0.0 || zz == 0.0) {</b>
+<b class="nc"><i>2812</i>&nbsp;                        throw new NonInvertibleTransformException(&quot;Determinant is 0&quot;);</b>
+<i>2813</i>&nbsp;                    }
+<b class="nc"><i>2814</i>&nbsp;                    return new Point3D(</b>
+<i>2815</i>&nbsp;                            (1.0 / xx) * x,
+<i>2816</i>&nbsp;                            (1.0 / yy) * y,
+<i>2817</i>&nbsp;                            (1.0 / zz) * z);
+<i>2818</i>&nbsp;                case APPLY_3D_COMPLEX:
+<b class="nc"><i>2819</i>&nbsp;                    return super.inverseDeltaTransform(x, y, z);</b>
+<i>2820</i>&nbsp;            }
+<i>2821</i>&nbsp;        }
+<i>2822</i>&nbsp;
+<i>2823</i>&nbsp;        /* *************************************************************************
+<i>2824</i>&nbsp;         *                                                                         *
+<i>2825</i>&nbsp;         *                               Other API                                 *
+<i>2826</i>&nbsp;         *                                                                         *
+<i>2827</i>&nbsp;         **************************************************************************/
+<i>2828</i>&nbsp;
+<i>2829</i>&nbsp;        @Override
+<i>2830</i>&nbsp;        public String toString() {
+<b class="nc"><i>2831</i>&nbsp;           final StringBuilder sb = new StringBuilder(&quot;Transform [\n&quot;);</b>
+<i>2832</i>&nbsp;
+<b class="nc"><i>2833</i>&nbsp;            sb.append(&quot;\t&quot;).append(xx);</b>
+<b class="nc"><i>2834</i>&nbsp;            sb.append(&quot;, &quot;).append(xy);</b>
+<b class="nc"><i>2835</i>&nbsp;            sb.append(&quot;, &quot;).append(xz);</b>
+<b class="nc"><i>2836</i>&nbsp;            sb.append(&quot;, &quot;).append(xt);</b>
+<b class="nc"><i>2837</i>&nbsp;            sb.append(&#39;\n&#39;);</b>
+<b class="nc"><i>2838</i>&nbsp;            sb.append(&quot;\t&quot;).append(yx);</b>
+<b class="nc"><i>2839</i>&nbsp;            sb.append(&quot;, &quot;).append(yy);</b>
+<b class="nc"><i>2840</i>&nbsp;            sb.append(&quot;, &quot;).append(yz);</b>
+<b class="nc"><i>2841</i>&nbsp;            sb.append(&quot;, &quot;).append(yt);</b>
+<b class="nc"><i>2842</i>&nbsp;            sb.append(&#39;\n&#39;);</b>
+<b class="nc"><i>2843</i>&nbsp;            sb.append(&quot;\t&quot;).append(zx);</b>
+<b class="nc"><i>2844</i>&nbsp;            sb.append(&quot;, &quot;).append(zy);</b>
+<b class="nc"><i>2845</i>&nbsp;            sb.append(&quot;, &quot;).append(zz);</b>
+<b class="nc"><i>2846</i>&nbsp;            sb.append(&quot;, &quot;).append(zt);</b>
+<i>2847</i>&nbsp;
+<b class="nc"><i>2848</i>&nbsp;            return sb.append(&quot;\n]&quot;).toString();</b>
+<i>2849</i>&nbsp;        }
+<i>2850</i>&nbsp;
+<i>2851</i>&nbsp;        /* *************************************************************************
+<i>2852</i>&nbsp;         *                                                                         *
+<i>2853</i>&nbsp;         *                    Internal implementation stuff                        *
+<i>2854</i>&nbsp;         *                                                                         *
+<i>2855</i>&nbsp;         **************************************************************************/
+<i>2856</i>&nbsp;
+<i>2857</i>&nbsp;        private void updateState() {
+<b class="fc"><i>2858</i>&nbsp;            updateState2D();</b>
+<i>2859</i>&nbsp;
+<b class="fc"><i>2860</i>&nbsp;            state3d = APPLY_NON_3D;</b>
+<i>2861</i>&nbsp;
+<b class="fc"><i>2862</i>&nbsp;            if (xz != 0.0 ||</b>
+<i>2863</i>&nbsp;                yz != 0.0 ||
+<i>2864</i>&nbsp;                zx != 0.0 ||
+<i>2865</i>&nbsp;                zy != 0.0)
+<i>2866</i>&nbsp;            {
+<b class="nc"><i>2867</i>&nbsp;                state3d = APPLY_3D_COMPLEX;</b>
+<i>2868</i>&nbsp;            } else {
+<b class="fc"><i>2869</i>&nbsp;                if ((state2d &amp; APPLY_SHEAR) == 0) {</b>
+<b class="fc"><i>2870</i>&nbsp;                    if (zt != 0.0) {</b>
+<b class="nc"><i>2871</i>&nbsp;                        state3d |= APPLY_TRANSLATE;</b>
+<i>2872</i>&nbsp;                    }
+<b class="fc"><i>2873</i>&nbsp;                    if (zz != 1.0) {</b>
+<b class="nc"><i>2874</i>&nbsp;                        state3d |= APPLY_SCALE;</b>
+<i>2875</i>&nbsp;                    }
+<b class="fc"><i>2876</i>&nbsp;                    if (state3d != APPLY_NON_3D) {</b>
+<b class="nc"><i>2877</i>&nbsp;                        state3d |= (state2d &amp; (APPLY_SCALE | APPLY_TRANSLATE));</b>
+<i>2878</i>&nbsp;                    }
+<i>2879</i>&nbsp;                } else {
+<b class="nc"><i>2880</i>&nbsp;                    if (zz != 1.0 || zt != 0.0) {</b>
+<b class="nc"><i>2881</i>&nbsp;                        state3d = APPLY_3D_COMPLEX;</b>
+<i>2882</i>&nbsp;                    }
+<i>2883</i>&nbsp;                }
+<i>2884</i>&nbsp;            }
+<b class="fc"><i>2885</i>&nbsp;        }</b>
+<i>2886</i>&nbsp;
+<i>2887</i>&nbsp;        private void updateState2D() {
+<b class="fc"><i>2888</i>&nbsp;            if (xy == 0.0 &amp;&amp; yx == 0.0) {</b>
+<b class="fc"><i>2889</i>&nbsp;                if (xx == 1.0 &amp;&amp; yy == 1.0) {</b>
+<b class="fc"><i>2890</i>&nbsp;                    if (xt == 0.0 &amp;&amp; yt == 0.0) {</b>
+<b class="fc"><i>2891</i>&nbsp;                        state2d = APPLY_IDENTITY;</b>
+<i>2892</i>&nbsp;                    } else {
+<b class="nc"><i>2893</i>&nbsp;                        state2d = APPLY_TRANSLATE;</b>
+<i>2894</i>&nbsp;                    }
+<i>2895</i>&nbsp;                } else {
+<b class="nc"><i>2896</i>&nbsp;                    if (xt == 0.0 &amp;&amp; yt == 0.0) {</b>
+<b class="nc"><i>2897</i>&nbsp;                        state2d = APPLY_SCALE;</b>
+<i>2898</i>&nbsp;                    } else {
+<b class="nc"><i>2899</i>&nbsp;                        state2d = (APPLY_SCALE | APPLY_TRANSLATE);</b>
+<i>2900</i>&nbsp;                    }
+<i>2901</i>&nbsp;                }
+<i>2902</i>&nbsp;            } else {
+<b class="nc"><i>2903</i>&nbsp;                if (xx == 0.0 &amp;&amp; yy == 0.0) {</b>
+<b class="nc"><i>2904</i>&nbsp;                    if (xt == 0.0 &amp;&amp; yt == 0.0) {</b>
+<b class="nc"><i>2905</i>&nbsp;                        state2d = APPLY_SHEAR;</b>
+<i>2906</i>&nbsp;                    } else {
+<b class="nc"><i>2907</i>&nbsp;                        state2d = (APPLY_SHEAR | APPLY_TRANSLATE);</b>
+<i>2908</i>&nbsp;                    }
+<i>2909</i>&nbsp;                } else {
+<b class="nc"><i>2910</i>&nbsp;                    if (xt == 0.0 &amp;&amp; yt == 0.0) {</b>
+<b class="nc"><i>2911</i>&nbsp;                        state2d = (APPLY_SHEAR | APPLY_SCALE);</b>
+<i>2912</i>&nbsp;                    } else {
+<b class="nc"><i>2913</i>&nbsp;                        state2d = (APPLY_SHEAR | APPLY_SCALE | APPLY_TRANSLATE);</b>
+<i>2914</i>&nbsp;                    }
+<i>2915</i>&nbsp;                }
+<i>2916</i>&nbsp;            }
+<b class="fc"><i>2917</i>&nbsp;        }</b>
+<i>2918</i>&nbsp;
+<i>2919</i>&nbsp;        void ensureCanTransform2DPoint() throws IllegalStateException {
+<b class="nc"><i>2920</i>&nbsp;            if (state3d != APPLY_NON_3D) {</b>
+<b class="nc"><i>2921</i>&nbsp;                throw new IllegalStateException(&quot;Cannot transform 2D point &quot;</b>
+<i>2922</i>&nbsp;                        + &quot;with a 3D transform&quot;);
+<i>2923</i>&nbsp;            }
+<b class="nc"><i>2924</i>&nbsp;        }</b>
+<i>2925</i>&nbsp;
+<i>2926</i>&nbsp;        private static void stateError() {
+<b class="nc"><i>2927</i>&nbsp;            throw new InternalError(&quot;missing case in a switch&quot;);</b>
+<i>2928</i>&nbsp;        }
+<i>2929</i>&nbsp;
+<i>2930</i>&nbsp;
+<i>2931</i>&nbsp;        @Override
+<i>2932</i>&nbsp;        void apply(final Affine3D trans) {
+<b class="fc"><i>2933</i>&nbsp;            trans.concatenate(xx, xy, xz, xt,</b>
+<i>2934</i>&nbsp;                              yx, yy, yz, yt,
+<i>2935</i>&nbsp;                              zx, zy, zz, zt);
+<b class="fc"><i>2936</i>&nbsp;        }</b>
+<i>2937</i>&nbsp;
+<i>2938</i>&nbsp;        @Override
+<i>2939</i>&nbsp;        BaseTransform derive(final BaseTransform trans) {
+<b class="nc"><i>2940</i>&nbsp;            return trans.deriveWithConcatenation(xx, xy, xz, xt,</b>
+<i>2941</i>&nbsp;                                                 yx, yy, yz, yt,
+<i>2942</i>&nbsp;                                                 zx, zy, zz, zt);
+<i>2943</i>&nbsp;        }
+<i>2944</i>&nbsp;
+<i>2945</i>&nbsp;        /**
+<i>2946</i>&nbsp;         * Used only by tests to check the 2d matrix state
+<i>2947</i>&nbsp;         */
+<i>2948</i>&nbsp;        int getState2d() {
+<b class="nc"><i>2949</i>&nbsp;            return state2d;</b>
+<i>2950</i>&nbsp;        }
+<i>2951</i>&nbsp;
+<i>2952</i>&nbsp;        /**
+<i>2953</i>&nbsp;         * Used only by tests to check the 3d matrix state
+<i>2954</i>&nbsp;         */
+<i>2955</i>&nbsp;        int getState3d() {
+<b class="nc"><i>2956</i>&nbsp;            return state3d;</b>
+<i>2957</i>&nbsp;        }
+<i>2958</i>&nbsp;
+<i>2959</i>&nbsp;    }
+<i>2960</i>&nbsp;
+<i>2961</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2017-12-04 21:49</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,137 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: EventDispatcher</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">javafx.event</a> ]
+</div>
+
+<h1>Coverage Summary for Class: EventDispatcher (javafx.event)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+</tr>
+<tr>
+  <td class="name">EventDispatcher</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright (c) 2010, 2013, Oracle and/or its affiliates. All rights reserved.
+<i>3</i>&nbsp; * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+<i>4</i>&nbsp; *
+<i>5</i>&nbsp; *
+<i>6</i>&nbsp; *
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; *
+<i>11</i>&nbsp; *
+<i>12</i>&nbsp; *
+<i>13</i>&nbsp; *
+<i>14</i>&nbsp; *
+<i>15</i>&nbsp; *
+<i>16</i>&nbsp; *
+<i>17</i>&nbsp; *
+<i>18</i>&nbsp; *
+<i>19</i>&nbsp; *
+<i>20</i>&nbsp; *
+<i>21</i>&nbsp; *
+<i>22</i>&nbsp; *
+<i>23</i>&nbsp; *
+<i>24</i>&nbsp; */
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;package javafx.event;
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;// PENDING_DOC_REVIEW
+<i>29</i>&nbsp;/**
+<i>30</i>&nbsp; * An {@code EventDispatcher} represents an event dispatching and processing
+<i>31</i>&nbsp; * entity. It is used when an {@code Event} needs to be dispatched to the
+<i>32</i>&nbsp; * associated {@code EventTarget} through the {@code EventDispatchChain}
+<i>33</i>&nbsp; * specified by the target. Each {@code EventDispatcher} in the chain can
+<i>34</i>&nbsp; * influence the event path and the event itself. One {@code EventDispatcher}
+<i>35</i>&nbsp; * can appear in multiple chains.
+<i>36</i>&nbsp; * &lt;p&gt;
+<i>37</i>&nbsp; * The system defines two successive phases of event delivery. The first
+<i>38</i>&nbsp; * phase is called capturing phase and happens when when an event travels from
+<i>39</i>&nbsp; * the first element of the {@code EventDispatchChain} associated with the event
+<i>40</i>&nbsp; * target to its last element. If the event target is part of some hierarchy,
+<i>41</i>&nbsp; * the direction of the event in this phase usually corresponds with the
+<i>42</i>&nbsp; * direction from the root element of the hierarchy to the target. The second
+<i>43</i>&nbsp; * phase is called bubbling phase and happens in the reverse order to the first
+<i>44</i>&nbsp; * phase. So the event is returning back from the last element of the
+<i>45</i>&nbsp; * {@code EventDispatchChain} to its first element in this phase. Usually that
+<i>46</i>&nbsp; * corresponds to the direction from the event target back to the root in the
+<i>47</i>&nbsp; * event target&#39;s hierarchy.
+<i>48</i>&nbsp; * &lt;p&gt;
+<i>49</i>&nbsp; * Each {@code EventDispatcher} in an {@code EventDispatchChain} is responsible
+<i>50</i>&nbsp; * for forwarding the event to the rest of the chain during event dispatching.
+<i>51</i>&nbsp; * This forwarding happens in the {@code dispatchEvent} method and forms a chain
+<i>52</i>&nbsp; * of nested calls which allows one {@code EventDispatcher} to see the event
+<i>53</i>&nbsp; * during both dispatching phases in a single {@code dispatchEvent} call.
+<i>54</i>&nbsp; * &lt;p&gt;
+<i>55</i>&nbsp; * Template for {@code dispatchEvent} implementation.
+<i>56</i>&nbsp;&lt;PRE&gt;
+<i>57</i>&nbsp;public Event dispatchEvent(Event event, EventDispatchChain tail) {
+<i>58</i>&nbsp;    // capturing phase, can handle / modify / substitute / divert the event
+<i>59</i>&nbsp;
+<i>60</i>&nbsp;    if (notHandledYet) {
+<i>61</i>&nbsp;        // forward the event to the rest of the chain
+<i>62</i>&nbsp;        event = tail.dispatchEvent(event);
+<i>63</i>&nbsp;
+<i>64</i>&nbsp;        if (event != null) {
+<i>65</i>&nbsp;            // bubbling phase, can handle / modify / substitute / divert
+<i>66</i>&nbsp;            // the event
+<i>67</i>&nbsp;        }
+<i>68</i>&nbsp;    }
+<i>69</i>&nbsp;
+<i>70</i>&nbsp;    return notHandledYet ? event : null;
+<i>71</i>&nbsp;&lt;/PRE&gt;
+<i>72</i>&nbsp;}
+<i>73</i>&nbsp;
+<i>74</i>&nbsp; * @since JavaFX 2.0
+<i>75</i>&nbsp; */
+<i>76</i>&nbsp;public interface EventDispatcher {
+<i>77</i>&nbsp;    /**
+<i>78</i>&nbsp;     * Dispatches the specified event by this {@code EventDispatcher}. Does
+<i>79</i>&nbsp;     * any required event processing. Both the event and its further path can
+<i>80</i>&nbsp;     * be modified in this method. If the event is not handled / consumed during
+<i>81</i>&nbsp;     * the capturing phase, it should be dispatched to the rest of the chain
+<i>82</i>&nbsp;     * ({@code event = tail.dispatch(event);}).
+<i>83</i>&nbsp;     *
+<i>84</i>&nbsp;     * @param event the event do dispatch
+<i>85</i>&nbsp;     * @param tail the rest of the chain to dispatch event to
+<i>86</i>&nbsp;     * @return the return event or {@code null} if the event has been handled /
+<i>87</i>&nbsp;     *      consumed
+<i>88</i>&nbsp;     */
+<i>89</i>&nbsp;    Event dispatchEvent(Event event, EventDispatchChain tail);
+<i>90</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2017-12-04 21:49</div>
+</div>
+</body>
+</html>

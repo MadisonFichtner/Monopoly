@@ -1,0 +1,739 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: Translate2D</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.javafx.geom.transform</a> ]
+</div>
+
+<h1>Coverage Summary for Class: Translate2D (com.sun.javafx.geom.transform)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">Translate2D</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    33.3%
+  </span>
+  <span class="absValue">
+    (18/ 54)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    24%
+  </span>
+  <span class="absValue">
+    (66/ 275)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright (c) 2011, 2013, Oracle and/or its affiliates. All rights reserved.
+<i>3</i>&nbsp; * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+<i>4</i>&nbsp; *
+<i>5</i>&nbsp; *
+<i>6</i>&nbsp; *
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; *
+<i>11</i>&nbsp; *
+<i>12</i>&nbsp; *
+<i>13</i>&nbsp; *
+<i>14</i>&nbsp; *
+<i>15</i>&nbsp; *
+<i>16</i>&nbsp; *
+<i>17</i>&nbsp; *
+<i>18</i>&nbsp; *
+<i>19</i>&nbsp; *
+<i>20</i>&nbsp; *
+<i>21</i>&nbsp; *
+<i>22</i>&nbsp; *
+<i>23</i>&nbsp; *
+<i>24</i>&nbsp; */
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;package com.sun.javafx.geom.transform;
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;import com.sun.javafx.geom.BaseBounds;
+<i>29</i>&nbsp;import com.sun.javafx.geom.Path2D;
+<i>30</i>&nbsp;import com.sun.javafx.geom.Point2D;
+<i>31</i>&nbsp;import com.sun.javafx.geom.Rectangle;
+<i>32</i>&nbsp;import com.sun.javafx.geom.Shape;
+<i>33</i>&nbsp;import com.sun.javafx.geom.Vec3d;
+<i>34</i>&nbsp;
+<i>35</i>&nbsp;/**
+<i>36</i>&nbsp; *
+<i>37</i>&nbsp; */
+<i>38</i>&nbsp;public class Translate2D extends BaseTransform {
+<i>39</i>&nbsp;    private double mxt;
+<i>40</i>&nbsp;    private double myt;
+<i>41</i>&nbsp;
+<i>42</i>&nbsp;    public static BaseTransform getInstance(double mxt, double myt) {
+<b class="nc"><i>43</i>&nbsp;        if (mxt == 0.0 &amp;&amp; myt == 0.0) {</b>
+<b class="nc"><i>44</i>&nbsp;            return IDENTITY_TRANSFORM;</b>
+<i>45</i>&nbsp;        } else {
+<b class="nc"><i>46</i>&nbsp;            return new Translate2D(mxt, myt);</b>
+<i>47</i>&nbsp;        }
+<i>48</i>&nbsp;    }
+<i>49</i>&nbsp;
+<b class="fc"><i>50</i>&nbsp;    public Translate2D(double tx, double ty) {</b>
+<b class="fc"><i>51</i>&nbsp;        this.mxt = tx;</b>
+<b class="fc"><i>52</i>&nbsp;        this.myt = ty;</b>
+<b class="fc"><i>53</i>&nbsp;    }</b>
+<i>54</i>&nbsp;
+<b class="fc"><i>55</i>&nbsp;    public Translate2D(BaseTransform tx) {</b>
+<b class="fc"><i>56</i>&nbsp;        if (!tx.isTranslateOrIdentity()) {</b>
+<b class="nc"><i>57</i>&nbsp;            degreeError(Degree.TRANSLATE_2D);</b>
+<i>58</i>&nbsp;        }
+<b class="fc"><i>59</i>&nbsp;        this.mxt = tx.getMxt();</b>
+<b class="fc"><i>60</i>&nbsp;        this.myt = tx.getMyt();</b>
+<b class="fc"><i>61</i>&nbsp;    }</b>
+<i>62</i>&nbsp;
+<i>63</i>&nbsp;    @Override
+<i>64</i>&nbsp;    public Degree getDegree() {
+<b class="fc"><i>65</i>&nbsp;        return Degree.TRANSLATE_2D;</b>
+<i>66</i>&nbsp;    }
+<i>67</i>&nbsp;
+<i>68</i>&nbsp;    @Override
+<i>69</i>&nbsp;    public double getDeterminant() {
+<b class="nc"><i>70</i>&nbsp;        return 1.0;</b>
+<i>71</i>&nbsp;    }
+<i>72</i>&nbsp;
+<i>73</i>&nbsp;    @Override
+<i>74</i>&nbsp;    public double getMxt() {
+<b class="fc"><i>75</i>&nbsp;        return mxt;</b>
+<i>76</i>&nbsp;    }
+<i>77</i>&nbsp;
+<i>78</i>&nbsp;    @Override
+<i>79</i>&nbsp;    public double getMyt() {
+<b class="fc"><i>80</i>&nbsp;        return myt;</b>
+<i>81</i>&nbsp;    }
+<i>82</i>&nbsp;
+<i>83</i>&nbsp;    @Override
+<i>84</i>&nbsp;    public int getType() {
+<b class="nc"><i>85</i>&nbsp;        return (mxt == 0.0 &amp;&amp; myt == 0.0) ? TYPE_IDENTITY : TYPE_TRANSLATION;</b>
+<i>86</i>&nbsp;    }
+<i>87</i>&nbsp;
+<i>88</i>&nbsp;    @Override
+<i>89</i>&nbsp;    public boolean isIdentity() {
+<b class="fc"><i>90</i>&nbsp;        return (mxt == 0.0 &amp;&amp; myt == 0.0);</b>
+<i>91</i>&nbsp;    }
+<i>92</i>&nbsp;
+<i>93</i>&nbsp;    @Override
+<i>94</i>&nbsp;    public boolean isTranslateOrIdentity() {
+<b class="fc"><i>95</i>&nbsp;        return true;</b>
+<i>96</i>&nbsp;    }
+<i>97</i>&nbsp;
+<i>98</i>&nbsp;    @Override
+<i>99</i>&nbsp;    public boolean is2D() {
+<b class="fc"><i>100</i>&nbsp;        return true;</b>
+<i>101</i>&nbsp;    }
+<i>102</i>&nbsp;
+<i>103</i>&nbsp;    @Override
+<i>104</i>&nbsp;    public Point2D transform(Point2D src, Point2D dst) {
+<b class="fc"><i>105</i>&nbsp;        if (dst == null) dst = makePoint(src, dst);</b>
+<b class="fc"><i>106</i>&nbsp;        dst.setLocation(</b>
+<i>107</i>&nbsp;            (float) (src.x + mxt),
+<i>108</i>&nbsp;            (float) (src.y + myt));
+<b class="fc"><i>109</i>&nbsp;        return dst;</b>
+<i>110</i>&nbsp;    }
+<i>111</i>&nbsp;
+<i>112</i>&nbsp;    @Override
+<i>113</i>&nbsp;    public Point2D inverseTransform(Point2D src, Point2D dst) {
+<b class="nc"><i>114</i>&nbsp;        if (dst == null) dst = makePoint(src, dst);</b>
+<b class="nc"><i>115</i>&nbsp;        dst.setLocation(</b>
+<i>116</i>&nbsp;            (float) (src.x - mxt),
+<i>117</i>&nbsp;            (float) (src.y - myt));
+<b class="nc"><i>118</i>&nbsp;        return dst;</b>
+<i>119</i>&nbsp;    }
+<i>120</i>&nbsp;
+<i>121</i>&nbsp;    @Override
+<i>122</i>&nbsp;    public Vec3d transform(Vec3d src, Vec3d dst) {
+<b class="fc"><i>123</i>&nbsp;        if (dst == null) {</b>
+<b class="nc"><i>124</i>&nbsp;            dst = new Vec3d();</b>
+<i>125</i>&nbsp;        }
+<b class="fc"><i>126</i>&nbsp;        dst.x = src.x + mxt;</b>
+<b class="fc"><i>127</i>&nbsp;        dst.y = src.y + myt;</b>
+<b class="fc"><i>128</i>&nbsp;        dst.z = src.z;</b>
+<b class="fc"><i>129</i>&nbsp;        return dst;</b>
+<i>130</i>&nbsp;    }
+<i>131</i>&nbsp;
+<i>132</i>&nbsp;    @Override
+<i>133</i>&nbsp;    public Vec3d deltaTransform(Vec3d src, Vec3d dst) {
+<b class="nc"><i>134</i>&nbsp;        if (dst == null) {</b>
+<b class="nc"><i>135</i>&nbsp;            dst = new Vec3d();</b>
+<i>136</i>&nbsp;        }
+<b class="nc"><i>137</i>&nbsp;        dst.set(src);</b>
+<b class="nc"><i>138</i>&nbsp;        return dst;</b>
+<i>139</i>&nbsp;    }
+<i>140</i>&nbsp;
+<i>141</i>&nbsp;    @Override
+<i>142</i>&nbsp;    public Vec3d inverseTransform(Vec3d src, Vec3d dst) {
+<b class="fc"><i>143</i>&nbsp;        if (dst == null) {</b>
+<b class="nc"><i>144</i>&nbsp;            dst = new Vec3d();</b>
+<i>145</i>&nbsp;        }
+<b class="fc"><i>146</i>&nbsp;        dst.x = src.x - mxt;</b>
+<b class="fc"><i>147</i>&nbsp;        dst.y = src.y - myt;</b>
+<b class="fc"><i>148</i>&nbsp;        dst.z = src.z;</b>
+<b class="fc"><i>149</i>&nbsp;        return dst;</b>
+<i>150</i>&nbsp;    }
+<i>151</i>&nbsp;
+<i>152</i>&nbsp;    @Override
+<i>153</i>&nbsp;    public Vec3d inverseDeltaTransform(Vec3d src, Vec3d dst) {
+<b class="fc"><i>154</i>&nbsp;        if (dst == null) {</b>
+<b class="nc"><i>155</i>&nbsp;            dst = new Vec3d();</b>
+<i>156</i>&nbsp;        }
+<b class="fc"><i>157</i>&nbsp;        dst.set(src);</b>
+<b class="fc"><i>158</i>&nbsp;        return dst;</b>
+<i>159</i>&nbsp;    }
+<i>160</i>&nbsp;
+<i>161</i>&nbsp;    @Override
+<i>162</i>&nbsp;    public void transform(float[] srcPts, int srcOff,
+<i>163</i>&nbsp;                          float[] dstPts, int dstOff,
+<i>164</i>&nbsp;                          int numPts)
+<i>165</i>&nbsp;    {
+<b class="nc"><i>166</i>&nbsp;        float tx = (float) this.mxt;</b>
+<b class="nc"><i>167</i>&nbsp;        float ty = (float) this.myt;</b>
+<b class="nc"><i>168</i>&nbsp;        if (dstPts == srcPts) {</b>
+<b class="nc"><i>169</i>&nbsp;            if (dstOff &gt; srcOff &amp;&amp; dstOff &lt; srcOff + numPts * 2) {</b>
+<i>170</i>&nbsp;                // If the arrays overlap partially with the destination higher
+<i>171</i>&nbsp;                // than the source and we transform the coordinates normally
+<i>172</i>&nbsp;                // we would overwrite some of the later source coordinates
+<i>173</i>&nbsp;                // with results of previous transformations.
+<i>174</i>&nbsp;                // To get around this we use arraycopy to copy the points
+<i>175</i>&nbsp;                // to their final destination with correct overwrite
+<i>176</i>&nbsp;                // handling and then transform them in place in the new
+<i>177</i>&nbsp;                // safer location.
+<b class="nc"><i>178</i>&nbsp;                System.arraycopy(srcPts, srcOff, dstPts, dstOff, numPts * 2);</b>
+<i>179</i>&nbsp;                // srcPts = dstPts;     // They are known to be equal.
+<b class="nc"><i>180</i>&nbsp;                srcOff = dstOff;</b>
+<i>181</i>&nbsp;            }
+<b class="nc"><i>182</i>&nbsp;            if (dstOff == srcOff &amp;&amp; tx == 0.0f &amp;&amp; ty == 0.0f) {</b>
+<b class="nc"><i>183</i>&nbsp;                return;</b>
+<i>184</i>&nbsp;            }
+<i>185</i>&nbsp;        }
+<b class="nc"><i>186</i>&nbsp;        for (int i = 0; i &lt; numPts; i++) {</b>
+<b class="nc"><i>187</i>&nbsp;            dstPts[dstOff++] = srcPts[srcOff++] + tx;</b>
+<b class="nc"><i>188</i>&nbsp;            dstPts[dstOff++] = srcPts[srcOff++] + ty;</b>
+<i>189</i>&nbsp;        }
+<b class="nc"><i>190</i>&nbsp;    }</b>
+<i>191</i>&nbsp;
+<i>192</i>&nbsp;    @Override
+<i>193</i>&nbsp;    public void transform(double[] srcPts, int srcOff,
+<i>194</i>&nbsp;                          double[] dstPts, int dstOff,
+<i>195</i>&nbsp;                          int numPts)
+<i>196</i>&nbsp;    {
+<b class="nc"><i>197</i>&nbsp;        double tx = this.mxt;</b>
+<b class="nc"><i>198</i>&nbsp;        double ty = this.myt;</b>
+<b class="nc"><i>199</i>&nbsp;        if (dstPts == srcPts) {</b>
+<b class="nc"><i>200</i>&nbsp;            if (dstOff &gt; srcOff &amp;&amp; dstOff &lt; srcOff + numPts * 2) {</b>
+<i>201</i>&nbsp;                // If the arrays overlap partially with the destination higher
+<i>202</i>&nbsp;                // than the source and we transform the coordinates normally
+<i>203</i>&nbsp;                // we would overwrite some of the later source coordinates
+<i>204</i>&nbsp;                // with results of previous transformations.
+<i>205</i>&nbsp;                // To get around this we use arraycopy to copy the points
+<i>206</i>&nbsp;                // to their final destination with correct overwrite
+<i>207</i>&nbsp;                // handling and then transform them in place in the new
+<i>208</i>&nbsp;                // safer location.
+<b class="nc"><i>209</i>&nbsp;                System.arraycopy(srcPts, srcOff, dstPts, dstOff, numPts * 2);</b>
+<i>210</i>&nbsp;                // srcPts = dstPts;     // They are known to be equal.
+<b class="nc"><i>211</i>&nbsp;                srcOff = dstOff;</b>
+<i>212</i>&nbsp;            }
+<b class="nc"><i>213</i>&nbsp;            if (dstOff == srcOff &amp;&amp; tx == 0.0 &amp;&amp; ty == 0.0) {</b>
+<b class="nc"><i>214</i>&nbsp;                return;</b>
+<i>215</i>&nbsp;            }
+<i>216</i>&nbsp;        }
+<b class="nc"><i>217</i>&nbsp;        for (int i = 0; i &lt; numPts; i++) {</b>
+<b class="nc"><i>218</i>&nbsp;            dstPts[dstOff++] = srcPts[srcOff++] + tx;</b>
+<b class="nc"><i>219</i>&nbsp;            dstPts[dstOff++] = srcPts[srcOff++] + ty;</b>
+<i>220</i>&nbsp;        }
+<b class="nc"><i>221</i>&nbsp;    }</b>
+<i>222</i>&nbsp;
+<i>223</i>&nbsp;    @Override
+<i>224</i>&nbsp;    public void transform(float[] srcPts, int srcOff,
+<i>225</i>&nbsp;                          double[] dstPts, int dstOff,
+<i>226</i>&nbsp;                          int numPts)
+<i>227</i>&nbsp;    {
+<b class="nc"><i>228</i>&nbsp;        double tx = this.mxt;</b>
+<b class="nc"><i>229</i>&nbsp;        double ty = this.myt;</b>
+<b class="nc"><i>230</i>&nbsp;        for (int i = 0; i &lt; numPts; i++) {</b>
+<b class="nc"><i>231</i>&nbsp;            dstPts[dstOff++] = srcPts[srcOff++] + tx;</b>
+<b class="nc"><i>232</i>&nbsp;            dstPts[dstOff++] = srcPts[srcOff++] + ty;</b>
+<i>233</i>&nbsp;        }
+<b class="nc"><i>234</i>&nbsp;    }</b>
+<i>235</i>&nbsp;
+<i>236</i>&nbsp;    @Override
+<i>237</i>&nbsp;    public void transform(double[] srcPts, int srcOff,
+<i>238</i>&nbsp;                          float[] dstPts, int dstOff,
+<i>239</i>&nbsp;                          int numPts)
+<i>240</i>&nbsp;    {
+<b class="nc"><i>241</i>&nbsp;        double tx = this.mxt;</b>
+<b class="nc"><i>242</i>&nbsp;        double ty = this.myt;</b>
+<b class="nc"><i>243</i>&nbsp;        for (int i = 0; i &lt; numPts; i++) {</b>
+<b class="nc"><i>244</i>&nbsp;            dstPts[dstOff++] = (float) (srcPts[srcOff++] + tx);</b>
+<b class="nc"><i>245</i>&nbsp;            dstPts[dstOff++] = (float) (srcPts[srcOff++] + ty);</b>
+<i>246</i>&nbsp;        }
+<b class="nc"><i>247</i>&nbsp;    }</b>
+<i>248</i>&nbsp;
+<i>249</i>&nbsp;    @Override
+<i>250</i>&nbsp;    public void deltaTransform(float[] srcPts, int srcOff,
+<i>251</i>&nbsp;                               float[] dstPts, int dstOff,
+<i>252</i>&nbsp;                               int numPts)
+<i>253</i>&nbsp;    {
+<b class="nc"><i>254</i>&nbsp;        if (srcPts != dstPts || srcOff != dstOff) {</b>
+<b class="nc"><i>255</i>&nbsp;            System.arraycopy(srcPts, srcOff, dstPts, dstOff, numPts * 2);</b>
+<i>256</i>&nbsp;        }
+<b class="nc"><i>257</i>&nbsp;    }</b>
+<i>258</i>&nbsp;
+<i>259</i>&nbsp;    @Override
+<i>260</i>&nbsp;    public void deltaTransform(double[] srcPts, int srcOff,
+<i>261</i>&nbsp;                               double[] dstPts, int dstOff,
+<i>262</i>&nbsp;                               int numPts)
+<i>263</i>&nbsp;    {
+<b class="nc"><i>264</i>&nbsp;        if (srcPts != dstPts || srcOff != dstOff) {</b>
+<b class="nc"><i>265</i>&nbsp;            System.arraycopy(srcPts, srcOff, dstPts, dstOff, numPts * 2);</b>
+<i>266</i>&nbsp;        }
+<b class="nc"><i>267</i>&nbsp;    }</b>
+<i>268</i>&nbsp;
+<i>269</i>&nbsp;    @Override
+<i>270</i>&nbsp;    public void inverseTransform(float[] srcPts, int srcOff,
+<i>271</i>&nbsp;                                 float[] dstPts, int dstOff,
+<i>272</i>&nbsp;                                 int numPts)
+<i>273</i>&nbsp;    {
+<b class="nc"><i>274</i>&nbsp;        float tx = (float) this.mxt;</b>
+<b class="nc"><i>275</i>&nbsp;        float ty = (float) this.myt;</b>
+<b class="nc"><i>276</i>&nbsp;        if (dstPts == srcPts) {</b>
+<b class="nc"><i>277</i>&nbsp;            if (dstOff &gt; srcOff &amp;&amp; dstOff &lt; srcOff + numPts * 2) {</b>
+<i>278</i>&nbsp;                // If the arrays overlap partially with the destination higher
+<i>279</i>&nbsp;                // than the source and we transform the coordinates normally
+<i>280</i>&nbsp;                // we would overwrite some of the later source coordinates
+<i>281</i>&nbsp;                // with results of previous transformations.
+<i>282</i>&nbsp;                // To get around this we use arraycopy to copy the points
+<i>283</i>&nbsp;                // to their final destination with correct overwrite
+<i>284</i>&nbsp;                // handling and then transform them in place in the new
+<i>285</i>&nbsp;                // safer location.
+<b class="nc"><i>286</i>&nbsp;                System.arraycopy(srcPts, srcOff, dstPts, dstOff, numPts * 2);</b>
+<i>287</i>&nbsp;                // srcPts = dstPts;     // They are known to be equal.
+<b class="nc"><i>288</i>&nbsp;                srcOff = dstOff;</b>
+<i>289</i>&nbsp;            }
+<b class="nc"><i>290</i>&nbsp;            if (dstOff == srcOff &amp;&amp; tx == 0.0f &amp;&amp; ty == 0.0f) {</b>
+<b class="nc"><i>291</i>&nbsp;                return;</b>
+<i>292</i>&nbsp;            }
+<i>293</i>&nbsp;        }
+<b class="nc"><i>294</i>&nbsp;        for (int i = 0; i &lt; numPts; i++) {</b>
+<b class="nc"><i>295</i>&nbsp;            dstPts[dstOff++] = srcPts[srcOff++] - tx;</b>
+<b class="nc"><i>296</i>&nbsp;            dstPts[dstOff++] = srcPts[srcOff++] - ty;</b>
+<i>297</i>&nbsp;        }
+<b class="nc"><i>298</i>&nbsp;    }</b>
+<i>299</i>&nbsp;
+<i>300</i>&nbsp;    @Override
+<i>301</i>&nbsp;    public void inverseDeltaTransform(float[] srcPts, int srcOff,
+<i>302</i>&nbsp;                                      float[] dstPts, int dstOff,
+<i>303</i>&nbsp;                                      int numPts)
+<i>304</i>&nbsp;    {
+<b class="nc"><i>305</i>&nbsp;        if (srcPts != dstPts || srcOff != dstOff) {</b>
+<b class="nc"><i>306</i>&nbsp;            System.arraycopy(srcPts, srcOff, dstPts, dstOff, numPts * 2);</b>
+<i>307</i>&nbsp;        }
+<b class="nc"><i>308</i>&nbsp;    }</b>
+<i>309</i>&nbsp;
+<i>310</i>&nbsp;    @Override
+<i>311</i>&nbsp;    public void inverseTransform(double[] srcPts, int srcOff,
+<i>312</i>&nbsp;                                 double[] dstPts, int dstOff,
+<i>313</i>&nbsp;                                 int numPts)
+<i>314</i>&nbsp;    {
+<b class="nc"><i>315</i>&nbsp;        double tx = this.mxt;</b>
+<b class="nc"><i>316</i>&nbsp;        double ty = this.myt;</b>
+<b class="nc"><i>317</i>&nbsp;        if (dstPts == srcPts) {</b>
+<b class="nc"><i>318</i>&nbsp;            if (dstOff &gt; srcOff &amp;&amp; dstOff &lt; srcOff + numPts * 2) {</b>
+<i>319</i>&nbsp;                // If the arrays overlap partially with the destination higher
+<i>320</i>&nbsp;                // than the source and we transform the coordinates normally
+<i>321</i>&nbsp;                // we would overwrite some of the later source coordinates
+<i>322</i>&nbsp;                // with results of previous transformations.
+<i>323</i>&nbsp;                // To get around this we use arraycopy to copy the points
+<i>324</i>&nbsp;                // to their final destination with correct overwrite
+<i>325</i>&nbsp;                // handling and then transform them in place in the new
+<i>326</i>&nbsp;                // safer location.
+<b class="nc"><i>327</i>&nbsp;                System.arraycopy(srcPts, srcOff, dstPts, dstOff, numPts * 2);</b>
+<i>328</i>&nbsp;                // srcPts = dstPts;     // They are known to be equal.
+<b class="nc"><i>329</i>&nbsp;                srcOff = dstOff;</b>
+<i>330</i>&nbsp;            }
+<b class="nc"><i>331</i>&nbsp;            if (dstOff == srcOff &amp;&amp; tx == 0f &amp;&amp; ty == 0f) {</b>
+<b class="nc"><i>332</i>&nbsp;                return;</b>
+<i>333</i>&nbsp;            }
+<i>334</i>&nbsp;        }
+<b class="nc"><i>335</i>&nbsp;        for (int i = 0; i &lt; numPts; i++) {</b>
+<b class="nc"><i>336</i>&nbsp;            dstPts[dstOff++] = srcPts[srcOff++] - tx;</b>
+<b class="nc"><i>337</i>&nbsp;            dstPts[dstOff++] = srcPts[srcOff++] - ty;</b>
+<i>338</i>&nbsp;        }
+<b class="nc"><i>339</i>&nbsp;    }</b>
+<i>340</i>&nbsp;
+<i>341</i>&nbsp;    @Override
+<i>342</i>&nbsp;    public BaseBounds transform(BaseBounds bounds, BaseBounds result) {
+<b class="fc"><i>343</i>&nbsp;        float minX = (float) (bounds.getMinX() + mxt);</b>
+<b class="fc"><i>344</i>&nbsp;        float minY = (float) (bounds.getMinY() + myt);</b>
+<b class="fc"><i>345</i>&nbsp;        float minZ = bounds.getMinZ();</b>
+<b class="fc"><i>346</i>&nbsp;        float maxX = (float) (bounds.getMaxX() + mxt);</b>
+<b class="fc"><i>347</i>&nbsp;        float maxY = (float) (bounds.getMaxY() + myt);</b>
+<b class="fc"><i>348</i>&nbsp;        float maxZ = bounds.getMaxZ();</b>
+<b class="fc"><i>349</i>&nbsp;        return result.deriveWithNewBounds(minX, minY, minZ, maxX, maxY, maxZ);</b>
+<i>350</i>&nbsp;    }
+<i>351</i>&nbsp;
+<i>352</i>&nbsp;    @Override
+<i>353</i>&nbsp;    public void transform(Rectangle rect, Rectangle result) {
+<b class="nc"><i>354</i>&nbsp;        transform(rect, result, mxt, myt);</b>
+<b class="nc"><i>355</i>&nbsp;    }</b>
+<i>356</i>&nbsp;
+<i>357</i>&nbsp;    @Override
+<i>358</i>&nbsp;    public BaseBounds inverseTransform(BaseBounds bounds, BaseBounds result) {
+<b class="nc"><i>359</i>&nbsp;        float minX = (float) (bounds.getMinX() - mxt);</b>
+<b class="nc"><i>360</i>&nbsp;        float minY = (float) (bounds.getMinY() - myt);</b>
+<b class="nc"><i>361</i>&nbsp;        float minZ = bounds.getMinZ();</b>
+<b class="nc"><i>362</i>&nbsp;        float maxX = (float) (bounds.getMaxX() - mxt);</b>
+<b class="nc"><i>363</i>&nbsp;        float maxY = (float) (bounds.getMaxY() - myt);</b>
+<b class="nc"><i>364</i>&nbsp;        float maxZ = bounds.getMaxZ();</b>
+<b class="nc"><i>365</i>&nbsp;        return result.deriveWithNewBounds(minX, minY, minZ, maxX, maxY, maxZ);</b>
+<i>366</i>&nbsp;    }
+<i>367</i>&nbsp;
+<i>368</i>&nbsp;    @Override
+<i>369</i>&nbsp;    public void inverseTransform(Rectangle rect, Rectangle result) {
+<b class="nc"><i>370</i>&nbsp;        transform(rect, result, -mxt, -myt);</b>
+<b class="nc"><i>371</i>&nbsp;    }</b>
+<i>372</i>&nbsp;
+<i>373</i>&nbsp;    static void transform(Rectangle rect, Rectangle result,
+<i>374</i>&nbsp;                          double mxt, double myt)
+<i>375</i>&nbsp;    {
+<b class="nc"><i>376</i>&nbsp;        int imxt = (int) mxt;</b>
+<b class="nc"><i>377</i>&nbsp;        int imyt = (int) myt;</b>
+<b class="nc"><i>378</i>&nbsp;        if (imxt == mxt &amp;&amp; imyt == myt) {</b>
+<b class="nc"><i>379</i>&nbsp;            result.setBounds(rect);</b>
+<b class="nc"><i>380</i>&nbsp;            result.translate(imxt, imyt);</b>
+<i>381</i>&nbsp;        } else {
+<b class="nc"><i>382</i>&nbsp;            double x1 = rect.x + mxt;</b>
+<b class="nc"><i>383</i>&nbsp;            double y1 = rect.y + myt;</b>
+<b class="nc"><i>384</i>&nbsp;            double x2 = Math.ceil(x1 + rect.width);</b>
+<b class="nc"><i>385</i>&nbsp;            double y2 = Math.ceil(y1 + rect.height);</b>
+<b class="nc"><i>386</i>&nbsp;            x1 = Math.floor(x1);</b>
+<b class="nc"><i>387</i>&nbsp;            y1 = Math.floor(y1);</b>
+<b class="nc"><i>388</i>&nbsp;            result.setBounds((int) x1, (int) y1, (int) (x2 - x1), (int) (y2 - y1));</b>
+<i>389</i>&nbsp;        }
+<b class="nc"><i>390</i>&nbsp;    }</b>
+<i>391</i>&nbsp;
+<i>392</i>&nbsp;    @Override
+<i>393</i>&nbsp;    public Shape createTransformedShape(Shape s) {
+<b class="nc"><i>394</i>&nbsp;        return new Path2D(s, this);</b>
+<i>395</i>&nbsp;    }
+<i>396</i>&nbsp;
+<i>397</i>&nbsp;    @Override
+<i>398</i>&nbsp;    public void setToIdentity() {
+<b class="fc"><i>399</i>&nbsp;        this.mxt = this.myt = 0.0;</b>
+<b class="fc"><i>400</i>&nbsp;    }</b>
+<i>401</i>&nbsp;
+<i>402</i>&nbsp;    @Override
+<i>403</i>&nbsp;    public void setTransform(BaseTransform xform) {
+<b class="nc"><i>404</i>&nbsp;        if (!xform.isTranslateOrIdentity()) {</b>
+<b class="nc"><i>405</i>&nbsp;            degreeError(Degree.TRANSLATE_2D);</b>
+<i>406</i>&nbsp;        }
+<b class="nc"><i>407</i>&nbsp;        this.mxt = xform.getMxt();</b>
+<b class="nc"><i>408</i>&nbsp;        this.myt = xform.getMyt();</b>
+<b class="nc"><i>409</i>&nbsp;    }</b>
+<i>410</i>&nbsp;
+<i>411</i>&nbsp;    @Override
+<i>412</i>&nbsp;    public void invert() {
+<b class="nc"><i>413</i>&nbsp;        this.mxt = -this.mxt;</b>
+<b class="nc"><i>414</i>&nbsp;        this.myt = -this.myt;</b>
+<b class="nc"><i>415</i>&nbsp;    }</b>
+<i>416</i>&nbsp;
+<i>417</i>&nbsp;    @Override
+<i>418</i>&nbsp;    public void restoreTransform(double mxx, double myx,
+<i>419</i>&nbsp;                                 double mxy, double myy,
+<i>420</i>&nbsp;                                 double mxt, double myt)
+<i>421</i>&nbsp;    {
+<b class="nc"><i>422</i>&nbsp;        if (mxx != 1.0 || myx != 0.0 ||</b>
+<i>423</i>&nbsp;            mxy != 0.0 || myy != 1.0)
+<i>424</i>&nbsp;        {
+<b class="nc"><i>425</i>&nbsp;            degreeError(Degree.TRANSLATE_2D);</b>
+<i>426</i>&nbsp;        }
+<b class="nc"><i>427</i>&nbsp;        this.mxt = mxt;</b>
+<b class="nc"><i>428</i>&nbsp;        this.myt = myt;</b>
+<b class="nc"><i>429</i>&nbsp;    }</b>
+<i>430</i>&nbsp;
+<i>431</i>&nbsp;    @Override
+<i>432</i>&nbsp;    public void restoreTransform(double mxx, double mxy, double mxz, double mxt,
+<i>433</i>&nbsp;                                 double myx, double myy, double myz, double myt,
+<i>434</i>&nbsp;                                 double mzx, double mzy, double mzz, double mzt)
+<i>435</i>&nbsp;    {
+<b class="nc"><i>436</i>&nbsp;        if (mxx != 1.0 || mxy != 0.0 || mxz != 0.0 ||</b>
+<i>437</i>&nbsp;            myx != 0.0 || myy != 1.0 || myz != 0.0 ||
+<i>438</i>&nbsp;            mzx != 0.0 || mzy != 0.0 || mzz != 1.0 || mzt != 0.0)
+<i>439</i>&nbsp;        {
+<b class="nc"><i>440</i>&nbsp;            degreeError(Degree.TRANSLATE_2D);</b>
+<i>441</i>&nbsp;        }
+<b class="nc"><i>442</i>&nbsp;        this.mxt = mxt;</b>
+<b class="nc"><i>443</i>&nbsp;        this.myt = myt;</b>
+<b class="nc"><i>444</i>&nbsp;    }</b>
+<i>445</i>&nbsp;
+<i>446</i>&nbsp;    @Override
+<i>447</i>&nbsp;    public BaseTransform deriveWithTranslation(double mxt, double myt) {
+<b class="nc"><i>448</i>&nbsp;        this.mxt += mxt;</b>
+<b class="nc"><i>449</i>&nbsp;        this.myt += myt;</b>
+<b class="nc"><i>450</i>&nbsp;        return this;</b>
+<i>451</i>&nbsp;    }
+<i>452</i>&nbsp;
+<i>453</i>&nbsp;    @Override
+<i>454</i>&nbsp;    public BaseTransform deriveWithTranslation(double mxt, double myt, double mzt) {
+<b class="fc"><i>455</i>&nbsp;        if (mzt == 0.0) {</b>
+<b class="fc"><i>456</i>&nbsp;            this.mxt += mxt;</b>
+<b class="fc"><i>457</i>&nbsp;            this.myt += myt;</b>
+<b class="fc"><i>458</i>&nbsp;            return this;</b>
+<i>459</i>&nbsp;        }
+<b class="nc"><i>460</i>&nbsp;        Affine3D a = new Affine3D();</b>
+<b class="nc"><i>461</i>&nbsp;        a.translate(this.mxt + mxt, this.myt + myt, mzt);</b>
+<b class="nc"><i>462</i>&nbsp;        return a;</b>
+<i>463</i>&nbsp;    }
+<i>464</i>&nbsp;
+<i>465</i>&nbsp;    @Override
+<i>466</i>&nbsp;    public BaseTransform deriveWithScale(double mxx, double myy, double mzz) {
+<b class="nc"><i>467</i>&nbsp;        if (mzz == 1.0) {</b>
+<b class="nc"><i>468</i>&nbsp;            if (mxx == 1.0 &amp;&amp; myy == 1.0) {</b>
+<b class="nc"><i>469</i>&nbsp;                return this;</b>
+<i>470</i>&nbsp;            }
+<b class="nc"><i>471</i>&nbsp;            Affine2D a = new Affine2D();</b>
+<b class="nc"><i>472</i>&nbsp;            a.translate(this.mxt, this.myt);</b>
+<b class="nc"><i>473</i>&nbsp;            a.scale(mxx, myy);</b>
+<b class="nc"><i>474</i>&nbsp;            return a;</b>
+<i>475</i>&nbsp;        }
+<b class="nc"><i>476</i>&nbsp;        Affine3D a = new Affine3D();</b>
+<b class="nc"><i>477</i>&nbsp;        a.translate(this.mxt, this.myt);</b>
+<b class="nc"><i>478</i>&nbsp;        a.scale(mxx, myy, mzz);</b>
+<b class="nc"><i>479</i>&nbsp;        return a;</b>
+<i>480</i>&nbsp;
+<i>481</i>&nbsp;    }
+<i>482</i>&nbsp;
+<i>483</i>&nbsp;    @Override
+<i>484</i>&nbsp;    public BaseTransform deriveWithRotation(double theta,
+<i>485</i>&nbsp;            double axisX, double axisY, double axisZ) {
+<b class="nc"><i>486</i>&nbsp;        if (theta == 0.0) {</b>
+<b class="nc"><i>487</i>&nbsp;            return this;</b>
+<i>488</i>&nbsp;        }
+<b class="nc"><i>489</i>&nbsp;        if (almostZero(axisX) &amp;&amp; almostZero(axisY)) {</b>
+<b class="nc"><i>490</i>&nbsp;            if (axisZ == 0.0) {</b>
+<b class="nc"><i>491</i>&nbsp;                return this;</b>
+<i>492</i>&nbsp;            }
+<b class="nc"><i>493</i>&nbsp;            Affine2D a = new Affine2D();</b>
+<b class="nc"><i>494</i>&nbsp;            a.translate(this.mxt, this.myt);</b>
+<b class="nc"><i>495</i>&nbsp;            if (axisZ &gt; 0) {</b>
+<b class="nc"><i>496</i>&nbsp;                a.rotate(theta);</b>
+<b class="nc"><i>497</i>&nbsp;            } else if (axisZ &lt; 0) {</b>
+<b class="nc"><i>498</i>&nbsp;                a.rotate(-theta);</b>
+<i>499</i>&nbsp;            }
+<b class="nc"><i>500</i>&nbsp;            return a;</b>
+<i>501</i>&nbsp;        }
+<b class="nc"><i>502</i>&nbsp;        Affine3D a = new Affine3D();</b>
+<b class="nc"><i>503</i>&nbsp;        a.translate(this.mxt, this.myt);</b>
+<b class="nc"><i>504</i>&nbsp;        a.rotate(theta, axisX, axisY, axisZ);</b>
+<b class="nc"><i>505</i>&nbsp;        return a;</b>
+<i>506</i>&nbsp;    }
+<i>507</i>&nbsp;
+<i>508</i>&nbsp;    @Override
+<i>509</i>&nbsp;    public BaseTransform deriveWithPreTranslation(double mxt, double myt) {
+<b class="nc"><i>510</i>&nbsp;        this.mxt += mxt;</b>
+<b class="nc"><i>511</i>&nbsp;        this.myt += myt;</b>
+<b class="nc"><i>512</i>&nbsp;        return this;</b>
+<i>513</i>&nbsp;    }
+<i>514</i>&nbsp;
+<i>515</i>&nbsp;    @Override
+<i>516</i>&nbsp;    public BaseTransform deriveWithConcatenation(double mxx, double myx,
+<i>517</i>&nbsp;                                                 double mxy, double myy,
+<i>518</i>&nbsp;                                                 double mxt, double myt)
+<i>519</i>&nbsp;    {
+<b class="nc"><i>520</i>&nbsp;        if (mxx == 1.0 &amp;&amp; myx == 0.0 &amp;&amp; mxy == 0.0 &amp;&amp; myy == 1.0) {</b>
+<b class="nc"><i>521</i>&nbsp;            this.mxt += mxt;</b>
+<b class="nc"><i>522</i>&nbsp;            this.myt += myt;</b>
+<b class="nc"><i>523</i>&nbsp;            return this;</b>
+<i>524</i>&nbsp;        } else {
+<b class="nc"><i>525</i>&nbsp;            return new Affine2D(mxx, myx,</b>
+<i>526</i>&nbsp;                                mxy, myy,
+<i>527</i>&nbsp;                                this.mxt + mxt, this.myt + myt);
+<i>528</i>&nbsp;        }
+<i>529</i>&nbsp;    }
+<i>530</i>&nbsp;
+<i>531</i>&nbsp;    @Override
+<i>532</i>&nbsp;    public BaseTransform deriveWithConcatenation(
+<i>533</i>&nbsp;            double mxx,   double mxy,   double mxz,   double mxt,
+<i>534</i>&nbsp;            double myx,   double myy,   double myz,   double myt,
+<i>535</i>&nbsp;            double mzx,   double mzy,   double mzz,   double mzt) {
+<b class="nc"><i>536</i>&nbsp;        if (                                   mxz == 0.0</b>
+<i>537</i>&nbsp;                                            &amp;&amp; myz == 0.0
+<i>538</i>&nbsp;                &amp;&amp; mzx == 0.0 &amp;&amp; mzy == 0.0 &amp;&amp; mzz == 1.0 &amp;&amp; mzt == 0.0) {
+<b class="nc"><i>539</i>&nbsp;            return deriveWithConcatenation(mxx, myx,</b>
+<i>540</i>&nbsp;                                           mxy, myy,
+<i>541</i>&nbsp;                                           mxt, myt);
+<i>542</i>&nbsp;        }
+<i>543</i>&nbsp;
+<b class="nc"><i>544</i>&nbsp;        return new Affine3D(mxx, mxy, mxz, mxt + this.mxt,</b>
+<i>545</i>&nbsp;                            myx, myy, myz, myt + this.myt,
+<i>546</i>&nbsp;                            mzx, mzy, mzz, mzt);
+<i>547</i>&nbsp;    }
+<i>548</i>&nbsp;
+<i>549</i>&nbsp;    @Override
+<i>550</i>&nbsp;    public BaseTransform deriveWithConcatenation(BaseTransform tx) {
+<b class="nc"><i>551</i>&nbsp;        if (tx.isTranslateOrIdentity()) {</b>
+<b class="nc"><i>552</i>&nbsp;            this.mxt += tx.getMxt();</b>
+<b class="nc"><i>553</i>&nbsp;            this.myt += tx.getMyt();</b>
+<b class="nc"><i>554</i>&nbsp;            return this;</b>
+<b class="nc"><i>555</i>&nbsp;        } else if (tx.is2D()) {</b>
+<b class="nc"><i>556</i>&nbsp;            return getInstance(tx.getMxx(), tx.getMyx(),</b>
+<b class="nc"><i>557</i>&nbsp;                               tx.getMxy(), tx.getMyy(),</b>
+<b class="nc"><i>558</i>&nbsp;                               this.mxt + tx.getMxt(), this.myt + tx.getMyt());</b>
+<i>559</i>&nbsp;        } else {
+<b class="nc"><i>560</i>&nbsp;            Affine3D t3d = new Affine3D(tx);</b>
+<b class="nc"><i>561</i>&nbsp;            t3d.preTranslate(this.mxt, this.myt, 0.0);</b>
+<b class="nc"><i>562</i>&nbsp;            return t3d;</b>
+<i>563</i>&nbsp;        }
+<i>564</i>&nbsp;    }
+<i>565</i>&nbsp;
+<i>566</i>&nbsp;    @Override
+<i>567</i>&nbsp;    public BaseTransform deriveWithPreConcatenation(BaseTransform tx) {
+<b class="nc"><i>568</i>&nbsp;        if (tx.isTranslateOrIdentity()) {</b>
+<b class="nc"><i>569</i>&nbsp;            this.mxt += tx.getMxt();</b>
+<b class="nc"><i>570</i>&nbsp;            this.myt += tx.getMyt();</b>
+<b class="nc"><i>571</i>&nbsp;            return this;</b>
+<b class="nc"><i>572</i>&nbsp;        } else if (tx.is2D()) {</b>
+<b class="nc"><i>573</i>&nbsp;            Affine2D t2d = new Affine2D(tx);</b>
+<b class="nc"><i>574</i>&nbsp;            t2d.translate(this.mxt, this.myt);</b>
+<b class="nc"><i>575</i>&nbsp;            return t2d;</b>
+<i>576</i>&nbsp;        } else {
+<b class="nc"><i>577</i>&nbsp;            Affine3D t3d = new Affine3D(tx);</b>
+<b class="nc"><i>578</i>&nbsp;            t3d.translate(this.mxt, this.myt, 0.0);</b>
+<b class="nc"><i>579</i>&nbsp;            return t3d;</b>
+<i>580</i>&nbsp;        }
+<i>581</i>&nbsp;    }
+<i>582</i>&nbsp;
+<i>583</i>&nbsp;    @Override
+<i>584</i>&nbsp;    public BaseTransform deriveWithNewTransform(BaseTransform tx) {
+<b class="fc"><i>585</i>&nbsp;        if (tx.isTranslateOrIdentity()) {</b>
+<b class="fc"><i>586</i>&nbsp;            this.mxt = tx.getMxt();</b>
+<b class="fc"><i>587</i>&nbsp;            this.myt = tx.getMyt();</b>
+<b class="fc"><i>588</i>&nbsp;            return this;</b>
+<i>589</i>&nbsp;        } else {
+<b class="nc"><i>590</i>&nbsp;            return getInstance(tx);</b>
+<i>591</i>&nbsp;        }
+<i>592</i>&nbsp;    }
+<i>593</i>&nbsp;
+<i>594</i>&nbsp;    @Override
+<i>595</i>&nbsp;    public BaseTransform createInverse() {
+<b class="nc"><i>596</i>&nbsp;        if (isIdentity()) {</b>
+<b class="nc"><i>597</i>&nbsp;            return IDENTITY_TRANSFORM;</b>
+<i>598</i>&nbsp;        } else {
+<b class="nc"><i>599</i>&nbsp;            return new Translate2D(-this.mxt, -this.myt);</b>
+<i>600</i>&nbsp;        }
+<i>601</i>&nbsp;    }
+<i>602</i>&nbsp;
+<i>603</i>&nbsp;    // Round values to sane precision for printing
+<i>604</i>&nbsp;    // Note that Math.sin(Math.PI) has an error of about 10^-16
+<i>605</i>&nbsp;    private static double _matround(double matval) {
+<b class="nc"><i>606</i>&nbsp;        return Math.rint(matval * 1E15) / 1E15;</b>
+<i>607</i>&nbsp;    }
+<i>608</i>&nbsp;
+<i>609</i>&nbsp;    @Override
+<i>610</i>&nbsp;    public String toString() {
+<b class="nc"><i>611</i>&nbsp;        return (&quot;Translate2D[&quot;</b>
+<b class="nc"><i>612</i>&nbsp;                + _matround(mxt) + &quot;, &quot;</b>
+<b class="nc"><i>613</i>&nbsp;                + _matround(myt) + &quot;]&quot;);</b>
+<i>614</i>&nbsp;    }
+<i>615</i>&nbsp;
+<i>616</i>&nbsp;    @Override
+<i>617</i>&nbsp;    public BaseTransform copy() {
+<b class="nc"><i>618</i>&nbsp;        return new Translate2D(this.mxt, this.myt);</b>
+<i>619</i>&nbsp;    }
+<i>620</i>&nbsp;
+<i>621</i>&nbsp;    @Override
+<i>622</i>&nbsp;    public boolean equals(Object obj) {
+<b class="fc"><i>623</i>&nbsp;        if (obj instanceof BaseTransform) {</b>
+<b class="fc"><i>624</i>&nbsp;            BaseTransform tx = (BaseTransform) obj;</b>
+<b class="fc"><i>625</i>&nbsp;            return (tx.isTranslateOrIdentity() &amp;&amp;</b>
+<b class="fc"><i>626</i>&nbsp;                    tx.getMxt() == this.mxt &amp;&amp;</b>
+<b class="fc"><i>627</i>&nbsp;                    tx.getMyt() == this.myt);</b>
+<i>628</i>&nbsp;        }
+<b class="nc"><i>629</i>&nbsp;        return false;</b>
+<i>630</i>&nbsp;    }
+<i>631</i>&nbsp;
+<i>632</i>&nbsp;    private static final long BASE_HASH;
+<i>633</i>&nbsp;    static {
+<b class="fc"><i>634</i>&nbsp;        long bits = 0;</b>
+<b class="fc"><i>635</i>&nbsp;        bits = bits * 31 + Double.doubleToLongBits(IDENTITY_TRANSFORM.getMzz());</b>
+<b class="fc"><i>636</i>&nbsp;        bits = bits * 31 + Double.doubleToLongBits(IDENTITY_TRANSFORM.getMzy());</b>
+<b class="fc"><i>637</i>&nbsp;        bits = bits * 31 + Double.doubleToLongBits(IDENTITY_TRANSFORM.getMzx());</b>
+<b class="fc"><i>638</i>&nbsp;        bits = bits * 31 + Double.doubleToLongBits(IDENTITY_TRANSFORM.getMyz());</b>
+<b class="fc"><i>639</i>&nbsp;        bits = bits * 31 + Double.doubleToLongBits(IDENTITY_TRANSFORM.getMxz());</b>
+<b class="fc"><i>640</i>&nbsp;        bits = bits * 31 + Double.doubleToLongBits(IDENTITY_TRANSFORM.getMyy());</b>
+<b class="fc"><i>641</i>&nbsp;        bits = bits * 31 + Double.doubleToLongBits(IDENTITY_TRANSFORM.getMyx());</b>
+<b class="fc"><i>642</i>&nbsp;        bits = bits * 31 + Double.doubleToLongBits(IDENTITY_TRANSFORM.getMxy());</b>
+<b class="fc"><i>643</i>&nbsp;        bits = bits * 31 + Double.doubleToLongBits(IDENTITY_TRANSFORM.getMxx());</b>
+<b class="fc"><i>644</i>&nbsp;        bits = bits * 31 + Double.doubleToLongBits(IDENTITY_TRANSFORM.getMzt());</b>
+<b class="fc"><i>645</i>&nbsp;        BASE_HASH = bits;</b>
+<b class="fc"><i>646</i>&nbsp;    }</b>
+<i>647</i>&nbsp;
+<i>648</i>&nbsp;    @Override
+<i>649</i>&nbsp;    public int hashCode() {
+<b class="nc"><i>650</i>&nbsp;        if (isIdentity()) return 0;</b>
+<b class="nc"><i>651</i>&nbsp;        long bits = BASE_HASH;</b>
+<b class="nc"><i>652</i>&nbsp;        bits = bits * 31 + Double.doubleToLongBits(getMyt());</b>
+<b class="nc"><i>653</i>&nbsp;        bits = bits * 31 + Double.doubleToLongBits(getMxt());</b>
+<b class="nc"><i>654</i>&nbsp;        return (((int) bits) ^ ((int) (bits &gt;&gt; 32)));</b>
+<i>655</i>&nbsp;    }
+<i>656</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2017-12-04 21:49</div>
+</div>
+</body>
+</html>

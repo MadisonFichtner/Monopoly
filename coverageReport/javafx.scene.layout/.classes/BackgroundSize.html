@@ -1,0 +1,291 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: BackgroundSize</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">javafx.scene.layout</a> ]
+</div>
+
+<h1>Coverage Summary for Class: BackgroundSize (javafx.scene.layout)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">BackgroundSize</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    20%
+  </span>
+  <span class="absValue">
+    (2/ 10)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    50%
+  </span>
+  <span class="absValue">
+    (20/ 40)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright (c) 2012, 2017, Oracle and/or its affiliates. All rights reserved.
+<i>3</i>&nbsp; * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+<i>4</i>&nbsp; *
+<i>5</i>&nbsp; *
+<i>6</i>&nbsp; *
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; *
+<i>11</i>&nbsp; *
+<i>12</i>&nbsp; *
+<i>13</i>&nbsp; *
+<i>14</i>&nbsp; *
+<i>15</i>&nbsp; *
+<i>16</i>&nbsp; *
+<i>17</i>&nbsp; *
+<i>18</i>&nbsp; *
+<i>19</i>&nbsp; *
+<i>20</i>&nbsp; *
+<i>21</i>&nbsp; *
+<i>22</i>&nbsp; *
+<i>23</i>&nbsp; *
+<i>24</i>&nbsp; */
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;package javafx.scene.layout;
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;import javafx.beans.NamedArg;
+<i>29</i>&nbsp;
+<i>30</i>&nbsp;
+<i>31</i>&nbsp;/**
+<i>32</i>&nbsp; * Defines the size of the area that a BackgroundImage should fill relative
+<i>33</i>&nbsp; * to the Region it is styling. There are several properties whose values
+<i>34</i>&nbsp; * take precedence over the others. In particular there are 4 key properties,
+<i>35</i>&nbsp; * {@code width}, {@code height}, {@code contain}, and {@code cover}. Both width
+<i>36</i>&nbsp; * and height are independent of each other, however both interact with
+<i>37</i>&nbsp; * contain and cover.
+<i>38</i>&nbsp; * &lt;p&gt;
+<i>39</i>&nbsp; * From the CSS Specification, {@code cover} is defined to:
+<i>40</i>&nbsp; * &lt;blockquote&gt;
+<i>41</i>&nbsp; * Scale the image, while preserving its intrinsic aspect ratio (if any), to the smallest size such that both
+<i>42</i>&nbsp; * its width and its height can completely cover the background positioning area.
+<i>43</i>&nbsp; * &lt;/blockquote&gt;
+<i>44</i>&nbsp; * {@code contain} is defined to:
+<i>45</i>&nbsp; * &lt;blockquote&gt;
+<i>46</i>&nbsp; * Scale the image, while preserving its intrinsic aspect ratio (if any), to the largest size such that both its
+<i>47</i>&nbsp; * width and its height can fit inside the background positioning area.
+<i>48</i>&nbsp; * &lt;/blockquote&gt;
+<i>49</i>&nbsp; * And width and height both specify (in absolute values or percentages) the size to use. These
+<i>50</i>&nbsp; * two properties only apply if both cover and contain are false. If both cover and contain are true,
+<i>51</i>&nbsp; * then {@code cover} will be used.
+<i>52</i>&nbsp; * &lt;p&gt;
+<i>53</i>&nbsp; * The width and height may also be set to {@code AUTO}, indicating that the area should be sized
+<i>54</i>&nbsp; * so as to use the image&#39;s intrinsic size, or if it cannot be determined, 100%.
+<i>55</i>&nbsp; * @since JavaFX 8.0
+<i>56</i>&nbsp; */
+<i>57</i>&nbsp;public final class BackgroundSize {
+<i>58</i>&nbsp;    /**
+<i>59</i>&nbsp;     * From the CSS Specification:
+<i>60</i>&nbsp;     * &lt;blockquote&gt;
+<i>61</i>&nbsp;     *   An &quot;auto&quot; value for one dimension is resolved by using the image&#39;s intrinsic ratio and the size of the other
+<i>62</i>&nbsp;     *   dimension, or failing that, using the image&#39;s intrinsic size, or failing that, treating it as 100%.
+<i>63</i>&nbsp;     *   &lt;p&gt;
+<i>64</i>&nbsp;     *   If both values are &quot;auto&quot; then the intrinsic width and/or height of the image should be used, if any,
+<i>65</i>&nbsp;     *   the missing dimension (if any) behaving as &quot;auto&quot; as described above. If the image has neither an intrinsic
+<i>66</i>&nbsp;     *   width nor an intrinsic height, its size is determined as for &quot;contain&quot;.
+<i>67</i>&nbsp;     * &lt;/blockquote&gt;
+<i>68</i>&nbsp;     *
+<i>69</i>&nbsp;     * When set to AUTO, the values for widthAsPercentage and heightAsPercentage are ignored.
+<i>70</i>&nbsp;     */
+<i>71</i>&nbsp;    public static final double AUTO = -1;
+<i>72</i>&nbsp;
+<i>73</i>&nbsp;    /**
+<i>74</i>&nbsp;     * The default BackgroundSize used by BackgroundImages when an explicit size is not defined.
+<i>75</i>&nbsp;     * By default, the BackgroundSize is AUTO, AUTO for the width and height, and is neither
+<i>76</i>&nbsp;     * cover nor contain.
+<i>77</i>&nbsp;     */
+<b class="fc"><i>78</i>&nbsp;    public static final BackgroundSize DEFAULT = new BackgroundSize(AUTO, AUTO, true, true, false, false);</b>
+<i>79</i>&nbsp;
+<i>80</i>&nbsp;    /**
+<i>81</i>&nbsp;     * The width of the area within the Region where the associated BackgroundImage should
+<i>82</i>&nbsp;     * render. If set to AUTO, then {@code widthAsPercentage} is ignored. This value has
+<i>83</i>&nbsp;     * no meaning if either {@code contain} or {@code cover} are specified. This value
+<i>84</i>&nbsp;     * cannot be negative, except when set to the value of AUTO.
+<i>85</i>&nbsp;     * @return the width of the area within the Region where the associated
+<i>86</i>&nbsp;     * BackgroundImage should render
+<i>87</i>&nbsp;     */
+<b class="nc"><i>88</i>&nbsp;    public final double getWidth() { return width; }</b>
+<i>89</i>&nbsp;    final double width;
+<i>90</i>&nbsp;
+<i>91</i>&nbsp;    /**
+<i>92</i>&nbsp;     * The height of the area within the Region where the associated BackgroundImage should
+<i>93</i>&nbsp;     * render. If set to AUTO, then {@code heightAsPercentage} is ignored. This value has
+<i>94</i>&nbsp;     * no meaning if either {@code contain} or {@code cover} are specified. This value
+<i>95</i>&nbsp;     * cannot be negative, except when set to the value of AUTO.
+<i>96</i>&nbsp;     * @return the height of the area within the Region where the associated
+<i>97</i>&nbsp;     * BackgroundImage should render
+<i>98</i>&nbsp;     */
+<b class="nc"><i>99</i>&nbsp;    public final double getHeight() { return height; }</b>
+<i>100</i>&nbsp;    final double height;
+<i>101</i>&nbsp;
+<i>102</i>&nbsp;    /**
+<i>103</i>&nbsp;     * Specifies whether the value contained in {@code width} should be interpreted
+<i>104</i>&nbsp;     * as a percentage or as a normal value.
+<i>105</i>&nbsp;     * @return true if width should be interpreted as a percentage
+<i>106</i>&nbsp;     */
+<b class="nc"><i>107</i>&nbsp;    public final boolean isWidthAsPercentage() { return widthAsPercentage; }</b>
+<i>108</i>&nbsp;    final boolean widthAsPercentage;
+<i>109</i>&nbsp;
+<i>110</i>&nbsp;    /**
+<i>111</i>&nbsp;     * Specifies whether the value contained in {@code height} should be interpreted
+<i>112</i>&nbsp;     * as a percentage or as a normal value.
+<i>113</i>&nbsp;     * @return true if height should be interpreted as a percentage
+<i>114</i>&nbsp;     */
+<b class="nc"><i>115</i>&nbsp;    public final boolean isHeightAsPercentage() { return heightAsPercentage; }</b>
+<i>116</i>&nbsp;    final boolean heightAsPercentage;
+<i>117</i>&nbsp;
+<i>118</i>&nbsp;    /**
+<i>119</i>&nbsp;     * If true, scale the image, while preserving its intrinsic aspect ratio (if any), to the
+<i>120</i>&nbsp;     * largest size such that both its width and its height can fit inside the background
+<i>121</i>&nbsp;     * positioning area.
+<i>122</i>&nbsp;     * @return true if the image can fit inside the background positioning area
+<i>123</i>&nbsp;     */
+<b class="nc"><i>124</i>&nbsp;    public final boolean isContain() { return contain; }</b>
+<i>125</i>&nbsp;    final boolean contain;
+<i>126</i>&nbsp;
+<i>127</i>&nbsp;    /**
+<i>128</i>&nbsp;     * If true, scale the image, while preserving its intrinsic aspect ratio (if any), to the
+<i>129</i>&nbsp;     * smallest size such that both its width and its height can completely cover the background
+<i>130</i>&nbsp;     * positioning area.
+<i>131</i>&nbsp;     * @return true if image can completely cover the background positioning area
+<i>132</i>&nbsp;     */
+<b class="nc"><i>133</i>&nbsp;    public final boolean isCover() { return cover; }</b>
+<i>134</i>&nbsp;    final boolean cover;
+<i>135</i>&nbsp;
+<i>136</i>&nbsp;    /**
+<i>137</i>&nbsp;     * A cached hash code value
+<i>138</i>&nbsp;     */
+<i>139</i>&nbsp;    private final int hash;
+<i>140</i>&nbsp;
+<i>141</i>&nbsp;    /**
+<i>142</i>&nbsp;     * Create a new BackgroundSize.
+<i>143</i>&nbsp;     *
+<i>144</i>&nbsp;     * @param width                 The width. Cannot be less than 0, except for the value of AUTO.
+<i>145</i>&nbsp;     * @param height                The height. Cannot be less than 0, except for the value of AUTO.
+<i>146</i>&nbsp;     * @param widthAsPercentage     Whether the width is to be interpreted as a percentage
+<i>147</i>&nbsp;     * @param heightAsPercentage    Whether the height is to be interpreted as a percentage
+<i>148</i>&nbsp;     * @param contain               Whether the image should be sized to fit within the Region maximally
+<i>149</i>&nbsp;     * @param cover                 Whether the image should be sized to &quot;cover&quot; the Region
+<i>150</i>&nbsp;     */
+<i>151</i>&nbsp;    public BackgroundSize(@NamedArg(&quot;width&quot;) double width, @NamedArg(&quot;height&quot;) double height,
+<i>152</i>&nbsp;                          @NamedArg(&quot;widthAsPercentage&quot;) boolean widthAsPercentage, @NamedArg(&quot;heightAsPercentage&quot;) boolean heightAsPercentage,
+<b class="fc"><i>153</i>&nbsp;                          @NamedArg(&quot;contain&quot;) boolean contain, @NamedArg(&quot;cover&quot;) boolean cover) {</b>
+<i>154</i>&nbsp;        // TODO Should deal with NaN and Infinity values as well
+<b class="fc"><i>155</i>&nbsp;        if (width &lt; 0 &amp;&amp; width != AUTO)</b>
+<b class="nc"><i>156</i>&nbsp;            throw new IllegalArgumentException(&quot;Width cannot be &lt; 0, except when AUTO&quot;);</b>
+<b class="fc"><i>157</i>&nbsp;        if (height &lt; 0 &amp;&amp; height != AUTO)</b>
+<b class="nc"><i>158</i>&nbsp;            throw new IllegalArgumentException(&quot;Height cannot be &lt; 0, except when AUTO&quot;);</b>
+<i>159</i>&nbsp;
+<b class="fc"><i>160</i>&nbsp;        this.width = width;</b>
+<b class="fc"><i>161</i>&nbsp;        this.height = height;</b>
+<b class="fc"><i>162</i>&nbsp;        this.widthAsPercentage = widthAsPercentage;</b>
+<b class="fc"><i>163</i>&nbsp;        this.heightAsPercentage = heightAsPercentage;</b>
+<b class="fc"><i>164</i>&nbsp;        this.contain = contain;</b>
+<b class="fc"><i>165</i>&nbsp;        this.cover = cover;</b>
+<i>166</i>&nbsp;
+<i>167</i>&nbsp;        // Pre-compute the hash code. NOTE: all variables are prefixed with &quot;this&quot; so that we
+<i>168</i>&nbsp;        // do not accidentally compute the hash based on the constructor arguments rather than
+<i>169</i>&nbsp;        // based on the fields themselves!
+<i>170</i>&nbsp;        int result;
+<i>171</i>&nbsp;        long temp;
+<b class="fc"><i>172</i>&nbsp;        result = (this.widthAsPercentage ? 1 : 0);</b>
+<b class="fc"><i>173</i>&nbsp;        result = 31 * result + (this.heightAsPercentage ? 1 : 0);</b>
+<b class="fc"><i>174</i>&nbsp;        temp = this.width != +0.0d ? Double.doubleToLongBits(this.width) : 0L;</b>
+<b class="fc"><i>175</i>&nbsp;        result = 31 * result + (int) (temp ^ (temp &gt;&gt;&gt; 32));</b>
+<b class="fc"><i>176</i>&nbsp;        temp = this.height != +0.0d ? Double.doubleToLongBits(this.height) : 0L;</b>
+<b class="fc"><i>177</i>&nbsp;        result = 31 * result + (int) (temp ^ (temp &gt;&gt;&gt; 32));</b>
+<b class="fc"><i>178</i>&nbsp;        result = 31 * result + (this.cover ? 1 : 0);</b>
+<b class="fc"><i>179</i>&nbsp;        result = 31 * result + (this.contain ? 1 : 0);</b>
+<b class="fc"><i>180</i>&nbsp;        hash = result;</b>
+<b class="fc"><i>181</i>&nbsp;    }</b>
+<i>182</i>&nbsp;
+<i>183</i>&nbsp;    /**
+<i>184</i>&nbsp;     * {@inheritDoc}
+<i>185</i>&nbsp;     */
+<i>186</i>&nbsp;    @Override public boolean equals(Object o) {
+<b class="nc"><i>187</i>&nbsp;        if (this == o) return true;</b>
+<b class="nc"><i>188</i>&nbsp;        if (o == null || getClass() != o.getClass()) return false;</b>
+<b class="nc"><i>189</i>&nbsp;        BackgroundSize that = (BackgroundSize) o;</b>
+<i>190</i>&nbsp;        // Because the hash is cached, this can be very fast
+<b class="nc"><i>191</i>&nbsp;        if (this.hash != that.hash) return false;</b>
+<b class="nc"><i>192</i>&nbsp;        if (contain != that.contain) return false;</b>
+<b class="nc"><i>193</i>&nbsp;        if (cover != that.cover) return false;</b>
+<b class="nc"><i>194</i>&nbsp;        if (Double.compare(that.height, height) != 0) return false;</b>
+<b class="nc"><i>195</i>&nbsp;        if (heightAsPercentage != that.heightAsPercentage) return false;</b>
+<b class="nc"><i>196</i>&nbsp;        if (widthAsPercentage != that.widthAsPercentage) return false;</b>
+<b class="nc"><i>197</i>&nbsp;        if (Double.compare(that.width, width) != 0) return false;</b>
+<i>198</i>&nbsp;
+<b class="nc"><i>199</i>&nbsp;        return true;</b>
+<i>200</i>&nbsp;    }
+<i>201</i>&nbsp;
+<i>202</i>&nbsp;    /**
+<i>203</i>&nbsp;     * {@inheritDoc}
+<i>204</i>&nbsp;     */
+<i>205</i>&nbsp;    @Override public int hashCode() {
+<b class="nc"><i>206</i>&nbsp;        return hash;</b>
+<i>207</i>&nbsp;    }
+<i>208</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2017-12-04 21:49</div>
+</div>
+</body>
+</html>

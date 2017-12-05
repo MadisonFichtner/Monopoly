@@ -1,0 +1,1028 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: GeneralTransform3D</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.javafx.geom.transform</a> ]
+</div>
+
+<h1>Coverage Summary for Class: GeneralTransform3D (com.sun.javafx.geom.transform)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">GeneralTransform3D</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    43.8%
+  </span>
+  <span class="absValue">
+    (14/ 32)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    16%
+  </span>
+  <span class="absValue">
+    (54/ 337)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright (c) 2007, 2013, Oracle and/or its affiliates. All rights reserved.
+<i>3</i>&nbsp; * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+<i>4</i>&nbsp; *
+<i>5</i>&nbsp; *
+<i>6</i>&nbsp; *
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; *
+<i>11</i>&nbsp; *
+<i>12</i>&nbsp; *
+<i>13</i>&nbsp; *
+<i>14</i>&nbsp; *
+<i>15</i>&nbsp; *
+<i>16</i>&nbsp; *
+<i>17</i>&nbsp; *
+<i>18</i>&nbsp; *
+<i>19</i>&nbsp; *
+<i>20</i>&nbsp; *
+<i>21</i>&nbsp; *
+<i>22</i>&nbsp; *
+<i>23</i>&nbsp; *
+<i>24</i>&nbsp; */
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;package com.sun.javafx.geom.transform;
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;import com.sun.javafx.geom.BaseBounds;
+<i>29</i>&nbsp;import com.sun.javafx.geom.Point2D;
+<i>30</i>&nbsp;import com.sun.javafx.geom.Vec3d;
+<i>31</i>&nbsp;import com.sun.javafx.geom.Vec3f;
+<i>32</i>&nbsp;
+<i>33</i>&nbsp;/**
+<i>34</i>&nbsp; * A general-purpose 4x4 transform that may or may not be affine. The
+<i>35</i>&nbsp; * GeneralTransform is typically used only for projection transforms.
+<i>36</i>&nbsp; *
+<i>37</i>&nbsp; */
+<b class="fc"><i>38</i>&nbsp;public final class GeneralTransform3D implements CanTransformVec3d {</b>
+<i>39</i>&nbsp;
+<i>40</i>&nbsp;    //The 4x4 double-precision floating point matrix.  The mathematical
+<i>41</i>&nbsp;    //representation is row major, as in traditional matrix mathematics.
+<b class="fc"><i>42</i>&nbsp;    protected double[] mat = new double[16];</b>
+<i>43</i>&nbsp;
+<i>44</i>&nbsp;    //flag if this is an identity transformation.
+<i>45</i>&nbsp;    private boolean identity;
+<i>46</i>&nbsp;
+<i>47</i>&nbsp;    /**
+<i>48</i>&nbsp;     * Constructs and initializes a transform to the identity matrix.
+<i>49</i>&nbsp;     */
+<b class="fc"><i>50</i>&nbsp;    public GeneralTransform3D() {</b>
+<b class="fc"><i>51</i>&nbsp;        setIdentity();</b>
+<b class="fc"><i>52</i>&nbsp;    }</b>
+<i>53</i>&nbsp;
+<i>54</i>&nbsp;    /**
+<i>55</i>&nbsp;     * Returns true if the transform is affine. A transform is considered
+<i>56</i>&nbsp;     * to be affine if the last row of its matrix is (0,0,0,1). Note that
+<i>57</i>&nbsp;     * an instance of AffineTransform3D is always affine.
+<i>58</i>&nbsp;     */
+<i>59</i>&nbsp;    public boolean isAffine() {
+<b class="nc"><i>60</i>&nbsp;        if (!isInfOrNaN() &amp;&amp;</b>
+<b class="nc"><i>61</i>&nbsp;                almostZero(mat[12]) &amp;&amp;</b>
+<b class="nc"><i>62</i>&nbsp;                almostZero(mat[13]) &amp;&amp;</b>
+<b class="nc"><i>63</i>&nbsp;                almostZero(mat[14]) &amp;&amp;</b>
+<b class="nc"><i>64</i>&nbsp;                almostOne(mat[15])) {</b>
+<i>65</i>&nbsp;
+<b class="nc"><i>66</i>&nbsp;            return true;</b>
+<i>67</i>&nbsp;        } else {
+<b class="nc"><i>68</i>&nbsp;            return false;</b>
+<i>69</i>&nbsp;        }
+<i>70</i>&nbsp;    }
+<i>71</i>&nbsp;
+<i>72</i>&nbsp;    /**
+<i>73</i>&nbsp;     * Sets the value of this transform to the specified transform.
+<i>74</i>&nbsp;     *
+<i>75</i>&nbsp;     * @param t1 the transform to copy into this transform.
+<i>76</i>&nbsp;     *
+<i>77</i>&nbsp;     * @return this transform
+<i>78</i>&nbsp;     */
+<i>79</i>&nbsp;    public GeneralTransform3D set(GeneralTransform3D t1) {
+<b class="fc"><i>80</i>&nbsp;        System.arraycopy(t1.mat, 0, mat, 0, mat.length);</b>
+<b class="fc"><i>81</i>&nbsp;        updateState();</b>
+<b class="fc"><i>82</i>&nbsp;        return this;</b>
+<i>83</i>&nbsp;    }
+<i>84</i>&nbsp;
+<i>85</i>&nbsp;    /**
+<i>86</i>&nbsp;     * Sets the matrix values of this transform to the values in the
+<i>87</i>&nbsp;     * specified array.
+<i>88</i>&nbsp;     *
+<i>89</i>&nbsp;     * @param m an array of 16 values to copy into this transform in
+<i>90</i>&nbsp;     * row major order.
+<i>91</i>&nbsp;     *
+<i>92</i>&nbsp;     * @return this transform
+<i>93</i>&nbsp;     */
+<i>94</i>&nbsp;    public GeneralTransform3D set(double[] m) {
+<b class="fc"><i>95</i>&nbsp;        System.arraycopy(m, 0, mat, 0, mat.length);</b>
+<b class="fc"><i>96</i>&nbsp;        updateState();</b>
+<b class="fc"><i>97</i>&nbsp;        return this;</b>
+<i>98</i>&nbsp;    }
+<i>99</i>&nbsp;
+<i>100</i>&nbsp;    /**
+<i>101</i>&nbsp;     * Returns a copy of an array of 16 values that contains the 4x4 matrix
+<i>102</i>&nbsp;     * of this transform. The first four elements of the array will contain
+<i>103</i>&nbsp;     * the top row of the transform matrix, etc.
+<i>104</i>&nbsp;     *
+<i>105</i>&nbsp;     * @param rv the return value, or null
+<i>106</i>&nbsp;     *
+<i>107</i>&nbsp;     * @return an array of 16 values
+<i>108</i>&nbsp;     */
+<i>109</i>&nbsp;    public double[] get(double[] rv) {
+<b class="fc"><i>110</i>&nbsp;        if (rv == null) {</b>
+<b class="nc"><i>111</i>&nbsp;            rv = new double[mat.length];</b>
+<i>112</i>&nbsp;        }
+<b class="fc"><i>113</i>&nbsp;        System.arraycopy(mat, 0, rv, 0, mat.length);</b>
+<i>114</i>&nbsp;
+<b class="fc"><i>115</i>&nbsp;        return rv;</b>
+<i>116</i>&nbsp;    }
+<i>117</i>&nbsp;
+<i>118</i>&nbsp;    public double get(int index) {
+<b class="fc"><i>119</i>&nbsp;        assert ((index &gt;= 0) &amp;&amp; (index &lt; mat.length));</b>
+<b class="fc"><i>120</i>&nbsp;        return mat[index];</b>
+<i>121</i>&nbsp;    }
+<i>122</i>&nbsp;
+<i>123</i>&nbsp;    private Vec3d tempV3d;
+<i>124</i>&nbsp;
+<i>125</i>&nbsp;    public BaseBounds transform(BaseBounds src, BaseBounds dst) {
+<b class="fc"><i>126</i>&nbsp;        if (tempV3d == null) {</b>
+<b class="fc"><i>127</i>&nbsp;            tempV3d = new Vec3d();</b>
+<i>128</i>&nbsp;        }
+<b class="fc"><i>129</i>&nbsp;        return TransformHelper.general3dBoundsTransform(this, src, dst, tempV3d);</b>
+<i>130</i>&nbsp;    }
+<i>131</i>&nbsp;
+<i>132</i>&nbsp;    /**
+<i>133</i>&nbsp;     * Transform 2D point (with z == 0)
+<i>134</i>&nbsp;     * @param point
+<i>135</i>&nbsp;     * @param pointOut
+<i>136</i>&nbsp;     * @return
+<i>137</i>&nbsp;     */
+<i>138</i>&nbsp;    public Point2D transform(Point2D point, Point2D pointOut) {
+<b class="nc"><i>139</i>&nbsp;        if (pointOut == null) {</b>
+<b class="nc"><i>140</i>&nbsp;            pointOut = new Point2D();</b>
+<i>141</i>&nbsp;        }
+<i>142</i>&nbsp;
+<b class="nc"><i>143</i>&nbsp;        double w = (float) (mat[12] * point.x + mat[13] * point.y</b>
+<i>144</i>&nbsp;                 + mat[15]);
+<i>145</i>&nbsp;
+<b class="nc"><i>146</i>&nbsp;        pointOut.x = (float) (mat[0] * point.x + mat[1] * point.y</b>
+<i>147</i>&nbsp;                + mat[3]);
+<b class="nc"><i>148</i>&nbsp;        pointOut.y = (float) (mat[4] * point.x + mat[5] * point.y</b>
+<i>149</i>&nbsp;                + mat[7]);
+<i>150</i>&nbsp;
+<b class="nc"><i>151</i>&nbsp;        pointOut.x /= w;</b>
+<b class="nc"><i>152</i>&nbsp;        pointOut.y /= w;</b>
+<i>153</i>&nbsp;
+<b class="nc"><i>154</i>&nbsp;        return pointOut;</b>
+<i>155</i>&nbsp;    }
+<i>156</i>&nbsp;
+<i>157</i>&nbsp;    /**
+<i>158</i>&nbsp;     * Transforms the point parameter with this transform and
+<i>159</i>&nbsp;     * places the result into pointOut.  The fourth element of the
+<i>160</i>&nbsp;     * point input paramter is assumed to be one.
+<i>161</i>&nbsp;     *
+<i>162</i>&nbsp;     * @param point the input point to be transformed
+<i>163</i>&nbsp;     *
+<i>164</i>&nbsp;     * @param pointOut the transformed point
+<i>165</i>&nbsp;     *
+<i>166</i>&nbsp;     * @return the transformed point
+<i>167</i>&nbsp;     */
+<i>168</i>&nbsp;    public Vec3d transform(Vec3d point, Vec3d pointOut)  {
+<b class="fc"><i>169</i>&nbsp;        if (pointOut == null) {</b>
+<b class="nc"><i>170</i>&nbsp;            pointOut = new Vec3d();</b>
+<i>171</i>&nbsp;        }
+<i>172</i>&nbsp;
+<i>173</i>&nbsp;        // compute here as point.x, point.y and point.z may change
+<i>174</i>&nbsp;        // in case (point == pointOut), and mat[14] is usually != 0
+<b class="fc"><i>175</i>&nbsp;        double w = (float) (mat[12] * point.x + mat[13] * point.y</b>
+<i>176</i>&nbsp;                + mat[14] * point.z + mat[15]);
+<i>177</i>&nbsp;
+<b class="fc"><i>178</i>&nbsp;        pointOut.x = (float) (mat[0] * point.x + mat[1] * point.y</b>
+<i>179</i>&nbsp;                + mat[2] * point.z + mat[3]);
+<b class="fc"><i>180</i>&nbsp;        pointOut.y = (float) (mat[4] * point.x + mat[5] * point.y</b>
+<i>181</i>&nbsp;                + mat[6] * point.z + mat[7]);
+<b class="fc"><i>182</i>&nbsp;        pointOut.z = (float) (mat[8] * point.x + mat[9] * point.y</b>
+<i>183</i>&nbsp;                + mat[10] * point.z + mat[11]);
+<i>184</i>&nbsp;
+<b class="fc"><i>185</i>&nbsp;        if (w != 0.0f) {</b>
+<b class="fc"><i>186</i>&nbsp;            pointOut.x /= w;</b>
+<b class="fc"><i>187</i>&nbsp;            pointOut.y /= w;</b>
+<b class="fc"><i>188</i>&nbsp;            pointOut.z /= w;</b>
+<i>189</i>&nbsp;        }
+<i>190</i>&nbsp;
+<b class="fc"><i>191</i>&nbsp;        return pointOut;</b>
+<i>192</i>&nbsp;    }
+<i>193</i>&nbsp;
+<i>194</i>&nbsp;
+<i>195</i>&nbsp;    /**
+<i>196</i>&nbsp;     * Transforms the point parameter with this transform and
+<i>197</i>&nbsp;     * places the result back into point.  The fourth element of the
+<i>198</i>&nbsp;     * point input paramter is assumed to be one.
+<i>199</i>&nbsp;     *
+<i>200</i>&nbsp;     * @param point the input point to be transformed
+<i>201</i>&nbsp;     *
+<i>202</i>&nbsp;     * @return the transformed point
+<i>203</i>&nbsp;     */
+<i>204</i>&nbsp;    public Vec3d transform(Vec3d point) {
+<b class="fc"><i>205</i>&nbsp;        return transform(point, point);</b>
+<i>206</i>&nbsp;    }
+<i>207</i>&nbsp;
+<i>208</i>&nbsp;    /**
+<i>209</i>&nbsp;     * Transforms the normal parameter by this transform and places the value
+<i>210</i>&nbsp;     * into normalOut.  The fourth element of the normal is assumed to be zero.
+<i>211</i>&nbsp;     * Note: For correct lighting results, if a transform has uneven scaling
+<i>212</i>&nbsp;     * surface normals should transformed by the inverse transpose of
+<i>213</i>&nbsp;     * the transform. This the responsibility of the application and is not
+<i>214</i>&nbsp;     * done automatically by this method.
+<i>215</i>&nbsp;     *
+<i>216</i>&nbsp;     * @param normal the input normal to be transformed
+<i>217</i>&nbsp;     *
+<i>218</i>&nbsp;     * @param normalOut the transformed normal
+<i>219</i>&nbsp;     *
+<i>220</i>&nbsp;     * @return the transformed normal
+<i>221</i>&nbsp;     */
+<i>222</i>&nbsp;    public Vec3f transformNormal(Vec3f normal, Vec3f normalOut) {
+<b class="nc"><i>223</i>&nbsp;        normal.x =  (float) (mat[0]*normal.x + mat[1]*normal.y +</b>
+<i>224</i>&nbsp;                            mat[2]*normal.z);
+<b class="nc"><i>225</i>&nbsp;        normal.y =  (float) (mat[4]*normal.x + mat[5]*normal.y +</b>
+<i>226</i>&nbsp;                            mat[6]*normal.z);
+<b class="nc"><i>227</i>&nbsp;        normal.z =  (float) (mat[8]*normal.x + mat[9]*normal.y +</b>
+<i>228</i>&nbsp;                             mat[10]*normal.z);
+<b class="nc"><i>229</i>&nbsp;        return normalOut;</b>
+<i>230</i>&nbsp;    }
+<i>231</i>&nbsp;
+<i>232</i>&nbsp;    /**
+<i>233</i>&nbsp;     * Transforms the normal parameter by this transform and places the value
+<i>234</i>&nbsp;     * back into normal.  The fourth element of the normal is assumed to be zero.
+<i>235</i>&nbsp;     * Note: For correct lighting results, if a transform has uneven scaling
+<i>236</i>&nbsp;     * surface normals should transformed by the inverse transpose of
+<i>237</i>&nbsp;     * the transform. This the responsibility of the application and is not
+<i>238</i>&nbsp;     * done automatically by this method.
+<i>239</i>&nbsp;     *
+<i>240</i>&nbsp;     * @param normal the input normal to be transformed
+<i>241</i>&nbsp;     *
+<i>242</i>&nbsp;     * @return the transformed normal
+<i>243</i>&nbsp;     */
+<i>244</i>&nbsp;    public Vec3f transformNormal(Vec3f normal) {
+<b class="nc"><i>245</i>&nbsp;        return transformNormal(normal, normal);</b>
+<i>246</i>&nbsp;    }
+<i>247</i>&nbsp;
+<i>248</i>&nbsp;    /**
+<i>249</i>&nbsp;     * Sets the value of this transform to a perspective projection transform.
+<i>250</i>&nbsp;     * This transform maps points from Eye Coordinates (EC)
+<i>251</i>&nbsp;     * to Clipping Coordinates (CC).
+<i>252</i>&nbsp;     * Note that the field of view is specified in radians.
+<i>253</i>&nbsp;     *
+<i>254</i>&nbsp;     * @param verticalFOV specifies whether the fov is vertical (Y direction).
+<i>255</i>&nbsp;     *
+<i>256</i>&nbsp;     * @param fov specifies the field of view in radians
+<i>257</i>&nbsp;     *
+<i>258</i>&nbsp;     * @param aspect specifies the aspect ratio. The aspect ratio is the ratio
+<i>259</i>&nbsp;     * of width to height.
+<i>260</i>&nbsp;     *
+<i>261</i>&nbsp;     * @param zNear the distance to the frustum&#39;s near clipping plane.
+<i>262</i>&nbsp;     * This value must be positive, (the value -zNear is the location of the
+<i>263</i>&nbsp;     * near clip plane).
+<i>264</i>&nbsp;     *
+<i>265</i>&nbsp;     * @param zFar the distance to the frustum&#39;s far clipping plane
+<i>266</i>&nbsp;     *
+<i>267</i>&nbsp;     * @return this transform
+<i>268</i>&nbsp;     */
+<i>269</i>&nbsp;    public GeneralTransform3D perspective(boolean verticalFOV,
+<i>270</i>&nbsp;            double fov, double aspect, double zNear, double zFar) {
+<i>271</i>&nbsp;        double sine;
+<i>272</i>&nbsp;        double cotangent;
+<i>273</i>&nbsp;        double deltaZ;
+<b class="nc"><i>274</i>&nbsp;        double half_fov = fov * 0.5;</b>
+<i>275</i>&nbsp;
+<b class="nc"><i>276</i>&nbsp;        deltaZ = zFar - zNear;</b>
+<b class="nc"><i>277</i>&nbsp;        sine = Math.sin(half_fov);</b>
+<i>278</i>&nbsp;
+<b class="nc"><i>279</i>&nbsp;        cotangent = Math.cos(half_fov) / sine;</b>
+<i>280</i>&nbsp;
+<b class="nc"><i>281</i>&nbsp;        mat[0] = verticalFOV ? cotangent / aspect : cotangent;</b>
+<b class="nc"><i>282</i>&nbsp;        mat[5] = verticalFOV ? cotangent : cotangent * aspect;</b>
+<b class="nc"><i>283</i>&nbsp;        mat[10] = -(zFar + zNear) / deltaZ;</b>
+<b class="nc"><i>284</i>&nbsp;        mat[11] = -2.0 * zNear * zFar / deltaZ;</b>
+<b class="nc"><i>285</i>&nbsp;        mat[14] = -1.0;</b>
+<b class="nc"><i>286</i>&nbsp;        mat[1] = mat[2] = mat[3] = mat[4] = mat[6] = mat[7] = mat[8] = mat[9] = mat[12] = mat[13] = mat[15] = 0;</b>
+<i>287</i>&nbsp;
+<b class="nc"><i>288</i>&nbsp;        updateState();</b>
+<b class="nc"><i>289</i>&nbsp;        return this;</b>
+<i>290</i>&nbsp;    }
+<i>291</i>&nbsp;
+<i>292</i>&nbsp;    /**
+<i>293</i>&nbsp;     * Sets the value of this transform to an orthographic (parallel)
+<i>294</i>&nbsp;     * projection transform.
+<i>295</i>&nbsp;     * This transform maps coordinates from Eye Coordinates (EC)
+<i>296</i>&nbsp;     * to Clipping Coordinates (CC).  Note that unlike the similar function
+<i>297</i>&nbsp;     * in OpenGL, the clipping coordinates generated by the resulting
+<i>298</i>&nbsp;     * transform are in a right-handed coordinate system.
+<i>299</i>&nbsp;     * @param left the vertical line on the left edge of the near
+<i>300</i>&nbsp;     * clipping plane mapped to the left edge of the graphics window
+<i>301</i>&nbsp;     * @param right the vertical line on the right edge of the near
+<i>302</i>&nbsp;     * clipping plane mapped to the right edge of the graphics window
+<i>303</i>&nbsp;     * @param bottom the horizontal line on the bottom edge of the near
+<i>304</i>&nbsp;     * clipping plane mapped to the bottom edge of the graphics window
+<i>305</i>&nbsp;     * @param top the horizontal line on the top edge of the near
+<i>306</i>&nbsp;     * clipping plane mapped to the top edge of the graphics window
+<i>307</i>&nbsp;     * @param near the distance to the frustum&#39;s near clipping plane
+<i>308</i>&nbsp;     * (the value -near is the location of the near clip plane)
+<i>309</i>&nbsp;     * @param far the distance to the frustum&#39;s far clipping plane
+<i>310</i>&nbsp;     *
+<i>311</i>&nbsp;     * @return this transform
+<i>312</i>&nbsp;     */
+<i>313</i>&nbsp;    public GeneralTransform3D ortho(double left, double right, double bottom,
+<i>314</i>&nbsp;                                    double top, double near, double far) {
+<b class="fc"><i>315</i>&nbsp;        double deltax = 1 / (right - left);</b>
+<b class="fc"><i>316</i>&nbsp;        double deltay = 1 / (top - bottom);</b>
+<b class="fc"><i>317</i>&nbsp;        double deltaz = 1 / (far - near);</b>
+<i>318</i>&nbsp;
+<b class="fc"><i>319</i>&nbsp;        mat[0] = 2.0 * deltax;</b>
+<b class="fc"><i>320</i>&nbsp;        mat[3] = -(right + left) * deltax;</b>
+<b class="fc"><i>321</i>&nbsp;        mat[5] = 2.0 * deltay;</b>
+<b class="fc"><i>322</i>&nbsp;        mat[7] = -(top + bottom) * deltay;</b>
+<b class="fc"><i>323</i>&nbsp;        mat[10] = 2.0 * deltaz;</b>
+<b class="fc"><i>324</i>&nbsp;        mat[11] = (far + near) * deltaz;</b>
+<b class="fc"><i>325</i>&nbsp;        mat[1] = mat[2] = mat[4] = mat[6] = mat[8] =</b>
+<i>326</i>&nbsp;                mat[9] = mat[12] = mat[13] = mat[14] = 0;
+<b class="fc"><i>327</i>&nbsp;        mat[15] = 1;</b>
+<i>328</i>&nbsp;
+<b class="fc"><i>329</i>&nbsp;        updateState();</b>
+<b class="fc"><i>330</i>&nbsp;        return this;</b>
+<i>331</i>&nbsp;    }
+<i>332</i>&nbsp;
+<i>333</i>&nbsp;    public double computeClipZCoord() {
+<b class="nc"><i>334</i>&nbsp;        double zEc = (1.0 - mat[15]) / mat[14];</b>
+<b class="nc"><i>335</i>&nbsp;        double zCc = mat[10] * zEc + mat[11];</b>
+<b class="nc"><i>336</i>&nbsp;        return zCc;</b>
+<i>337</i>&nbsp;    }
+<i>338</i>&nbsp;
+<i>339</i>&nbsp;    /**
+<i>340</i>&nbsp;     * Computes the determinant of this transform.
+<i>341</i>&nbsp;     *
+<i>342</i>&nbsp;     * @return the determinant
+<i>343</i>&nbsp;     */
+<i>344</i>&nbsp;    public double determinant() {
+<i>345</i>&nbsp;         // cofactor exapainsion along first row
+<b class="nc"><i>346</i>&nbsp;         return mat[0]*(mat[5]*(mat[10]*mat[15] - mat[11]*mat[14]) -</b>
+<i>347</i>&nbsp;                        mat[6]*(mat[ 9]*mat[15] - mat[11]*mat[13]) +
+<i>348</i>&nbsp;                        mat[7]*(mat[ 9]*mat[14] - mat[10]*mat[13])) -
+<i>349</i>&nbsp;                mat[1]*(mat[4]*(mat[10]*mat[15] - mat[11]*mat[14]) -
+<i>350</i>&nbsp;                        mat[6]*(mat[ 8]*mat[15] - mat[11]*mat[12]) +
+<i>351</i>&nbsp;                        mat[7]*(mat[ 8]*mat[14] - mat[10]*mat[12])) +
+<i>352</i>&nbsp;                mat[2]*(mat[4]*(mat[ 9]*mat[15] - mat[11]*mat[13]) -
+<i>353</i>&nbsp;                        mat[5]*(mat[ 8]*mat[15] - mat[11]*mat[12]) +
+<i>354</i>&nbsp;                        mat[7]*(mat[ 8]*mat[13] - mat[ 9]*mat[12])) -
+<i>355</i>&nbsp;                mat[3]*(mat[4]*(mat[ 9]*mat[14] - mat[10]*mat[13]) -
+<i>356</i>&nbsp;                        mat[5]*(mat[ 8]*mat[14] - mat[10]*mat[12]) +
+<i>357</i>&nbsp;                        mat[6]*(mat[ 8]*mat[13] - mat[ 9]*mat[12]));
+<i>358</i>&nbsp;    }
+<i>359</i>&nbsp;
+<i>360</i>&nbsp;    /**
+<i>361</i>&nbsp;     * Inverts this transform in place.
+<i>362</i>&nbsp;     *
+<i>363</i>&nbsp;     * @return this transform
+<i>364</i>&nbsp;     */
+<i>365</i>&nbsp;    public GeneralTransform3D invert() {
+<b class="nc"><i>366</i>&nbsp;        return invert(this);</b>
+<i>367</i>&nbsp;    }
+<i>368</i>&nbsp;
+<i>369</i>&nbsp;    /**
+<i>370</i>&nbsp;     * General invert routine.  Inverts t1 and places the result in &quot;this&quot;.
+<i>371</i>&nbsp;     * Note that this routine handles both the &quot;this&quot; version and the
+<i>372</i>&nbsp;     * non-&quot;this&quot; version.
+<i>373</i>&nbsp;     *
+<i>374</i>&nbsp;     * Also note that since this routine is slow anyway, we won&#39;t worry
+<i>375</i>&nbsp;     * about allocating a little bit of garbage.
+<i>376</i>&nbsp;     */
+<i>377</i>&nbsp;    private GeneralTransform3D invert(GeneralTransform3D t1) {
+<b class="nc"><i>378</i>&nbsp;        double[] tmp = new double[16];</b>
+<b class="nc"><i>379</i>&nbsp;        int[] row_perm = new int[4];</b>
+<i>380</i>&nbsp;
+<i>381</i>&nbsp;        // Use LU decomposition and backsubstitution code specifically
+<i>382</i>&nbsp;        // for floating-point 4x4 matrices.
+<i>383</i>&nbsp;        // Copy source matrix to tmp
+<b class="nc"><i>384</i>&nbsp;        System.arraycopy(t1.mat, 0, tmp, 0, tmp.length);</b>
+<i>385</i>&nbsp;
+<i>386</i>&nbsp;        // Calculate LU decomposition: Is the matrix singular?
+<b class="nc"><i>387</i>&nbsp;        if (!luDecomposition(tmp, row_perm)) {</b>
+<i>388</i>&nbsp;            // Matrix has no inverse
+<b class="nc"><i>389</i>&nbsp;            throw new SingularMatrixException();</b>
+<i>390</i>&nbsp;        }
+<i>391</i>&nbsp;
+<i>392</i>&nbsp;        // Perform back substitution on the identity matrix
+<i>393</i>&nbsp;        // luDecomposition will set rot[] &amp; scales[] for use
+<i>394</i>&nbsp;        // in luBacksubstituation
+<b class="nc"><i>395</i>&nbsp;        mat[0] = 1.0;  mat[1] = 0.0;  mat[2] = 0.0;  mat[3] = 0.0;</b>
+<b class="nc"><i>396</i>&nbsp;        mat[4] = 0.0;  mat[5] = 1.0;  mat[6] = 0.0;  mat[7] = 0.0;</b>
+<b class="nc"><i>397</i>&nbsp;        mat[8] = 0.0;  mat[9] = 0.0;  mat[10] = 1.0; mat[11] = 0.0;</b>
+<b class="nc"><i>398</i>&nbsp;        mat[12] = 0.0; mat[13] = 0.0; mat[14] = 0.0; mat[15] = 1.0;</b>
+<b class="nc"><i>399</i>&nbsp;        luBacksubstitution(tmp, row_perm, this.mat);</b>
+<i>400</i>&nbsp;
+<b class="nc"><i>401</i>&nbsp;        updateState();</b>
+<b class="nc"><i>402</i>&nbsp;        return this;</b>
+<i>403</i>&nbsp;    }
+<i>404</i>&nbsp;
+<i>405</i>&nbsp;    /**
+<i>406</i>&nbsp;     * Given a 4x4 array &quot;matrix0&quot;, this function replaces it with the
+<i>407</i>&nbsp;     * LU decomposition of a row-wise permutation of itself.  The input
+<i>408</i>&nbsp;     * parameters are &quot;matrix0&quot; and &quot;dimen&quot;.  The array &quot;matrix0&quot; is also
+<i>409</i>&nbsp;     * an output parameter.  The vector &quot;row_perm[4]&quot; is an output
+<i>410</i>&nbsp;     * parameter that contains the row permutations resulting from partial
+<i>411</i>&nbsp;     * pivoting.  The output parameter &quot;even_row_xchg&quot; is 1 when the
+<i>412</i>&nbsp;     * number of row exchanges is even, or -1 otherwise.  Assumes data
+<i>413</i>&nbsp;     * type is always double.
+<i>414</i>&nbsp;     *
+<i>415</i>&nbsp;     * This function is similar to luDecomposition, except that it
+<i>416</i>&nbsp;     * is tuned specifically for 4x4 matrices.
+<i>417</i>&nbsp;     *
+<i>418</i>&nbsp;     * @return true if the matrix is nonsingular, or false otherwise.
+<i>419</i>&nbsp;     */
+<i>420</i>&nbsp;    private static boolean luDecomposition(double[] matrix0,
+<i>421</i>&nbsp;            int[] row_perm) {
+<i>422</i>&nbsp;
+<i>423</i>&nbsp;        // Reference: Press, Flannery, Teukolsky, Vetterling,
+<i>424</i>&nbsp;        //            _Numerical_Recipes_in_C_, Cambridge University Press,
+<i>425</i>&nbsp;        //            1988, pp 40-45.
+<i>426</i>&nbsp;        //
+<i>427</i>&nbsp;
+<i>428</i>&nbsp;        // Can&#39;t re-use this temporary since the method is static.
+<b class="nc"><i>429</i>&nbsp;        double row_scale[] = new double[4];</b>
+<i>430</i>&nbsp;
+<i>431</i>&nbsp;        // Determine implicit scaling information by looping over rows
+<i>432</i>&nbsp;        {
+<i>433</i>&nbsp;            int i, j;
+<i>434</i>&nbsp;            int ptr, rs;
+<i>435</i>&nbsp;            double big, temp;
+<i>436</i>&nbsp;
+<b class="nc"><i>437</i>&nbsp;            ptr = 0;</b>
+<b class="nc"><i>438</i>&nbsp;            rs = 0;</b>
+<i>439</i>&nbsp;
+<i>440</i>&nbsp;            // For each row ...
+<b class="nc"><i>441</i>&nbsp;            i = 4;</b>
+<b class="nc"><i>442</i>&nbsp;            while (i-- != 0) {</b>
+<b class="nc"><i>443</i>&nbsp;                big = 0.0;</b>
+<i>444</i>&nbsp;
+<i>445</i>&nbsp;                // For each column, find the largest element in the row
+<b class="nc"><i>446</i>&nbsp;                j = 4;</b>
+<b class="nc"><i>447</i>&nbsp;                while (j-- != 0) {</b>
+<b class="nc"><i>448</i>&nbsp;                    temp = matrix0[ptr++];</b>
+<b class="nc"><i>449</i>&nbsp;                    temp = Math.abs(temp);</b>
+<b class="nc"><i>450</i>&nbsp;                    if (temp &gt; big) {</b>
+<b class="nc"><i>451</i>&nbsp;                        big = temp;</b>
+<i>452</i>&nbsp;                    }
+<i>453</i>&nbsp;                }
+<i>454</i>&nbsp;
+<i>455</i>&nbsp;                // Is the matrix singular?
+<b class="nc"><i>456</i>&nbsp;                if (big == 0.0) {</b>
+<b class="nc"><i>457</i>&nbsp;                    return false;</b>
+<i>458</i>&nbsp;                }
+<b class="nc"><i>459</i>&nbsp;                row_scale[rs++] = 1.0 / big;</b>
+<i>460</i>&nbsp;            }
+<i>461</i>&nbsp;        }
+<i>462</i>&nbsp;
+<i>463</i>&nbsp;        {
+<i>464</i>&nbsp;            int j;
+<i>465</i>&nbsp;            int mtx;
+<i>466</i>&nbsp;
+<b class="nc"><i>467</i>&nbsp;            mtx = 0;</b>
+<i>468</i>&nbsp;
+<i>469</i>&nbsp;            // For all columns, execute Crout&#39;s method
+<b class="nc"><i>470</i>&nbsp;            for (j = 0; j &lt; 4; j++) {</b>
+<i>471</i>&nbsp;                int i, imax, k;
+<i>472</i>&nbsp;                int target, p1, p2;
+<i>473</i>&nbsp;                double sum, big, temp;
+<i>474</i>&nbsp;
+<i>475</i>&nbsp;                // Determine elements of upper diagonal matrix U
+<b class="nc"><i>476</i>&nbsp;                for (i = 0; i &lt; j; i++) {</b>
+<b class="nc"><i>477</i>&nbsp;                    target = mtx + (4*i) + j;</b>
+<b class="nc"><i>478</i>&nbsp;                    sum = matrix0[target];</b>
+<b class="nc"><i>479</i>&nbsp;                    k = i;</b>
+<b class="nc"><i>480</i>&nbsp;                    p1 = mtx + (4*i);</b>
+<b class="nc"><i>481</i>&nbsp;                    p2 = mtx + j;</b>
+<b class="nc"><i>482</i>&nbsp;                    while (k-- != 0) {</b>
+<b class="nc"><i>483</i>&nbsp;                        sum -= matrix0[p1] * matrix0[p2];</b>
+<b class="nc"><i>484</i>&nbsp;                        p1++;</b>
+<b class="nc"><i>485</i>&nbsp;                        p2 += 4;</b>
+<i>486</i>&nbsp;                    }
+<b class="nc"><i>487</i>&nbsp;                    matrix0[target] = sum;</b>
+<i>488</i>&nbsp;                }
+<i>489</i>&nbsp;
+<i>490</i>&nbsp;                // Search for largest pivot element and calculate
+<i>491</i>&nbsp;                // intermediate elements of lower diagonal matrix L.
+<b class="nc"><i>492</i>&nbsp;                big = 0.0;</b>
+<b class="nc"><i>493</i>&nbsp;                imax = -1;</b>
+<b class="nc"><i>494</i>&nbsp;                for (i = j; i &lt; 4; i++) {</b>
+<b class="nc"><i>495</i>&nbsp;                    target = mtx + (4*i) + j;</b>
+<b class="nc"><i>496</i>&nbsp;                    sum = matrix0[target];</b>
+<b class="nc"><i>497</i>&nbsp;                    k = j;</b>
+<b class="nc"><i>498</i>&nbsp;                    p1 = mtx + (4*i);</b>
+<b class="nc"><i>499</i>&nbsp;                    p2 = mtx + j;</b>
+<b class="nc"><i>500</i>&nbsp;                    while (k-- != 0) {</b>
+<b class="nc"><i>501</i>&nbsp;                        sum -= matrix0[p1] * matrix0[p2];</b>
+<b class="nc"><i>502</i>&nbsp;                        p1++;</b>
+<b class="nc"><i>503</i>&nbsp;                        p2 += 4;</b>
+<i>504</i>&nbsp;                    }
+<b class="nc"><i>505</i>&nbsp;                    matrix0[target] = sum;</b>
+<i>506</i>&nbsp;
+<i>507</i>&nbsp;                    // Is this the best pivot so far?
+<b class="nc"><i>508</i>&nbsp;                    if ((temp = row_scale[i] * Math.abs(sum)) &gt;= big) {</b>
+<b class="nc"><i>509</i>&nbsp;                        big = temp;</b>
+<b class="nc"><i>510</i>&nbsp;                        imax = i;</b>
+<i>511</i>&nbsp;                    }
+<i>512</i>&nbsp;                }
+<i>513</i>&nbsp;
+<b class="nc"><i>514</i>&nbsp;                if (imax &lt; 0) {</b>
+<b class="nc"><i>515</i>&nbsp;                    return false;</b>
+<i>516</i>&nbsp;                }
+<i>517</i>&nbsp;
+<i>518</i>&nbsp;                // Is a row exchange necessary?
+<b class="nc"><i>519</i>&nbsp;                if (j != imax) {</b>
+<i>520</i>&nbsp;                    // Yes: exchange rows
+<b class="nc"><i>521</i>&nbsp;                    k = 4;</b>
+<b class="nc"><i>522</i>&nbsp;                    p1 = mtx + (4*imax);</b>
+<b class="nc"><i>523</i>&nbsp;                    p2 = mtx + (4*j);</b>
+<b class="nc"><i>524</i>&nbsp;                    while (k-- != 0) {</b>
+<b class="nc"><i>525</i>&nbsp;                        temp = matrix0[p1];</b>
+<b class="nc"><i>526</i>&nbsp;                        matrix0[p1++] = matrix0[p2];</b>
+<b class="nc"><i>527</i>&nbsp;                        matrix0[p2++] = temp;</b>
+<i>528</i>&nbsp;                    }
+<i>529</i>&nbsp;
+<i>530</i>&nbsp;                    // Record change in scale factor
+<b class="nc"><i>531</i>&nbsp;                    row_scale[imax] = row_scale[j];</b>
+<i>532</i>&nbsp;                }
+<i>533</i>&nbsp;
+<i>534</i>&nbsp;                // Record row permutation
+<b class="nc"><i>535</i>&nbsp;                row_perm[j] = imax;</b>
+<i>536</i>&nbsp;
+<i>537</i>&nbsp;                // Is the matrix singular
+<b class="nc"><i>538</i>&nbsp;                if (matrix0[(mtx + (4*j) + j)] == 0.0) {</b>
+<b class="nc"><i>539</i>&nbsp;                    return false;</b>
+<i>540</i>&nbsp;                }
+<i>541</i>&nbsp;
+<i>542</i>&nbsp;                // Divide elements of lower diagonal matrix L by pivot
+<b class="nc"><i>543</i>&nbsp;                if (j != (4-1)) {</b>
+<b class="nc"><i>544</i>&nbsp;                    temp = 1.0 / (matrix0[(mtx + (4*j) + j)]);</b>
+<b class="nc"><i>545</i>&nbsp;                    target = mtx + (4*(j+1)) + j;</b>
+<b class="nc"><i>546</i>&nbsp;                    i = 3 - j;</b>
+<b class="nc"><i>547</i>&nbsp;                    while (i-- != 0) {</b>
+<b class="nc"><i>548</i>&nbsp;                        matrix0[target] *= temp;</b>
+<b class="nc"><i>549</i>&nbsp;                        target += 4;</b>
+<i>550</i>&nbsp;                    }
+<i>551</i>&nbsp;                }
+<i>552</i>&nbsp;            }
+<i>553</i>&nbsp;        }
+<i>554</i>&nbsp;
+<b class="nc"><i>555</i>&nbsp;        return true;</b>
+<i>556</i>&nbsp;    }
+<i>557</i>&nbsp;
+<i>558</i>&nbsp;
+<i>559</i>&nbsp;    /**
+<i>560</i>&nbsp;     * Solves a set of linear equations.  The input parameters &quot;matrix1&quot;,
+<i>561</i>&nbsp;     * and &quot;row_perm&quot; come from luDecompostionD4x4 and do not change
+<i>562</i>&nbsp;     * here.  The parameter &quot;matrix2&quot; is a set of column vectors assembled
+<i>563</i>&nbsp;     * into a 4x4 matrix of floating-point values.  The procedure takes each
+<i>564</i>&nbsp;     * column of &quot;matrix2&quot; in turn and treats it as the right-hand side of the
+<i>565</i>&nbsp;     * matrix equation Ax = LUx = b.  The solution vector replaces the
+<i>566</i>&nbsp;     * original column of the matrix.
+<i>567</i>&nbsp;     *
+<i>568</i>&nbsp;     * If &quot;matrix2&quot; is the identity matrix, the procedure replaces its contents
+<i>569</i>&nbsp;     * with the inverse of the matrix from which &quot;matrix1&quot; was originally
+<i>570</i>&nbsp;     * derived.
+<i>571</i>&nbsp;     */
+<i>572</i>&nbsp;    //
+<i>573</i>&nbsp;    // Reference: Press, Flannery, Teukolsky, Vetterling,
+<i>574</i>&nbsp;    //        _Numerical_Recipes_in_C_, Cambridge University Press,
+<i>575</i>&nbsp;    //        1988, pp 44-45.
+<i>576</i>&nbsp;    //
+<i>577</i>&nbsp;    private static void luBacksubstitution(double[] matrix1,
+<i>578</i>&nbsp;            int[] row_perm,
+<i>579</i>&nbsp;            double[] matrix2) {
+<i>580</i>&nbsp;
+<i>581</i>&nbsp;        int i, ii, ip, j, k;
+<i>582</i>&nbsp;        int rp;
+<i>583</i>&nbsp;        int cv, rv;
+<i>584</i>&nbsp;
+<i>585</i>&nbsp;        //      rp = row_perm;
+<b class="nc"><i>586</i>&nbsp;        rp = 0;</b>
+<i>587</i>&nbsp;
+<i>588</i>&nbsp;        // For each column vector of matrix2 ...
+<b class="nc"><i>589</i>&nbsp;        for (k = 0; k &lt; 4; k++) {</b>
+<i>590</i>&nbsp;            //      cv = &amp;(matrix2[0][k]);
+<b class="nc"><i>591</i>&nbsp;            cv = k;</b>
+<b class="nc"><i>592</i>&nbsp;            ii = -1;</b>
+<i>593</i>&nbsp;
+<i>594</i>&nbsp;            // Forward substitution
+<b class="nc"><i>595</i>&nbsp;            for (i = 0; i &lt; 4; i++) {</b>
+<i>596</i>&nbsp;                double sum;
+<i>597</i>&nbsp;
+<b class="nc"><i>598</i>&nbsp;                ip = row_perm[rp+i];</b>
+<b class="nc"><i>599</i>&nbsp;                sum = matrix2[cv+4*ip];</b>
+<b class="nc"><i>600</i>&nbsp;                matrix2[cv+4*ip] = matrix2[cv+4*i];</b>
+<b class="nc"><i>601</i>&nbsp;                if (ii &gt;= 0) {</b>
+<i>602</i>&nbsp;                    //              rv = &amp;(matrix1[i][0]);
+<b class="nc"><i>603</i>&nbsp;                    rv = i*4;</b>
+<b class="nc"><i>604</i>&nbsp;                    for (j = ii; j &lt;= i-1; j++) {</b>
+<b class="nc"><i>605</i>&nbsp;                        sum -= matrix1[rv+j] * matrix2[cv+4*j];</b>
+<i>606</i>&nbsp;                    }
+<i>607</i>&nbsp;                }
+<b class="nc"><i>608</i>&nbsp;                else if (sum != 0.0) {</b>
+<b class="nc"><i>609</i>&nbsp;                    ii = i;</b>
+<i>610</i>&nbsp;                }
+<b class="nc"><i>611</i>&nbsp;                matrix2[cv+4*i] = sum;</b>
+<i>612</i>&nbsp;            }
+<i>613</i>&nbsp;
+<i>614</i>&nbsp;            // Backsubstitution
+<i>615</i>&nbsp;            //      rv = &amp;(matrix1[3][0]);
+<b class="nc"><i>616</i>&nbsp;            rv = 3*4;</b>
+<b class="nc"><i>617</i>&nbsp;            matrix2[cv+4*3] /= matrix1[rv+3];</b>
+<i>618</i>&nbsp;
+<b class="nc"><i>619</i>&nbsp;            rv -= 4;</b>
+<b class="nc"><i>620</i>&nbsp;            matrix2[cv+4*2] = (matrix2[cv+4*2] -</b>
+<i>621</i>&nbsp;                            matrix1[rv+3] * matrix2[cv+4*3]) / matrix1[rv+2];
+<i>622</i>&nbsp;
+<b class="nc"><i>623</i>&nbsp;            rv -= 4;</b>
+<b class="nc"><i>624</i>&nbsp;            matrix2[cv+4*1] = (matrix2[cv+4*1] -</b>
+<i>625</i>&nbsp;                            matrix1[rv+2] * matrix2[cv+4*2] -
+<i>626</i>&nbsp;                            matrix1[rv+3] * matrix2[cv+4*3]) / matrix1[rv+1];
+<i>627</i>&nbsp;
+<b class="nc"><i>628</i>&nbsp;            rv -= 4;</b>
+<b class="nc"><i>629</i>&nbsp;            matrix2[cv+4*0] = (matrix2[cv+4*0] -</b>
+<i>630</i>&nbsp;                            matrix1[rv+1] * matrix2[cv+4*1] -
+<i>631</i>&nbsp;                            matrix1[rv+2] * matrix2[cv+4*2] -
+<i>632</i>&nbsp;                            matrix1[rv+3] * matrix2[cv+4*3]) / matrix1[rv+0];
+<i>633</i>&nbsp;        }
+<b class="nc"><i>634</i>&nbsp;    }</b>
+<i>635</i>&nbsp;
+<i>636</i>&nbsp;
+<i>637</i>&nbsp;    /**
+<i>638</i>&nbsp;     * Sets the value of this transform to the result of multiplying itself
+<i>639</i>&nbsp;     * with transform t1 : this = this * t1.
+<i>640</i>&nbsp;      *
+<i>641</i>&nbsp;     * @param t1 the other transform
+<i>642</i>&nbsp;     *
+<i>643</i>&nbsp;     * @return this transform
+<i>644</i>&nbsp;     */
+<i>645</i>&nbsp;    public GeneralTransform3D mul(BaseTransform t1) {
+<b class="fc"><i>646</i>&nbsp;        if (t1.isIdentity()) {</b>
+<b class="fc"><i>647</i>&nbsp;            return this;</b>
+<i>648</i>&nbsp;        }
+<i>649</i>&nbsp;
+<i>650</i>&nbsp;        double tmp0, tmp1, tmp2, tmp3;
+<i>651</i>&nbsp;        double tmp4, tmp5, tmp6, tmp7;
+<i>652</i>&nbsp;        double tmp8, tmp9, tmp10, tmp11;
+<i>653</i>&nbsp;        double tmp12, tmp13, tmp14, tmp15;
+<i>654</i>&nbsp;
+<b class="nc"><i>655</i>&nbsp;        double mxx = t1.getMxx();</b>
+<b class="nc"><i>656</i>&nbsp;        double mxy = t1.getMxy();</b>
+<b class="nc"><i>657</i>&nbsp;        double mxz = t1.getMxz();</b>
+<b class="nc"><i>658</i>&nbsp;        double mxt = t1.getMxt();</b>
+<b class="nc"><i>659</i>&nbsp;        double myx = t1.getMyx();</b>
+<b class="nc"><i>660</i>&nbsp;        double myy = t1.getMyy();</b>
+<b class="nc"><i>661</i>&nbsp;        double myz = t1.getMyz();</b>
+<b class="nc"><i>662</i>&nbsp;        double myt = t1.getMyt();</b>
+<b class="nc"><i>663</i>&nbsp;        double mzx = t1.getMzx();</b>
+<b class="nc"><i>664</i>&nbsp;        double mzy = t1.getMzy();</b>
+<b class="nc"><i>665</i>&nbsp;        double mzz = t1.getMzz();</b>
+<b class="nc"><i>666</i>&nbsp;        double mzt = t1.getMzt();</b>
+<i>667</i>&nbsp;
+<b class="nc"><i>668</i>&nbsp;        tmp0 = mat[0] * mxx + mat[1] * myx + mat[2] * mzx;</b>
+<b class="nc"><i>669</i>&nbsp;        tmp1 = mat[0] * mxy + mat[1] * myy + mat[2] * mzy;</b>
+<b class="nc"><i>670</i>&nbsp;        tmp2 = mat[0] * mxz + mat[1] * myz + mat[2] * mzz;</b>
+<b class="nc"><i>671</i>&nbsp;        tmp3 = mat[0] * mxt + mat[1] * myt + mat[2] * mzt + mat[3];</b>
+<b class="nc"><i>672</i>&nbsp;        tmp4 = mat[4] * mxx + mat[5] * myx + mat[6] * mzx;</b>
+<b class="nc"><i>673</i>&nbsp;        tmp5 = mat[4] * mxy + mat[5] * myy + mat[6] * mzy;</b>
+<b class="nc"><i>674</i>&nbsp;        tmp6 = mat[4] * mxz + mat[5] * myz + mat[6] * mzz;</b>
+<b class="nc"><i>675</i>&nbsp;        tmp7 = mat[4] * mxt + mat[5] * myt + mat[6] * mzt + mat[7];</b>
+<b class="nc"><i>676</i>&nbsp;        tmp8 = mat[8] * mxx + mat[9] * myx + mat[10] * mzx;</b>
+<b class="nc"><i>677</i>&nbsp;        tmp9 = mat[8] * mxy + mat[9] * myy + mat[10] * mzy;</b>
+<b class="nc"><i>678</i>&nbsp;        tmp10 = mat[8] * mxz + mat[9] * myz + mat[10] * mzz;</b>
+<b class="nc"><i>679</i>&nbsp;        tmp11 = mat[8] * mxt + mat[9] * myt + mat[10] * mzt + mat[11];</b>
+<b class="nc"><i>680</i>&nbsp;        if (isAffine()) {</b>
+<b class="nc"><i>681</i>&nbsp;            tmp12 = tmp13 = tmp14 = 0;</b>
+<b class="nc"><i>682</i>&nbsp;            tmp15 = 1;</b>
+<i>683</i>&nbsp;        }
+<i>684</i>&nbsp;        else {
+<b class="nc"><i>685</i>&nbsp;            tmp12 = mat[12] * mxx + mat[13] * myx + mat[14] * mzx;</b>
+<b class="nc"><i>686</i>&nbsp;            tmp13 = mat[12] * mxy + mat[13] * myy + mat[14] * mzy;</b>
+<b class="nc"><i>687</i>&nbsp;            tmp14 = mat[12] * mxz + mat[13] * myz + mat[14] * mzz;</b>
+<b class="nc"><i>688</i>&nbsp;            tmp15 = mat[12] * mxt + mat[13] * myt + mat[14] * mzt + mat[15];</b>
+<i>689</i>&nbsp;        }
+<i>690</i>&nbsp;
+<b class="nc"><i>691</i>&nbsp;        mat[0] = tmp0;</b>
+<b class="nc"><i>692</i>&nbsp;        mat[1] = tmp1;</b>
+<b class="nc"><i>693</i>&nbsp;        mat[2] = tmp2;</b>
+<b class="nc"><i>694</i>&nbsp;        mat[3] = tmp3;</b>
+<b class="nc"><i>695</i>&nbsp;        mat[4] = tmp4;</b>
+<b class="nc"><i>696</i>&nbsp;        mat[5] = tmp5;</b>
+<b class="nc"><i>697</i>&nbsp;        mat[6] = tmp6;</b>
+<b class="nc"><i>698</i>&nbsp;        mat[7] = tmp7;</b>
+<b class="nc"><i>699</i>&nbsp;        mat[8] = tmp8;</b>
+<b class="nc"><i>700</i>&nbsp;        mat[9] = tmp9;</b>
+<b class="nc"><i>701</i>&nbsp;        mat[10] = tmp10;</b>
+<b class="nc"><i>702</i>&nbsp;        mat[11] = tmp11;</b>
+<b class="nc"><i>703</i>&nbsp;        mat[12] = tmp12;</b>
+<b class="nc"><i>704</i>&nbsp;        mat[13] = tmp13;</b>
+<b class="nc"><i>705</i>&nbsp;        mat[14] = tmp14;</b>
+<b class="nc"><i>706</i>&nbsp;        mat[15] = tmp15;</b>
+<i>707</i>&nbsp;
+<b class="nc"><i>708</i>&nbsp;        updateState();</b>
+<b class="nc"><i>709</i>&nbsp;        return this;</b>
+<i>710</i>&nbsp;    }
+<i>711</i>&nbsp;
+<i>712</i>&nbsp;    /**
+<i>713</i>&nbsp;     * Sets the value of this transform to the result of multiplying itself
+<i>714</i>&nbsp;     * with a scale transform:
+<i>715</i>&nbsp;     * &lt;pre&gt;
+<i>716</i>&nbsp;     * scaletx =
+<i>717</i>&nbsp;     *     [ sx  0  0  0 ]
+<i>718</i>&nbsp;     *     [  0 sy  0  0 ]
+<i>719</i>&nbsp;     *     [  0  0 sz  0 ]
+<i>720</i>&nbsp;     *     [  0  0  0  1 ].
+<i>721</i>&nbsp;     * this = this * scaletx.
+<i>722</i>&nbsp;     * &lt;/pre&gt;
+<i>723</i>&nbsp;     *
+<i>724</i>&nbsp;     * @param sx the X coordinate scale factor
+<i>725</i>&nbsp;     * @param sy the Y coordinate scale factor
+<i>726</i>&nbsp;     * @param sz the Z coordinate scale factor
+<i>727</i>&nbsp;     *
+<i>728</i>&nbsp;     * @return this transform
+<i>729</i>&nbsp;     */
+<i>730</i>&nbsp;    public GeneralTransform3D scale(double sx, double sy, double sz) {
+<b class="nc"><i>731</i>&nbsp;        boolean update = false;</b>
+<i>732</i>&nbsp;
+<b class="nc"><i>733</i>&nbsp;        if (sx != 1.0) {</b>
+<b class="nc"><i>734</i>&nbsp;            mat[0]  *= sx;</b>
+<b class="nc"><i>735</i>&nbsp;            mat[4]  *= sx;</b>
+<b class="nc"><i>736</i>&nbsp;            mat[8]  *= sx;</b>
+<b class="nc"><i>737</i>&nbsp;            mat[12] *= sx;</b>
+<b class="nc"><i>738</i>&nbsp;            update = true;</b>
+<i>739</i>&nbsp;        }
+<b class="nc"><i>740</i>&nbsp;        if (sy != 1.0) {</b>
+<b class="nc"><i>741</i>&nbsp;            mat[1]  *= sy;</b>
+<b class="nc"><i>742</i>&nbsp;            mat[5]  *= sy;</b>
+<b class="nc"><i>743</i>&nbsp;            mat[9]  *= sy;</b>
+<b class="nc"><i>744</i>&nbsp;            mat[13] *= sy;</b>
+<b class="nc"><i>745</i>&nbsp;            update = true;</b>
+<i>746</i>&nbsp;        }
+<b class="nc"><i>747</i>&nbsp;        if (sz != 1.0) {</b>
+<b class="nc"><i>748</i>&nbsp;            mat[2]  *= sz;</b>
+<b class="nc"><i>749</i>&nbsp;            mat[6]  *= sz;</b>
+<b class="nc"><i>750</i>&nbsp;            mat[10] *= sz;</b>
+<b class="nc"><i>751</i>&nbsp;            mat[14] *= sz;</b>
+<b class="nc"><i>752</i>&nbsp;            update = true;</b>
+<i>753</i>&nbsp;        }
+<i>754</i>&nbsp;
+<b class="nc"><i>755</i>&nbsp;        if (update) {</b>
+<b class="nc"><i>756</i>&nbsp;            updateState();</b>
+<i>757</i>&nbsp;        }
+<b class="nc"><i>758</i>&nbsp;        return this;</b>
+<i>759</i>&nbsp;    }
+<i>760</i>&nbsp;
+<i>761</i>&nbsp;    /**
+<i>762</i>&nbsp;     * Sets the value of this transform to the result of multiplying itself
+<i>763</i>&nbsp;     * with transform t1 : this = this * t1.
+<i>764</i>&nbsp;      *
+<i>765</i>&nbsp;     * @param t1 the other transform
+<i>766</i>&nbsp;     *
+<i>767</i>&nbsp;     * @return this transform
+<i>768</i>&nbsp;     */
+<i>769</i>&nbsp;    public GeneralTransform3D mul(GeneralTransform3D t1) {
+<b class="nc"><i>770</i>&nbsp;        if (t1.isIdentity()) {</b>
+<b class="nc"><i>771</i>&nbsp;            return this;</b>
+<i>772</i>&nbsp;        }
+<i>773</i>&nbsp;
+<i>774</i>&nbsp;        double tmp0, tmp1, tmp2, tmp3;
+<i>775</i>&nbsp;        double tmp4, tmp5, tmp6, tmp7;
+<i>776</i>&nbsp;        double tmp8, tmp9, tmp10, tmp11;
+<i>777</i>&nbsp;        double tmp12, tmp13, tmp14, tmp15;
+<i>778</i>&nbsp;
+<b class="nc"><i>779</i>&nbsp;        if (t1.isAffine()) {</b>
+<b class="nc"><i>780</i>&nbsp;            tmp0 = mat[0] * t1.mat[0] + mat[1] * t1.mat[4] + mat[2] * t1.mat[8];</b>
+<b class="nc"><i>781</i>&nbsp;            tmp1 = mat[0] * t1.mat[1] + mat[1] * t1.mat[5] + mat[2] * t1.mat[9];</b>
+<b class="nc"><i>782</i>&nbsp;            tmp2 = mat[0] * t1.mat[2] + mat[1] * t1.mat[6] + mat[2] * t1.mat[10];</b>
+<b class="nc"><i>783</i>&nbsp;            tmp3 = mat[0] * t1.mat[3] + mat[1] * t1.mat[7] + mat[2] * t1.mat[11] + mat[3];</b>
+<b class="nc"><i>784</i>&nbsp;            tmp4 = mat[4] * t1.mat[0] + mat[5] * t1.mat[4] + mat[6] * t1.mat[8];</b>
+<b class="nc"><i>785</i>&nbsp;            tmp5 = mat[4] * t1.mat[1] + mat[5] * t1.mat[5] + mat[6] * t1.mat[9];</b>
+<b class="nc"><i>786</i>&nbsp;            tmp6 = mat[4] * t1.mat[2] + mat[5] * t1.mat[6] + mat[6] * t1.mat[10];</b>
+<b class="nc"><i>787</i>&nbsp;            tmp7 = mat[4] * t1.mat[3] + mat[5] * t1.mat[7] + mat[6] * t1.mat[11] + mat[7];</b>
+<b class="nc"><i>788</i>&nbsp;            tmp8 = mat[8] * t1.mat[0] + mat[9] * t1.mat[4] + mat[10] * t1.mat[8];</b>
+<b class="nc"><i>789</i>&nbsp;            tmp9 = mat[8] * t1.mat[1] + mat[9] * t1.mat[5] + mat[10] * t1.mat[9];</b>
+<b class="nc"><i>790</i>&nbsp;            tmp10 = mat[8] * t1.mat[2] + mat[9] * t1.mat[6] + mat[10] * t1.mat[10];</b>
+<b class="nc"><i>791</i>&nbsp;            tmp11 = mat[8] * t1.mat[3] + mat[9] * t1.mat[7] + mat[10] * t1.mat[11] + mat[11];</b>
+<b class="nc"><i>792</i>&nbsp;            if (isAffine()) {</b>
+<b class="nc"><i>793</i>&nbsp;                tmp12 = tmp13 = tmp14 = 0;</b>
+<b class="nc"><i>794</i>&nbsp;                tmp15 = 1;</b>
+<i>795</i>&nbsp;            }
+<i>796</i>&nbsp;            else {
+<b class="nc"><i>797</i>&nbsp;                tmp12 = mat[12] * t1.mat[0] + mat[13] * t1.mat[4] +</b>
+<i>798</i>&nbsp;                        mat[14] * t1.mat[8];
+<b class="nc"><i>799</i>&nbsp;                tmp13 = mat[12] * t1.mat[1] + mat[13] * t1.mat[5] +</b>
+<i>800</i>&nbsp;                        mat[14] * t1.mat[9];
+<b class="nc"><i>801</i>&nbsp;                tmp14 = mat[12] * t1.mat[2] + mat[13] * t1.mat[6] +</b>
+<i>802</i>&nbsp;                        mat[14] * t1.mat[10];
+<b class="nc"><i>803</i>&nbsp;                tmp15 = mat[12] * t1.mat[3] + mat[13] * t1.mat[7] +</b>
+<i>804</i>&nbsp;                        mat[14] * t1.mat[11] + mat[15];
+<i>805</i>&nbsp;            }
+<i>806</i>&nbsp;        } else {
+<b class="nc"><i>807</i>&nbsp;            tmp0 = mat[0] * t1.mat[0] + mat[1] * t1.mat[4] + mat[2] * t1.mat[8] +</b>
+<i>808</i>&nbsp;                    mat[3] * t1.mat[12];
+<b class="nc"><i>809</i>&nbsp;            tmp1 = mat[0] * t1.mat[1] + mat[1] * t1.mat[5] + mat[2] * t1.mat[9] +</b>
+<i>810</i>&nbsp;                    mat[3] * t1.mat[13];
+<b class="nc"><i>811</i>&nbsp;            tmp2 = mat[0] * t1.mat[2] + mat[1] * t1.mat[6] + mat[2] * t1.mat[10] +</b>
+<i>812</i>&nbsp;                    mat[3] * t1.mat[14];
+<b class="nc"><i>813</i>&nbsp;            tmp3 = mat[0] * t1.mat[3] + mat[1] * t1.mat[7] + mat[2] * t1.mat[11] +</b>
+<i>814</i>&nbsp;                    mat[3] * t1.mat[15];
+<b class="nc"><i>815</i>&nbsp;            tmp4 = mat[4] * t1.mat[0] + mat[5] * t1.mat[4] + mat[6] * t1.mat[8] +</b>
+<i>816</i>&nbsp;                    mat[7] * t1.mat[12];
+<b class="nc"><i>817</i>&nbsp;            tmp5 = mat[4] * t1.mat[1] + mat[5] * t1.mat[5] + mat[6] * t1.mat[9] +</b>
+<i>818</i>&nbsp;                    mat[7] * t1.mat[13];
+<b class="nc"><i>819</i>&nbsp;            tmp6 = mat[4] * t1.mat[2] + mat[5] * t1.mat[6] + mat[6] * t1.mat[10] +</b>
+<i>820</i>&nbsp;                    mat[7] * t1.mat[14];
+<b class="nc"><i>821</i>&nbsp;            tmp7 = mat[4] * t1.mat[3] + mat[5] * t1.mat[7] + mat[6] * t1.mat[11] +</b>
+<i>822</i>&nbsp;                    mat[7] * t1.mat[15];
+<b class="nc"><i>823</i>&nbsp;            tmp8 = mat[8] * t1.mat[0] + mat[9] * t1.mat[4] + mat[10] * t1.mat[8] +</b>
+<i>824</i>&nbsp;                    mat[11] * t1.mat[12];
+<b class="nc"><i>825</i>&nbsp;            tmp9 = mat[8] * t1.mat[1] + mat[9] * t1.mat[5] + mat[10] * t1.mat[9] +</b>
+<i>826</i>&nbsp;                    mat[11] * t1.mat[13];
+<b class="nc"><i>827</i>&nbsp;            tmp10 = mat[8] * t1.mat[2] + mat[9] * t1.mat[6] +</b>
+<i>828</i>&nbsp;                    mat[10] * t1.mat[10] + mat[11] * t1.mat[14];
+<i>829</i>&nbsp;
+<b class="nc"><i>830</i>&nbsp;            tmp11 = mat[8] * t1.mat[3] + mat[9] * t1.mat[7] +</b>
+<i>831</i>&nbsp;                    mat[10] * t1.mat[11] + mat[11] * t1.mat[15];
+<b class="nc"><i>832</i>&nbsp;            if (isAffine()) {</b>
+<b class="nc"><i>833</i>&nbsp;                tmp12 = t1.mat[12];</b>
+<b class="nc"><i>834</i>&nbsp;                tmp13 = t1.mat[13];</b>
+<b class="nc"><i>835</i>&nbsp;                tmp14 = t1.mat[14];</b>
+<b class="nc"><i>836</i>&nbsp;                tmp15 = t1.mat[15];</b>
+<i>837</i>&nbsp;            } else {
+<b class="nc"><i>838</i>&nbsp;                tmp12 = mat[12] * t1.mat[0] + mat[13] * t1.mat[4] +</b>
+<i>839</i>&nbsp;                        mat[14] * t1.mat[8] + mat[15] * t1.mat[12];
+<b class="nc"><i>840</i>&nbsp;                tmp13 = mat[12] * t1.mat[1] + mat[13] * t1.mat[5] +</b>
+<i>841</i>&nbsp;                        mat[14] * t1.mat[9] + mat[15] * t1.mat[13];
+<b class="nc"><i>842</i>&nbsp;                tmp14 = mat[12] * t1.mat[2] + mat[13] * t1.mat[6] +</b>
+<i>843</i>&nbsp;                        mat[14] * t1.mat[10] + mat[15] * t1.mat[14];
+<b class="nc"><i>844</i>&nbsp;                tmp15 = mat[12] * t1.mat[3] + mat[13] * t1.mat[7] +</b>
+<i>845</i>&nbsp;                        mat[14] * t1.mat[11] + mat[15] * t1.mat[15];
+<i>846</i>&nbsp;            }
+<i>847</i>&nbsp;        }
+<i>848</i>&nbsp;
+<b class="nc"><i>849</i>&nbsp;        mat[0] = tmp0;</b>
+<b class="nc"><i>850</i>&nbsp;        mat[1] = tmp1;</b>
+<b class="nc"><i>851</i>&nbsp;        mat[2] = tmp2;</b>
+<b class="nc"><i>852</i>&nbsp;        mat[3] = tmp3;</b>
+<b class="nc"><i>853</i>&nbsp;        mat[4] = tmp4;</b>
+<b class="nc"><i>854</i>&nbsp;        mat[5] = tmp5;</b>
+<b class="nc"><i>855</i>&nbsp;        mat[6] = tmp6;</b>
+<b class="nc"><i>856</i>&nbsp;        mat[7] = tmp7;</b>
+<b class="nc"><i>857</i>&nbsp;        mat[8] = tmp8;</b>
+<b class="nc"><i>858</i>&nbsp;        mat[9] = tmp9;</b>
+<b class="nc"><i>859</i>&nbsp;        mat[10] = tmp10;</b>
+<b class="nc"><i>860</i>&nbsp;        mat[11] = tmp11;</b>
+<b class="nc"><i>861</i>&nbsp;        mat[12] = tmp12;</b>
+<b class="nc"><i>862</i>&nbsp;        mat[13] = tmp13;</b>
+<b class="nc"><i>863</i>&nbsp;        mat[14] = tmp14;</b>
+<b class="nc"><i>864</i>&nbsp;        mat[15] = tmp15;</b>
+<i>865</i>&nbsp;
+<b class="nc"><i>866</i>&nbsp;        updateState();</b>
+<b class="nc"><i>867</i>&nbsp;        return this;</b>
+<i>868</i>&nbsp;    }
+<i>869</i>&nbsp;
+<i>870</i>&nbsp;    /**
+<i>871</i>&nbsp;     * Sets this transform to the identity matrix.
+<i>872</i>&nbsp;     *
+<i>873</i>&nbsp;     * @return this transform
+<i>874</i>&nbsp;     */
+<i>875</i>&nbsp;    public GeneralTransform3D setIdentity() {
+<b class="fc"><i>876</i>&nbsp;        mat[0] = 1.0;  mat[1] = 0.0;  mat[2] = 0.0;  mat[3] = 0.0;</b>
+<b class="fc"><i>877</i>&nbsp;        mat[4] = 0.0;  mat[5] = 1.0;  mat[6] = 0.0;  mat[7] = 0.0;</b>
+<b class="fc"><i>878</i>&nbsp;        mat[8] = 0.0;  mat[9] = 0.0;  mat[10] = 1.0; mat[11] = 0.0;</b>
+<b class="fc"><i>879</i>&nbsp;        mat[12] = 0.0; mat[13] = 0.0; mat[14] = 0.0; mat[15] = 1.0;</b>
+<b class="fc"><i>880</i>&nbsp;        identity = true;</b>
+<b class="fc"><i>881</i>&nbsp;        return this;</b>
+<i>882</i>&nbsp;    }
+<i>883</i>&nbsp;
+<i>884</i>&nbsp;    /**
+<i>885</i>&nbsp;     * Returns true if the transform is identity. A transform is considered
+<i>886</i>&nbsp;     * to be identity if the diagonal elements of its matrix is all 1s
+<i>887</i>&nbsp;     * otherwise 0s.
+<i>888</i>&nbsp;     */
+<i>889</i>&nbsp;    public boolean isIdentity() {
+<b class="fc"><i>890</i>&nbsp;        return identity;</b>
+<i>891</i>&nbsp;    }
+<i>892</i>&nbsp;
+<i>893</i>&nbsp;    private void updateState() {
+<i>894</i>&nbsp;        //set the identity flag.
+<b class="fc"><i>895</i>&nbsp;        identity =</b>
+<i>896</i>&nbsp;            mat[0]  == 1.0 &amp;&amp; mat[5]  == 1.0 &amp;&amp; mat[10] == 1.0 &amp;&amp; mat[15] == 1.0 &amp;&amp;
+<i>897</i>&nbsp;            mat[1]  == 0.0 &amp;&amp; mat[2]  == 0.0 &amp;&amp; mat[3]  == 0.0 &amp;&amp;
+<i>898</i>&nbsp;            mat[4]  == 0.0 &amp;&amp; mat[6]  == 0.0 &amp;&amp; mat[7]  == 0.0 &amp;&amp;
+<i>899</i>&nbsp;            mat[8]  == 0.0 &amp;&amp; mat[9]  == 0.0 &amp;&amp; mat[11] == 0.0 &amp;&amp;
+<i>900</i>&nbsp;            mat[12] == 0.0 &amp;&amp; mat[13] == 0.0 &amp;&amp; mat[14] == 0.0;
+<b class="fc"><i>901</i>&nbsp;    }</b>
+<i>902</i>&nbsp;
+<i>903</i>&nbsp;    // Check whether matrix has an Infinity or NaN value. If so, don&#39;t treat it
+<i>904</i>&nbsp;    // as affine.
+<i>905</i>&nbsp;    boolean isInfOrNaN() {
+<i>906</i>&nbsp;        // The following is a faster version of the check.
+<i>907</i>&nbsp;        // Instead of 3 tests per array element (Double.isInfinite is 2 tests),
+<i>908</i>&nbsp;        // for a total of 48 tests, we will do 16 multiplies and 1 test.
+<b class="nc"><i>909</i>&nbsp;        double d = 0.0;</b>
+<b class="nc"><i>910</i>&nbsp;        for (int i = 0; i &lt; mat.length; i++) {</b>
+<b class="nc"><i>911</i>&nbsp;            d *= mat[i];</b>
+<i>912</i>&nbsp;        }
+<i>913</i>&nbsp;
+<b class="nc"><i>914</i>&nbsp;        return d != 0.0;</b>
+<i>915</i>&nbsp;    }
+<i>916</i>&nbsp;
+<i>917</i>&nbsp;    private static final double EPSILON_ABSOLUTE = 1.0e-5;
+<i>918</i>&nbsp;
+<i>919</i>&nbsp;    static boolean almostZero(double a) {
+<b class="nc"><i>920</i>&nbsp;        return ((a &lt; EPSILON_ABSOLUTE) &amp;&amp; (a &gt; -EPSILON_ABSOLUTE));</b>
+<i>921</i>&nbsp;    }
+<i>922</i>&nbsp;
+<i>923</i>&nbsp;    static boolean almostOne(double a) {
+<b class="nc"><i>924</i>&nbsp;        return ((a &lt; 1+EPSILON_ABSOLUTE) &amp;&amp; (a &gt; 1-EPSILON_ABSOLUTE));</b>
+<i>925</i>&nbsp;    }
+<i>926</i>&nbsp;
+<i>927</i>&nbsp;    public GeneralTransform3D copy() {
+<b class="nc"><i>928</i>&nbsp;        GeneralTransform3D newTransform = new GeneralTransform3D();</b>
+<b class="nc"><i>929</i>&nbsp;        newTransform.set(this);</b>
+<b class="nc"><i>930</i>&nbsp;        return newTransform;</b>
+<i>931</i>&nbsp;    }
+<i>932</i>&nbsp;
+<i>933</i>&nbsp;    /**
+<i>934</i>&nbsp;     * Returns the matrix elements of this transform as a string.
+<i>935</i>&nbsp;     * @return  the matrix elements of this transform
+<i>936</i>&nbsp;     */
+<i>937</i>&nbsp;    @Override
+<i>938</i>&nbsp;    public String toString() {
+<b class="nc"><i>939</i>&nbsp;        return mat[0] + &quot;, &quot; + mat[1] + &quot;, &quot; + mat[2] + &quot;, &quot; + mat[3] + &quot;\n&quot; +</b>
+<i>940</i>&nbsp;                mat[4] + &quot;, &quot; + mat[5] + &quot;, &quot; + mat[6] + &quot;, &quot; + mat[7] + &quot;\n&quot; +
+<i>941</i>&nbsp;                mat[8] + &quot;, &quot; + mat[9] + &quot;, &quot; + mat[10] + &quot;, &quot; + mat[11] + &quot;\n&quot; +
+<i>942</i>&nbsp;                mat[12] + &quot;, &quot; + mat[13] + &quot;, &quot; + mat[14] + &quot;, &quot; + mat[15] + &quot;\n&quot;;
+<i>943</i>&nbsp;    }
+<i>944</i>&nbsp;
+<i>945</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2017-12-04 21:49</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,177 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: AbstractShadow</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.scenario.effect</a> ]
+</div>
+
+<h1>Coverage Summary for Class: AbstractShadow (com.sun.scenario.effect)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">AbstractShadow</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (2/ 2)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">AbstractShadow$ShadowMode</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (2/ 2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (5/ 5)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (3/ 3)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (7/ 7)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright (c) 2009, 2014, Oracle and/or its affiliates. All rights reserved.
+<i>3</i>&nbsp; * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+<i>4</i>&nbsp; *
+<i>5</i>&nbsp; *
+<i>6</i>&nbsp; *
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; *
+<i>11</i>&nbsp; *
+<i>12</i>&nbsp; *
+<i>13</i>&nbsp; *
+<i>14</i>&nbsp; *
+<i>15</i>&nbsp; *
+<i>16</i>&nbsp; *
+<i>17</i>&nbsp; *
+<i>18</i>&nbsp; *
+<i>19</i>&nbsp; *
+<i>20</i>&nbsp; *
+<i>21</i>&nbsp; *
+<i>22</i>&nbsp; *
+<i>23</i>&nbsp; *
+<i>24</i>&nbsp; */
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;package com.sun.scenario.effect;
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;/**
+<i>29</i>&nbsp; * An implementation supertype for both Gaussian and Box filter based
+<i>30</i>&nbsp; * shadows to facilitate their conditional usage inside the various
+<i>31</i>&nbsp; * composite shadow effects like DropShadow and InnerShadow.
+<i>32</i>&nbsp; *
+<i>33</i>&nbsp; * The radius, width and height parameters all refer to the corresponding
+<i>34</i>&nbsp; * dimension that a &quot;Gaussian&quot; blur filter would use - other shadow
+<i>35</i>&nbsp; * implementations will have to use whatever parameters produce a
+<i>36</i>&nbsp; * similar effect.
+<i>37</i>&nbsp; * The width and height parameters should relate to the radius parameter
+<i>38</i>&nbsp; * by the equation {@code w,h = 2 * r + 1} and if the width and height are
+<i>39</i>&nbsp; * set to something different then the radius parameter will be an average
+<i>40</i>&nbsp; * of the corresponding individual dimensional radius values.
+<i>41</i>&nbsp; */
+<i>42</i>&nbsp;public abstract class AbstractShadow extends LinearConvolveCoreEffect {
+<i>43</i>&nbsp;    public AbstractShadow(Effect input) {
+<b class="fc"><i>44</i>&nbsp;        super(input);</b>
+<b class="fc"><i>45</i>&nbsp;    }</b>
+<i>46</i>&nbsp;
+<b class="fc"><i>47</i>&nbsp;    public enum ShadowMode {</b>
+<b class="fc"><i>48</i>&nbsp;        ONE_PASS_BOX,</b>
+<b class="fc"><i>49</i>&nbsp;        TWO_PASS_BOX,</b>
+<b class="fc"><i>50</i>&nbsp;        THREE_PASS_BOX,</b>
+<b class="fc"><i>51</i>&nbsp;        GAUSSIAN,</b>
+<i>52</i>&nbsp;    }
+<i>53</i>&nbsp;
+<i>54</i>&nbsp;    public abstract ShadowMode getMode();
+<i>55</i>&nbsp;    public abstract AbstractShadow implFor(ShadowMode m);
+<i>56</i>&nbsp;    public abstract float getGaussianRadius();
+<i>57</i>&nbsp;    public abstract void  setGaussianRadius(float r);
+<i>58</i>&nbsp;    public abstract float getGaussianWidth();
+<i>59</i>&nbsp;    public abstract void  setGaussianWidth(float w);
+<i>60</i>&nbsp;    public abstract float getGaussianHeight();
+<i>61</i>&nbsp;    public abstract void  setGaussianHeight(float h);
+<i>62</i>&nbsp;    public abstract float getSpread();
+<i>63</i>&nbsp;    public abstract void  setSpread(float spread);
+<i>64</i>&nbsp;    public abstract Color4f getColor();
+<i>65</i>&nbsp;    public abstract void setColor(Color4f c);
+<i>66</i>&nbsp;    public abstract Effect getInput();
+<i>67</i>&nbsp;    public abstract void setInput(Effect input);
+<i>68</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2017-12-04 21:49</div>
+</div>
+</body>
+</html>

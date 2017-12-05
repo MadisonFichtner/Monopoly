@@ -1,0 +1,143 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: ObservableArray</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">javafx.collections</a> ]
+</div>
+
+<h1>Coverage Summary for Class: ObservableArray (javafx.collections)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+</tr>
+<tr>
+  <td class="name">ObservableArray</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright (c) 2013, 2016, Oracle and/or its affiliates. All rights reserved.
+<i>3</i>&nbsp; * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+<i>4</i>&nbsp; *
+<i>5</i>&nbsp; *
+<i>6</i>&nbsp; *
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; *
+<i>11</i>&nbsp; *
+<i>12</i>&nbsp; *
+<i>13</i>&nbsp; *
+<i>14</i>&nbsp; *
+<i>15</i>&nbsp; *
+<i>16</i>&nbsp; *
+<i>17</i>&nbsp; *
+<i>18</i>&nbsp; *
+<i>19</i>&nbsp; *
+<i>20</i>&nbsp; *
+<i>21</i>&nbsp; *
+<i>22</i>&nbsp; *
+<i>23</i>&nbsp; *
+<i>24</i>&nbsp; */
+<i>25</i>&nbsp;package javafx.collections;
+<i>26</i>&nbsp;
+<i>27</i>&nbsp;import javafx.beans.Observable;
+<i>28</i>&nbsp;
+<i>29</i>&nbsp;/**
+<i>30</i>&nbsp; * {@code ObservableArray} is an array that allows listeners to track changes
+<i>31</i>&nbsp; * when they occur. In order to track changes, the internal array
+<i>32</i>&nbsp; * is encapsulated and there is no direct access available from the outside.
+<i>33</i>&nbsp; * Bulk operations are supported but they always do a copy of the data range.
+<i>34</i>&nbsp; * You can find them in subclasses as they deal with primitive arrays directly.
+<i>35</i>&nbsp; *
+<i>36</i>&nbsp; * &lt;p&gt;Implementations have both {@code capacity}, which is internal array length,
+<i>37</i>&nbsp; * and {@code size}. If size needs to be increased beyond capacity, the capacity
+<i>38</i>&nbsp; * increases to match that new size. Use {@link #trimToSize()} method
+<i>39</i>&nbsp; * to shrink it.
+<i>40</i>&nbsp; *
+<i>41</i>&nbsp; * @see ArrayChangeListener
+<i>42</i>&nbsp; * @param &lt;T&gt; actual array instance type
+<i>43</i>&nbsp; * @since JavaFX 8.0
+<i>44</i>&nbsp; */
+<i>45</i>&nbsp;public interface ObservableArray&lt;T extends ObservableArray&lt;T&gt;&gt; extends Observable {
+<i>46</i>&nbsp;
+<i>47</i>&nbsp;    /**
+<i>48</i>&nbsp;     * Add a listener to this observable array.
+<i>49</i>&nbsp;     * @param listener the listener for listening to the array changes
+<i>50</i>&nbsp;     * @throws NullPointerException if {@code listener} is {@code null}
+<i>51</i>&nbsp;     */
+<i>52</i>&nbsp;    public void addListener(ArrayChangeListener&lt;T&gt; listener);
+<i>53</i>&nbsp;
+<i>54</i>&nbsp;    /**
+<i>55</i>&nbsp;     * Tries to remove a listener from this observable array. If the listener is not
+<i>56</i>&nbsp;     * attached to this array, nothing happens.
+<i>57</i>&nbsp;     * @param listener a listener to remove
+<i>58</i>&nbsp;     * @throws NullPointerException if {@code listener} is {@code null}
+<i>59</i>&nbsp;     */
+<i>60</i>&nbsp;    public void removeListener(ArrayChangeListener&lt;T&gt; listener);
+<i>61</i>&nbsp;
+<i>62</i>&nbsp;    /**
+<i>63</i>&nbsp;     * Sets new length of data in this array. This method grows capacity
+<i>64</i>&nbsp;     * if necessary but never shrinks it. Resulting array will contain existing
+<i>65</i>&nbsp;     * data for indexes that are less than the current size and zeroes for
+<i>66</i>&nbsp;     * indexes that are greater than the current size.
+<i>67</i>&nbsp;     * @param size new length of data in this array
+<i>68</i>&nbsp;     * @throws NegativeArraySizeException if size is negative
+<i>69</i>&nbsp;     */
+<i>70</i>&nbsp;    public void resize(int size);
+<i>71</i>&nbsp;
+<i>72</i>&nbsp;    /**
+<i>73</i>&nbsp;     * Grows the capacity of this array if the current capacity is less than
+<i>74</i>&nbsp;     * given {@code capacity}, does nothing if it already exceeds
+<i>75</i>&nbsp;     * the {@code capacity}.
+<i>76</i>&nbsp;     * @param capacity the capacity of this array
+<i>77</i>&nbsp;     */
+<i>78</i>&nbsp;    public void ensureCapacity(int capacity);
+<i>79</i>&nbsp;
+<i>80</i>&nbsp;    /**
+<i>81</i>&nbsp;     * Shrinks the capacity to the current size of data in the array.
+<i>82</i>&nbsp;     */
+<i>83</i>&nbsp;    public void trimToSize();
+<i>84</i>&nbsp;
+<i>85</i>&nbsp;    /**
+<i>86</i>&nbsp;     * Empties the array by resizing it to 0. Capacity is not changed.
+<i>87</i>&nbsp;     * @see #trimToSize()
+<i>88</i>&nbsp;     */
+<i>89</i>&nbsp;    public void clear();
+<i>90</i>&nbsp;
+<i>91</i>&nbsp;    /**
+<i>92</i>&nbsp;     * Retrieves length of data in this array.
+<i>93</i>&nbsp;     * @return length of data in this array
+<i>94</i>&nbsp;     */
+<i>95</i>&nbsp;    public int size();
+<i>96</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2017-12-04 21:49</div>
+</div>
+</body>
+</html>

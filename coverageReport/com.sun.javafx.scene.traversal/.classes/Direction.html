@@ -1,0 +1,152 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: Direction</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.javafx.scene.traversal</a> ]
+</div>
+
+<h1>Coverage Summary for Class: Direction (com.sun.javafx.scene.traversal)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">Direction</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    60%
+  </span>
+  <span class="absValue">
+    (3/ 5)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    64.7%
+  </span>
+  <span class="absValue">
+    (11/ 17)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright (c) 2010, 2014, Oracle and/or its affiliates. All rights reserved.
+<i>3</i>&nbsp; * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+<i>4</i>&nbsp; *
+<i>5</i>&nbsp; *
+<i>6</i>&nbsp; *
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; *
+<i>11</i>&nbsp; *
+<i>12</i>&nbsp; *
+<i>13</i>&nbsp; *
+<i>14</i>&nbsp; *
+<i>15</i>&nbsp; *
+<i>16</i>&nbsp; *
+<i>17</i>&nbsp; *
+<i>18</i>&nbsp; *
+<i>19</i>&nbsp; *
+<i>20</i>&nbsp; *
+<i>21</i>&nbsp; *
+<i>22</i>&nbsp; *
+<i>23</i>&nbsp; *
+<i>24</i>&nbsp; */
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;package com.sun.javafx.scene.traversal;
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;import javafx.geometry.NodeOrientation;
+<i>29</i>&nbsp;
+<i>30</i>&nbsp;/**
+<i>31</i>&nbsp; * Specifies the direction of traversal.
+<i>32</i>&nbsp; */
+<b class="fc"><i>33</i>&nbsp;public enum Direction {</b>
+<i>34</i>&nbsp;
+<b class="fc"><i>35</i>&nbsp;    UP(false),</b>
+<b class="fc"><i>36</i>&nbsp;    DOWN(true),</b>
+<b class="fc"><i>37</i>&nbsp;    LEFT(false),</b>
+<b class="fc"><i>38</i>&nbsp;    RIGHT(true),</b>
+<b class="fc"><i>39</i>&nbsp;    NEXT(true),</b>
+<b class="fc"><i>40</i>&nbsp;    NEXT_IN_LINE(true), // Like NEXT, but does not traverse into the current parent</b>
+<b class="fc"><i>41</i>&nbsp;    PREVIOUS(false);</b>
+<i>42</i>&nbsp;    private final boolean forward;
+<i>43</i>&nbsp;
+<b class="fc"><i>44</i>&nbsp;    Direction(boolean forward) {</b>
+<b class="fc"><i>45</i>&nbsp;        this.forward = forward;</b>
+<b class="fc"><i>46</i>&nbsp;    }</b>
+<i>47</i>&nbsp;
+<i>48</i>&nbsp;    public boolean isForward() {
+<b class="nc"><i>49</i>&nbsp;        return forward;</b>
+<i>50</i>&nbsp;    }
+<i>51</i>&nbsp;
+<i>52</i>&nbsp;    /**
+<i>53</i>&nbsp;     * Returns the direction with respect to the node&#39;s orientation. It affect&#39;s only arrow keys however, so it&#39;s not
+<i>54</i>&nbsp;     * an error to ignore this call if handling only next/previous traversal.
+<i>55</i>&nbsp;     * @param orientation
+<i>56</i>&nbsp;     * @return
+<i>57</i>&nbsp;     */
+<i>58</i>&nbsp;    public Direction getDirectionForNodeOrientation(NodeOrientation orientation) {
+<b class="nc"><i>59</i>&nbsp;        if (orientation == NodeOrientation.RIGHT_TO_LEFT) {</b>
+<b class="nc"><i>60</i>&nbsp;            switch (this) {</b>
+<i>61</i>&nbsp;                case LEFT:
+<b class="nc"><i>62</i>&nbsp;                    return RIGHT;</b>
+<i>63</i>&nbsp;                case RIGHT:
+<b class="nc"><i>64</i>&nbsp;                    return LEFT;</b>
+<i>65</i>&nbsp;            }
+<i>66</i>&nbsp;        }
+<b class="nc"><i>67</i>&nbsp;        return this;</b>
+<i>68</i>&nbsp;    }
+<i>69</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2017-12-04 21:49</div>
+</div>
+</body>
+</html>

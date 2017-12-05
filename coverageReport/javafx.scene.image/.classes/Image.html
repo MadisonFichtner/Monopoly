@@ -1,0 +1,1383 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: Image</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">javafx.scene.image</a> ]
+</div>
+
+<h1>Coverage Summary for Class: Image (javafx.scene.image)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">Image</td>
+<td class="coverageStat">
+  <span class="percent">
+    49.2%
+  </span>
+  <span class="absValue">
+    (31/ 63)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    46.3%
+  </span>
+  <span class="absValue">
+    (100/ 216)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">Image$1</td>
+<td class="coverageStat">
+  <span class="percent">
+    28.6%
+  </span>
+  <span class="absValue">
+    (2/ 7)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    28.6%
+  </span>
+  <span class="absValue">
+    (2/ 7)
+  </span>
+</td>
+  </tr>
+  <tr>
+    <td class="name">Image$DoublePropertyImpl</td>
+<td class="coverageStat">
+  <span class="percent">
+    66.7%
+  </span>
+  <span class="absValue">
+    (4/ 6)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    80%
+  </span>
+  <span class="absValue">
+    (8/ 10)
+  </span>
+</td>
+  </tr>
+  <tr>
+    <td class="name">Image$ObjectPropertyImpl</td>
+<td class="coverageStat">
+  <span class="percent">
+    50%
+  </span>
+  <span class="absValue">
+    (4/ 8)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    50%
+  </span>
+  <span class="absValue">
+    (10/ 20)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    48.8%
+  </span>
+  <span class="absValue">
+    (41/ 84)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    47.4%
+  </span>
+  <span class="absValue">
+    (120/ 253)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright (c) 2010, 2017, Oracle and/or its affiliates. All rights reserved.
+<i>3</i>&nbsp; * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+<i>4</i>&nbsp; *
+<i>5</i>&nbsp; *
+<i>6</i>&nbsp; *
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; *
+<i>11</i>&nbsp; *
+<i>12</i>&nbsp; *
+<i>13</i>&nbsp; *
+<i>14</i>&nbsp; *
+<i>15</i>&nbsp; *
+<i>16</i>&nbsp; *
+<i>17</i>&nbsp; *
+<i>18</i>&nbsp; *
+<i>19</i>&nbsp; *
+<i>20</i>&nbsp; *
+<i>21</i>&nbsp; *
+<i>22</i>&nbsp; *
+<i>23</i>&nbsp; *
+<i>24</i>&nbsp; */
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;package javafx.scene.image;
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;import java.io.InputStream;
+<i>29</i>&nbsp;import java.lang.ref.WeakReference;
+<i>30</i>&nbsp;import java.net.MalformedURLException;
+<i>31</i>&nbsp;import java.net.URL;
+<i>32</i>&nbsp;import java.nio.Buffer;
+<i>33</i>&nbsp;import java.nio.ByteBuffer;
+<i>34</i>&nbsp;import java.nio.IntBuffer;
+<i>35</i>&nbsp;import java.util.LinkedList;
+<i>36</i>&nbsp;import java.util.Queue;
+<i>37</i>&nbsp;import java.util.concurrent.CancellationException;
+<i>38</i>&nbsp;import java.util.regex.Pattern;
+<i>39</i>&nbsp;import javafx.animation.KeyFrame;
+<i>40</i>&nbsp;import javafx.animation.Timeline;
+<i>41</i>&nbsp;import javafx.beans.NamedArg;
+<i>42</i>&nbsp;import javafx.beans.property.ReadOnlyBooleanProperty;
+<i>43</i>&nbsp;import javafx.beans.property.ReadOnlyBooleanWrapper;
+<i>44</i>&nbsp;import javafx.beans.property.ReadOnlyDoubleProperty;
+<i>45</i>&nbsp;import javafx.beans.property.ReadOnlyDoublePropertyBase;
+<i>46</i>&nbsp;import javafx.beans.property.ReadOnlyDoubleWrapper;
+<i>47</i>&nbsp;import javafx.beans.property.ReadOnlyObjectProperty;
+<i>48</i>&nbsp;import javafx.beans.property.ReadOnlyObjectPropertyBase;
+<i>49</i>&nbsp;import javafx.beans.property.ReadOnlyObjectWrapper;
+<i>50</i>&nbsp;import javafx.scene.paint.Color;
+<i>51</i>&nbsp;import javafx.util.Duration;
+<i>52</i>&nbsp;import com.sun.javafx.runtime.async.AsyncOperation;
+<i>53</i>&nbsp;import com.sun.javafx.runtime.async.AsyncOperationListener;
+<i>54</i>&nbsp;import com.sun.javafx.tk.ImageLoader;
+<i>55</i>&nbsp;import com.sun.javafx.tk.PlatformImage;
+<i>56</i>&nbsp;import com.sun.javafx.tk.Toolkit;
+<i>57</i>&nbsp;import javafx.animation.Interpolator;
+<i>58</i>&nbsp;import javafx.animation.KeyValue;
+<i>59</i>&nbsp;import javafx.beans.property.SimpleIntegerProperty;
+<i>60</i>&nbsp;
+<i>61</i>&nbsp;/**
+<i>62</i>&nbsp; * The {@code Image} class represents graphical images and is used for loading
+<i>63</i>&nbsp; * images from a specified URL.
+<i>64</i>&nbsp; *
+<i>65</i>&nbsp; * &lt;p&gt;
+<i>66</i>&nbsp; * Supported image formats are:
+<i>67</i>&nbsp; * &lt;/p&gt;
+<i>68</i>&nbsp; * &lt;ul&gt;
+<i>69</i>&nbsp; * &lt;li&gt;&lt;a href=&quot;http://msdn.microsoft.com/en-us/library/dd183376(v=vs.85).aspx&quot;&gt;BMP&lt;/a&gt;&lt;/li&gt;
+<i>70</i>&nbsp; * &lt;li&gt;&lt;a href=&quot;http://www.w3.org/Graphics/GIF/spec-gif89a.txt&quot;&gt;GIF&lt;/a&gt;&lt;/li&gt;
+<i>71</i>&nbsp; * &lt;li&gt;&lt;a href=&quot;http://www.ijg.org&quot;&gt;JPEG&lt;/a&gt;&lt;/li&gt;
+<i>72</i>&nbsp; * &lt;li&gt;&lt;a href=&quot;http://www.libpng.org/pub/png/spec/&quot;&gt;PNG&lt;/a&gt;&lt;/li&gt;
+<i>73</i>&nbsp; * &lt;/ul&gt;
+<i>74</i>&nbsp; *
+<i>75</i>&nbsp; * &lt;p&gt;
+<i>76</i>&nbsp; * Images can be resized as they are loaded (for example to reduce the amount of
+<i>77</i>&nbsp; * memory consumed by the image). The application can specify the quality of
+<i>78</i>&nbsp; * filtering used when scaling, and whether or not to preserve the original
+<i>79</i>&nbsp; * image&#39;s aspect ratio.
+<i>80</i>&nbsp; * &lt;/p&gt;
+<i>81</i>&nbsp; *
+<i>82</i>&nbsp; * &lt;p&gt;
+<i>83</i>&nbsp; * All URLs supported by {@link URL} can be passed to the constructor.
+<i>84</i>&nbsp; * If the passed string is not a valid URL, but a path instead, the Image is
+<i>85</i>&nbsp; * searched on the classpath in that case.
+<i>86</i>&nbsp; * &lt;/p&gt;
+<i>87</i>&nbsp; *
+<i>88</i>&nbsp; * &lt;p&gt;Use {@link ImageView} for displaying images loaded with this
+<i>89</i>&nbsp; * class. The same {@code Image} instance can be displayed by multiple
+<i>90</i>&nbsp; * {@code ImageView}s.&lt;/p&gt;
+<i>91</i>&nbsp; *
+<i>92</i>&nbsp; *&lt;p&gt;Example code for loading images.&lt;/p&gt;
+<i>93</i>&nbsp;
+<i>94</i>&nbsp;&lt;PRE&gt;
+<i>95</i>&nbsp;import javafx.scene.image.Image;
+<i>96</i>&nbsp;
+<i>97</i>&nbsp;// load an image in background, displaying a placeholder while it&#39;s loading
+<i>98</i>&nbsp;// (assuming there&#39;s an ImageView node somewhere displaying this image)
+<i>99</i>&nbsp;// The image is located in default package of the classpath
+<i>100</i>&nbsp;Image image1 = new Image(&quot;/flower.png&quot;, true);
+<i>101</i>&nbsp;
+<i>102</i>&nbsp;// load an image and resize it to 100x150 without preserving its original
+<i>103</i>&nbsp;// aspect ratio
+<i>104</i>&nbsp;// The image is located in my.res package of the classpath
+<i>105</i>&nbsp;Image image2 = new Image(&quot;my/res/flower.png&quot;, 100, 150, false, false);
+<i>106</i>&nbsp;
+<i>107</i>&nbsp;// load an image and resize it to width of 100 while preserving its
+<i>108</i>&nbsp;// original aspect ratio, using faster filtering method
+<i>109</i>&nbsp;// The image is downloaded from the supplied URL through http protocol
+<i>110</i>&nbsp;Image image3 = new Image(&quot;http://sample.com/res/flower.png&quot;, 100, 0, false, false);
+<i>111</i>&nbsp;
+<i>112</i>&nbsp;// load an image and resize it only in one dimension, to the height of 100 and
+<i>113</i>&nbsp;// the original width, without preserving original aspect ratio
+<i>114</i>&nbsp;// The image is located in the current working directory
+<i>115</i>&nbsp;Image image4 = new Image(&quot;file:flower.png&quot;, 0, 100, false, false);
+<i>116</i>&nbsp;
+<i>117</i>&nbsp;&lt;/PRE&gt;
+<i>118</i>&nbsp; * @since JavaFX 2.0
+<i>119</i>&nbsp; */
+<b class="nc"><i>120</i>&nbsp;public class Image {</b>
+<i>121</i>&nbsp;
+<i>122</i>&nbsp;    static {
+<b class="fc"><i>123</i>&nbsp;        Toolkit.setImageAccessor(new Toolkit.ImageAccessor() {</b>
+<i>124</i>&nbsp;
+<i>125</i>&nbsp;            @Override
+<i>126</i>&nbsp;            public boolean isAnimation(Image image) {
+<b class="nc"><i>127</i>&nbsp;                return image.isAnimation();</b>
+<i>128</i>&nbsp;            }
+<i>129</i>&nbsp;
+<i>130</i>&nbsp;            @Override
+<i>131</i>&nbsp;            public ReadOnlyObjectProperty&lt;PlatformImage&gt;
+<i>132</i>&nbsp;                    getImageProperty(Image image)
+<i>133</i>&nbsp;            {
+<b class="nc"><i>134</i>&nbsp;                return image.acc_platformImageProperty();</b>
+<i>135</i>&nbsp;            }
+<i>136</i>&nbsp;
+<i>137</i>&nbsp;            @Override
+<i>138</i>&nbsp;            public int[] getPreColors(PixelFormat&lt;ByteBuffer&gt; pf) {
+<b class="nc"><i>139</i>&nbsp;                return ((PixelFormat.IndexedPixelFormat) pf).getPreColors();</b>
+<i>140</i>&nbsp;            }
+<i>141</i>&nbsp;
+<i>142</i>&nbsp;            @Override
+<i>143</i>&nbsp;            public int[] getNonPreColors(PixelFormat&lt;ByteBuffer&gt; pf) {
+<b class="nc"><i>144</i>&nbsp;                return ((PixelFormat.IndexedPixelFormat) pf).getNonPreColors();</b>
+<i>145</i>&nbsp;            }
+<i>146</i>&nbsp;
+<i>147</i>&nbsp;            @Override
+<i>148</i>&nbsp;            public  Object getPlatformImage(Image image) {
+<b class="fc"><i>149</i>&nbsp;                return image.getPlatformImage();</b>
+<i>150</i>&nbsp;            }
+<i>151</i>&nbsp;
+<i>152</i>&nbsp;            @Override
+<i>153</i>&nbsp;            public Image fromPlatformImage(Object image) {
+<b class="nc"><i>154</i>&nbsp;                return Image.fromPlatformImage(image);</b>
+<i>155</i>&nbsp;            }
+<i>156</i>&nbsp;        });
+<i>157</i>&nbsp;    }
+<i>158</i>&nbsp;
+<i>159</i>&nbsp;    // Matches strings that start with a valid URI scheme
+<b class="fc"><i>160</i>&nbsp;    private static final Pattern URL_QUICKMATCH = Pattern.compile(&quot;^\\p{Alpha}[\\p{Alnum}+.-]*:.*$&quot;);</b>
+<i>161</i>&nbsp;    /**
+<i>162</i>&nbsp;     * The string representing the URL to use in fetching the pixel data.
+<i>163</i>&nbsp;     *
+<i>164</i>&nbsp;     * @defaultValue empty string
+<i>165</i>&nbsp;     */
+<i>166</i>&nbsp;    private final String url;
+<i>167</i>&nbsp;
+<i>168</i>&nbsp;    /**
+<i>169</i>&nbsp;     * Returns the url used to fetch the pixel data contained in the Image instance,
+<i>170</i>&nbsp;     * if specified in the constructor. If no url is provided in the constructor (for
+<i>171</i>&nbsp;     * instance, if the Image is constructed from an
+<i>172</i>&nbsp;     * {@link #Image(InputStream) InputStream}), this method will return null.
+<i>173</i>&nbsp;     *
+<i>174</i>&nbsp;     * @return a String containing the URL used to fetch the pixel data for this
+<i>175</i>&nbsp;     *      Image instance.
+<i>176</i>&nbsp;     * @since 9
+<i>177</i>&nbsp;     */
+<i>178</i>&nbsp;    public final String getUrl() {
+<b class="fc"><i>179</i>&nbsp;        return url;</b>
+<i>180</i>&nbsp;    }
+<i>181</i>&nbsp;
+<i>182</i>&nbsp;    private final InputStream inputSource;
+<i>183</i>&nbsp;
+<i>184</i>&nbsp;    final InputStream getInputSource() {
+<b class="nc"><i>185</i>&nbsp;        return inputSource;</b>
+<i>186</i>&nbsp;    }
+<i>187</i>&nbsp;
+<i>188</i>&nbsp;    /**
+<i>189</i>&nbsp;     * The approximate percentage of image&#39;s loading that
+<i>190</i>&nbsp;     * has been completed. A positive value between 0 and 1 where 0 is 0% and 1
+<i>191</i>&nbsp;     * is 100%.
+<i>192</i>&nbsp;     *
+<i>193</i>&nbsp;     * @defaultValue 0
+<i>194</i>&nbsp;     */
+<i>195</i>&nbsp;    private ReadOnlyDoubleWrapper progress;
+<i>196</i>&nbsp;
+<i>197</i>&nbsp;
+<i>198</i>&nbsp;    /**
+<i>199</i>&nbsp;     * This is package private *only* for the sake of testing. We need a way to feed fake progress
+<i>200</i>&nbsp;     * values. It would be better if Image were refactored to be testable (for example, by allowing
+<i>201</i>&nbsp;     * the test code to provide its own implementation of background loading), but this is a simpler
+<i>202</i>&nbsp;     * and safer change for now.
+<i>203</i>&nbsp;     *
+<i>204</i>&nbsp;     * @param value should be 0-1.
+<i>205</i>&nbsp;     */
+<i>206</i>&nbsp;    final void setProgress(double value) {
+<b class="fc"><i>207</i>&nbsp;        progressPropertyImpl().set(value);</b>
+<b class="fc"><i>208</i>&nbsp;    }</b>
+<i>209</i>&nbsp;
+<i>210</i>&nbsp;    public final double getProgress() {
+<b class="fc"><i>211</i>&nbsp;        return progress == null ? 0.0 : progress.get();</b>
+<i>212</i>&nbsp;    }
+<i>213</i>&nbsp;
+<i>214</i>&nbsp;    public final ReadOnlyDoubleProperty progressProperty() {
+<b class="nc"><i>215</i>&nbsp;        return progressPropertyImpl().getReadOnlyProperty();</b>
+<i>216</i>&nbsp;    }
+<i>217</i>&nbsp;
+<i>218</i>&nbsp;    private ReadOnlyDoubleWrapper progressPropertyImpl() {
+<b class="fc"><i>219</i>&nbsp;        if (progress == null) {</b>
+<b class="fc"><i>220</i>&nbsp;            progress = new ReadOnlyDoubleWrapper(this, &quot;progress&quot;);</b>
+<i>221</i>&nbsp;        }
+<b class="fc"><i>222</i>&nbsp;        return progress;</b>
+<i>223</i>&nbsp;    }
+<i>224</i>&nbsp;    // PENDING_DOC_REVIEW
+<i>225</i>&nbsp;    /**
+<i>226</i>&nbsp;     * The width of the bounding box within which the source image is
+<i>227</i>&nbsp;     * resized as necessary to fit. If set to a value {@code &lt;= 0}, then the
+<i>228</i>&nbsp;     * intrinsic width of the image will be used.
+<i>229</i>&nbsp;     * &lt;p/&gt;
+<i>230</i>&nbsp;     * See {@link #preserveRatio} for information on interaction between image&#39;s
+<i>231</i>&nbsp;     * {@code requestedWidth}, {@code requestedHeight} and {@code preserveRatio}
+<i>232</i>&nbsp;     * attributes.
+<i>233</i>&nbsp;     *
+<i>234</i>&nbsp;     * @defaultValue 0
+<i>235</i>&nbsp;     */
+<i>236</i>&nbsp;    private final double requestedWidth;
+<i>237</i>&nbsp;
+<i>238</i>&nbsp;    /**
+<i>239</i>&nbsp;     * Gets the width of the bounding box within which the source image is
+<i>240</i>&nbsp;     * resized as necessary to fit. If set to a value {@code &lt;= 0}, then the
+<i>241</i>&nbsp;     * intrinsic width of the image will be used.
+<i>242</i>&nbsp;     * &lt;p&gt;
+<i>243</i>&nbsp;     * See {@link #preserveRatio} for information on interaction between image&#39;s
+<i>244</i>&nbsp;     * {@code requestedWidth}, {@code requestedHeight} and {@code preserveRatio}
+<i>245</i>&nbsp;     * attributes.
+<i>246</i>&nbsp;     *
+<i>247</i>&nbsp;     * @return The requested width
+<i>248</i>&nbsp;     */
+<i>249</i>&nbsp;    public final double getRequestedWidth() {
+<b class="fc"><i>250</i>&nbsp;        return requestedWidth;</b>
+<i>251</i>&nbsp;    }
+<i>252</i>&nbsp;    // PENDING_DOC_REVIEW
+<i>253</i>&nbsp;    /**
+<i>254</i>&nbsp;     * The height of the bounding box within which the source image is
+<i>255</i>&nbsp;     * resized as necessary to fit. If set to a value {@code &lt;= 0}, then the
+<i>256</i>&nbsp;     * intrinsic height of the image will be used.
+<i>257</i>&nbsp;     * &lt;p&gt;
+<i>258</i>&nbsp;     * See {@link #preserveRatio} for information on interaction between image&#39;s
+<i>259</i>&nbsp;     * {@code requestedWidth}, {@code requestedHeight} and {@code preserveRatio}
+<i>260</i>&nbsp;     * attributes.
+<i>261</i>&nbsp;     *
+<i>262</i>&nbsp;     * @defaultValue 0
+<i>263</i>&nbsp;     */
+<i>264</i>&nbsp;    private final double requestedHeight;
+<i>265</i>&nbsp;
+<i>266</i>&nbsp;    /**
+<i>267</i>&nbsp;     * Gets the height of the bounding box within which the source image is
+<i>268</i>&nbsp;     * resized as necessary to fit. If set to a value {@code &lt;= 0}, then the
+<i>269</i>&nbsp;     * intrinsic height of the image will be used.
+<i>270</i>&nbsp;     * &lt;p&gt;
+<i>271</i>&nbsp;     * See {@link #preserveRatio} for information on interaction between image&#39;s
+<i>272</i>&nbsp;     * {@code requestedWidth}, {@code requestedHeight} and {@code preserveRatio}
+<i>273</i>&nbsp;     * attributes.
+<i>274</i>&nbsp;     *
+<i>275</i>&nbsp;     * @return The requested height
+<i>276</i>&nbsp;     */
+<i>277</i>&nbsp;    public final double getRequestedHeight() {
+<b class="fc"><i>278</i>&nbsp;        return requestedHeight;</b>
+<i>279</i>&nbsp;    }
+<i>280</i>&nbsp;    // PENDING_DOC_REVIEW
+<i>281</i>&nbsp;    /**
+<i>282</i>&nbsp;     * The image width or {@code 0} if the image loading fails. While the image
+<i>283</i>&nbsp;     * is being loaded it is set to {@code 0}.
+<i>284</i>&nbsp;     */
+<i>285</i>&nbsp;    private DoublePropertyImpl width;
+<i>286</i>&nbsp;
+<i>287</i>&nbsp;    public final double getWidth() {
+<b class="fc"><i>288</i>&nbsp;        return width == null ? 0.0 : width.get();</b>
+<i>289</i>&nbsp;    }
+<i>290</i>&nbsp;
+<i>291</i>&nbsp;    public final ReadOnlyDoubleProperty widthProperty() {
+<b class="nc"><i>292</i>&nbsp;        return widthPropertyImpl();</b>
+<i>293</i>&nbsp;    }
+<i>294</i>&nbsp;
+<i>295</i>&nbsp;    private DoublePropertyImpl widthPropertyImpl() {
+<b class="fc"><i>296</i>&nbsp;        if (width == null) {</b>
+<b class="fc"><i>297</i>&nbsp;            width = new DoublePropertyImpl(&quot;width&quot;);</b>
+<i>298</i>&nbsp;        }
+<i>299</i>&nbsp;
+<b class="fc"><i>300</i>&nbsp;        return width;</b>
+<i>301</i>&nbsp;    }
+<i>302</i>&nbsp;
+<i>303</i>&nbsp;    private final class DoublePropertyImpl extends ReadOnlyDoublePropertyBase {
+<i>304</i>&nbsp;        private final String name;
+<i>305</i>&nbsp;
+<i>306</i>&nbsp;        private double value;
+<i>307</i>&nbsp;
+<b class="fc"><i>308</i>&nbsp;        public DoublePropertyImpl(final String name) {</b>
+<b class="fc"><i>309</i>&nbsp;            this.name = name;</b>
+<b class="fc"><i>310</i>&nbsp;        }</b>
+<i>311</i>&nbsp;
+<i>312</i>&nbsp;        public void store(final double value) {
+<b class="fc"><i>313</i>&nbsp;            this.value = value;</b>
+<b class="fc"><i>314</i>&nbsp;        }</b>
+<i>315</i>&nbsp;
+<i>316</i>&nbsp;        @Override
+<i>317</i>&nbsp;        public void fireValueChangedEvent() {
+<b class="fc"><i>318</i>&nbsp;            super.fireValueChangedEvent();</b>
+<b class="fc"><i>319</i>&nbsp;        }</b>
+<i>320</i>&nbsp;
+<i>321</i>&nbsp;        @Override
+<i>322</i>&nbsp;        public double get() {
+<b class="fc"><i>323</i>&nbsp;            return value;</b>
+<i>324</i>&nbsp;        }
+<i>325</i>&nbsp;
+<i>326</i>&nbsp;        @Override
+<i>327</i>&nbsp;        public Object getBean() {
+<b class="nc"><i>328</i>&nbsp;            return Image.this;</b>
+<i>329</i>&nbsp;        }
+<i>330</i>&nbsp;
+<i>331</i>&nbsp;        @Override
+<i>332</i>&nbsp;        public String getName() {
+<b class="nc"><i>333</i>&nbsp;            return name;</b>
+<i>334</i>&nbsp;        }
+<i>335</i>&nbsp;    }
+<i>336</i>&nbsp;
+<i>337</i>&nbsp;    // PENDING_DOC_REVIEW
+<i>338</i>&nbsp;    /**
+<i>339</i>&nbsp;     * The image height or {@code 0} if the image loading fails. While the image
+<i>340</i>&nbsp;     * is being loaded it is set to {@code 0}.
+<i>341</i>&nbsp;     */
+<i>342</i>&nbsp;    private DoublePropertyImpl height;
+<i>343</i>&nbsp;
+<i>344</i>&nbsp;    public final double getHeight() {
+<b class="fc"><i>345</i>&nbsp;        return height == null ? 0.0 : height.get();</b>
+<i>346</i>&nbsp;    }
+<i>347</i>&nbsp;
+<i>348</i>&nbsp;    public final ReadOnlyDoubleProperty heightProperty() {
+<b class="nc"><i>349</i>&nbsp;        return heightPropertyImpl();</b>
+<i>350</i>&nbsp;    }
+<i>351</i>&nbsp;
+<i>352</i>&nbsp;    private DoublePropertyImpl heightPropertyImpl() {
+<b class="fc"><i>353</i>&nbsp;        if (height == null) {</b>
+<b class="fc"><i>354</i>&nbsp;            height = new DoublePropertyImpl(&quot;height&quot;);</b>
+<i>355</i>&nbsp;        }
+<i>356</i>&nbsp;
+<b class="fc"><i>357</i>&nbsp;        return height;</b>
+<i>358</i>&nbsp;    }
+<i>359</i>&nbsp;
+<i>360</i>&nbsp;    /**
+<i>361</i>&nbsp;     * Indicates whether to preserve the aspect ratio of the original image
+<i>362</i>&nbsp;     * when scaling to fit the image within the bounding box provided by
+<i>363</i>&nbsp;     * {@code width} and {@code height}.
+<i>364</i>&nbsp;     * &lt;p&gt;
+<i>365</i>&nbsp;     * If set to {@code true}, it affects the dimensions of this {@code Image}
+<i>366</i>&nbsp;     * in the following way:
+<i>367</i>&nbsp;     * &lt;ul&gt;
+<i>368</i>&nbsp;     *  &lt;li&gt; If only {@code width} is set, height is scaled to preserve ratio
+<i>369</i>&nbsp;     *  &lt;li&gt; If only {@code height} is set, width is scaled to preserve ratio
+<i>370</i>&nbsp;     *  &lt;li&gt; If both are set, they both may be scaled to get the best fit in a
+<i>371</i>&nbsp;     *  width by height rectangle while preserving the original aspect ratio
+<i>372</i>&nbsp;     * &lt;/ul&gt;
+<i>373</i>&nbsp;     * The reported {@code width} and {@code height} may be different from the
+<i>374</i>&nbsp;     * initially set values if they needed to be adjusted to preserve aspect
+<i>375</i>&nbsp;     * ratio.
+<i>376</i>&nbsp;     *
+<i>377</i>&nbsp;     * If unset or set to {@code false}, it affects the dimensions of this
+<i>378</i>&nbsp;     * {@code ImageView} in the following way:
+<i>379</i>&nbsp;     * &lt;ul&gt;
+<i>380</i>&nbsp;     *  &lt;li&gt; If only {@code width} is set, the image&#39;s width is scaled to
+<i>381</i>&nbsp;     *  match and height is unchanged;
+<i>382</i>&nbsp;     *  &lt;li&gt; If only {@code height} is set, the image&#39;s height is scaled to
+<i>383</i>&nbsp;     *  match and height is unchanged;
+<i>384</i>&nbsp;     *  &lt;li&gt; If both are set, the image is scaled to match both.
+<i>385</i>&nbsp;     * &lt;/ul&gt;
+<i>386</i>&nbsp;     *
+<i>387</i>&nbsp;     * @defaultValue false
+<i>388</i>&nbsp;     */
+<i>389</i>&nbsp;    private final boolean preserveRatio;
+<i>390</i>&nbsp;
+<i>391</i>&nbsp;    /**
+<i>392</i>&nbsp;     * Indicates whether to preserve the aspect ratio of the original image
+<i>393</i>&nbsp;     * when scaling to fit the image within the bounding box provided by
+<i>394</i>&nbsp;     * {@code width} and {@code height}.
+<i>395</i>&nbsp;     * &lt;p&gt;
+<i>396</i>&nbsp;     * If set to {@code true}, it affects the dimensions of this {@code Image}
+<i>397</i>&nbsp;     * in the following way:
+<i>398</i>&nbsp;     * &lt;ul&gt;
+<i>399</i>&nbsp;     *  &lt;li&gt; If only {@code width} is set, height is scaled to preserve ratio
+<i>400</i>&nbsp;     *  &lt;li&gt; If only {@code height} is set, width is scaled to preserve ratio
+<i>401</i>&nbsp;     *  &lt;li&gt; If both are set, they both may be scaled to get the best fit in a
+<i>402</i>&nbsp;     *  width by height rectangle while preserving the original aspect ratio
+<i>403</i>&nbsp;     * &lt;/ul&gt;
+<i>404</i>&nbsp;     * The reported {@code width} and {@code height} may be different from the
+<i>405</i>&nbsp;     * initially set values if they needed to be adjusted to preserve aspect
+<i>406</i>&nbsp;     * ratio.
+<i>407</i>&nbsp;     *
+<i>408</i>&nbsp;     * If unset or set to {@code false}, it affects the dimensions of this
+<i>409</i>&nbsp;     * {@code ImageView} in the following way:
+<i>410</i>&nbsp;     * &lt;ul&gt;
+<i>411</i>&nbsp;     *  &lt;li&gt; If only {@code width} is set, the image&#39;s width is scaled to
+<i>412</i>&nbsp;     *  match and height is unchanged;
+<i>413</i>&nbsp;     *  &lt;li&gt; If only {@code height} is set, the image&#39;s height is scaled to
+<i>414</i>&nbsp;     *  match and height is unchanged;
+<i>415</i>&nbsp;     *  &lt;li&gt; If both are set, the image is scaled to match both.
+<i>416</i>&nbsp;     * &lt;/ul&gt;
+<i>417</i>&nbsp;     *
+<i>418</i>&nbsp;     * @return true if the aspect ratio of the original image is to be
+<i>419</i>&nbsp;     *               preserved when scaling to fit the image within the bounding
+<i>420</i>&nbsp;     *               box provided by {@code width} and {@code height}.
+<i>421</i>&nbsp;     */
+<i>422</i>&nbsp;    public final boolean isPreserveRatio() {
+<b class="fc"><i>423</i>&nbsp;        return preserveRatio;</b>
+<i>424</i>&nbsp;    }
+<i>425</i>&nbsp;
+<i>426</i>&nbsp;    /**
+<i>427</i>&nbsp;     * Indicates whether to use a better quality filtering algorithm or a faster
+<i>428</i>&nbsp;     * one when scaling this image to fit within the
+<i>429</i>&nbsp;     * bounding box provided by {@code width} and {@code height}.
+<i>430</i>&nbsp;     *
+<i>431</i>&nbsp;     * &lt;p&gt;
+<i>432</i>&nbsp;     * If not initialized or set to {@code true} a better quality filtering
+<i>433</i>&nbsp;     * will be used, otherwise a faster but lesser quality filtering will be
+<i>434</i>&nbsp;     * used.
+<i>435</i>&nbsp;     * &lt;/p&gt;
+<i>436</i>&nbsp;     *
+<i>437</i>&nbsp;     * @defaultValue true
+<i>438</i>&nbsp;     */
+<i>439</i>&nbsp;    private final boolean smooth;
+<i>440</i>&nbsp;
+<i>441</i>&nbsp;    /**
+<i>442</i>&nbsp;     * Indicates whether to use a better quality filtering algorithm or a faster
+<i>443</i>&nbsp;     * one when scaling this image to fit within the
+<i>444</i>&nbsp;     * bounding box provided by {@code width} and {@code height}.
+<i>445</i>&nbsp;     *
+<i>446</i>&nbsp;     * &lt;p&gt;
+<i>447</i>&nbsp;     * If not initialized or set to {@code true} a better quality filtering
+<i>448</i>&nbsp;     * will be used, otherwise a faster but lesser quality filtering will be
+<i>449</i>&nbsp;     * used.
+<i>450</i>&nbsp;     * &lt;/p&gt;
+<i>451</i>&nbsp;     *
+<i>452</i>&nbsp;     * @return true if a better quality (but slower) filtering algorithm
+<i>453</i>&nbsp;     *              is used for scaling to fit within the
+<i>454</i>&nbsp;     *              bounding box provided by {@code width} and {@code height}.
+<i>455</i>&nbsp;     */
+<i>456</i>&nbsp;    public final boolean isSmooth() {
+<b class="fc"><i>457</i>&nbsp;        return smooth;</b>
+<i>458</i>&nbsp;    }
+<i>459</i>&nbsp;
+<i>460</i>&nbsp;    /**
+<i>461</i>&nbsp;     * Indicates whether the image is being loaded in the background.
+<i>462</i>&nbsp;     *
+<i>463</i>&nbsp;     * @defaultValue false
+<i>464</i>&nbsp;     */
+<i>465</i>&nbsp;    private final boolean backgroundLoading;
+<i>466</i>&nbsp;
+<i>467</i>&nbsp;    /**
+<i>468</i>&nbsp;     * Indicates whether the image is being loaded in the background.
+<i>469</i>&nbsp;     * @return true if the image is loaded in the background
+<i>470</i>&nbsp;     */
+<i>471</i>&nbsp;    public final boolean isBackgroundLoading() {
+<b class="fc"><i>472</i>&nbsp;        return backgroundLoading;</b>
+<i>473</i>&nbsp;    }
+<i>474</i>&nbsp;
+<i>475</i>&nbsp;    /**
+<i>476</i>&nbsp;     * Indicates whether an error was detected while loading an image.
+<i>477</i>&nbsp;     *
+<i>478</i>&nbsp;     * @defaultValue false
+<i>479</i>&nbsp;     */
+<i>480</i>&nbsp;    private ReadOnlyBooleanWrapper error;
+<i>481</i>&nbsp;
+<i>482</i>&nbsp;
+<i>483</i>&nbsp;    private void setError(boolean value) {
+<b class="fc"><i>484</i>&nbsp;        errorPropertyImpl().set(value);</b>
+<b class="fc"><i>485</i>&nbsp;    }</b>
+<i>486</i>&nbsp;
+<i>487</i>&nbsp;    public final boolean isError() {
+<b class="nc"><i>488</i>&nbsp;        return error == null ? false : error.get();</b>
+<i>489</i>&nbsp;    }
+<i>490</i>&nbsp;
+<i>491</i>&nbsp;    public final ReadOnlyBooleanProperty errorProperty() {
+<b class="nc"><i>492</i>&nbsp;        return errorPropertyImpl().getReadOnlyProperty();</b>
+<i>493</i>&nbsp;    }
+<i>494</i>&nbsp;
+<i>495</i>&nbsp;    private ReadOnlyBooleanWrapper errorPropertyImpl() {
+<b class="fc"><i>496</i>&nbsp;        if (error == null) {</b>
+<b class="fc"><i>497</i>&nbsp;            error = new ReadOnlyBooleanWrapper(this, &quot;error&quot;);</b>
+<i>498</i>&nbsp;        }
+<b class="fc"><i>499</i>&nbsp;        return error;</b>
+<i>500</i>&nbsp;    }
+<i>501</i>&nbsp;
+<i>502</i>&nbsp;    /**
+<i>503</i>&nbsp;     * The exception which caused image loading to fail. Contains a non-null
+<i>504</i>&nbsp;     * value only if the {@code error} property is set to {@code true}.
+<i>505</i>&nbsp;     *
+<i>506</i>&nbsp;     * @since JavaFX 8.0
+<i>507</i>&nbsp;     */
+<i>508</i>&nbsp;    private ReadOnlyObjectWrapper&lt;Exception&gt; exception;
+<i>509</i>&nbsp;
+<i>510</i>&nbsp;    private void setException(Exception value) {
+<b class="fc"><i>511</i>&nbsp;        exceptionPropertyImpl().set(value);</b>
+<b class="fc"><i>512</i>&nbsp;    }</b>
+<i>513</i>&nbsp;
+<i>514</i>&nbsp;    public final Exception getException() {
+<b class="nc"><i>515</i>&nbsp;        return exception == null ? null : exception.get();</b>
+<i>516</i>&nbsp;    }
+<i>517</i>&nbsp;
+<i>518</i>&nbsp;    public final ReadOnlyObjectProperty&lt;Exception&gt; exceptionProperty() {
+<b class="nc"><i>519</i>&nbsp;        return exceptionPropertyImpl().getReadOnlyProperty();</b>
+<i>520</i>&nbsp;    }
+<i>521</i>&nbsp;
+<i>522</i>&nbsp;    private ReadOnlyObjectWrapper&lt;Exception&gt; exceptionPropertyImpl() {
+<b class="fc"><i>523</i>&nbsp;        if (exception == null) {</b>
+<b class="fc"><i>524</i>&nbsp;            exception = new ReadOnlyObjectWrapper&lt;Exception&gt;(this, &quot;exception&quot;);</b>
+<i>525</i>&nbsp;        }
+<b class="fc"><i>526</i>&nbsp;        return exception;</b>
+<i>527</i>&nbsp;    }
+<i>528</i>&nbsp;
+<i>529</i>&nbsp;    /*
+<i>530</i>&nbsp;     * The underlying platform representation of this Image object.
+<i>531</i>&nbsp;     *
+<i>532</i>&nbsp;     * @defaultValue null
+<i>533</i>&nbsp;     */
+<i>534</i>&nbsp;    private ObjectPropertyImpl&lt;PlatformImage&gt; platformImage;
+<i>535</i>&nbsp;
+<i>536</i>&nbsp;    final Object getPlatformImage() {
+<b class="fc"><i>537</i>&nbsp;        return platformImage == null ? null : platformImage.get();</b>
+<i>538</i>&nbsp;    }
+<i>539</i>&nbsp;
+<i>540</i>&nbsp;    final ReadOnlyObjectProperty&lt;PlatformImage&gt; acc_platformImageProperty() {
+<b class="nc"><i>541</i>&nbsp;        return platformImagePropertyImpl();</b>
+<i>542</i>&nbsp;    }
+<i>543</i>&nbsp;
+<i>544</i>&nbsp;    private ObjectPropertyImpl&lt;PlatformImage&gt; platformImagePropertyImpl() {
+<b class="fc"><i>545</i>&nbsp;        if (platformImage == null) {</b>
+<b class="fc"><i>546</i>&nbsp;            platformImage = new ObjectPropertyImpl&lt;PlatformImage&gt;(&quot;platformImage&quot;);</b>
+<i>547</i>&nbsp;        }
+<i>548</i>&nbsp;
+<b class="fc"><i>549</i>&nbsp;        return platformImage;</b>
+<i>550</i>&nbsp;    }
+<i>551</i>&nbsp;
+<i>552</i>&nbsp;    void pixelsDirty() {
+<b class="nc"><i>553</i>&nbsp;        platformImagePropertyImpl().fireValueChangedEvent();</b>
+<b class="nc"><i>554</i>&nbsp;    }</b>
+<i>555</i>&nbsp;
+<i>556</i>&nbsp;    private final class ObjectPropertyImpl&lt;T&gt;
+<i>557</i>&nbsp;            extends ReadOnlyObjectPropertyBase&lt;T&gt; {
+<i>558</i>&nbsp;        private final String name;
+<i>559</i>&nbsp;
+<i>560</i>&nbsp;        private T value;
+<b class="fc"><i>561</i>&nbsp;        private boolean valid = true;</b>
+<i>562</i>&nbsp;
+<b class="fc"><i>563</i>&nbsp;        public ObjectPropertyImpl(final String name) {</b>
+<b class="fc"><i>564</i>&nbsp;            this.name = name;</b>
+<b class="fc"><i>565</i>&nbsp;        }</b>
+<i>566</i>&nbsp;
+<i>567</i>&nbsp;        public void store(final T value) {
+<b class="fc"><i>568</i>&nbsp;            this.value = value;</b>
+<b class="fc"><i>569</i>&nbsp;        }</b>
+<i>570</i>&nbsp;
+<i>571</i>&nbsp;        public void set(final T value) {
+<b class="nc"><i>572</i>&nbsp;            if (this.value != value) {</b>
+<b class="nc"><i>573</i>&nbsp;                this.value = value;</b>
+<b class="nc"><i>574</i>&nbsp;                markInvalid();</b>
+<i>575</i>&nbsp;            }
+<b class="nc"><i>576</i>&nbsp;        }</b>
+<i>577</i>&nbsp;
+<i>578</i>&nbsp;        @Override
+<i>579</i>&nbsp;        public void fireValueChangedEvent() {
+<b class="fc"><i>580</i>&nbsp;            super.fireValueChangedEvent();</b>
+<b class="fc"><i>581</i>&nbsp;        }</b>
+<i>582</i>&nbsp;
+<i>583</i>&nbsp;        private void markInvalid() {
+<b class="nc"><i>584</i>&nbsp;            if (valid) {</b>
+<b class="nc"><i>585</i>&nbsp;                valid = false;</b>
+<b class="nc"><i>586</i>&nbsp;                fireValueChangedEvent();</b>
+<i>587</i>&nbsp;            }
+<b class="nc"><i>588</i>&nbsp;        }</b>
+<i>589</i>&nbsp;
+<i>590</i>&nbsp;        @Override
+<i>591</i>&nbsp;        public T get() {
+<b class="fc"><i>592</i>&nbsp;            valid = true;</b>
+<b class="fc"><i>593</i>&nbsp;            return value;</b>
+<i>594</i>&nbsp;        }
+<i>595</i>&nbsp;
+<i>596</i>&nbsp;        @Override
+<i>597</i>&nbsp;        public Object getBean() {
+<b class="nc"><i>598</i>&nbsp;            return Image.this;</b>
+<i>599</i>&nbsp;        }
+<i>600</i>&nbsp;
+<i>601</i>&nbsp;        @Override
+<i>602</i>&nbsp;        public String getName() {
+<b class="nc"><i>603</i>&nbsp;            return name;</b>
+<i>604</i>&nbsp;        }
+<i>605</i>&nbsp;    }
+<i>606</i>&nbsp;
+<i>607</i>&nbsp;    /**
+<i>608</i>&nbsp;     * Constructs an {@code Image} with content loaded from the specified
+<i>609</i>&nbsp;     * url.
+<i>610</i>&nbsp;     *
+<i>611</i>&nbsp;     * @param url the string representing the URL to use in fetching the pixel
+<i>612</i>&nbsp;     *      data
+<i>613</i>&nbsp;     * @throws NullPointerException if URL is null
+<i>614</i>&nbsp;     * @throws IllegalArgumentException if URL is invalid or unsupported
+<i>615</i>&nbsp;     */
+<i>616</i>&nbsp;    public Image(@NamedArg(&quot;url&quot;) String url) {
+<b class="fc"><i>617</i>&nbsp;        this(validateUrl(url), null, 0, 0, false, false, false);</b>
+<b class="fc"><i>618</i>&nbsp;        initialize(null);</b>
+<b class="fc"><i>619</i>&nbsp;    }</b>
+<i>620</i>&nbsp;
+<i>621</i>&nbsp;    /**
+<i>622</i>&nbsp;     * Construct a new {@code Image} with the specified parameters.
+<i>623</i>&nbsp;     *
+<i>624</i>&nbsp;     * @param url the string representing the URL to use in fetching the pixel
+<i>625</i>&nbsp;     *      data
+<i>626</i>&nbsp;     * @param backgroundLoading indicates whether the image
+<i>627</i>&nbsp;     *      is being loaded in the background
+<i>628</i>&nbsp;     * @throws NullPointerException if URL is null
+<i>629</i>&nbsp;     * @throws IllegalArgumentException if URL is invalid or unsupported
+<i>630</i>&nbsp;     */
+<i>631</i>&nbsp;    public Image(@NamedArg(&quot;url&quot;) String url, @NamedArg(&quot;backgroundLoading&quot;) boolean backgroundLoading) {
+<b class="nc"><i>632</i>&nbsp;        this(validateUrl(url), null, 0, 0, false, false, backgroundLoading);</b>
+<b class="nc"><i>633</i>&nbsp;        initialize(null);</b>
+<b class="nc"><i>634</i>&nbsp;    }</b>
+<i>635</i>&nbsp;
+<i>636</i>&nbsp;    /**
+<i>637</i>&nbsp;     * Construct a new {@code Image} with the specified parameters.
+<i>638</i>&nbsp;     *
+<i>639</i>&nbsp;     * @param url the string representing the URL to use in fetching the pixel
+<i>640</i>&nbsp;     *      data
+<i>641</i>&nbsp;     * @param requestedWidth the image&#39;s bounding box width
+<i>642</i>&nbsp;     * @param requestedHeight the image&#39;s bounding box height
+<i>643</i>&nbsp;     * @param preserveRatio indicates whether to preserve the aspect ratio of
+<i>644</i>&nbsp;     *      the original image when scaling to fit the image within the
+<i>645</i>&nbsp;     *      specified bounding box
+<i>646</i>&nbsp;     * @param smooth indicates whether to use a better quality filtering
+<i>647</i>&nbsp;     *      algorithm or a faster one when scaling this image to fit within
+<i>648</i>&nbsp;     *      the specified bounding box
+<i>649</i>&nbsp;     * @throws NullPointerException if URL is null
+<i>650</i>&nbsp;     * @throws IllegalArgumentException if URL is invalid or unsupported
+<i>651</i>&nbsp;     */
+<i>652</i>&nbsp;    public Image(@NamedArg(&quot;url&quot;) String url, @NamedArg(&quot;requestedWidth&quot;) double requestedWidth, @NamedArg(&quot;requestedHeight&quot;) double requestedHeight,
+<i>653</i>&nbsp;                 @NamedArg(&quot;preserveRatio&quot;) boolean preserveRatio, @NamedArg(&quot;smooth&quot;) boolean smooth) {
+<b class="nc"><i>654</i>&nbsp;        this(validateUrl(url), null, requestedWidth, requestedHeight,</b>
+<i>655</i>&nbsp;             preserveRatio, smooth, false);
+<b class="nc"><i>656</i>&nbsp;        initialize(null);</b>
+<b class="nc"><i>657</i>&nbsp;    }</b>
+<i>658</i>&nbsp;
+<i>659</i>&nbsp;    /**
+<i>660</i>&nbsp;     * Construct a new {@code Image} with the specified parameters.
+<i>661</i>&nbsp;     *
+<i>662</i>&nbsp;     * The &lt;i&gt;url&lt;/i&gt; without scheme is threated as relative to classpath,
+<i>663</i>&nbsp;     * url with scheme is treated accordingly to the scheme using
+<i>664</i>&nbsp;     * {@link URL#openStream()}
+<i>665</i>&nbsp;     *
+<i>666</i>&nbsp;     * @param url the string representing the URL to use in fetching the pixel
+<i>667</i>&nbsp;     *      data
+<i>668</i>&nbsp;     * @param requestedWidth the image&#39;s bounding box width
+<i>669</i>&nbsp;     * @param requestedHeight the image&#39;s bounding box height
+<i>670</i>&nbsp;     * @param preserveRatio indicates whether to preserve the aspect ratio of
+<i>671</i>&nbsp;     *      the original image when scaling to fit the image within the
+<i>672</i>&nbsp;     *      specified bounding box
+<i>673</i>&nbsp;     * @param smooth indicates whether to use a better quality filtering
+<i>674</i>&nbsp;     *      algorithm or a faster one when scaling this image to fit within
+<i>675</i>&nbsp;     *      the specified bounding box
+<i>676</i>&nbsp;     * @param backgroundLoading indicates whether the image
+<i>677</i>&nbsp;     *      is being loaded in the background
+<i>678</i>&nbsp;     * @throws NullPointerException if URL is null
+<i>679</i>&nbsp;     * @throws IllegalArgumentException if URL is invalid or unsupported
+<i>680</i>&nbsp;     */
+<i>681</i>&nbsp;    public Image(
+<i>682</i>&nbsp;            @NamedArg(value=&quot;url&quot;, defaultValue=&quot;\&quot;\&quot;&quot;) String url,
+<i>683</i>&nbsp;            @NamedArg(&quot;requestedWidth&quot;) double requestedWidth,
+<i>684</i>&nbsp;            @NamedArg(&quot;requestedHeight&quot;) double requestedHeight,
+<i>685</i>&nbsp;            @NamedArg(&quot;preserveRatio&quot;) boolean preserveRatio,
+<i>686</i>&nbsp;            @NamedArg(value=&quot;smooth&quot;, defaultValue=&quot;true&quot;) boolean smooth,
+<i>687</i>&nbsp;            @NamedArg(&quot;backgroundLoading&quot;) boolean backgroundLoading) {
+<b class="fc"><i>688</i>&nbsp;        this(validateUrl(url), null, requestedWidth, requestedHeight,</b>
+<i>689</i>&nbsp;             preserveRatio, smooth, backgroundLoading);
+<b class="fc"><i>690</i>&nbsp;        initialize(null);</b>
+<b class="fc"><i>691</i>&nbsp;    }</b>
+<i>692</i>&nbsp;
+<i>693</i>&nbsp;    /**
+<i>694</i>&nbsp;     * Construct an {@code Image} with content loaded from the specified
+<i>695</i>&nbsp;     * input stream.
+<i>696</i>&nbsp;     *
+<i>697</i>&nbsp;     * @param is the stream from which to load the image
+<i>698</i>&nbsp;     * @throws NullPointerException if input stream is null
+<i>699</i>&nbsp;     */
+<i>700</i>&nbsp;    public Image(@NamedArg(&quot;is&quot;) InputStream is) {
+<b class="nc"><i>701</i>&nbsp;        this(null, validateInputStream(is), 0, 0, false, false, false);</b>
+<b class="nc"><i>702</i>&nbsp;        initialize(null);</b>
+<b class="nc"><i>703</i>&nbsp;    }</b>
+<i>704</i>&nbsp;
+<i>705</i>&nbsp;    /**
+<i>706</i>&nbsp;     * Construct a new {@code Image} with the specified parameters.
+<i>707</i>&nbsp;     *
+<i>708</i>&nbsp;     * @param is the stream from which to load the image
+<i>709</i>&nbsp;     * @param requestedWidth the image&#39;s bounding box width
+<i>710</i>&nbsp;     * @param requestedHeight the image&#39;s bounding box height
+<i>711</i>&nbsp;     * @param preserveRatio indicates whether to preserve the aspect ratio of
+<i>712</i>&nbsp;     *      the original image when scaling to fit the image within the
+<i>713</i>&nbsp;     *      specified bounding box
+<i>714</i>&nbsp;     * @param smooth indicates whether to use a better quality filtering
+<i>715</i>&nbsp;     *      algorithm or a faster one when scaling this image to fit within
+<i>716</i>&nbsp;     *      the specified bounding box
+<i>717</i>&nbsp;     * @throws NullPointerException if input stream is null
+<i>718</i>&nbsp;     */
+<i>719</i>&nbsp;    public Image(@NamedArg(&quot;is&quot;) InputStream is, @NamedArg(&quot;requestedWidth&quot;) double requestedWidth, @NamedArg(&quot;requestedHeight&quot;) double requestedHeight,
+<i>720</i>&nbsp;                 @NamedArg(&quot;preserveRatio&quot;) boolean preserveRatio, @NamedArg(&quot;smooth&quot;) boolean smooth) {
+<b class="nc"><i>721</i>&nbsp;        this(null, validateInputStream(is), requestedWidth, requestedHeight,</b>
+<i>722</i>&nbsp;             preserveRatio, smooth, false);
+<b class="nc"><i>723</i>&nbsp;        initialize(null);</b>
+<b class="nc"><i>724</i>&nbsp;    }</b>
+<i>725</i>&nbsp;
+<i>726</i>&nbsp;    /**
+<i>727</i>&nbsp;     * Package private internal constructor used only by {@link WritableImage}.
+<i>728</i>&nbsp;     * The dimensions must both be positive numbers &lt;code&gt;(&amp;gt;&amp;nbsp;0)&lt;/code&gt;.
+<i>729</i>&nbsp;     *
+<i>730</i>&nbsp;     * @param width the width of the empty image
+<i>731</i>&nbsp;     * @param height the height of the empty image
+<i>732</i>&nbsp;     * @throws IllegalArgumentException if either dimension is negative or zero.
+<i>733</i>&nbsp;     */
+<i>734</i>&nbsp;    Image(int width, int height) {
+<b class="nc"><i>735</i>&nbsp;        this(null, null, width, height, false, false, false);</b>
+<b class="nc"><i>736</i>&nbsp;        if (width &lt;= 0 || height &lt;= 0) {</b>
+<b class="nc"><i>737</i>&nbsp;            throw new IllegalArgumentException(&quot;Image dimensions must be positive (w,h &gt; 0)&quot;);</b>
+<i>738</i>&nbsp;        }
+<b class="nc"><i>739</i>&nbsp;        initialize(Toolkit.getToolkit().createPlatformImage(width, height));</b>
+<b class="nc"><i>740</i>&nbsp;    }</b>
+<i>741</i>&nbsp;
+<i>742</i>&nbsp;    private Image(Object externalImage) {
+<b class="nc"><i>743</i>&nbsp;        this(null, null, 0, 0, false, false, false);</b>
+<b class="nc"><i>744</i>&nbsp;        initialize(externalImage);</b>
+<b class="nc"><i>745</i>&nbsp;    }</b>
+<i>746</i>&nbsp;
+<i>747</i>&nbsp;    private Image(String url, InputStream is,
+<i>748</i>&nbsp;                  double requestedWidth, double requestedHeight,
+<i>749</i>&nbsp;                  boolean preserveRatio, boolean smooth,
+<b class="fc"><i>750</i>&nbsp;                  boolean backgroundLoading) {</b>
+<b class="fc"><i>751</i>&nbsp;        this.url = url;</b>
+<b class="fc"><i>752</i>&nbsp;        this.inputSource = is;</b>
+<b class="fc"><i>753</i>&nbsp;        this.requestedWidth = requestedWidth;</b>
+<b class="fc"><i>754</i>&nbsp;        this.requestedHeight = requestedHeight;</b>
+<b class="fc"><i>755</i>&nbsp;        this.preserveRatio = preserveRatio;</b>
+<b class="fc"><i>756</i>&nbsp;        this.smooth = smooth;</b>
+<b class="fc"><i>757</i>&nbsp;        this.backgroundLoading = backgroundLoading;</b>
+<b class="fc"><i>758</i>&nbsp;    }</b>
+<i>759</i>&nbsp;
+<i>760</i>&nbsp;    /**
+<i>761</i>&nbsp;     * Cancels the background loading of this image.
+<i>762</i>&nbsp;     *
+<i>763</i>&nbsp;     * &lt;p&gt;Has no effect if this image isn&#39;t loaded in background or if loading
+<i>764</i>&nbsp;     * has already completed.&lt;/p&gt;
+<i>765</i>&nbsp;     */
+<i>766</i>&nbsp;    public void cancel() {
+<b class="nc"><i>767</i>&nbsp;        if (backgroundTask != null) {</b>
+<b class="nc"><i>768</i>&nbsp;            backgroundTask.cancel();</b>
+<i>769</i>&nbsp;        }
+<b class="nc"><i>770</i>&nbsp;    }</b>
+<i>771</i>&nbsp;
+<i>772</i>&nbsp;    /*
+<i>773</i>&nbsp;     * used for testing
+<i>774</i>&nbsp;     */
+<i>775</i>&nbsp;    void dispose() {
+<b class="nc"><i>776</i>&nbsp;        cancel();</b>
+<b class="nc"><i>777</i>&nbsp;        if (animation != null) {</b>
+<b class="nc"><i>778</i>&nbsp;            animation.stop();</b>
+<i>779</i>&nbsp;        }
+<b class="nc"><i>780</i>&nbsp;    }</b>
+<i>781</i>&nbsp;
+<i>782</i>&nbsp;    private ImageTask backgroundTask;
+<i>783</i>&nbsp;
+<i>784</i>&nbsp;    private void initialize(Object externalImage) {
+<i>785</i>&nbsp;        // we need to check the original values here, because setting placeholder
+<i>786</i>&nbsp;        // changes platformImage, so wrong branch of if would be used
+<b class="fc"><i>787</i>&nbsp;        if (externalImage != null) {</b>
+<i>788</i>&nbsp;            // Make an image from the provided platform-specific image
+<i>789</i>&nbsp;            // object (e.g. a BufferedImage in the case of the Swing profile)
+<b class="nc"><i>790</i>&nbsp;            ImageLoader loader = loadPlatformImage(externalImage);</b>
+<b class="nc"><i>791</i>&nbsp;            finishImage(loader);</b>
+<b class="nc"><i>792</i>&nbsp;        } else if (isBackgroundLoading() &amp;&amp; (inputSource == null)) {</b>
+<i>793</i>&nbsp;            // Load image in the background.
+<b class="nc"><i>794</i>&nbsp;            loadInBackground();</b>
+<i>795</i>&nbsp;        } else {
+<i>796</i>&nbsp;            // Load image immediately.
+<i>797</i>&nbsp;            ImageLoader loader;
+<b class="fc"><i>798</i>&nbsp;            if (inputSource != null) {</b>
+<b class="nc"><i>799</i>&nbsp;                loader = loadImage(inputSource, getRequestedWidth(), getRequestedHeight(),</b>
+<b class="nc"><i>800</i>&nbsp;                                   isPreserveRatio(), isSmooth());</b>
+<i>801</i>&nbsp;            } else {
+<b class="fc"><i>802</i>&nbsp;                loader = loadImage(getUrl(), getRequestedWidth(), getRequestedHeight(),</b>
+<b class="fc"><i>803</i>&nbsp;                                   isPreserveRatio(), isSmooth());</b>
+<i>804</i>&nbsp;            }
+<b class="fc"><i>805</i>&nbsp;            finishImage(loader);</b>
+<i>806</i>&nbsp;        }
+<b class="fc"><i>807</i>&nbsp;    }</b>
+<i>808</i>&nbsp;
+<i>809</i>&nbsp;    private void finishImage(ImageLoader loader) {
+<b class="fc"><i>810</i>&nbsp;        final Exception loadingException = loader.getException();</b>
+<b class="fc"><i>811</i>&nbsp;        if (loadingException != null) {</b>
+<b class="fc"><i>812</i>&nbsp;            finishImage(loadingException);</b>
+<b class="fc"><i>813</i>&nbsp;            return;</b>
+<i>814</i>&nbsp;        }
+<i>815</i>&nbsp;
+<b class="fc"><i>816</i>&nbsp;        if (loader.getFrameCount() &gt; 1) {</b>
+<b class="nc"><i>817</i>&nbsp;            initializeAnimatedImage(loader);</b>
+<i>818</i>&nbsp;        } else {
+<b class="fc"><i>819</i>&nbsp;            PlatformImage pi = loader.getFrame(0);</b>
+<b class="fc"><i>820</i>&nbsp;            double w = loader.getWidth() / pi.getPixelScale();</b>
+<b class="fc"><i>821</i>&nbsp;            double h = loader.getHeight() / pi.getPixelScale();</b>
+<b class="fc"><i>822</i>&nbsp;            setPlatformImageWH(pi, w, h);</b>
+<i>823</i>&nbsp;        }
+<b class="fc"><i>824</i>&nbsp;        setProgress(1);</b>
+<b class="fc"><i>825</i>&nbsp;    }</b>
+<i>826</i>&nbsp;
+<i>827</i>&nbsp;    private void finishImage(Exception exception) {
+<b class="fc"><i>828</i>&nbsp;       setException(exception);</b>
+<b class="fc"><i>829</i>&nbsp;       setError(true);</b>
+<b class="fc"><i>830</i>&nbsp;       setPlatformImageWH(null, 0, 0);</b>
+<b class="fc"><i>831</i>&nbsp;       setProgress(1);</b>
+<b class="fc"><i>832</i>&nbsp;    }</b>
+<i>833</i>&nbsp;
+<i>834</i>&nbsp;    // Support for animated images.
+<i>835</i>&nbsp;    private Animation animation;
+<i>836</i>&nbsp;    // We keep the animation frames associated with the Image rather than with
+<i>837</i>&nbsp;    // the animation, so most of the data can be garbage collected while
+<i>838</i>&nbsp;    // the animation is still running.
+<i>839</i>&nbsp;    private PlatformImage[] animFrames;
+<i>840</i>&nbsp;
+<i>841</i>&nbsp;    // Generates the animation Timeline for multiframe images.
+<i>842</i>&nbsp;    private void initializeAnimatedImage(ImageLoader loader) {
+<b class="nc"><i>843</i>&nbsp;        final int frameCount = loader.getFrameCount();</b>
+<b class="nc"><i>844</i>&nbsp;        animFrames = new PlatformImage[frameCount];</b>
+<i>845</i>&nbsp;
+<b class="nc"><i>846</i>&nbsp;        for (int i = 0; i &lt; frameCount; ++i) {</b>
+<b class="nc"><i>847</i>&nbsp;            animFrames[i] = loader.getFrame(i);</b>
+<i>848</i>&nbsp;        }
+<i>849</i>&nbsp;
+<b class="nc"><i>850</i>&nbsp;        PlatformImage zeroFrame = loader.getFrame(0);</b>
+<i>851</i>&nbsp;
+<b class="nc"><i>852</i>&nbsp;        double w = loader.getWidth() / zeroFrame.getPixelScale();</b>
+<b class="nc"><i>853</i>&nbsp;        double h = loader.getHeight() / zeroFrame.getPixelScale();</b>
+<b class="nc"><i>854</i>&nbsp;        setPlatformImageWH(zeroFrame, w, h);</b>
+<i>855</i>&nbsp;
+<b class="nc"><i>856</i>&nbsp;        animation = new Animation(this, loader);</b>
+<b class="nc"><i>857</i>&nbsp;        animation.start();</b>
+<b class="nc"><i>858</i>&nbsp;    }</b>
+<i>859</i>&nbsp;
+<i>860</i>&nbsp;    private static final class Animation {
+<i>861</i>&nbsp;        final WeakReference&lt;Image&gt; imageRef;
+<i>862</i>&nbsp;        final Timeline timeline;
+<i>863</i>&nbsp;        final SimpleIntegerProperty frameIndex = new SimpleIntegerProperty() {
+<i>864</i>&nbsp;            @Override
+<i>865</i>&nbsp;            protected void invalidated() {
+<i>866</i>&nbsp;                updateImage(get());
+<i>867</i>&nbsp;            }
+<i>868</i>&nbsp;        };
+<i>869</i>&nbsp;
+<i>870</i>&nbsp;        public Animation(final Image image, final ImageLoader loader) {
+<i>871</i>&nbsp;            imageRef = new WeakReference&lt;Image&gt;(image);
+<i>872</i>&nbsp;            timeline = new Timeline();
+<i>873</i>&nbsp;            int loopCount = loader.getLoopCount();
+<i>874</i>&nbsp;            timeline.setCycleCount(loopCount == 0 ? Timeline.INDEFINITE : loopCount);
+<i>875</i>&nbsp;
+<i>876</i>&nbsp;            final int frameCount = loader.getFrameCount();
+<i>877</i>&nbsp;            int duration = 0;
+<i>878</i>&nbsp;
+<i>879</i>&nbsp;            for (int i = 0; i &lt; frameCount; ++i) {
+<i>880</i>&nbsp;                addKeyFrame(i, duration);
+<i>881</i>&nbsp;                duration = duration + loader.getFrameDelay(i);
+<i>882</i>&nbsp;            }
+<i>883</i>&nbsp;
+<i>884</i>&nbsp;            // Note: we need one extra frame in the timeline to define how long
+<i>885</i>&nbsp;            // the last frame is shown, the wrap around is &quot;instantaneous&quot;
+<i>886</i>&nbsp;            timeline.getKeyFrames().add(new KeyFrame(Duration.millis(duration)));
+<i>887</i>&nbsp;        }
+<i>888</i>&nbsp;
+<i>889</i>&nbsp;        public void start() {
+<i>890</i>&nbsp;            timeline.play();
+<i>891</i>&nbsp;        }
+<i>892</i>&nbsp;
+<i>893</i>&nbsp;        public void stop() {
+<i>894</i>&nbsp;            timeline.stop();
+<i>895</i>&nbsp;        }
+<i>896</i>&nbsp;
+<i>897</i>&nbsp;        private void updateImage(final int frameIndex) {
+<i>898</i>&nbsp;            final Image image = imageRef.get();
+<i>899</i>&nbsp;            if (image != null) {
+<i>900</i>&nbsp;                image.platformImagePropertyImpl().set(
+<i>901</i>&nbsp;                        image.animFrames[frameIndex]);
+<i>902</i>&nbsp;            } else {
+<i>903</i>&nbsp;                timeline.stop();
+<i>904</i>&nbsp;            }
+<i>905</i>&nbsp;        }
+<i>906</i>&nbsp;
+<i>907</i>&nbsp;        private void addKeyFrame(final int index, final double duration) {
+<i>908</i>&nbsp;            timeline.getKeyFrames().add(
+<i>909</i>&nbsp;                    new KeyFrame(Duration.millis(duration),
+<i>910</i>&nbsp;                            new KeyValue(frameIndex, index, Interpolator.DISCRETE)
+<i>911</i>&nbsp;                    ));
+<i>912</i>&nbsp;        }
+<i>913</i>&nbsp;    }
+<i>914</i>&nbsp;
+<i>915</i>&nbsp;    private void cycleTasks() {
+<b class="nc"><i>916</i>&nbsp;        synchronized (pendingTasks) {</b>
+<b class="nc"><i>917</i>&nbsp;            runningTasks--;</b>
+<i>918</i>&nbsp;            // do we have any pending tasks to run ?
+<i>919</i>&nbsp;            // we can assume we are under the throttle limit because
+<i>920</i>&nbsp;            // one task just completed.
+<b class="nc"><i>921</i>&nbsp;            final ImageTask nextTask = pendingTasks.poll();</b>
+<b class="nc"><i>922</i>&nbsp;            if (nextTask != null) {</b>
+<b class="nc"><i>923</i>&nbsp;                runningTasks++;</b>
+<b class="nc"><i>924</i>&nbsp;                nextTask.start();</b>
+<i>925</i>&nbsp;            }
+<b class="nc"><i>926</i>&nbsp;        }</b>
+<b class="nc"><i>927</i>&nbsp;    }</b>
+<i>928</i>&nbsp;
+<i>929</i>&nbsp;    private void loadInBackground() {
+<b class="nc"><i>930</i>&nbsp;        backgroundTask = new ImageTask();</b>
+<i>931</i>&nbsp;        // This is an artificial throttle on background image loading tasks.
+<i>932</i>&nbsp;        // It has been shown that with large images, we can quickly use up the
+<i>933</i>&nbsp;        // heap loading images, even if they result in thumbnails.
+<i>934</i>&nbsp;        // The limit of MAX_RUNNING_TASKS is arbitrary, and was based on initial
+<i>935</i>&nbsp;        // testing with
+<i>936</i>&nbsp;        // about 60 2-6 megapixel images.
+<b class="nc"><i>937</i>&nbsp;        synchronized (pendingTasks) {</b>
+<b class="nc"><i>938</i>&nbsp;            if (runningTasks &gt;= MAX_RUNNING_TASKS) {</b>
+<b class="nc"><i>939</i>&nbsp;                pendingTasks.offer(backgroundTask);</b>
+<i>940</i>&nbsp;            } else {
+<b class="nc"><i>941</i>&nbsp;                runningTasks++;</b>
+<b class="nc"><i>942</i>&nbsp;                backgroundTask.start();</b>
+<i>943</i>&nbsp;            }
+<b class="nc"><i>944</i>&nbsp;        }</b>
+<b class="nc"><i>945</i>&nbsp;    }</b>
+<i>946</i>&nbsp;
+<i>947</i>&nbsp;    // Used by SwingUtils.toFXImage
+<i>948</i>&nbsp;    static Image fromPlatformImage(Object image) {
+<b class="nc"><i>949</i>&nbsp;        return new Image(image);</b>
+<i>950</i>&nbsp;    }
+<i>951</i>&nbsp;
+<i>952</i>&nbsp;    private void setPlatformImageWH(final PlatformImage newPlatformImage,
+<i>953</i>&nbsp;                                    final double newWidth,
+<i>954</i>&nbsp;                                    final double newHeight) {
+<b class="fc"><i>955</i>&nbsp;        if ((Toolkit.getImageAccessor().getPlatformImage(this) == newPlatformImage)</b>
+<b class="fc"><i>956</i>&nbsp;                &amp;&amp; (getWidth() == newWidth)</b>
+<b class="fc"><i>957</i>&nbsp;                &amp;&amp; (getHeight() == newHeight)) {</b>
+<b class="fc"><i>958</i>&nbsp;            return;</b>
+<i>959</i>&nbsp;        }
+<i>960</i>&nbsp;
+<b class="fc"><i>961</i>&nbsp;        final Object oldPlatformImage = Toolkit.getImageAccessor().getPlatformImage(this);</b>
+<b class="fc"><i>962</i>&nbsp;        final double oldWidth = getWidth();</b>
+<b class="fc"><i>963</i>&nbsp;        final double oldHeight = getHeight();</b>
+<i>964</i>&nbsp;
+<b class="fc"><i>965</i>&nbsp;        storePlatformImageWH(newPlatformImage, newWidth, newHeight);</b>
+<i>966</i>&nbsp;
+<b class="fc"><i>967</i>&nbsp;        if (oldPlatformImage != newPlatformImage) {</b>
+<b class="fc"><i>968</i>&nbsp;            platformImagePropertyImpl().fireValueChangedEvent();</b>
+<i>969</i>&nbsp;        }
+<i>970</i>&nbsp;
+<b class="fc"><i>971</i>&nbsp;        if (oldWidth != newWidth) {</b>
+<b class="fc"><i>972</i>&nbsp;            widthPropertyImpl().fireValueChangedEvent();</b>
+<i>973</i>&nbsp;        }
+<i>974</i>&nbsp;
+<b class="fc"><i>975</i>&nbsp;        if (oldHeight != newHeight) {</b>
+<b class="fc"><i>976</i>&nbsp;            heightPropertyImpl().fireValueChangedEvent();</b>
+<i>977</i>&nbsp;        }
+<b class="fc"><i>978</i>&nbsp;    }</b>
+<i>979</i>&nbsp;
+<i>980</i>&nbsp;    private void storePlatformImageWH(final PlatformImage platformImage,
+<i>981</i>&nbsp;                                      final double width,
+<i>982</i>&nbsp;                                      final double height) {
+<b class="fc"><i>983</i>&nbsp;        platformImagePropertyImpl().store(platformImage);</b>
+<b class="fc"><i>984</i>&nbsp;        widthPropertyImpl().store(width);</b>
+<b class="fc"><i>985</i>&nbsp;        heightPropertyImpl().store(height);</b>
+<b class="fc"><i>986</i>&nbsp;    }</b>
+<i>987</i>&nbsp;
+<i>988</i>&nbsp;    void setPlatformImage(PlatformImage newPlatformImage) {
+<b class="nc"><i>989</i>&nbsp;        platformImage.set(newPlatformImage);</b>
+<b class="nc"><i>990</i>&nbsp;    }</b>
+<i>991</i>&nbsp;
+<i>992</i>&nbsp;    private static final int MAX_RUNNING_TASKS = 4;
+<b class="fc"><i>993</i>&nbsp;    private static int runningTasks = 0;</b>
+<b class="fc"><i>994</i>&nbsp;    private static final Queue&lt;ImageTask&gt; pendingTasks =</b>
+<i>995</i>&nbsp;            new LinkedList&lt;ImageTask&gt;();
+<i>996</i>&nbsp;
+<i>997</i>&nbsp;    private final class ImageTask
+<i>998</i>&nbsp;            implements AsyncOperationListener&lt;ImageLoader&gt; {
+<i>999</i>&nbsp;
+<i>1000</i>&nbsp;        private final AsyncOperation peer;
+<i>1001</i>&nbsp;
+<i>1002</i>&nbsp;        public ImageTask() {
+<i>1003</i>&nbsp;            peer = constructPeer();
+<i>1004</i>&nbsp;        }
+<i>1005</i>&nbsp;
+<i>1006</i>&nbsp;        @Override
+<i>1007</i>&nbsp;        public void onCancel() {
+<i>1008</i>&nbsp;            finishImage(new CancellationException(&quot;Loading cancelled&quot;));
+<i>1009</i>&nbsp;            cycleTasks();
+<i>1010</i>&nbsp;        }
+<i>1011</i>&nbsp;
+<i>1012</i>&nbsp;        @Override
+<i>1013</i>&nbsp;        public void onException(Exception exception) {
+<i>1014</i>&nbsp;            finishImage(exception);
+<i>1015</i>&nbsp;            cycleTasks();
+<i>1016</i>&nbsp;        }
+<i>1017</i>&nbsp;
+<i>1018</i>&nbsp;        @Override
+<i>1019</i>&nbsp;        public void onCompletion(ImageLoader value) {
+<i>1020</i>&nbsp;            finishImage(value);
+<i>1021</i>&nbsp;            cycleTasks();
+<i>1022</i>&nbsp;        }
+<i>1023</i>&nbsp;
+<i>1024</i>&nbsp;        @Override
+<i>1025</i>&nbsp;        public void onProgress(int cur, int max) {
+<i>1026</i>&nbsp;            if (max &gt; 0) {
+<i>1027</i>&nbsp;                double curProgress = (double) cur / max;
+<i>1028</i>&nbsp;                if ((curProgress &lt; 1) &amp;&amp; (curProgress &gt;= (getProgress() + 0.1))) {
+<i>1029</i>&nbsp;                    setProgress(curProgress);
+<i>1030</i>&nbsp;                }
+<i>1031</i>&nbsp;            }
+<i>1032</i>&nbsp;        }
+<i>1033</i>&nbsp;
+<i>1034</i>&nbsp;        public void start() {
+<i>1035</i>&nbsp;            peer.start();
+<i>1036</i>&nbsp;        }
+<i>1037</i>&nbsp;
+<i>1038</i>&nbsp;        public void cancel() {
+<i>1039</i>&nbsp;            peer.cancel();
+<i>1040</i>&nbsp;        }
+<i>1041</i>&nbsp;
+<i>1042</i>&nbsp;        private AsyncOperation constructPeer() {
+<i>1043</i>&nbsp;            return loadImageAsync(this, url,
+<i>1044</i>&nbsp;                                  requestedWidth, requestedHeight,
+<i>1045</i>&nbsp;                                  preserveRatio, smooth);
+<i>1046</i>&nbsp;        }
+<i>1047</i>&nbsp;    }
+<i>1048</i>&nbsp;
+<i>1049</i>&nbsp;    private static ImageLoader loadImage(
+<i>1050</i>&nbsp;            String url, double width, double height,
+<i>1051</i>&nbsp;            boolean preserveRatio, boolean smooth) {
+<b class="fc"><i>1052</i>&nbsp;        return Toolkit.getToolkit().loadImage(url, (int) width, (int) height,</b>
+<i>1053</i>&nbsp;                                              preserveRatio, smooth);
+<i>1054</i>&nbsp;
+<i>1055</i>&nbsp;    }
+<i>1056</i>&nbsp;
+<i>1057</i>&nbsp;    private static ImageLoader loadImage(
+<i>1058</i>&nbsp;            InputStream stream, double width, double height,
+<i>1059</i>&nbsp;            boolean preserveRatio, boolean smooth) {
+<b class="nc"><i>1060</i>&nbsp;        return Toolkit.getToolkit().loadImage(stream, (int) width, (int) height,</b>
+<i>1061</i>&nbsp;                                              preserveRatio, smooth);
+<i>1062</i>&nbsp;
+<i>1063</i>&nbsp;    }
+<i>1064</i>&nbsp;
+<i>1065</i>&nbsp;    private static AsyncOperation loadImageAsync(
+<i>1066</i>&nbsp;            AsyncOperationListener&lt;? extends ImageLoader&gt; listener,
+<i>1067</i>&nbsp;            String url, double width, double height,
+<i>1068</i>&nbsp;            boolean preserveRatio, boolean smooth) {
+<b class="nc"><i>1069</i>&nbsp;        return Toolkit.getToolkit().loadImageAsync(listener, url,</b>
+<i>1070</i>&nbsp;                                                   (int) width, (int) height,
+<i>1071</i>&nbsp;                                                   preserveRatio, smooth);
+<i>1072</i>&nbsp;    }
+<i>1073</i>&nbsp;
+<i>1074</i>&nbsp;    private static ImageLoader loadPlatformImage(Object platformImage) {
+<b class="nc"><i>1075</i>&nbsp;        return Toolkit.getToolkit().loadPlatformImage(platformImage);</b>
+<i>1076</i>&nbsp;    }
+<i>1077</i>&nbsp;
+<i>1078</i>&nbsp;    private static String validateUrl(final String url) {
+<b class="fc"><i>1079</i>&nbsp;        if (url == null) {</b>
+<b class="nc"><i>1080</i>&nbsp;            throw new NullPointerException(&quot;URL must not be null&quot;);</b>
+<i>1081</i>&nbsp;        }
+<i>1082</i>&nbsp;
+<b class="fc"><i>1083</i>&nbsp;        if (url.trim().isEmpty()) {</b>
+<b class="nc"><i>1084</i>&nbsp;            throw new IllegalArgumentException(&quot;URL must not be empty&quot;);</b>
+<i>1085</i>&nbsp;        }
+<i>1086</i>&nbsp;
+<i>1087</i>&nbsp;        try {
+<b class="fc"><i>1088</i>&nbsp;            if (!URL_QUICKMATCH.matcher(url).matches()) {</b>
+<b class="nc"><i>1089</i>&nbsp;                final ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();</b>
+<i>1090</i>&nbsp;                URL resource;
+<b class="nc"><i>1091</i>&nbsp;                if (url.charAt(0) == &#39;/&#39;) {</b>
+<i>1092</i>&nbsp;                    // FIXME: JIGSAW -- use Class.getResourceAsStream if resource is in a module
+<b class="nc"><i>1093</i>&nbsp;                    resource = contextClassLoader.getResource(url.substring(1));</b>
+<i>1094</i>&nbsp;                } else {
+<i>1095</i>&nbsp;                    // FIXME: JIGSAW -- use Class.getResourceAsStream if resource is in a module
+<b class="nc"><i>1096</i>&nbsp;                    resource = contextClassLoader.getResource(url);</b>
+<i>1097</i>&nbsp;                }
+<b class="nc"><i>1098</i>&nbsp;                if (resource == null) {</b>
+<b class="nc"><i>1099</i>&nbsp;                    throw new IllegalArgumentException(&quot;Invalid URL or resource not found&quot;);</b>
+<i>1100</i>&nbsp;                }
+<b class="nc"><i>1101</i>&nbsp;                return resource.toString();</b>
+<i>1102</i>&nbsp;            }
+<i>1103</i>&nbsp;            // Use URL constructor for validation
+<b class="fc"><i>1104</i>&nbsp;            return new URL(url).toString();</b>
+<b class="nc"><i>1105</i>&nbsp;        } catch (final IllegalArgumentException e) {</b>
+<b class="nc"><i>1106</i>&nbsp;            throw new IllegalArgumentException(</b>
+<b class="nc"><i>1107</i>&nbsp;                    constructDetailedExceptionMessage(&quot;Invalid URL&quot;, e), e);</b>
+<b class="nc"><i>1108</i>&nbsp;        } catch (final MalformedURLException e) {</b>
+<b class="nc"><i>1109</i>&nbsp;            throw new IllegalArgumentException(</b>
+<b class="nc"><i>1110</i>&nbsp;                    constructDetailedExceptionMessage(&quot;Invalid URL&quot;, e), e);</b>
+<i>1111</i>&nbsp;        }
+<i>1112</i>&nbsp;    }
+<i>1113</i>&nbsp;
+<i>1114</i>&nbsp;    private static InputStream validateInputStream(
+<i>1115</i>&nbsp;            final InputStream inputStream) {
+<b class="nc"><i>1116</i>&nbsp;        if (inputStream == null) {</b>
+<b class="nc"><i>1117</i>&nbsp;            throw new NullPointerException(&quot;Input stream must not be null&quot;);</b>
+<i>1118</i>&nbsp;        }
+<i>1119</i>&nbsp;
+<b class="nc"><i>1120</i>&nbsp;        return inputStream;</b>
+<i>1121</i>&nbsp;    }
+<i>1122</i>&nbsp;
+<i>1123</i>&nbsp;    private static String constructDetailedExceptionMessage(
+<i>1124</i>&nbsp;            final String mainMessage,
+<i>1125</i>&nbsp;            final Throwable cause) {
+<b class="nc"><i>1126</i>&nbsp;        if (cause == null) {</b>
+<b class="nc"><i>1127</i>&nbsp;            return mainMessage;</b>
+<i>1128</i>&nbsp;        }
+<i>1129</i>&nbsp;
+<b class="nc"><i>1130</i>&nbsp;        final String causeMessage = cause.getMessage();</b>
+<b class="nc"><i>1131</i>&nbsp;        return constructDetailedExceptionMessage(</b>
+<b class="nc"><i>1132</i>&nbsp;                       (causeMessage != null)</b>
+<b class="nc"><i>1133</i>&nbsp;                               ? mainMessage + &quot;: &quot; + causeMessage</b>
+<b class="nc"><i>1134</i>&nbsp;                               : mainMessage,</b>
+<b class="nc"><i>1135</i>&nbsp;                       cause.getCause());</b>
+<i>1136</i>&nbsp;    }
+<i>1137</i>&nbsp;
+<i>1138</i>&nbsp;    /**
+<i>1139</i>&nbsp;     * Indicates whether image is animated.
+<i>1140</i>&nbsp;     */
+<i>1141</i>&nbsp;    boolean isAnimation() {
+<b class="fc"><i>1142</i>&nbsp;        return animation != null;</b>
+<i>1143</i>&nbsp;    }
+<i>1144</i>&nbsp;
+<i>1145</i>&nbsp;    boolean pixelsReadable() {
+<b class="nc"><i>1146</i>&nbsp;        return (getProgress() &gt;= 1.0 &amp;&amp; !isAnimation() &amp;&amp; !isError());</b>
+<i>1147</i>&nbsp;    }
+<i>1148</i>&nbsp;
+<i>1149</i>&nbsp;    private PixelReader reader;
+<i>1150</i>&nbsp;    /**
+<i>1151</i>&nbsp;     * This method returns a {@code PixelReader} that provides access to
+<i>1152</i>&nbsp;     * read the pixels of the image, if the image is readable.
+<i>1153</i>&nbsp;     * If this method returns null then this image does not support reading
+<i>1154</i>&nbsp;     * at this time.
+<i>1155</i>&nbsp;     * This method will return null if the image is being loaded from a
+<i>1156</i>&nbsp;     * source and is still incomplete {the progress is still &amp;lt;1.0) or if
+<i>1157</i>&nbsp;     * there was an error.
+<i>1158</i>&nbsp;     * This method may also return null for some images in a format that
+<i>1159</i>&nbsp;     * is not supported for reading and writing pixels to.
+<i>1160</i>&nbsp;     *
+<i>1161</i>&nbsp;     * @return the {@code PixelReader} for reading the pixel data of the image
+<i>1162</i>&nbsp;     * @since JavaFX 2.2
+<i>1163</i>&nbsp;     */
+<i>1164</i>&nbsp;    public final PixelReader getPixelReader() {
+<b class="nc"><i>1165</i>&nbsp;        if (!pixelsReadable()) {</b>
+<b class="nc"><i>1166</i>&nbsp;            return null;</b>
+<i>1167</i>&nbsp;        }
+<b class="nc"><i>1168</i>&nbsp;        if (reader == null) {</b>
+<b class="nc"><i>1169</i>&nbsp;            reader = new PixelReader() {</b>
+<i>1170</i>&nbsp;                @Override
+<i>1171</i>&nbsp;                public PixelFormat getPixelFormat() {
+<i>1172</i>&nbsp;                    PlatformImage pimg = platformImage.get();
+<i>1173</i>&nbsp;                    return pimg.getPlatformPixelFormat();
+<i>1174</i>&nbsp;                }
+<i>1175</i>&nbsp;
+<i>1176</i>&nbsp;                @Override
+<i>1177</i>&nbsp;                public int getArgb(int x, int y) {
+<i>1178</i>&nbsp;                    PlatformImage pimg = platformImage.get();
+<i>1179</i>&nbsp;                    return pimg.getArgb(x, y);
+<i>1180</i>&nbsp;                }
+<i>1181</i>&nbsp;
+<i>1182</i>&nbsp;                @Override
+<i>1183</i>&nbsp;                public Color getColor(int x, int y) {
+<i>1184</i>&nbsp;                    int argb = getArgb(x, y);
+<i>1185</i>&nbsp;                    int a = argb &gt;&gt;&gt; 24;
+<i>1186</i>&nbsp;                    int r = (argb &gt;&gt; 16) &amp; 0xff;
+<i>1187</i>&nbsp;                    int g = (argb &gt;&gt;  8) &amp; 0xff;
+<i>1188</i>&nbsp;                    int b = (argb      ) &amp; 0xff;
+<i>1189</i>&nbsp;                    return Color.rgb(r, g, b, a / 255.0);
+<i>1190</i>&nbsp;                }
+<i>1191</i>&nbsp;
+<i>1192</i>&nbsp;                @Override
+<i>1193</i>&nbsp;                public &lt;T extends Buffer&gt;
+<i>1194</i>&nbsp;                    void getPixels(int x, int y, int w, int h,
+<i>1195</i>&nbsp;                                   WritablePixelFormat&lt;T&gt; pixelformat,
+<i>1196</i>&nbsp;                                   T buffer, int scanlineStride)
+<i>1197</i>&nbsp;                {
+<i>1198</i>&nbsp;                    PlatformImage pimg = platformImage.get();
+<i>1199</i>&nbsp;                    pimg.getPixels(x, y, w, h, pixelformat,
+<i>1200</i>&nbsp;                                   buffer, scanlineStride);
+<i>1201</i>&nbsp;                }
+<i>1202</i>&nbsp;
+<i>1203</i>&nbsp;                @Override
+<i>1204</i>&nbsp;                public void getPixels(int x, int y, int w, int h,
+<i>1205</i>&nbsp;                                    WritablePixelFormat&lt;ByteBuffer&gt; pixelformat,
+<i>1206</i>&nbsp;                                    byte buffer[], int offset, int scanlineStride)
+<i>1207</i>&nbsp;                {
+<i>1208</i>&nbsp;                    PlatformImage pimg = platformImage.get();
+<i>1209</i>&nbsp;                    pimg.getPixels(x, y, w, h, pixelformat,
+<i>1210</i>&nbsp;                                   buffer, offset, scanlineStride);
+<i>1211</i>&nbsp;                }
+<i>1212</i>&nbsp;
+<i>1213</i>&nbsp;                @Override
+<i>1214</i>&nbsp;                public void getPixels(int x, int y, int w, int h,
+<i>1215</i>&nbsp;                                    WritablePixelFormat&lt;IntBuffer&gt; pixelformat,
+<i>1216</i>&nbsp;                                    int buffer[], int offset, int scanlineStride)
+<i>1217</i>&nbsp;                {
+<i>1218</i>&nbsp;                    PlatformImage pimg = platformImage.get();
+<i>1219</i>&nbsp;                    pimg.getPixels(x, y, w, h, pixelformat,
+<i>1220</i>&nbsp;                                   buffer, offset, scanlineStride);
+<i>1221</i>&nbsp;                }
+<i>1222</i>&nbsp;            };
+<i>1223</i>&nbsp;        }
+<b class="nc"><i>1224</i>&nbsp;        return reader;</b>
+<i>1225</i>&nbsp;    }
+<i>1226</i>&nbsp;
+<i>1227</i>&nbsp;    PlatformImage getWritablePlatformImage() {
+<b class="nc"><i>1228</i>&nbsp;        PlatformImage pimg = platformImage.get();</b>
+<b class="nc"><i>1229</i>&nbsp;        if (!pimg.isWritable()) {</b>
+<b class="nc"><i>1230</i>&nbsp;            pimg = pimg.promoteToWritableImage();</b>
+<i>1231</i>&nbsp;            // assert pimg.isWritable();
+<b class="nc"><i>1232</i>&nbsp;            platformImage.set(pimg);</b>
+<i>1233</i>&nbsp;        }
+<b class="nc"><i>1234</i>&nbsp;        return pimg;</b>
+<i>1235</i>&nbsp;    }
+<i>1236</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2017-12-04 21:49</div>
+</div>
+</body>
+</html>

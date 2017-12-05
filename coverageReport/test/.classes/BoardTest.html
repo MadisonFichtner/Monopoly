@@ -1,0 +1,128 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: BoardTest</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">test</a> ]
+</div>
+
+<h1>Coverage Summary for Class: BoardTest (test)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">BoardTest</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (3/ 3)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (20/ 20)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;package test;
+<i>2</i>&nbsp;
+<i>3</i>&nbsp;import org.junit.Test;
+<i>4</i>&nbsp;
+<i>5</i>&nbsp;import src.Board;
+<i>6</i>&nbsp;import src.Card;
+<i>7</i>&nbsp;import src.Deed;
+<i>8</i>&nbsp;import src.Player;
+<i>9</i>&nbsp;
+<i>10</i>&nbsp;import java.util.ArrayList;
+<i>11</i>&nbsp;
+<i>12</i>&nbsp;import static junit.framework.Assert.assertTrue;
+<i>13</i>&nbsp;
+<b class="fc"><i>14</i>&nbsp;public class BoardTest {</b>
+<i>15</i>&nbsp;    @Test
+<i>16</i>&nbsp;    public void beginTurn() throws Exception {
+<b class="fc"><i>17</i>&nbsp;        Deed[] deeds = new Deed[40];</b>
+<b class="fc"><i>18</i>&nbsp;        Player[] players = new Player[4];</b>
+<b class="fc"><i>19</i>&nbsp;        players[0] = new Player(&quot;test&quot;, &quot;player&quot;, 0);</b>
+<b class="fc"><i>20</i>&nbsp;        Board testBoard = new Board(players, deeds, new ArrayList&lt;Card&gt;(), new ArrayList&lt;Card&gt;());</b>
+<i>21</i>&nbsp;
+<b class="fc"><i>22</i>&nbsp;        testBoard.beginTurn(players[0]);</b>
+<i>23</i>&nbsp;
+<b class="fc"><i>24</i>&nbsp;        assertTrue(testBoard.getCurrent().equals(players[0]));</b>
+<b class="fc"><i>25</i>&nbsp;    }</b>
+<i>26</i>&nbsp;
+<i>27</i>&nbsp;    @Test
+<i>28</i>&nbsp;    public void gameOver() throws Exception {
+<b class="fc"><i>29</i>&nbsp;        Deed[] deeds = new Deed[40];                    //Creates empty board, doesn&#39;t need to be a real board for this test</b>
+<b class="fc"><i>30</i>&nbsp;        Player[] players = new Player[4];                //Creates array of 4 players</b>
+<b class="fc"><i>31</i>&nbsp;        players[0] = new Player(&quot;Madison&quot;, &quot;Fichtner&quot;, 0);</b>
+<b class="fc"><i>32</i>&nbsp;        players[1] = new Player(&quot;Cody&quot;, &quot;Stoner&quot;, 1);</b>
+<b class="fc"><i>33</i>&nbsp;        players[2] = new Player(&quot;Trent&quot;, &quot;Baker&quot;, 2);</b>
+<b class="fc"><i>34</i>&nbsp;        players[3] = new Player(&quot;Logan&quot;, &quot;Bonney&quot;, 3);</b>
+<b class="fc"><i>35</i>&nbsp;        players[0].setMoney(players[0].getMoney() + 500);                        //Guarantees that we expect players[0] to win with 500 more dollars than anyone else (net worth of 2000 since everyone starts with 1500)</b>
+<i>36</i>&nbsp;
+<b class="fc"><i>37</i>&nbsp;        Player expectedWinner = players[0];                //Sets expected winner to players[0]</b>
+<b class="fc"><i>38</i>&nbsp;        Board board = new Board(players, deeds, new ArrayList&lt;Card&gt;(), new ArrayList&lt;Card&gt;());        //Creates new board given players, and deeds</b>
+<b class="fc"><i>39</i>&nbsp;        Player winner = board.gameOver();                //Sets actual winner to whoever is the result of Board.java&#39;s game_over() function</b>
+<i>40</i>&nbsp;
+<b class="fc"><i>41</i>&nbsp;        assertTrue(winner.equals(expectedWinner));</b>
+<b class="fc"><i>42</i>&nbsp;    }</b>
+<i>43</i>&nbsp;
+<i>44</i>&nbsp;
+<i>45</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2017-12-04 21:54</div>
+</div>
+</body>
+</html>

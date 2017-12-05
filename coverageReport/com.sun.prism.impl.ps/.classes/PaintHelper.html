@@ -1,0 +1,985 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: PaintHelper</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.prism.impl.ps</a> ]
+</div>
+
+<h1>Coverage Summary for Class: PaintHelper (com.sun.prism.impl.ps)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">PaintHelper</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    52.6%
+  </span>
+  <span class="absValue">
+    (10/ 19)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    29%
+  </span>
+  <span class="absValue">
+    (130/ 448)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright (c) 2009, 2013, Oracle and/or its affiliates. All rights reserved.
+<i>3</i>&nbsp; * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+<i>4</i>&nbsp; *
+<i>5</i>&nbsp; *
+<i>6</i>&nbsp; *
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; *
+<i>11</i>&nbsp; *
+<i>12</i>&nbsp; *
+<i>13</i>&nbsp; *
+<i>14</i>&nbsp; *
+<i>15</i>&nbsp; *
+<i>16</i>&nbsp; *
+<i>17</i>&nbsp; *
+<i>18</i>&nbsp; *
+<i>19</i>&nbsp; *
+<i>20</i>&nbsp; *
+<i>21</i>&nbsp; *
+<i>22</i>&nbsp; *
+<i>23</i>&nbsp; *
+<i>24</i>&nbsp; */
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;package com.sun.prism.impl.ps;
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;import java.nio.ByteBuffer;
+<i>29</i>&nbsp;import java.nio.FloatBuffer;
+<i>30</i>&nbsp;import java.util.List;
+<i>31</i>&nbsp;import com.sun.javafx.geom.PickRay;
+<i>32</i>&nbsp;import com.sun.javafx.geom.Point2D;
+<i>33</i>&nbsp;import com.sun.javafx.geom.Vec3d;
+<i>34</i>&nbsp;import com.sun.javafx.geom.transform.Affine2D;
+<i>35</i>&nbsp;import com.sun.javafx.geom.transform.Affine3D;
+<i>36</i>&nbsp;import com.sun.javafx.geom.transform.AffineBase;
+<i>37</i>&nbsp;import com.sun.javafx.geom.transform.BaseTransform;
+<i>38</i>&nbsp;import com.sun.javafx.geom.transform.NoninvertibleTransformException;
+<i>39</i>&nbsp;import com.sun.javafx.sg.prism.NGCamera;
+<i>40</i>&nbsp;import com.sun.javafx.sg.prism.NGPerspectiveCamera;
+<i>41</i>&nbsp;import com.sun.prism.Image;
+<i>42</i>&nbsp;import com.sun.prism.PixelFormat;
+<i>43</i>&nbsp;import com.sun.prism.ResourceFactory;
+<i>44</i>&nbsp;import com.sun.prism.Texture;
+<i>45</i>&nbsp;import com.sun.prism.Texture.Usage;
+<i>46</i>&nbsp;import com.sun.prism.Texture.WrapMode;
+<i>47</i>&nbsp;import com.sun.prism.impl.BufferUtil;
+<i>48</i>&nbsp;import com.sun.prism.paint.Color;
+<i>49</i>&nbsp;import com.sun.prism.paint.Gradient;
+<i>50</i>&nbsp;import com.sun.prism.paint.ImagePattern;
+<i>51</i>&nbsp;import com.sun.prism.paint.LinearGradient;
+<i>52</i>&nbsp;import com.sun.prism.paint.RadialGradient;
+<i>53</i>&nbsp;import com.sun.prism.paint.Stop;
+<i>54</i>&nbsp;import com.sun.prism.ps.Shader;
+<i>55</i>&nbsp;import com.sun.prism.ps.ShaderGraphics;
+<i>56</i>&nbsp;
+<b class="nc"><i>57</i>&nbsp;class PaintHelper {</b>
+<i>58</i>&nbsp;
+<i>59</i>&nbsp;/****************** Shared MultipleGradientPaint support ********************/
+<i>60</i>&nbsp;
+<i>61</i>&nbsp;    /**
+<i>62</i>&nbsp;     * The maximum number of gradient &quot;stops&quot; supported by our native
+<i>63</i>&nbsp;     * fragment shader implementations.
+<i>64</i>&nbsp;     *
+<i>65</i>&nbsp;     * This value has been empirically determined and capped to allow
+<i>66</i>&nbsp;     * our native shaders to run on all shader-level graphics hardware,
+<i>67</i>&nbsp;     * even on the older, more limited GPUs.  Even the oldest Nvidia
+<i>68</i>&nbsp;     * hardware could handle 16, or even 32 fractions without any problem.
+<i>69</i>&nbsp;     * But the first-generation boards from ATI would fall back into
+<i>70</i>&nbsp;     * software mode (which is unusably slow) for values larger than 12;
+<i>71</i>&nbsp;     * it appears that those boards do not have enough native registers
+<i>72</i>&nbsp;     * to support the number of array accesses required by our gradient
+<i>73</i>&nbsp;     * shaders.  So for now we will cap this value at 12, but we can
+<i>74</i>&nbsp;     * re-evaluate this in the future as hardware becomes more capable.
+<i>75</i>&nbsp;     */
+<i>76</i>&nbsp;    static final int MULTI_MAX_FRACTIONS = 12;
+<i>77</i>&nbsp;
+<i>78</i>&nbsp;    /**
+<i>79</i>&nbsp;     * Make the texture width a power of two value larger
+<i>80</i>&nbsp;     * than MULTI_MAX_FRACTIONS.
+<i>81</i>&nbsp;     */
+<i>82</i>&nbsp;    private static final int MULTI_TEXTURE_SIZE = 16;
+<i>83</i>&nbsp;    private static final int MULTI_CACHE_SIZE = 256;
+<i>84</i>&nbsp;    private static final int GTEX_CLR_TABLE_SIZE = 101; // for every % from 0% to 100%
+<i>85</i>&nbsp;    private static final int GTEX_CLR_TABLE_MIRRORED_SIZE =
+<i>86</i>&nbsp;        GTEX_CLR_TABLE_SIZE * 2 - 1;
+<i>87</i>&nbsp;
+<i>88</i>&nbsp;    private static final float FULL_TEXEL_Y = 1.0f / MULTI_CACHE_SIZE;
+<i>89</i>&nbsp;    private static final float HALF_TEXEL_Y = FULL_TEXEL_Y / 2.0f;
+<i>90</i>&nbsp;
+<b class="fc"><i>91</i>&nbsp;    private static final FloatBuffer stopVals =</b>
+<b class="fc"><i>92</i>&nbsp;        BufferUtil.newFloatBuffer(MULTI_MAX_FRACTIONS * 4);</b>
+<b class="fc"><i>93</i>&nbsp;    private static final ByteBuffer bgraColors =</b>
+<b class="fc"><i>94</i>&nbsp;        BufferUtil.newByteBuffer(MULTI_TEXTURE_SIZE*4);</b>
+<b class="fc"><i>95</i>&nbsp;    private static final Image colorsImg =</b>
+<b class="fc"><i>96</i>&nbsp;        Image.fromByteBgraPreData(bgraColors, MULTI_TEXTURE_SIZE, 1);</b>
+<b class="fc"><i>97</i>&nbsp;    private static final int[] previousColors = new int[MULTI_TEXTURE_SIZE];</b>
+<i>98</i>&nbsp;
+<b class="fc"><i>99</i>&nbsp;    private static final byte gtexColors[] = new byte[GTEX_CLR_TABLE_MIRRORED_SIZE * 4];</b>
+<b class="fc"><i>100</i>&nbsp;    private static final Image gtexImg =</b>
+<b class="fc"><i>101</i>&nbsp;        Image.fromByteBgraPreData(ByteBuffer.wrap(gtexColors), GTEX_CLR_TABLE_MIRRORED_SIZE, 1);</b>
+<i>102</i>&nbsp;
+<b class="fc"><i>103</i>&nbsp;    private static long cacheOffset = -1;</b>
+<i>104</i>&nbsp;
+<b class="fc"><i>105</i>&nbsp;    private static Texture gradientCacheTexture = null;</b>
+<b class="fc"><i>106</i>&nbsp;    private static Texture gtexCacheTexture = null;</b>
+<i>107</i>&nbsp;
+<b class="fc"><i>108</i>&nbsp;    private static final Affine2D scratchXform2D = new Affine2D();</b>
+<b class="fc"><i>109</i>&nbsp;    private static final Affine3D scratchXform3D = new Affine3D();</b>
+<i>110</i>&nbsp;
+<i>111</i>&nbsp;    private static float len(float dx, float dy) {
+<b class="fc"><i>112</i>&nbsp;        return ((dx == 0f) ? Math.abs(dy)</b>
+<b class="nc"><i>113</i>&nbsp;                : ((dy == 0f) ? Math.abs(dx)</b>
+<b class="nc"><i>114</i>&nbsp;                   : (float)Math.sqrt(dx * dx + dy * dy)));</b>
+<i>115</i>&nbsp;    }
+<i>116</i>&nbsp;
+<i>117</i>&nbsp;    static void initGradientTextures(ShaderGraphics g) {
+<b class="fc"><i>118</i>&nbsp;        gradientCacheTexture = g.getResourceFactory().createTexture(</b>
+<i>119</i>&nbsp;                PixelFormat.BYTE_BGRA_PRE, Usage.DEFAULT, WrapMode.CLAMP_TO_EDGE,
+<i>120</i>&nbsp;                MULTI_TEXTURE_SIZE, MULTI_CACHE_SIZE);
+<b class="fc"><i>121</i>&nbsp;        gradientCacheTexture.setLinearFiltering(true);</b>
+<i>122</i>&nbsp;        // gradientCacheTexture remains permanently locked, useful, and permanent
+<i>123</i>&nbsp;        // an additional lock is added when a caller calls getGreientTeture for
+<i>124</i>&nbsp;        // them to unlock
+<b class="fc"><i>125</i>&nbsp;        gradientCacheTexture.contentsUseful();</b>
+<b class="fc"><i>126</i>&nbsp;        gradientCacheTexture.makePermanent();</b>
+<i>127</i>&nbsp;
+<b class="fc"><i>128</i>&nbsp;        gtexCacheTexture = g.getResourceFactory().createTexture(</b>
+<i>129</i>&nbsp;                PixelFormat.BYTE_BGRA_PRE, Usage.DEFAULT, WrapMode.CLAMP_NOT_NEEDED,
+<i>130</i>&nbsp;                GTEX_CLR_TABLE_MIRRORED_SIZE, MULTI_CACHE_SIZE);
+<b class="fc"><i>131</i>&nbsp;        gtexCacheTexture.setLinearFiltering(true);</b>
+<i>132</i>&nbsp;        // gtexCacheTexture remains permanently locked, useful, and permanent
+<i>133</i>&nbsp;        // an additional lock is added when a caller calls getWrapGreientTeture for
+<i>134</i>&nbsp;        // them to unlock
+<b class="fc"><i>135</i>&nbsp;        gtexCacheTexture.contentsUseful();</b>
+<b class="fc"><i>136</i>&nbsp;        gtexCacheTexture.makePermanent();</b>
+<b class="fc"><i>137</i>&nbsp;    }</b>
+<i>138</i>&nbsp;
+<i>139</i>&nbsp;    static Texture getGradientTexture(ShaderGraphics g, Gradient paint) {
+<b class="fc"><i>140</i>&nbsp;        if (gradientCacheTexture == null) {</b>
+<b class="fc"><i>141</i>&nbsp;            initGradientTextures(g);</b>
+<i>142</i>&nbsp;        }
+<i>143</i>&nbsp;
+<i>144</i>&nbsp;        // gradientCacheTexture is left permanent and locked so it never
+<i>145</i>&nbsp;        // goes away or needs to be checked for isSurfaceLost(), but we
+<i>146</i>&nbsp;        // add a lock here so that the caller can unlock without knowing
+<i>147</i>&nbsp;        // our inner implementation details
+<b class="fc"><i>148</i>&nbsp;        gradientCacheTexture.lock();</b>
+<b class="fc"><i>149</i>&nbsp;        return gradientCacheTexture;</b>
+<i>150</i>&nbsp;    }
+<i>151</i>&nbsp;
+<i>152</i>&nbsp;    static Texture getWrapGradientTexture(ShaderGraphics g) {
+<b class="nc"><i>153</i>&nbsp;        if (gtexCacheTexture == null) {</b>
+<b class="nc"><i>154</i>&nbsp;            initGradientTextures(g);</b>
+<i>155</i>&nbsp;        }
+<i>156</i>&nbsp;
+<i>157</i>&nbsp;        // gtexCacheTexture is left permanent and locked so it never
+<i>158</i>&nbsp;        // goes away or needs to be checked for isSurfaceLost(), but we
+<i>159</i>&nbsp;        // add a lock here so that the caller can unlock without knowing
+<i>160</i>&nbsp;        // our inner implementation details
+<b class="nc"><i>161</i>&nbsp;        gtexCacheTexture.lock();</b>
+<b class="nc"><i>162</i>&nbsp;        return gtexCacheTexture;</b>
+<i>163</i>&nbsp;    }
+<i>164</i>&nbsp;
+<i>165</i>&nbsp;    private static void stopsToImage(List&lt;Stop&gt; stops, int numStops)
+<i>166</i>&nbsp;    {
+<b class="fc"><i>167</i>&nbsp;        if (numStops &gt; MULTI_MAX_FRACTIONS) {</b>
+<b class="nc"><i>168</i>&nbsp;            throw new RuntimeException(</b>
+<i>169</i>&nbsp;                &quot;Maximum number of gradient stops exceeded &quot; +
+<i>170</i>&nbsp;                &quot;(paint uses &quot; + numStops +
+<i>171</i>&nbsp;                &quot; stops, but max is &quot; + MULTI_MAX_FRACTIONS + &quot;)&quot;);
+<i>172</i>&nbsp;        }
+<i>173</i>&nbsp;
+<b class="fc"><i>174</i>&nbsp;        bgraColors.clear();</b>
+<b class="fc"><i>175</i>&nbsp;        Color lastColor = null;</b>
+<b class="fc"><i>176</i>&nbsp;        for (int i = 0; i &lt; MULTI_TEXTURE_SIZE; i++) {</b>
+<i>177</i>&nbsp;            Color c;
+<b class="fc"><i>178</i>&nbsp;            if (i &lt; numStops) {</b>
+<b class="fc"><i>179</i>&nbsp;                c = stops.get(i).getColor();</b>
+<b class="fc"><i>180</i>&nbsp;                lastColor = c;</b>
+<i>181</i>&nbsp;            } else {
+<i>182</i>&nbsp;                // repeat the last color for the remaining slots so that
+<i>183</i>&nbsp;                // we can simply reference the last pixel of the texture when
+<i>184</i>&nbsp;                // dealing with edge conditions
+<b class="fc"><i>185</i>&nbsp;                c = lastColor;</b>
+<i>186</i>&nbsp;            }
+<b class="fc"><i>187</i>&nbsp;            c.putBgraPreBytes(bgraColors);</b>
+<i>188</i>&nbsp;
+<i>189</i>&nbsp;            // optimization: keep track of colors used each time so that
+<i>190</i>&nbsp;            // we can skip updating the texture if the colors are same as
+<i>191</i>&nbsp;            // the last time
+<b class="fc"><i>192</i>&nbsp;            int argb = c.getIntArgbPre();</b>
+<b class="fc"><i>193</i>&nbsp;            if (argb != previousColors[i]) {</b>
+<b class="fc"><i>194</i>&nbsp;                previousColors[i] = argb;</b>
+<i>195</i>&nbsp;            }
+<i>196</i>&nbsp;        }
+<b class="fc"><i>197</i>&nbsp;        bgraColors.rewind();</b>
+<b class="fc"><i>198</i>&nbsp;    }</b>
+<i>199</i>&nbsp;
+<i>200</i>&nbsp;    private static void insertInterpColor(byte colors[], int index,
+<i>201</i>&nbsp;                                          Color c0, Color c1, float t)
+<i>202</i>&nbsp;    {
+<b class="fc"><i>203</i>&nbsp;        t *= 255.0f;</b>
+<b class="fc"><i>204</i>&nbsp;        float u = 255.0f - t;</b>
+<b class="fc"><i>205</i>&nbsp;        index *= 4;</b>
+<b class="fc"><i>206</i>&nbsp;        colors[index + 0] = (byte) (c0.getBluePremult()  * u + c1.getBluePremult()  * t + 0.5f);</b>
+<b class="fc"><i>207</i>&nbsp;        colors[index + 1] = (byte) (c0.getGreenPremult() * u + c1.getGreenPremult() * t + 0.5f);</b>
+<b class="fc"><i>208</i>&nbsp;        colors[index + 2] = (byte) (c0.getRedPremult()   * u + c1.getRedPremult()   * t + 0.5f);</b>
+<b class="fc"><i>209</i>&nbsp;        colors[index + 3] = (byte) (c0.getAlpha()        * u + c1.getAlpha()        * t + 0.5f);</b>
+<b class="fc"><i>210</i>&nbsp;    }</b>
+<i>211</i>&nbsp;
+<b class="fc"><i>212</i>&nbsp;    private static Color PINK = new Color(1.0f, 0.078431375f, 0.5764706f, 1.0f);</b>
+<i>213</i>&nbsp;
+<i>214</i>&nbsp;    private static void stopsToGtexImage(List&lt;Stop&gt; stops, int numStops) {
+<b class="fc"><i>215</i>&nbsp;        Color lastColor = stops.get(0).getColor();</b>
+<b class="fc"><i>216</i>&nbsp;        float offset = stops.get(0).getOffset();</b>
+<b class="fc"><i>217</i>&nbsp;        int lastIndex = (int) (offset * (GTEX_CLR_TABLE_SIZE - 1) + 0.5f);</b>
+<b class="fc"><i>218</i>&nbsp;        insertInterpColor(gtexColors, 0, lastColor, lastColor, 0.0f);</b>
+<b class="fc"><i>219</i>&nbsp;        for (int i = 1; i &lt; numStops; i++) {</b>
+<b class="fc"><i>220</i>&nbsp;            Color color = stops.get(i).getColor();</b>
+<b class="fc"><i>221</i>&nbsp;            offset = stops.get(i).getOffset();</b>
+<b class="fc"><i>222</i>&nbsp;            int index = (int) (offset * (GTEX_CLR_TABLE_SIZE - 1) + 0.5f);</b>
+<b class="fc"><i>223</i>&nbsp;            if (index == lastIndex) {</b>
+<b class="nc"><i>224</i>&nbsp;                insertInterpColor(gtexColors, index, lastColor, color, 0.5f);</b>
+<i>225</i>&nbsp;            } else {
+<b class="fc"><i>226</i>&nbsp;                for (int j = lastIndex+1; j &lt;= index; j++) {</b>
+<b class="fc"><i>227</i>&nbsp;                    float t = j - lastIndex;</b>
+<b class="fc"><i>228</i>&nbsp;                    t /= (index - lastIndex);</b>
+<b class="fc"><i>229</i>&nbsp;                    insertInterpColor(gtexColors, j, lastColor, color, t);</b>
+<i>230</i>&nbsp;                }
+<i>231</i>&nbsp;            }
+<b class="fc"><i>232</i>&nbsp;            lastIndex = index;</b>
+<b class="fc"><i>233</i>&nbsp;            lastColor = color;</b>
+<i>234</i>&nbsp;        }
+<i>235</i>&nbsp;        // assert (lastIndex = GTEX_CLR_TABLE_SIZE);
+<i>236</i>&nbsp;        // now mirror the list for fast REFLECT calculations
+<i>237</i>&nbsp;        // mirroring is around index = (GTEX_CLR_TABLE_SIZE-1) which is
+<i>238</i>&nbsp;        // where the last color for fract=1.0 should have been stored
+<b class="fc"><i>239</i>&nbsp;        for (int i = 1; i &lt; GTEX_CLR_TABLE_SIZE; i++) {</b>
+<b class="fc"><i>240</i>&nbsp;            int j = (GTEX_CLR_TABLE_SIZE - 1 + i) * 4;</b>
+<b class="fc"><i>241</i>&nbsp;            int k = (GTEX_CLR_TABLE_SIZE - 1 - i) * 4;</b>
+<b class="fc"><i>242</i>&nbsp;            gtexColors[j + 0] = gtexColors[k + 0];</b>
+<b class="fc"><i>243</i>&nbsp;            gtexColors[j + 1] = gtexColors[k + 1];</b>
+<b class="fc"><i>244</i>&nbsp;            gtexColors[j + 2] = gtexColors[k + 2];</b>
+<b class="fc"><i>245</i>&nbsp;            gtexColors[j + 3] = gtexColors[k + 3];</b>
+<i>246</i>&nbsp;        }
+<b class="fc"><i>247</i>&nbsp;    }</b>
+<i>248</i>&nbsp;
+<i>249</i>&nbsp;    // Uses a least recently allocated algorithm for caching Gradient colors.
+<i>250</i>&nbsp;    // This could be optimized so that we never use the same color twice.
+<i>251</i>&nbsp;    // We always increment the cacheOffset (long) and keep the gradients stored
+<i>252</i>&nbsp;    // the cache in the range [cacheOffset - cacheSize + 1, cacheOffset]..
+<i>253</i>&nbsp;    public static int initGradient(Gradient paint) {
+<b class="fc"><i>254</i>&nbsp;        long offset = paint.getGradientOffset();</b>
+<b class="fc"><i>255</i>&nbsp;        if (offset &gt;= 0 &amp;&amp; (offset &gt; cacheOffset - MULTI_CACHE_SIZE)) {</b>
+<b class="fc"><i>256</i>&nbsp;            return (int) (offset % MULTI_CACHE_SIZE);</b>
+<i>257</i>&nbsp;        } else {
+<b class="fc"><i>258</i>&nbsp;            List&lt;Stop&gt; stops = paint.getStops();</b>
+<b class="fc"><i>259</i>&nbsp;            int numStops = paint.getNumStops();</b>
+<b class="fc"><i>260</i>&nbsp;            stopsToImage(stops,numStops);</b>
+<b class="fc"><i>261</i>&nbsp;            stopsToGtexImage(stops, numStops);</b>
+<b class="fc"><i>262</i>&nbsp;            long nextOffset = ++cacheOffset;</b>
+<b class="fc"><i>263</i>&nbsp;            paint.setGradientOffset(nextOffset);</b>
+<b class="fc"><i>264</i>&nbsp;            int cacheIdx = (int)(nextOffset % MULTI_CACHE_SIZE);</b>
+<i>265</i>&nbsp;            // both gradientCacheTexture and gtexCacheTexture should be
+<i>266</i>&nbsp;            // left permanent and locked so we can always call update on
+<i>267</i>&nbsp;            // either or both of them here.
+<b class="fc"><i>268</i>&nbsp;            gradientCacheTexture.update(colorsImg, 0, cacheIdx);</b>
+<b class="fc"><i>269</i>&nbsp;            gtexCacheTexture.update(gtexImg, 0, cacheIdx);</b>
+<b class="fc"><i>270</i>&nbsp;            return cacheIdx;</b>
+<i>271</i>&nbsp;        }
+<i>272</i>&nbsp;    }
+<i>273</i>&nbsp;
+<i>274</i>&nbsp;    private static void setMultiGradient(Shader shader,
+<i>275</i>&nbsp;                                         Gradient paint)
+<i>276</i>&nbsp;    {
+<b class="fc"><i>277</i>&nbsp;        List&lt;Stop&gt; stops = paint.getStops();</b>
+<b class="fc"><i>278</i>&nbsp;        int numStops = paint.getNumStops();</b>
+<i>279</i>&nbsp;
+<b class="fc"><i>280</i>&nbsp;        stopVals.clear();</b>
+<b class="fc"><i>281</i>&nbsp;        for (int i = 0; i &lt; MULTI_MAX_FRACTIONS; i++) {</b>
+<i>282</i>&nbsp;            // TODO: optimize this... (RT-27377)
+<b class="fc"><i>283</i>&nbsp;            stopVals.put((i &lt; numStops)   ?</b>
+<b class="fc"><i>284</i>&nbsp;                         stops.get(i).getOffset() : 0f);</b>
+<b class="fc"><i>285</i>&nbsp;            stopVals.put((i &lt; numStops-1) ?</b>
+<b class="fc"><i>286</i>&nbsp;                         1f / (stops.get(i+1).getOffset() - stops.get(i).getOffset()) : 0f);</b>
+<b class="fc"><i>287</i>&nbsp;            stopVals.put(0f); // unused</b>
+<b class="fc"><i>288</i>&nbsp;            stopVals.put(0f); // unused</b>
+<i>289</i>&nbsp;        }
+<b class="fc"><i>290</i>&nbsp;        stopVals.rewind();</b>
+<b class="fc"><i>291</i>&nbsp;        shader.setConstants(&quot;fractions&quot;, stopVals, 0, MULTI_MAX_FRACTIONS);</b>
+<b class="fc"><i>292</i>&nbsp;        float index_y = initGradient(paint);</b>
+<b class="fc"><i>293</i>&nbsp;        shader.setConstant(&quot;offset&quot;, index_y / (float)MULTI_CACHE_SIZE + HALF_TEXEL_Y);</b>
+<i>294</i>&nbsp;
+<i>295</i>&nbsp;        // Note that the colors image/texture has already been updated
+<i>296</i>&nbsp;        // in BaseShaderContext.validatePaintOp()...
+<b class="fc"><i>297</i>&nbsp;    }</b>
+<i>298</i>&nbsp;
+<i>299</i>&nbsp;    private static void setTextureGradient(Shader shader,
+<i>300</i>&nbsp;                                           Gradient paint)
+<i>301</i>&nbsp;    {
+<b class="nc"><i>302</i>&nbsp;        float cy = initGradient(paint) + 0.5f;</b>
+<b class="nc"><i>303</i>&nbsp;        float cx = 0.5f;</b>
+<b class="nc"><i>304</i>&nbsp;        float fractmul = 0.0f, clampmul = 0.0f;</b>
+<b class="nc"><i>305</i>&nbsp;        switch (paint.getSpreadMethod()) {</b>
+<i>306</i>&nbsp;            case Gradient.PAD:
+<i>307</i>&nbsp;                // distance from 0.5 texels to TABLE_SIZE - 0.5 texels
+<b class="nc"><i>308</i>&nbsp;                clampmul = GTEX_CLR_TABLE_SIZE - 1.0f;</b>
+<b class="nc"><i>309</i>&nbsp;                break;</b>
+<i>310</i>&nbsp;            case Gradient.REPEAT:
+<i>311</i>&nbsp;                // distance from 0.5 texels to TABLE_SIZE - 0.5 texels
+<b class="nc"><i>312</i>&nbsp;                fractmul = GTEX_CLR_TABLE_SIZE - 1.0f;</b>
+<b class="nc"><i>313</i>&nbsp;                break;</b>
+<i>314</i>&nbsp;            case Gradient.REFLECT:
+<i>315</i>&nbsp;                // distance from 0.5 texels to MIRROR_TABLE_SIZE - 0.5 texels
+<b class="nc"><i>316</i>&nbsp;                fractmul = GTEX_CLR_TABLE_MIRRORED_SIZE - 1.0f;</b>
+<i>317</i>&nbsp;                break;
+<i>318</i>&nbsp;        }
+<b class="nc"><i>319</i>&nbsp;        float xscale = 1.0f / gtexCacheTexture.getPhysicalWidth();</b>
+<b class="nc"><i>320</i>&nbsp;        float yscale = 1.0f / gtexCacheTexture.getPhysicalHeight();</b>
+<b class="nc"><i>321</i>&nbsp;        cx *= xscale;</b>
+<b class="nc"><i>322</i>&nbsp;        cy *= yscale;</b>
+<b class="nc"><i>323</i>&nbsp;        fractmul *= xscale;</b>
+<b class="nc"><i>324</i>&nbsp;        clampmul *= xscale;</b>
+<b class="nc"><i>325</i>&nbsp;        shader.setConstant(&quot;content&quot;, cx, cy, fractmul, clampmul);</b>
+<i>326</i>&nbsp;
+<i>327</i>&nbsp;        // Note that the colors image/texture has already been updated
+<i>328</i>&nbsp;        // in BaseShaderContext.validatePaintOp()...
+<b class="nc"><i>329</i>&nbsp;    }</b>
+<i>330</i>&nbsp;
+<i>331</i>&nbsp;/********************** LinearGradientPaint support *************************/
+<i>332</i>&nbsp;
+<i>333</i>&nbsp;    /**
+<i>334</i>&nbsp;     * This method uses techniques that are nearly identical to those
+<i>335</i>&nbsp;     * employed in setGradientPaint() above.  The primary difference
+<i>336</i>&nbsp;     * is that at the native level we use a fragment shader to manually
+<i>337</i>&nbsp;     * apply the plane equation constants to the current fragment position
+<i>338</i>&nbsp;     * to calculate the gradient position in the range [0,1] (the native
+<i>339</i>&nbsp;     * code for GradientPaint does the same, except that it uses OpenGL&#39;s
+<i>340</i>&nbsp;     * automatic texture coordinate generation facilities). We Also, project
+<i>341</i>&nbsp;     * in the 3D case to create a perspective vector which is used in the
+<i>342</i>&nbsp;     * fragment shader.
+<i>343</i>&nbsp;     *
+<i>344</i>&nbsp;     * One other minor difference worth mentioning is that
+<i>345</i>&nbsp;     * setGradientPaint() calculates the plane equation constants
+<i>346</i>&nbsp;     * such that the gradient end points are positioned at 0.25 and 0.75
+<i>347</i>&nbsp;     * (for reasons discussed in the comments for that method).  In
+<i>348</i>&nbsp;     * contrast, for LinearGradientPaint we setup the equation constants
+<i>349</i>&nbsp;     * such that the gradient end points fall at 0.0 and 1.0.  The
+<i>350</i>&nbsp;     * reason for this difference is that in the fragment shader we
+<i>351</i>&nbsp;     * have more control over how the gradient values are interpreted
+<i>352</i>&nbsp;     * (depending on the paint&#39;s CycleMethod).
+<i>353</i>&nbsp;     */
+<i>354</i>&nbsp;    static void setLinearGradient(ShaderGraphics g,
+<i>355</i>&nbsp;                                  Shader shader,
+<i>356</i>&nbsp;                                  LinearGradient paint,
+<i>357</i>&nbsp;                                  float rx, float ry, float rw, float rh)
+<i>358</i>&nbsp;    {
+<b class="fc"><i>359</i>&nbsp;        BaseTransform paintXform = paint.getGradientTransformNoClone();</b>
+<b class="fc"><i>360</i>&nbsp;        Affine3D at = scratchXform3D;</b>
+<b class="fc"><i>361</i>&nbsp;        g.getPaintShaderTransform(at);</b>
+<i>362</i>&nbsp;
+<b class="fc"><i>363</i>&nbsp;        if (paintXform != null) {</b>
+<b class="fc"><i>364</i>&nbsp;            at.concatenate(paintXform);</b>
+<i>365</i>&nbsp;        }
+<i>366</i>&nbsp;
+<b class="fc"><i>367</i>&nbsp;        float x1 = rx + (paint.getX1() * rw);</b>
+<b class="fc"><i>368</i>&nbsp;        float y1 = ry + (paint.getY1() * rh);</b>
+<b class="fc"><i>369</i>&nbsp;        float x2 = rx + (paint.getX2() * rw);</b>
+<b class="fc"><i>370</i>&nbsp;        float y2 = ry + (paint.getY2() * rh);</b>
+<i>371</i>&nbsp;
+<i>372</i>&nbsp;        // calculate plane equation constants
+<b class="fc"><i>373</i>&nbsp;        float x = x1;</b>
+<b class="fc"><i>374</i>&nbsp;        float y = y1;</b>
+<b class="fc"><i>375</i>&nbsp;        at.translate(x, y);</b>
+<i>376</i>&nbsp;        // now gradient point 1 is at the origin
+<b class="fc"><i>377</i>&nbsp;        x = x2 - x;</b>
+<b class="fc"><i>378</i>&nbsp;        y = y2 - y;</b>
+<b class="fc"><i>379</i>&nbsp;        double len = len(x, y);</b>
+<i>380</i>&nbsp;
+<b class="fc"><i>381</i>&nbsp;        at.rotate(Math.atan2(y, x));</b>
+<i>382</i>&nbsp;        // now gradient point 2 is on the positive x-axis
+<b class="fc"><i>383</i>&nbsp;        at.scale(len, 1);</b>
+<i>384</i>&nbsp;        // now gradient point 1 is at (0.0, 0), point 2 is at (1.0, 0)
+<i>385</i>&nbsp;
+<i>386</i>&nbsp;        double p0, p1, p2;
+<i>387</i>&nbsp;
+<b class="fc"><i>388</i>&nbsp;        if (!at.is2D()) {</b>
+<i>389</i>&nbsp;            BaseTransform inv;
+<i>390</i>&nbsp;            try {
+<b class="nc"><i>391</i>&nbsp;                inv = at.createInverse();</b>
+<b class="nc"><i>392</i>&nbsp;            } catch (NoninvertibleTransformException e) {</b>
+<b class="nc"><i>393</i>&nbsp;                at.setToScale(0, 0, 0);</b>
+<b class="nc"><i>394</i>&nbsp;                inv = at;</b>
+<b class="nc"><i>395</i>&nbsp;            }</b>
+<i>396</i>&nbsp;
+<b class="nc"><i>397</i>&nbsp;            NGCamera cam = g.getCameraNoClone();</b>
+<b class="nc"><i>398</i>&nbsp;            Vec3d tmpVec = new Vec3d();</b>
+<b class="nc"><i>399</i>&nbsp;            PickRay tmpvec = new PickRay();</b>
+<i>400</i>&nbsp;
+<b class="nc"><i>401</i>&nbsp;            PickRay ray00 = project(0,0,cam,inv,tmpvec,tmpVec,null);</b>
+<b class="nc"><i>402</i>&nbsp;            PickRay ray10 = project(1,0,cam,inv,tmpvec,tmpVec,null);</b>
+<b class="nc"><i>403</i>&nbsp;            PickRay ray01 = project(0,1,cam,inv,tmpvec,tmpVec,null);</b>
+<i>404</i>&nbsp;
+<b class="nc"><i>405</i>&nbsp;            p0 = ray10.getDirectionNoClone().x - ray00.getDirectionNoClone().x;</b>
+<b class="nc"><i>406</i>&nbsp;            p1 = ray01.getDirectionNoClone().x - ray00.getDirectionNoClone().x;</b>
+<b class="nc"><i>407</i>&nbsp;            p2 = ray00.getDirectionNoClone().x;</b>
+<i>408</i>&nbsp;
+<b class="nc"><i>409</i>&nbsp;            p0 *= -ray00.getOriginNoClone().z;</b>
+<b class="nc"><i>410</i>&nbsp;            p1 *= -ray00.getOriginNoClone().z;</b>
+<b class="nc"><i>411</i>&nbsp;            p2 *= -ray00.getOriginNoClone().z;</b>
+<i>412</i>&nbsp;
+<b class="nc"><i>413</i>&nbsp;            double wv0 = ray10.getDirectionNoClone().z - ray00.getDirectionNoClone().z;</b>
+<b class="nc"><i>414</i>&nbsp;            double wv1 = ray01.getDirectionNoClone().z - ray00.getDirectionNoClone().z;</b>
+<b class="nc"><i>415</i>&nbsp;            double wv2 = ray00.getDirectionNoClone().z;</b>
+<i>416</i>&nbsp;
+<b class="nc"><i>417</i>&nbsp;            shader.setConstant(&quot;gradParams&quot;, (float)p0, (float)p1, (float)p2, (float)ray00.getOriginNoClone().x);</b>
+<b class="nc"><i>418</i>&nbsp;            shader.setConstant(&quot;perspVec&quot;, (float)wv0, (float)wv1, (float)wv2);</b>
+<b class="nc"><i>419</i>&nbsp;        } else {</b>
+<i>420</i>&nbsp;            try {
+<b class="fc"><i>421</i>&nbsp;                at.invert();</b>
+<b class="nc"><i>422</i>&nbsp;            } catch (NoninvertibleTransformException ex) {</b>
+<b class="nc"><i>423</i>&nbsp;                at.setToScale(0, 0, 0);</b>
+<b class="fc"><i>424</i>&nbsp;            }</b>
+<b class="fc"><i>425</i>&nbsp;            p0 = (float)at.getMxx();</b>
+<b class="fc"><i>426</i>&nbsp;            p1 = (float)at.getMxy();</b>
+<b class="fc"><i>427</i>&nbsp;            p2 = (float)at.getMxt();</b>
+<b class="fc"><i>428</i>&nbsp;            shader.setConstant(&quot;gradParams&quot;, (float)p0, (float)p1, (float)p2, 0.0f);</b>
+<b class="fc"><i>429</i>&nbsp;            shader.setConstant(&quot;perspVec&quot;, 0.0f, 0.0f, 1.0f);</b>
+<i>430</i>&nbsp;        }
+<i>431</i>&nbsp;
+<b class="fc"><i>432</i>&nbsp;        setMultiGradient(shader, paint);</b>
+<b class="fc"><i>433</i>&nbsp;    }</b>
+<i>434</i>&nbsp;
+<i>435</i>&nbsp;    static AffineBase getLinearGradientTx(LinearGradient paint,
+<i>436</i>&nbsp;                                          Shader shader,
+<i>437</i>&nbsp;                                          BaseTransform renderTx,
+<i>438</i>&nbsp;                                          float rx, float ry, float rw, float rh)
+<i>439</i>&nbsp;    {
+<i>440</i>&nbsp;        AffineBase ret;
+<i>441</i>&nbsp;
+<b class="nc"><i>442</i>&nbsp;        float x1 = paint.getX1();</b>
+<b class="nc"><i>443</i>&nbsp;        float y1 = paint.getY1();</b>
+<b class="nc"><i>444</i>&nbsp;        float x2 = paint.getX2();</b>
+<b class="nc"><i>445</i>&nbsp;        float y2 = paint.getY2();</b>
+<b class="nc"><i>446</i>&nbsp;        if (paint.isProportional()) {</b>
+<b class="nc"><i>447</i>&nbsp;            x1 = rx + x1 * rw;</b>
+<b class="nc"><i>448</i>&nbsp;            y1 = ry + y1 * rh;</b>
+<b class="nc"><i>449</i>&nbsp;            x2 = rx + x2 * rw;</b>
+<b class="nc"><i>450</i>&nbsp;            y2 = ry + y2 * rh;</b>
+<i>451</i>&nbsp;        }
+<b class="nc"><i>452</i>&nbsp;        float dx = x2 - x1;</b>
+<b class="nc"><i>453</i>&nbsp;        float dy = y2 - y1;</b>
+<b class="nc"><i>454</i>&nbsp;        float len = len(dx, dy);</b>
+<b class="nc"><i>455</i>&nbsp;        if (paint.getSpreadMethod() == Gradient.REFLECT) {</b>
+<b class="nc"><i>456</i>&nbsp;            len *= 2.0f;</b>
+<i>457</i>&nbsp;        }
+<i>458</i>&nbsp;
+<b class="nc"><i>459</i>&nbsp;        BaseTransform paintXform = paint.getGradientTransformNoClone();</b>
+<b class="nc"><i>460</i>&nbsp;        if (paintXform.isIdentity() &amp;&amp; renderTx.isIdentity()) {</b>
+<b class="nc"><i>461</i>&nbsp;            Affine2D at = scratchXform2D;</b>
+<i>462</i>&nbsp;
+<i>463</i>&nbsp;            // calculate plane equation constants
+<b class="nc"><i>464</i>&nbsp;            at.setToTranslation(x1, y1);</b>
+<i>465</i>&nbsp;            // now gradient point 1 is at the origin
+<b class="nc"><i>466</i>&nbsp;            at.rotate(dx, dy);</b>
+<i>467</i>&nbsp;            // now gradient point 2 is on the positive x-axis
+<b class="nc"><i>468</i>&nbsp;            at.scale(len, 1);</b>
+<i>469</i>&nbsp;            // now 0,0 maps to gradient point 1 and 1,0 maps to point 2
+<i>470</i>&nbsp;
+<b class="nc"><i>471</i>&nbsp;            ret = at;</b>
+<b class="nc"><i>472</i>&nbsp;        } else {</b>
+<b class="nc"><i>473</i>&nbsp;            Affine3D at = scratchXform3D;</b>
+<b class="nc"><i>474</i>&nbsp;            at.setTransform(renderTx);</b>
+<b class="nc"><i>475</i>&nbsp;            at.concatenate(paintXform);</b>
+<i>476</i>&nbsp;
+<i>477</i>&nbsp;            // calculate plane equation constants
+<b class="nc"><i>478</i>&nbsp;            at.translate(x1, y1);</b>
+<i>479</i>&nbsp;            // now gradient point 1 is at the origin
+<b class="nc"><i>480</i>&nbsp;            at.rotate(Math.atan2(dy, dx));</b>
+<i>481</i>&nbsp;            // now gradient point 2 is on the positive x-axis
+<b class="nc"><i>482</i>&nbsp;            at.scale(len, 1);</b>
+<i>483</i>&nbsp;            // now 0,0 maps to gradient point 1 and 1,0 maps to point 2
+<i>484</i>&nbsp;
+<b class="nc"><i>485</i>&nbsp;            ret = at;</b>
+<i>486</i>&nbsp;        }
+<i>487</i>&nbsp;
+<i>488</i>&nbsp;        try {
+<b class="nc"><i>489</i>&nbsp;            ret.invert();</b>
+<b class="nc"><i>490</i>&nbsp;        } catch (NoninvertibleTransformException e) {</b>
+<b class="nc"><i>491</i>&nbsp;            scratchXform2D.setToScale(0, 0);</b>
+<b class="nc"><i>492</i>&nbsp;            ret = scratchXform2D;</b>
+<b class="nc"><i>493</i>&nbsp;        }</b>
+<i>494</i>&nbsp;
+<b class="nc"><i>495</i>&nbsp;        setTextureGradient(shader, paint);</b>
+<i>496</i>&nbsp;
+<b class="nc"><i>497</i>&nbsp;        return ret;</b>
+<i>498</i>&nbsp;    }
+<i>499</i>&nbsp;
+<i>500</i>&nbsp;/********************** RadialGradientPaint support *************************/
+<i>501</i>&nbsp;
+<i>502</i>&nbsp;    /**
+<i>503</i>&nbsp;     * This method calculates six m** values and a focus adjustment value that
+<i>504</i>&nbsp;     * are used by the native fragment shader. (See LinearGradient Comment for
+<i>505</i>&nbsp;     * the 3D case.) These techniques are based on a whitepaper by Daniel Rice
+<i>506</i>&nbsp;     * on radial gradient performance (attached to the bug report for 6521533).
+<i>507</i>&nbsp;     * One can refer to that document for the complete set of formulas and
+<i>508</i>&nbsp;     * calculations, but the basic goal is to compose a transform that will
+<i>509</i>&nbsp;     * convert an (x,y) position in device space into a &quot;u&quot; value that represents
+<i>510</i>&nbsp;     * the relative distance to the gradient focus point.  The resulting
+<i>511</i>&nbsp;     * value can be used to look up the appropriate color by linearly
+<i>512</i>&nbsp;     * interpolating between the two nearest colors in the gradient.
+<i>513</i>&nbsp;     */
+<i>514</i>&nbsp;    static void setRadialGradient(ShaderGraphics g,
+<i>515</i>&nbsp;                                  Shader shader,
+<i>516</i>&nbsp;                                  RadialGradient paint,
+<i>517</i>&nbsp;                                  float rx, float ry, float rw, float rh)
+<i>518</i>&nbsp;    {
+<b class="nc"><i>519</i>&nbsp;        Affine3D at = scratchXform3D;</b>
+<b class="nc"><i>520</i>&nbsp;        g.getPaintShaderTransform(at);</b>
+<i>521</i>&nbsp;
+<i>522</i>&nbsp;        // save original (untransformed) center and focus points and
+<i>523</i>&nbsp;        // adjust to account for proportional attribute if necessary
+<b class="nc"><i>524</i>&nbsp;        float radius = paint.getRadius();</b>
+<b class="nc"><i>525</i>&nbsp;        float cx = paint.getCenterX();</b>
+<b class="nc"><i>526</i>&nbsp;        float cy = paint.getCenterY();</b>
+<b class="nc"><i>527</i>&nbsp;        float fa = paint.getFocusAngle();</b>
+<b class="nc"><i>528</i>&nbsp;        float fd = paint.getFocusDistance();</b>
+<b class="nc"><i>529</i>&nbsp;        if (fd &lt; 0) {</b>
+<b class="nc"><i>530</i>&nbsp;            fd = -fd;</b>
+<b class="nc"><i>531</i>&nbsp;            fa = fa+180;</b>
+<i>532</i>&nbsp;        }
+<b class="nc"><i>533</i>&nbsp;        fa = (float) Math.toRadians(fa);</b>
+<b class="nc"><i>534</i>&nbsp;        if (paint.isProportional()) {</b>
+<b class="nc"><i>535</i>&nbsp;            float bcx = rx + (rw / 2f);</b>
+<b class="nc"><i>536</i>&nbsp;            float bcy = ry + (rh / 2f);</b>
+<b class="nc"><i>537</i>&nbsp;            float scale = Math.min(rw, rh);</b>
+<b class="nc"><i>538</i>&nbsp;            cx = (cx - 0.5f) * scale + bcx;</b>
+<b class="nc"><i>539</i>&nbsp;            cy = (cy - 0.5f) * scale + bcy;</b>
+<b class="nc"><i>540</i>&nbsp;            if (rw != rh &amp;&amp; rw != 0f &amp;&amp; rh != 0f) {</b>
+<b class="nc"><i>541</i>&nbsp;                at.translate(bcx, bcy);</b>
+<b class="nc"><i>542</i>&nbsp;                at.scale(rw / scale, rh / scale);</b>
+<b class="nc"><i>543</i>&nbsp;                at.translate(-bcx, -bcy);</b>
+<i>544</i>&nbsp;            }
+<b class="nc"><i>545</i>&nbsp;            radius = radius * scale;</b>
+<i>546</i>&nbsp;        }
+<i>547</i>&nbsp;
+<i>548</i>&nbsp;        // transform from gradient coords to device coords
+<b class="nc"><i>549</i>&nbsp;        BaseTransform paintXform = paint.getGradientTransformNoClone();</b>
+<b class="nc"><i>550</i>&nbsp;        if (paintXform != null) {</b>
+<b class="nc"><i>551</i>&nbsp;            at.concatenate(paintXform);</b>
+<i>552</i>&nbsp;        }
+<i>553</i>&nbsp;
+<i>554</i>&nbsp;        // transform unit circle to gradient coords; we start with the
+<i>555</i>&nbsp;        // unit circle (center=(0,0), focus on positive x-axis, radius=1)
+<i>556</i>&nbsp;        // and then transform into gradient space
+<b class="nc"><i>557</i>&nbsp;        at.translate(cx, cy);</b>
+<b class="nc"><i>558</i>&nbsp;        at.rotate(fa);</b>
+<b class="nc"><i>559</i>&nbsp;        at.scale(radius, radius);</b>
+<i>560</i>&nbsp;
+<i>561</i>&nbsp;            // invert to get mapping from device coords to unit circle
+<i>562</i>&nbsp;        try {
+<b class="nc"><i>563</i>&nbsp;            at.invert();</b>
+<b class="nc"><i>564</i>&nbsp;        } catch (Exception e) {</b>
+<b class="nc"><i>565</i>&nbsp;            at.setToScale(0.0, 0.0, 0.0);</b>
+<b class="nc"><i>566</i>&nbsp;        }</b>
+<i>567</i>&nbsp;
+<b class="nc"><i>568</i>&nbsp;        if (!at.is2D()) {</b>
+<b class="nc"><i>569</i>&nbsp;            NGCamera cam = g.getCameraNoClone();</b>
+<b class="nc"><i>570</i>&nbsp;            Vec3d tmpVec = new Vec3d();</b>
+<b class="nc"><i>571</i>&nbsp;            PickRay tmpvec = new PickRay();</b>
+<i>572</i>&nbsp;
+<b class="nc"><i>573</i>&nbsp;            PickRay ray00 = project(0, 0, cam, at, tmpvec, tmpVec, null);</b>
+<b class="nc"><i>574</i>&nbsp;            PickRay ray10 = project(1, 0, cam, at, tmpvec, tmpVec, null);</b>
+<b class="nc"><i>575</i>&nbsp;            PickRay ray01 = project(0, 1, cam, at, tmpvec, tmpVec, null);</b>
+<i>576</i>&nbsp;
+<b class="nc"><i>577</i>&nbsp;            double p0 = ray10.getDirectionNoClone().x - ray00.getDirectionNoClone().x;</b>
+<b class="nc"><i>578</i>&nbsp;            double p1 = ray01.getDirectionNoClone().x - ray00.getDirectionNoClone().x;</b>
+<b class="nc"><i>579</i>&nbsp;            double p2 = ray00.getDirectionNoClone().x;</b>
+<i>580</i>&nbsp;
+<b class="nc"><i>581</i>&nbsp;            double py0 = ray10.getDirectionNoClone().y - ray00.getDirectionNoClone().y;</b>
+<b class="nc"><i>582</i>&nbsp;            double py1 = ray01.getDirectionNoClone().y - ray00.getDirectionNoClone().y;</b>
+<b class="nc"><i>583</i>&nbsp;            double py2 = ray00.getDirectionNoClone().y;</b>
+<i>584</i>&nbsp;
+<b class="nc"><i>585</i>&nbsp;            p0 *= -ray00.getOriginNoClone().z;</b>
+<b class="nc"><i>586</i>&nbsp;            p1 *= -ray00.getOriginNoClone().z;</b>
+<b class="nc"><i>587</i>&nbsp;            p2 *= -ray00.getOriginNoClone().z;</b>
+<i>588</i>&nbsp;
+<b class="nc"><i>589</i>&nbsp;            py0 *= -ray00.getOriginNoClone().z;</b>
+<b class="nc"><i>590</i>&nbsp;            py1 *= -ray00.getOriginNoClone().z;</b>
+<b class="nc"><i>591</i>&nbsp;            py2 *= -ray00.getOriginNoClone().z;</b>
+<i>592</i>&nbsp;
+<b class="nc"><i>593</i>&nbsp;            double wv0 = ray10.getDirectionNoClone().z - ray00.getDirectionNoClone().z;</b>
+<b class="nc"><i>594</i>&nbsp;            double wv1 = ray01.getDirectionNoClone().z - ray00.getDirectionNoClone().z;</b>
+<b class="nc"><i>595</i>&nbsp;            double wv2 = ray00.getDirectionNoClone().z;</b>
+<i>596</i>&nbsp;
+<b class="nc"><i>597</i>&nbsp;            shader.setConstant(&quot;perspVec&quot;, (float) wv0, (float) wv1, (float) wv2);</b>
+<b class="nc"><i>598</i>&nbsp;            shader.setConstant(&quot;m0&quot;, (float) p0, (float) p1, (float) p2, (float) ray00.getOriginNoClone().x);</b>
+<b class="nc"><i>599</i>&nbsp;            shader.setConstant(&quot;m1&quot;, (float) py0, (float) py1, (float) py2, (float) ray00.getOriginNoClone().y);</b>
+<b class="nc"><i>600</i>&nbsp;        } else {</b>
+<b class="nc"><i>601</i>&nbsp;            float m00 = (float) at.getMxx();</b>
+<b class="nc"><i>602</i>&nbsp;            float m01 = (float) at.getMxy();</b>
+<b class="nc"><i>603</i>&nbsp;            float m02 = (float) at.getMxt();</b>
+<b class="nc"><i>604</i>&nbsp;            shader.setConstant(&quot;m0&quot;, m00, m01, m02, 0.0f);</b>
+<i>605</i>&nbsp;
+<b class="nc"><i>606</i>&nbsp;            float m10 = (float) at.getMyx();</b>
+<b class="nc"><i>607</i>&nbsp;            float m11 = (float) at.getMyy();</b>
+<b class="nc"><i>608</i>&nbsp;            float m12 = (float) at.getMyt();</b>
+<b class="nc"><i>609</i>&nbsp;            shader.setConstant(&quot;m1&quot;, m10, m11, m12, 0.0f);</b>
+<i>610</i>&nbsp;
+<b class="nc"><i>611</i>&nbsp;            shader.setConstant(&quot;perspVec&quot;, 0.0f, 0.0f, 1.0f);</b>
+<i>612</i>&nbsp;        }
+<i>613</i>&nbsp;
+<i>614</i>&nbsp;        // clamp the focus point so that it does not rest on, or outside
+<i>615</i>&nbsp;        // of, the circumference of the gradient circle
+<b class="nc"><i>616</i>&nbsp;        fd = (float) Math.min(fd, 0.99f);</b>
+<i>617</i>&nbsp;
+<i>618</i>&nbsp;        // pack a few unrelated, precalculated values into a single float4
+<b class="nc"><i>619</i>&nbsp;        float denom = 1.0f - (fd * fd);</b>
+<b class="nc"><i>620</i>&nbsp;        float inv_denom = 1.0f / denom;</b>
+<b class="nc"><i>621</i>&nbsp;        shader.setConstant(&quot;precalc&quot;, fd, denom, inv_denom);</b>
+<i>622</i>&nbsp;
+<b class="nc"><i>623</i>&nbsp;        setMultiGradient(shader, paint);</b>
+<b class="nc"><i>624</i>&nbsp;    }</b>
+<i>625</i>&nbsp;
+<i>626</i>&nbsp;    static AffineBase getRadialGradientTx(RadialGradient paint,
+<i>627</i>&nbsp;                                          Shader shader,
+<i>628</i>&nbsp;                                          BaseTransform renderTx,
+<i>629</i>&nbsp;                                          float rx, float ry, float rw, float rh)
+<i>630</i>&nbsp;    {
+<b class="nc"><i>631</i>&nbsp;        Affine3D at = scratchXform3D;</b>
+<b class="nc"><i>632</i>&nbsp;        at.setTransform(renderTx);</b>
+<i>633</i>&nbsp;
+<i>634</i>&nbsp;        // save original (untransformed) center and focus points and
+<i>635</i>&nbsp;        // adjust to account for proportional attribute if necessary
+<b class="nc"><i>636</i>&nbsp;        float radius = paint.getRadius();</b>
+<b class="nc"><i>637</i>&nbsp;        float cx = paint.getCenterX();</b>
+<b class="nc"><i>638</i>&nbsp;        float cy = paint.getCenterY();</b>
+<b class="nc"><i>639</i>&nbsp;        float fa = paint.getFocusAngle();</b>
+<b class="nc"><i>640</i>&nbsp;        float fd = paint.getFocusDistance();</b>
+<b class="nc"><i>641</i>&nbsp;        if (fd &lt; 0) {</b>
+<b class="nc"><i>642</i>&nbsp;            fd = -fd;</b>
+<b class="nc"><i>643</i>&nbsp;            fa = fa+180;</b>
+<i>644</i>&nbsp;        }
+<b class="nc"><i>645</i>&nbsp;        fa = (float) Math.toRadians(fa);</b>
+<b class="nc"><i>646</i>&nbsp;        if (paint.isProportional()) {</b>
+<b class="nc"><i>647</i>&nbsp;            float bcx = rx + (rw / 2f);</b>
+<b class="nc"><i>648</i>&nbsp;            float bcy = ry + (rh / 2f);</b>
+<b class="nc"><i>649</i>&nbsp;            float scale = Math.min(rw, rh);</b>
+<b class="nc"><i>650</i>&nbsp;            cx = (cx - 0.5f) * scale + bcx;</b>
+<b class="nc"><i>651</i>&nbsp;            cy = (cy - 0.5f) * scale + bcy;</b>
+<b class="nc"><i>652</i>&nbsp;            if (rw != rh &amp;&amp; rw != 0f &amp;&amp; rh != 0f) {</b>
+<b class="nc"><i>653</i>&nbsp;                at.translate(bcx, bcy);</b>
+<b class="nc"><i>654</i>&nbsp;                at.scale(rw / scale, rh / scale);</b>
+<b class="nc"><i>655</i>&nbsp;                at.translate(-bcx, -bcy);</b>
+<i>656</i>&nbsp;            }
+<b class="nc"><i>657</i>&nbsp;            radius = radius * scale;</b>
+<i>658</i>&nbsp;        }
+<b class="nc"><i>659</i>&nbsp;        if (paint.getSpreadMethod() == Gradient.REFLECT) {</b>
+<b class="nc"><i>660</i>&nbsp;            radius *= 2.0f;</b>
+<i>661</i>&nbsp;        }
+<i>662</i>&nbsp;
+<i>663</i>&nbsp;        // transform from gradient coords to device coords
+<b class="nc"><i>664</i>&nbsp;        BaseTransform paintXform = paint.getGradientTransformNoClone();</b>
+<b class="nc"><i>665</i>&nbsp;        if (paintXform != null) {</b>
+<b class="nc"><i>666</i>&nbsp;            at.concatenate(paintXform);</b>
+<i>667</i>&nbsp;        }
+<i>668</i>&nbsp;
+<i>669</i>&nbsp;        // transform unit circle to gradient coords; we start with the
+<i>670</i>&nbsp;        // unit circle (center=(0,0), focus on positive x-axis, radius=1)
+<i>671</i>&nbsp;        // and then transform into gradient space
+<b class="nc"><i>672</i>&nbsp;        at.translate(cx, cy);</b>
+<b class="nc"><i>673</i>&nbsp;        at.rotate(fa);</b>
+<b class="nc"><i>674</i>&nbsp;        at.scale(radius, radius);</b>
+<i>675</i>&nbsp;
+<i>676</i>&nbsp;            // invert to get mapping from device coords to unit circle
+<i>677</i>&nbsp;        try {
+<b class="nc"><i>678</i>&nbsp;            at.invert();</b>
+<b class="nc"><i>679</i>&nbsp;        } catch (Exception e) {</b>
+<b class="nc"><i>680</i>&nbsp;            at.setToScale(0.0, 0.0, 0.0);</b>
+<b class="nc"><i>681</i>&nbsp;        }</b>
+<i>682</i>&nbsp;
+<i>683</i>&nbsp;        // clamp the focus point so that it does not rest on, or outside
+<i>684</i>&nbsp;        // of, the circumference of the gradient circle
+<b class="nc"><i>685</i>&nbsp;        fd = (float) Math.min(fd, 0.99f);</b>
+<i>686</i>&nbsp;
+<i>687</i>&nbsp;        // pack a few unrelated, precalculated values into a single float4
+<b class="nc"><i>688</i>&nbsp;        float denom = 1.0f - (fd * fd);</b>
+<b class="nc"><i>689</i>&nbsp;        float inv_denom = 1.0f / denom;</b>
+<b class="nc"><i>690</i>&nbsp;        shader.setConstant(&quot;precalc&quot;, fd, denom, inv_denom);</b>
+<i>691</i>&nbsp;
+<b class="nc"><i>692</i>&nbsp;        setTextureGradient(shader, paint);</b>
+<i>693</i>&nbsp;
+<b class="nc"><i>694</i>&nbsp;        return at;</b>
+<i>695</i>&nbsp;    }
+<i>696</i>&nbsp;
+<i>697</i>&nbsp;/************************** ImagePattern support ****************************/
+<i>698</i>&nbsp;
+<i>699</i>&nbsp;    /**
+<i>700</i>&nbsp;     * We use the plane equation to automatically
+<i>701</i>&nbsp;     * map the ImagePattern image to the geometry being rendered.  The
+<i>702</i>&nbsp;     * shader uses two separate plane equations that take the (x,y)
+<i>703</i>&nbsp;     * location (in device space) of the fragment being rendered to
+<i>704</i>&nbsp;     * calculate (u,v) texture coordinates for that fragment:
+<i>705</i>&nbsp;     *     u = Ax + By + Cz + Dw
+<i>706</i>&nbsp;     *     v = Ex + Fy + Gz + Hw
+<i>707</i>&nbsp;     *
+<i>708</i>&nbsp;     * For the 3D case we calculate a perspective vector by projecting rays
+<i>709</i>&nbsp;     * at various points, can finding the deltas. So we need to calculate appropriate
+<i>710</i>&nbsp;     * values for the plane equation constants (A,B,D) and (E,F,H) such
+<i>711</i>&nbsp;     * that {u,v}=0 for the top-left of the ImagePattern&#39;s anchor
+<i>712</i>&nbsp;     * rectangle and {u,v}=1 for the bottom-right of the anchor rectangle.
+<i>713</i>&nbsp;     * We can easily make the texture image repeat for {u,v} values
+<i>714</i>&nbsp;     * outside the range [0,1] by using the fract() instruction within
+<i>715</i>&nbsp;     * the shader.
+<i>716</i>&nbsp;     *
+<i>717</i>&nbsp;     * Calculating the plane equation constants is surprisingly simple.
+<i>718</i>&nbsp;     * We can think of it as an inverse matrix operation that takes
+<i>719</i>&nbsp;     * device space coordinates and transforms them into user space
+<i>720</i>&nbsp;     * coordinates that correspond to a location relative to the anchor
+<i>721</i>&nbsp;     * rectangle.  First, we translate and scale the current user space
+<i>722</i>&nbsp;     * transform by applying the anchor rectangle bounds.  We then take
+<i>723</i>&nbsp;     * the inverse of this affine transform.  The rows of the resulting
+<i>724</i>&nbsp;     * inverse matrix correlate nicely to the plane equation constants
+<i>725</i>&nbsp;     * we were seeking.
+<i>726</i>&nbsp;     */
+<i>727</i>&nbsp;
+<i>728</i>&nbsp;    static void setImagePattern(ShaderGraphics g,
+<i>729</i>&nbsp;                                Shader shader,
+<i>730</i>&nbsp;                                ImagePattern paint,
+<i>731</i>&nbsp;                                float rx, float ry, float rw, float rh)
+<i>732</i>&nbsp;    {
+<b class="nc"><i>733</i>&nbsp;        float x1 = rx + (paint.getX() * rw);</b>
+<b class="nc"><i>734</i>&nbsp;        float y1 = ry + (paint.getY() * rh);</b>
+<b class="nc"><i>735</i>&nbsp;        float x2 = x1 + (paint.getWidth() * rw);</b>
+<b class="nc"><i>736</i>&nbsp;        float y2 = y1 + (paint.getHeight() * rh);</b>
+<i>737</i>&nbsp;
+<b class="nc"><i>738</i>&nbsp;        ResourceFactory rf = g.getResourceFactory();</b>
+<b class="nc"><i>739</i>&nbsp;        Image img = paint.getImage();</b>
+<b class="nc"><i>740</i>&nbsp;        Texture paintTex = rf.getCachedTexture(img, Texture.WrapMode.REPEAT);</b>
+<b class="nc"><i>741</i>&nbsp;        float cx = paintTex.getContentX();</b>
+<b class="nc"><i>742</i>&nbsp;        float cy = paintTex.getContentY();</b>
+<b class="nc"><i>743</i>&nbsp;        float cw = paintTex.getContentWidth();</b>
+<b class="nc"><i>744</i>&nbsp;        float ch = paintTex.getContentHeight();</b>
+<b class="nc"><i>745</i>&nbsp;        float texw = paintTex.getPhysicalWidth();</b>
+<b class="nc"><i>746</i>&nbsp;        float texh = paintTex.getPhysicalHeight();</b>
+<b class="nc"><i>747</i>&nbsp;        paintTex.unlock();</b>
+<i>748</i>&nbsp;
+<i>749</i>&nbsp;        // calculate plane equation constants
+<b class="nc"><i>750</i>&nbsp;        Affine3D at = scratchXform3D;</b>
+<b class="nc"><i>751</i>&nbsp;        g.getPaintShaderTransform(at);</b>
+<i>752</i>&nbsp;
+<b class="nc"><i>753</i>&nbsp;        at.translate(x1, y1);</b>
+<b class="nc"><i>754</i>&nbsp;        at.scale(x2 - x1, y2 - y1);</b>
+<i>755</i>&nbsp;        // Adjustment for case when WrapMode.REPEAT is simulated
+<b class="nc"><i>756</i>&nbsp;        if (cw &lt; texw) {</b>
+<b class="nc"><i>757</i>&nbsp;            at.translate(0.5/cw, 0.0);</b>
+<b class="nc"><i>758</i>&nbsp;            cx += 0.5f;</b>
+<i>759</i>&nbsp;        }
+<b class="nc"><i>760</i>&nbsp;        if (ch &lt; texh) {</b>
+<b class="nc"><i>761</i>&nbsp;            at.translate(0.0, 0.5/ch);</b>
+<b class="nc"><i>762</i>&nbsp;            cy += 0.5f;</b>
+<i>763</i>&nbsp;        }
+<i>764</i>&nbsp;
+<i>765</i>&nbsp;        try {
+<b class="nc"><i>766</i>&nbsp;            at.invert();</b>
+<b class="nc"><i>767</i>&nbsp;        } catch (Exception e) {</b>
+<b class="nc"><i>768</i>&nbsp;            at.setToScale(0.0, 0.0, 0.0);</b>
+<b class="nc"><i>769</i>&nbsp;        }</b>
+<i>770</i>&nbsp;
+<b class="nc"><i>771</i>&nbsp;        if (!at.is2D()) {</b>
+<b class="nc"><i>772</i>&nbsp;            NGCamera cam = g.getCameraNoClone();</b>
+<b class="nc"><i>773</i>&nbsp;            Vec3d tmpVec = new Vec3d();</b>
+<b class="nc"><i>774</i>&nbsp;            PickRay tmpvec = new PickRay();</b>
+<b class="nc"><i>775</i>&nbsp;            PickRay ray00 = project(0,0,cam,at,tmpvec,tmpVec,null);</b>
+<b class="nc"><i>776</i>&nbsp;            PickRay ray10 = project(1,0,cam,at,tmpvec,tmpVec,null);</b>
+<b class="nc"><i>777</i>&nbsp;            PickRay ray01 = project(0,1,cam,at,tmpvec,tmpVec,null);</b>
+<i>778</i>&nbsp;
+<b class="nc"><i>779</i>&nbsp;            double p0 = ray10.getDirectionNoClone().x - ray00.getDirectionNoClone().x;</b>
+<b class="nc"><i>780</i>&nbsp;            double p1 = ray01.getDirectionNoClone().x - ray00.getDirectionNoClone().x;</b>
+<b class="nc"><i>781</i>&nbsp;            double p2 = ray00.getDirectionNoClone().x;</b>
+<i>782</i>&nbsp;
+<b class="nc"><i>783</i>&nbsp;            double py0 = ray10.getDirectionNoClone().y - ray00.getDirectionNoClone().y;</b>
+<b class="nc"><i>784</i>&nbsp;            double py1 = ray01.getDirectionNoClone().y - ray00.getDirectionNoClone().y;</b>
+<b class="nc"><i>785</i>&nbsp;            double py2 = ray00.getDirectionNoClone().y;</b>
+<i>786</i>&nbsp;
+<b class="nc"><i>787</i>&nbsp;            p0 *= -ray00.getOriginNoClone().z;</b>
+<b class="nc"><i>788</i>&nbsp;            p1 *= -ray00.getOriginNoClone().z;</b>
+<b class="nc"><i>789</i>&nbsp;            p2 *= -ray00.getOriginNoClone().z;</b>
+<i>790</i>&nbsp;
+<b class="nc"><i>791</i>&nbsp;            py0 *= -ray00.getOriginNoClone().z;</b>
+<b class="nc"><i>792</i>&nbsp;            py1 *= -ray00.getOriginNoClone().z;</b>
+<b class="nc"><i>793</i>&nbsp;            py2 *= -ray00.getOriginNoClone().z;</b>
+<i>794</i>&nbsp;
+<b class="nc"><i>795</i>&nbsp;            double wv0 = ray10.getDirectionNoClone().z - ray00.getDirectionNoClone().z;</b>
+<b class="nc"><i>796</i>&nbsp;            double wv1 = ray01.getDirectionNoClone().z - ray00.getDirectionNoClone().z;</b>
+<b class="nc"><i>797</i>&nbsp;            double wv2 = ray00.getDirectionNoClone().z;</b>
+<i>798</i>&nbsp;
+<b class="nc"><i>799</i>&nbsp;            shader.setConstant(&quot;perspVec&quot;, (float)wv0, (float)wv1, (float)wv2);</b>
+<b class="nc"><i>800</i>&nbsp;            shader.setConstant(&quot;xParams&quot;, (float)p0, (float)p1, (float)p2, (float)ray00.getOriginNoClone().x);</b>
+<b class="nc"><i>801</i>&nbsp;            shader.setConstant(&quot;yParams&quot;, (float)py0, (float)py1, (float)py2, (float)ray00.getOriginNoClone().y);</b>
+<b class="nc"><i>802</i>&nbsp;        } else {</b>
+<b class="nc"><i>803</i>&nbsp;            float m00 = (float)at.getMxx();</b>
+<b class="nc"><i>804</i>&nbsp;            float m01 = (float)at.getMxy();</b>
+<b class="nc"><i>805</i>&nbsp;            float m02 = (float)at.getMxt();</b>
+<b class="nc"><i>806</i>&nbsp;            shader.setConstant(&quot;xParams&quot;, m00, m01, m02, 0.0f);</b>
+<i>807</i>&nbsp;
+<b class="nc"><i>808</i>&nbsp;            float m10 = (float)at.getMyx();</b>
+<b class="nc"><i>809</i>&nbsp;            float m11 = (float)at.getMyy();</b>
+<b class="nc"><i>810</i>&nbsp;            float m12 = (float)at.getMyt();</b>
+<b class="nc"><i>811</i>&nbsp;            shader.setConstant(&quot;yParams&quot;, m10, m11, m12, 0.0f);</b>
+<b class="nc"><i>812</i>&nbsp;            shader.setConstant(&quot;perspVec&quot;, 0.0f, 0.0f, 1.0f);</b>
+<i>813</i>&nbsp;        }
+<i>814</i>&nbsp;
+<b class="nc"><i>815</i>&nbsp;        cx /= texw;</b>
+<b class="nc"><i>816</i>&nbsp;        cy /= texh;</b>
+<b class="nc"><i>817</i>&nbsp;        cw /= texw;</b>
+<b class="nc"><i>818</i>&nbsp;        ch /= texh;</b>
+<b class="nc"><i>819</i>&nbsp;        shader.setConstant(&quot;content&quot;, cx, cy, cw, ch);</b>
+<b class="nc"><i>820</i>&nbsp;    }</b>
+<i>821</i>&nbsp;
+<i>822</i>&nbsp;    static AffineBase getImagePatternTx(ShaderGraphics g,
+<i>823</i>&nbsp;                                        ImagePattern paint,
+<i>824</i>&nbsp;                                        Shader shader,
+<i>825</i>&nbsp;                                        BaseTransform renderTx,
+<i>826</i>&nbsp;                                        float rx, float ry, float rw, float rh)
+<i>827</i>&nbsp;    {
+<b class="nc"><i>828</i>&nbsp;        float px = paint.getX();</b>
+<b class="nc"><i>829</i>&nbsp;        float py = paint.getY();</b>
+<b class="nc"><i>830</i>&nbsp;        float pw = paint.getWidth();</b>
+<b class="nc"><i>831</i>&nbsp;        float ph = paint.getHeight();</b>
+<b class="nc"><i>832</i>&nbsp;        if (paint.isProportional()) {</b>
+<b class="nc"><i>833</i>&nbsp;            px = rx + px * rw;</b>
+<b class="nc"><i>834</i>&nbsp;            py = ry + py * rh;</b>
+<b class="nc"><i>835</i>&nbsp;            pw = pw * rw;</b>
+<b class="nc"><i>836</i>&nbsp;            ph = ph * rh;</b>
+<i>837</i>&nbsp;        }
+<i>838</i>&nbsp;
+<b class="nc"><i>839</i>&nbsp;        ResourceFactory rf = g.getResourceFactory();</b>
+<b class="nc"><i>840</i>&nbsp;        Image img = paint.getImage();</b>
+<b class="nc"><i>841</i>&nbsp;        Texture paintTex = rf.getCachedTexture(img, Texture.WrapMode.REPEAT);</b>
+<b class="nc"><i>842</i>&nbsp;        float cx = paintTex.getContentX();</b>
+<b class="nc"><i>843</i>&nbsp;        float cy = paintTex.getContentY();</b>
+<b class="nc"><i>844</i>&nbsp;        float cw = paintTex.getContentWidth();</b>
+<b class="nc"><i>845</i>&nbsp;        float ch = paintTex.getContentHeight();</b>
+<b class="nc"><i>846</i>&nbsp;        float texw = paintTex.getPhysicalWidth();</b>
+<b class="nc"><i>847</i>&nbsp;        float texh = paintTex.getPhysicalHeight();</b>
+<b class="nc"><i>848</i>&nbsp;        paintTex.unlock();</b>
+<i>849</i>&nbsp;
+<i>850</i>&nbsp;        // calculate plane equation constants
+<i>851</i>&nbsp;        AffineBase ret;
+<b class="nc"><i>852</i>&nbsp;        if (renderTx.isIdentity()) {</b>
+<b class="nc"><i>853</i>&nbsp;            Affine2D at = scratchXform2D;</b>
+<i>854</i>&nbsp;
+<b class="nc"><i>855</i>&nbsp;            at.setToTranslation(px, py);</b>
+<b class="nc"><i>856</i>&nbsp;            at.scale(pw, ph);</b>
+<b class="nc"><i>857</i>&nbsp;            ret = at;</b>
+<b class="nc"><i>858</i>&nbsp;        } else {</b>
+<b class="nc"><i>859</i>&nbsp;            Affine3D at = scratchXform3D;</b>
+<b class="nc"><i>860</i>&nbsp;            at.setTransform(renderTx);</b>
+<i>861</i>&nbsp;
+<b class="nc"><i>862</i>&nbsp;            at.translate(px, py);</b>
+<b class="nc"><i>863</i>&nbsp;            at.scale(pw, ph);</b>
+<b class="nc"><i>864</i>&nbsp;            ret = at;</b>
+<i>865</i>&nbsp;        }
+<i>866</i>&nbsp;
+<i>867</i>&nbsp;        // Adjustment for case when WrapMode.REPEAT is simulated
+<b class="nc"><i>868</i>&nbsp;        if (cw &lt; texw) {</b>
+<b class="nc"><i>869</i>&nbsp;            ret.translate(0.5/cw, 0.0);</b>
+<b class="nc"><i>870</i>&nbsp;            cx += 0.5f;</b>
+<i>871</i>&nbsp;        }
+<b class="nc"><i>872</i>&nbsp;        if (ch &lt; texh) {</b>
+<b class="nc"><i>873</i>&nbsp;            ret.translate(0.0, 0.5/ch);</b>
+<b class="nc"><i>874</i>&nbsp;            cy += 0.5f;</b>
+<i>875</i>&nbsp;        }
+<i>876</i>&nbsp;
+<i>877</i>&nbsp;        try {
+<b class="nc"><i>878</i>&nbsp;            ret.invert();</b>
+<b class="nc"><i>879</i>&nbsp;        } catch (Exception e) {</b>
+<b class="nc"><i>880</i>&nbsp;            ret = scratchXform2D;</b>
+<b class="nc"><i>881</i>&nbsp;            scratchXform2D.setToScale(0.0, 0.0);</b>
+<b class="nc"><i>882</i>&nbsp;        }</b>
+<i>883</i>&nbsp;
+<b class="nc"><i>884</i>&nbsp;        cx /= texw;</b>
+<b class="nc"><i>885</i>&nbsp;        cy /= texh;</b>
+<b class="nc"><i>886</i>&nbsp;        cw /= texw;</b>
+<b class="nc"><i>887</i>&nbsp;        ch /= texh;</b>
+<b class="nc"><i>888</i>&nbsp;        shader.setConstant(&quot;content&quot;, cx, cy, cw, ch);</b>
+<i>889</i>&nbsp;
+<b class="nc"><i>890</i>&nbsp;        return ret;</b>
+<i>891</i>&nbsp;    }
+<i>892</i>&nbsp;
+<i>893</i>&nbsp;    static PickRay project(float x, float y,
+<i>894</i>&nbsp;                           NGCamera cam, BaseTransform inv,
+<i>895</i>&nbsp;                           PickRay tmpray, Vec3d tmpvec, Point2D ret)
+<i>896</i>&nbsp;    {
+<b class="nc"><i>897</i>&nbsp;        tmpray = cam.computePickRay(x, y, tmpray);</b>
+<b class="nc"><i>898</i>&nbsp;        return tmpray.project(inv, cam instanceof NGPerspectiveCamera,</b>
+<i>899</i>&nbsp;                                         tmpvec, ret);
+<i>900</i>&nbsp;    }
+<i>901</i>&nbsp;
+<i>902</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2017-12-04 21:49</div>
+</div>
+</body>
+</html>

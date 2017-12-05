@@ -1,0 +1,237 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: CompositeGlyphMapper</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.javafx.font</a> ]
+</div>
+
+<h1>Coverage Summary for Class: CompositeGlyphMapper (com.sun.javafx.font)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">CompositeGlyphMapper</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    57.1%
+  </span>
+  <span class="absValue">
+    (4/ 7)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    56%
+  </span>
+  <span class="absValue">
+    (28/ 50)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright (c) 2011, 2013, Oracle and/or its affiliates. All rights reserved.
+<i>3</i>&nbsp; * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+<i>4</i>&nbsp; *
+<i>5</i>&nbsp; *
+<i>6</i>&nbsp; *
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; *
+<i>11</i>&nbsp; *
+<i>12</i>&nbsp; *
+<i>13</i>&nbsp; *
+<i>14</i>&nbsp; *
+<i>15</i>&nbsp; *
+<i>16</i>&nbsp; *
+<i>17</i>&nbsp; *
+<i>18</i>&nbsp; *
+<i>19</i>&nbsp; *
+<i>20</i>&nbsp; *
+<i>21</i>&nbsp; *
+<i>22</i>&nbsp; *
+<i>23</i>&nbsp; *
+<i>24</i>&nbsp; */
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;package com.sun.javafx.font;
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;import java.util.HashMap;
+<i>29</i>&nbsp;
+<i>30</i>&nbsp;public class CompositeGlyphMapper extends CharToGlyphMapper {
+<i>31</i>&nbsp;
+<i>32</i>&nbsp;    public static final int SLOTMASK =  0xff000000;
+<i>33</i>&nbsp;    public static final int GLYPHMASK = 0x00ffffff;
+<i>34</i>&nbsp;
+<i>35</i>&nbsp;    public static final int NBLOCKS = 216;
+<i>36</i>&nbsp;    public static final int BLOCKSZ = 256;
+<i>37</i>&nbsp;    public static final int MAXUNICODE = NBLOCKS*BLOCKSZ;
+<i>38</i>&nbsp;
+<i>39</i>&nbsp;    private static final int SIMPLE_ASCII_MASK_START =  0x0020;
+<i>40</i>&nbsp;    private static final int SIMPLE_ASCII_MASK_END =    0x007e;
+<i>41</i>&nbsp;    private static final int ASCII_COUNT =
+<i>42</i>&nbsp;            SIMPLE_ASCII_MASK_END - SIMPLE_ASCII_MASK_START + 1;
+<i>43</i>&nbsp;
+<i>44</i>&nbsp;    private boolean asciiCacheOK;
+<i>45</i>&nbsp;    private char charToGlyph[]; // Quick lookup
+<i>46</i>&nbsp;
+<i>47</i>&nbsp;    CompositeFontResource font;
+<i>48</i>&nbsp;    CharToGlyphMapper slotMappers[];
+<i>49</i>&nbsp;
+<i>50</i>&nbsp;    /* For now, we&#39;ll use a Map to store the char-&gt;glyph lookup result.
+<i>51</i>&nbsp;     * Maybe later I could use arrays for &quot;common&quot; values and
+<i>52</i>&nbsp;     * perhaps for less common values, just not cache at all if
+<i>53</i>&nbsp;     * lookup is relatively inexpensive. Or let the slot fonts do
+<i>54</i>&nbsp;     * the caching ? So a variety of strategies are possible.
+<i>55</i>&nbsp;     */
+<i>56</i>&nbsp;    HashMap&lt;Integer, Integer&gt; glyphMap;
+<i>57</i>&nbsp;
+<b class="fc"><i>58</i>&nbsp;    public CompositeGlyphMapper(CompositeFontResource compFont) {</b>
+<b class="fc"><i>59</i>&nbsp;        font = compFont;</b>
+<b class="fc"><i>60</i>&nbsp;        missingGlyph = 0; // TrueType font standard, avoids lookup.</b>
+<b class="fc"><i>61</i>&nbsp;        glyphMap = new HashMap&lt;Integer, Integer&gt;();</b>
+<b class="fc"><i>62</i>&nbsp;        slotMappers = new CharToGlyphMapper[compFont.getNumSlots()];</b>
+<b class="fc"><i>63</i>&nbsp;        asciiCacheOK = true;</b>
+<b class="fc"><i>64</i>&nbsp;    }</b>
+<i>65</i>&nbsp;
+<i>66</i>&nbsp;    private final CharToGlyphMapper getSlotMapper(int slot) {
+<b class="fc"><i>67</i>&nbsp;        if (slot &gt;= slotMappers.length) {</b>
+<b class="nc"><i>68</i>&nbsp;            CharToGlyphMapper[] tmp = new CharToGlyphMapper[font.getNumSlots()];</b>
+<b class="nc"><i>69</i>&nbsp;            System.arraycopy(slotMappers, 0, tmp, 0, slotMappers.length);</b>
+<b class="nc"><i>70</i>&nbsp;            slotMappers = tmp;</b>
+<i>71</i>&nbsp;        }
+<b class="fc"><i>72</i>&nbsp;        CharToGlyphMapper mapper = slotMappers[slot];</b>
+<b class="fc"><i>73</i>&nbsp;        if (mapper == null) {</b>
+<b class="fc"><i>74</i>&nbsp;            mapper = font.getSlotResource(slot).getGlyphMapper();</b>
+<b class="fc"><i>75</i>&nbsp;            slotMappers[slot] = mapper;</b>
+<i>76</i>&nbsp;        }
+<b class="fc"><i>77</i>&nbsp;        return mapper;</b>
+<i>78</i>&nbsp;    }
+<i>79</i>&nbsp;
+<i>80</i>&nbsp;    public int getMissingGlyphCode() {
+<b class="nc"><i>81</i>&nbsp;        return missingGlyph;</b>
+<i>82</i>&nbsp;    }
+<i>83</i>&nbsp;
+<i>84</i>&nbsp;    /* Making the glyph codes of a composite including the first
+<i>85</i>&nbsp;     * slot have bits in the top byte set will indicate to the rendering
+<i>86</i>&nbsp;     * loops that they need to locate the glyphs by dereferencing to
+<i>87</i>&nbsp;     * the physical font strike.
+<i>88</i>&nbsp;     */
+<i>89</i>&nbsp;    public final int compositeGlyphCode(int slot, int glyphCode) {
+<b class="nc"><i>90</i>&nbsp;        return ((slot) &lt;&lt; 24 | (glyphCode &amp; GLYPHMASK));</b>
+<i>91</i>&nbsp;    }
+<i>92</i>&nbsp;
+<i>93</i>&nbsp;    private final int convertToGlyph(int unicode) {
+<b class="nc"><i>94</i>&nbsp;        for (int slot = 0; slot &lt; font.getNumSlots(); slot++) {</b>
+<b class="nc"><i>95</i>&nbsp;            CharToGlyphMapper mapper = getSlotMapper(slot);</b>
+<b class="nc"><i>96</i>&nbsp;            int glyphCode = mapper.charToGlyph(unicode);</b>
+<b class="nc"><i>97</i>&nbsp;            if (glyphCode != mapper.getMissingGlyphCode()) {</b>
+<b class="nc"><i>98</i>&nbsp;                glyphCode = compositeGlyphCode(slot, glyphCode);</b>
+<b class="nc"><i>99</i>&nbsp;                glyphMap.put(unicode, glyphCode);</b>
+<b class="nc"><i>100</i>&nbsp;                return glyphCode;</b>
+<i>101</i>&nbsp;            }
+<i>102</i>&nbsp;        }
+<b class="nc"><i>103</i>&nbsp;        glyphMap.put(unicode, missingGlyph);</b>
+<b class="nc"><i>104</i>&nbsp;        return missingGlyph;</b>
+<i>105</i>&nbsp;    }
+<i>106</i>&nbsp;
+<i>107</i>&nbsp;    private int getAsciiGlyphCode(int charCode) {
+<i>108</i>&nbsp;
+<i>109</i>&nbsp;        // Check if charCode is in ASCII range
+<b class="fc"><i>110</i>&nbsp;        if (!asciiCacheOK ||</b>
+<i>111</i>&nbsp;            (charCode &gt; SIMPLE_ASCII_MASK_END) ||
+<i>112</i>&nbsp;            (charCode &lt; SIMPLE_ASCII_MASK_START)) {
+<b class="nc"><i>113</i>&nbsp;            return -1;</b>
+<i>114</i>&nbsp;        }
+<i>115</i>&nbsp;
+<i>116</i>&nbsp;        // Construct charToGlyph array of all ASCII characters
+<b class="fc"><i>117</i>&nbsp;        if (charToGlyph == null) {</b>
+<b class="fc"><i>118</i>&nbsp;            char glyphCodes[] = new char[ASCII_COUNT];</b>
+<b class="fc"><i>119</i>&nbsp;            CharToGlyphMapper mapper = getSlotMapper(0);</b>
+<b class="fc"><i>120</i>&nbsp;            int missingGlyphCode = mapper.getMissingGlyphCode();</b>
+<b class="fc"><i>121</i>&nbsp;            for (int i = 0; i &lt; ASCII_COUNT; i++) {</b>
+<b class="fc"><i>122</i>&nbsp;                int glyphCode = mapper.charToGlyph(SIMPLE_ASCII_MASK_START + i);</b>
+<b class="fc"><i>123</i>&nbsp;                if (glyphCode == missingGlyphCode) {</b>
+<i>124</i>&nbsp;                    // If any glyphCode is missing, then do not use charToGlyph
+<i>125</i>&nbsp;                    // array.
+<b class="nc"><i>126</i>&nbsp;                    charToGlyph = null;</b>
+<b class="nc"><i>127</i>&nbsp;                    asciiCacheOK = false;</b>
+<b class="nc"><i>128</i>&nbsp;                    return -1;</b>
+<i>129</i>&nbsp;                }
+<i>130</i>&nbsp;                // Slot 0 mask is 0, so can use this glyphCode directly
+<b class="fc"><i>131</i>&nbsp;                glyphCodes[i] = (char)glyphCode;</b>
+<i>132</i>&nbsp;            }
+<b class="fc"><i>133</i>&nbsp;            charToGlyph = glyphCodes;</b>
+<i>134</i>&nbsp;        }
+<i>135</i>&nbsp;
+<b class="fc"><i>136</i>&nbsp;        int index = charCode - SIMPLE_ASCII_MASK_START;</b>
+<b class="fc"><i>137</i>&nbsp;        return charToGlyph[index];</b>
+<i>138</i>&nbsp;    }
+<i>139</i>&nbsp;
+<i>140</i>&nbsp;    public int getGlyphCode(int charCode) {
+<i>141</i>&nbsp;        // If ASCII then array lookup, else use glyphMap
+<b class="fc"><i>142</i>&nbsp;        int retVal = getAsciiGlyphCode(charCode);</b>
+<b class="fc"><i>143</i>&nbsp;        if (retVal &gt;= 0) {</b>
+<b class="fc"><i>144</i>&nbsp;            return retVal;</b>
+<i>145</i>&nbsp;        }
+<i>146</i>&nbsp;
+<b class="nc"><i>147</i>&nbsp;        Integer codeInt = glyphMap.get(charCode);</b>
+<b class="nc"><i>148</i>&nbsp;        if (codeInt != null) {</b>
+<b class="nc"><i>149</i>&nbsp;            return codeInt.intValue();</b>
+<i>150</i>&nbsp;        } else {
+<b class="nc"><i>151</i>&nbsp;            return convertToGlyph(charCode);</b>
+<i>152</i>&nbsp;        }
+<i>153</i>&nbsp;    }
+<i>154</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2017-12-04 21:49</div>
+</div>
+</body>
+</html>

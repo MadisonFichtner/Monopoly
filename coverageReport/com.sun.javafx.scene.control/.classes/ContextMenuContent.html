@@ -1,0 +1,1795 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: ContextMenuContent</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.javafx.scene.control</a> ]
+</div>
+
+<h1>Coverage Summary for Class: ContextMenuContent (com.sun.javafx.scene.control)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">ContextMenuContent</td>
+<td class="coverageStat">
+  <span class="percent">
+    44.6%
+  </span>
+  <span class="absValue">
+    (25/ 56)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    44.6%
+  </span>
+  <span class="absValue">
+    (176/ 395)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">ContextMenuContent$1</td>
+<td class="coverageStat">
+  <span class="percent">
+    50%
+  </span>
+  <span class="absValue">
+    (1/ 2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    2.9%
+  </span>
+  <span class="absValue">
+    (1/ 35)
+  </span>
+</td>
+  </tr>
+  <tr>
+    <td class="name">ContextMenuContent$ArrowMenuItem</td>
+<td class="coverageStat">
+  <span class="percent">
+    33.3%
+  </span>
+  <span class="absValue">
+    (4/ 12)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    48.9%
+  </span>
+  <span class="absValue">
+    (22/ 45)
+  </span>
+</td>
+  </tr>
+  <tr>
+    <td class="name">ContextMenuContent$MenuBox</td>
+<td class="coverageStat">
+  <span class="percent">
+    66.7%
+  </span>
+  <span class="absValue">
+    (2/ 3)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    75%
+  </span>
+  <span class="absValue">
+    (12/ 16)
+  </span>
+</td>
+  </tr>
+  <tr>
+    <td class="name">ContextMenuContent$MenuItemContainer</td>
+<td class="coverageStat">
+  <span class="percent">
+    48.3%
+  </span>
+  <span class="absValue">
+    (14/ 29)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    37.3%
+  </span>
+  <span class="absValue">
+    (110/ 295)
+  </span>
+</td>
+  </tr>
+  <tr>
+    <td class="name">ContextMenuContent$MenuLabel</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (5/ 5)
+  </span>
+</td>
+  </tr>
+  <tr>
+    <td class="name">ContextMenuContent$StyleableProperties</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (2/ 2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    81.8%
+  </span>
+  <span class="absValue">
+    (9/ 11)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    46.7%
+  </span>
+  <span class="absValue">
+    (49/ 105)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    41.8%
+  </span>
+  <span class="absValue">
+    (335/ 802)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright (c) 2011, 2017, Oracle and/or its affiliates. All rights reserved.
+<i>3</i>&nbsp; * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+<i>4</i>&nbsp; *
+<i>5</i>&nbsp; *
+<i>6</i>&nbsp; *
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; *
+<i>11</i>&nbsp; *
+<i>12</i>&nbsp; *
+<i>13</i>&nbsp; *
+<i>14</i>&nbsp; *
+<i>15</i>&nbsp; *
+<i>16</i>&nbsp; *
+<i>17</i>&nbsp; *
+<i>18</i>&nbsp; *
+<i>19</i>&nbsp; *
+<i>20</i>&nbsp; *
+<i>21</i>&nbsp; *
+<i>22</i>&nbsp; *
+<i>23</i>&nbsp; *
+<i>24</i>&nbsp; */
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;package com.sun.javafx.scene.control;
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;import com.sun.javafx.scene.NodeHelper;
+<i>29</i>&nbsp;import com.sun.javafx.scene.control.behavior.TwoLevelFocusPopupBehavior;
+<i>30</i>&nbsp;import com.sun.javafx.scene.control.skin.Utils;
+<i>31</i>&nbsp;import com.sun.javafx.scene.traversal.Direction;
+<i>32</i>&nbsp;import javafx.animation.Animation.Status;
+<i>33</i>&nbsp;import javafx.animation.KeyFrame;
+<i>34</i>&nbsp;import javafx.animation.Timeline;
+<i>35</i>&nbsp;import javafx.beans.InvalidationListener;
+<i>36</i>&nbsp;import javafx.beans.WeakInvalidationListener;
+<i>37</i>&nbsp;import javafx.beans.property.ReadOnlyBooleanProperty;
+<i>38</i>&nbsp;import javafx.beans.value.ChangeListener;
+<i>39</i>&nbsp;import javafx.beans.value.ObservableValue;
+<i>40</i>&nbsp;import javafx.collections.ListChangeListener;
+<i>41</i>&nbsp;import javafx.collections.ObservableList;
+<i>42</i>&nbsp;import javafx.css.CssMetaData;
+<i>43</i>&nbsp;import javafx.css.PseudoClass;
+<i>44</i>&nbsp;import javafx.css.Styleable;
+<i>45</i>&nbsp;import javafx.event.ActionEvent;
+<i>46</i>&nbsp;import javafx.event.EventHandler;
+<i>47</i>&nbsp;import javafx.geometry.*;
+<i>48</i>&nbsp;import javafx.scene.AccessibleAction;
+<i>49</i>&nbsp;import javafx.scene.AccessibleAttribute;
+<i>50</i>&nbsp;import javafx.scene.AccessibleRole;
+<i>51</i>&nbsp;import javafx.scene.Node;
+<i>52</i>&nbsp;import javafx.scene.Parent;
+<i>53</i>&nbsp;import javafx.scene.control.*;
+<i>54</i>&nbsp;import javafx.scene.input.KeyEvent;
+<i>55</i>&nbsp;import javafx.scene.input.MouseEvent;
+<i>56</i>&nbsp;import javafx.scene.input.ScrollEvent;
+<i>57</i>&nbsp;import javafx.scene.layout.Region;
+<i>58</i>&nbsp;import javafx.scene.layout.StackPane;
+<i>59</i>&nbsp;import javafx.scene.layout.VBox;
+<i>60</i>&nbsp;import javafx.scene.shape.Rectangle;
+<i>61</i>&nbsp;import javafx.stage.Window;
+<i>62</i>&nbsp;import javafx.util.Duration;
+<i>63</i>&nbsp;
+<i>64</i>&nbsp;import java.util.ArrayList;
+<i>65</i>&nbsp;import java.util.Collections;
+<i>66</i>&nbsp;import java.util.List;
+<i>67</i>&nbsp;import java.util.Optional;
+<i>68</i>&nbsp;
+<i>69</i>&nbsp;/**
+<i>70</i>&nbsp; * This is a the SkinBase for ContextMenu based controls so that the CSS parts
+<i>71</i>&nbsp; * work right, because otherwise we would have to copy the Keys from there to here.
+<i>72</i>&nbsp; */
+<b class="fc"><i>73</i>&nbsp;public class ContextMenuContent extends Region {</b>
+<i>74</i>&nbsp;
+<i>75</i>&nbsp;    private static final String ITEM_STYLE_CLASS_LISTENER = &quot;itemStyleClassListener&quot;;
+<i>76</i>&nbsp;
+<i>77</i>&nbsp;    private ContextMenu contextMenu;
+<i>78</i>&nbsp;
+<i>79</i>&nbsp;    /***************************************************************************
+<i>80</i>&nbsp;     * UI subcomponents
+<i>81</i>&nbsp;     **************************************************************************/
+<i>82</i>&nbsp;
+<b class="fc"><i>83</i>&nbsp;    private double maxGraphicWidth = 0; // we keep this margin to left for graphic</b>
+<b class="fc"><i>84</i>&nbsp;    private double maxRightWidth = 0;</b>
+<b class="fc"><i>85</i>&nbsp;    private double maxLabelWidth = 0;</b>
+<b class="fc"><i>86</i>&nbsp;    private double maxRowHeight = 0;</b>
+<b class="fc"><i>87</i>&nbsp;    private double maxLeftWidth = 0;</b>
+<b class="fc"><i>88</i>&nbsp;    private double oldWidth = 0;</b>
+<i>89</i>&nbsp;
+<i>90</i>&nbsp;    private Rectangle clipRect;
+<i>91</i>&nbsp;    MenuBox itemsContainer;
+<i>92</i>&nbsp;    private ArrowMenuItem upArrow;
+<i>93</i>&nbsp;    private ArrowMenuItem downArrow;
+<i>94</i>&nbsp;
+<i>95</i>&nbsp;    /*
+<i>96</i>&nbsp;     * We maintain a current focused index which is used
+<i>97</i>&nbsp;     * in keyboard navigation of menu items.
+<i>98</i>&nbsp;     */
+<b class="fc"><i>99</i>&nbsp;    private int currentFocusedIndex = -1;</b>
+<i>100</i>&nbsp;
+<b class="fc"><i>101</i>&nbsp;    private boolean itemsDirty = true;</b>
+<b class="fc"><i>102</i>&nbsp;    private InvalidationListener popupShowingListener = arg0 -&gt; {</b>
+<b class="fc"><i>103</i>&nbsp;        updateItems();</b>
+<b class="fc"><i>104</i>&nbsp;    };</b>
+<b class="fc"><i>105</i>&nbsp;    private WeakInvalidationListener weakPopupShowingListener =</b>
+<i>106</i>&nbsp;            new WeakInvalidationListener(popupShowingListener);
+<i>107</i>&nbsp;
+<i>108</i>&nbsp;
+<i>109</i>&nbsp;    /***************************************************************************
+<i>110</i>&nbsp;     * Constructors
+<i>111</i>&nbsp;     **************************************************************************/
+<b class="fc"><i>112</i>&nbsp;    public ContextMenuContent(final ContextMenu popupMenu) {</b>
+<b class="fc"><i>113</i>&nbsp;        this.contextMenu = popupMenu;</b>
+<b class="fc"><i>114</i>&nbsp;        clipRect = new Rectangle();</b>
+<b class="fc"><i>115</i>&nbsp;         clipRect.setSmooth(false);</b>
+<b class="fc"><i>116</i>&nbsp;        itemsContainer = new MenuBox();</b>
+<i>117</i>&nbsp;//        itemsContainer = new VBox();
+<b class="fc"><i>118</i>&nbsp;        itemsContainer.setClip(clipRect);</b>
+<i>119</i>&nbsp;
+<b class="fc"><i>120</i>&nbsp;        upArrow = new ArrowMenuItem(this);</b>
+<b class="fc"><i>121</i>&nbsp;        upArrow.setUp(true);</b>
+<b class="fc"><i>122</i>&nbsp;        upArrow.setFocusTraversable(false);</b>
+<i>123</i>&nbsp;
+<b class="fc"><i>124</i>&nbsp;        downArrow = new ArrowMenuItem(this);</b>
+<b class="fc"><i>125</i>&nbsp;        downArrow.setUp(false);</b>
+<b class="fc"><i>126</i>&nbsp;        downArrow.setFocusTraversable(false);</b>
+<b class="fc"><i>127</i>&nbsp;        getChildren().add(itemsContainer);</b>
+<b class="fc"><i>128</i>&nbsp;        getChildren().add(upArrow);</b>
+<b class="fc"><i>129</i>&nbsp;        getChildren().add(downArrow);</b>
+<b class="fc"><i>130</i>&nbsp;        initialize();</b>
+<b class="fc"><i>131</i>&nbsp;        setUpBinds();</b>
+<b class="fc"><i>132</i>&nbsp;        updateItems();</b>
+<i>133</i>&nbsp;        // RT-20197 add menuitems only on first show.
+<b class="fc"><i>134</i>&nbsp;        popupMenu.showingProperty().addListener(weakPopupShowingListener);</b>
+<i>135</i>&nbsp;
+<i>136</i>&nbsp;        /*
+<i>137</i>&nbsp;        ** only add this if we&#39;re on an embedded
+<i>138</i>&nbsp;        ** platform that supports 5-button navigation
+<i>139</i>&nbsp;        */
+<b class="fc"><i>140</i>&nbsp;        if (Utils.isTwoLevelFocus()) {</b>
+<b class="nc"><i>141</i>&nbsp;            new TwoLevelFocusPopupBehavior(this);</b>
+<i>142</i>&nbsp;        }
+<b class="fc"><i>143</i>&nbsp;    }</b>
+<i>144</i>&nbsp;
+<i>145</i>&nbsp;    //For access from controls
+<i>146</i>&nbsp;    public VBox getItemsContainer() {
+<b class="fc"><i>147</i>&nbsp;        return itemsContainer;</b>
+<i>148</i>&nbsp;    }
+<i>149</i>&nbsp;    //For testing purpose only
+<i>150</i>&nbsp;    int getCurrentFocusIndex() {
+<b class="nc"><i>151</i>&nbsp;        return currentFocusedIndex;</b>
+<i>152</i>&nbsp;    }
+<i>153</i>&nbsp;    //For testing purpose only
+<i>154</i>&nbsp;    void setCurrentFocusedIndex(int index) {
+<b class="nc"><i>155</i>&nbsp;        if (index &lt; itemsContainer.getChildren().size()) {</b>
+<b class="nc"><i>156</i>&nbsp;            currentFocusedIndex = index;</b>
+<i>157</i>&nbsp;        }
+<b class="nc"><i>158</i>&nbsp;    }</b>
+<i>159</i>&nbsp;
+<i>160</i>&nbsp;    private void updateItems() {
+<b class="fc"><i>161</i>&nbsp;        if (itemsDirty) {</b>
+<b class="fc"><i>162</i>&nbsp;            updateVisualItems();</b>
+<b class="fc"><i>163</i>&nbsp;            itemsDirty = false;</b>
+<i>164</i>&nbsp;        }
+<b class="fc"><i>165</i>&nbsp;    }</b>
+<i>166</i>&nbsp;
+<i>167</i>&nbsp;    private void computeVisualMetrics() {
+<b class="fc"><i>168</i>&nbsp;        maxRightWidth = 0;</b>
+<b class="fc"><i>169</i>&nbsp;        maxLabelWidth = 0;</b>
+<b class="fc"><i>170</i>&nbsp;        maxRowHeight = 0;</b>
+<b class="fc"><i>171</i>&nbsp;        maxGraphicWidth = 0;</b>
+<b class="fc"><i>172</i>&nbsp;        maxLeftWidth = 0;</b>
+<i>173</i>&nbsp;
+<b class="fc"><i>174</i>&nbsp;        for (int i = 0; i &lt; itemsContainer.getChildren().size(); i++) {</b>
+<b class="fc"><i>175</i>&nbsp;            Node child = itemsContainer.getChildren().get(i);</b>
+<b class="fc"><i>176</i>&nbsp;            if (child instanceof MenuItemContainer) {</b>
+<b class="fc"><i>177</i>&nbsp;                final MenuItemContainer menuItemContainer = (MenuItemContainer)itemsContainer.getChildren().get(i);</b>
+<i>178</i>&nbsp;
+<b class="fc"><i>179</i>&nbsp;                if (! menuItemContainer.isVisible()) continue;</b>
+<i>180</i>&nbsp;
+<b class="fc"><i>181</i>&nbsp;                double alt = -1;</b>
+<b class="fc"><i>182</i>&nbsp;                Node n = menuItemContainer.left;</b>
+<b class="fc"><i>183</i>&nbsp;                if (n != null) {</b>
+<b class="fc"><i>184</i>&nbsp;                    if (n.getContentBias() == Orientation.VERTICAL) { // width depends on height</b>
+<b class="nc"><i>185</i>&nbsp;                        alt = snapSizeY(n.prefHeight(-1));</b>
+<b class="fc"><i>186</i>&nbsp;                    } else alt = -1;</b>
+<b class="fc"><i>187</i>&nbsp;                    maxLeftWidth = Math.max(maxLeftWidth, snapSizeX(n.prefWidth(alt)));</b>
+<b class="fc"><i>188</i>&nbsp;                    maxRowHeight = Math.max(maxRowHeight, n.prefHeight(-1));</b>
+<i>189</i>&nbsp;                }
+<i>190</i>&nbsp;
+<b class="fc"><i>191</i>&nbsp;                n = menuItemContainer.graphic;</b>
+<b class="fc"><i>192</i>&nbsp;                if (n != null) {</b>
+<b class="nc"><i>193</i>&nbsp;                    if (n.getContentBias() == Orientation.VERTICAL) { // width depends on height</b>
+<b class="nc"><i>194</i>&nbsp;                        alt = snapSizeY(n.prefHeight(-1));</b>
+<b class="nc"><i>195</i>&nbsp;                    } else alt = -1;</b>
+<b class="nc"><i>196</i>&nbsp;                    maxGraphicWidth = Math.max(maxGraphicWidth, snapSizeX(n.prefWidth(alt)));</b>
+<b class="nc"><i>197</i>&nbsp;                    maxRowHeight = Math.max(maxRowHeight, n.prefHeight(-1));</b>
+<i>198</i>&nbsp;                }
+<i>199</i>&nbsp;
+<b class="fc"><i>200</i>&nbsp;                n = menuItemContainer.label;</b>
+<b class="fc"><i>201</i>&nbsp;                if (n != null) {</b>
+<b class="fc"><i>202</i>&nbsp;                    if (n.getContentBias() == Orientation.VERTICAL) {</b>
+<b class="nc"><i>203</i>&nbsp;                        alt = snapSizeY(n.prefHeight(-1));</b>
+<b class="fc"><i>204</i>&nbsp;                    } else alt = -1;</b>
+<b class="fc"><i>205</i>&nbsp;                    maxLabelWidth = Math.max(maxLabelWidth, snapSizeX(n.prefWidth(alt)));</b>
+<b class="fc"><i>206</i>&nbsp;                    maxRowHeight = Math.max(maxRowHeight, n.prefHeight(-1));</b>
+<i>207</i>&nbsp;                }
+<i>208</i>&nbsp;
+<b class="fc"><i>209</i>&nbsp;                n = menuItemContainer.right;</b>
+<b class="fc"><i>210</i>&nbsp;                if (n != null) {</b>
+<b class="nc"><i>211</i>&nbsp;                    if (n.getContentBias() == Orientation.VERTICAL) { // width depends on height</b>
+<b class="nc"><i>212</i>&nbsp;                        alt = snapSizeY(n.prefHeight(-1));</b>
+<b class="nc"><i>213</i>&nbsp;                    } else alt = -1;</b>
+<b class="nc"><i>214</i>&nbsp;                    maxRightWidth = Math.max(maxRightWidth, snapSizeX(n.prefWidth(alt)));</b>
+<b class="nc"><i>215</i>&nbsp;                    maxRowHeight = Math.max(maxRowHeight, n.prefHeight(-1));</b>
+<i>216</i>&nbsp;                }
+<i>217</i>&nbsp;            }
+<i>218</i>&nbsp;        }
+<i>219</i>&nbsp;
+<i>220</i>&nbsp;        // Fix for RT-38838.
+<i>221</i>&nbsp;        // This fixes the issue where CSS is applied to a menu after it has been
+<i>222</i>&nbsp;        // showing, resulting in its bounds changing. In this case, we need to
+<i>223</i>&nbsp;        // shift the submenu such that it is properly aligned with its parent menu.
+<i>224</i>&nbsp;        //
+<i>225</i>&nbsp;        // To do this, we must firstly determine if the open submenu is shifted
+<i>226</i>&nbsp;        // horizontally to appear on the other side of this menu, as this is the
+<i>227</i>&nbsp;        // only situation where shifting has to happen. If so, we need to check
+<i>228</i>&nbsp;        // if we should shift the submenu due to changes in width.
+<i>229</i>&nbsp;        //
+<i>230</i>&nbsp;        // We need to get the parent menu of this contextMenu, so that we only
+<i>231</i>&nbsp;        // modify the X value in the following conditions:
+<i>232</i>&nbsp;        // 1) There exists a parent menu
+<i>233</i>&nbsp;        // 2) The parent menu is in the correct position (i.e. to the left of this
+<i>234</i>&nbsp;        //    menu in normal LTR systems).
+<b class="fc"><i>235</i>&nbsp;        final double newWidth = maxRightWidth + maxLabelWidth + maxGraphicWidth + maxLeftWidth;</b>
+<b class="fc"><i>236</i>&nbsp;        Window ownerWindow = contextMenu.getOwnerWindow();</b>
+<b class="fc"><i>237</i>&nbsp;        if (ownerWindow instanceof ContextMenu) {</b>
+<b class="nc"><i>238</i>&nbsp;            if (contextMenu.getX() &lt; ownerWindow.getX()) {</b>
+<b class="nc"><i>239</i>&nbsp;                if (oldWidth != newWidth) {</b>
+<b class="nc"><i>240</i>&nbsp;                    contextMenu.setX(contextMenu.getX() + oldWidth - newWidth);</b>
+<i>241</i>&nbsp;                }
+<i>242</i>&nbsp;            }
+<i>243</i>&nbsp;        }
+<i>244</i>&nbsp;
+<b class="fc"><i>245</i>&nbsp;        oldWidth = newWidth;</b>
+<b class="fc"><i>246</i>&nbsp;    }</b>
+<i>247</i>&nbsp;
+<i>248</i>&nbsp;    private void updateVisualItems() {
+<b class="fc"><i>249</i>&nbsp;        ObservableList&lt;Node&gt; itemsContainerChilder = itemsContainer.getChildren();</b>
+<i>250</i>&nbsp;
+<b class="fc"><i>251</i>&nbsp;        disposeVisualItems();</b>
+<i>252</i>&nbsp;
+<b class="fc"><i>253</i>&nbsp;        for (int row = 0; row &lt; getItems().size(); row++) {</b>
+<b class="fc"><i>254</i>&nbsp;            final MenuItem item = getItems().get(row);</b>
+<b class="fc"><i>255</i>&nbsp;            if (item instanceof CustomMenuItem &amp;&amp; ((CustomMenuItem) item).getContent() == null) {</b>
+<b class="nc"><i>256</i>&nbsp;                continue;</b>
+<i>257</i>&nbsp;            }
+<i>258</i>&nbsp;
+<b class="fc"><i>259</i>&nbsp;            if (item instanceof SeparatorMenuItem) {</b>
+<i>260</i>&nbsp;                // we don&#39;t want the hover highlight for separators, so for
+<i>261</i>&nbsp;                // now this is the simplest approach - just remove the
+<i>262</i>&nbsp;                // background entirely. This may cause issues if people
+<i>263</i>&nbsp;                // intend to style the background differently.
+<b class="nc"><i>264</i>&nbsp;                Node node = ((CustomMenuItem) item).getContent();</b>
+<b class="nc"><i>265</i>&nbsp;                node.visibleProperty().bind(item.visibleProperty());</b>
+<b class="nc"><i>266</i>&nbsp;                itemsContainerChilder.add(node);</b>
+<i>267</i>&nbsp;                // Add the (separator) menu item to properties map of this node.
+<i>268</i>&nbsp;                // Special casing this for separator :
+<i>269</i>&nbsp;                // This allows associating this container with SeparatorMenuItem.
+<b class="nc"><i>270</i>&nbsp;                node.getProperties().put(MenuItem.class, item);</b>
+<b class="nc"><i>271</i>&nbsp;            } else {</b>
+<b class="fc"><i>272</i>&nbsp;                MenuItemContainer menuItemContainer = new MenuItemContainer(item);</b>
+<b class="fc"><i>273</i>&nbsp;                menuItemContainer.visibleProperty().bind(item.visibleProperty());</b>
+<b class="fc"><i>274</i>&nbsp;                itemsContainerChilder.add(menuItemContainer);</b>
+<i>275</i>&nbsp;            }
+<i>276</i>&nbsp;        }
+<i>277</i>&nbsp;
+<i>278</i>&nbsp;        // Add the Menu to properties map of this skin. Used by QA for testing
+<i>279</i>&nbsp;        // This enables associating a parent menu for this skin showing menu items.
+<b class="fc"><i>280</i>&nbsp;        if (getItems().size() &gt; 0) {</b>
+<b class="fc"><i>281</i>&nbsp;            final MenuItem item = getItems().get(0);</b>
+<b class="fc"><i>282</i>&nbsp;            getProperties().put(Menu.class, item.getParentMenu());</b>
+<i>283</i>&nbsp;        }
+<i>284</i>&nbsp;
+<i>285</i>&nbsp;        // RT-36513 made this applyCss(). Modified by RT-36995 to NodeHelper.reapplyCSS()
+<b class="fc"><i>286</i>&nbsp;        NodeHelper.reapplyCSS(this);</b>
+<b class="fc"><i>287</i>&nbsp;    }</b>
+<i>288</i>&nbsp;
+<i>289</i>&nbsp;    private void disposeVisualItems() {
+<i>290</i>&nbsp;        // clean up itemsContainer
+<b class="fc"><i>291</i>&nbsp;        ObservableList&lt;Node&gt; itemsContainerChilder = itemsContainer.getChildren();</b>
+<b class="fc"><i>292</i>&nbsp;        for (int i = 0, max = itemsContainerChilder.size(); i &lt; max; i++) {</b>
+<b class="nc"><i>293</i>&nbsp;            Node n = itemsContainerChilder.get(i);</b>
+<i>294</i>&nbsp;
+<b class="nc"><i>295</i>&nbsp;            if (n instanceof MenuItemContainer) {</b>
+<b class="nc"><i>296</i>&nbsp;                MenuItemContainer container = (MenuItemContainer) n;</b>
+<b class="nc"><i>297</i>&nbsp;                container.visibleProperty().unbind();</b>
+<b class="nc"><i>298</i>&nbsp;                container.dispose();</b>
+<i>299</i>&nbsp;            }
+<i>300</i>&nbsp;        }
+<b class="fc"><i>301</i>&nbsp;        itemsContainerChilder.clear();</b>
+<b class="fc"><i>302</i>&nbsp;    }</b>
+<i>303</i>&nbsp;
+<i>304</i>&nbsp;    /**
+<i>305</i>&nbsp;     * Can be called by Skins when they need to clean up the content of any
+<i>306</i>&nbsp;     * ContextMenu instances they might have created. This ensures that contents
+<i>307</i>&nbsp;     * of submenus if any, also get cleaned up.
+<i>308</i>&nbsp;     */
+<i>309</i>&nbsp;    public void dispose() {
+<b class="nc"><i>310</i>&nbsp;        disposeBinds();</b>
+<b class="nc"><i>311</i>&nbsp;        disposeVisualItems();</b>
+<i>312</i>&nbsp;
+<b class="nc"><i>313</i>&nbsp;        disposeContextMenu(submenu);</b>
+<b class="nc"><i>314</i>&nbsp;        submenu = null;</b>
+<b class="nc"><i>315</i>&nbsp;        openSubmenu = null;</b>
+<b class="nc"><i>316</i>&nbsp;        selectedBackground = null;</b>
+<b class="nc"><i>317</i>&nbsp;        if (contextMenu != null) {</b>
+<b class="nc"><i>318</i>&nbsp;            contextMenu.getItems().clear();</b>
+<b class="nc"><i>319</i>&nbsp;            contextMenu = null;</b>
+<i>320</i>&nbsp;        }
+<b class="nc"><i>321</i>&nbsp;    }</b>
+<i>322</i>&nbsp;
+<i>323</i>&nbsp;    public void disposeContextMenu(ContextMenu menu) {
+<b class="nc"><i>324</i>&nbsp;        if (menu == null) return;</b>
+<i>325</i>&nbsp;
+<b class="nc"><i>326</i>&nbsp;        Skin&lt;?&gt; skin = menu.getSkin();</b>
+<b class="nc"><i>327</i>&nbsp;        if (skin == null) return;</b>
+<i>328</i>&nbsp;
+<b class="nc"><i>329</i>&nbsp;        ContextMenuContent cmContent = (ContextMenuContent)skin.getNode();</b>
+<b class="nc"><i>330</i>&nbsp;        if (cmContent == null) return;</b>
+<i>331</i>&nbsp;
+<b class="nc"><i>332</i>&nbsp;        cmContent.dispose(); // recursive call to dispose submenus.</b>
+<b class="nc"><i>333</i>&nbsp;    }</b>
+<i>334</i>&nbsp;
+<i>335</i>&nbsp;    @Override protected void layoutChildren() {
+<b class="fc"><i>336</i>&nbsp;        if (itemsContainer.getChildren().size() == 0) return;</b>
+<b class="fc"><i>337</i>&nbsp;        final double x = snappedLeftInset();</b>
+<b class="fc"><i>338</i>&nbsp;        final double y = snappedTopInset();</b>
+<b class="fc"><i>339</i>&nbsp;        final double w = getWidth() - x - snappedRightInset();</b>
+<b class="fc"><i>340</i>&nbsp;        final double h = getHeight() - y - snappedBottomInset();</b>
+<b class="fc"><i>341</i>&nbsp;        final double contentHeight =  snapSizeY(getContentHeight()); // itemsContainer.prefHeight(-1);</b>
+<i>342</i>&nbsp;
+<b class="fc"><i>343</i>&nbsp;        itemsContainer.resize(w,contentHeight);</b>
+<b class="fc"><i>344</i>&nbsp;        itemsContainer.relocate(x, y);</b>
+<i>345</i>&nbsp;
+<b class="fc"><i>346</i>&nbsp;        if (isFirstShow &amp;&amp; ty == 0) {</b>
+<b class="fc"><i>347</i>&nbsp;            upArrow.setVisible(false);</b>
+<b class="fc"><i>348</i>&nbsp;            isFirstShow = false;</b>
+<i>349</i>&nbsp;        } else {
+<b class="fc"><i>350</i>&nbsp;            upArrow.setVisible(ty &lt; y &amp;&amp; ty &lt; 0);</b>
+<i>351</i>&nbsp;        }
+<b class="fc"><i>352</i>&nbsp;        downArrow.setVisible(ty + contentHeight &gt; (y + h));</b>
+<i>353</i>&nbsp;
+<b class="fc"><i>354</i>&nbsp;        clipRect.setX(0);</b>
+<b class="fc"><i>355</i>&nbsp;        clipRect.setY(0);</b>
+<b class="fc"><i>356</i>&nbsp;        clipRect.setWidth(w);</b>
+<b class="fc"><i>357</i>&nbsp;        clipRect.setHeight(h);</b>
+<i>358</i>&nbsp;
+<b class="fc"><i>359</i>&nbsp;        if (upArrow.isVisible()) {</b>
+<b class="nc"><i>360</i>&nbsp;            final double prefHeight = snapSizeY(upArrow.prefHeight(-1));</b>
+<b class="nc"><i>361</i>&nbsp;            clipRect.setHeight(snapSizeY(clipRect.getHeight() - prefHeight));</b>
+<b class="nc"><i>362</i>&nbsp;            clipRect.setY(snapSizeY(clipRect.getY()) + prefHeight);</b>
+<b class="nc"><i>363</i>&nbsp;            upArrow.resize(snapSizeX(upArrow.prefWidth(-1)), prefHeight);</b>
+<b class="nc"><i>364</i>&nbsp;            positionInArea(upArrow, x, y, w, prefHeight, /*baseline ignored*/0,</b>
+<i>365</i>&nbsp;                    HPos.CENTER, VPos.CENTER);
+<i>366</i>&nbsp;        }
+<i>367</i>&nbsp;
+<b class="fc"><i>368</i>&nbsp;        if (downArrow.isVisible()) {</b>
+<b class="nc"><i>369</i>&nbsp;            final double prefHeight = snapSizeY(downArrow.prefHeight(-1));</b>
+<b class="nc"><i>370</i>&nbsp;            clipRect.setHeight(snapSizeY(clipRect.getHeight()) - prefHeight);</b>
+<b class="nc"><i>371</i>&nbsp;            downArrow.resize(snapSizeX(downArrow.prefWidth(-1)), prefHeight);</b>
+<b class="nc"><i>372</i>&nbsp;            positionInArea(downArrow, x, (y + h - prefHeight), w, prefHeight, /*baseline ignored*/0,</b>
+<i>373</i>&nbsp;                    HPos.CENTER, VPos.CENTER);
+<i>374</i>&nbsp;        }
+<b class="fc"><i>375</i>&nbsp;    }</b>
+<i>376</i>&nbsp;
+<i>377</i>&nbsp;     @Override protected double computePrefWidth(double height) {
+<b class="fc"><i>378</i>&nbsp;         computeVisualMetrics();</b>
+<b class="fc"><i>379</i>&nbsp;         double prefWidth = 0;</b>
+<b class="fc"><i>380</i>&nbsp;         if (itemsContainer.getChildren().size() == 0) return 0;</b>
+<b class="fc"><i>381</i>&nbsp;         for (Node n : itemsContainer.getChildren()) {</b>
+<b class="fc"><i>382</i>&nbsp;             if (! n.isVisible()) continue;</b>
+<b class="fc"><i>383</i>&nbsp;             prefWidth = Math.max(prefWidth, snapSizeX(n.prefWidth(-1)));</b>
+<b class="fc"><i>384</i>&nbsp;         }</b>
+<b class="fc"><i>385</i>&nbsp;         return snappedLeftInset() + snapSizeX(prefWidth) + snappedRightInset();</b>
+<i>386</i>&nbsp;    }
+<i>387</i>&nbsp;
+<i>388</i>&nbsp;    @Override protected double computePrefHeight(double width) {
+<b class="fc"><i>389</i>&nbsp;        if (itemsContainer.getChildren().size() == 0) return 0;</b>
+<b class="fc"><i>390</i>&nbsp;        final double screenHeight = getScreenHeight();</b>
+<b class="fc"><i>391</i>&nbsp;        final double contentHeight = getContentHeight(); // itemsContainer.prefHeight(width);</b>
+<b class="fc"><i>392</i>&nbsp;        double totalHeight = snappedTopInset() + snapSizeY(contentHeight) + snappedBottomInset();</b>
+<i>393</i>&nbsp;        // the pref height of this menu is the smaller value of the
+<i>394</i>&nbsp;        // actual pref height and the height of the screens _visual_ bounds.
+<b class="fc"><i>395</i>&nbsp;        double prefHeight = (screenHeight &lt;= 0) ? (totalHeight) : (Math.min(totalHeight, screenHeight));</b>
+<b class="fc"><i>396</i>&nbsp;        return prefHeight;</b>
+<i>397</i>&nbsp;    }
+<i>398</i>&nbsp;
+<i>399</i>&nbsp;    @Override protected double computeMinHeight(double width) {
+<b class="fc"><i>400</i>&nbsp;        return 0.0;</b>
+<i>401</i>&nbsp;    }
+<i>402</i>&nbsp;
+<i>403</i>&nbsp;    @Override protected double computeMaxHeight(double height) {
+<b class="fc"><i>404</i>&nbsp;        return getScreenHeight();</b>
+<i>405</i>&nbsp;    }
+<i>406</i>&nbsp;
+<i>407</i>&nbsp;    private double getScreenHeight() {
+<b class="fc"><i>408</i>&nbsp;        if (contextMenu == null || contextMenu.getOwnerWindow() == null ||</b>
+<b class="fc"><i>409</i>&nbsp;                contextMenu.getOwnerWindow().getScene() == null) {</b>
+<b class="fc"><i>410</i>&nbsp;            return -1;</b>
+<i>411</i>&nbsp;        }
+<b class="fc"><i>412</i>&nbsp;        return snapSizeY(com.sun.javafx.util.Utils.getScreen(</b>
+<b class="fc"><i>413</i>&nbsp;            contextMenu.getOwnerWindow().getScene().getRoot()).getVisualBounds().getHeight());</b>
+<i>414</i>&nbsp;
+<i>415</i>&nbsp;    }
+<i>416</i>&nbsp;
+<i>417</i>&nbsp;    private double getContentHeight() {
+<b class="fc"><i>418</i>&nbsp;        double h = 0.0d;</b>
+<b class="fc"><i>419</i>&nbsp;        for (Node i : itemsContainer.getChildren()) {</b>
+<b class="fc"><i>420</i>&nbsp;            if (i.isVisible()) {</b>
+<b class="fc"><i>421</i>&nbsp;               h += snapSizeY(i.prefHeight(-1));</b>
+<i>422</i>&nbsp;            }
+<b class="fc"><i>423</i>&nbsp;        }</b>
+<b class="fc"><i>424</i>&nbsp;        return h;</b>
+<i>425</i>&nbsp;    }
+<i>426</i>&nbsp;
+<i>427</i>&nbsp;    // This handles shifting ty when doing keyboard navigation.
+<i>428</i>&nbsp;    private void ensureFocusedMenuItemIsVisible(Node node) {
+<b class="nc"><i>429</i>&nbsp;        if (node == null) return;</b>
+<i>430</i>&nbsp;
+<b class="nc"><i>431</i>&nbsp;        final Bounds nodeBounds = node.getBoundsInParent();</b>
+<b class="nc"><i>432</i>&nbsp;        final Bounds clipBounds = clipRect.getBoundsInParent();</b>
+<i>433</i>&nbsp;
+<b class="nc"><i>434</i>&nbsp;        if (nodeBounds.getMaxY() &gt;= clipBounds.getMaxY()) {</b>
+<i>435</i>&nbsp;            // this is for moving down the menu
+<b class="nc"><i>436</i>&nbsp;            scroll(-nodeBounds.getMaxY() + clipBounds.getMaxY());</b>
+<b class="nc"><i>437</i>&nbsp;        } else if (nodeBounds.getMinY() &lt;= clipBounds.getMinY()) {</b>
+<i>438</i>&nbsp;            // this is for moving up the menu
+<b class="nc"><i>439</i>&nbsp;            scroll(-nodeBounds.getMinY() + clipBounds.getMinY());</b>
+<i>440</i>&nbsp;        }
+<b class="nc"><i>441</i>&nbsp;    }</b>
+<i>442</i>&nbsp;
+<i>443</i>&nbsp;    protected ObservableList&lt;MenuItem&gt; getItems() {
+<b class="fc"><i>444</i>&nbsp;        return contextMenu.getItems();</b>
+<i>445</i>&nbsp;    }
+<i>446</i>&nbsp;
+<i>447</i>&nbsp;    /**
+<i>448</i>&nbsp;     * Finds the index of currently focused item.
+<i>449</i>&nbsp;     */
+<i>450</i>&nbsp;    private int findFocusedIndex() {
+<b class="nc"><i>451</i>&nbsp;         for (int i = 0; i &lt; itemsContainer.getChildren().size(); i++) {</b>
+<b class="nc"><i>452</i>&nbsp;            Node n = itemsContainer.getChildren().get(i);</b>
+<b class="nc"><i>453</i>&nbsp;            if (n.isFocused()) {</b>
+<b class="nc"><i>454</i>&nbsp;                return i;</b>
+<i>455</i>&nbsp;            }
+<i>456</i>&nbsp;        }
+<b class="nc"><i>457</i>&nbsp;        return -1;</b>
+<i>458</i>&nbsp;    }
+<i>459</i>&nbsp;
+<b class="fc"><i>460</i>&nbsp;    private boolean isFirstShow = true;</b>
+<i>461</i>&nbsp;    private double ty;
+<i>462</i>&nbsp;
+<i>463</i>&nbsp;    private void initialize() {
+<i>464</i>&nbsp;        // RT-19624 calling requestFocus inside layout was casuing repeated layouts.
+<b class="fc"><i>465</i>&nbsp;        contextMenu.addEventHandler(Menu.ON_SHOWN, event -&gt; {</b>
+<b class="fc"><i>466</i>&nbsp;            currentFocusedIndex = -1;</b>
+<b class="fc"><i>467</i>&nbsp;            for (Node child : itemsContainer.getChildren()) {</b>
+<b class="fc"><i>468</i>&nbsp;                if (child instanceof MenuItemContainer) {</b>
+<b class="fc"><i>469</i>&nbsp;                    final MenuItem item = ((MenuItemContainer)child).item;</b>
+<i>470</i>&nbsp;                    // When the choiceBox popup is shown, if this menu item is selected
+<i>471</i>&nbsp;                    // do a requestFocus so CSS kicks in and the item is highlighted.
+<b class="fc"><i>472</i>&nbsp;                    if (&quot;choice-box-menu-item&quot;.equals(item.getId())) {</b>
+<b class="fc"><i>473</i>&nbsp;                        if (((RadioMenuItem)item).isSelected()) {</b>
+<b class="nc"><i>474</i>&nbsp;                            child.requestFocus();</b>
+<b class="nc"><i>475</i>&nbsp;                            break;</b>
+<i>476</i>&nbsp;                        }
+<i>477</i>&nbsp;                    }
+<i>478</i>&nbsp;                }
+<i>479</i>&nbsp;
+<b class="fc"><i>480</i>&nbsp;            }</b>
+<b class="fc"><i>481</i>&nbsp;        });</b>
+<i>482</i>&nbsp;
+<i>483</i>&nbsp;//        // FIXME For some reason getSkinnable()Behavior traversal functions don&#39;t
+<i>484</i>&nbsp;//        // get called as expected, so I&#39;ve just put the important code below.
+<i>485</i>&nbsp;        // We use setOnKeyPressed here as we are not adding a listener to a public
+<i>486</i>&nbsp;        // event type (ContextMenuContent is not public API), and without this
+<i>487</i>&nbsp;        // we get the issue shown in RT-34429
+<b class="fc"><i>488</i>&nbsp;        setOnKeyPressed(new EventHandler&lt;KeyEvent&gt;() {</b>
+<i>489</i>&nbsp;            @Override public void handle(KeyEvent ke) {
+<b class="nc"><i>490</i>&nbsp;                switch (ke.getCode()) {</b>
+<i>491</i>&nbsp;                    case LEFT:
+<b class="nc"><i>492</i>&nbsp;                        if (getEffectiveNodeOrientation() == NodeOrientation.RIGHT_TO_LEFT) {</b>
+<b class="nc"><i>493</i>&nbsp;                            processRightKey(ke);</b>
+<i>494</i>&nbsp;                        } else {
+<b class="nc"><i>495</i>&nbsp;                            processLeftKey(ke);</b>
+<i>496</i>&nbsp;                        }
+<b class="nc"><i>497</i>&nbsp;                        break;</b>
+<i>498</i>&nbsp;                    case RIGHT:
+<b class="nc"><i>499</i>&nbsp;                        if (getEffectiveNodeOrientation() == NodeOrientation.RIGHT_TO_LEFT) {</b>
+<b class="nc"><i>500</i>&nbsp;                            processLeftKey(ke);</b>
+<i>501</i>&nbsp;                        } else {
+<b class="nc"><i>502</i>&nbsp;                            processRightKey(ke);</b>
+<i>503</i>&nbsp;                        }
+<b class="nc"><i>504</i>&nbsp;                        break;</b>
+<i>505</i>&nbsp;                    case CANCEL:
+<b class="nc"><i>506</i>&nbsp;                        ke.consume();</b>
+<b class="nc"><i>507</i>&nbsp;                        break;</b>
+<i>508</i>&nbsp;                    case ESCAPE:
+<i>509</i>&nbsp;                        // if the owner is not a menubar button, just close the
+<i>510</i>&nbsp;                        // menu - this will move focus up to the parent menu
+<i>511</i>&nbsp;                        // as required. In the case of the parent being a
+<i>512</i>&nbsp;                        // menubar button we special case in the conditional code
+<i>513</i>&nbsp;                        // beneath this switch statement. See RT-34429 for more context.
+<b class="nc"><i>514</i>&nbsp;                        final Node ownerNode = contextMenu.getOwnerNode();</b>
+<b class="nc"><i>515</i>&nbsp;                        if (! (ownerNode instanceof MenuBarButton)) {</b>
+<b class="nc"><i>516</i>&nbsp;                            contextMenu.hide();</b>
+<b class="nc"><i>517</i>&nbsp;                            ke.consume();</b>
+<i>518</i>&nbsp;                        }
+<i>519</i>&nbsp;                        break;
+<i>520</i>&nbsp;                    case DOWN:
+<i>521</i>&nbsp;                        // move to the next sibling
+<b class="nc"><i>522</i>&nbsp;                        move(Direction.NEXT);</b>
+<b class="nc"><i>523</i>&nbsp;                        ke.consume();</b>
+<b class="nc"><i>524</i>&nbsp;                        break;</b>
+<i>525</i>&nbsp;                    case UP:
+<i>526</i>&nbsp;                        // move to previous sibling
+<b class="nc"><i>527</i>&nbsp;                        move(Direction.PREVIOUS);</b>
+<b class="nc"><i>528</i>&nbsp;                        ke.consume();</b>
+<b class="nc"><i>529</i>&nbsp;                        break;</b>
+<i>530</i>&nbsp;                    case SPACE:
+<i>531</i>&nbsp;                    case ENTER:
+<i>532</i>&nbsp;                        // select the menuitem
+<b class="nc"><i>533</i>&nbsp;                        selectMenuItem();</b>
+<b class="nc"><i>534</i>&nbsp;                        ke.consume();</b>
+<b class="nc"><i>535</i>&nbsp;                        break;</b>
+<i>536</i>&nbsp;                    default:
+<i>537</i>&nbsp;                        break;
+<i>538</i>&nbsp;                }
+<i>539</i>&nbsp;
+<b class="nc"><i>540</i>&nbsp;                if (!ke.isConsumed()) {</b>
+<b class="nc"><i>541</i>&nbsp;                    final Node ownerNode = contextMenu.getOwnerNode();</b>
+<b class="nc"><i>542</i>&nbsp;                    if (ownerNode instanceof MenuItemContainer) {</b>
+<i>543</i>&nbsp;                        // Forward to parent menu
+<b class="nc"><i>544</i>&nbsp;                        Parent parent = ownerNode.getParent();</b>
+<b class="nc"><i>545</i>&nbsp;                        while (parent != null &amp;&amp; !(parent instanceof ContextMenuContent)) {</b>
+<b class="nc"><i>546</i>&nbsp;                            parent = parent.getParent();</b>
+<i>547</i>&nbsp;                        }
+<b class="nc"><i>548</i>&nbsp;                        if (parent instanceof ContextMenuContent) {</b>
+<b class="nc"><i>549</i>&nbsp;                            parent.getOnKeyPressed().handle(ke);</b>
+<i>550</i>&nbsp;                        }
+<b class="nc"><i>551</i>&nbsp;                    } else if (ownerNode instanceof MenuBarButton) {</b>
+<i>552</i>&nbsp;                        // the following code no longer appears necessary, but
+<i>553</i>&nbsp;                        // leaving in intact for now...
+<i>554</i>&nbsp;//                        // This is a top-level MenuBar Menu, so forward event to MenuBar
+<i>555</i>&nbsp;//                        MenuBarSkin mbs = ((MenuBarButton)ownerNode).getMenuBarSkin();
+<i>556</i>&nbsp;//                        if (mbs != null &amp;&amp; mbs.getKeyEventHandler() != null) {
+<i>557</i>&nbsp;//                            mbs.getKeyEventHandler().handle(ke);
+<i>558</i>&nbsp;//                        }
+<i>559</i>&nbsp;                    }
+<i>560</i>&nbsp;                }
+<b class="nc"><i>561</i>&nbsp;            }</b>
+<i>562</i>&nbsp;        });
+<i>563</i>&nbsp;
+<b class="fc"><i>564</i>&nbsp;        addEventHandler(ScrollEvent.SCROLL, event -&gt; {</b>
+<i>565</i>&nbsp;            /*
+<i>566</i>&nbsp;             * we&#39;ll only scroll if the arrows are visible in the direction
+<i>567</i>&nbsp;             * that we&#39;re going, otherwise we go into empty space.
+<i>568</i>&nbsp;             */
+<b class="nc"><i>569</i>&nbsp;            final double textDeltaY = event.getTextDeltaY();</b>
+<b class="nc"><i>570</i>&nbsp;            final double deltaY = event.getDeltaY();</b>
+<b class="nc"><i>571</i>&nbsp;            if ((downArrow.isVisible() &amp;&amp; (textDeltaY &lt; 0.0 || deltaY &lt; 0.0)) ||</b>
+<b class="nc"><i>572</i>&nbsp;                (upArrow.isVisible() &amp;&amp; (textDeltaY &gt; 0.0 || deltaY &gt; 0.0))) {</b>
+<i>573</i>&nbsp;
+<b class="nc"><i>574</i>&nbsp;                switch(event.getTextDeltaYUnits()) {</b>
+<i>575</i>&nbsp;                  case LINES:
+<i>576</i>&nbsp;                      /*
+<i>577</i>&nbsp;                      ** scroll lines, use the row height of selected row,
+<i>578</i>&nbsp;                      ** or row 0 if none selected
+<i>579</i>&nbsp;                      */
+<b class="nc"><i>580</i>&nbsp;                      int focusedIndex = findFocusedIndex();</b>
+<b class="nc"><i>581</i>&nbsp;                      if (focusedIndex == -1) {</b>
+<b class="nc"><i>582</i>&nbsp;                          focusedIndex = 0;</b>
+<i>583</i>&nbsp;                      }
+<b class="nc"><i>584</i>&nbsp;                      double rowHeight = itemsContainer.getChildren().get(focusedIndex).prefHeight(-1);</b>
+<b class="nc"><i>585</i>&nbsp;                      scroll(textDeltaY * rowHeight);</b>
+<b class="nc"><i>586</i>&nbsp;                      break;</b>
+<i>587</i>&nbsp;                  case PAGES:
+<i>588</i>&nbsp;                      /*
+<i>589</i>&nbsp;                      ** page scroll, scroll the menu height
+<i>590</i>&nbsp;                      */
+<b class="nc"><i>591</i>&nbsp;                      scroll(textDeltaY * itemsContainer.getHeight());</b>
+<b class="nc"><i>592</i>&nbsp;                      break;</b>
+<i>593</i>&nbsp;                  case NONE:
+<i>594</i>&nbsp;                      /*
+<i>595</i>&nbsp;                      ** pixel scroll
+<i>596</i>&nbsp;                      */
+<b class="nc"><i>597</i>&nbsp;                      scroll(deltaY);</b>
+<i>598</i>&nbsp;                      break;
+<i>599</i>&nbsp;                }
+<b class="nc"><i>600</i>&nbsp;                event.consume();</b>
+<i>601</i>&nbsp;            }
+<b class="nc"><i>602</i>&nbsp;        });</b>
+<b class="fc"><i>603</i>&nbsp;    }</b>
+<i>604</i>&nbsp;
+<i>605</i>&nbsp;    private Optional&lt;Node&gt; getFocusedNode() {
+<b class="nc"><i>606</i>&nbsp;        final List&lt;Node&gt; children = itemsContainer.getChildren();</b>
+<b class="nc"><i>607</i>&nbsp;        final boolean validIndex = currentFocusedIndex &gt;= 0 &amp;&amp; currentFocusedIndex &lt; children.size();</b>
+<b class="nc"><i>608</i>&nbsp;        return validIndex ? Optional.of(children.get(currentFocusedIndex)) : Optional.empty();</b>
+<i>609</i>&nbsp;    }
+<i>610</i>&nbsp;
+<i>611</i>&nbsp;    private void processLeftKey(KeyEvent ke) {
+<b class="nc"><i>612</i>&nbsp;        getFocusedNode().ifPresent(n -&gt; {</b>
+<b class="nc"><i>613</i>&nbsp;            if (n instanceof MenuItemContainer) {</b>
+<b class="nc"><i>614</i>&nbsp;                MenuItem item = ((MenuItemContainer)n).item;</b>
+<b class="nc"><i>615</i>&nbsp;                if (item instanceof Menu) {</b>
+<b class="nc"><i>616</i>&nbsp;                    final Menu menu = (Menu) item;</b>
+<i>617</i>&nbsp;
+<i>618</i>&nbsp;                    // if the submenu for this menu is showing, hide it
+<b class="nc"><i>619</i>&nbsp;                    if (menu == openSubmenu &amp;&amp; submenu != null &amp;&amp; submenu.isShowing()) {</b>
+<b class="nc"><i>620</i>&nbsp;                        hideSubmenu();</b>
+<b class="nc"><i>621</i>&nbsp;                        ke.consume();</b>
+<i>622</i>&nbsp;                    }
+<i>623</i>&nbsp;                }
+<i>624</i>&nbsp;            }
+<b class="nc"><i>625</i>&nbsp;        });</b>
+<b class="nc"><i>626</i>&nbsp;    }</b>
+<i>627</i>&nbsp;
+<i>628</i>&nbsp;    private void processRightKey(KeyEvent ke) {
+<b class="nc"><i>629</i>&nbsp;        getFocusedNode().ifPresent(n -&gt; {</b>
+<b class="nc"><i>630</i>&nbsp;            if (n instanceof MenuItemContainer) {</b>
+<b class="nc"><i>631</i>&nbsp;                MenuItem item = ((MenuItemContainer)n).item;</b>
+<b class="nc"><i>632</i>&nbsp;                if (item instanceof Menu) {</b>
+<b class="nc"><i>633</i>&nbsp;                    final Menu menu = (Menu) item;</b>
+<b class="nc"><i>634</i>&nbsp;                    if (menu.isDisable()) return;</b>
+<b class="nc"><i>635</i>&nbsp;                    selectedBackground = ((MenuItemContainer)n);</b>
+<i>636</i>&nbsp;
+<i>637</i>&nbsp;                    // RT-15103
+<i>638</i>&nbsp;                    // if submenu for this menu is already showing then do nothing
+<i>639</i>&nbsp;                    // Menubar will process the right key and move to the next menu
+<b class="nc"><i>640</i>&nbsp;                    if (openSubmenu == menu &amp;&amp; submenu != null &amp;&amp; submenu.isShowing()) {</b>
+<b class="nc"><i>641</i>&nbsp;                        return;</b>
+<i>642</i>&nbsp;                    }
+<i>643</i>&nbsp;
+<b class="nc"><i>644</i>&nbsp;                    showMenu(menu);</b>
+<b class="nc"><i>645</i>&nbsp;                    ke.consume();</b>
+<i>646</i>&nbsp;                }
+<i>647</i>&nbsp;            }
+<b class="nc"><i>648</i>&nbsp;        });</b>
+<b class="nc"><i>649</i>&nbsp;    }</b>
+<i>650</i>&nbsp;
+<i>651</i>&nbsp;    private void showMenu(Menu menu) {
+<b class="nc"><i>652</i>&nbsp;        menu.show();</b>
+<i>653</i>&nbsp;        // request focus on the first item of the submenu after it is shown
+<b class="nc"><i>654</i>&nbsp;        ContextMenuContent cmContent = (ContextMenuContent)submenu.getSkin().getNode();</b>
+<b class="nc"><i>655</i>&nbsp;        if (cmContent != null) {</b>
+<b class="nc"><i>656</i>&nbsp;           if (cmContent.itemsContainer.getChildren().size() &gt; 0) {</b>
+<b class="nc"><i>657</i>&nbsp;               cmContent.itemsContainer.getChildren().get(0).requestFocus();</b>
+<b class="nc"><i>658</i>&nbsp;               cmContent.currentFocusedIndex = 0;</b>
+<i>659</i>&nbsp;           } else {
+<b class="nc"><i>660</i>&nbsp;               cmContent.requestFocus();</b>
+<i>661</i>&nbsp;           }
+<i>662</i>&nbsp;        }
+<b class="nc"><i>663</i>&nbsp;    }</b>
+<i>664</i>&nbsp;
+<i>665</i>&nbsp;    private void selectMenuItem() {
+<b class="nc"><i>666</i>&nbsp;        getFocusedNode().ifPresent(n -&gt; {</b>
+<b class="nc"><i>667</i>&nbsp;            if (n instanceof MenuItemContainer) {</b>
+<b class="nc"><i>668</i>&nbsp;                MenuItem item = ((MenuItemContainer)n).item;</b>
+<b class="nc"><i>669</i>&nbsp;                if (item instanceof Menu) {</b>
+<b class="nc"><i>670</i>&nbsp;                    final Menu menu = (Menu) item;</b>
+<b class="nc"><i>671</i>&nbsp;                    if (openSubmenu != null) {</b>
+<b class="nc"><i>672</i>&nbsp;                        hideSubmenu();</b>
+<i>673</i>&nbsp;                    }
+<b class="nc"><i>674</i>&nbsp;                    if (menu.isDisable()) return;</b>
+<b class="nc"><i>675</i>&nbsp;                    selectedBackground = ((MenuItemContainer)n);</b>
+<b class="nc"><i>676</i>&nbsp;                    menu.show();</b>
+<b class="nc"><i>677</i>&nbsp;                } else {</b>
+<b class="nc"><i>678</i>&nbsp;                    ((MenuItemContainer)n).doSelect();</b>
+<i>679</i>&nbsp;                }
+<i>680</i>&nbsp;            }
+<b class="nc"><i>681</i>&nbsp;        });</b>
+<b class="nc"><i>682</i>&nbsp;    }</b>
+<i>683</i>&nbsp;
+<i>684</i>&nbsp;    private void move(Direction dir) {
+<b class="nc"><i>685</i>&nbsp;        int startIndex = currentFocusedIndex != -1 ? currentFocusedIndex : itemsContainer.getChildren().size();</b>
+<b class="nc"><i>686</i>&nbsp;        requestFocusOnIndex(findSibling(dir, startIndex));</b>
+<b class="nc"><i>687</i>&nbsp;    }</b>
+<i>688</i>&nbsp;
+<i>689</i>&nbsp;    private int findSibling(final Direction dir, final int startIndex) {
+<b class="nc"><i>690</i>&nbsp;        final int childCount = itemsContainer.getChildren().size();</b>
+<b class="nc"><i>691</i>&nbsp;        int i = startIndex;</b>
+<i>692</i>&nbsp;        do {
+<b class="nc"><i>693</i>&nbsp;            if (dir.isForward() &amp;&amp; i &gt;= childCount - 1) {</b>
+<i>694</i>&nbsp;                // loop to zero
+<b class="nc"><i>695</i>&nbsp;                i = 0;</b>
+<b class="nc"><i>696</i>&nbsp;            } else if (!dir.isForward() &amp;&amp; i == 0) {</b>
+<i>697</i>&nbsp;                // loop to end
+<b class="nc"><i>698</i>&nbsp;                i = childCount - 1;</b>
+<i>699</i>&nbsp;            } else {
+<b class="nc"><i>700</i>&nbsp;                i += (dir.isForward() ? 1 : -1);</b>
+<i>701</i>&nbsp;            }
+<i>702</i>&nbsp;
+<b class="nc"><i>703</i>&nbsp;            Node n = itemsContainer.getChildren().get(i);</b>
+<b class="nc"><i>704</i>&nbsp;            if (n instanceof MenuItemContainer &amp;&amp; n.isVisible()) {</b>
+<b class="nc"><i>705</i>&nbsp;                return i;</b>
+<i>706</i>&nbsp;            }
+<b class="nc"><i>707</i>&nbsp;        } while (i != startIndex);</b>
+<b class="nc"><i>708</i>&nbsp;        return -1;</b>
+<i>709</i>&nbsp;    }
+<i>710</i>&nbsp;
+<i>711</i>&nbsp;    public void requestFocusOnIndex(int index) {
+<b class="nc"><i>712</i>&nbsp;        currentFocusedIndex = index;</b>
+<b class="nc"><i>713</i>&nbsp;        Node n = itemsContainer.getChildren().get(index);</b>
+<b class="nc"><i>714</i>&nbsp;        selectedBackground = ((MenuItemContainer)n);</b>
+<b class="nc"><i>715</i>&nbsp;        n.requestFocus();</b>
+<b class="nc"><i>716</i>&nbsp;        ensureFocusedMenuItemIsVisible(n);</b>
+<b class="nc"><i>717</i>&nbsp;    }</b>
+<i>718</i>&nbsp;
+<i>719</i>&nbsp;    /*
+<i>720</i>&nbsp;     * Get the Y offset from the top of the popup to the menu item whose index
+<i>721</i>&nbsp;     * is given.
+<i>722</i>&nbsp;     */
+<i>723</i>&nbsp;    public double getMenuYOffset(int menuIndex) {
+<b class="nc"><i>724</i>&nbsp;        double offset = 0;</b>
+<b class="nc"><i>725</i>&nbsp;        if (itemsContainer.getChildren().size() &gt; menuIndex) {</b>
+<b class="nc"><i>726</i>&nbsp;            offset = snappedTopInset();</b>
+<b class="nc"><i>727</i>&nbsp;            Node menuitem = itemsContainer.getChildren().get(menuIndex);</b>
+<b class="nc"><i>728</i>&nbsp;            offset += menuitem.getLayoutY() + menuitem.prefHeight(-1);</b>
+<i>729</i>&nbsp;        }
+<b class="nc"><i>730</i>&nbsp;        return offset;</b>
+<i>731</i>&nbsp;    }
+<i>732</i>&nbsp;
+<i>733</i>&nbsp;    private void setUpBinds() {
+<b class="fc"><i>734</i>&nbsp;        updateMenuShowingListeners(contextMenu.getItems(), true);</b>
+<b class="fc"><i>735</i>&nbsp;        contextMenu.getItems().addListener(contextMenuItemsListener);</b>
+<b class="fc"><i>736</i>&nbsp;    }</b>
+<i>737</i>&nbsp;
+<i>738</i>&nbsp;    private void disposeBinds() {
+<b class="nc"><i>739</i>&nbsp;        updateMenuShowingListeners(contextMenu.getItems(), false);</b>
+<b class="nc"><i>740</i>&nbsp;        contextMenu.getItems().removeListener(contextMenuItemsListener);</b>
+<b class="nc"><i>741</i>&nbsp;    }</b>
+<i>742</i>&nbsp;
+<b class="fc"><i>743</i>&nbsp;    private ChangeListener&lt;Boolean&gt; menuShowingListener = (observable, wasShowing, isShowing) -&gt; {</b>
+<b class="nc"><i>744</i>&nbsp;        ReadOnlyBooleanProperty isShowingProperty = (ReadOnlyBooleanProperty) observable;</b>
+<b class="nc"><i>745</i>&nbsp;        Menu menu = (Menu) isShowingProperty.getBean();</b>
+<i>746</i>&nbsp;
+<b class="nc"><i>747</i>&nbsp;        if (wasShowing &amp;&amp; ! isShowing) {</b>
+<i>748</i>&nbsp;            // hide the submenu popup
+<b class="nc"><i>749</i>&nbsp;            hideSubmenu();</b>
+<b class="nc"><i>750</i>&nbsp;        } else if (! wasShowing &amp;&amp; isShowing) {</b>
+<i>751</i>&nbsp;            // show the submenu popup
+<b class="nc"><i>752</i>&nbsp;            showSubmenu(menu);</b>
+<i>753</i>&nbsp;        }
+<b class="nc"><i>754</i>&nbsp;    };</b>
+<i>755</i>&nbsp;
+<b class="fc"><i>756</i>&nbsp;    private ListChangeListener&lt;MenuItem&gt; contextMenuItemsListener = (ListChangeListener&lt;MenuItem&gt;) c -&gt; {</b>
+<i>757</i>&nbsp;        // Add listeners to the showing property of all menus that have
+<i>758</i>&nbsp;        // been added, and remove listeners from menus that have been removed
+<i>759</i>&nbsp;        // FIXME this is temporary - we should be adding and removing
+<i>760</i>&nbsp;        // listeners such that they use the one listener defined above
+<i>761</i>&nbsp;        // - but that can&#39;t be done until we have the bean in the
+<i>762</i>&nbsp;        // ObservableValue
+<b class="nc"><i>763</i>&nbsp;        while (c.next()) {</b>
+<b class="nc"><i>764</i>&nbsp;            updateMenuShowingListeners(c.getRemoved(), false);</b>
+<b class="nc"><i>765</i>&nbsp;            updateMenuShowingListeners(c.getAddedSubList(), true);</b>
+<i>766</i>&nbsp;        }
+<i>767</i>&nbsp;
+<i>768</i>&nbsp;        // Listener to items in PopupMenu to update items in PopupMenuContent
+<b class="nc"><i>769</i>&nbsp;        itemsDirty = true;</b>
+<b class="nc"><i>770</i>&nbsp;        updateItems(); // RT-29761</b>
+<b class="nc"><i>771</i>&nbsp;    };</b>
+<i>772</i>&nbsp;
+<b class="fc"><i>773</i>&nbsp;    private ChangeListener&lt;Boolean&gt; menuItemVisibleListener = (observable, oldValue, newValue) -&gt; {</b>
+<i>774</i>&nbsp;        // re layout as item&#39;s visibility changed
+<b class="nc"><i>775</i>&nbsp;        requestLayout();</b>
+<b class="nc"><i>776</i>&nbsp;    };</b>
+<i>777</i>&nbsp;
+<i>778</i>&nbsp;    private void updateMenuShowingListeners(List&lt;? extends MenuItem&gt; items, boolean addListeners) {
+<b class="fc"><i>779</i>&nbsp;        for (MenuItem item : items) {</b>
+<b class="fc"><i>780</i>&nbsp;            if (item instanceof Menu) {</b>
+<b class="nc"><i>781</i>&nbsp;                final Menu menu = (Menu) item;</b>
+<i>782</i>&nbsp;
+<b class="nc"><i>783</i>&nbsp;                if (addListeners) {</b>
+<b class="nc"><i>784</i>&nbsp;                    menu.showingProperty().addListener(menuShowingListener);</b>
+<i>785</i>&nbsp;                } else {
+<b class="nc"><i>786</i>&nbsp;                    menu.showingProperty().removeListener(menuShowingListener);</b>
+<i>787</i>&nbsp;                }
+<i>788</i>&nbsp;            }
+<i>789</i>&nbsp;
+<i>790</i>&nbsp;             // listen to menu items&#39;s visible property.
+<b class="fc"><i>791</i>&nbsp;            if (addListeners) {</b>
+<b class="fc"><i>792</i>&nbsp;                item.visibleProperty().addListener(menuItemVisibleListener);</b>
+<i>793</i>&nbsp;            } else {
+<b class="nc"><i>794</i>&nbsp;                item.visibleProperty().removeListener(menuItemVisibleListener);</b>
+<i>795</i>&nbsp;            }
+<b class="fc"><i>796</i>&nbsp;        }</b>
+<b class="fc"><i>797</i>&nbsp;    }</b>
+<i>798</i>&nbsp;
+<i>799</i>&nbsp;    // For test purpose only
+<i>800</i>&nbsp;    ContextMenu getSubMenu() {
+<b class="nc"><i>801</i>&nbsp;        return submenu;</b>
+<i>802</i>&nbsp;    }
+<i>803</i>&nbsp;
+<i>804</i>&nbsp;    Menu getOpenSubMenu() {
+<b class="nc"><i>805</i>&nbsp;        return openSubmenu;</b>
+<i>806</i>&nbsp;    }
+<i>807</i>&nbsp;
+<i>808</i>&nbsp;    private void createSubmenu() {
+<b class="nc"><i>809</i>&nbsp;        if (submenu == null) {</b>
+<b class="nc"><i>810</i>&nbsp;            submenu = new ContextMenu();</b>
+<b class="nc"><i>811</i>&nbsp;            submenu.showingProperty().addListener(new ChangeListener&lt;Boolean&gt;() {</b>
+<i>812</i>&nbsp;                @Override public void changed(ObservableValue&lt;? extends Boolean&gt; observable,
+<i>813</i>&nbsp;                                              Boolean oldValue, Boolean newValue) {
+<i>814</i>&nbsp;                    if (!submenu.isShowing()) {
+<i>815</i>&nbsp;                        // Maybe user clicked outside or typed ESCAPE.
+<i>816</i>&nbsp;                        // Make sure menus are in sync.
+<i>817</i>&nbsp;                        for (Node node : itemsContainer.getChildren()) {
+<i>818</i>&nbsp;                            if (node instanceof MenuItemContainer
+<i>819</i>&nbsp;                                  &amp;&amp; ((MenuItemContainer)node).item instanceof Menu) {
+<i>820</i>&nbsp;                                Menu menu = (Menu)((MenuItemContainer)node).item;
+<i>821</i>&nbsp;                                if (menu.isShowing()) {
+<i>822</i>&nbsp;                                    menu.hide();
+<i>823</i>&nbsp;                                }
+<i>824</i>&nbsp;                            }
+<i>825</i>&nbsp;                        }
+<i>826</i>&nbsp;                    }
+<i>827</i>&nbsp;                }
+<i>828</i>&nbsp;            });
+<i>829</i>&nbsp;        }
+<b class="nc"><i>830</i>&nbsp;    }</b>
+<i>831</i>&nbsp;
+<i>832</i>&nbsp;    private void showSubmenu(Menu menu) {
+<b class="nc"><i>833</i>&nbsp;        openSubmenu = menu;</b>
+<b class="nc"><i>834</i>&nbsp;        createSubmenu();</b>
+<b class="nc"><i>835</i>&nbsp;        submenu.getItems().setAll(menu.getItems());</b>
+<b class="nc"><i>836</i>&nbsp;        submenu.show(selectedBackground, Side.RIGHT, 0, 0);</b>
+<b class="nc"><i>837</i>&nbsp;    }</b>
+<i>838</i>&nbsp;
+<i>839</i>&nbsp;    private void hideSubmenu() {
+<b class="nc"><i>840</i>&nbsp;        if (submenu == null) return;</b>
+<i>841</i>&nbsp;
+<b class="nc"><i>842</i>&nbsp;        submenu.hide();</b>
+<b class="nc"><i>843</i>&nbsp;        openSubmenu = null;</b>
+<i>844</i>&nbsp;
+<i>845</i>&nbsp;        // Fix for RT-37022 - we dispose content so that we do not process CSS
+<i>846</i>&nbsp;        // on hidden submenus
+<b class="nc"><i>847</i>&nbsp;        disposeContextMenu(submenu);</b>
+<b class="nc"><i>848</i>&nbsp;        submenu = null;</b>
+<i>849</i>&nbsp;
+<i>850</i>&nbsp;        // Fix for JDK-8158679 - we put the focus on the menu, and then back
+<i>851</i>&nbsp;        // on the menu item, so that screen readers can properly speak out
+<i>852</i>&nbsp;        // the menu item.
+<b class="nc"><i>853</i>&nbsp;        getFocusedNode().ifPresent(n -&gt; {</b>
+<b class="nc"><i>854</i>&nbsp;            requestFocus();</b>
+<b class="nc"><i>855</i>&nbsp;            n.requestFocus();</b>
+<b class="nc"><i>856</i>&nbsp;        });</b>
+<b class="nc"><i>857</i>&nbsp;    }</b>
+<i>858</i>&nbsp;
+<i>859</i>&nbsp;    private void hideAllMenus(MenuItem item) {
+<b class="fc"><i>860</i>&nbsp;        if (contextMenu != null) contextMenu.hide();</b>
+<i>861</i>&nbsp;
+<i>862</i>&nbsp;        Menu parentMenu;
+<b class="fc"><i>863</i>&nbsp;        while ((parentMenu = item.getParentMenu()) != null) {</b>
+<b class="nc"><i>864</i>&nbsp;            parentMenu.hide();</b>
+<b class="nc"><i>865</i>&nbsp;            item = parentMenu;</b>
+<i>866</i>&nbsp;        }
+<b class="fc"><i>867</i>&nbsp;        if (item.getParentPopup() != null) {</b>
+<b class="fc"><i>868</i>&nbsp;            item.getParentPopup().hide();</b>
+<i>869</i>&nbsp;        }
+<b class="fc"><i>870</i>&nbsp;    }</b>
+<i>871</i>&nbsp;
+<i>872</i>&nbsp;    private Menu openSubmenu;
+<i>873</i>&nbsp;    private ContextMenu submenu;
+<i>874</i>&nbsp;
+<i>875</i>&nbsp;    // FIXME: HACKY. We use this so that a submenu knows where to open from
+<i>876</i>&nbsp;    // but this will only work for mouse hovers currently - and won&#39;t work
+<i>877</i>&nbsp;    // programmatically.
+<i>878</i>&nbsp;    // package protected for testing only!
+<i>879</i>&nbsp;    Region selectedBackground;
+<i>880</i>&nbsp;
+<i>881</i>&nbsp;    void scroll(double delta) {
+<b class="nc"><i>882</i>&nbsp;        double newTy = ty + delta;</b>
+<b class="nc"><i>883</i>&nbsp;        if (ty == newTy) return;</b>
+<i>884</i>&nbsp;
+<i>885</i>&nbsp;        // translation should never be positive (this would mean the top of the
+<i>886</i>&nbsp;        // menu content is detaching from the top of the menu!)
+<b class="nc"><i>887</i>&nbsp;        if (newTy &gt; 0.0) {</b>
+<b class="nc"><i>888</i>&nbsp;            newTy = 0.0;</b>
+<i>889</i>&nbsp;        }
+<i>890</i>&nbsp;
+<i>891</i>&nbsp;        // translation should never be greater than the preferred height of the
+<i>892</i>&nbsp;        // menu content (otherwise the menu content will be detaching from the
+<i>893</i>&nbsp;        // bottom of the menu).
+<i>894</i>&nbsp;        // RT-37185: We check the direction of the scroll, to prevent it locking
+<i>895</i>&nbsp;        // up when scrolling upwards from the very bottom (using the on-screen
+<i>896</i>&nbsp;        // up arrow).
+<b class="nc"><i>897</i>&nbsp;        if (delta &lt; 0 &amp;&amp; (getHeight() - newTy) &gt; itemsContainer.getHeight() - downArrow.getHeight()) {</b>
+<b class="nc"><i>898</i>&nbsp;            newTy = getHeight() - itemsContainer.getHeight() - downArrow.getHeight();</b>
+<i>899</i>&nbsp;        }
+<i>900</i>&nbsp;
+<b class="nc"><i>901</i>&nbsp;        ty = newTy;</b>
+<b class="nc"><i>902</i>&nbsp;        itemsContainer.requestLayout();</b>
+<b class="nc"><i>903</i>&nbsp;    }</b>
+<i>904</i>&nbsp;
+<i>905</i>&nbsp;    /***************************************************************************
+<i>906</i>&nbsp;     *                                                                         *
+<i>907</i>&nbsp;     *                         Stylesheet Handling                             *
+<i>908</i>&nbsp;     *                                                                         *
+<i>909</i>&nbsp;     **************************************************************************/
+<i>910</i>&nbsp;    @Override public Styleable getStyleableParent() {
+<b class="fc"><i>911</i>&nbsp;        return contextMenu;</b>
+<i>912</i>&nbsp;    }
+<i>913</i>&nbsp;
+<b class="fc"><i>914</i>&nbsp;    private static class StyleableProperties {</b>
+<i>915</i>&nbsp;
+<i>916</i>&nbsp;        private static final List&lt;CssMetaData&lt;? extends Styleable, ?&gt;&gt; STYLEABLES;
+<i>917</i>&nbsp;        static {
+<i>918</i>&nbsp;
+<b class="fc"><i>919</i>&nbsp;            final List&lt;CssMetaData&lt;? extends Styleable, ?&gt;&gt; styleables =</b>
+<b class="fc"><i>920</i>&nbsp;                new ArrayList&lt;CssMetaData&lt;? extends Styleable, ?&gt;&gt;(Region.getClassCssMetaData());</b>
+<i>921</i>&nbsp;
+<i>922</i>&nbsp;            //
+<i>923</i>&nbsp;            // SkinBase only has Region&#39;s unique StlyleableProperty&#39;s, none of Nodes
+<i>924</i>&nbsp;            // So, we need to add effect back in. The effect property is in a
+<i>925</i>&nbsp;            // private inner class, so get the property from Node the hard way.
+<b class="fc"><i>926</i>&nbsp;            final List&lt;CssMetaData&lt;? extends Styleable, ?&gt;&gt; nodeStyleables = Node.getClassCssMetaData();</b>
+<b class="fc"><i>927</i>&nbsp;            for(int n=0, max=nodeStyleables.size(); n&lt;max; n++) {</b>
+<b class="fc"><i>928</i>&nbsp;                CssMetaData&lt;? extends Styleable, ?&gt; styleable = nodeStyleables.get(n);</b>
+<b class="fc"><i>929</i>&nbsp;                if (&quot;effect&quot;.equals(styleable.getProperty())) {</b>
+<b class="nc"><i>930</i>&nbsp;                    styleables.add(styleable);</b>
+<b class="nc"><i>931</i>&nbsp;                    break;</b>
+<i>932</i>&nbsp;                }
+<i>933</i>&nbsp;            }
+<b class="fc"><i>934</i>&nbsp;            STYLEABLES = Collections.unmodifiableList(styleables);</b>
+<b class="fc"><i>935</i>&nbsp;        }</b>
+<i>936</i>&nbsp;    }
+<i>937</i>&nbsp;
+<i>938</i>&nbsp;    /**
+<i>939</i>&nbsp;     * @return The CssMetaData associated with this class, which may include the
+<i>940</i>&nbsp;     * CssMetaData of its superclasses.
+<i>941</i>&nbsp;     */
+<i>942</i>&nbsp;    public static List&lt;CssMetaData&lt;? extends Styleable, ?&gt;&gt; getClassCssMetaData() {
+<b class="fc"><i>943</i>&nbsp;        return StyleableProperties.STYLEABLES;</b>
+<i>944</i>&nbsp;    }
+<i>945</i>&nbsp;
+<i>946</i>&nbsp;    /**
+<i>947</i>&nbsp;     * {@inheritDoc}
+<i>948</i>&nbsp;     */
+<i>949</i>&nbsp;    @Override
+<i>950</i>&nbsp;    public List&lt;CssMetaData&lt;? extends Styleable, ?&gt;&gt; getCssMetaData() {
+<b class="fc"><i>951</i>&nbsp;        return getClassCssMetaData();</b>
+<i>952</i>&nbsp;    }
+<i>953</i>&nbsp;
+<i>954</i>&nbsp;    public Label getLabelAt(int index) {
+<b class="nc"><i>955</i>&nbsp;        return ((MenuItemContainer)itemsContainer.getChildren().get(index)).getLabel();</b>
+<i>956</i>&nbsp;    }
+<i>957</i>&nbsp;
+<i>958</i>&nbsp;    /**
+<i>959</i>&nbsp;     * Custom VBox to enable scrolling of items. Scrolling effect is achieved by
+<i>960</i>&nbsp;     * controlling the translate Y coordinate of the menu item &quot;ty&quot; which is set by a
+<i>961</i>&nbsp;     * timeline when mouse is over up/down arrow.
+<i>962</i>&nbsp;     */
+<i>963</i>&nbsp;    class MenuBox extends VBox {
+<b class="fc"><i>964</i>&nbsp;        MenuBox() {</b>
+<b class="fc"><i>965</i>&nbsp;            setAccessibleRole(AccessibleRole.CONTEXT_MENU);</b>
+<b class="fc"><i>966</i>&nbsp;        }</b>
+<i>967</i>&nbsp;
+<i>968</i>&nbsp;        @Override protected void layoutChildren() {
+<b class="fc"><i>969</i>&nbsp;            double yOffset = ty;</b>
+<b class="fc"><i>970</i>&nbsp;            for (Node n : getChildren()) {</b>
+<b class="fc"><i>971</i>&nbsp;                if (n.isVisible()) {</b>
+<b class="fc"><i>972</i>&nbsp;                    final double prefHeight = snapSizeY(n.prefHeight(-1));</b>
+<b class="fc"><i>973</i>&nbsp;                    n.resize(snapSizeX(getWidth()), prefHeight);</b>
+<b class="fc"><i>974</i>&nbsp;                    n.relocate(snappedLeftInset(), yOffset);</b>
+<b class="fc"><i>975</i>&nbsp;                    yOffset += prefHeight;</b>
+<i>976</i>&nbsp;                }
+<b class="fc"><i>977</i>&nbsp;            }</b>
+<b class="fc"><i>978</i>&nbsp;        }</b>
+<i>979</i>&nbsp;
+<i>980</i>&nbsp;        /** {@inheritDoc} */
+<i>981</i>&nbsp;        @Override
+<i>982</i>&nbsp;        public Object queryAccessibleAttribute(AccessibleAttribute attribute, Object... parameters) {
+<b class="nc"><i>983</i>&nbsp;            switch (attribute) {</b>
+<b class="nc"><i>984</i>&nbsp;                case VISIBLE: return contextMenu.isShowing();</b>
+<b class="nc"><i>985</i>&nbsp;                case PARENT_MENU: return contextMenu.getOwnerNode();</b>
+<b class="nc"><i>986</i>&nbsp;                default: return super.queryAccessibleAttribute(attribute, parameters);</b>
+<i>987</i>&nbsp;            }
+<i>988</i>&nbsp;        }
+<i>989</i>&nbsp;    }
+<i>990</i>&nbsp;
+<i>991</i>&nbsp;    class ArrowMenuItem extends StackPane {
+<i>992</i>&nbsp;         private StackPane upDownArrow;
+<i>993</i>&nbsp;         private ContextMenuContent popupMenuContent;
+<b class="fc"><i>994</i>&nbsp;         private boolean up = false;</b>
+<b class="fc"><i>995</i>&nbsp;         public final boolean isUp() { return up; }</b>
+<i>996</i>&nbsp;         public void setUp(boolean value) {
+<b class="fc"><i>997</i>&nbsp;            up = value;</b>
+<b class="fc"><i>998</i>&nbsp;            upDownArrow.getStyleClass().setAll(isUp() ? &quot;menu-up-arrow&quot; : &quot;menu-down-arrow&quot;);</b>
+<b class="fc"><i>999</i>&nbsp;        }</b>
+<i>1000</i>&nbsp;
+<i>1001</i>&nbsp;        // used to automatically scroll through menu items when the user performs
+<i>1002</i>&nbsp;        // certain interactions, e.g. pressing and holding the arrow buttons
+<i>1003</i>&nbsp;        private Timeline scrollTimeline;
+<i>1004</i>&nbsp;
+<b class="fc"><i>1005</i>&nbsp;        public ArrowMenuItem(ContextMenuContent pmc) {</b>
+<b class="fc"><i>1006</i>&nbsp;            getStyleClass().setAll(&quot;scroll-arrow&quot;);</b>
+<b class="fc"><i>1007</i>&nbsp;            upDownArrow = new StackPane();</b>
+<b class="fc"><i>1008</i>&nbsp;            this.popupMenuContent = pmc;</b>
+<b class="fc"><i>1009</i>&nbsp;            upDownArrow.setMouseTransparent(true);</b>
+<b class="fc"><i>1010</i>&nbsp;            upDownArrow.getStyleClass().setAll(isUp() ? &quot;menu-up-arrow&quot; : &quot;menu-down-arrow&quot;);</b>
+<i>1011</i>&nbsp;    //        setMaxWidth(Math.max(upDownArrow.prefWidth(-1), getWidth()));
+<b class="fc"><i>1012</i>&nbsp;            addEventHandler(MouseEvent.MOUSE_ENTERED, me -&gt; {</b>
+<b class="nc"><i>1013</i>&nbsp;                if (scrollTimeline != null &amp;&amp; (scrollTimeline.getStatus() != Status.STOPPED)) {</b>
+<b class="nc"><i>1014</i>&nbsp;                    return;</b>
+<i>1015</i>&nbsp;                }
+<b class="nc"><i>1016</i>&nbsp;                startTimeline();</b>
+<b class="nc"><i>1017</i>&nbsp;            });</b>
+<b class="fc"><i>1018</i>&nbsp;            addEventHandler(MouseEvent.MOUSE_EXITED, me -&gt; {</b>
+<b class="nc"><i>1019</i>&nbsp;                stopTimeline();</b>
+<b class="nc"><i>1020</i>&nbsp;            });</b>
+<b class="fc"><i>1021</i>&nbsp;            setVisible(false);</b>
+<b class="fc"><i>1022</i>&nbsp;            setManaged(false);</b>
+<b class="fc"><i>1023</i>&nbsp;            getChildren().add(upDownArrow);</b>
+<b class="fc"><i>1024</i>&nbsp;        }</b>
+<i>1025</i>&nbsp;
+<i>1026</i>&nbsp;        @Override protected double computePrefWidth(double height) {
+<i>1027</i>&nbsp;//            return snapSize(getInsets().getLeft()) + snapSize(getInsets().getRight());
+<b class="nc"><i>1028</i>&nbsp;            return itemsContainer.getWidth();</b>
+<i>1029</i>&nbsp;        }
+<i>1030</i>&nbsp;
+<i>1031</i>&nbsp;        @Override protected double computePrefHeight(double width) {
+<b class="nc"><i>1032</i>&nbsp;            return snappedTopInset() + upDownArrow.prefHeight(-1) + snappedBottomInset();</b>
+<i>1033</i>&nbsp;        }
+<i>1034</i>&nbsp;
+<i>1035</i>&nbsp;        @Override protected void layoutChildren() {
+<b class="fc"><i>1036</i>&nbsp;            double w = snapSizeX(upDownArrow.prefWidth(-1));</b>
+<b class="fc"><i>1037</i>&nbsp;            double h = snapSizeY(upDownArrow.prefHeight(-1));</b>
+<i>1038</i>&nbsp;
+<b class="fc"><i>1039</i>&nbsp;            upDownArrow.resize(w, h);</b>
+<b class="fc"><i>1040</i>&nbsp;            positionInArea(upDownArrow, 0, 0, getWidth(), getHeight(),</b>
+<i>1041</i>&nbsp;                    /*baseline ignored*/0, HPos.CENTER, VPos.CENTER);
+<b class="fc"><i>1042</i>&nbsp;        }</b>
+<i>1043</i>&nbsp;
+<i>1044</i>&nbsp;        private void adjust() {
+<b class="nc"><i>1045</i>&nbsp;            if(up) popupMenuContent.scroll(12); else popupMenuContent.scroll(-12);</b>
+<b class="nc"><i>1046</i>&nbsp;        }</b>
+<i>1047</i>&nbsp;
+<i>1048</i>&nbsp;        private void startTimeline() {
+<b class="nc"><i>1049</i>&nbsp;            scrollTimeline = new Timeline();</b>
+<b class="nc"><i>1050</i>&nbsp;            scrollTimeline.setCycleCount(Timeline.INDEFINITE);</b>
+<b class="nc"><i>1051</i>&nbsp;            KeyFrame kf = new KeyFrame(</b>
+<b class="nc"><i>1052</i>&nbsp;                Duration.millis(60),</b>
+<i>1053</i>&nbsp;                    event -&gt; {
+<b class="nc"><i>1054</i>&nbsp;                        adjust();</b>
+<b class="nc"><i>1055</i>&nbsp;                    }</b>
+<i>1056</i>&nbsp;            );
+<b class="nc"><i>1057</i>&nbsp;            scrollTimeline.getKeyFrames().clear();</b>
+<b class="nc"><i>1058</i>&nbsp;            scrollTimeline.getKeyFrames().add(kf);</b>
+<b class="nc"><i>1059</i>&nbsp;            scrollTimeline.play();</b>
+<b class="nc"><i>1060</i>&nbsp;        }</b>
+<i>1061</i>&nbsp;
+<i>1062</i>&nbsp;        private void stopTimeline() {
+<b class="nc"><i>1063</i>&nbsp;            scrollTimeline.stop();</b>
+<b class="nc"><i>1064</i>&nbsp;            scrollTimeline = null;</b>
+<b class="nc"><i>1065</i>&nbsp;        }</b>
+<i>1066</i>&nbsp;    }
+<i>1067</i>&nbsp;
+<i>1068</i>&nbsp;    /*
+<i>1069</i>&nbsp;     * Container responsible for laying out a single row in the menu - in other
+<i>1070</i>&nbsp;     * words, this contains and lays out a single MenuItem, regardless of it&#39;s
+<i>1071</i>&nbsp;     * specific subtype.
+<i>1072</i>&nbsp;     */
+<b class="fc"><i>1073</i>&nbsp;    public class MenuItemContainer extends Region {</b>
+<i>1074</i>&nbsp;
+<i>1075</i>&nbsp;        private final MenuItem item;
+<i>1076</i>&nbsp;
+<i>1077</i>&nbsp;        private Node left;
+<i>1078</i>&nbsp;        private Node graphic;
+<i>1079</i>&nbsp;        private Node label;
+<i>1080</i>&nbsp;        private Node right;
+<i>1081</i>&nbsp;
+<b class="fc"><i>1082</i>&nbsp;        private final LambdaMultiplePropertyChangeListenerHandler listener =</b>
+<i>1083</i>&nbsp;            new LambdaMultiplePropertyChangeListenerHandler();
+<i>1084</i>&nbsp;
+<i>1085</i>&nbsp;        private EventHandler&lt;MouseEvent&gt; mouseEnteredEventHandler;
+<i>1086</i>&nbsp;        private EventHandler&lt;MouseEvent&gt; mouseReleasedEventHandler;
+<i>1087</i>&nbsp;
+<i>1088</i>&nbsp;        private EventHandler&lt;ActionEvent&gt; actionEventHandler;
+<i>1089</i>&nbsp;
+<i>1090</i>&nbsp;        protected Label getLabel(){
+<b class="nc"><i>1091</i>&nbsp;            return (Label) label;</b>
+<i>1092</i>&nbsp;        }
+<i>1093</i>&nbsp;
+<i>1094</i>&nbsp;        public MenuItem getItem() {
+<b class="nc"><i>1095</i>&nbsp;            return item;</b>
+<i>1096</i>&nbsp;        }
+<i>1097</i>&nbsp;
+<b class="fc"><i>1098</i>&nbsp;        public MenuItemContainer(MenuItem item){</b>
+<b class="fc"><i>1099</i>&nbsp;            if (item == null) {</b>
+<b class="nc"><i>1100</i>&nbsp;                throw new NullPointerException(&quot;MenuItem can not be null&quot;);</b>
+<i>1101</i>&nbsp;            }
+<i>1102</i>&nbsp;
+<b class="fc"><i>1103</i>&nbsp;            getStyleClass().addAll(item.getStyleClass());</b>
+<b class="fc"><i>1104</i>&nbsp;            setId(item.getId());</b>
+<b class="fc"><i>1105</i>&nbsp;            setFocusTraversable(!(item instanceof CustomMenuItem));</b>
+<b class="fc"><i>1106</i>&nbsp;            this.item = item;</b>
+<i>1107</i>&nbsp;
+<b class="fc"><i>1108</i>&nbsp;            createChildren();</b>
+<i>1109</i>&nbsp;
+<i>1110</i>&nbsp;            // listen to changes in the state of certain MenuItem types
+<i>1111</i>&nbsp;            ReadOnlyBooleanProperty pseudoProperty;
+<b class="fc"><i>1112</i>&nbsp;            if (item instanceof Menu) {</b>
+<b class="nc"><i>1113</i>&nbsp;                pseudoProperty = ((Menu)item).showingProperty();</b>
+<b class="nc"><i>1114</i>&nbsp;                listener.registerChangeListener(pseudoProperty,</b>
+<b class="nc"><i>1115</i>&nbsp;                        e -&gt; pseudoClassStateChanged(SELECTED_PSEUDOCLASS_STATE, ((Menu) item).isShowing()));</b>
+<b class="nc"><i>1116</i>&nbsp;                pseudoClassStateChanged(SELECTED_PSEUDOCLASS_STATE, pseudoProperty.get());</b>
+<b class="nc"><i>1117</i>&nbsp;                setAccessibleRole(AccessibleRole.MENU);</b>
+<b class="fc"><i>1118</i>&nbsp;            } else if (item instanceof RadioMenuItem) {</b>
+<b class="fc"><i>1119</i>&nbsp;                pseudoProperty = ((RadioMenuItem)item).selectedProperty();</b>
+<b class="fc"><i>1120</i>&nbsp;                listener.registerChangeListener(pseudoProperty,</b>
+<b class="fc"><i>1121</i>&nbsp;                        e -&gt; pseudoClassStateChanged(CHECKED_PSEUDOCLASS_STATE, ((RadioMenuItem) item).isSelected()));</b>
+<b class="fc"><i>1122</i>&nbsp;                pseudoClassStateChanged(CHECKED_PSEUDOCLASS_STATE, pseudoProperty.get());</b>
+<b class="fc"><i>1123</i>&nbsp;                setAccessibleRole(AccessibleRole.RADIO_MENU_ITEM);</b>
+<b class="nc"><i>1124</i>&nbsp;            } else if (item instanceof CheckMenuItem) {</b>
+<b class="nc"><i>1125</i>&nbsp;                pseudoProperty = ((CheckMenuItem)item).selectedProperty();</b>
+<b class="nc"><i>1126</i>&nbsp;                listener.registerChangeListener(pseudoProperty,</b>
+<b class="nc"><i>1127</i>&nbsp;                        e -&gt; pseudoClassStateChanged(CHECKED_PSEUDOCLASS_STATE, ((CheckMenuItem) item).isSelected()));</b>
+<b class="nc"><i>1128</i>&nbsp;                pseudoClassStateChanged(CHECKED_PSEUDOCLASS_STATE, pseudoProperty.get());</b>
+<b class="nc"><i>1129</i>&nbsp;                setAccessibleRole(AccessibleRole.CHECK_MENU_ITEM);</b>
+<i>1130</i>&nbsp;            } else {
+<b class="nc"><i>1131</i>&nbsp;                setAccessibleRole(AccessibleRole.MENU_ITEM);</b>
+<i>1132</i>&nbsp;            }
+<i>1133</i>&nbsp;
+<b class="fc"><i>1134</i>&nbsp;            pseudoClassStateChanged(DISABLED_PSEUDOCLASS_STATE, item.disableProperty().get());</b>
+<b class="fc"><i>1135</i>&nbsp;            listener.registerChangeListener(item.disableProperty(),</b>
+<b class="nc"><i>1136</i>&nbsp;                    e -&gt; pseudoClassStateChanged(DISABLED_PSEUDOCLASS_STATE, item.isDisable()));</b>
+<i>1137</i>&nbsp;
+<i>1138</i>&nbsp;            // Add the menu item to properties map of this node. Used by QA for testing
+<i>1139</i>&nbsp;            // This allows associating this container with corresponding MenuItem.
+<b class="fc"><i>1140</i>&nbsp;            getProperties().put(MenuItem.class, item);</b>
+<i>1141</i>&nbsp;
+<b class="fc"><i>1142</i>&nbsp;            listener.registerChangeListener(item.graphicProperty(), e -&gt; {</b>
+<b class="nc"><i>1143</i>&nbsp;                createChildren();</b>
+<b class="nc"><i>1144</i>&nbsp;                computeVisualMetrics();</b>
+<b class="nc"><i>1145</i>&nbsp;            });</b>
+<i>1146</i>&nbsp;
+<b class="fc"><i>1147</i>&nbsp;            actionEventHandler = e -&gt; {</b>
+<b class="nc"><i>1148</i>&nbsp;                if (item instanceof Menu) {</b>
+<b class="nc"><i>1149</i>&nbsp;                    final Menu menu = (Menu) item;</b>
+<b class="nc"><i>1150</i>&nbsp;                    if (openSubmenu == menu &amp;&amp; submenu.isShowing()) return;</b>
+<b class="nc"><i>1151</i>&nbsp;                    if (openSubmenu != null) {</b>
+<b class="nc"><i>1152</i>&nbsp;                        hideSubmenu();</b>
+<i>1153</i>&nbsp;                    }
+<i>1154</i>&nbsp;
+<b class="nc"><i>1155</i>&nbsp;                    selectedBackground = MenuItemContainer.this;</b>
+<b class="nc"><i>1156</i>&nbsp;                    showMenu(menu);</b>
+<b class="nc"><i>1157</i>&nbsp;                } else {</b>
+<b class="nc"><i>1158</i>&nbsp;                    doSelect();</b>
+<i>1159</i>&nbsp;                }
+<b class="nc"><i>1160</i>&nbsp;            };</b>
+<b class="fc"><i>1161</i>&nbsp;            addEventHandler(ActionEvent.ACTION, actionEventHandler);</b>
+<b class="fc"><i>1162</i>&nbsp;        }</b>
+<i>1163</i>&nbsp;
+<i>1164</i>&nbsp;        public void dispose() {
+<b class="nc"><i>1165</i>&nbsp;            if (item instanceof CustomMenuItem) {</b>
+<b class="nc"><i>1166</i>&nbsp;                Node node = ((CustomMenuItem)item).getContent();</b>
+<b class="nc"><i>1167</i>&nbsp;                if (node != null) {</b>
+<b class="nc"><i>1168</i>&nbsp;                    node.removeEventHandler(MouseEvent.MOUSE_CLICKED, customMenuItemMouseClickedHandler);</b>
+<i>1169</i>&nbsp;                }
+<i>1170</i>&nbsp;            }
+<i>1171</i>&nbsp;
+<b class="nc"><i>1172</i>&nbsp;            listener.dispose();</b>
+<b class="nc"><i>1173</i>&nbsp;            removeEventHandler(ActionEvent.ACTION, actionEventHandler);</b>
+<i>1174</i>&nbsp;
+<b class="nc"><i>1175</i>&nbsp;            if (label != null) {</b>
+<b class="nc"><i>1176</i>&nbsp;                ((Label)label).textProperty().unbind();</b>
+<b class="nc"><i>1177</i>&nbsp;                label.styleProperty().unbind();</b>
+<b class="nc"><i>1178</i>&nbsp;                label.idProperty().unbind();</b>
+<i>1179</i>&nbsp;
+<b class="nc"><i>1180</i>&nbsp;                ListChangeListener&lt;String&gt; itemStyleClassListener = (ListChangeListener&lt;String&gt;)item.getProperties().remove(ITEM_STYLE_CLASS_LISTENER);</b>
+<b class="nc"><i>1181</i>&nbsp;                if (itemStyleClassListener != null) {</b>
+<b class="nc"><i>1182</i>&nbsp;                    item.getStyleClass().removeListener(itemStyleClassListener);</b>
+<i>1183</i>&nbsp;                }
+<i>1184</i>&nbsp;            }
+<i>1185</i>&nbsp;
+<b class="nc"><i>1186</i>&nbsp;            left = null;</b>
+<b class="nc"><i>1187</i>&nbsp;            graphic = null;</b>
+<b class="nc"><i>1188</i>&nbsp;            label = null;</b>
+<b class="nc"><i>1189</i>&nbsp;            right = null;</b>
+<b class="nc"><i>1190</i>&nbsp;        }</b>
+<i>1191</i>&nbsp;
+<i>1192</i>&nbsp;        private void createChildren() {
+<b class="fc"><i>1193</i>&nbsp;            getChildren().clear();</b>
+<i>1194</i>&nbsp;
+<i>1195</i>&nbsp;            // draw background region for hover effects. All content (other
+<i>1196</i>&nbsp;            // than Nodes from NodeMenuItems) are set to be mouseTransparent, so
+<i>1197</i>&nbsp;            // this background also acts as the receiver of user input
+<b class="fc"><i>1198</i>&nbsp;            if (item instanceof CustomMenuItem) {</b>
+<b class="nc"><i>1199</i>&nbsp;                createNodeMenuItemChildren((CustomMenuItem)item);</b>
+<i>1200</i>&nbsp;
+<b class="nc"><i>1201</i>&nbsp;                if (mouseEnteredEventHandler == null) {</b>
+<b class="nc"><i>1202</i>&nbsp;                    mouseEnteredEventHandler = event -&gt; {</b>
+<b class="nc"><i>1203</i>&nbsp;                        requestFocus(); // request Focus on hover</b>
+<b class="nc"><i>1204</i>&nbsp;                    };</b>
+<i>1205</i>&nbsp;                } else {
+<b class="nc"><i>1206</i>&nbsp;                    removeEventHandler(MouseEvent.MOUSE_ENTERED, mouseEnteredEventHandler);</b>
+<i>1207</i>&nbsp;                }
+<b class="nc"><i>1208</i>&nbsp;                addEventHandler(MouseEvent.MOUSE_ENTERED, mouseEnteredEventHandler);</b>
+<i>1209</i>&nbsp;            } else {
+<i>1210</i>&nbsp;                // --- add check / radio to left column
+<b class="fc"><i>1211</i>&nbsp;                Node leftNode = getLeftGraphic(item);</b>
+<b class="fc"><i>1212</i>&nbsp;                if (leftNode != null) {</b>
+<b class="fc"><i>1213</i>&nbsp;                    StackPane leftPane = new StackPane();</b>
+<b class="fc"><i>1214</i>&nbsp;                    leftPane.getStyleClass().add(&quot;left-container&quot;);</b>
+<b class="fc"><i>1215</i>&nbsp;                    leftPane.getChildren().add(leftNode);</b>
+<b class="fc"><i>1216</i>&nbsp;                    left = leftPane;</b>
+<b class="fc"><i>1217</i>&nbsp;                    getChildren().add(left);</b>
+<b class="fc"><i>1218</i>&nbsp;                    left.setNodeOrientation(NodeOrientation.LEFT_TO_RIGHT);</b>
+<i>1219</i>&nbsp;                }
+<i>1220</i>&nbsp;                // -- add graphic to graphic pane
+<b class="fc"><i>1221</i>&nbsp;                if (item.getGraphic() != null) {</b>
+<b class="nc"><i>1222</i>&nbsp;                    Node graphicNode = item.getGraphic();</b>
+<b class="nc"><i>1223</i>&nbsp;                    StackPane graphicPane = new StackPane();</b>
+<b class="nc"><i>1224</i>&nbsp;                    graphicPane.getStyleClass().add(&quot;graphic-container&quot;);</b>
+<b class="nc"><i>1225</i>&nbsp;                    graphicPane.getChildren().add(graphicNode);</b>
+<b class="nc"><i>1226</i>&nbsp;                    graphic = graphicPane;</b>
+<b class="nc"><i>1227</i>&nbsp;                    getChildren().add(graphic);</b>
+<i>1228</i>&nbsp;                }
+<i>1229</i>&nbsp;
+<i>1230</i>&nbsp;                // --- add text to center column
+<b class="fc"><i>1231</i>&nbsp;                label = new MenuLabel(item, this);  // make this a menulabel to handle mnemonics fire()</b>
+<i>1232</i>&nbsp;
+<i>1233</i>&nbsp;                // set up bindings from the MenuItem into the Label
+<b class="fc"><i>1234</i>&nbsp;                ((Label)label).textProperty().bind(item.textProperty());</b>
+<b class="fc"><i>1235</i>&nbsp;                label.styleProperty().bind(item.styleProperty());</b>
+<b class="fc"><i>1236</i>&nbsp;                label.idProperty().bind(item.styleProperty());</b>
+<i>1237</i>&nbsp;
+<i>1238</i>&nbsp;                // we want to ensure that any styleclasses set on the menuitem are applied to the
+<i>1239</i>&nbsp;                // label (so we can style appropriately), but we can&#39;t just do a binding such as this:
+<i>1240</i>&nbsp;                // Bindings.bindContent(label.getStyleClass(), item.getStyleClass());
+<i>1241</i>&nbsp;                // Because that means we overwrite the &#39;label&#39; style class on the Label.
+<i>1242</i>&nbsp;                // What we really want is to ensure all style classes in the MenuItem are _copied_
+<i>1243</i>&nbsp;                // into the label, which is what we do below
+<b class="fc"><i>1244</i>&nbsp;                ListChangeListener&lt;String&gt; itemStyleClassListener = c -&gt; {</b>
+<b class="fc"><i>1245</i>&nbsp;                    while (c.next()) {</b>
+<b class="fc"><i>1246</i>&nbsp;                        label.getStyleClass().removeAll(c.getRemoved());</b>
+<b class="fc"><i>1247</i>&nbsp;                        label.getStyleClass().addAll(c.getAddedSubList());</b>
+<i>1248</i>&nbsp;                    }
+<b class="fc"><i>1249</i>&nbsp;                };</b>
+<b class="fc"><i>1250</i>&nbsp;                item.getStyleClass().addListener(itemStyleClassListener);</b>
+<b class="fc"><i>1251</i>&nbsp;                item.getProperties().put(ITEM_STYLE_CLASS_LISTENER, itemStyleClassListener);</b>
+<i>1252</i>&nbsp;
+<i>1253</i>&nbsp;
+<b class="fc"><i>1254</i>&nbsp;                label.setMouseTransparent(true);</b>
+<b class="fc"><i>1255</i>&nbsp;                getChildren().add(label);</b>
+<i>1256</i>&nbsp;
+<b class="fc"><i>1257</i>&nbsp;                listener.unregisterChangeListeners(focusedProperty());</b>
+<i>1258</i>&nbsp;                // RT-19546 update currentFocusedIndex when MenuItemContainer gets focused.
+<i>1259</i>&nbsp;                // e.g this happens when you press the Right key to open a submenu; the first
+<i>1260</i>&nbsp;                // menuitem is focused.
+<b class="fc"><i>1261</i>&nbsp;                listener.registerChangeListener(focusedProperty(), e -&gt; {</b>
+<b class="fc"><i>1262</i>&nbsp;                    if (isFocused()) {</b>
+<b class="fc"><i>1263</i>&nbsp;                        currentFocusedIndex = itemsContainer.getChildren().indexOf(MenuItemContainer.this);</b>
+<i>1264</i>&nbsp;                    }
+<b class="fc"><i>1265</i>&nbsp;                });</b>
+<i>1266</i>&nbsp;
+<i>1267</i>&nbsp;                // --- draw in right column - this depends on whether we are
+<i>1268</i>&nbsp;                // a Menu or not. A Menu gets an arrow, whereas other MenuItems
+<i>1269</i>&nbsp;                // get the ability to draw an accelerator
+<b class="fc"><i>1270</i>&nbsp;                if (item instanceof Menu) {</b>
+<i>1271</i>&nbsp;                    // --- add arrow / accelerator / mnemonic to right column
+<b class="nc"><i>1272</i>&nbsp;                    Region rightNode = new Region();</b>
+<b class="nc"><i>1273</i>&nbsp;                    rightNode.setMouseTransparent(true);</b>
+<b class="nc"><i>1274</i>&nbsp;                    rightNode.getStyleClass().add(&quot;arrow&quot;);</b>
+<i>1275</i>&nbsp;
+<b class="nc"><i>1276</i>&nbsp;                    StackPane rightPane = new StackPane();</b>
+<b class="nc"><i>1277</i>&nbsp;                    rightPane.setMaxWidth(Math.max(rightNode.prefWidth(-1), 10));</b>
+<b class="nc"><i>1278</i>&nbsp;                    rightPane.setMouseTransparent(true);</b>
+<b class="nc"><i>1279</i>&nbsp;                    rightPane.getStyleClass().add(&quot;right-container&quot;);</b>
+<b class="nc"><i>1280</i>&nbsp;                    rightPane.getChildren().add(rightNode);</b>
+<b class="nc"><i>1281</i>&nbsp;                    right = rightPane;</b>
+<b class="nc"><i>1282</i>&nbsp;                    getChildren().add(rightPane);</b>
+<i>1283</i>&nbsp;
+<b class="nc"><i>1284</i>&nbsp;                    if (mouseEnteredEventHandler == null) {</b>
+<b class="nc"><i>1285</i>&nbsp;                        mouseEnteredEventHandler = event -&gt; {</b>
+<b class="nc"><i>1286</i>&nbsp;                            if (openSubmenu != null &amp;&amp; item != openSubmenu) {</b>
+<i>1287</i>&nbsp;                                // if a submenu of a different menu is already
+<i>1288</i>&nbsp;                                // open then close it (RT-15049)
+<b class="nc"><i>1289</i>&nbsp;                                hideSubmenu();</b>
+<i>1290</i>&nbsp;                            }
+<i>1291</i>&nbsp;
+<b class="nc"><i>1292</i>&nbsp;                            final Menu menu = (Menu) item;</b>
+<b class="nc"><i>1293</i>&nbsp;                            if (menu.isDisable()) return;</b>
+<b class="nc"><i>1294</i>&nbsp;                            selectedBackground = MenuItemContainer.this;</b>
+<b class="nc"><i>1295</i>&nbsp;                            menu.show();</b>
+<b class="nc"><i>1296</i>&nbsp;                            requestFocus();  // request Focus on hover</b>
+<b class="nc"><i>1297</i>&nbsp;                        };</b>
+<i>1298</i>&nbsp;                    } else {
+<b class="nc"><i>1299</i>&nbsp;                        removeEventHandler(MouseEvent.MOUSE_ENTERED, mouseEnteredEventHandler);</b>
+<i>1300</i>&nbsp;                    }
+<i>1301</i>&nbsp;
+<b class="nc"><i>1302</i>&nbsp;                    if (mouseReleasedEventHandler == null) {</b>
+<b class="nc"><i>1303</i>&nbsp;                        mouseReleasedEventHandler = event -&gt; {</b>
+<b class="nc"><i>1304</i>&nbsp;                            item.fire();</b>
+<b class="nc"><i>1305</i>&nbsp;                        };</b>
+<i>1306</i>&nbsp;                    } else {
+<b class="nc"><i>1307</i>&nbsp;                        removeEventHandler(MouseEvent.MOUSE_RELEASED, mouseReleasedEventHandler);</b>
+<i>1308</i>&nbsp;                    }
+<i>1309</i>&nbsp;
+<i>1310</i>&nbsp;                    // show submenu when the menu is hovered over
+<b class="nc"><i>1311</i>&nbsp;                    addEventHandler(MouseEvent.MOUSE_ENTERED, mouseEnteredEventHandler);</b>
+<b class="nc"><i>1312</i>&nbsp;                    addEventHandler(MouseEvent.MOUSE_RELEASED, mouseReleasedEventHandler);</b>
+<b class="nc"><i>1313</i>&nbsp;                } else { // normal MenuItem</b>
+<i>1314</i>&nbsp;                    // remove old listeners
+<b class="fc"><i>1315</i>&nbsp;                    listener.unregisterChangeListeners(item.acceleratorProperty());</b>
+<i>1316</i>&nbsp;
+<i>1317</i>&nbsp;                    // accelerator support
+<b class="fc"><i>1318</i>&nbsp;                    updateAccelerator();</b>
+<i>1319</i>&nbsp;
+<b class="fc"><i>1320</i>&nbsp;                    if (mouseEnteredEventHandler == null) {</b>
+<b class="fc"><i>1321</i>&nbsp;                        mouseEnteredEventHandler = event -&gt; {</b>
+<b class="fc"><i>1322</i>&nbsp;                            if (openSubmenu != null) {</b>
+<b class="nc"><i>1323</i>&nbsp;                                openSubmenu.hide();</b>
+<i>1324</i>&nbsp;                            }
+<b class="fc"><i>1325</i>&nbsp;                            requestFocus();  // request Focus on hover</b>
+<b class="fc"><i>1326</i>&nbsp;                        };</b>
+<i>1327</i>&nbsp;                    } else {
+<b class="nc"><i>1328</i>&nbsp;                        removeEventHandler(MouseEvent.MOUSE_ENTERED, mouseEnteredEventHandler);</b>
+<i>1329</i>&nbsp;                    }
+<i>1330</i>&nbsp;
+<b class="fc"><i>1331</i>&nbsp;                    if (mouseReleasedEventHandler == null) {</b>
+<b class="fc"><i>1332</i>&nbsp;                        mouseReleasedEventHandler = event -&gt; {</b>
+<b class="fc"><i>1333</i>&nbsp;                            doSelect();</b>
+<b class="fc"><i>1334</i>&nbsp;                        };</b>
+<i>1335</i>&nbsp;                    } else {
+<b class="nc"><i>1336</i>&nbsp;                        removeEventHandler(MouseEvent.MOUSE_RELEASED, mouseReleasedEventHandler);</b>
+<i>1337</i>&nbsp;                    }
+<i>1338</i>&nbsp;
+<b class="fc"><i>1339</i>&nbsp;                    addEventHandler(MouseEvent.MOUSE_ENTERED, mouseEnteredEventHandler);</b>
+<b class="fc"><i>1340</i>&nbsp;                    addEventHandler(MouseEvent.MOUSE_RELEASED, mouseReleasedEventHandler);</b>
+<i>1341</i>&nbsp;
+<b class="fc"><i>1342</i>&nbsp;                    listener.registerChangeListener(item.acceleratorProperty(), e -&gt; updateAccelerator());</b>
+<i>1343</i>&nbsp;                }
+<i>1344</i>&nbsp;            }
+<b class="fc"><i>1345</i>&nbsp;        }</b>
+<i>1346</i>&nbsp;
+<i>1347</i>&nbsp;        private void updateAccelerator() {
+<b class="fc"><i>1348</i>&nbsp;            if (item.getAccelerator() != null) {</b>
+<b class="nc"><i>1349</i>&nbsp;                if (right != null) {</b>
+<b class="nc"><i>1350</i>&nbsp;                    getChildren().remove(right);</b>
+<i>1351</i>&nbsp;                }
+<i>1352</i>&nbsp;
+<b class="nc"><i>1353</i>&nbsp;                String text = item.getAccelerator().getDisplayText();</b>
+<b class="nc"><i>1354</i>&nbsp;                right = new Label(text);</b>
+<b class="nc"><i>1355</i>&nbsp;                right.setStyle(item.getStyle());</b>
+<b class="nc"><i>1356</i>&nbsp;                right.getStyleClass().add(&quot;accelerator-text&quot;);</b>
+<b class="nc"><i>1357</i>&nbsp;                getChildren().add(right);</b>
+<b class="nc"><i>1358</i>&nbsp;            } else {</b>
+<b class="fc"><i>1359</i>&nbsp;                getChildren().remove(right);</b>
+<i>1360</i>&nbsp;            }
+<b class="fc"><i>1361</i>&nbsp;        }</b>
+<i>1362</i>&nbsp;
+<i>1363</i>&nbsp;        void doSelect() {
+<i>1364</i>&nbsp;            // don&#39;t do anything on disabled menu items
+<b class="fc"><i>1365</i>&nbsp;            if (item.isDisable()) return;</b>
+<i>1366</i>&nbsp;            // toggle state of check or radio items
+<b class="fc"><i>1367</i>&nbsp;            if (item instanceof CheckMenuItem) {</b>
+<b class="nc"><i>1368</i>&nbsp;                CheckMenuItem checkItem = (CheckMenuItem)item;</b>
+<b class="nc"><i>1369</i>&nbsp;                checkItem.setSelected(!checkItem.isSelected());</b>
+<b class="nc"><i>1370</i>&nbsp;            } else if (item instanceof RadioMenuItem) {</b>
+<i>1371</i>&nbsp;                // this is a radio button. If there is a toggleGroup specified, we
+<i>1372</i>&nbsp;                // simply set selected to true. If no toggleGroup is specified, we
+<i>1373</i>&nbsp;                // toggle the selected state, as there is no assumption of mutual
+<i>1374</i>&nbsp;                // exclusivity when no toggleGroup is set.
+<b class="fc"><i>1375</i>&nbsp;                final RadioMenuItem radioItem = (RadioMenuItem) item;</b>
+<b class="fc"><i>1376</i>&nbsp;                radioItem.setSelected(radioItem.getToggleGroup() != null ? true : !radioItem.isSelected());</b>
+<i>1377</i>&nbsp;            }
+<i>1378</i>&nbsp;
+<i>1379</i>&nbsp;            // fire the action before hiding the menu
+<b class="fc"><i>1380</i>&nbsp;            item.fire();</b>
+<i>1381</i>&nbsp;
+<b class="fc"><i>1382</i>&nbsp;            if (item instanceof CustomMenuItem) {</b>
+<b class="nc"><i>1383</i>&nbsp;                CustomMenuItem customMenuItem = (CustomMenuItem) item;</b>
+<b class="nc"><i>1384</i>&nbsp;                if (customMenuItem.isHideOnClick()) {</b>
+<b class="nc"><i>1385</i>&nbsp;                    hideAllMenus(item);</b>
+<i>1386</i>&nbsp;                }
+<b class="nc"><i>1387</i>&nbsp;            } else {</b>
+<b class="fc"><i>1388</i>&nbsp;                hideAllMenus(item);</b>
+<i>1389</i>&nbsp;            }
+<b class="fc"><i>1390</i>&nbsp;        }</b>
+<i>1391</i>&nbsp;
+<i>1392</i>&nbsp;        private EventHandler&lt;MouseEvent&gt; customMenuItemMouseClickedHandler;
+<i>1393</i>&nbsp;
+<i>1394</i>&nbsp;        private void createNodeMenuItemChildren(final CustomMenuItem item) {
+<b class="nc"><i>1395</i>&nbsp;            Node node = item.getContent();</b>
+<b class="nc"><i>1396</i>&nbsp;            getChildren().add(node);</b>
+<i>1397</i>&nbsp;
+<i>1398</i>&nbsp;            // handle hideOnClick
+<b class="nc"><i>1399</i>&nbsp;            customMenuItemMouseClickedHandler = event -&gt; {</b>
+<b class="nc"><i>1400</i>&nbsp;                if (item == null || item.isDisable()) return;</b>
+<i>1401</i>&nbsp;
+<b class="nc"><i>1402</i>&nbsp;                item.fire();</b>
+<b class="nc"><i>1403</i>&nbsp;                if (item.isHideOnClick()) {</b>
+<b class="nc"><i>1404</i>&nbsp;                    hideAllMenus(item);</b>
+<i>1405</i>&nbsp;                }
+<b class="nc"><i>1406</i>&nbsp;            };</b>
+<b class="nc"><i>1407</i>&nbsp;            node.addEventHandler(MouseEvent.MOUSE_CLICKED, customMenuItemMouseClickedHandler);</b>
+<b class="nc"><i>1408</i>&nbsp;        }</b>
+<i>1409</i>&nbsp;
+<i>1410</i>&nbsp;        @Override protected void layoutChildren() {
+<i>1411</i>&nbsp;            double xOffset;
+<i>1412</i>&nbsp;
+<b class="fc"><i>1413</i>&nbsp;            final double prefHeight = prefHeight(-1);</b>
+<b class="fc"><i>1414</i>&nbsp;            if (left != null) {</b>
+<b class="fc"><i>1415</i>&nbsp;                xOffset = snappedLeftInset();</b>
+<b class="fc"><i>1416</i>&nbsp;                left.resize(left.prefWidth(-1), left.prefHeight(-1));</b>
+<b class="fc"><i>1417</i>&nbsp;                positionInArea(left, xOffset, 0,</b>
+<b class="fc"><i>1418</i>&nbsp;                        maxLeftWidth, prefHeight, 0, HPos.LEFT, VPos.CENTER);</b>
+<i>1419</i>&nbsp;            }
+<b class="fc"><i>1420</i>&nbsp;            if (graphic != null) {</b>
+<b class="nc"><i>1421</i>&nbsp;                xOffset = snappedLeftInset() + maxLeftWidth;</b>
+<b class="nc"><i>1422</i>&nbsp;                graphic.resize(graphic.prefWidth(-1), graphic.prefHeight(-1));</b>
+<b class="nc"><i>1423</i>&nbsp;                positionInArea(graphic, xOffset, 0,</b>
+<b class="nc"><i>1424</i>&nbsp;                        maxGraphicWidth, prefHeight, 0, HPos.LEFT, VPos.CENTER);</b>
+<i>1425</i>&nbsp;            }
+<i>1426</i>&nbsp;
+<b class="fc"><i>1427</i>&nbsp;            if (label != null) {</b>
+<b class="fc"><i>1428</i>&nbsp;                xOffset = snappedLeftInset() + maxLeftWidth + maxGraphicWidth;</b>
+<b class="fc"><i>1429</i>&nbsp;                label.resize(label.prefWidth(-1), label.prefHeight(-1));</b>
+<b class="fc"><i>1430</i>&nbsp;                positionInArea(label, xOffset, 0,</b>
+<b class="fc"><i>1431</i>&nbsp;                        maxLabelWidth, prefHeight, 0, HPos.LEFT, VPos.CENTER);</b>
+<i>1432</i>&nbsp;            }
+<i>1433</i>&nbsp;
+<b class="fc"><i>1434</i>&nbsp;            if (right != null) {</b>
+<b class="nc"><i>1435</i>&nbsp;                xOffset = snappedLeftInset() + maxLeftWidth + maxGraphicWidth + maxLabelWidth;</b>
+<b class="nc"><i>1436</i>&nbsp;                right.resize(right.prefWidth(-1), right.prefHeight(-1));</b>
+<b class="nc"><i>1437</i>&nbsp;                positionInArea(right, xOffset, 0,</b>
+<b class="nc"><i>1438</i>&nbsp;                    maxRightWidth, prefHeight, 0, HPos.RIGHT, VPos.CENTER);</b>
+<i>1439</i>&nbsp;            }
+<i>1440</i>&nbsp;
+<b class="fc"><i>1441</i>&nbsp;            if ( item instanceof CustomMenuItem) {</b>
+<b class="nc"><i>1442</i>&nbsp;                Node n = ((CustomMenuItem) item).getContent();</b>
+<b class="nc"><i>1443</i>&nbsp;                if (item instanceof SeparatorMenuItem) {</b>
+<b class="nc"><i>1444</i>&nbsp;                    double width = prefWidth(-1) - (snappedLeftInset() + maxGraphicWidth + snappedRightInset());</b>
+<b class="nc"><i>1445</i>&nbsp;                    n.resize(width, n.prefHeight(-1));</b>
+<b class="nc"><i>1446</i>&nbsp;                    positionInArea(n, snappedLeftInset() + maxGraphicWidth, 0, prefWidth(-1), prefHeight, 0, HPos.LEFT, VPos.CENTER);</b>
+<b class="nc"><i>1447</i>&nbsp;                } else {</b>
+<b class="nc"><i>1448</i>&nbsp;                    n.resize(n.prefWidth(-1), n.prefHeight(-1));</b>
+<i>1449</i>&nbsp;                    //the node should be left aligned
+<b class="nc"><i>1450</i>&nbsp;                    positionInArea(n, snappedLeftInset(), 0, getWidth(), prefHeight, 0, HPos.LEFT, VPos.CENTER);</b>
+<i>1451</i>&nbsp;                }
+<i>1452</i>&nbsp;            }
+<b class="fc"><i>1453</i>&nbsp;        }</b>
+<i>1454</i>&nbsp;
+<i>1455</i>&nbsp;        @Override protected double computePrefHeight(double width) {
+<b class="fc"><i>1456</i>&nbsp;            double prefHeight = 0;</b>
+<b class="fc"><i>1457</i>&nbsp;            if (item instanceof CustomMenuItem || item instanceof SeparatorMenuItem) {</b>
+<b class="nc"><i>1458</i>&nbsp;                prefHeight = (getChildren().isEmpty()) ? 0 : getChildren().get(0).prefHeight(-1);</b>
+<i>1459</i>&nbsp;            } else {
+<b class="fc"><i>1460</i>&nbsp;                prefHeight = Math.max(prefHeight, (left != null) ? left.prefHeight(-1) : 0);</b>
+<b class="fc"><i>1461</i>&nbsp;                prefHeight = Math.max(prefHeight, (graphic != null) ? graphic.prefHeight(-1) : 0);</b>
+<b class="fc"><i>1462</i>&nbsp;                prefHeight = Math.max(prefHeight, (label != null) ? label.prefHeight(-1) : 0);</b>
+<b class="fc"><i>1463</i>&nbsp;                prefHeight = Math.max(prefHeight, (right != null) ? right.prefHeight(-1) : 0);</b>
+<i>1464</i>&nbsp;            }
+<b class="fc"><i>1465</i>&nbsp;             return snappedTopInset() + prefHeight + snappedBottomInset();</b>
+<i>1466</i>&nbsp;        }
+<i>1467</i>&nbsp;
+<i>1468</i>&nbsp;        @Override protected double computePrefWidth(double height) {
+<b class="fc"><i>1469</i>&nbsp;            double nodeMenuItemWidth = 0;</b>
+<b class="fc"><i>1470</i>&nbsp;            if (item instanceof CustomMenuItem &amp;&amp; !(item instanceof SeparatorMenuItem)) {</b>
+<b class="nc"><i>1471</i>&nbsp;                nodeMenuItemWidth = snappedLeftInset() + ((CustomMenuItem) item).getContent().prefWidth(-1) +</b>
+<b class="nc"><i>1472</i>&nbsp;                        snappedRightInset();</b>
+<i>1473</i>&nbsp;            }
+<b class="fc"><i>1474</i>&nbsp;            return Math.max(nodeMenuItemWidth,</b>
+<b class="fc"><i>1475</i>&nbsp;                    snappedLeftInset() + maxLeftWidth + maxGraphicWidth +</b>
+<b class="fc"><i>1476</i>&nbsp;                    maxLabelWidth + maxRightWidth + snappedRightInset());</b>
+<i>1477</i>&nbsp;        }
+<i>1478</i>&nbsp;
+<i>1479</i>&nbsp;        // Responsible for returning a graphic (if necessary) to position in the
+<i>1480</i>&nbsp;        // left column of the menu. This may be a Node from the MenuItem.graphic
+<i>1481</i>&nbsp;        // property, or it may be a check/radio item if necessary.
+<i>1482</i>&nbsp;        private Node getLeftGraphic(MenuItem item) {
+<b class="fc"><i>1483</i>&nbsp;            if (item instanceof RadioMenuItem) {</b>
+<b class="fc"><i>1484</i>&nbsp;                 final Region _graphic = new Region();</b>
+<b class="fc"><i>1485</i>&nbsp;                _graphic.getStyleClass().add(&quot;radio&quot;);</b>
+<b class="fc"><i>1486</i>&nbsp;                return _graphic;</b>
+<b class="nc"><i>1487</i>&nbsp;            } else if (item instanceof CheckMenuItem) {</b>
+<b class="nc"><i>1488</i>&nbsp;                final StackPane _graphic = new StackPane();</b>
+<b class="nc"><i>1489</i>&nbsp;                _graphic.getStyleClass().add(&quot;check&quot;);</b>
+<b class="nc"><i>1490</i>&nbsp;                return _graphic;</b>
+<i>1491</i>&nbsp;            }
+<i>1492</i>&nbsp;
+<b class="nc"><i>1493</i>&nbsp;            return null;</b>
+<i>1494</i>&nbsp;        }
+<i>1495</i>&nbsp;
+<i>1496</i>&nbsp;        /** {@inheritDoc} */
+<i>1497</i>&nbsp;        @Override
+<i>1498</i>&nbsp;        public Object queryAccessibleAttribute(AccessibleAttribute attribute, Object... parameters) {
+<b class="nc"><i>1499</i>&nbsp;            switch (attribute) {</b>
+<i>1500</i>&nbsp;                case SELECTED:
+<b class="nc"><i>1501</i>&nbsp;                    if (item instanceof CheckMenuItem) {</b>
+<b class="nc"><i>1502</i>&nbsp;                        return ((CheckMenuItem)item).isSelected();</b>
+<i>1503</i>&nbsp;                    }
+<b class="nc"><i>1504</i>&nbsp;                    if (item instanceof RadioMenuItem) {</b>
+<b class="nc"><i>1505</i>&nbsp;                        return ((RadioMenuItem) item).isSelected();</b>
+<i>1506</i>&nbsp;                    }
+<b class="nc"><i>1507</i>&nbsp;                    return false;</b>
+<b class="nc"><i>1508</i>&nbsp;                case ACCELERATOR: return item.getAccelerator();</b>
+<i>1509</i>&nbsp;                case TEXT: {
+<b class="nc"><i>1510</i>&nbsp;                    String title = &quot;&quot;;</b>
+<b class="nc"><i>1511</i>&nbsp;                    if (graphic != null) {</b>
+<b class="nc"><i>1512</i>&nbsp;                        String t = (String)graphic.queryAccessibleAttribute(AccessibleAttribute.TEXT);</b>
+<b class="nc"><i>1513</i>&nbsp;                        if (t != null) title += t;</b>
+<i>1514</i>&nbsp;                    }
+<b class="nc"><i>1515</i>&nbsp;                    final Label label = getLabel();</b>
+<b class="nc"><i>1516</i>&nbsp;                    if (label != null) {</b>
+<b class="nc"><i>1517</i>&nbsp;                        String t = (String)label.queryAccessibleAttribute(AccessibleAttribute.TEXT);</b>
+<b class="nc"><i>1518</i>&nbsp;                        if (t != null) title += t;</b>
+<i>1519</i>&nbsp;                    }
+<b class="nc"><i>1520</i>&nbsp;                    if (item instanceof CustomMenuItem) {</b>
+<b class="nc"><i>1521</i>&nbsp;                        Node content = ((CustomMenuItem) item).getContent();</b>
+<b class="nc"><i>1522</i>&nbsp;                        if (content != null) {</b>
+<b class="nc"><i>1523</i>&nbsp;                            String t = (String)content.queryAccessibleAttribute(AccessibleAttribute.TEXT);</b>
+<b class="nc"><i>1524</i>&nbsp;                            if (t != null) title += t;</b>
+<i>1525</i>&nbsp;                        }
+<i>1526</i>&nbsp;                    }
+<b class="nc"><i>1527</i>&nbsp;                    return title;</b>
+<i>1528</i>&nbsp;                }
+<i>1529</i>&nbsp;                case MNEMONIC: {
+<b class="nc"><i>1530</i>&nbsp;                    final Label label = getLabel();</b>
+<b class="nc"><i>1531</i>&nbsp;                    if (label != null) {</b>
+<b class="nc"><i>1532</i>&nbsp;                        String mnemonic = (String)label.queryAccessibleAttribute(AccessibleAttribute.MNEMONIC);</b>
+<b class="nc"><i>1533</i>&nbsp;                        if (mnemonic != null) return mnemonic;</b>
+<i>1534</i>&nbsp;                    }
+<b class="nc"><i>1535</i>&nbsp;                    return null;</b>
+<i>1536</i>&nbsp;                }
+<b class="nc"><i>1537</i>&nbsp;                case DISABLED: return item.isDisable();</b>
+<i>1538</i>&nbsp;                case SUBMENU:
+<b class="nc"><i>1539</i>&nbsp;                    createSubmenu();</b>
+<i>1540</i>&nbsp;                    // Accessibility might need to see the menu node before the window
+<i>1541</i>&nbsp;                    // is visible (i.e. before the skin is applied).
+<b class="nc"><i>1542</i>&nbsp;                    if (submenu.getSkin() == null) {</b>
+<b class="nc"><i>1543</i>&nbsp;                        submenu.getStyleableNode().applyCss();</b>
+<i>1544</i>&nbsp;                    }
+<b class="nc"><i>1545</i>&nbsp;                    ContextMenuContent cmContent = (ContextMenuContent)submenu.getSkin().getNode();</b>
+<b class="nc"><i>1546</i>&nbsp;                    return cmContent.itemsContainer;</b>
+<b class="nc"><i>1547</i>&nbsp;                default: return super.queryAccessibleAttribute(attribute, parameters);</b>
+<i>1548</i>&nbsp;            }
+<i>1549</i>&nbsp;        }
+<i>1550</i>&nbsp;
+<i>1551</i>&nbsp;        /** {@inheritDoc} */
+<i>1552</i>&nbsp;        @Override
+<i>1553</i>&nbsp;        public void executeAccessibleAction(AccessibleAction action, Object... parameters) {
+<b class="nc"><i>1554</i>&nbsp;            switch (action) {</b>
+<i>1555</i>&nbsp;                case SHOW_MENU:{
+<b class="nc"><i>1556</i>&nbsp;                    if (item instanceof Menu) {</b>
+<b class="nc"><i>1557</i>&nbsp;                        final Menu menuItem = (Menu) item;</b>
+<b class="nc"><i>1558</i>&nbsp;                        if (menuItem.isShowing()) {</b>
+<b class="nc"><i>1559</i>&nbsp;                            menuItem.hide();</b>
+<i>1560</i>&nbsp;                        } else {
+<b class="nc"><i>1561</i>&nbsp;                            menuItem.show();</b>
+<i>1562</i>&nbsp;                        }
+<b class="nc"><i>1563</i>&nbsp;                    }</b>
+<i>1564</i>&nbsp;                    break;
+<i>1565</i>&nbsp;                }
+<i>1566</i>&nbsp;                case FIRE:
+<b class="nc"><i>1567</i>&nbsp;                    doSelect();</b>
+<b class="nc"><i>1568</i>&nbsp;                    break;</b>
+<b class="nc"><i>1569</i>&nbsp;                default: super.executeAccessibleAction(action);</b>
+<i>1570</i>&nbsp;            }
+<b class="nc"><i>1571</i>&nbsp;        }</b>
+<i>1572</i>&nbsp;    }
+<i>1573</i>&nbsp;
+<i>1574</i>&nbsp;
+<b class="fc"><i>1575</i>&nbsp;    private static final PseudoClass SELECTED_PSEUDOCLASS_STATE =</b>
+<b class="fc"><i>1576</i>&nbsp;            PseudoClass.getPseudoClass(&quot;selected&quot;);</b>
+<b class="fc"><i>1577</i>&nbsp;    private static final PseudoClass DISABLED_PSEUDOCLASS_STATE =</b>
+<b class="fc"><i>1578</i>&nbsp;            PseudoClass.getPseudoClass(&quot;disabled&quot;);</b>
+<b class="fc"><i>1579</i>&nbsp;    private static final PseudoClass CHECKED_PSEUDOCLASS_STATE =</b>
+<b class="fc"><i>1580</i>&nbsp;            PseudoClass.getPseudoClass(&quot;checked&quot;);</b>
+<i>1581</i>&nbsp;
+<i>1582</i>&nbsp;    private class MenuLabel extends Label {
+<i>1583</i>&nbsp;
+<b class="fc"><i>1584</i>&nbsp;        public MenuLabel(MenuItem item, MenuItemContainer mic) {</b>
+<b class="fc"><i>1585</i>&nbsp;            super(item.getText());</b>
+<b class="fc"><i>1586</i>&nbsp;            setMnemonicParsing(item.isMnemonicParsing());</b>
+<b class="fc"><i>1587</i>&nbsp;            setLabelFor(mic);</b>
+<b class="fc"><i>1588</i>&nbsp;        }</b>
+<i>1589</i>&nbsp;    }
+<i>1590</i>&nbsp;
+<i>1591</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2017-12-04 21:49</div>
+</div>
+</body>
+</html>

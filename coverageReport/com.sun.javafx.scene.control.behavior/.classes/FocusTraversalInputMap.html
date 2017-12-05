@@ -1,0 +1,239 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: FocusTraversalInputMap</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.javafx.scene.control.behavior</a> ]
+</div>
+
+<h1>Coverage Summary for Class: FocusTraversalInputMap (com.sun.javafx.scene.control.behavior)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">FocusTraversalInputMap</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    58.3%
+  </span>
+  <span class="absValue">
+    (14/ 24)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    37.5%
+  </span>
+  <span class="absValue">
+    (15/ 40)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright (c) 2015, 2016, Oracle and/or its affiliates. All rights reserved.
+<i>3</i>&nbsp; * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+<i>4</i>&nbsp; *
+<i>5</i>&nbsp; *
+<i>6</i>&nbsp; *
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; *
+<i>11</i>&nbsp; *
+<i>12</i>&nbsp; *
+<i>13</i>&nbsp; *
+<i>14</i>&nbsp; *
+<i>15</i>&nbsp; *
+<i>16</i>&nbsp; *
+<i>17</i>&nbsp; *
+<i>18</i>&nbsp; *
+<i>19</i>&nbsp; *
+<i>20</i>&nbsp; *
+<i>21</i>&nbsp; *
+<i>22</i>&nbsp; *
+<i>23</i>&nbsp; *
+<i>24</i>&nbsp; */
+<i>25</i>&nbsp;package com.sun.javafx.scene.control.behavior;
+<i>26</i>&nbsp;
+<i>27</i>&nbsp;import com.sun.javafx.scene.NodeHelper;
+<i>28</i>&nbsp;import com.sun.javafx.scene.traversal.Direction;
+<i>29</i>&nbsp;import javafx.event.EventTarget;
+<i>30</i>&nbsp;import javafx.scene.Node;
+<i>31</i>&nbsp;import com.sun.javafx.scene.control.inputmap.InputMap;
+<i>32</i>&nbsp;import com.sun.javafx.scene.control.inputmap.KeyBinding;
+<i>33</i>&nbsp;import javafx.scene.input.KeyEvent;
+<i>34</i>&nbsp;
+<i>35</i>&nbsp;import java.util.ArrayList;
+<i>36</i>&nbsp;import java.util.List;
+<i>37</i>&nbsp;
+<i>38</i>&nbsp;import static com.sun.javafx.scene.control.inputmap.InputMap.*;
+<i>39</i>&nbsp;import static javafx.scene.input.KeyCode.DOWN;
+<i>40</i>&nbsp;import static javafx.scene.input.KeyCode.LEFT;
+<i>41</i>&nbsp;import static javafx.scene.input.KeyCode.RIGHT;
+<i>42</i>&nbsp;import static javafx.scene.input.KeyCode.TAB;
+<i>43</i>&nbsp;import static javafx.scene.input.KeyCode.UP;
+<i>44</i>&nbsp;
+<i>45</i>&nbsp;public class FocusTraversalInputMap&lt;N extends Node&gt; {
+<i>46</i>&nbsp;
+<b class="fc"><i>47</i>&nbsp;    private static final List&lt;InputMap.Mapping&lt;?&gt;&gt; mappings = new ArrayList&lt;&gt;();</b>
+<i>48</i>&nbsp;    static {
+<b class="fc"><i>49</i>&nbsp;        mappings.add(new KeyMapping(UP, e -&gt; traverseUp(e)));</b>
+<b class="fc"><i>50</i>&nbsp;        mappings.add(new KeyMapping(DOWN, e -&gt; traverseDown(e)));</b>
+<b class="fc"><i>51</i>&nbsp;        mappings.add(new KeyMapping(LEFT, e -&gt; traverseLeft(e)));</b>
+<b class="fc"><i>52</i>&nbsp;        mappings.add(new KeyMapping(RIGHT, e -&gt; traverseRight(e)));</b>
+<b class="fc"><i>53</i>&nbsp;        mappings.add(new KeyMapping(TAB, e -&gt; traverseNext(e)));</b>
+<b class="fc"><i>54</i>&nbsp;        mappings.add(new KeyMapping(new KeyBinding(TAB).shift(), e -&gt; traversePrevious(e)));</b>
+<i>55</i>&nbsp;
+<b class="fc"><i>56</i>&nbsp;        mappings.add(new KeyMapping(new KeyBinding(UP).shift().alt().ctrl(), e -&gt; traverseUp(e)));</b>
+<b class="fc"><i>57</i>&nbsp;        mappings.add(new KeyMapping(new KeyBinding(DOWN).shift().alt().ctrl(), e -&gt; traverseDown(e)));</b>
+<b class="fc"><i>58</i>&nbsp;        mappings.add(new KeyMapping(new KeyBinding(LEFT).shift().alt().ctrl(), e -&gt; traverseLeft(e)));</b>
+<b class="fc"><i>59</i>&nbsp;        mappings.add(new KeyMapping(new KeyBinding(RIGHT).shift().alt().ctrl(), e -&gt; traverseRight(e)));</b>
+<b class="fc"><i>60</i>&nbsp;        mappings.add(new KeyMapping(new KeyBinding(TAB).shift().alt().ctrl(), e -&gt; traverseNext(e)));</b>
+<b class="fc"><i>61</i>&nbsp;        mappings.add(new KeyMapping(new KeyBinding(TAB).alt().ctrl(), e -&gt; traversePrevious(e)));</b>
+<b class="fc"><i>62</i>&nbsp;    }</b>
+<i>63</i>&nbsp;
+<b class="nc"><i>64</i>&nbsp;    private FocusTraversalInputMap() {</b>
+<i>65</i>&nbsp;        // no-op, just forcing use of static method
+<b class="nc"><i>66</i>&nbsp;    }</b>
+<i>67</i>&nbsp;
+<i>68</i>&nbsp;    public static InputMap.Mapping&lt;?&gt;[] getFocusTraversalMappings() {
+<b class="fc"><i>69</i>&nbsp;        return mappings.toArray(new InputMap.Mapping[mappings.size()]);</b>
+<i>70</i>&nbsp;    }
+<i>71</i>&nbsp;
+<i>72</i>&nbsp;    public static &lt;N extends Node&gt; InputMap&lt;N&gt; createInputMap(N node) {
+<b class="nc"><i>73</i>&nbsp;        InputMap&lt;N&gt; inputMap = new InputMap&lt;&gt;(node);</b>
+<b class="nc"><i>74</i>&nbsp;        inputMap.getMappings().addAll(getFocusTraversalMappings());</b>
+<b class="nc"><i>75</i>&nbsp;        return inputMap;</b>
+<i>76</i>&nbsp;    }
+<i>77</i>&nbsp;
+<i>78</i>&nbsp;
+<i>79</i>&nbsp;
+<i>80</i>&nbsp;    /***************************************************************************
+<i>81</i>&nbsp;     * Focus Traversal methods                                                 *
+<i>82</i>&nbsp;     **************************************************************************/
+<i>83</i>&nbsp;
+<i>84</i>&nbsp;    /**
+<i>85</i>&nbsp;     * Called by any of the BehaviorBase traverse methods to actually effect a
+<i>86</i>&nbsp;     * traversal of the focus. The default behavior of this method is to simply
+<i>87</i>&nbsp;     * traverse on the given node, passing the given direction. A
+<i>88</i>&nbsp;     * subclass may override this method.
+<i>89</i>&nbsp;     *
+<i>90</i>&nbsp;     * @param node The node to traverse on
+<i>91</i>&nbsp;     * @param dir The direction to traverse
+<i>92</i>&nbsp;     */
+<i>93</i>&nbsp;    public static void traverse(final Node node, final Direction dir) {
+<b class="nc"><i>94</i>&nbsp;        if (node == null) {</b>
+<b class="nc"><i>95</i>&nbsp;            throw new IllegalArgumentException(&quot;Attempting to traverse on a null Node. &quot; +</b>
+<i>96</i>&nbsp;                    &quot;Most probably a KeyEvent has been fired with a null target specified.&quot;);
+<i>97</i>&nbsp;        }
+<b class="nc"><i>98</i>&nbsp;        NodeHelper.traverse(node, dir);</b>
+<b class="nc"><i>99</i>&nbsp;    }</b>
+<i>100</i>&nbsp;
+<i>101</i>&nbsp;    /**
+<i>102</i>&nbsp;     * Calls the focus traversal engine and indicates that traversal should
+<i>103</i>&nbsp;     * go the next focusTraversable Node above the current one.
+<i>104</i>&nbsp;     */
+<i>105</i>&nbsp;    public static final void traverseUp(KeyEvent e) {
+<b class="nc"><i>106</i>&nbsp;        traverse(getNode(e), com.sun.javafx.scene.traversal.Direction.UP);</b>
+<b class="nc"><i>107</i>&nbsp;    }</b>
+<i>108</i>&nbsp;
+<i>109</i>&nbsp;    /**
+<i>110</i>&nbsp;     * Calls the focus traversal engine and indicates that traversal should
+<i>111</i>&nbsp;     * go the next focusTraversable Node below the current one.
+<i>112</i>&nbsp;     */
+<i>113</i>&nbsp;    public static final void traverseDown(KeyEvent e) {
+<b class="nc"><i>114</i>&nbsp;        traverse(getNode(e), com.sun.javafx.scene.traversal.Direction.DOWN);</b>
+<b class="nc"><i>115</i>&nbsp;    }</b>
+<i>116</i>&nbsp;
+<i>117</i>&nbsp;    /**
+<i>118</i>&nbsp;     * Calls the focus traversal engine and indicates that traversal should
+<i>119</i>&nbsp;     * go the next focusTraversable Node left of the current one.
+<i>120</i>&nbsp;     */
+<i>121</i>&nbsp;    public static final void traverseLeft(KeyEvent e) {
+<b class="nc"><i>122</i>&nbsp;        traverse(getNode(e), com.sun.javafx.scene.traversal.Direction.LEFT);</b>
+<b class="nc"><i>123</i>&nbsp;    }</b>
+<i>124</i>&nbsp;
+<i>125</i>&nbsp;    /**
+<i>126</i>&nbsp;     * Calls the focus traversal engine and indicates that traversal should
+<i>127</i>&nbsp;     * go the next focusTraversable Node right of the current one.
+<i>128</i>&nbsp;     */
+<i>129</i>&nbsp;    public static final void traverseRight(KeyEvent e) {
+<b class="nc"><i>130</i>&nbsp;        traverse(getNode(e), com.sun.javafx.scene.traversal.Direction.RIGHT);</b>
+<b class="nc"><i>131</i>&nbsp;    }</b>
+<i>132</i>&nbsp;
+<i>133</i>&nbsp;    /**
+<i>134</i>&nbsp;     * Calls the focus traversal engine and indicates that traversal should
+<i>135</i>&nbsp;     * go the next focusTraversable Node in the focus traversal cycle.
+<i>136</i>&nbsp;     */
+<i>137</i>&nbsp;    public static final void traverseNext(KeyEvent e) {
+<b class="nc"><i>138</i>&nbsp;        traverse(getNode(e), com.sun.javafx.scene.traversal.Direction.NEXT);</b>
+<b class="nc"><i>139</i>&nbsp;    }</b>
+<i>140</i>&nbsp;
+<i>141</i>&nbsp;    /**
+<i>142</i>&nbsp;     * Calls the focus traversal engine and indicates that traversal should
+<i>143</i>&nbsp;     * go the previous focusTraversable Node in the focus traversal cycle.
+<i>144</i>&nbsp;     */
+<i>145</i>&nbsp;    public static final void traversePrevious(KeyEvent e) {
+<b class="nc"><i>146</i>&nbsp;        traverse(getNode(e), com.sun.javafx.scene.traversal.Direction.PREVIOUS);</b>
+<b class="nc"><i>147</i>&nbsp;    }</b>
+<i>148</i>&nbsp;
+<i>149</i>&nbsp;    private static Node getNode(KeyEvent e) {
+<b class="nc"><i>150</i>&nbsp;        EventTarget target = e.getTarget();</b>
+<b class="nc"><i>151</i>&nbsp;        if (target instanceof Node) {</b>
+<b class="nc"><i>152</i>&nbsp;            return (Node) target;</b>
+<i>153</i>&nbsp;        }
+<b class="nc"><i>154</i>&nbsp;        return null;</b>
+<i>155</i>&nbsp;    }
+<i>156</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2017-12-04 21:49</div>
+</div>
+</body>
+</html>

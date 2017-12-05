@@ -1,0 +1,471 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: WinApplication</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.glass.ui.win</a> ]
+</div>
+
+<h1>Coverage Summary for Class: WinApplication (com.sun.glass.ui.win)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">WinApplication</td>
+<td class="coverageStat">
+  <span class="percent">
+    63.4%
+  </span>
+  <span class="absValue">
+    (26/ 41)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    50%
+  </span>
+  <span class="absValue">
+    (63/ 126)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">WinApplication$1</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (2/ 2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    66.7%
+  </span>
+  <span class="absValue">
+    (8/ 12)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    65.1%
+  </span>
+  <span class="absValue">
+    (28/ 43)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    51.4%
+  </span>
+  <span class="absValue">
+    (71/ 138)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright (c) 2010, 2017, Oracle and/or its affiliates. All rights reserved.
+<i>3</i>&nbsp; * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+<i>4</i>&nbsp; *
+<i>5</i>&nbsp; *
+<i>6</i>&nbsp; *
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; *
+<i>11</i>&nbsp; *
+<i>12</i>&nbsp; *
+<i>13</i>&nbsp; *
+<i>14</i>&nbsp; *
+<i>15</i>&nbsp; *
+<i>16</i>&nbsp; *
+<i>17</i>&nbsp; *
+<i>18</i>&nbsp; *
+<i>19</i>&nbsp; *
+<i>20</i>&nbsp; *
+<i>21</i>&nbsp; *
+<i>22</i>&nbsp; *
+<i>23</i>&nbsp; *
+<i>24</i>&nbsp; */
+<i>25</i>&nbsp;package com.sun.glass.ui.win;
+<i>26</i>&nbsp;
+<i>27</i>&nbsp;import com.sun.glass.ui.*;
+<i>28</i>&nbsp;import com.sun.glass.ui.CommonDialogs.ExtensionFilter;
+<i>29</i>&nbsp;import com.sun.glass.ui.CommonDialogs.FileChooserResult;
+<i>30</i>&nbsp;import com.sun.glass.utils.NativeLibLoader;
+<i>31</i>&nbsp;import com.sun.prism.impl.PrismSettings;
+<i>32</i>&nbsp;import com.sun.javafx.tk.Toolkit;
+<i>33</i>&nbsp;
+<i>34</i>&nbsp;import java.io.File;
+<i>35</i>&nbsp;import java.nio.ByteBuffer;
+<i>36</i>&nbsp;import java.nio.IntBuffer;
+<i>37</i>&nbsp;import java.security.AccessController;
+<i>38</i>&nbsp;import java.security.PrivilegedAction;
+<i>39</i>&nbsp;
+<b class="fc"><i>40</i>&nbsp;final class WinApplication extends Application implements InvokeLaterDispatcher.InvokeLaterSubmitter {</b>
+<i>41</i>&nbsp;    static float   overrideUIScale;
+<i>42</i>&nbsp;
+<i>43</i>&nbsp;    private static boolean getBoolean(String propname, boolean defval, String description) {
+<b class="nc"><i>44</i>&nbsp;        String str = System.getProperty(propname);</b>
+<b class="nc"><i>45</i>&nbsp;        if (str == null) {</b>
+<b class="nc"><i>46</i>&nbsp;            str = System.getenv(propname);</b>
+<i>47</i>&nbsp;        }
+<b class="nc"><i>48</i>&nbsp;        if (str == null) {</b>
+<b class="nc"><i>49</i>&nbsp;            return defval;</b>
+<i>50</i>&nbsp;        }
+<b class="nc"><i>51</i>&nbsp;        Boolean ret = Boolean.parseBoolean(str);</b>
+<b class="nc"><i>52</i>&nbsp;        if (PrismSettings.verbose) {</b>
+<b class="nc"><i>53</i>&nbsp;            System.out.println((ret ? &quot;&quot; : &quot;not &quot;)+description);</b>
+<i>54</i>&nbsp;        }
+<b class="nc"><i>55</i>&nbsp;        return ret;</b>
+<i>56</i>&nbsp;    }
+<i>57</i>&nbsp;
+<i>58</i>&nbsp;    private static float getFloat(String propname, float defval, String description) {
+<b class="fc"><i>59</i>&nbsp;        String str = System.getProperty(propname);</b>
+<b class="fc"><i>60</i>&nbsp;        if (str == null) {</b>
+<b class="fc"><i>61</i>&nbsp;            str = System.getenv(propname);</b>
+<i>62</i>&nbsp;        }
+<b class="fc"><i>63</i>&nbsp;        if (str == null) {</b>
+<b class="fc"><i>64</i>&nbsp;            return defval;</b>
+<i>65</i>&nbsp;        }
+<b class="nc"><i>66</i>&nbsp;        str = str.trim();</b>
+<i>67</i>&nbsp;        float val;
+<b class="nc"><i>68</i>&nbsp;        if (str.endsWith(&quot;%&quot;)) {</b>
+<b class="nc"><i>69</i>&nbsp;            val = Integer.parseInt(str.substring(0, str.length()-1)) / 100.0f;</b>
+<b class="nc"><i>70</i>&nbsp;        } else if (str.endsWith(&quot;DPI&quot;) || str.endsWith(&quot;dpi&quot;)) {</b>
+<b class="nc"><i>71</i>&nbsp;            val = Integer.parseInt(str.substring(0, str.length()-3)) / 96.0f;</b>
+<i>72</i>&nbsp;        } else {
+<b class="nc"><i>73</i>&nbsp;            val = Float.parseFloat(str);</b>
+<i>74</i>&nbsp;        }
+<b class="nc"><i>75</i>&nbsp;        if (PrismSettings.verbose) {</b>
+<b class="nc"><i>76</i>&nbsp;            System.out.println(description+val);</b>
+<i>77</i>&nbsp;        }
+<b class="nc"><i>78</i>&nbsp;        return val;</b>
+<i>79</i>&nbsp;    }
+<i>80</i>&nbsp;
+<i>81</i>&nbsp;    private static native void initIDs(float overrideUIScale);
+<i>82</i>&nbsp;    static {
+<b class="fc"><i>83</i>&nbsp;        AccessController.doPrivileged(new PrivilegedAction&lt;Void&gt;() {</b>
+<i>84</i>&nbsp;            public Void run() {
+<b class="fc"><i>85</i>&nbsp;                verbose = Boolean.getBoolean(&quot;javafx.verbose&quot;);</b>
+<b class="fc"><i>86</i>&nbsp;                if (PrismSettings.allowHiDPIScaling) {</b>
+<b class="fc"><i>87</i>&nbsp;                    overrideUIScale = getFloat(&quot;glass.win.uiScale&quot;, -1.0f, &quot;Forcing UI scaling factor: &quot;);</b>
+<i>88</i>&nbsp;                    // We only parse these if verbose, to inform the user...
+<b class="fc"><i>89</i>&nbsp;                    if (PrismSettings.verbose) {</b>
+<b class="nc"><i>90</i>&nbsp;                        getFloat(&quot;glass.win.renderScale&quot;, -1.0f,</b>
+<i>91</i>&nbsp;                                 &quot;(No longer supported) Rendering scaling factor: &quot;);
+<b class="nc"><i>92</i>&nbsp;                        getFloat(&quot;glass.win.minHiDPI&quot;, 1.5f,</b>
+<i>93</i>&nbsp;                                 &quot;(No longer supported) UI scaling threshold: &quot;);
+<b class="nc"><i>94</i>&nbsp;                        getBoolean(&quot;glass.win.forceIntegerRenderScale&quot;, true,</b>
+<i>95</i>&nbsp;                                   &quot;(No longer supported) force integer rendering scale&quot;);
+<i>96</i>&nbsp;                    }
+<i>97</i>&nbsp;                } else {
+<b class="nc"><i>98</i>&nbsp;                    overrideUIScale = 1.0f;</b>
+<i>99</i>&nbsp;                }
+<i>100</i>&nbsp;                // This loading of msvcp140.dll and vcruntime140.dll (VS2017) is required on Windows platforms
+<b class="fc"><i>101</i>&nbsp;                Toolkit.loadMSWindowsLibraries();</b>
+<b class="fc"><i>102</i>&nbsp;                Application.loadNativeLibrary();</b>
+<b class="fc"><i>103</i>&nbsp;                return null;</b>
+<i>104</i>&nbsp;            }
+<i>105</i>&nbsp;        });
+<b class="fc"><i>106</i>&nbsp;        initIDs(overrideUIScale);</b>
+<b class="fc"><i>107</i>&nbsp;    }</b>
+<i>108</i>&nbsp;
+<i>109</i>&nbsp;    private final InvokeLaterDispatcher invokeLaterDispatcher;
+<b class="fc"><i>110</i>&nbsp;    WinApplication() {</b>
+<i>111</i>&nbsp;        // Embedded in SWT, with shared event thread
+<b class="fc"><i>112</i>&nbsp;        boolean isEventThread = AccessController</b>
+<b class="fc"><i>113</i>&nbsp;                .doPrivileged((PrivilegedAction&lt;Boolean&gt;) () -&gt; Boolean.getBoolean(&quot;javafx.embed.isEventThread&quot;));</b>
+<b class="fc"><i>114</i>&nbsp;        if (!isEventThread) {</b>
+<b class="fc"><i>115</i>&nbsp;            invokeLaterDispatcher = new InvokeLaterDispatcher(this);</b>
+<b class="fc"><i>116</i>&nbsp;            invokeLaterDispatcher.start();</b>
+<i>117</i>&nbsp;        } else {
+<b class="nc"><i>118</i>&nbsp;            invokeLaterDispatcher = null;</b>
+<i>119</i>&nbsp;        }
+<b class="fc"><i>120</i>&nbsp;    }</b>
+<i>121</i>&nbsp;
+<i>122</i>&nbsp;    private static boolean verbose;
+<i>123</i>&nbsp;
+<i>124</i>&nbsp;    // returng toolkit window HWND
+<i>125</i>&nbsp;    private native long _init(int awarenessRequested);
+<i>126</i>&nbsp;    private native void _setClassLoader(ClassLoader classLoader);
+<i>127</i>&nbsp;    private native void _runLoop(Runnable launchable);
+<i>128</i>&nbsp;    private native void _terminateLoop();
+<i>129</i>&nbsp;
+<i>130</i>&nbsp;    private static final int Process_DPI_Unaware            = 0;
+<i>131</i>&nbsp;    private static final int Process_System_DPI_Aware       = 1;
+<i>132</i>&nbsp;    private static final int Process_Per_Monitor_DPI_Aware  = 2;
+<i>133</i>&nbsp;
+<i>134</i>&nbsp;    private static int getDesiredAwarenesslevel() {
+<b class="fc"><i>135</i>&nbsp;        if (!PrismSettings.allowHiDPIScaling) {</b>
+<b class="nc"><i>136</i>&nbsp;            return Process_DPI_Unaware;</b>
+<i>137</i>&nbsp;        }
+<b class="fc"><i>138</i>&nbsp;        String awareRequested = AccessController</b>
+<b class="fc"><i>139</i>&nbsp;            .doPrivileged((PrivilegedAction&lt;String&gt;) () -&gt;</b>
+<b class="fc"><i>140</i>&nbsp;                          System.getProperty(&quot;javafx.glass.winDPIawareness&quot;));</b>
+<b class="fc"><i>141</i>&nbsp;        if (awareRequested != null) {</b>
+<b class="nc"><i>142</i>&nbsp;            awareRequested = awareRequested.toLowerCase();</b>
+<b class="nc"><i>143</i>&nbsp;            if (awareRequested.equals(&quot;aware&quot;)) {</b>
+<b class="nc"><i>144</i>&nbsp;                return Process_System_DPI_Aware;</b>
+<b class="nc"><i>145</i>&nbsp;            } else if (awareRequested.equals(&quot;permonitor&quot;)) {</b>
+<b class="nc"><i>146</i>&nbsp;                return Process_Per_Monitor_DPI_Aware;</b>
+<i>147</i>&nbsp;            } else {
+<b class="nc"><i>148</i>&nbsp;                if (!awareRequested.equals(&quot;unaware&quot;)) {</b>
+<b class="nc"><i>149</i>&nbsp;                    System.err.println(&quot;unrecognized DPI awareness request, defaulting to unaware: &quot;+awareRequested);</b>
+<i>150</i>&nbsp;                }
+<b class="nc"><i>151</i>&nbsp;                return Process_DPI_Unaware;</b>
+<i>152</i>&nbsp;            }
+<i>153</i>&nbsp;        }
+<b class="fc"><i>154</i>&nbsp;        return Process_Per_Monitor_DPI_Aware;</b>
+<i>155</i>&nbsp;    }
+<i>156</i>&nbsp;
+<i>157</i>&nbsp;    @Override
+<i>158</i>&nbsp;    protected void runLoop(final Runnable launchable) {
+<b class="fc"><i>159</i>&nbsp;        boolean isEventThread = AccessController</b>
+<b class="fc"><i>160</i>&nbsp;            .doPrivileged((PrivilegedAction&lt;Boolean&gt;) () -&gt; Boolean.getBoolean(&quot;javafx.embed.isEventThread&quot;));</b>
+<b class="fc"><i>161</i>&nbsp;        int awareness = getDesiredAwarenesslevel();</b>
+<i>162</i>&nbsp;
+<b class="fc"><i>163</i>&nbsp;        ClassLoader classLoader = WinApplication.class.getClassLoader();</b>
+<b class="fc"><i>164</i>&nbsp;        _setClassLoader(classLoader);</b>
+<i>165</i>&nbsp;
+<b class="fc"><i>166</i>&nbsp;        if (isEventThread) {</b>
+<b class="nc"><i>167</i>&nbsp;            _init(awareness);</b>
+<b class="nc"><i>168</i>&nbsp;            setEventThread(Thread.currentThread());</b>
+<b class="nc"><i>169</i>&nbsp;            launchable.run();</b>
+<b class="nc"><i>170</i>&nbsp;            return;</b>
+<i>171</i>&nbsp;        }
+<b class="fc"><i>172</i>&nbsp;        final Thread toolkitThread =</b>
+<b class="fc"><i>173</i>&nbsp;            AccessController.doPrivileged((PrivilegedAction&lt;Thread&gt;) () -&gt; new Thread(() -&gt; {</b>
+<b class="fc"><i>174</i>&nbsp;                _init(awareness);</b>
+<b class="fc"><i>175</i>&nbsp;                _runLoop(launchable);</b>
+<b class="fc"><i>176</i>&nbsp;            }, &quot;WindowsNativeRunloopThread&quot;));</b>
+<b class="fc"><i>177</i>&nbsp;        setEventThread(toolkitThread);</b>
+<b class="fc"><i>178</i>&nbsp;        toolkitThread.start();</b>
+<b class="fc"><i>179</i>&nbsp;    }</b>
+<i>180</i>&nbsp;
+<i>181</i>&nbsp;    @Override protected void finishTerminating() {
+<b class="fc"><i>182</i>&nbsp;        final Thread toolkitThread = getEventThread();</b>
+<b class="fc"><i>183</i>&nbsp;        if (toolkitThread != null) {</b>
+<b class="fc"><i>184</i>&nbsp;            _terminateLoop();</b>
+<b class="fc"><i>185</i>&nbsp;            setEventThread(null);</b>
+<i>186</i>&nbsp;        }
+<b class="fc"><i>187</i>&nbsp;        super.finishTerminating();</b>
+<b class="fc"><i>188</i>&nbsp;    }</b>
+<i>189</i>&nbsp;
+<i>190</i>&nbsp;    @Override public boolean shouldUpdateWindow() {
+<b class="fc"><i>191</i>&nbsp;        return true;</b>
+<i>192</i>&nbsp;    }
+<i>193</i>&nbsp;
+<i>194</i>&nbsp;    native private Object _enterNestedEventLoopImpl();
+<i>195</i>&nbsp;    native private void _leaveNestedEventLoopImpl(Object retValue);
+<i>196</i>&nbsp;
+<i>197</i>&nbsp;    @Override protected Object _enterNestedEventLoop() {
+<b class="nc"><i>198</i>&nbsp;        if (invokeLaterDispatcher != null) {</b>
+<b class="nc"><i>199</i>&nbsp;            invokeLaterDispatcher.notifyEnteringNestedEventLoop();</b>
+<i>200</i>&nbsp;        }
+<i>201</i>&nbsp;        try {
+<b class="nc"><i>202</i>&nbsp;            return _enterNestedEventLoopImpl();</b>
+<i>203</i>&nbsp;        } finally {
+<b class="nc"><i>204</i>&nbsp;            if (invokeLaterDispatcher != null) {</b>
+<b class="nc"><i>205</i>&nbsp;                invokeLaterDispatcher.notifyLeftNestedEventLoop();</b>
+<i>206</i>&nbsp;            }
+<i>207</i>&nbsp;        }
+<i>208</i>&nbsp;    }
+<i>209</i>&nbsp;
+<i>210</i>&nbsp;    @Override protected void _leaveNestedEventLoop(Object retValue) {
+<b class="nc"><i>211</i>&nbsp;        if (invokeLaterDispatcher != null) {</b>
+<b class="nc"><i>212</i>&nbsp;            invokeLaterDispatcher.notifyLeavingNestedEventLoop();</b>
+<i>213</i>&nbsp;        }
+<b class="nc"><i>214</i>&nbsp;        _leaveNestedEventLoopImpl(retValue);</b>
+<b class="nc"><i>215</i>&nbsp;    }</b>
+<i>216</i>&nbsp;
+<i>217</i>&nbsp;    // FACTORY METHODS
+<i>218</i>&nbsp;
+<i>219</i>&nbsp;    @Override public Window createWindow(Window owner, Screen screen, int styleMask) {
+<b class="fc"><i>220</i>&nbsp;        return new WinWindow(owner, screen, styleMask);</b>
+<i>221</i>&nbsp;    }
+<i>222</i>&nbsp;
+<i>223</i>&nbsp;    @Override public Window createWindow(long parent) {
+<b class="nc"><i>224</i>&nbsp;        return new WinChildWindow(parent);</b>
+<i>225</i>&nbsp;    }
+<i>226</i>&nbsp;
+<i>227</i>&nbsp;    @Override public View createView() {
+<b class="fc"><i>228</i>&nbsp;        return new WinView();</b>
+<i>229</i>&nbsp;    }
+<i>230</i>&nbsp;
+<i>231</i>&nbsp;    @Override public Cursor createCursor(int type) {
+<b class="fc"><i>232</i>&nbsp;        return new WinCursor(type);</b>
+<i>233</i>&nbsp;    }
+<i>234</i>&nbsp;
+<i>235</i>&nbsp;    @Override public Cursor createCursor(int x, int y, Pixels pixels) {
+<b class="nc"><i>236</i>&nbsp;        return new WinCursor(x, y, pixels);</b>
+<i>237</i>&nbsp;    }
+<i>238</i>&nbsp;
+<i>239</i>&nbsp;    @Override protected void staticCursor_setVisible(boolean visible) {
+<b class="nc"><i>240</i>&nbsp;        WinCursor.setVisible_impl(visible);</b>
+<b class="nc"><i>241</i>&nbsp;    }</b>
+<i>242</i>&nbsp;
+<i>243</i>&nbsp;    @Override protected Size staticCursor_getBestSize(int width, int height) {
+<b class="nc"><i>244</i>&nbsp;        return WinCursor.getBestSize_impl(width, height);</b>
+<i>245</i>&nbsp;    }
+<i>246</i>&nbsp;
+<i>247</i>&nbsp;    @Override public Pixels createPixels(int width, int height, ByteBuffer data) {
+<b class="nc"><i>248</i>&nbsp;        return new WinPixels(width, height, data);</b>
+<i>249</i>&nbsp;    }
+<i>250</i>&nbsp;
+<i>251</i>&nbsp;    @Override public Pixels createPixels(int width, int height, IntBuffer data) {
+<b class="nc"><i>252</i>&nbsp;        return new WinPixels(width, height, data);</b>
+<i>253</i>&nbsp;    }
+<i>254</i>&nbsp;
+<i>255</i>&nbsp;    @Override
+<i>256</i>&nbsp;    public Pixels createPixels(int width, int height, IntBuffer data, float scalex, float scaley) {
+<b class="fc"><i>257</i>&nbsp;        return new WinPixels(width, height, data, scalex, scaley);</b>
+<i>258</i>&nbsp;    }
+<i>259</i>&nbsp;
+<i>260</i>&nbsp;    @Override protected int staticPixels_getNativeFormat() {
+<b class="fc"><i>261</i>&nbsp;        return WinPixels.getNativeFormat_impl();</b>
+<i>262</i>&nbsp;    }
+<i>263</i>&nbsp;
+<i>264</i>&nbsp;    @Override public Robot createRobot() {
+<b class="nc"><i>265</i>&nbsp;        return new WinRobot();</b>
+<i>266</i>&nbsp;    }
+<i>267</i>&nbsp;
+<i>268</i>&nbsp;    @Override protected double staticScreen_getVideoRefreshPeriod() {
+<b class="fc"><i>269</i>&nbsp;        return 0.0;     // indicate millisecond resolution</b>
+<i>270</i>&nbsp;    }
+<i>271</i>&nbsp;
+<i>272</i>&nbsp;    @Override native protected Screen[] staticScreen_getScreens();
+<i>273</i>&nbsp;
+<i>274</i>&nbsp;    @Override public Timer createTimer(Runnable runnable) {
+<b class="fc"><i>275</i>&nbsp;        return new WinTimer(runnable);</b>
+<i>276</i>&nbsp;    }
+<i>277</i>&nbsp;
+<i>278</i>&nbsp;    @Override protected int staticTimer_getMinPeriod() {
+<b class="fc"><i>279</i>&nbsp;        return WinTimer.getMinPeriod_impl();</b>
+<i>280</i>&nbsp;    }
+<i>281</i>&nbsp;
+<i>282</i>&nbsp;    @Override protected int staticTimer_getMaxPeriod() {
+<b class="fc"><i>283</i>&nbsp;        return WinTimer.getMaxPeriod_impl();</b>
+<i>284</i>&nbsp;    }
+<i>285</i>&nbsp;
+<i>286</i>&nbsp;    @Override public Accessible createAccessible() {
+<b class="nc"><i>287</i>&nbsp;        return new WinAccessible();</b>
+<i>288</i>&nbsp;    }
+<i>289</i>&nbsp;
+<i>290</i>&nbsp;    @Override protected FileChooserResult staticCommonDialogs_showFileChooser(Window owner, String folder, String filename, String title, int type,
+<i>291</i>&nbsp;                                             boolean multipleMode, ExtensionFilter[] extensionFilters, int defaultFilterIndex) {
+<b class="nc"><i>292</i>&nbsp;        if (invokeLaterDispatcher != null) {</b>
+<b class="nc"><i>293</i>&nbsp;            invokeLaterDispatcher.notifyEnteringNestedEventLoop();</b>
+<i>294</i>&nbsp;        }
+<b class="nc"><i>295</i>&nbsp;        return WinCommonDialogs.showFileChooser_impl(owner, folder, filename, title, type, multipleMode, extensionFilters, defaultFilterIndex);</b>
+<i>296</i>&nbsp;    }
+<i>297</i>&nbsp;
+<i>298</i>&nbsp;    @Override protected File staticCommonDialogs_showFolderChooser(Window owner, String folder, String title) {
+<b class="nc"><i>299</i>&nbsp;        if (invokeLaterDispatcher != null) {</b>
+<b class="nc"><i>300</i>&nbsp;            invokeLaterDispatcher.notifyEnteringNestedEventLoop();</b>
+<i>301</i>&nbsp;        }
+<b class="nc"><i>302</i>&nbsp;        return WinCommonDialogs.showFolderChooser_impl(owner, folder, title);</b>
+<i>303</i>&nbsp;    }
+<i>304</i>&nbsp;
+<i>305</i>&nbsp;    @Override protected long staticView_getMultiClickTime() {
+<b class="fc"><i>306</i>&nbsp;        return WinView.getMultiClickTime_impl();</b>
+<i>307</i>&nbsp;    }
+<i>308</i>&nbsp;
+<i>309</i>&nbsp;    @Override protected int staticView_getMultiClickMaxX() {
+<b class="fc"><i>310</i>&nbsp;        return WinView.getMultiClickMaxX_impl();</b>
+<i>311</i>&nbsp;    }
+<i>312</i>&nbsp;
+<i>313</i>&nbsp;    @Override protected int staticView_getMultiClickMaxY() {
+<b class="fc"><i>314</i>&nbsp;        return WinView.getMultiClickMaxY_impl();</b>
+<i>315</i>&nbsp;    }
+<i>316</i>&nbsp;
+<i>317</i>&nbsp;    @Override native protected void _invokeAndWait(Runnable runnable);
+<i>318</i>&nbsp;
+<i>319</i>&nbsp;    native private void _submitForLaterInvocation(Runnable r);
+<i>320</i>&nbsp;    // InvokeLaterDispatcher.InvokeLaterSubmitter
+<i>321</i>&nbsp;    @Override public void submitForLaterInvocation(Runnable r) {
+<b class="fc"><i>322</i>&nbsp;        _submitForLaterInvocation(r);</b>
+<b class="fc"><i>323</i>&nbsp;    }</b>
+<i>324</i>&nbsp;
+<i>325</i>&nbsp;    @Override protected void _invokeLater(Runnable runnable) {
+<b class="fc"><i>326</i>&nbsp;        if (invokeLaterDispatcher != null) {</b>
+<b class="fc"><i>327</i>&nbsp;            invokeLaterDispatcher.invokeLater(runnable);</b>
+<i>328</i>&nbsp;        } else {
+<b class="nc"><i>329</i>&nbsp;            submitForLaterInvocation(runnable);</b>
+<i>330</i>&nbsp;        }
+<b class="fc"><i>331</i>&nbsp;    }</b>
+<i>332</i>&nbsp;
+<i>333</i>&nbsp;    private native String _getHighContrastTheme();
+<i>334</i>&nbsp;    @Override public String getHighContrastTheme() {
+<b class="fc"><i>335</i>&nbsp;        checkEventThread();</b>
+<b class="fc"><i>336</i>&nbsp;        return _getHighContrastTheme();</b>
+<i>337</i>&nbsp;    }
+<i>338</i>&nbsp;
+<i>339</i>&nbsp;    @Override
+<i>340</i>&nbsp;    protected boolean _supportsInputMethods() {
+<b class="nc"><i>341</i>&nbsp;        return true;</b>
+<i>342</i>&nbsp;    }
+<i>343</i>&nbsp;
+<i>344</i>&nbsp;    @Override
+<i>345</i>&nbsp;    protected boolean _supportsTransparentWindows() {
+<b class="fc"><i>346</i>&nbsp;        return true;</b>
+<i>347</i>&nbsp;    }
+<i>348</i>&nbsp;
+<i>349</i>&nbsp;    @Override native protected boolean _supportsUnifiedWindows();
+<i>350</i>&nbsp;
+<i>351</i>&nbsp;    public String getDataDirectory() {
+<b class="nc"><i>352</i>&nbsp;        checkEventThread();</b>
+<b class="nc"><i>353</i>&nbsp;        String baseDirectory = AccessController.doPrivileged((PrivilegedAction&lt;String&gt;) () -&gt; System.getenv(&quot;APPDATA&quot;));</b>
+<b class="nc"><i>354</i>&nbsp;        if (baseDirectory == null || baseDirectory.length() == 0) {</b>
+<b class="nc"><i>355</i>&nbsp;            return super.getDataDirectory();</b>
+<i>356</i>&nbsp;        }
+<b class="nc"><i>357</i>&nbsp;        return baseDirectory + File.separator + name + File.separator;</b>
+<i>358</i>&nbsp;    }
+<i>359</i>&nbsp;
+<i>360</i>&nbsp;    @Override
+<i>361</i>&nbsp;    protected native int _getKeyCodeForChar(char c);
+<i>362</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2017-12-04 21:49</div>
+</div>
+</body>
+</html>

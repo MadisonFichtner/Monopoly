@@ -1,0 +1,1287 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: Shape</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.javafx.geom</a> ]
+</div>
+
+<h1>Coverage Summary for Class: Shape (com.sun.javafx.geom)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">Shape</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    16.7%
+  </span>
+  <span class="absValue">
+    (3/ 18)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    9.3%
+  </span>
+  <span class="absValue">
+    (33/ 353)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright (c) 1996, 2013, Oracle and/or its affiliates. All rights reserved.
+<i>3</i>&nbsp; * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+<i>4</i>&nbsp; *
+<i>5</i>&nbsp; *
+<i>6</i>&nbsp; *
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; *
+<i>11</i>&nbsp; *
+<i>12</i>&nbsp; *
+<i>13</i>&nbsp; *
+<i>14</i>&nbsp; *
+<i>15</i>&nbsp; *
+<i>16</i>&nbsp; *
+<i>17</i>&nbsp; *
+<i>18</i>&nbsp; *
+<i>19</i>&nbsp; *
+<i>20</i>&nbsp; *
+<i>21</i>&nbsp; *
+<i>22</i>&nbsp; *
+<i>23</i>&nbsp; *
+<i>24</i>&nbsp; */
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;package com.sun.javafx.geom;
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;import com.sun.javafx.geom.transform.BaseTransform;
+<i>29</i>&nbsp;
+<i>30</i>&nbsp;/**
+<i>31</i>&nbsp; * The &lt;code&gt;Shape&lt;/code&gt; class provides definitions for objects
+<i>32</i>&nbsp; * that represent some form of geometric shape. The &lt;code&gt;Shape&lt;/code&gt;
+<i>33</i>&nbsp; * is described by a {@link PathIterator} object, which can express the
+<i>34</i>&nbsp; * outline of the &lt;code&gt;Shape&lt;/code&gt; as well as a rule for determining
+<i>35</i>&nbsp; * how the outline divides the 2D plane into interior and exterior
+<i>36</i>&nbsp; * points. Each &lt;code&gt;Shape&lt;/code&gt; object provides callbacks to get the
+<i>37</i>&nbsp; * bounding box of the geometry, determine whether points or
+<i>38</i>&nbsp; * rectangles lie partly or entirely within the interior
+<i>39</i>&nbsp; * of the &lt;code&gt;Shape&lt;/code&gt;, and retrieve a &lt;code&gt;PathIterator&lt;/code&gt;
+<i>40</i>&nbsp; * object that describes the trajectory path of the &lt;code&gt;Shape&lt;/code&gt;
+<i>41</i>&nbsp; * outline.
+<i>42</i>&nbsp; * &lt;p&gt;
+<i>43</i>&nbsp; * &lt;b&gt;Definition of insideness:&lt;/b&gt;
+<i>44</i>&nbsp; * A point is considered to lie inside a
+<i>45</i>&nbsp; * &lt;code&gt;Shape&lt;/code&gt; if and only if:
+<i>46</i>&nbsp; * &lt;ul&gt;
+<i>47</i>&nbsp; * &lt;li&gt; it lies completely
+<i>48</i>&nbsp; * inside the&lt;code&gt;Shape&lt;/code&gt; boundary &lt;i&gt;or&lt;/i&gt;
+<i>49</i>&nbsp; * &lt;li&gt;
+<i>50</i>&nbsp; * it lies exactly on the &lt;code&gt;Shape&lt;/code&gt; boundary &lt;i&gt;and&lt;/i&gt; the
+<i>51</i>&nbsp; * space immediately adjacent to the
+<i>52</i>&nbsp; * point in the increasing &lt;code&gt;X&lt;/code&gt; direction is
+<i>53</i>&nbsp; * entirely inside the boundary &lt;i&gt;or&lt;/i&gt;
+<i>54</i>&nbsp; * &lt;li&gt;
+<i>55</i>&nbsp; * it lies exactly on a horizontal boundary segment &lt;b&gt;and&lt;/b&gt; the
+<i>56</i>&nbsp; * space immediately adjacent to the point in the
+<i>57</i>&nbsp; * increasing &lt;code&gt;Y&lt;/code&gt; direction is inside the boundary.
+<i>58</i>&nbsp; * &lt;/ul&gt;
+<i>59</i>&nbsp; * &lt;p&gt;The &lt;code&gt;contains&lt;/code&gt; and &lt;code&gt;intersects&lt;/code&gt; methods
+<i>60</i>&nbsp; * consider the interior of a &lt;code&gt;Shape&lt;/code&gt; to be the area it
+<i>61</i>&nbsp; * encloses as if it were filled.  This means that these methods
+<i>62</i>&nbsp; * consider
+<i>63</i>&nbsp; * unclosed shapes to be implicitly closed for the purpose of
+<i>64</i>&nbsp; * determining if a shape contains or intersects a rectangle or if a
+<i>65</i>&nbsp; * shape contains a point.
+<i>66</i>&nbsp; *
+<i>67</i>&nbsp; * @see com.sun.javafx.geom.PathIterator
+<i>68</i>&nbsp; * @see com.sun.javafx.geom.transform.BaseTransform
+<i>69</i>&nbsp; * @see com.sun.javafx.geom.FlatteningPathIterator
+<i>70</i>&nbsp; * @see com.sun.javafx.geom.Path2D
+<i>71</i>&nbsp; *
+<i>72</i>&nbsp; * @version 1.19 06/24/98
+<i>73</i>&nbsp; */
+<b class="fc"><i>74</i>&nbsp;public abstract class Shape {</b>
+<i>75</i>&nbsp;    /**
+<i>76</i>&nbsp;     * Note that there is no guarantee that the returned
+<i>77</i>&nbsp;     * {@link RectBounds} is the smallest bounding box that encloses
+<i>78</i>&nbsp;     * the &lt;code&gt;Shape&lt;/code&gt;, only that the &lt;code&gt;Shape&lt;/code&gt; lies
+<i>79</i>&nbsp;     * entirely within the indicated &lt;code&gt;RectBounds&lt;/code&gt;.
+<i>80</i>&nbsp;     * @return an instance of &lt;code&gt;RectBounds&lt;/code&gt;
+<i>81</i>&nbsp;     */
+<i>82</i>&nbsp;    public abstract RectBounds getBounds();
+<i>83</i>&nbsp;
+<i>84</i>&nbsp;    /**
+<i>85</i>&nbsp;     * Tests if the specified coordinates are inside the boundary of the
+<i>86</i>&nbsp;     * &lt;code&gt;Shape&lt;/code&gt;.
+<i>87</i>&nbsp;     * @param x the specified X coordinate to be tested
+<i>88</i>&nbsp;     * @param y the specified Y coordinate to be tested
+<i>89</i>&nbsp;     * @return &lt;code&gt;true&lt;/code&gt; if the specified coordinates are inside
+<i>90</i>&nbsp;     *         the &lt;code&gt;Shape&lt;/code&gt; boundary; &lt;code&gt;false&lt;/code&gt;
+<i>91</i>&nbsp;     *         otherwise.
+<i>92</i>&nbsp;     */
+<i>93</i>&nbsp;    public abstract boolean contains(float x, float y);
+<i>94</i>&nbsp;
+<i>95</i>&nbsp;    /**
+<i>96</i>&nbsp;     * Tests if a specified {@link Point2D} is inside the boundary
+<i>97</i>&nbsp;     * of the &lt;code&gt;Shape&lt;/code&gt;.
+<i>98</i>&nbsp;     * @param p the specified &lt;code&gt;Point2D&lt;/code&gt; to be tested
+<i>99</i>&nbsp;     * @return &lt;code&gt;true&lt;/code&gt; if the specified &lt;code&gt;Point2D&lt;/code&gt; is
+<i>100</i>&nbsp;     *          inside the boundary of the &lt;code&gt;Shape&lt;/code&gt;;
+<i>101</i>&nbsp;     *      &lt;code&gt;false&lt;/code&gt; otherwise.
+<i>102</i>&nbsp;     */
+<i>103</i>&nbsp;    public boolean contains(Point2D p) {
+<b class="nc"><i>104</i>&nbsp;        return contains(p.x, p.y);</b>
+<i>105</i>&nbsp;    }
+<i>106</i>&nbsp;
+<i>107</i>&nbsp;    /**
+<i>108</i>&nbsp;     * Tests if the interior of the &lt;code&gt;Shape&lt;/code&gt; intersects the
+<i>109</i>&nbsp;     * interior of a specified rectangular area.
+<i>110</i>&nbsp;     * The rectangular area is considered to intersect the &lt;code&gt;Shape&lt;/code&gt;
+<i>111</i>&nbsp;     * if any point is contained in both the interior of the
+<i>112</i>&nbsp;     * &lt;code&gt;Shape&lt;/code&gt; and the specified rectangular area.
+<i>113</i>&nbsp;     * &lt;p&gt;
+<i>114</i>&nbsp;     * The {@code Shape.intersects()} method allows a {@code Shape}
+<i>115</i>&nbsp;     * implementation to conservatively return {@code true} when:
+<i>116</i>&nbsp;     * &lt;ul&gt;
+<i>117</i>&nbsp;     * &lt;li&gt;
+<i>118</i>&nbsp;     * there is a high probability that the rectangular area and the
+<i>119</i>&nbsp;     * &lt;code&gt;Shape&lt;/code&gt; intersect, but
+<i>120</i>&nbsp;     * &lt;li&gt;
+<i>121</i>&nbsp;     * the calculations to accurately determine this intersection
+<i>122</i>&nbsp;     * are prohibitively expensive.
+<i>123</i>&nbsp;     * &lt;/ul&gt;
+<i>124</i>&nbsp;     * This means that for some {@code Shapes} this method might
+<i>125</i>&nbsp;     * return {@code true} even though the rectangular area does not
+<i>126</i>&nbsp;     * intersect the {@code Shape}.
+<i>127</i>&nbsp;     * The {@link com.sun.javafx.geom.Area Area} class performs
+<i>128</i>&nbsp;     * more accurate computations of geometric intersection than most
+<i>129</i>&nbsp;     * {@code Shape} objects and therefore can be used if a more precise
+<i>130</i>&nbsp;     * answer is required.
+<i>131</i>&nbsp;     *
+<i>132</i>&nbsp;     * @param x the X coordinate of the upper-left corner
+<i>133</i>&nbsp;     *          of the specified rectangular area
+<i>134</i>&nbsp;     * @param y the Y coordinate of the upper-left corner
+<i>135</i>&nbsp;     *          of the specified rectangular area
+<i>136</i>&nbsp;     * @param w the width of the specified rectangular area
+<i>137</i>&nbsp;     * @param h the height of the specified rectangular area
+<i>138</i>&nbsp;     * @return &lt;code&gt;true&lt;/code&gt; if the interior of the &lt;code&gt;Shape&lt;/code&gt; and
+<i>139</i>&nbsp;     *      the interior of the rectangular area intersect, or are
+<i>140</i>&nbsp;     *      both highly likely to intersect and intersection calculations
+<i>141</i>&nbsp;     *      would be too expensive to perform; &lt;code&gt;false&lt;/code&gt; otherwise.
+<i>142</i>&nbsp;     */
+<i>143</i>&nbsp;    public abstract boolean intersects(float x, float y, float w, float h);
+<i>144</i>&nbsp;
+<i>145</i>&nbsp;    /**
+<i>146</i>&nbsp;     * Tests if the interior of the &lt;code&gt;Shape&lt;/code&gt; intersects the
+<i>147</i>&nbsp;     * interior of a specified rectangular area.
+<i>148</i>&nbsp;     * The rectangular area is considered to intersect the &lt;code&gt;Shape&lt;/code&gt;
+<i>149</i>&nbsp;     * if any point is contained in both the interior of the
+<i>150</i>&nbsp;     * &lt;code&gt;Shape&lt;/code&gt; and the specified rectangular area.
+<i>151</i>&nbsp;     * &lt;p&gt;
+<i>152</i>&nbsp;     * The {@code Shape.intersects()} method allows a {@code Shape}
+<i>153</i>&nbsp;     * implementation to conservatively return {@code true} when:
+<i>154</i>&nbsp;     * &lt;ul&gt;
+<i>155</i>&nbsp;     * &lt;li&gt;
+<i>156</i>&nbsp;     * there is a high probability that the rectangular area and the
+<i>157</i>&nbsp;     * &lt;code&gt;Shape&lt;/code&gt; intersect, but
+<i>158</i>&nbsp;     * &lt;li&gt;
+<i>159</i>&nbsp;     * the calculations to accurately determine this intersection
+<i>160</i>&nbsp;     * are prohibitively expensive.
+<i>161</i>&nbsp;     * &lt;/ul&gt;
+<i>162</i>&nbsp;     * This means that for some {@code Shapes} this method might
+<i>163</i>&nbsp;     * return {@code true} even though the rectangular area does not
+<i>164</i>&nbsp;     * intersect the {@code Shape}.
+<i>165</i>&nbsp;     * The {@link com.sun.javafx.geom.Area Area} class performs
+<i>166</i>&nbsp;     * more accurate computations of geometric intersection than most
+<i>167</i>&nbsp;     * {@code Shape} objects and therefore can be used if a more precise
+<i>168</i>&nbsp;     * answer is required.
+<i>169</i>&nbsp;     *
+<i>170</i>&nbsp;     * @param x the X coordinate of the upper-left corner
+<i>171</i>&nbsp;     *          of the specified rectangular area
+<i>172</i>&nbsp;     * @param y the Y coordinate of the upper-left corner
+<i>173</i>&nbsp;     *          of the specified rectangular area
+<i>174</i>&nbsp;     * @param w the width of the specified rectangular area
+<i>175</i>&nbsp;     * @param h the height of the specified rectangular area
+<i>176</i>&nbsp;     * @return &lt;code&gt;true&lt;/code&gt; if the interior of the &lt;code&gt;Shape&lt;/code&gt; and
+<i>177</i>&nbsp;     *      the interior of the rectangular area intersect, or are
+<i>178</i>&nbsp;     *      both highly likely to intersect and intersection calculations
+<i>179</i>&nbsp;     *      would be too expensive to perform; &lt;code&gt;false&lt;/code&gt; otherwise.
+<i>180</i>&nbsp;     */
+<i>181</i>&nbsp;    public boolean intersects(RectBounds r) {
+<b class="nc"><i>182</i>&nbsp;        float x = r.getMinX();</b>
+<b class="nc"><i>183</i>&nbsp;        float y = r.getMinY();</b>
+<b class="nc"><i>184</i>&nbsp;        float w = r.getMaxX() - x;</b>
+<b class="nc"><i>185</i>&nbsp;        float h = r.getMaxY() - y;</b>
+<b class="nc"><i>186</i>&nbsp;        return intersects(x, y, w, h);</b>
+<i>187</i>&nbsp;    }
+<i>188</i>&nbsp;
+<i>189</i>&nbsp;    /**
+<i>190</i>&nbsp;     * Tests if the interior of the &lt;code&gt;Shape&lt;/code&gt; entirely contains
+<i>191</i>&nbsp;     * the specified rectangular area.  All coordinates that lie inside
+<i>192</i>&nbsp;     * the rectangular area must lie within the &lt;code&gt;Shape&lt;/code&gt; for the
+<i>193</i>&nbsp;     * entire rectanglar area to be considered contained within the
+<i>194</i>&nbsp;     * &lt;code&gt;Shape&lt;/code&gt;.
+<i>195</i>&nbsp;     * &lt;p&gt;
+<i>196</i>&nbsp;     * The {@code Shape.contains()} method allows a {@code Shape}
+<i>197</i>&nbsp;     * implementation to conservatively return {@code false} when:
+<i>198</i>&nbsp;     * &lt;ul&gt;
+<i>199</i>&nbsp;     * &lt;li&gt;
+<i>200</i>&nbsp;     * the &lt;code&gt;intersect&lt;/code&gt; method returns &lt;code&gt;true&lt;/code&gt; and
+<i>201</i>&nbsp;     * &lt;li&gt;
+<i>202</i>&nbsp;     * the calculations to determine whether or not the
+<i>203</i>&nbsp;     * &lt;code&gt;Shape&lt;/code&gt; entirely contains the rectangular area are
+<i>204</i>&nbsp;     * prohibitively expensive.
+<i>205</i>&nbsp;     * &lt;/ul&gt;
+<i>206</i>&nbsp;     * This means that for some {@code Shapes} this method might
+<i>207</i>&nbsp;     * return {@code false} even though the {@code Shape} contains
+<i>208</i>&nbsp;     * the rectangular area.
+<i>209</i>&nbsp;     * The {@link com.sun.javafx.geom.Area Area} class performs
+<i>210</i>&nbsp;     * more accurate geometric computations than most
+<i>211</i>&nbsp;     * {@code Shape} objects and therefore can be used if a more precise
+<i>212</i>&nbsp;     * answer is required.
+<i>213</i>&nbsp;     *
+<i>214</i>&nbsp;     * @param x the X coordinate of the upper-left corner
+<i>215</i>&nbsp;     *          of the specified rectangular area
+<i>216</i>&nbsp;     * @param y the Y coordinate of the upper-left corner
+<i>217</i>&nbsp;     *          of the specified rectangular area
+<i>218</i>&nbsp;     * @param w the width of the specified rectangular area
+<i>219</i>&nbsp;     * @param h the height of the specified rectangular area
+<i>220</i>&nbsp;     * @return &lt;code&gt;true&lt;/code&gt; if the interior of the &lt;code&gt;Shape&lt;/code&gt;
+<i>221</i>&nbsp;     *      entirely contains the specified rectangular area;
+<i>222</i>&nbsp;     *      &lt;code&gt;false&lt;/code&gt; otherwise or, if the &lt;code&gt;Shape&lt;/code&gt;
+<i>223</i>&nbsp;     *      contains the rectangular area and the
+<i>224</i>&nbsp;     *      &lt;code&gt;intersects&lt;/code&gt; method returns &lt;code&gt;true&lt;/code&gt;
+<i>225</i>&nbsp;     *      and the containment calculations would be too expensive to
+<i>226</i>&nbsp;     *      perform.
+<i>227</i>&nbsp;     * @see #intersects
+<i>228</i>&nbsp;     */
+<i>229</i>&nbsp;    public abstract boolean contains(float x, float y, float w, float h);
+<i>230</i>&nbsp;
+<i>231</i>&nbsp;    /**
+<i>232</i>&nbsp;     * Tests if the interior of the &lt;code&gt;Shape&lt;/code&gt; entirely contains the
+<i>233</i>&nbsp;     * specified &lt;code&gt;RectBounds&lt;/code&gt;.
+<i>234</i>&nbsp;     * The {@code Shape.contains()} method allows a {@code Shape}
+<i>235</i>&nbsp;     * implementation to conservatively return {@code false} when:
+<i>236</i>&nbsp;     * &lt;ul&gt;
+<i>237</i>&nbsp;     * &lt;li&gt;
+<i>238</i>&nbsp;     * the &lt;code&gt;intersect&lt;/code&gt; method returns &lt;code&gt;true&lt;/code&gt; and
+<i>239</i>&nbsp;     * &lt;li&gt;
+<i>240</i>&nbsp;     * the calculations to determine whether or not the
+<i>241</i>&nbsp;     * &lt;code&gt;Shape&lt;/code&gt; entirely contains the &lt;code&gt;RectBounds&lt;/code&gt;
+<i>242</i>&nbsp;     * are prohibitively expensive.
+<i>243</i>&nbsp;     * &lt;/ul&gt;
+<i>244</i>&nbsp;     * This means that for some {@code Shapes} this method might
+<i>245</i>&nbsp;     * return {@code false} even though the {@code Shape} contains
+<i>246</i>&nbsp;     * the {@code RectBounds}.
+<i>247</i>&nbsp;     * The {@link com.sun.javafx.geom.Area Area} class performs
+<i>248</i>&nbsp;     * more accurate geometric computations than most
+<i>249</i>&nbsp;     * {@code Shape} objects and therefore can be used if a more precise
+<i>250</i>&nbsp;     * answer is required.
+<i>251</i>&nbsp;     *
+<i>252</i>&nbsp;     * @param r The specified &lt;code&gt;RectBounds&lt;/code&gt;
+<i>253</i>&nbsp;     * @return &lt;code&gt;true&lt;/code&gt; if the interior of the &lt;code&gt;Shape&lt;/code&gt;
+<i>254</i>&nbsp;     *          entirely contains the &lt;code&gt;RectBounds&lt;/code&gt;;
+<i>255</i>&nbsp;     *          &lt;code&gt;false&lt;/code&gt; otherwise or, if the &lt;code&gt;Shape&lt;/code&gt;
+<i>256</i>&nbsp;     *          contains the &lt;code&gt;RectBounds&lt;/code&gt; and the
+<i>257</i>&nbsp;     *          &lt;code&gt;intersects&lt;/code&gt; method returns &lt;code&gt;true&lt;/code&gt;
+<i>258</i>&nbsp;     *          and the containment calculations would be too expensive to
+<i>259</i>&nbsp;     *          perform.
+<i>260</i>&nbsp;     * @see #contains(float, float, float, float)
+<i>261</i>&nbsp;     */
+<i>262</i>&nbsp;    public boolean contains(RectBounds r) {
+<b class="nc"><i>263</i>&nbsp;        float x = r.getMinX();</b>
+<b class="nc"><i>264</i>&nbsp;        float y = r.getMinY();</b>
+<b class="nc"><i>265</i>&nbsp;        float w = r.getMaxX() - x;</b>
+<b class="nc"><i>266</i>&nbsp;        float h = r.getMaxY() - y;</b>
+<b class="nc"><i>267</i>&nbsp;        return contains(x, y, w, h);</b>
+<i>268</i>&nbsp;    }
+<i>269</i>&nbsp;
+<i>270</i>&nbsp;    /**
+<i>271</i>&nbsp;     * Returns an iterator object that iterates along the
+<i>272</i>&nbsp;     * &lt;code&gt;Shape&lt;/code&gt; boundary and provides access to the geometry of the
+<i>273</i>&nbsp;     * &lt;code&gt;Shape&lt;/code&gt; outline.  If an optional {@link BaseTransform}
+<i>274</i>&nbsp;     * is specified, the coordinates returned in the iteration are
+<i>275</i>&nbsp;     * transformed accordingly.
+<i>276</i>&nbsp;     * &lt;p&gt;
+<i>277</i>&nbsp;     * Each call to this method returns a fresh &lt;code&gt;PathIterator&lt;/code&gt;
+<i>278</i>&nbsp;     * object that traverses the geometry of the &lt;code&gt;Shape&lt;/code&gt; object
+<i>279</i>&nbsp;     * independently from any other &lt;code&gt;PathIterator&lt;/code&gt; objects in use
+<i>280</i>&nbsp;     * at the same time.
+<i>281</i>&nbsp;     * &lt;p&gt;
+<i>282</i>&nbsp;     * It is recommended, but not guaranteed, that objects
+<i>283</i>&nbsp;     * implementing the &lt;code&gt;Shape&lt;/code&gt; interface isolate iterations
+<i>284</i>&nbsp;     * that are in process from any changes that might occur to the original
+<i>285</i>&nbsp;     * object&#39;s geometry during such iterations.
+<i>286</i>&nbsp;     *
+<i>287</i>&nbsp;     * @param tx an optional &lt;code&gt;BaseTransform&lt;/code&gt; to be applied to the
+<i>288</i>&nbsp;     *      coordinates as they are returned in the iteration, or
+<i>289</i>&nbsp;     *      &lt;code&gt;null&lt;/code&gt; if untransformed coordinates are desired
+<i>290</i>&nbsp;     * @return a new &lt;code&gt;PathIterator&lt;/code&gt; object, which independently
+<i>291</i>&nbsp;     *      traverses the geometry of the &lt;code&gt;Shape&lt;/code&gt;.
+<i>292</i>&nbsp;     */
+<i>293</i>&nbsp;    public abstract PathIterator getPathIterator(BaseTransform tx);
+<i>294</i>&nbsp;
+<i>295</i>&nbsp;    /**
+<i>296</i>&nbsp;     * Returns an iterator object that iterates along the &lt;code&gt;Shape&lt;/code&gt;
+<i>297</i>&nbsp;     * boundary and provides access to a flattened view of the
+<i>298</i>&nbsp;     * &lt;code&gt;Shape&lt;/code&gt; outline geometry.
+<i>299</i>&nbsp;     * &lt;p&gt;
+<i>300</i>&nbsp;     * Only SEG_MOVETO, SEG_LINETO, and SEG_CLOSE point types are
+<i>301</i>&nbsp;     * returned by the iterator.
+<i>302</i>&nbsp;     * &lt;p&gt;
+<i>303</i>&nbsp;     * If an optional &lt;code&gt;BaseTransform&lt;/code&gt; is specified,
+<i>304</i>&nbsp;     * the coordinates returned in the iteration are transformed
+<i>305</i>&nbsp;     * accordingly.
+<i>306</i>&nbsp;     * &lt;p&gt;
+<i>307</i>&nbsp;     * The amount of subdivision of the curved segments is controlled
+<i>308</i>&nbsp;     * by the &lt;code&gt;flatness&lt;/code&gt; parameter, which specifies the
+<i>309</i>&nbsp;     * maximum distance that any point on the unflattened transformed
+<i>310</i>&nbsp;     * curve can deviate from the returned flattened path segments.
+<i>311</i>&nbsp;     * Note that a limit on the accuracy of the flattened path might be
+<i>312</i>&nbsp;     * silently imposed, causing very small flattening parameters to be
+<i>313</i>&nbsp;     * treated as larger values.  This limit, if there is one, is
+<i>314</i>&nbsp;     * defined by the particular implementation that is used.
+<i>315</i>&nbsp;     * &lt;p&gt;
+<i>316</i>&nbsp;     * Each call to this method returns a fresh &lt;code&gt;PathIterator&lt;/code&gt;
+<i>317</i>&nbsp;     * object that traverses the &lt;code&gt;Shape&lt;/code&gt; object geometry
+<i>318</i>&nbsp;     * independently from any other &lt;code&gt;PathIterator&lt;/code&gt; objects in use at
+<i>319</i>&nbsp;     * the same time.
+<i>320</i>&nbsp;     * &lt;p&gt;
+<i>321</i>&nbsp;     * It is recommended, but not guaranteed, that objects
+<i>322</i>&nbsp;     * implementing the &lt;code&gt;Shape&lt;/code&gt; interface isolate iterations
+<i>323</i>&nbsp;     * that are in process from any changes that might occur to the original
+<i>324</i>&nbsp;     * object&#39;s geometry during such iterations.
+<i>325</i>&nbsp;     *
+<i>326</i>&nbsp;     * @param tx an optional &lt;code&gt;BaseTransform&lt;/code&gt; to be applied to the
+<i>327</i>&nbsp;     *      coordinates as they are returned in the iteration, or
+<i>328</i>&nbsp;     *      &lt;code&gt;null&lt;/code&gt; if untransformed coordinates are desired
+<i>329</i>&nbsp;     * @param flatness the maximum distance that the line segments used to
+<i>330</i>&nbsp;     *          approximate the curved segments are allowed to deviate
+<i>331</i>&nbsp;     *          from any point on the original curve
+<i>332</i>&nbsp;     * @return a new &lt;code&gt;PathIterator&lt;/code&gt; that independently traverses
+<i>333</i>&nbsp;     *         a flattened view of the geometry of the  &lt;code&gt;Shape&lt;/code&gt;.
+<i>334</i>&nbsp;     */
+<i>335</i>&nbsp;    public abstract PathIterator getPathIterator(BaseTransform tx, float flatness);
+<i>336</i>&nbsp;
+<i>337</i>&nbsp;    /**
+<i>338</i>&nbsp;     * Returns a new copy of this {@code Shape} instance.
+<i>339</i>&nbsp;     *
+<i>340</i>&nbsp;     * @return a copy of this shape
+<i>341</i>&nbsp;     */
+<i>342</i>&nbsp;    public abstract Shape copy();
+<i>343</i>&nbsp;
+<i>344</i>&nbsp;    /**
+<i>345</i>&nbsp;     * Calculates the number of times the given path
+<i>346</i>&nbsp;     * crosses the ray extending to the right from (px,py).
+<i>347</i>&nbsp;     * If the point lies on a part of the path,
+<i>348</i>&nbsp;     * then no crossings are counted for that intersection.
+<i>349</i>&nbsp;     * +1 is added for each crossing where the Y coordinate is increasing
+<i>350</i>&nbsp;     * -1 is added for each crossing where the Y coordinate is decreasing
+<i>351</i>&nbsp;     * The return value is the sum of all crossings for every segment in
+<i>352</i>&nbsp;     * the path.
+<i>353</i>&nbsp;     * The path must start with a SEG_MOVETO, otherwise an exception is
+<i>354</i>&nbsp;     * thrown.
+<i>355</i>&nbsp;     * The caller must check p[xy] for NaN values.
+<i>356</i>&nbsp;     * The caller may also reject infinite p[xy] values as well.
+<i>357</i>&nbsp;     */
+<i>358</i>&nbsp;    public static int pointCrossingsForPath(PathIterator pi,
+<i>359</i>&nbsp;                                            float px, float py)
+<i>360</i>&nbsp;    {
+<b class="nc"><i>361</i>&nbsp;        if (pi.isDone()) {</b>
+<b class="nc"><i>362</i>&nbsp;            return 0;</b>
+<i>363</i>&nbsp;        }
+<b class="nc"><i>364</i>&nbsp;        float coords[] = new float[6];</b>
+<b class="nc"><i>365</i>&nbsp;        if (pi.currentSegment(coords) != PathIterator.SEG_MOVETO) {</b>
+<b class="nc"><i>366</i>&nbsp;            throw new IllegalPathStateException(&quot;missing initial moveto &quot;+</b>
+<i>367</i>&nbsp;                                                &quot;in path definition&quot;);
+<i>368</i>&nbsp;        }
+<b class="nc"><i>369</i>&nbsp;        pi.next();</b>
+<b class="nc"><i>370</i>&nbsp;        float movx = coords[0];</b>
+<b class="nc"><i>371</i>&nbsp;        float movy = coords[1];</b>
+<b class="nc"><i>372</i>&nbsp;        float curx = movx;</b>
+<b class="nc"><i>373</i>&nbsp;        float cury = movy;</b>
+<i>374</i>&nbsp;        float endx, endy;
+<b class="nc"><i>375</i>&nbsp;        int crossings = 0;</b>
+<b class="nc"><i>376</i>&nbsp;        while (!pi.isDone()) {</b>
+<b class="nc"><i>377</i>&nbsp;            switch (pi.currentSegment(coords)) {</b>
+<i>378</i>&nbsp;                case PathIterator.SEG_MOVETO:
+<b class="nc"><i>379</i>&nbsp;                    if (cury != movy) {</b>
+<b class="nc"><i>380</i>&nbsp;                        crossings += pointCrossingsForLine(px, py,</b>
+<i>381</i>&nbsp;                                                           curx, cury,
+<i>382</i>&nbsp;                                                           movx, movy);
+<i>383</i>&nbsp;                    }
+<b class="nc"><i>384</i>&nbsp;                    movx = curx = coords[0];</b>
+<b class="nc"><i>385</i>&nbsp;                    movy = cury = coords[1];</b>
+<b class="nc"><i>386</i>&nbsp;                    break;</b>
+<i>387</i>&nbsp;                case PathIterator.SEG_LINETO:
+<b class="nc"><i>388</i>&nbsp;                    endx = coords[0];</b>
+<b class="nc"><i>389</i>&nbsp;                    endy = coords[1];</b>
+<b class="nc"><i>390</i>&nbsp;                    crossings += pointCrossingsForLine(px, py,</b>
+<i>391</i>&nbsp;                                                       curx, cury,
+<i>392</i>&nbsp;                                                       endx, endy);
+<b class="nc"><i>393</i>&nbsp;                    curx = endx;</b>
+<b class="nc"><i>394</i>&nbsp;                    cury = endy;</b>
+<b class="nc"><i>395</i>&nbsp;                    break;</b>
+<i>396</i>&nbsp;                case PathIterator.SEG_QUADTO:
+<b class="nc"><i>397</i>&nbsp;                    endx = coords[2];</b>
+<b class="nc"><i>398</i>&nbsp;                    endy = coords[3];</b>
+<b class="nc"><i>399</i>&nbsp;                    crossings += pointCrossingsForQuad(px, py,</b>
+<i>400</i>&nbsp;                                                       curx, cury,
+<i>401</i>&nbsp;                                                       coords[0], coords[1],
+<i>402</i>&nbsp;                                                       endx, endy, 0);
+<b class="nc"><i>403</i>&nbsp;                    curx = endx;</b>
+<b class="nc"><i>404</i>&nbsp;                    cury = endy;</b>
+<b class="nc"><i>405</i>&nbsp;                    break;</b>
+<i>406</i>&nbsp;                case PathIterator.SEG_CUBICTO:
+<b class="nc"><i>407</i>&nbsp;                    endx = coords[4];</b>
+<b class="nc"><i>408</i>&nbsp;                    endy = coords[5];</b>
+<b class="nc"><i>409</i>&nbsp;                    crossings += pointCrossingsForCubic(px, py,</b>
+<i>410</i>&nbsp;                                                        curx, cury,
+<i>411</i>&nbsp;                                                        coords[0], coords[1],
+<i>412</i>&nbsp;                                                        coords[2], coords[3],
+<i>413</i>&nbsp;                                                        endx, endy, 0);
+<b class="nc"><i>414</i>&nbsp;                    curx = endx;</b>
+<b class="nc"><i>415</i>&nbsp;                    cury = endy;</b>
+<b class="nc"><i>416</i>&nbsp;                    break;</b>
+<i>417</i>&nbsp;                case PathIterator.SEG_CLOSE:
+<b class="nc"><i>418</i>&nbsp;                    if (cury != movy) {</b>
+<b class="nc"><i>419</i>&nbsp;                        crossings += pointCrossingsForLine(px, py,</b>
+<i>420</i>&nbsp;                                                           curx, cury,
+<i>421</i>&nbsp;                                                           movx, movy);
+<i>422</i>&nbsp;                    }
+<b class="nc"><i>423</i>&nbsp;                    curx = movx;</b>
+<b class="nc"><i>424</i>&nbsp;                    cury = movy;</b>
+<i>425</i>&nbsp;                    break;
+<i>426</i>&nbsp;            }
+<b class="nc"><i>427</i>&nbsp;            pi.next();</b>
+<i>428</i>&nbsp;        }
+<b class="nc"><i>429</i>&nbsp;        if (cury != movy) {</b>
+<b class="nc"><i>430</i>&nbsp;            crossings += pointCrossingsForLine(px, py,</b>
+<i>431</i>&nbsp;                                               curx, cury,
+<i>432</i>&nbsp;                                               movx, movy);
+<i>433</i>&nbsp;        }
+<b class="nc"><i>434</i>&nbsp;        return crossings;</b>
+<i>435</i>&nbsp;    }
+<i>436</i>&nbsp;
+<i>437</i>&nbsp;    /**
+<i>438</i>&nbsp;     * Calculates the number of times the line from (x0,y0) to (x1,y1)
+<i>439</i>&nbsp;     * crosses the ray extending to the right from (px,py).
+<i>440</i>&nbsp;     * If the point lies on the line, then no crossings are recorded.
+<i>441</i>&nbsp;     * +1 is returned for a crossing where the Y coordinate is increasing
+<i>442</i>&nbsp;     * -1 is returned for a crossing where the Y coordinate is decreasing
+<i>443</i>&nbsp;     */
+<i>444</i>&nbsp;    public static int pointCrossingsForLine(float px, float py,
+<i>445</i>&nbsp;                                            float x0, float y0,
+<i>446</i>&nbsp;                                            float x1, float y1)
+<i>447</i>&nbsp;    {
+<b class="fc"><i>448</i>&nbsp;        if (py &lt;  y0 &amp;&amp; py &lt;  y1) return 0;</b>
+<b class="fc"><i>449</i>&nbsp;        if (py &gt;= y0 &amp;&amp; py &gt;= y1) return 0;</b>
+<i>450</i>&nbsp;        // assert(y0 != y1);
+<b class="fc"><i>451</i>&nbsp;        if (px &gt;= x0 &amp;&amp; px &gt;= x1) return 0;</b>
+<b class="fc"><i>452</i>&nbsp;        if (px &lt;  x0 &amp;&amp; px &lt;  x1) return (y0 &lt; y1) ? 1 : -1;</b>
+<b class="nc"><i>453</i>&nbsp;        float xintercept = x0 + (py - y0) * (x1 - x0) / (y1 - y0);</b>
+<b class="nc"><i>454</i>&nbsp;        if (px &gt;= xintercept) return 0;</b>
+<b class="nc"><i>455</i>&nbsp;        return (y0 &lt; y1) ? 1 : -1;</b>
+<i>456</i>&nbsp;    }
+<i>457</i>&nbsp;
+<i>458</i>&nbsp;    /**
+<i>459</i>&nbsp;     * Calculates the number of times the quad from (x0,y0) to (x1,y1)
+<i>460</i>&nbsp;     * crosses the ray extending to the right from (px,py).
+<i>461</i>&nbsp;     * If the point lies on a part of the curve,
+<i>462</i>&nbsp;     * then no crossings are counted for that intersection.
+<i>463</i>&nbsp;     * the level parameter should be 0 at the top-level call and will count
+<i>464</i>&nbsp;     * up for each recursion level to prevent infinite recursion
+<i>465</i>&nbsp;     * +1 is added for each crossing where the Y coordinate is increasing
+<i>466</i>&nbsp;     * -1 is added for each crossing where the Y coordinate is decreasing
+<i>467</i>&nbsp;     */
+<i>468</i>&nbsp;    public static int pointCrossingsForQuad(float px, float py,
+<i>469</i>&nbsp;                                            float x0, float y0,
+<i>470</i>&nbsp;                                            float xc, float yc,
+<i>471</i>&nbsp;                                            float x1, float y1, int level)
+<i>472</i>&nbsp;    {
+<b class="nc"><i>473</i>&nbsp;        if (py &lt;  y0 &amp;&amp; py &lt;  yc &amp;&amp; py &lt;  y1) return 0;</b>
+<b class="nc"><i>474</i>&nbsp;        if (py &gt;= y0 &amp;&amp; py &gt;= yc &amp;&amp; py &gt;= y1) return 0;</b>
+<i>475</i>&nbsp;        // Note y0 could equal y1...
+<b class="nc"><i>476</i>&nbsp;        if (px &gt;= x0 &amp;&amp; px &gt;= xc &amp;&amp; px &gt;= x1) return 0;</b>
+<b class="nc"><i>477</i>&nbsp;        if (px &lt;  x0 &amp;&amp; px &lt;  xc &amp;&amp; px &lt;  x1) {</b>
+<b class="nc"><i>478</i>&nbsp;            if (py &gt;= y0) {</b>
+<b class="nc"><i>479</i>&nbsp;                if (py &lt; y1) return 1;</b>
+<i>480</i>&nbsp;            } else {
+<i>481</i>&nbsp;                // py &lt; y0
+<b class="nc"><i>482</i>&nbsp;                if (py &gt;= y1) return -1;</b>
+<i>483</i>&nbsp;            }
+<i>484</i>&nbsp;            // py outside of y01 range, and/or y0==y1
+<b class="nc"><i>485</i>&nbsp;            return 0;</b>
+<i>486</i>&nbsp;        }
+<i>487</i>&nbsp;        // double precision only has 52 bits of mantissa
+<b class="nc"><i>488</i>&nbsp;        if (level &gt; 52) return pointCrossingsForLine(px, py, x0, y0, x1, y1);</b>
+<b class="nc"><i>489</i>&nbsp;        float x0c = (x0 + xc) / 2;</b>
+<b class="nc"><i>490</i>&nbsp;        float y0c = (y0 + yc) / 2;</b>
+<b class="nc"><i>491</i>&nbsp;        float xc1 = (xc + x1) / 2;</b>
+<b class="nc"><i>492</i>&nbsp;        float yc1 = (yc + y1) / 2;</b>
+<b class="nc"><i>493</i>&nbsp;        xc = (x0c + xc1) / 2;</b>
+<b class="nc"><i>494</i>&nbsp;        yc = (y0c + yc1) / 2;</b>
+<b class="nc"><i>495</i>&nbsp;        if (Float.isNaN(xc) || Float.isNaN(yc)) {</b>
+<i>496</i>&nbsp;            // [xy]c are NaN if any of [xy]0c or [xy]c1 are NaN
+<i>497</i>&nbsp;            // [xy]0c or [xy]c1 are NaN if any of [xy][0c1] are NaN
+<i>498</i>&nbsp;            // These values are also NaN if opposing infinities are added
+<b class="nc"><i>499</i>&nbsp;            return 0;</b>
+<i>500</i>&nbsp;        }
+<b class="nc"><i>501</i>&nbsp;        return (pointCrossingsForQuad(px, py,</b>
+<i>502</i>&nbsp;                                      x0, y0, x0c, y0c, xc, yc,
+<i>503</i>&nbsp;                                      level+1) +
+<b class="nc"><i>504</i>&nbsp;                pointCrossingsForQuad(px, py,</b>
+<i>505</i>&nbsp;                                      xc, yc, xc1, yc1, x1, y1,
+<i>506</i>&nbsp;                                      level+1));
+<i>507</i>&nbsp;    }
+<i>508</i>&nbsp;
+<i>509</i>&nbsp;    /**
+<i>510</i>&nbsp;     * Calculates the number of times the cubic from (x0,y0) to (x1,y1)
+<i>511</i>&nbsp;     * crosses the ray extending to the right from (px,py).
+<i>512</i>&nbsp;     * If the point lies on a part of the curve,
+<i>513</i>&nbsp;     * then no crossings are counted for that intersection.
+<i>514</i>&nbsp;     * the level parameter should be 0 at the top-level call and will count
+<i>515</i>&nbsp;     * up for each recursion level to prevent infinite recursion
+<i>516</i>&nbsp;     * +1 is added for each crossing where the Y coordinate is increasing
+<i>517</i>&nbsp;     * -1 is added for each crossing where the Y coordinate is decreasing
+<i>518</i>&nbsp;     */
+<i>519</i>&nbsp;    public static int pointCrossingsForCubic(float px, float py,
+<i>520</i>&nbsp;                                             float x0, float y0,
+<i>521</i>&nbsp;                                             float xc0, float yc0,
+<i>522</i>&nbsp;                                             float xc1, float yc1,
+<i>523</i>&nbsp;                                             float x1, float y1, int level)
+<i>524</i>&nbsp;    {
+<b class="nc"><i>525</i>&nbsp;        if (py &lt;  y0 &amp;&amp; py &lt;  yc0 &amp;&amp; py &lt;  yc1 &amp;&amp; py &lt;  y1) return 0;</b>
+<b class="nc"><i>526</i>&nbsp;        if (py &gt;= y0 &amp;&amp; py &gt;= yc0 &amp;&amp; py &gt;= yc1 &amp;&amp; py &gt;= y1) return 0;</b>
+<i>527</i>&nbsp;        // Note y0 could equal yc0...
+<b class="nc"><i>528</i>&nbsp;        if (px &gt;= x0 &amp;&amp; px &gt;= xc0 &amp;&amp; px &gt;= xc1 &amp;&amp; px &gt;= x1) return 0;</b>
+<b class="nc"><i>529</i>&nbsp;        if (px &lt;  x0 &amp;&amp; px &lt;  xc0 &amp;&amp; px &lt;  xc1 &amp;&amp; px &lt;  x1) {</b>
+<b class="nc"><i>530</i>&nbsp;            if (py &gt;= y0) {</b>
+<b class="nc"><i>531</i>&nbsp;                if (py &lt; y1) return 1;</b>
+<i>532</i>&nbsp;            } else {
+<i>533</i>&nbsp;                // py &lt; y0
+<b class="nc"><i>534</i>&nbsp;                if (py &gt;= y1) return -1;</b>
+<i>535</i>&nbsp;            }
+<i>536</i>&nbsp;            // py outside of y01 range, and/or y0==yc0
+<b class="nc"><i>537</i>&nbsp;            return 0;</b>
+<i>538</i>&nbsp;        }
+<i>539</i>&nbsp;        // double precision only has 52 bits of mantissa
+<b class="nc"><i>540</i>&nbsp;        if (level &gt; 52) return pointCrossingsForLine(px, py, x0, y0, x1, y1);</b>
+<b class="nc"><i>541</i>&nbsp;        float xmid = (xc0 + xc1) / 2;</b>
+<b class="nc"><i>542</i>&nbsp;        float ymid = (yc0 + yc1) / 2;</b>
+<b class="nc"><i>543</i>&nbsp;        xc0 = (x0 + xc0) / 2;</b>
+<b class="nc"><i>544</i>&nbsp;        yc0 = (y0 + yc0) / 2;</b>
+<b class="nc"><i>545</i>&nbsp;        xc1 = (xc1 + x1) / 2;</b>
+<b class="nc"><i>546</i>&nbsp;        yc1 = (yc1 + y1) / 2;</b>
+<b class="nc"><i>547</i>&nbsp;        float xc0m = (xc0 + xmid) / 2;</b>
+<b class="nc"><i>548</i>&nbsp;        float yc0m = (yc0 + ymid) / 2;</b>
+<b class="nc"><i>549</i>&nbsp;        float xmc1 = (xmid + xc1) / 2;</b>
+<b class="nc"><i>550</i>&nbsp;        float ymc1 = (ymid + yc1) / 2;</b>
+<b class="nc"><i>551</i>&nbsp;        xmid = (xc0m + xmc1) / 2;</b>
+<b class="nc"><i>552</i>&nbsp;        ymid = (yc0m + ymc1) / 2;</b>
+<b class="nc"><i>553</i>&nbsp;        if (Float.isNaN(xmid) || Float.isNaN(ymid)) {</b>
+<i>554</i>&nbsp;            // [xy]mid are NaN if any of [xy]c0m or [xy]mc1 are NaN
+<i>555</i>&nbsp;            // [xy]c0m or [xy]mc1 are NaN if any of [xy][c][01] are NaN
+<i>556</i>&nbsp;            // These values are also NaN if opposing infinities are added
+<b class="nc"><i>557</i>&nbsp;            return 0;</b>
+<i>558</i>&nbsp;        }
+<b class="nc"><i>559</i>&nbsp;        return (pointCrossingsForCubic(px, py,</b>
+<i>560</i>&nbsp;                                       x0, y0, xc0, yc0,
+<i>561</i>&nbsp;                                       xc0m, yc0m, xmid, ymid, level+1) +
+<b class="nc"><i>562</i>&nbsp;                pointCrossingsForCubic(px, py,</b>
+<i>563</i>&nbsp;                                       xmid, ymid, xmc1, ymc1,
+<i>564</i>&nbsp;                                       xc1, yc1, x1, y1, level+1));
+<i>565</i>&nbsp;    }
+<i>566</i>&nbsp;
+<i>567</i>&nbsp;    /**
+<i>568</i>&nbsp;     * The rectangle intersection test counts the number of times
+<i>569</i>&nbsp;     * that the path crosses through the shadow that the rectangle
+<i>570</i>&nbsp;     * projects to the right towards (x =&gt; +INFINITY).
+<i>571</i>&nbsp;     *
+<i>572</i>&nbsp;     * During processing of the path it actually counts every time
+<i>573</i>&nbsp;     * the path crosses either or both of the top and bottom edges
+<i>574</i>&nbsp;     * of that shadow.  If the path enters from the top, the count
+<i>575</i>&nbsp;     * is incremented.  If it then exits back through the top, the
+<i>576</i>&nbsp;     * same way it came in, the count is decremented and there is
+<i>577</i>&nbsp;     * no impact on the winding count.  If, instead, the path exits
+<i>578</i>&nbsp;     * out the bottom, then the count is incremented again and a
+<i>579</i>&nbsp;     * full pass through the shadow is indicated by the winding count
+<i>580</i>&nbsp;     * having been incremented by 2.
+<i>581</i>&nbsp;     *
+<i>582</i>&nbsp;     * Thus, the winding count that it accumulates is actually float
+<i>583</i>&nbsp;     * the real winding count.  Since the path is continuous, the
+<i>584</i>&nbsp;     * final answer should be a multiple of 2, otherwise there is a
+<i>585</i>&nbsp;     * logic error somewhere.
+<i>586</i>&nbsp;     *
+<i>587</i>&nbsp;     * If the path ever has a direct hit on the rectangle, then a
+<i>588</i>&nbsp;     * special value is returned.  This special value terminates
+<i>589</i>&nbsp;     * all ongoing accumulation on up through the call chain and
+<i>590</i>&nbsp;     * ends up getting returned to the calling function which can
+<i>591</i>&nbsp;     * then produce an answer directly.  For intersection tests,
+<i>592</i>&nbsp;     * the answer is always &quot;true&quot; if the path intersects the
+<i>593</i>&nbsp;     * rectangle.  For containment tests, the answer is always
+<i>594</i>&nbsp;     * &quot;false&quot; if the path intersects the rectangle.  Thus, no
+<i>595</i>&nbsp;     * further processing is ever needed if an intersection occurs.
+<i>596</i>&nbsp;     */
+<i>597</i>&nbsp;    public static final int RECT_INTERSECTS = 0x80000000;
+<i>598</i>&nbsp;
+<i>599</i>&nbsp;    /**
+<i>600</i>&nbsp;     * Accumulate the number of times the path crosses the shadow
+<i>601</i>&nbsp;     * extending to the right of the rectangle.  See the comment
+<i>602</i>&nbsp;     * for the RECT_INTERSECTS constant for more complete details.
+<i>603</i>&nbsp;     * The return value is the sum of all crossings for both the
+<i>604</i>&nbsp;     * top and bottom of the shadow for every segment in the path,
+<i>605</i>&nbsp;     * or the special value RECT_INTERSECTS if the path ever enters
+<i>606</i>&nbsp;     * the interior of the rectangle.
+<i>607</i>&nbsp;     * The path must start with a SEG_MOVETO, otherwise an exception is
+<i>608</i>&nbsp;     * thrown.
+<i>609</i>&nbsp;     * The caller must check r[xy]{min,max} for NaN values.
+<i>610</i>&nbsp;     */
+<i>611</i>&nbsp;    public static int rectCrossingsForPath(PathIterator pi,
+<i>612</i>&nbsp;                                           float rxmin, float rymin,
+<i>613</i>&nbsp;                                           float rxmax, float rymax)
+<i>614</i>&nbsp;    {
+<b class="nc"><i>615</i>&nbsp;        if (rxmax &lt;= rxmin || rymax &lt;= rymin) {</b>
+<b class="nc"><i>616</i>&nbsp;            return 0;</b>
+<i>617</i>&nbsp;        }
+<b class="nc"><i>618</i>&nbsp;        if (pi.isDone()) {</b>
+<b class="nc"><i>619</i>&nbsp;            return 0;</b>
+<i>620</i>&nbsp;        }
+<b class="nc"><i>621</i>&nbsp;        float coords[] = new float[6];</b>
+<b class="nc"><i>622</i>&nbsp;        if (pi.currentSegment(coords) != PathIterator.SEG_MOVETO) {</b>
+<b class="nc"><i>623</i>&nbsp;            throw new IllegalPathStateException(&quot;missing initial moveto &quot;+</b>
+<i>624</i>&nbsp;                                                &quot;in path definition&quot;);
+<i>625</i>&nbsp;        }
+<b class="nc"><i>626</i>&nbsp;        pi.next();</b>
+<i>627</i>&nbsp;        float curx, cury, movx, movy, endx, endy;
+<b class="nc"><i>628</i>&nbsp;        curx = movx = coords[0];</b>
+<b class="nc"><i>629</i>&nbsp;        cury = movy = coords[1];</b>
+<b class="nc"><i>630</i>&nbsp;        int crossings = 0;</b>
+<b class="nc"><i>631</i>&nbsp;        while (crossings != RECT_INTERSECTS &amp;&amp; !pi.isDone()) {</b>
+<b class="nc"><i>632</i>&nbsp;            switch (pi.currentSegment(coords)) {</b>
+<i>633</i>&nbsp;            case PathIterator.SEG_MOVETO:
+<b class="nc"><i>634</i>&nbsp;                if (curx != movx || cury != movy) {</b>
+<b class="nc"><i>635</i>&nbsp;                    crossings = rectCrossingsForLine(crossings,</b>
+<i>636</i>&nbsp;                                                     rxmin, rymin,
+<i>637</i>&nbsp;                                                     rxmax, rymax,
+<i>638</i>&nbsp;                                                     curx, cury,
+<i>639</i>&nbsp;                                                     movx, movy);
+<i>640</i>&nbsp;                }
+<i>641</i>&nbsp;                // Count should always be a multiple of 2 here.
+<i>642</i>&nbsp;                // assert((crossings &amp; 1) != 0);
+<b class="nc"><i>643</i>&nbsp;                movx = curx = coords[0];</b>
+<b class="nc"><i>644</i>&nbsp;                movy = cury = coords[1];</b>
+<b class="nc"><i>645</i>&nbsp;                break;</b>
+<i>646</i>&nbsp;            case PathIterator.SEG_LINETO:
+<b class="nc"><i>647</i>&nbsp;                endx = coords[0];</b>
+<b class="nc"><i>648</i>&nbsp;                endy = coords[1];</b>
+<b class="nc"><i>649</i>&nbsp;                crossings = rectCrossingsForLine(crossings,</b>
+<i>650</i>&nbsp;                                                 rxmin, rymin,
+<i>651</i>&nbsp;                                                 rxmax, rymax,
+<i>652</i>&nbsp;                                                 curx, cury,
+<i>653</i>&nbsp;                                                 endx, endy);
+<b class="nc"><i>654</i>&nbsp;                curx = endx;</b>
+<b class="nc"><i>655</i>&nbsp;                cury = endy;</b>
+<b class="nc"><i>656</i>&nbsp;                break;</b>
+<i>657</i>&nbsp;            case PathIterator.SEG_QUADTO:
+<b class="nc"><i>658</i>&nbsp;                endx = coords[2];</b>
+<b class="nc"><i>659</i>&nbsp;                endy = coords[3];</b>
+<b class="nc"><i>660</i>&nbsp;                crossings = rectCrossingsForQuad(crossings,</b>
+<i>661</i>&nbsp;                                                 rxmin, rymin,
+<i>662</i>&nbsp;                                                 rxmax, rymax,
+<i>663</i>&nbsp;                                                 curx, cury,
+<i>664</i>&nbsp;                                                 coords[0], coords[1],
+<i>665</i>&nbsp;                                                 endx, endy, 0);
+<b class="nc"><i>666</i>&nbsp;                curx = endx;</b>
+<b class="nc"><i>667</i>&nbsp;                cury = endy;</b>
+<b class="nc"><i>668</i>&nbsp;                break;</b>
+<i>669</i>&nbsp;            case PathIterator.SEG_CUBICTO:
+<b class="nc"><i>670</i>&nbsp;                endx = coords[4];</b>
+<b class="nc"><i>671</i>&nbsp;                endy = coords[5];</b>
+<b class="nc"><i>672</i>&nbsp;                crossings = rectCrossingsForCubic(crossings,</b>
+<i>673</i>&nbsp;                                                  rxmin, rymin,
+<i>674</i>&nbsp;                                                  rxmax, rymax,
+<i>675</i>&nbsp;                                                  curx, cury,
+<i>676</i>&nbsp;                                                  coords[0], coords[1],
+<i>677</i>&nbsp;                                                  coords[2], coords[3],
+<i>678</i>&nbsp;                                                  endx, endy, 0);
+<b class="nc"><i>679</i>&nbsp;                curx = endx;</b>
+<b class="nc"><i>680</i>&nbsp;                cury = endy;</b>
+<b class="nc"><i>681</i>&nbsp;                break;</b>
+<i>682</i>&nbsp;            case PathIterator.SEG_CLOSE:
+<b class="nc"><i>683</i>&nbsp;                if (curx != movx || cury != movy) {</b>
+<b class="nc"><i>684</i>&nbsp;                    crossings = rectCrossingsForLine(crossings,</b>
+<i>685</i>&nbsp;                                                     rxmin, rymin,
+<i>686</i>&nbsp;                                                     rxmax, rymax,
+<i>687</i>&nbsp;                                                     curx, cury,
+<i>688</i>&nbsp;                                                     movx, movy);
+<i>689</i>&nbsp;                }
+<b class="nc"><i>690</i>&nbsp;                curx = movx;</b>
+<b class="nc"><i>691</i>&nbsp;                cury = movy;</b>
+<i>692</i>&nbsp;                // Count should always be a multiple of 2 here.
+<i>693</i>&nbsp;                // assert((crossings &amp; 1) != 0);
+<i>694</i>&nbsp;                break;
+<i>695</i>&nbsp;            }
+<b class="nc"><i>696</i>&nbsp;            pi.next();</b>
+<i>697</i>&nbsp;        }
+<b class="nc"><i>698</i>&nbsp;        if (crossings != RECT_INTERSECTS &amp;&amp; (curx != movx || cury != movy)) {</b>
+<b class="nc"><i>699</i>&nbsp;            crossings = rectCrossingsForLine(crossings,</b>
+<i>700</i>&nbsp;                                             rxmin, rymin,
+<i>701</i>&nbsp;                                             rxmax, rymax,
+<i>702</i>&nbsp;                                             curx, cury,
+<i>703</i>&nbsp;                                             movx, movy);
+<i>704</i>&nbsp;        }
+<i>705</i>&nbsp;        // Count should always be a multiple of 2 here.
+<i>706</i>&nbsp;        // assert((crossings &amp; 1) != 0);
+<b class="nc"><i>707</i>&nbsp;        return crossings;</b>
+<i>708</i>&nbsp;    }
+<i>709</i>&nbsp;
+<i>710</i>&nbsp;    /**
+<i>711</i>&nbsp;     * Accumulate the number of times the line crosses the shadow
+<i>712</i>&nbsp;     * extending to the right of the rectangle.  See the comment
+<i>713</i>&nbsp;     * for the RECT_INTERSECTS constant for more complete details.
+<i>714</i>&nbsp;     */
+<i>715</i>&nbsp;    public static int rectCrossingsForLine(int crossings,
+<i>716</i>&nbsp;                                           float rxmin, float rymin,
+<i>717</i>&nbsp;                                           float rxmax, float rymax,
+<i>718</i>&nbsp;                                           float x0, float y0,
+<i>719</i>&nbsp;                                           float x1, float y1)
+<i>720</i>&nbsp;    {
+<b class="nc"><i>721</i>&nbsp;        if (y0 &gt;= rymax &amp;&amp; y1 &gt;= rymax) return crossings;</b>
+<b class="nc"><i>722</i>&nbsp;        if (y0 &lt;= rymin &amp;&amp; y1 &lt;= rymin) return crossings;</b>
+<b class="nc"><i>723</i>&nbsp;        if (x0 &lt;= rxmin &amp;&amp; x1 &lt;= rxmin) return crossings;</b>
+<b class="nc"><i>724</i>&nbsp;        if (x0 &gt;= rxmax &amp;&amp; x1 &gt;= rxmax) {</b>
+<i>725</i>&nbsp;            // Line is entirely to the right of the rect
+<i>726</i>&nbsp;            // and the vertical ranges of the two overlap by a non-empty amount
+<i>727</i>&nbsp;            // Thus, this line segment is partially in the &quot;right-shadow&quot;
+<i>728</i>&nbsp;            // Path may have done a complete crossing
+<i>729</i>&nbsp;            // Or path may have entered or exited the right-shadow
+<b class="nc"><i>730</i>&nbsp;            if (y0 &lt; y1) {</b>
+<i>731</i>&nbsp;                // y-increasing line segment...
+<i>732</i>&nbsp;                // We know that y0 &lt; rymax and y1 &gt; rymin
+<b class="nc"><i>733</i>&nbsp;                if (y0 &lt;= rymin) crossings++;</b>
+<b class="nc"><i>734</i>&nbsp;                if (y1 &gt;= rymax) crossings++;</b>
+<b class="nc"><i>735</i>&nbsp;            } else if (y1 &lt; y0) {</b>
+<i>736</i>&nbsp;                // y-decreasing line segment...
+<i>737</i>&nbsp;                // We know that y1 &lt; rymax and y0 &gt; rymin
+<b class="nc"><i>738</i>&nbsp;                if (y1 &lt;= rymin) crossings--;</b>
+<b class="nc"><i>739</i>&nbsp;                if (y0 &gt;= rymax) crossings--;</b>
+<i>740</i>&nbsp;            }
+<b class="nc"><i>741</i>&nbsp;            return crossings;</b>
+<i>742</i>&nbsp;        }
+<i>743</i>&nbsp;        // Remaining case:
+<i>744</i>&nbsp;        // Both x and y ranges overlap by a non-empty amount
+<i>745</i>&nbsp;        // First do trivial INTERSECTS rejection of the cases
+<i>746</i>&nbsp;        // where one of the endpoints is inside the rectangle.
+<b class="nc"><i>747</i>&nbsp;        if ((x0 &gt; rxmin &amp;&amp; x0 &lt; rxmax &amp;&amp; y0 &gt; rymin &amp;&amp; y0 &lt; rymax) ||</b>
+<i>748</i>&nbsp;            (x1 &gt; rxmin &amp;&amp; x1 &lt; rxmax &amp;&amp; y1 &gt; rymin &amp;&amp; y1 &lt; rymax))
+<i>749</i>&nbsp;        {
+<b class="nc"><i>750</i>&nbsp;            return RECT_INTERSECTS;</b>
+<i>751</i>&nbsp;        }
+<i>752</i>&nbsp;        // Otherwise calculate the y intercepts and see where
+<i>753</i>&nbsp;        // they fall with respect to the rectangle
+<b class="nc"><i>754</i>&nbsp;        float xi0 = x0;</b>
+<b class="nc"><i>755</i>&nbsp;        if (y0 &lt; rymin) {</b>
+<b class="nc"><i>756</i>&nbsp;            xi0 += ((rymin - y0) * (x1 - x0) / (y1 - y0));</b>
+<b class="nc"><i>757</i>&nbsp;        } else if (y0 &gt; rymax) {</b>
+<b class="nc"><i>758</i>&nbsp;            xi0 += ((rymax - y0) * (x1 - x0) / (y1 - y0));</b>
+<i>759</i>&nbsp;        }
+<b class="nc"><i>760</i>&nbsp;        float xi1 = x1;</b>
+<b class="nc"><i>761</i>&nbsp;        if (y1 &lt; rymin) {</b>
+<b class="nc"><i>762</i>&nbsp;            xi1 += ((rymin - y1) * (x0 - x1) / (y0 - y1));</b>
+<b class="nc"><i>763</i>&nbsp;        } else if (y1 &gt; rymax) {</b>
+<b class="nc"><i>764</i>&nbsp;            xi1 += ((rymax - y1) * (x0 - x1) / (y0 - y1));</b>
+<i>765</i>&nbsp;        }
+<b class="nc"><i>766</i>&nbsp;        if (xi0 &lt;= rxmin &amp;&amp; xi1 &lt;= rxmin) return crossings;</b>
+<b class="nc"><i>767</i>&nbsp;        if (xi0 &gt;= rxmax &amp;&amp; xi1 &gt;= rxmax) {</b>
+<b class="nc"><i>768</i>&nbsp;            if (y0 &lt; y1) {</b>
+<i>769</i>&nbsp;                // y-increasing line segment...
+<i>770</i>&nbsp;                // We know that y0 &lt; rymax and y1 &gt; rymin
+<b class="nc"><i>771</i>&nbsp;                if (y0 &lt;= rymin) crossings++;</b>
+<b class="nc"><i>772</i>&nbsp;                if (y1 &gt;= rymax) crossings++;</b>
+<b class="nc"><i>773</i>&nbsp;            } else if (y1 &lt; y0) {</b>
+<i>774</i>&nbsp;                // y-decreasing line segment...
+<i>775</i>&nbsp;                // We know that y1 &lt; rymax and y0 &gt; rymin
+<b class="nc"><i>776</i>&nbsp;                if (y1 &lt;= rymin) crossings--;</b>
+<b class="nc"><i>777</i>&nbsp;                if (y0 &gt;= rymax) crossings--;</b>
+<i>778</i>&nbsp;            }
+<b class="nc"><i>779</i>&nbsp;            return crossings;</b>
+<i>780</i>&nbsp;        }
+<b class="nc"><i>781</i>&nbsp;        return RECT_INTERSECTS;</b>
+<i>782</i>&nbsp;    }
+<i>783</i>&nbsp;
+<i>784</i>&nbsp;    /**
+<i>785</i>&nbsp;     * Accumulate the number of times the quad crosses the shadow
+<i>786</i>&nbsp;     * extending to the right of the rectangle.  See the comment
+<i>787</i>&nbsp;     * for the RECT_INTERSECTS constant for more complete details.
+<i>788</i>&nbsp;     */
+<i>789</i>&nbsp;    public static int rectCrossingsForQuad(int crossings,
+<i>790</i>&nbsp;                                           float rxmin, float rymin,
+<i>791</i>&nbsp;                                           float rxmax, float rymax,
+<i>792</i>&nbsp;                                           float x0, float y0,
+<i>793</i>&nbsp;                                           float xc, float yc,
+<i>794</i>&nbsp;                                           float x1, float y1,
+<i>795</i>&nbsp;                                           int level)
+<i>796</i>&nbsp;    {
+<b class="nc"><i>797</i>&nbsp;        if (y0 &gt;= rymax &amp;&amp; yc &gt;= rymax &amp;&amp; y1 &gt;= rymax) return crossings;</b>
+<b class="nc"><i>798</i>&nbsp;        if (y0 &lt;= rymin &amp;&amp; yc &lt;= rymin &amp;&amp; y1 &lt;= rymin) return crossings;</b>
+<b class="nc"><i>799</i>&nbsp;        if (x0 &lt;= rxmin &amp;&amp; xc &lt;= rxmin &amp;&amp; x1 &lt;= rxmin) return crossings;</b>
+<b class="nc"><i>800</i>&nbsp;        if (x0 &gt;= rxmax &amp;&amp; xc &gt;= rxmax &amp;&amp; x1 &gt;= rxmax) {</b>
+<i>801</i>&nbsp;            // Quad is entirely to the right of the rect
+<i>802</i>&nbsp;            // and the vertical range of the 3 Y coordinates of the quad
+<i>803</i>&nbsp;            // overlaps the vertical range of the rect by a non-empty amount
+<i>804</i>&nbsp;            // We now judge the crossings solely based on the line segment
+<i>805</i>&nbsp;            // connecting the endpoints of the quad.
+<i>806</i>&nbsp;            // Note that we may have 0, 1, or 2 crossings as the control
+<i>807</i>&nbsp;            // point may be causing the Y range intersection while the
+<i>808</i>&nbsp;            // two endpoints are entirely above or below.
+<b class="nc"><i>809</i>&nbsp;            if (y0 &lt; y1) {</b>
+<i>810</i>&nbsp;                // y-increasing line segment...
+<b class="nc"><i>811</i>&nbsp;                if (y0 &lt;= rymin &amp;&amp; y1 &gt;  rymin) crossings++;</b>
+<b class="nc"><i>812</i>&nbsp;                if (y0 &lt;  rymax &amp;&amp; y1 &gt;= rymax) crossings++;</b>
+<b class="nc"><i>813</i>&nbsp;            } else if (y1 &lt; y0) {</b>
+<i>814</i>&nbsp;                // y-decreasing line segment...
+<b class="nc"><i>815</i>&nbsp;                if (y1 &lt;= rymin &amp;&amp; y0 &gt;  rymin) crossings--;</b>
+<b class="nc"><i>816</i>&nbsp;                if (y1 &lt;  rymax &amp;&amp; y0 &gt;= rymax) crossings--;</b>
+<i>817</i>&nbsp;            }
+<b class="nc"><i>818</i>&nbsp;            return crossings;</b>
+<i>819</i>&nbsp;        }
+<i>820</i>&nbsp;        // The intersection of ranges is more complicated
+<i>821</i>&nbsp;        // First do trivial INTERSECTS rejection of the cases
+<i>822</i>&nbsp;        // where one of the endpoints is inside the rectangle.
+<b class="nc"><i>823</i>&nbsp;        if ((x0 &lt; rxmax &amp;&amp; x0 &gt; rxmin &amp;&amp; y0 &lt; rymax &amp;&amp; y0 &gt; rymin) ||</b>
+<i>824</i>&nbsp;            (x1 &lt; rxmax &amp;&amp; x1 &gt; rxmin &amp;&amp; y1 &lt; rymax &amp;&amp; y1 &gt; rymin))
+<i>825</i>&nbsp;        {
+<b class="nc"><i>826</i>&nbsp;            return RECT_INTERSECTS;</b>
+<i>827</i>&nbsp;        }
+<i>828</i>&nbsp;        // Otherwise, subdivide and look for one of the cases above.
+<i>829</i>&nbsp;        // double precision only has 52 bits of mantissa
+<b class="nc"><i>830</i>&nbsp;        if (level &gt; 52) {</b>
+<b class="nc"><i>831</i>&nbsp;            return rectCrossingsForLine(crossings,</b>
+<i>832</i>&nbsp;                                        rxmin, rymin, rxmax, rymax,
+<i>833</i>&nbsp;                                        x0, y0, x1, y1);
+<i>834</i>&nbsp;        }
+<b class="nc"><i>835</i>&nbsp;        float x0c = (x0 + xc) / 2;</b>
+<b class="nc"><i>836</i>&nbsp;        float y0c = (y0 + yc) / 2;</b>
+<b class="nc"><i>837</i>&nbsp;        float xc1 = (xc + x1) / 2;</b>
+<b class="nc"><i>838</i>&nbsp;        float yc1 = (yc + y1) / 2;</b>
+<b class="nc"><i>839</i>&nbsp;        xc = (x0c + xc1) / 2;</b>
+<b class="nc"><i>840</i>&nbsp;        yc = (y0c + yc1) / 2;</b>
+<b class="nc"><i>841</i>&nbsp;        if (Float.isNaN(xc) || Float.isNaN(yc)) {</b>
+<i>842</i>&nbsp;            // [xy]c are NaN if any of [xy]0c or [xy]c1 are NaN
+<i>843</i>&nbsp;            // [xy]0c or [xy]c1 are NaN if any of [xy][0c1] are NaN
+<i>844</i>&nbsp;            // These values are also NaN if opposing infinities are added
+<b class="nc"><i>845</i>&nbsp;            return 0;</b>
+<i>846</i>&nbsp;        }
+<b class="nc"><i>847</i>&nbsp;        crossings = rectCrossingsForQuad(crossings,</b>
+<i>848</i>&nbsp;                                         rxmin, rymin, rxmax, rymax,
+<i>849</i>&nbsp;                                         x0, y0, x0c, y0c, xc, yc,
+<i>850</i>&nbsp;                                         level+1);
+<b class="nc"><i>851</i>&nbsp;        if (crossings != RECT_INTERSECTS) {</b>
+<b class="nc"><i>852</i>&nbsp;            crossings = rectCrossingsForQuad(crossings,</b>
+<i>853</i>&nbsp;                                             rxmin, rymin, rxmax, rymax,
+<i>854</i>&nbsp;                                             xc, yc, xc1, yc1, x1, y1,
+<i>855</i>&nbsp;                                             level+1);
+<i>856</i>&nbsp;        }
+<b class="nc"><i>857</i>&nbsp;        return crossings;</b>
+<i>858</i>&nbsp;    }
+<i>859</i>&nbsp;
+<i>860</i>&nbsp;    /**
+<i>861</i>&nbsp;     * Accumulate the number of times the cubic crosses the shadow
+<i>862</i>&nbsp;     * extending to the right of the rectangle.  See the comment
+<i>863</i>&nbsp;     * for the RECT_INTERSECTS constant for more complete details.
+<i>864</i>&nbsp;     */
+<i>865</i>&nbsp;    public static int rectCrossingsForCubic(int crossings,
+<i>866</i>&nbsp;                                            float rxmin, float rymin,
+<i>867</i>&nbsp;                                            float rxmax, float rymax,
+<i>868</i>&nbsp;                                            float x0,  float y0,
+<i>869</i>&nbsp;                                            float xc0, float yc0,
+<i>870</i>&nbsp;                                            float xc1, float yc1,
+<i>871</i>&nbsp;                                            float x1,  float y1,
+<i>872</i>&nbsp;                                            int level)
+<i>873</i>&nbsp;    {
+<b class="nc"><i>874</i>&nbsp;        if (y0 &gt;= rymax &amp;&amp; yc0 &gt;= rymax &amp;&amp; yc1 &gt;= rymax &amp;&amp; y1 &gt;= rymax) {</b>
+<b class="nc"><i>875</i>&nbsp;            return crossings;</b>
+<i>876</i>&nbsp;        }
+<b class="nc"><i>877</i>&nbsp;        if (y0 &lt;= rymin &amp;&amp; yc0 &lt;= rymin &amp;&amp; yc1 &lt;= rymin &amp;&amp; y1 &lt;= rymin) {</b>
+<b class="nc"><i>878</i>&nbsp;            return crossings;</b>
+<i>879</i>&nbsp;        }
+<b class="nc"><i>880</i>&nbsp;        if (x0 &lt;= rxmin &amp;&amp; xc0 &lt;= rxmin &amp;&amp; xc1 &lt;= rxmin &amp;&amp; x1 &lt;= rxmin) {</b>
+<b class="nc"><i>881</i>&nbsp;            return crossings;</b>
+<i>882</i>&nbsp;        }
+<b class="nc"><i>883</i>&nbsp;        if (x0 &gt;= rxmax &amp;&amp; xc0 &gt;= rxmax &amp;&amp; xc1 &gt;= rxmax &amp;&amp; x1 &gt;= rxmax) {</b>
+<i>884</i>&nbsp;            // Cubic is entirely to the right of the rect
+<i>885</i>&nbsp;            // and the vertical range of the 4 Y coordinates of the cubic
+<i>886</i>&nbsp;            // overlaps the vertical range of the rect by a non-empty amount
+<i>887</i>&nbsp;            // We now judge the crossings solely based on the line segment
+<i>888</i>&nbsp;            // connecting the endpoints of the cubic.
+<i>889</i>&nbsp;            // Note that we may have 0, 1, or 2 crossings as the control
+<i>890</i>&nbsp;            // points may be causing the Y range intersection while the
+<i>891</i>&nbsp;            // two endpoints are entirely above or below.
+<b class="nc"><i>892</i>&nbsp;            if (y0 &lt; y1) {</b>
+<i>893</i>&nbsp;                // y-increasing line segment...
+<b class="nc"><i>894</i>&nbsp;                if (y0 &lt;= rymin &amp;&amp; y1 &gt;  rymin) crossings++;</b>
+<b class="nc"><i>895</i>&nbsp;                if (y0 &lt;  rymax &amp;&amp; y1 &gt;= rymax) crossings++;</b>
+<b class="nc"><i>896</i>&nbsp;            } else if (y1 &lt; y0) {</b>
+<i>897</i>&nbsp;                // y-decreasing line segment...
+<b class="nc"><i>898</i>&nbsp;                if (y1 &lt;= rymin &amp;&amp; y0 &gt;  rymin) crossings--;</b>
+<b class="nc"><i>899</i>&nbsp;                if (y1 &lt;  rymax &amp;&amp; y0 &gt;= rymax) crossings--;</b>
+<i>900</i>&nbsp;            }
+<b class="nc"><i>901</i>&nbsp;            return crossings;</b>
+<i>902</i>&nbsp;        }
+<i>903</i>&nbsp;        // The intersection of ranges is more complicated
+<i>904</i>&nbsp;        // First do trivial INTERSECTS rejection of the cases
+<i>905</i>&nbsp;        // where one of the endpoints is inside the rectangle.
+<b class="nc"><i>906</i>&nbsp;        if ((x0 &gt; rxmin &amp;&amp; x0 &lt; rxmax &amp;&amp; y0 &gt; rymin &amp;&amp; y0 &lt; rymax) ||</b>
+<i>907</i>&nbsp;            (x1 &gt; rxmin &amp;&amp; x1 &lt; rxmax &amp;&amp; y1 &gt; rymin &amp;&amp; y1 &lt; rymax))
+<i>908</i>&nbsp;        {
+<b class="nc"><i>909</i>&nbsp;            return RECT_INTERSECTS;</b>
+<i>910</i>&nbsp;        }
+<i>911</i>&nbsp;        // Otherwise, subdivide and look for one of the cases above.
+<i>912</i>&nbsp;        // double precision only has 52 bits of mantissa
+<b class="nc"><i>913</i>&nbsp;        if (level &gt; 52) {</b>
+<b class="nc"><i>914</i>&nbsp;            return rectCrossingsForLine(crossings,</b>
+<i>915</i>&nbsp;                                        rxmin, rymin, rxmax, rymax,
+<i>916</i>&nbsp;                                        x0, y0, x1, y1);
+<i>917</i>&nbsp;        }
+<b class="nc"><i>918</i>&nbsp;        float xmid = (xc0 + xc1) / 2;</b>
+<b class="nc"><i>919</i>&nbsp;        float ymid = (yc0 + yc1) / 2;</b>
+<b class="nc"><i>920</i>&nbsp;        xc0 = (x0 + xc0) / 2;</b>
+<b class="nc"><i>921</i>&nbsp;        yc0 = (y0 + yc0) / 2;</b>
+<b class="nc"><i>922</i>&nbsp;        xc1 = (xc1 + x1) / 2;</b>
+<b class="nc"><i>923</i>&nbsp;        yc1 = (yc1 + y1) / 2;</b>
+<b class="nc"><i>924</i>&nbsp;        float xc0m = (xc0 + xmid) / 2;</b>
+<b class="nc"><i>925</i>&nbsp;        float yc0m = (yc0 + ymid) / 2;</b>
+<b class="nc"><i>926</i>&nbsp;        float xmc1 = (xmid + xc1) / 2;</b>
+<b class="nc"><i>927</i>&nbsp;        float ymc1 = (ymid + yc1) / 2;</b>
+<b class="nc"><i>928</i>&nbsp;        xmid = (xc0m + xmc1) / 2;</b>
+<b class="nc"><i>929</i>&nbsp;        ymid = (yc0m + ymc1) / 2;</b>
+<b class="nc"><i>930</i>&nbsp;        if (Float.isNaN(xmid) || Float.isNaN(ymid)) {</b>
+<i>931</i>&nbsp;            // [xy]mid are NaN if any of [xy]c0m or [xy]mc1 are NaN
+<i>932</i>&nbsp;            // [xy]c0m or [xy]mc1 are NaN if any of [xy][c][01] are NaN
+<i>933</i>&nbsp;            // These values are also NaN if opposing infinities are added
+<b class="nc"><i>934</i>&nbsp;            return 0;</b>
+<i>935</i>&nbsp;        }
+<b class="nc"><i>936</i>&nbsp;        crossings = rectCrossingsForCubic(crossings,</b>
+<i>937</i>&nbsp;                                          rxmin, rymin, rxmax, rymax,
+<i>938</i>&nbsp;                                          x0, y0, xc0, yc0,
+<i>939</i>&nbsp;                                          xc0m, yc0m, xmid, ymid, level+1);
+<b class="nc"><i>940</i>&nbsp;        if (crossings != RECT_INTERSECTS) {</b>
+<b class="nc"><i>941</i>&nbsp;            crossings = rectCrossingsForCubic(crossings,</b>
+<i>942</i>&nbsp;                                              rxmin, rymin, rxmax, rymax,
+<i>943</i>&nbsp;                                              xmid, ymid, xmc1, ymc1,
+<i>944</i>&nbsp;                                              xc1, yc1, x1, y1, level+1);
+<i>945</i>&nbsp;        }
+<b class="nc"><i>946</i>&nbsp;        return crossings;</b>
+<i>947</i>&nbsp;    }
+<i>948</i>&nbsp;
+<i>949</i>&nbsp;    /**
+<i>950</i>&nbsp;     * Tests if the specified line segment intersects the interior of the
+<i>951</i>&nbsp;     * rectangle denoted by rx1, ry1, rx2, ry2.
+<i>952</i>&nbsp;     */
+<i>953</i>&nbsp;    static boolean intersectsLine(float rx1, float ry1, float rwidth,
+<i>954</i>&nbsp;        float rheight, float x1, float y1, float x2, float y2)
+<i>955</i>&nbsp;    {
+<i>956</i>&nbsp;       int out1, out2;
+<b class="nc"><i>957</i>&nbsp;       if ((out2 = outcode(rx1, ry1, rwidth, rheight, x2, y2)) == 0) {</b>
+<b class="nc"><i>958</i>&nbsp;           return true;</b>
+<i>959</i>&nbsp;       }
+<b class="nc"><i>960</i>&nbsp;       while ((out1 = outcode(rx1, ry1, rwidth, rheight, x1, y1)) != 0) {</b>
+<b class="nc"><i>961</i>&nbsp;           if ((out1 &amp; out2) != 0) {</b>
+<b class="nc"><i>962</i>&nbsp;               return false;</b>
+<i>963</i>&nbsp;           }
+<b class="nc"><i>964</i>&nbsp;           if ((out1 &amp; (OUT_LEFT | OUT_RIGHT)) != 0) {</b>
+<b class="nc"><i>965</i>&nbsp;               if ((out1 &amp; OUT_RIGHT) != 0) {</b>
+<b class="nc"><i>966</i>&nbsp;                   rx1 += rwidth;</b>
+<i>967</i>&nbsp;               }
+<b class="nc"><i>968</i>&nbsp;               y1 = y1 + (rx1 - x1) * (y2 - y1) / (x2 - x1);</b>
+<b class="nc"><i>969</i>&nbsp;               x1 = rx1;</b>
+<i>970</i>&nbsp;           } else {
+<b class="nc"><i>971</i>&nbsp;               if ((out1 &amp; OUT_BOTTOM) != 0) {</b>
+<b class="nc"><i>972</i>&nbsp;                   ry1 += rheight;</b>
+<i>973</i>&nbsp;               }
+<b class="nc"><i>974</i>&nbsp;               x1 = x1 + (ry1 - y1) * (x2 - x1) / (y2 - y1);</b>
+<b class="nc"><i>975</i>&nbsp;               y1 = ry1;</b>
+<i>976</i>&nbsp;           }
+<i>977</i>&nbsp;       }
+<b class="nc"><i>978</i>&nbsp;       return true;</b>
+<i>979</i>&nbsp;    }
+<i>980</i>&nbsp;
+<i>981</i>&nbsp;    /**
+<i>982</i>&nbsp;     * {@inheritDoc}
+<i>983</i>&nbsp;     */
+<i>984</i>&nbsp;    static int outcode(float rx, float ry, float rwidth, float rheight, float x, float y) {
+<i>985</i>&nbsp;        /*
+<i>986</i>&nbsp;         * Note on casts to double below.  If the arithmetic of
+<i>987</i>&nbsp;         * x+w or y+h is done in int, then we may get integer
+<i>988</i>&nbsp;         * overflow. By converting to double before the addition
+<i>989</i>&nbsp;         * we force the addition to be carried out in double to
+<i>990</i>&nbsp;         * avoid overflow in the comparison.
+<i>991</i>&nbsp;         *
+<i>992</i>&nbsp;         * See bug 4320890 for problems that this can cause.
+<i>993</i>&nbsp;         */
+<b class="nc"><i>994</i>&nbsp;        int out = 0;</b>
+<b class="nc"><i>995</i>&nbsp;        if (rwidth &lt;= 0) {</b>
+<b class="nc"><i>996</i>&nbsp;            out |= OUT_LEFT | OUT_RIGHT;</b>
+<b class="nc"><i>997</i>&nbsp;        } else if (x &lt; rx) {</b>
+<b class="nc"><i>998</i>&nbsp;            out |= OUT_LEFT;</b>
+<b class="nc"><i>999</i>&nbsp;        } else if (x &gt; rx + (double) rwidth) {</b>
+<b class="nc"><i>1000</i>&nbsp;            out |= OUT_RIGHT;</b>
+<i>1001</i>&nbsp;        }
+<b class="nc"><i>1002</i>&nbsp;        if (rheight &lt;= 0) {</b>
+<b class="nc"><i>1003</i>&nbsp;            out |= OUT_TOP | OUT_BOTTOM;</b>
+<b class="nc"><i>1004</i>&nbsp;        } else if (y &lt; ry) {</b>
+<b class="nc"><i>1005</i>&nbsp;            out |= OUT_TOP;</b>
+<b class="nc"><i>1006</i>&nbsp;        } else if (y &gt; ry + (double) rheight) {</b>
+<b class="nc"><i>1007</i>&nbsp;            out |= OUT_BOTTOM;</b>
+<i>1008</i>&nbsp;        }
+<b class="nc"><i>1009</i>&nbsp;        return out;</b>
+<i>1010</i>&nbsp;    }
+<i>1011</i>&nbsp;
+<i>1012</i>&nbsp;    /**
+<i>1013</i>&nbsp;     * The bitmask that indicates that a point lies to the left of
+<i>1014</i>&nbsp;     * this &lt;code&gt;Rectangle2D&lt;/code&gt;.
+<i>1015</i>&nbsp;     */
+<i>1016</i>&nbsp;    public static final int OUT_LEFT = 1;
+<i>1017</i>&nbsp;
+<i>1018</i>&nbsp;    /**
+<i>1019</i>&nbsp;     * The bitmask that indicates that a point lies above
+<i>1020</i>&nbsp;     * this &lt;code&gt;Rectangle2D&lt;/code&gt;.
+<i>1021</i>&nbsp;     */
+<i>1022</i>&nbsp;    public static final int OUT_TOP = 2;
+<i>1023</i>&nbsp;
+<i>1024</i>&nbsp;    /**
+<i>1025</i>&nbsp;     * The bitmask that indicates that a point lies to the right of
+<i>1026</i>&nbsp;     * this &lt;code&gt;Rectangle2D&lt;/code&gt;.
+<i>1027</i>&nbsp;     */
+<i>1028</i>&nbsp;    public static final int OUT_RIGHT = 4;
+<i>1029</i>&nbsp;
+<i>1030</i>&nbsp;    /**
+<i>1031</i>&nbsp;     * The bitmask that indicates that a point lies below
+<i>1032</i>&nbsp;     * this &lt;code&gt;Rectangle2D&lt;/code&gt;.
+<i>1033</i>&nbsp;     */
+<i>1034</i>&nbsp;    public static final int OUT_BOTTOM = 8;
+<i>1035</i>&nbsp;
+<i>1036</i>&nbsp;    public static void accumulate(float bbox[], Shape s, BaseTransform tx) {
+<i>1037</i>&nbsp;        // Note that this is turned off since we cannot guarantee
+<i>1038</i>&nbsp;        // that the shape implementation will calculate minimal bounds
+<i>1039</i>&nbsp;        // without a little more work on the javafx.geom classes...
+<i>1040</i>&nbsp;//        if (tx.isIdentity()) {
+<i>1041</i>&nbsp;//            // The shape itself will often have a more optimal algorithm
+<i>1042</i>&nbsp;//            // to calculate the untransformed bounds...
+<i>1043</i>&nbsp;//            RectBounds r2d = s.getBounds();
+<i>1044</i>&nbsp;//            if (bbox[0] &gt; r2d.getMinX()) bbox[0] = r2d.getMinX();
+<i>1045</i>&nbsp;//            if (bbox[1] &gt; r2d.getMinY()) bbox[1] = r2d.getMinY();
+<i>1046</i>&nbsp;//            if (bbox[2] &lt; r2d.getMaxX()) bbox[2] = r2d.getMaxX();
+<i>1047</i>&nbsp;//            if (bbox[3] &lt; r2d.getMaxY()) bbox[3] = r2d.getMaxY();
+<i>1048</i>&nbsp;//            return;
+<i>1049</i>&nbsp;//        }
+<b class="fc"><i>1050</i>&nbsp;        PathIterator pi = s.getPathIterator(tx);</b>
+<b class="fc"><i>1051</i>&nbsp;        float coords[] = new float[6];</b>
+<b class="fc"><i>1052</i>&nbsp;        float mx = 0f, my = 0f, x0 = 0f, y0 = 0f, x1, y1;</b>
+<b class="fc"><i>1053</i>&nbsp;        while (!pi.isDone()) {</b>
+<b class="fc"><i>1054</i>&nbsp;            switch (pi.currentSegment(coords)) {</b>
+<i>1055</i>&nbsp;                case PathIterator.SEG_MOVETO:
+<b class="fc"><i>1056</i>&nbsp;                    mx = coords[0];</b>
+<b class="fc"><i>1057</i>&nbsp;                    my = coords[1];</b>
+<i>1058</i>&nbsp;                    /* NOBREAK */
+<i>1059</i>&nbsp;                case PathIterator.SEG_LINETO:
+<b class="fc"><i>1060</i>&nbsp;                    x0 = coords[0];</b>
+<b class="fc"><i>1061</i>&nbsp;                    y0 = coords[1];</b>
+<b class="fc"><i>1062</i>&nbsp;                    if (bbox[0] &gt; x0) bbox[0] = x0;</b>
+<b class="fc"><i>1063</i>&nbsp;                    if (bbox[1] &gt; y0) bbox[1] = y0;</b>
+<b class="fc"><i>1064</i>&nbsp;                    if (bbox[2] &lt; x0) bbox[2] = x0;</b>
+<b class="fc"><i>1065</i>&nbsp;                    if (bbox[3] &lt; y0) bbox[3] = y0;</b>
+<i>1066</i>&nbsp;                    break;
+<i>1067</i>&nbsp;                case PathIterator.SEG_QUADTO:
+<b class="nc"><i>1068</i>&nbsp;                    x1 = coords[2];</b>
+<b class="nc"><i>1069</i>&nbsp;                    y1 = coords[3];</b>
+<b class="nc"><i>1070</i>&nbsp;                    if (bbox[0] &gt; x1) bbox[0] = x1;</b>
+<b class="nc"><i>1071</i>&nbsp;                    if (bbox[1] &gt; y1) bbox[1] = y1;</b>
+<b class="nc"><i>1072</i>&nbsp;                    if (bbox[2] &lt; x1) bbox[2] = x1;</b>
+<b class="nc"><i>1073</i>&nbsp;                    if (bbox[3] &lt; y1) bbox[3] = y1;</b>
+<b class="nc"><i>1074</i>&nbsp;                    if (bbox[0] &gt; coords[0] || bbox[2] &lt; coords[0]) {</b>
+<b class="nc"><i>1075</i>&nbsp;                        accumulateQuad(bbox, 0, x0, coords[0], x1);</b>
+<i>1076</i>&nbsp;                    }
+<b class="nc"><i>1077</i>&nbsp;                    if (bbox[1] &gt; coords[1] || bbox[3] &lt; coords[1]) {</b>
+<b class="nc"><i>1078</i>&nbsp;                        accumulateQuad(bbox, 1, y0, coords[1], y1);</b>
+<i>1079</i>&nbsp;                    }
+<b class="nc"><i>1080</i>&nbsp;                    x0 = x1;</b>
+<b class="nc"><i>1081</i>&nbsp;                    y0 = y1;</b>
+<b class="nc"><i>1082</i>&nbsp;                    break;</b>
+<i>1083</i>&nbsp;                case PathIterator.SEG_CUBICTO:
+<b class="fc"><i>1084</i>&nbsp;                    x1 = coords[4];</b>
+<b class="fc"><i>1085</i>&nbsp;                    y1 = coords[5];</b>
+<b class="fc"><i>1086</i>&nbsp;                    if (bbox[0] &gt; x1) bbox[0] = x1;</b>
+<b class="fc"><i>1087</i>&nbsp;                    if (bbox[1] &gt; y1) bbox[1] = y1;</b>
+<b class="fc"><i>1088</i>&nbsp;                    if (bbox[2] &lt; x1) bbox[2] = x1;</b>
+<b class="fc"><i>1089</i>&nbsp;                    if (bbox[3] &lt; y1) bbox[3] = y1;</b>
+<b class="fc"><i>1090</i>&nbsp;                    if (bbox[0] &gt; coords[0] || bbox[2] &lt; coords[0] ||</b>
+<i>1091</i>&nbsp;                        bbox[0] &gt; coords[2] || bbox[2] &lt; coords[2])
+<i>1092</i>&nbsp;                    {
+<b class="nc"><i>1093</i>&nbsp;                        accumulateCubic(bbox, 0, x0, coords[0], coords[2], x1);</b>
+<i>1094</i>&nbsp;                    }
+<b class="fc"><i>1095</i>&nbsp;                    if (bbox[1] &gt; coords[1] || bbox[3] &lt; coords[1] ||</b>
+<i>1096</i>&nbsp;                        bbox[1] &gt; coords[3] || bbox[3] &lt; coords[3])
+<i>1097</i>&nbsp;                    {
+<b class="nc"><i>1098</i>&nbsp;                        accumulateCubic(bbox, 1, y0, coords[1], coords[3], y1);</b>
+<i>1099</i>&nbsp;                    }
+<b class="fc"><i>1100</i>&nbsp;                    x0 = x1;</b>
+<b class="fc"><i>1101</i>&nbsp;                    y0 = y1;</b>
+<b class="fc"><i>1102</i>&nbsp;                    break;</b>
+<i>1103</i>&nbsp;                case PathIterator.SEG_CLOSE:
+<b class="fc"><i>1104</i>&nbsp;                    x0 = mx;</b>
+<b class="fc"><i>1105</i>&nbsp;                    y0 = my;</b>
+<i>1106</i>&nbsp;                    break;
+<i>1107</i>&nbsp;            }
+<b class="fc"><i>1108</i>&nbsp;            pi.next();</b>
+<i>1109</i>&nbsp;        }
+<b class="fc"><i>1110</i>&nbsp;    }</b>
+<i>1111</i>&nbsp;
+<i>1112</i>&nbsp;    public static void accumulateQuad(float bbox[], int off,
+<i>1113</i>&nbsp;                                      float v0, float vc, float v1)
+<i>1114</i>&nbsp;    {
+<i>1115</i>&nbsp;        // Breaking this quad down into a polynomial:
+<i>1116</i>&nbsp;        // eqn[0] = v0;
+<i>1117</i>&nbsp;        // eqn[1] = vc + vc - v0 - v0;
+<i>1118</i>&nbsp;        // eqn[2] = v0 - vc - vc + v1;
+<i>1119</i>&nbsp;        // Deriving the polynomial:
+<i>1120</i>&nbsp;        // eqn&#39;[0] = 1*eqn[1] = 2*(vc-v0)
+<i>1121</i>&nbsp;        // eqn&#39;[1] = 2*eqn[2] = 2*((v1-vc)-(vc-v0))
+<i>1122</i>&nbsp;        // Solving for zeroes on the derivative:
+<i>1123</i>&nbsp;        // e1*t + e0 = 0
+<i>1124</i>&nbsp;        // t = -e0/e1;
+<i>1125</i>&nbsp;        // t = -2(vc-v0) / 2((v1-vc)-(vc-v0))
+<i>1126</i>&nbsp;        // t = (v0-vc) / (v1-vc+v0-vc)
+<b class="nc"><i>1127</i>&nbsp;        float num = v0 - vc;</b>
+<b class="nc"><i>1128</i>&nbsp;        float den = v1 - vc + num;</b>
+<b class="nc"><i>1129</i>&nbsp;        if (den != 0f) {</b>
+<b class="nc"><i>1130</i>&nbsp;            float t = num / den;</b>
+<b class="nc"><i>1131</i>&nbsp;            if (t &gt; 0 &amp;&amp; t &lt; 1) {</b>
+<b class="nc"><i>1132</i>&nbsp;                float u = 1f - t;</b>
+<b class="nc"><i>1133</i>&nbsp;                float v = v0 * u * u + 2 * vc * t * u + v1 * t * t;</b>
+<b class="nc"><i>1134</i>&nbsp;                if (bbox[off] &gt; v) bbox[off] = v;</b>
+<b class="nc"><i>1135</i>&nbsp;                if (bbox[off+2] &lt; v) bbox[off+2] = v;</b>
+<i>1136</i>&nbsp;            }
+<i>1137</i>&nbsp;        }
+<b class="nc"><i>1138</i>&nbsp;    }</b>
+<i>1139</i>&nbsp;
+<i>1140</i>&nbsp;    public static void accumulateCubic(float bbox[], int off,
+<i>1141</i>&nbsp;                                       float v0, float vc0, float vc1, float v1)
+<i>1142</i>&nbsp;    {
+<i>1143</i>&nbsp;        // Breaking this cubic down into a polynomial:
+<i>1144</i>&nbsp;        // eqn[0] = v0;
+<i>1145</i>&nbsp;        // eqn[1] = (vc0 - v0) * 3f;
+<i>1146</i>&nbsp;        // eqn[2] = (vc1 - vc0 - vc0 + v0) * 3f;
+<i>1147</i>&nbsp;        // eqn[3] = v1 + (vc0 - vc1) * 3f - v0;
+<i>1148</i>&nbsp;        // Deriving the polynomial:
+<i>1149</i>&nbsp;        // eqn&#39;[0] = 1*eqn[1] = 3(vc0-v0)
+<i>1150</i>&nbsp;        // eqn&#39;[1] = 2*eqn[2] = 6((vc1-vc0)-(vc0-v0))
+<i>1151</i>&nbsp;        // eqn&#39;[2] = 3*eqn[3] = 3((v1-vc1)-2(vc1-vc0)+(vc0-v0))
+<i>1152</i>&nbsp;        // Solving for zeroes on the derivative:
+<i>1153</i>&nbsp;        // e2*t*t + e1*t + e0 = a*t*t + b*t + c = 0
+<i>1154</i>&nbsp;        // Note that in solving for 0 we can divide all e0,e1,e2 by 3
+<i>1155</i>&nbsp;        // t = (-b +/- sqrt(b*b-4ac))/2a
+<b class="nc"><i>1156</i>&nbsp;        float c = vc0 - v0;</b>
+<b class="nc"><i>1157</i>&nbsp;        float b = 2f * ((vc1 - vc0) - c);</b>
+<b class="nc"><i>1158</i>&nbsp;        float a = (v1 - vc1) - b - c;</b>
+<b class="nc"><i>1159</i>&nbsp;        if (a == 0f) {</b>
+<i>1160</i>&nbsp;            // The quadratic parabola has degenerated to a line.
+<b class="nc"><i>1161</i>&nbsp;            if (b == 0f) {</b>
+<i>1162</i>&nbsp;                // The line has degenerated to a constant.
+<b class="nc"><i>1163</i>&nbsp;                return;</b>
+<i>1164</i>&nbsp;            }
+<b class="nc"><i>1165</i>&nbsp;            accumulateCubic(bbox, off, -c/b, v0, vc0, vc1, v1);</b>
+<i>1166</i>&nbsp;        } else {
+<i>1167</i>&nbsp;            // From Numerical Recipes, 5.6, Quadratic and Cubic Equations
+<b class="nc"><i>1168</i>&nbsp;            float d = b * b - 4f * a * c;</b>
+<b class="nc"><i>1169</i>&nbsp;            if (d &lt; 0f) {</b>
+<i>1170</i>&nbsp;                // If d &lt; 0.0, then there are no roots
+<b class="nc"><i>1171</i>&nbsp;                return;</b>
+<i>1172</i>&nbsp;            }
+<b class="nc"><i>1173</i>&nbsp;            d = (float) Math.sqrt(d);</b>
+<i>1174</i>&nbsp;            // For accuracy, calculate one root using:
+<i>1175</i>&nbsp;            //     (-b +/- d) / 2a
+<i>1176</i>&nbsp;            // and the other using:
+<i>1177</i>&nbsp;            //     2c / (-b +/- d)
+<i>1178</i>&nbsp;            // Choose the sign of the +/- so that b+d gets larger in magnitude
+<b class="nc"><i>1179</i>&nbsp;            if (b &lt; 0f) {</b>
+<b class="nc"><i>1180</i>&nbsp;                d = -d;</b>
+<i>1181</i>&nbsp;            }
+<b class="nc"><i>1182</i>&nbsp;            float q = (b + d) / -2f;</b>
+<i>1183</i>&nbsp;            // We already tested a for being 0 above
+<b class="nc"><i>1184</i>&nbsp;            accumulateCubic(bbox, off, q/a, v0, vc0, vc1, v1);</b>
+<b class="nc"><i>1185</i>&nbsp;            if (q != 0f) {</b>
+<b class="nc"><i>1186</i>&nbsp;                accumulateCubic(bbox, off, c/q, v0, vc0, vc1, v1);</b>
+<i>1187</i>&nbsp;            }
+<i>1188</i>&nbsp;        }
+<b class="nc"><i>1189</i>&nbsp;    }</b>
+<i>1190</i>&nbsp;
+<i>1191</i>&nbsp;    public static void accumulateCubic(float bbox[], int off, float t,
+<i>1192</i>&nbsp;                                       float v0, float vc0, float vc1, float v1)
+<i>1193</i>&nbsp;    {
+<b class="nc"><i>1194</i>&nbsp;        if (t &gt; 0 &amp;&amp; t &lt; 1) {</b>
+<b class="nc"><i>1195</i>&nbsp;            float u = 1f - t;</b>
+<b class="nc"><i>1196</i>&nbsp;            float v =        v0 * u * u * u</b>
+<i>1197</i>&nbsp;                      + 3 * vc0 * t * u * u
+<i>1198</i>&nbsp;                      + 3 * vc1 * t * t * u
+<i>1199</i>&nbsp;                      +      v1 * t * t * t;
+<b class="nc"><i>1200</i>&nbsp;            if (bbox[off] &gt; v) bbox[off] = v;</b>
+<b class="nc"><i>1201</i>&nbsp;            if (bbox[off+2] &lt; v) bbox[off+2] = v;</b>
+<i>1202</i>&nbsp;        }
+<b class="nc"><i>1203</i>&nbsp;    }</b>
+<i>1204</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2017-12-04 21:49</div>
+</div>
+</body>
+</html>

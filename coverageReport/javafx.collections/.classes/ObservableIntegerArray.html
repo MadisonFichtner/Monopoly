@@ -1,0 +1,247 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: ObservableIntegerArray</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">javafx.collections</a> ]
+</div>
+
+<h1>Coverage Summary for Class: ObservableIntegerArray (javafx.collections)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+</tr>
+<tr>
+  <td class="name">ObservableIntegerArray</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright (c) 2013, 2017, Oracle and/or its affiliates. All rights reserved.
+<i>3</i>&nbsp; * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+<i>4</i>&nbsp; *
+<i>5</i>&nbsp; *
+<i>6</i>&nbsp; *
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; *
+<i>11</i>&nbsp; *
+<i>12</i>&nbsp; *
+<i>13</i>&nbsp; *
+<i>14</i>&nbsp; *
+<i>15</i>&nbsp; *
+<i>16</i>&nbsp; *
+<i>17</i>&nbsp; *
+<i>18</i>&nbsp; *
+<i>19</i>&nbsp; *
+<i>20</i>&nbsp; *
+<i>21</i>&nbsp; *
+<i>22</i>&nbsp; *
+<i>23</i>&nbsp; *
+<i>24</i>&nbsp; */
+<i>25</i>&nbsp;package javafx.collections;
+<i>26</i>&nbsp;
+<i>27</i>&nbsp;/**
+<i>28</i>&nbsp; * {@code ObservableIntegerArray} is an {@code int[]} array that allows listeners
+<i>29</i>&nbsp; * to track changes when they occur. In order to track changes, the internal
+<i>30</i>&nbsp; * array is encapsulated and there is no direct access available from the outside.
+<i>31</i>&nbsp; * Bulk operations are supported but they always do a copy of the data range.
+<i>32</i>&nbsp; *
+<i>33</i>&nbsp; * @see ArrayChangeListener
+<i>34</i>&nbsp; * @since JavaFX 8.0
+<i>35</i>&nbsp; */
+<i>36</i>&nbsp;public interface ObservableIntegerArray extends ObservableArray&lt;ObservableIntegerArray&gt; {
+<i>37</i>&nbsp;
+<i>38</i>&nbsp;    /**
+<i>39</i>&nbsp;     * Copies specified portion of array into {@code dest} array. Throws
+<i>40</i>&nbsp;     * the same exceptions as {@link System#arraycopy(java.lang.Object,
+<i>41</i>&nbsp;     * int, java.lang.Object, int, int) System.arraycopy()} method.
+<i>42</i>&nbsp;     * @param srcIndex starting position in the observable array
+<i>43</i>&nbsp;     * @param dest destination array
+<i>44</i>&nbsp;     * @param destIndex starting position in destination array
+<i>45</i>&nbsp;     * @param length length of portion to copy
+<i>46</i>&nbsp;     */
+<i>47</i>&nbsp;    public void copyTo(int srcIndex, int[] dest, int destIndex, int length);
+<i>48</i>&nbsp;
+<i>49</i>&nbsp;    /**
+<i>50</i>&nbsp;     * Copies specified portion of array into {@code dest} observable array.
+<i>51</i>&nbsp;     * Throws the same exceptions as {@link System#arraycopy(java.lang.Object,
+<i>52</i>&nbsp;     * int, java.lang.Object, int, int) System.arraycopy()} method.
+<i>53</i>&nbsp;     * @param srcIndex starting position in the observable array
+<i>54</i>&nbsp;     * @param dest destination observable array
+<i>55</i>&nbsp;     * @param destIndex starting position in destination observable array
+<i>56</i>&nbsp;     * @param length length of portion to copy
+<i>57</i>&nbsp;     */
+<i>58</i>&nbsp;    public void copyTo(int srcIndex, ObservableIntegerArray dest, int destIndex, int length);
+<i>59</i>&nbsp;
+<i>60</i>&nbsp;    /**
+<i>61</i>&nbsp;     * Gets a single value of array. This is generally as fast as direct access
+<i>62</i>&nbsp;     * to an array and eliminates necessity to make a copy of array.
+<i>63</i>&nbsp;     * @param index index of element to get
+<i>64</i>&nbsp;     * @return value at the given index
+<i>65</i>&nbsp;     * @throws ArrayIndexOutOfBoundsException if {@code index} is outside
+<i>66</i>&nbsp;     * array bounds
+<i>67</i>&nbsp;     */
+<i>68</i>&nbsp;    public int get(int index);
+<i>69</i>&nbsp;
+<i>70</i>&nbsp;    /**
+<i>71</i>&nbsp;     * Appends given {@code elements} to the end of this array. Capacity is increased
+<i>72</i>&nbsp;     * if necessary to match the new size of the data.
+<i>73</i>&nbsp;     * @param elements elements to append
+<i>74</i>&nbsp;     */
+<i>75</i>&nbsp;    public void addAll(int... elements);
+<i>76</i>&nbsp;
+<i>77</i>&nbsp;    /**
+<i>78</i>&nbsp;     * Appends content of a given observable array to the end of this array.
+<i>79</i>&nbsp;     * Capacity is increased if necessary to match the new size of the data.
+<i>80</i>&nbsp;     * @param src observable array with elements to append
+<i>81</i>&nbsp;     */
+<i>82</i>&nbsp;    public void addAll(ObservableIntegerArray src);
+<i>83</i>&nbsp;
+<i>84</i>&nbsp;    /**
+<i>85</i>&nbsp;     * Appends a portion of given array to the end of this array.
+<i>86</i>&nbsp;     * Capacity is increased if necessary to match the new size of the data.
+<i>87</i>&nbsp;     * @param src source array
+<i>88</i>&nbsp;     * @param srcIndex starting position in source array
+<i>89</i>&nbsp;     * @param length length of portion to append
+<i>90</i>&nbsp;     */
+<i>91</i>&nbsp;    public void addAll(int[] src, int srcIndex, int length);
+<i>92</i>&nbsp;
+<i>93</i>&nbsp;    /**
+<i>94</i>&nbsp;     * Appends a portion of given observable array to the end of this array.
+<i>95</i>&nbsp;     * Capacity is increased if necessary to match the new size of the data.
+<i>96</i>&nbsp;     * @param src source observable array
+<i>97</i>&nbsp;     * @param srcIndex starting position in source array
+<i>98</i>&nbsp;     * @param length length of portion to append
+<i>99</i>&nbsp;     */
+<i>100</i>&nbsp;    public void addAll(ObservableIntegerArray src, int srcIndex, int length);
+<i>101</i>&nbsp;
+<i>102</i>&nbsp;    /**
+<i>103</i>&nbsp;     * Replaces this observable array content with given elements.
+<i>104</i>&nbsp;     * Capacity is increased if necessary to match the new size of the data.
+<i>105</i>&nbsp;     * @param elements elements to put into array content
+<i>106</i>&nbsp;     * @throws NullPointerException if {@code src} is null
+<i>107</i>&nbsp;     */
+<i>108</i>&nbsp;    public void setAll(int... elements);
+<i>109</i>&nbsp;
+<i>110</i>&nbsp;    /**
+<i>111</i>&nbsp;     * Replaces this observable array content with a copy of portion of
+<i>112</i>&nbsp;     * a given array.
+<i>113</i>&nbsp;     * Capacity is increased if necessary to match the new size of the data.
+<i>114</i>&nbsp;     * @param src source array to copy.
+<i>115</i>&nbsp;     * @param srcIndex starting position in source observable array
+<i>116</i>&nbsp;     * @param length length of a portion to copy
+<i>117</i>&nbsp;     * @throws NullPointerException if {@code src} is null
+<i>118</i>&nbsp;     */
+<i>119</i>&nbsp;    public void setAll(int[] src, int srcIndex, int length);
+<i>120</i>&nbsp;
+<i>121</i>&nbsp;    /**
+<i>122</i>&nbsp;     * Replaces this observable array content with a copy of given observable array.
+<i>123</i>&nbsp;     * Capacity is increased if necessary to match the new size of the data.
+<i>124</i>&nbsp;     * @param src source observable array to copy.
+<i>125</i>&nbsp;     * @throws NullPointerException if {@code src} is null
+<i>126</i>&nbsp;     */
+<i>127</i>&nbsp;    public void setAll(ObservableIntegerArray src);
+<i>128</i>&nbsp;
+<i>129</i>&nbsp;    /**
+<i>130</i>&nbsp;     * Replaces this observable array content with a portion of a given
+<i>131</i>&nbsp;     * observable array.
+<i>132</i>&nbsp;     * Capacity is increased if necessary to match the new size of the data.
+<i>133</i>&nbsp;     * @param src source observable array to copy.
+<i>134</i>&nbsp;     * @param srcIndex starting position in source observable array
+<i>135</i>&nbsp;     * @param length length of a portion to copy
+<i>136</i>&nbsp;     * @throws NullPointerException if {@code src} is null
+<i>137</i>&nbsp;     */
+<i>138</i>&nbsp;    public void setAll(ObservableIntegerArray src, int srcIndex, int length);
+<i>139</i>&nbsp;
+<i>140</i>&nbsp;    /**
+<i>141</i>&nbsp;     * Copies a portion of specified array into this observable array. Throws
+<i>142</i>&nbsp;     * the same exceptions as {@link System#arraycopy(java.lang.Object,
+<i>143</i>&nbsp;     * int, java.lang.Object, int, int) System.arraycopy()} method.
+<i>144</i>&nbsp;     * @param destIndex the starting destination position in this observable array
+<i>145</i>&nbsp;     * @param src source array to copy
+<i>146</i>&nbsp;     * @param srcIndex starting position in source array
+<i>147</i>&nbsp;     * @param length length of portion to copy
+<i>148</i>&nbsp;     */
+<i>149</i>&nbsp;    public void set(int destIndex, int[] src, int srcIndex, int length);
+<i>150</i>&nbsp;
+<i>151</i>&nbsp;    /**
+<i>152</i>&nbsp;     * Copies a portion of specified observable array into this observable array.
+<i>153</i>&nbsp;     * Throws the same exceptions as {@link System#arraycopy(java.lang.Object,
+<i>154</i>&nbsp;     * int, java.lang.Object, int, int) System.arraycopy()} method.
+<i>155</i>&nbsp;     * @param destIndex the starting destination position in this observable array
+<i>156</i>&nbsp;     * @param src source observable array to copy
+<i>157</i>&nbsp;     * @param srcIndex starting position in source array
+<i>158</i>&nbsp;     * @param length length of portion to copy
+<i>159</i>&nbsp;     */
+<i>160</i>&nbsp;    public void set(int destIndex, ObservableIntegerArray src, int srcIndex, int length);
+<i>161</i>&nbsp;
+<i>162</i>&nbsp;    /**
+<i>163</i>&nbsp;     * Sets a single value in the array. Avoid using this method if many values
+<i>164</i>&nbsp;     * are updated, use {@linkplain #set(int, int[], int, int)} update method
+<i>165</i>&nbsp;     * instead with as minimum number of invocations as possible.
+<i>166</i>&nbsp;     * @param index index of the value to set
+<i>167</i>&nbsp;     * @param value new value for the given index
+<i>168</i>&nbsp;     * @throws ArrayIndexOutOfBoundsException if {@code index} is outside
+<i>169</i>&nbsp;     * array bounds
+<i>170</i>&nbsp;     */
+<i>171</i>&nbsp;    public void set(int index, int value);
+<i>172</i>&nbsp;
+<i>173</i>&nbsp;    /**
+<i>174</i>&nbsp;     * Returns an array containing copy of the observable array.
+<i>175</i>&nbsp;     * If the observable array fits in the specified array, it is copied therein.
+<i>176</i>&nbsp;     * Otherwise, a new array is allocated with the size of the observable array.
+<i>177</i>&nbsp;     *
+<i>178</i>&nbsp;     * @param dest the array into which the observable array to be copied,
+<i>179</i>&nbsp;     *          if it is big enough; otherwise, a new int array is allocated.
+<i>180</i>&nbsp;     *          Ignored, if null.
+<i>181</i>&nbsp;     * @return an int array containing the copy of the observable array
+<i>182</i>&nbsp;     */
+<i>183</i>&nbsp;    public int[] toArray(int[] dest);
+<i>184</i>&nbsp;
+<i>185</i>&nbsp;    /**
+<i>186</i>&nbsp;     * Returns an array containing copy of specified portion of the observable array.
+<i>187</i>&nbsp;     * If specified portion of the observable array fits in the specified array,
+<i>188</i>&nbsp;     * it is copied therein. Otherwise, a new array of given length is allocated.
+<i>189</i>&nbsp;     *
+<i>190</i>&nbsp;     * @param srcIndex starting position in the observable array
+<i>191</i>&nbsp;     * @param dest the array into which specified portion of the observable array
+<i>192</i>&nbsp;     *          to be copied, if it is big enough;
+<i>193</i>&nbsp;     *          otherwise, a new int array is allocated.
+<i>194</i>&nbsp;     *          Ignored, if null.
+<i>195</i>&nbsp;     * @param length length of portion to copy
+<i>196</i>&nbsp;     * @return an int array containing the copy of specified portion the observable array
+<i>197</i>&nbsp;     */
+<i>198</i>&nbsp;    public int[] toArray(int srcIndex, int[] dest, int length);
+<i>199</i>&nbsp;
+<i>200</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2017-12-04 21:49</div>
+</div>
+</body>
+</html>

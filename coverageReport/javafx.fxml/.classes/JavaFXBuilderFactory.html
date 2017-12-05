@@ -1,0 +1,551 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: JavaFXBuilderFactory</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">javafx.fxml</a> ]
+</div>
+
+<h1>Coverage Summary for Class: JavaFXBuilderFactory (javafx.fxml)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">JavaFXBuilderFactory</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (4/ 4)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    69.2%
+  </span>
+  <span class="absValue">
+    (27/ 39)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright (c) 2010, 2017, Oracle and/or its affiliates. All rights reserved.
+<i>3</i>&nbsp; * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+<i>4</i>&nbsp; *
+<i>5</i>&nbsp; *
+<i>6</i>&nbsp; *
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; *
+<i>11</i>&nbsp; *
+<i>12</i>&nbsp; *
+<i>13</i>&nbsp; *
+<i>14</i>&nbsp; *
+<i>15</i>&nbsp; *
+<i>16</i>&nbsp; *
+<i>17</i>&nbsp; *
+<i>18</i>&nbsp; *
+<i>19</i>&nbsp; *
+<i>20</i>&nbsp; *
+<i>21</i>&nbsp; *
+<i>22</i>&nbsp; *
+<i>23</i>&nbsp; *
+<i>24</i>&nbsp; */
+<i>25</i>&nbsp;package javafx.fxml;
+<i>26</i>&nbsp;
+<i>27</i>&nbsp;import com.sun.javafx.fxml.BeanAdapter;
+<i>28</i>&nbsp;import com.sun.javafx.fxml.builder.JavaFXFontBuilder;
+<i>29</i>&nbsp;import com.sun.javafx.fxml.builder.JavaFXImageBuilder;
+<i>30</i>&nbsp;import com.sun.javafx.fxml.builder.JavaFXSceneBuilder;
+<i>31</i>&nbsp;import com.sun.javafx.fxml.builder.ProxyBuilder;
+<i>32</i>&nbsp;import com.sun.javafx.fxml.builder.TriangleMeshBuilder;
+<i>33</i>&nbsp;import com.sun.javafx.fxml.builder.URLBuilder;
+<i>34</i>&nbsp;import java.lang.annotation.Annotation;
+<i>35</i>&nbsp;import java.lang.reflect.Array;
+<i>36</i>&nbsp;import java.lang.reflect.Constructor;
+<i>37</i>&nbsp;import java.lang.reflect.InvocationTargetException;
+<i>38</i>&nbsp;import java.lang.reflect.Method;
+<i>39</i>&nbsp;import java.lang.reflect.Modifier;
+<i>40</i>&nbsp;import java.net.URL;
+<i>41</i>&nbsp;import java.util.AbstractMap;
+<i>42</i>&nbsp;import java.util.ArrayList;
+<i>43</i>&nbsp;import java.util.Arrays;
+<i>44</i>&nbsp;import java.util.Collection;
+<i>45</i>&nbsp;import java.util.HashMap;
+<i>46</i>&nbsp;import java.util.HashSet;
+<i>47</i>&nbsp;import java.util.Iterator;
+<i>48</i>&nbsp;import java.util.List;
+<i>49</i>&nbsp;import java.util.Map;
+<i>50</i>&nbsp;import java.util.Set;
+<i>51</i>&nbsp;import java.util.logging.Level;
+<i>52</i>&nbsp;import java.util.logging.Logger;
+<i>53</i>&nbsp;import javafx.application.ConditionalFeature;
+<i>54</i>&nbsp;import javafx.application.Platform;
+<i>55</i>&nbsp;import javafx.beans.NamedArg;
+<i>56</i>&nbsp;import javafx.collections.FXCollections;
+<i>57</i>&nbsp;import javafx.collections.ObservableList;
+<i>58</i>&nbsp;import javafx.collections.ObservableMap;
+<i>59</i>&nbsp;import javafx.scene.Node;
+<i>60</i>&nbsp;import javafx.scene.Scene;
+<i>61</i>&nbsp;import javafx.scene.image.Image;
+<i>62</i>&nbsp;import javafx.scene.shape.TriangleMesh;
+<i>63</i>&nbsp;import javafx.scene.text.Font;
+<i>64</i>&nbsp;import javafx.util.Builder;
+<i>65</i>&nbsp;import javafx.util.BuilderFactory;
+<i>66</i>&nbsp;import sun.reflect.misc.ConstructorUtil;
+<i>67</i>&nbsp;import sun.reflect.misc.MethodUtil;
+<i>68</i>&nbsp;
+<i>69</i>&nbsp;/**
+<i>70</i>&nbsp; * JavaFX builder factory.
+<i>71</i>&nbsp; * @since JavaFX 2.0
+<i>72</i>&nbsp; */
+<i>73</i>&nbsp;public final class JavaFXBuilderFactory implements BuilderFactory {
+<i>74</i>&nbsp;    private final ClassLoader classLoader;
+<i>75</i>&nbsp;    private final boolean webSupported;
+<i>76</i>&nbsp;    private static final String WEBVIEW_NAME = &quot;javafx.scene.web.WebView&quot;;
+<i>77</i>&nbsp;
+<i>78</i>&nbsp;    // WebViewBuilder class name loaded via reflection
+<i>79</i>&nbsp;// TODO: Uncomment the following when RT-40037 is fixed.
+<i>80</i>&nbsp;//    private static final String WEBVIEW_BUILDER_NAME =
+<i>81</i>&nbsp;//            &quot;com.sun.javafx.fxml.builder.web.JavaFXWebViewBuilder&quot;;
+<i>82</i>&nbsp;
+<i>83</i>&nbsp;// TODO: Remove the following when RT-40037 is fixed.
+<i>84</i>&nbsp;    private static final String WEBVIEW_BUILDER_NAME =
+<i>85</i>&nbsp;            &quot;com.sun.javafx.fxml.builder.web.WebViewBuilder&quot;;
+<i>86</i>&nbsp;
+<i>87</i>&nbsp;    /**
+<i>88</i>&nbsp;     * Default constructor.
+<i>89</i>&nbsp;     */
+<i>90</i>&nbsp;    public JavaFXBuilderFactory() {
+<b class="fc"><i>91</i>&nbsp;        this(FXMLLoader.getDefaultClassLoader());</b>
+<b class="fc"><i>92</i>&nbsp;    }</b>
+<i>93</i>&nbsp;
+<i>94</i>&nbsp;    /**
+<i>95</i>&nbsp;     * Constructor that takes a class loader.
+<i>96</i>&nbsp;     *
+<i>97</i>&nbsp;     * @param classLoader the class loader to use when loading classes
+<i>98</i>&nbsp;     * @since JavaFX 2.1
+<i>99</i>&nbsp;     */
+<b class="fc"><i>100</i>&nbsp;    public JavaFXBuilderFactory(ClassLoader classLoader) {</b>
+<b class="fc"><i>101</i>&nbsp;        if (classLoader == null) {</b>
+<b class="nc"><i>102</i>&nbsp;            throw new NullPointerException();</b>
+<i>103</i>&nbsp;        }
+<i>104</i>&nbsp;
+<b class="fc"><i>105</i>&nbsp;        this.classLoader = classLoader;</b>
+<b class="fc"><i>106</i>&nbsp;        this.webSupported = Platform.isSupported(ConditionalFeature.WEB);</b>
+<b class="fc"><i>107</i>&nbsp;    }</b>
+<i>108</i>&nbsp;
+<i>109</i>&nbsp;    /**
+<i>110</i>&nbsp;     * Returns the builder for the specified type, or null if no builder is
+<i>111</i>&nbsp;     * used. Most classes will note use a builder.
+<i>112</i>&nbsp;     *
+<i>113</i>&nbsp;     * @param type the class being looked up
+<i>114</i>&nbsp;     *
+<i>115</i>&nbsp;     * @return the builder for the class, or null if no builder is used
+<i>116</i>&nbsp;     */
+<i>117</i>&nbsp;    @Override
+<i>118</i>&nbsp;    public Builder&lt;?&gt; getBuilder(Class&lt;?&gt; type) {
+<b class="fc"><i>119</i>&nbsp;        if (type == null) {</b>
+<b class="nc"><i>120</i>&nbsp;            throw new NullPointerException();</b>
+<i>121</i>&nbsp;        }
+<i>122</i>&nbsp;
+<i>123</i>&nbsp;        Builder&lt;?&gt; builder;
+<i>124</i>&nbsp;
+<i>125</i>&nbsp;        // All classes without a default constructor need to appear here, as
+<i>126</i>&nbsp;        // well as any other class that has special requirements that need
+<i>127</i>&nbsp;        // a builder to handle them.
+<b class="fc"><i>128</i>&nbsp;        if (type == Scene.class) {</b>
+<b class="nc"><i>129</i>&nbsp;            builder = new JavaFXSceneBuilder();</b>
+<b class="fc"><i>130</i>&nbsp;        } else if (type == Font.class) {</b>
+<b class="nc"><i>131</i>&nbsp;            builder = new JavaFXFontBuilder();</b>
+<b class="fc"><i>132</i>&nbsp;        } else if (type == Image.class) {</b>
+<b class="fc"><i>133</i>&nbsp;            builder = new JavaFXImageBuilder();</b>
+<b class="fc"><i>134</i>&nbsp;        } else if (type == URL.class) {</b>
+<b class="nc"><i>135</i>&nbsp;            builder = new URLBuilder(classLoader);</b>
+<b class="fc"><i>136</i>&nbsp;        } else if (type == TriangleMesh.class) {</b>
+<b class="nc"><i>137</i>&nbsp;            builder = new TriangleMeshBuilder();</b>
+<b class="fc"><i>138</i>&nbsp;        } else if (webSupported &amp;&amp; type.getName().equals(WEBVIEW_NAME)) {</b>
+<i>139</i>&nbsp;
+<i>140</i>&nbsp;// TODO: enable this code when RT-40037 is fixed.
+<i>141</i>&nbsp;//            // Construct a WebViewBuilder via reflection
+<i>142</i>&nbsp;//            try {
+<i>143</i>&nbsp;//                Class&lt;Builder&lt;?&gt;&gt; builderClass =
+<i>144</i>&nbsp;//                        (Class&lt;Builder&lt;?&gt;&gt;)classLoader.loadClass(WEBVIEW_BUILDER_NAME);
+<i>145</i>&nbsp;//                Constructor&lt;Builder&lt;?&gt;&gt; constructor = builderClass.getConstructor(new Class[0]);
+<i>146</i>&nbsp;//                builder = constructor.newInstance();
+<i>147</i>&nbsp;//            } catch (Exception ex) {
+<i>148</i>&nbsp;//                // This should never happen
+<i>149</i>&nbsp;//                ex.printStackTrace();
+<i>150</i>&nbsp;//                builder = null;
+<i>151</i>&nbsp;//            }
+<i>152</i>&nbsp;
+<i>153</i>&nbsp;            // TODO: Remove the following when RT-40037 is fixed.
+<i>154</i>&nbsp;            try {
+<b class="nc"><i>155</i>&nbsp;                Class&lt;?&gt; builderClass = classLoader.loadClass(WEBVIEW_BUILDER_NAME);</b>
+<b class="nc"><i>156</i>&nbsp;                ObjectBuilderWrapper wrapper = new ObjectBuilderWrapper(builderClass);</b>
+<b class="nc"><i>157</i>&nbsp;                builder = wrapper.createBuilder();</b>
+<b class="nc"><i>158</i>&nbsp;            } catch (Exception ex) {</b>
+<b class="nc"><i>159</i>&nbsp;                builder = null;</b>
+<b class="nc"><i>160</i>&nbsp;            }</b>
+<b class="fc"><i>161</i>&nbsp;        } else if (scanForConstructorAnnotations(type)) {</b>
+<b class="fc"><i>162</i>&nbsp;            builder = new ProxyBuilder(type);</b>
+<i>163</i>&nbsp;        } else {
+<i>164</i>&nbsp;            // No builder will be used to construct this class. The class must
+<i>165</i>&nbsp;            // have a public default constructor, which is the case for all
+<i>166</i>&nbsp;            // platform classes, except those handled above.
+<b class="fc"><i>167</i>&nbsp;            builder = null;</b>
+<i>168</i>&nbsp;        }
+<i>169</i>&nbsp;
+<b class="fc"><i>170</i>&nbsp;        return builder;</b>
+<i>171</i>&nbsp;    }
+<i>172</i>&nbsp;
+<i>173</i>&nbsp;    private boolean scanForConstructorAnnotations(Class&lt;?&gt; type) {
+<b class="fc"><i>174</i>&nbsp;        Constructor constructors[] = ConstructorUtil.getConstructors(type);</b>
+<b class="fc"><i>175</i>&nbsp;        for (Constructor constructor : constructors) {</b>
+<b class="fc"><i>176</i>&nbsp;            Annotation[][] paramAnnotations = constructor.getParameterAnnotations();</b>
+<b class="fc"><i>177</i>&nbsp;            for (int i = 0; i &lt; constructor.getParameterTypes().length; i++) {</b>
+<b class="fc"><i>178</i>&nbsp;                for (Annotation annotation : paramAnnotations[i]) {</b>
+<b class="fc"><i>179</i>&nbsp;                    if (annotation instanceof NamedArg) {</b>
+<b class="fc"><i>180</i>&nbsp;                        return true;</b>
+<i>181</i>&nbsp;                    }
+<i>182</i>&nbsp;                }
+<i>183</i>&nbsp;            }
+<i>184</i>&nbsp;        }
+<b class="fc"><i>185</i>&nbsp;        return false;</b>
+<i>186</i>&nbsp;    }
+<i>187</i>&nbsp;
+<i>188</i>&nbsp;
+<i>189</i>&nbsp;    /**
+<i>190</i>&nbsp;     * Legacy ObjectBuilder wrapper.
+<i>191</i>&nbsp;     *
+<i>192</i>&nbsp;     * TODO: move this legacy functionality to JavaFXWebViewBuilder and modify
+<i>193</i>&nbsp;     * it to work without requiring the legacy builders. See RT-40037.
+<i>194</i>&nbsp;     */
+<i>195</i>&nbsp;    private static final class ObjectBuilderWrapper {
+<i>196</i>&nbsp;        private static final Object[]   NO_ARGS = {};
+<i>197</i>&nbsp;        private static final Class&lt;?&gt;[] NO_SIG = {};
+<i>198</i>&nbsp;
+<i>199</i>&nbsp;        private final Class&lt;?&gt;           builderClass;
+<i>200</i>&nbsp;        private final Method             createMethod;
+<i>201</i>&nbsp;        private final Method             buildMethod;
+<i>202</i>&nbsp;        private final Map&lt;String,Method&gt; methods = new HashMap&lt;String, Method&gt;();
+<i>203</i>&nbsp;        private final Map&lt;String,Method&gt; getters = new HashMap&lt;String,Method&gt;();
+<i>204</i>&nbsp;        private final Map&lt;String,Method&gt; setters = new HashMap&lt;String,Method&gt;();
+<i>205</i>&nbsp;
+<i>206</i>&nbsp;        final class ObjectBuilder extends AbstractMap&lt;String, Object&gt; implements Builder&lt;Object&gt; {
+<i>207</i>&nbsp;            private final Map&lt;String,Object&gt; containers = new HashMap&lt;String,Object&gt;();
+<i>208</i>&nbsp;            private Object                   builder = null;
+<i>209</i>&nbsp;            private Map&lt;Object,Object&gt;       properties;
+<i>210</i>&nbsp;
+<i>211</i>&nbsp;            private ObjectBuilder() {
+<i>212</i>&nbsp;                try {
+<i>213</i>&nbsp;                    builder = createMethod.invoke(null, NO_ARGS);
+<i>214</i>&nbsp;                } catch (Exception e) {
+<i>215</i>&nbsp;                    //TODO
+<i>216</i>&nbsp;                    throw new RuntimeException(&quot;Creation of the builder &quot; + builderClass.getName() + &quot; failed.&quot;, e);
+<i>217</i>&nbsp;                }
+<i>218</i>&nbsp;            }
+<i>219</i>&nbsp;
+<i>220</i>&nbsp;            @Override
+<i>221</i>&nbsp;            public Object build() {
+<i>222</i>&nbsp;                for (Iterator&lt;Entry&lt;String,Object&gt;&gt; iter = containers.entrySet().iterator(); iter.hasNext(); ) {
+<i>223</i>&nbsp;                    Entry&lt;String, Object&gt; entry = iter.next();
+<i>224</i>&nbsp;
+<i>225</i>&nbsp;                    put(entry.getKey(), entry.getValue());
+<i>226</i>&nbsp;                }
+<i>227</i>&nbsp;
+<i>228</i>&nbsp;                Object res;
+<i>229</i>&nbsp;                try {
+<i>230</i>&nbsp;                    res = buildMethod.invoke(builder, NO_ARGS);
+<i>231</i>&nbsp;                    // TODO:
+<i>232</i>&nbsp;                    // temporary special case for Node properties until
+<i>233</i>&nbsp;                    // platform builders are fixed
+<i>234</i>&nbsp;                    if (properties != null &amp;&amp; res instanceof Node) {
+<i>235</i>&nbsp;                        ((Map&lt;Object, Object&gt;)((Node)res).getProperties()).putAll(properties);
+<i>236</i>&nbsp;                    }
+<i>237</i>&nbsp;                } catch (InvocationTargetException exception) {
+<i>238</i>&nbsp;                    throw new RuntimeException(exception);
+<i>239</i>&nbsp;                } catch (IllegalAccessException exception) {
+<i>240</i>&nbsp;                    throw new RuntimeException(exception);
+<i>241</i>&nbsp;                } finally {
+<i>242</i>&nbsp;                    builder = null;
+<i>243</i>&nbsp;                }
+<i>244</i>&nbsp;
+<i>245</i>&nbsp;                return res;
+<i>246</i>&nbsp;            }
+<i>247</i>&nbsp;
+<i>248</i>&nbsp;            @Override
+<i>249</i>&nbsp;            public int size() {
+<i>250</i>&nbsp;                throw new UnsupportedOperationException();
+<i>251</i>&nbsp;            }
+<i>252</i>&nbsp;
+<i>253</i>&nbsp;            @Override
+<i>254</i>&nbsp;            public boolean isEmpty() {
+<i>255</i>&nbsp;                throw new UnsupportedOperationException();
+<i>256</i>&nbsp;            }
+<i>257</i>&nbsp;
+<i>258</i>&nbsp;            @Override
+<i>259</i>&nbsp;            public boolean containsKey(Object key) {
+<i>260</i>&nbsp;                return (getTemporaryContainer(key.toString()) != null);
+<i>261</i>&nbsp;            }
+<i>262</i>&nbsp;
+<i>263</i>&nbsp;            @Override
+<i>264</i>&nbsp;            public boolean containsValue(Object value) {
+<i>265</i>&nbsp;                throw new UnsupportedOperationException();
+<i>266</i>&nbsp;            }
+<i>267</i>&nbsp;
+<i>268</i>&nbsp;            @Override
+<i>269</i>&nbsp;            public Object get(Object key) {
+<i>270</i>&nbsp;                return getTemporaryContainer(key.toString());
+<i>271</i>&nbsp;            }
+<i>272</i>&nbsp;
+<i>273</i>&nbsp;            @Override
+<i>274</i>&nbsp;            @SuppressWarnings(&quot;unchecked&quot;)
+<i>275</i>&nbsp;            public Object put(String key, Object value) {
+<i>276</i>&nbsp;                // TODO:
+<i>277</i>&nbsp;                // temporary hack: builders don&#39;t have a method for properties...
+<i>278</i>&nbsp;                if (Node.class.isAssignableFrom(getTargetClass()) &amp;&amp; &quot;properties&quot;.equals(key)) {
+<i>279</i>&nbsp;                    properties = (Map&lt;Object,Object&gt;) value;
+<i>280</i>&nbsp;                    return null;
+<i>281</i>&nbsp;                }
+<i>282</i>&nbsp;                try {
+<i>283</i>&nbsp;                    Method m = methods.get(key);
+<i>284</i>&nbsp;                    if (m == null) {
+<i>285</i>&nbsp;                        m = findMethod(key);
+<i>286</i>&nbsp;                        methods.put(key, m);
+<i>287</i>&nbsp;                    }
+<i>288</i>&nbsp;                    try {
+<i>289</i>&nbsp;                        final Class&lt;?&gt; type = m.getParameterTypes()[0];
+<i>290</i>&nbsp;
+<i>291</i>&nbsp;                        // If the type is an Array, and our value is a list,
+<i>292</i>&nbsp;                        // we simply convert the list into an array. Otherwise,
+<i>293</i>&nbsp;                        // we treat the value as a string and split it into a
+<i>294</i>&nbsp;                        // list using the array component delimiter.
+<i>295</i>&nbsp;                        if (type.isArray()) {
+<i>296</i>&nbsp;                            final List&lt;?&gt; list;
+<i>297</i>&nbsp;                            if (value instanceof List) {
+<i>298</i>&nbsp;                                list = (List&lt;?&gt;)value;
+<i>299</i>&nbsp;                            } else {
+<i>300</i>&nbsp;                                list = Arrays.asList(value.toString().split(FXMLLoader.ARRAY_COMPONENT_DELIMITER));
+<i>301</i>&nbsp;                            }
+<i>302</i>&nbsp;
+<i>303</i>&nbsp;                            final Class&lt;?&gt; componentType = type.getComponentType();
+<i>304</i>&nbsp;                            Object array = Array.newInstance(componentType, list.size());
+<i>305</i>&nbsp;                            for (int i=0; i&lt;list.size(); i++) {
+<i>306</i>&nbsp;                                Array.set(array, i, BeanAdapter.coerce(list.get(i), componentType));
+<i>307</i>&nbsp;                            }
+<i>308</i>&nbsp;                            value = array;
+<i>309</i>&nbsp;                        }
+<i>310</i>&nbsp;
+<i>311</i>&nbsp;                        m.invoke(builder, new Object[] { BeanAdapter.coerce(value, type) });
+<i>312</i>&nbsp;                    } catch (Exception e) {
+<i>313</i>&nbsp;                        Logger.getLogger(ObjectBuilderWrapper.class.getName()).log(Level.WARNING,
+<i>314</i>&nbsp;                                &quot;Method &quot; + m.getName() + &quot; failed&quot;, e);
+<i>315</i>&nbsp;                    }
+<i>316</i>&nbsp;                    //TODO Is it OK to return null here?
+<i>317</i>&nbsp;                    return null;
+<i>318</i>&nbsp;                } catch (Exception e) {
+<i>319</i>&nbsp;                    //TODO Should be reported
+<i>320</i>&nbsp;                    Logger.getLogger(ObjectBuilderWrapper.class.getName()).log(Level.WARNING,
+<i>321</i>&nbsp;                            &quot;Failed to set &quot;+getTargetClass()+&quot;.&quot;+key+&quot; using &quot;+builderClass, e);
+<i>322</i>&nbsp;                    return null;
+<i>323</i>&nbsp;                }
+<i>324</i>&nbsp;            }
+<i>325</i>&nbsp;
+<i>326</i>&nbsp;            // Should do this in BeanAdapter?
+<i>327</i>&nbsp;            // This is used to support read-only collection property.
+<i>328</i>&nbsp;            // This method must return a Collection of the appropriate type
+<i>329</i>&nbsp;            // if 1. the property is read-only, and 2. the property is a collection.
+<i>330</i>&nbsp;            // It must return null otherwise.
+<i>331</i>&nbsp;            Object getReadOnlyProperty(String propName) {
+<i>332</i>&nbsp;                if (setters.get(propName) != null) return null;
+<i>333</i>&nbsp;                Method getter = getters.get(propName);
+<i>334</i>&nbsp;                if (getter == null) {
+<i>335</i>&nbsp;                    Method setter = null;
+<i>336</i>&nbsp;                    Class&lt;?&gt; target = getTargetClass();
+<i>337</i>&nbsp;                    String suffix = Character.toUpperCase(propName.charAt(0)) + propName.substring(1);
+<i>338</i>&nbsp;                    try {
+<i>339</i>&nbsp;                        getter = MethodUtil.getMethod(target, &quot;get&quot;+ suffix, NO_SIG);
+<i>340</i>&nbsp;                        setter = MethodUtil.getMethod(target, &quot;set&quot;+ suffix, new Class[] { getter.getReturnType() });
+<i>341</i>&nbsp;                    } catch (Exception x) {
+<i>342</i>&nbsp;                    }
+<i>343</i>&nbsp;                    if (getter != null) {
+<i>344</i>&nbsp;                        getters.put(propName, getter);
+<i>345</i>&nbsp;                        setters.put(propName, setter);
+<i>346</i>&nbsp;                    }
+<i>347</i>&nbsp;                    if (setter != null) return null;
+<i>348</i>&nbsp;                    }
+<i>349</i>&nbsp;
+<i>350</i>&nbsp;                Class&lt;?&gt; type;
+<i>351</i>&nbsp;                if (getter == null) {
+<i>352</i>&nbsp;                    // if we have found no getter it might be a constructor property
+<i>353</i>&nbsp;                    // try to get the type from the builder method.
+<i>354</i>&nbsp;                    final Method m = findMethod(propName);
+<i>355</i>&nbsp;                    if (m == null) {
+<i>356</i>&nbsp;                        return null;
+<i>357</i>&nbsp;                    }
+<i>358</i>&nbsp;                    type = m.getParameterTypes()[0];
+<i>359</i>&nbsp;                    if (type.isArray()) type = List.class;
+<i>360</i>&nbsp;                } else {
+<i>361</i>&nbsp;                    type = getter.getReturnType();
+<i>362</i>&nbsp;                }
+<i>363</i>&nbsp;
+<i>364</i>&nbsp;                if (ObservableMap.class.isAssignableFrom(type)) {
+<i>365</i>&nbsp;                    return FXCollections.observableMap(new HashMap&lt;Object, Object&gt;());
+<i>366</i>&nbsp;                } else if (Map.class.isAssignableFrom(type)) {
+<i>367</i>&nbsp;                    return new HashMap&lt;Object, Object&gt;();
+<i>368</i>&nbsp;                } else if (ObservableList.class.isAssignableFrom(type)) {
+<i>369</i>&nbsp;                    return FXCollections.observableArrayList();
+<i>370</i>&nbsp;                } else if (List.class.isAssignableFrom(type)) {
+<i>371</i>&nbsp;                    return new ArrayList&lt;Object&gt;();
+<i>372</i>&nbsp;                } else if (Set.class.isAssignableFrom(type)) {
+<i>373</i>&nbsp;                    return new HashSet&lt;Object&gt;();
+<i>374</i>&nbsp;                }
+<i>375</i>&nbsp;                return null;
+<i>376</i>&nbsp;            }
+<i>377</i>&nbsp;
+<i>378</i>&nbsp;            /**
+<i>379</i>&nbsp;             * This is used to support read-only collection property.
+<i>380</i>&nbsp;             * This method must return a Collection of the appropriate type
+<i>381</i>&nbsp;             * if 1. the property is read-only, and 2. the property is a collection.
+<i>382</i>&nbsp;             * It must return null otherwise.
+<i>383</i>&nbsp;             **/
+<i>384</i>&nbsp;            public Object getTemporaryContainer(String propName) {
+<i>385</i>&nbsp;                Object o = containers.get(propName);
+<i>386</i>&nbsp;                if (o == null) {
+<i>387</i>&nbsp;                    o = getReadOnlyProperty(propName);
+<i>388</i>&nbsp;                    if (o != null) {
+<i>389</i>&nbsp;                        containers.put(propName, o);
+<i>390</i>&nbsp;                    }
+<i>391</i>&nbsp;                }
+<i>392</i>&nbsp;
+<i>393</i>&nbsp;                return o;
+<i>394</i>&nbsp;            }
+<i>395</i>&nbsp;
+<i>396</i>&nbsp;            @Override
+<i>397</i>&nbsp;            public Object remove(Object key) {
+<i>398</i>&nbsp;                throw new UnsupportedOperationException();
+<i>399</i>&nbsp;            }
+<i>400</i>&nbsp;
+<i>401</i>&nbsp;            @Override
+<i>402</i>&nbsp;            public void putAll(Map&lt;? extends String, ? extends Object&gt; m) {
+<i>403</i>&nbsp;                throw new UnsupportedOperationException();
+<i>404</i>&nbsp;            }
+<i>405</i>&nbsp;
+<i>406</i>&nbsp;            @Override
+<i>407</i>&nbsp;            public void clear() {
+<i>408</i>&nbsp;                throw new UnsupportedOperationException();
+<i>409</i>&nbsp;            }
+<i>410</i>&nbsp;
+<i>411</i>&nbsp;            @Override
+<i>412</i>&nbsp;            public Set&lt;String&gt; keySet() {
+<i>413</i>&nbsp;                throw new UnsupportedOperationException();
+<i>414</i>&nbsp;            }
+<i>415</i>&nbsp;
+<i>416</i>&nbsp;            @Override
+<i>417</i>&nbsp;            public Collection&lt;Object&gt; values() {
+<i>418</i>&nbsp;                throw new UnsupportedOperationException();
+<i>419</i>&nbsp;            }
+<i>420</i>&nbsp;
+<i>421</i>&nbsp;            @Override
+<i>422</i>&nbsp;            public Set&lt;Entry&lt;String, Object&gt;&gt; entrySet() {
+<i>423</i>&nbsp;                throw new UnsupportedOperationException();
+<i>424</i>&nbsp;            }
+<i>425</i>&nbsp;        }
+<i>426</i>&nbsp;
+<i>427</i>&nbsp;        ObjectBuilderWrapper() {
+<i>428</i>&nbsp;            builderClass = null;
+<i>429</i>&nbsp;            createMethod = null;
+<i>430</i>&nbsp;            buildMethod = null;
+<i>431</i>&nbsp;        }
+<i>432</i>&nbsp;
+<i>433</i>&nbsp;        ObjectBuilderWrapper(Class&lt;?&gt; builderClass) throws NoSuchMethodException, InstantiationException, IllegalAccessException {
+<i>434</i>&nbsp;            this.builderClass = builderClass;
+<i>435</i>&nbsp;            createMethod = MethodUtil.getMethod(builderClass, &quot;create&quot;, NO_SIG);
+<i>436</i>&nbsp;            buildMethod = MethodUtil.getMethod(builderClass, &quot;build&quot;, NO_SIG);
+<i>437</i>&nbsp;            assert Modifier.isStatic(createMethod.getModifiers());
+<i>438</i>&nbsp;            assert !Modifier.isStatic(buildMethod.getModifiers());
+<i>439</i>&nbsp;        }
+<i>440</i>&nbsp;
+<i>441</i>&nbsp;        Builder&lt;Object&gt; createBuilder() {
+<i>442</i>&nbsp;            return new ObjectBuilder();
+<i>443</i>&nbsp;        }
+<i>444</i>&nbsp;
+<i>445</i>&nbsp;        private Method findMethod(String name) {
+<i>446</i>&nbsp;            if (name.length() &gt; 1
+<i>447</i>&nbsp;                    &amp;&amp; Character.isUpperCase(name.charAt(1))) {
+<i>448</i>&nbsp;                name = Character.toUpperCase(name.charAt(0)) + name.substring(1);
+<i>449</i>&nbsp;            }
+<i>450</i>&nbsp;
+<i>451</i>&nbsp;            for (Method m : MethodUtil.getMethods(builderClass)) {
+<i>452</i>&nbsp;                if (m.getName().equals(name)) {
+<i>453</i>&nbsp;                    return m;
+<i>454</i>&nbsp;                }
+<i>455</i>&nbsp;            }
+<i>456</i>&nbsp;            throw new IllegalArgumentException(&quot;Method &quot; + name + &quot; could not be found at class &quot; + builderClass.getName());
+<i>457</i>&nbsp;        }
+<i>458</i>&nbsp;
+<i>459</i>&nbsp;        /**
+<i>460</i>&nbsp;         * The type constructed by this builder.
+<i>461</i>&nbsp;         * @return The type constructed by this builder.
+<i>462</i>&nbsp;         */
+<i>463</i>&nbsp;        public Class&lt;?&gt; getTargetClass() {
+<i>464</i>&nbsp;            return buildMethod.getReturnType();
+<i>465</i>&nbsp;        }
+<i>466</i>&nbsp;    }
+<i>467</i>&nbsp;
+<i>468</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2017-12-04 21:49</div>
+</div>
+</body>
+</html>

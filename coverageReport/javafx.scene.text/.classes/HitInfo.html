@@ -1,0 +1,185 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: HitInfo</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">javafx.scene.text</a> ]
+</div>
+
+<h1>Coverage Summary for Class: HitInfo (javafx.scene.text)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">HitInfo</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    66.7%
+  </span>
+  <span class="absValue">
+    (4/ 6)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    50%
+  </span>
+  <span class="absValue">
+    (12/ 24)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright (c) 2010, 2017, Oracle and/or its affiliates. All rights reserved.
+<i>3</i>&nbsp; * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+<i>4</i>&nbsp; *
+<i>5</i>&nbsp; *
+<i>6</i>&nbsp; *
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; *
+<i>11</i>&nbsp; *
+<i>12</i>&nbsp; *
+<i>13</i>&nbsp; *
+<i>14</i>&nbsp; *
+<i>15</i>&nbsp; *
+<i>16</i>&nbsp; *
+<i>17</i>&nbsp; *
+<i>18</i>&nbsp; *
+<i>19</i>&nbsp; *
+<i>20</i>&nbsp; *
+<i>21</i>&nbsp; *
+<i>22</i>&nbsp; *
+<i>23</i>&nbsp; *
+<i>24</i>&nbsp; */
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;package javafx.scene.text;
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;import java.text.BreakIterator;
+<i>29</i>&nbsp;
+<i>30</i>&nbsp;/**
+<i>31</i>&nbsp; * Represents the hit information in a Text node.
+<i>32</i>&nbsp; *
+<i>33</i>&nbsp; * @since 9
+<i>34</i>&nbsp; */
+<i>35</i>&nbsp;public class HitInfo {
+<i>36</i>&nbsp;
+<i>37</i>&nbsp;    private int charIndex;
+<i>38</i>&nbsp;    private boolean leading;
+<i>39</i>&nbsp;    private int insertionIndex;
+<i>40</i>&nbsp;    private String text;
+<i>41</i>&nbsp;
+<i>42</i>&nbsp;    /**
+<i>43</i>&nbsp;     * Create a HitInfo object representing a text index and forward bias.
+<i>44</i>&nbsp;     *
+<i>45</i>&nbsp;     * @param charIndex the character index.
+<i>46</i>&nbsp;     * @param leading whether the hit is on the leading edge of the character. If it is false, it represents the trailing edge.
+<i>47</i>&nbsp;     */
+<b class="fc"><i>48</i>&nbsp;    HitInfo(int charIndex, int insertionIndex, boolean leading, String text) {</b>
+<b class="fc"><i>49</i>&nbsp;        this.charIndex = charIndex;</b>
+<b class="fc"><i>50</i>&nbsp;        this.leading = leading;</b>
+<b class="fc"><i>51</i>&nbsp;        this.insertionIndex = insertionIndex;</b>
+<b class="fc"><i>52</i>&nbsp;        this.text = text;</b>
+<b class="fc"><i>53</i>&nbsp;    }</b>
+<i>54</i>&nbsp;
+<i>55</i>&nbsp;    /**
+<i>56</i>&nbsp;     * The index of the character which this hit information refers to.
+<i>57</i>&nbsp;     * @return the index of the character which this hit information refers to
+<i>58</i>&nbsp;     */
+<b class="nc"><i>59</i>&nbsp;    public int getCharIndex() { return charIndex; }</b>
+<i>60</i>&nbsp;
+<i>61</i>&nbsp;    /**
+<i>62</i>&nbsp;     * Indicates whether the hit is on the leading edge of the character.
+<i>63</i>&nbsp;     * If it is false, it represents the trailing edge.
+<i>64</i>&nbsp;     * @return if true the hit is on the leading edge of the character, otherwise
+<i>65</i>&nbsp;     * the trailing edge
+<i>66</i>&nbsp;     */
+<b class="fc"><i>67</i>&nbsp;    public boolean isLeading() { return leading; }</b>
+<i>68</i>&nbsp;
+<b class="fc"><i>69</i>&nbsp;    private static BreakIterator charIterator = BreakIterator.getCharacterInstance();</b>
+<i>70</i>&nbsp;
+<i>71</i>&nbsp;    /**
+<i>72</i>&nbsp;     * Returns the index of the insertion position.
+<i>73</i>&nbsp;     * @return the index of the insertion position
+<i>74</i>&nbsp;     */
+<i>75</i>&nbsp;    public int getInsertionIndex() {
+<b class="fc"><i>76</i>&nbsp;        if (insertionIndex == -1) {</b>
+<b class="fc"><i>77</i>&nbsp;            insertionIndex = charIndex;</b>
+<b class="fc"><i>78</i>&nbsp;            if (!leading) {</b>
+<b class="nc"><i>79</i>&nbsp;                if (text != null) {</b>
+<i>80</i>&nbsp;                    // Skip complex character clusters / ligatures.
+<i>81</i>&nbsp;                    int next;
+<b class="nc"><i>82</i>&nbsp;                    synchronized(charIterator) {</b>
+<b class="nc"><i>83</i>&nbsp;                        charIterator.setText(text);</b>
+<b class="nc"><i>84</i>&nbsp;                        next = charIterator.following(insertionIndex);</b>
+<b class="nc"><i>85</i>&nbsp;                    }</b>
+<b class="nc"><i>86</i>&nbsp;                    if (next == BreakIterator.DONE) {</b>
+<b class="nc"><i>87</i>&nbsp;                        insertionIndex += 1;</b>
+<i>88</i>&nbsp;                    } else {
+<b class="nc"><i>89</i>&nbsp;                        insertionIndex = next;</b>
+<i>90</i>&nbsp;                    }
+<b class="nc"><i>91</i>&nbsp;                } else {</b>
+<b class="nc"><i>92</i>&nbsp;                    insertionIndex += 1;</b>
+<i>93</i>&nbsp;                }
+<i>94</i>&nbsp;            }
+<i>95</i>&nbsp;        }
+<b class="fc"><i>96</i>&nbsp;        return insertionIndex;</b>
+<i>97</i>&nbsp;    }
+<i>98</i>&nbsp;
+<i>99</i>&nbsp;    @Override public String toString() {
+<b class="nc"><i>100</i>&nbsp;        return &quot;charIndex: &quot; + charIndex + &quot;, isLeading: &quot; + leading + &quot;, insertionIndex: &quot; + getInsertionIndex();</b>
+<i>101</i>&nbsp;    }
+<i>102</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2017-12-04 21:49</div>
+</div>
+</body>
+</html>

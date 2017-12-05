@@ -1,0 +1,374 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: KeyCodeCombination</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">javafx.scene.input</a> ]
+</div>
+
+<h1>Coverage Summary for Class: KeyCodeCombination (javafx.scene.input)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">KeyCodeCombination</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    20%
+  </span>
+  <span class="absValue">
+    (2/ 10)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    8.1%
+  </span>
+  <span class="absValue">
+    (8/ 99)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright (c) 2011, 2015, Oracle and/or its affiliates. All rights reserved.
+<i>3</i>&nbsp; * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+<i>4</i>&nbsp; *
+<i>5</i>&nbsp; *
+<i>6</i>&nbsp; *
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; *
+<i>11</i>&nbsp; *
+<i>12</i>&nbsp; *
+<i>13</i>&nbsp; *
+<i>14</i>&nbsp; *
+<i>15</i>&nbsp; *
+<i>16</i>&nbsp; *
+<i>17</i>&nbsp; *
+<i>18</i>&nbsp; *
+<i>19</i>&nbsp; *
+<i>20</i>&nbsp; *
+<i>21</i>&nbsp; *
+<i>22</i>&nbsp; *
+<i>23</i>&nbsp; *
+<i>24</i>&nbsp; */
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;package javafx.scene.input;
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;import javafx.beans.NamedArg;
+<i>29</i>&nbsp;
+<i>30</i>&nbsp;
+<i>31</i>&nbsp;// PENDING_DOC_REVIEW
+<i>32</i>&nbsp;/**
+<i>33</i>&nbsp; * This class represents a key combination in which the main key is specified
+<i>34</i>&nbsp; * by its {@code KeyCode}. Such key combination is independent on the keyboard
+<i>35</i>&nbsp; * functional layout configured by the user at the time of key combination
+<i>36</i>&nbsp; * matching.
+<i>37</i>&nbsp; * @since JavaFX 2.0
+<i>38</i>&nbsp; */
+<i>39</i>&nbsp;public final class KeyCodeCombination extends KeyCombination {
+<i>40</i>&nbsp;    /** The key code associated with this key combination. */
+<i>41</i>&nbsp;    private KeyCode code;
+<i>42</i>&nbsp;
+<i>43</i>&nbsp;    /**
+<i>44</i>&nbsp;     * Gets the key code associated with this key combination.
+<i>45</i>&nbsp;     * @return The key code associated with this key combination
+<i>46</i>&nbsp;     */
+<i>47</i>&nbsp;    public final KeyCode getCode() {
+<b class="nc"><i>48</i>&nbsp;        return code;</b>
+<i>49</i>&nbsp;    }
+<i>50</i>&nbsp;
+<i>51</i>&nbsp;    /**
+<i>52</i>&nbsp;     * Constructs a {@code KeyCodeCombination} for the specified main key and
+<i>53</i>&nbsp;     * with an explicit specification of all modifier keys. Each modifier key
+<i>54</i>&nbsp;     * can be set to {@code PRESSED}, {@code RELEASED} or {@code IGNORED}.
+<i>55</i>&nbsp;     *
+<i>56</i>&nbsp;     * @param code the key code of the main key
+<i>57</i>&nbsp;     * @param shift the value of the {@code shift} modifier key
+<i>58</i>&nbsp;     * @param control the value of the {@code control} modifier key
+<i>59</i>&nbsp;     * @param alt the value of the {@code alt} modifier key
+<i>60</i>&nbsp;     * @param meta the value of the {@code meta} modifier key
+<i>61</i>&nbsp;     * @param shortcut the value of the {@code shortcut} modifier key
+<i>62</i>&nbsp;     */
+<i>63</i>&nbsp;    public KeyCodeCombination(final @NamedArg(&quot;code&quot;) KeyCode code,
+<i>64</i>&nbsp;                              final @NamedArg(&quot;shift&quot;) ModifierValue shift,
+<i>65</i>&nbsp;                              final @NamedArg(&quot;control&quot;) ModifierValue control,
+<i>66</i>&nbsp;                              final @NamedArg(&quot;alt&quot;) ModifierValue alt,
+<i>67</i>&nbsp;                              final @NamedArg(&quot;meta&quot;) ModifierValue meta,
+<i>68</i>&nbsp;                              final @NamedArg(&quot;shortcut&quot;) ModifierValue shortcut) {
+<b class="nc"><i>69</i>&nbsp;        super(shift, control, alt, meta, shortcut);</b>
+<i>70</i>&nbsp;
+<b class="nc"><i>71</i>&nbsp;        validateKeyCode(code);</b>
+<b class="nc"><i>72</i>&nbsp;        this.code = code;</b>
+<b class="nc"><i>73</i>&nbsp;    }</b>
+<i>74</i>&nbsp;
+<i>75</i>&nbsp;    /**
+<i>76</i>&nbsp;     * Constructs a {@code KeyCodeCombination} for the specified main key and
+<i>77</i>&nbsp;     * with the specified list of modifiers. All modifier keys which are not
+<i>78</i>&nbsp;     * explicitly listed are set to the default {@code RELEASED} value.
+<i>79</i>&nbsp;     * &lt;p&gt;
+<i>80</i>&nbsp;     * All possible modifiers which change the default modifier value are
+<i>81</i>&nbsp;     * defined as constants in the {@code KeyCombination} class.
+<i>82</i>&nbsp;     *
+<i>83</i>&nbsp;     * @param code the key code of the main key
+<i>84</i>&nbsp;     * @param modifiers the list of modifier keys and their corresponding values
+<i>85</i>&nbsp;     */
+<i>86</i>&nbsp;    public KeyCodeCombination(final @NamedArg(&quot;code&quot;) KeyCode code,
+<i>87</i>&nbsp;                              final @NamedArg(&quot;modifiers&quot;) Modifier... modifiers) {
+<b class="fc"><i>88</i>&nbsp;        super(modifiers);</b>
+<i>89</i>&nbsp;
+<b class="fc"><i>90</i>&nbsp;        validateKeyCode(code);</b>
+<b class="fc"><i>91</i>&nbsp;        this.code = code;</b>
+<b class="fc"><i>92</i>&nbsp;    }</b>
+<i>93</i>&nbsp;
+<i>94</i>&nbsp;    /**
+<i>95</i>&nbsp;     * Tests whether this key combination matches the key combination in the
+<i>96</i>&nbsp;     * given {@code KeyEvent}. It uses only the key code and the state of the
+<i>97</i>&nbsp;     * modifier keys from the {@code KeyEvent} in the test. This means that the
+<i>98</i>&nbsp;     * method can return {@code true} only for {@code KEY_PRESSED} and
+<i>99</i>&nbsp;     * {@code KEY_RELEASED} events, but not for {@code KEY_TYPED} events, which
+<i>100</i>&nbsp;     * don&#39;t have valid key codes.
+<i>101</i>&nbsp;     *
+<i>102</i>&nbsp;     * @param event the key event
+<i>103</i>&nbsp;     * @return {@code true} if the key combinations match, {@code false}
+<i>104</i>&nbsp;     *      otherwise
+<i>105</i>&nbsp;     */
+<i>106</i>&nbsp;    @Override
+<i>107</i>&nbsp;    public boolean match(final KeyEvent event) {
+<b class="nc"><i>108</i>&nbsp;        return (event.getCode() == getCode()) &amp;&amp; super.match(event);</b>
+<i>109</i>&nbsp;    }
+<i>110</i>&nbsp;
+<i>111</i>&nbsp;    /**
+<i>112</i>&nbsp;     * Returns a string representation of this {@code KeyCodeCombination}.
+<i>113</i>&nbsp;     * &lt;p&gt;
+<i>114</i>&nbsp;     * The string representation consists of sections separated by plus
+<i>115</i>&nbsp;     * characters. Each section specifies either a modifier key or the main key.
+<i>116</i>&nbsp;     * &lt;p&gt;
+<i>117</i>&nbsp;     * A modifier key section contains the {@code KeyCode} name of a modifier
+<i>118</i>&nbsp;     * key. It can be prefixed with the {@code Ignored} keyword. A non-prefixed
+<i>119</i>&nbsp;     * modifier key implies its {@code PRESSED} value while the prefixed version
+<i>120</i>&nbsp;     * implies the {@code IGNORED} value. If some modifier key is not specified
+<i>121</i>&nbsp;     * in the string at all, it means it has the default {@code RELEASED} value.
+<i>122</i>&nbsp;     * &lt;p&gt;
+<i>123</i>&nbsp;     * The main key section contains the key code name of the main key and is
+<i>124</i>&nbsp;     * the last section in the returned string.
+<i>125</i>&nbsp;     *
+<i>126</i>&nbsp;     * @return the string representation of this {@code KeyCodeCombination}
+<i>127</i>&nbsp;     */
+<i>128</i>&nbsp;    @Override
+<i>129</i>&nbsp;    public String getName() {
+<b class="nc"><i>130</i>&nbsp;        StringBuilder sb = new StringBuilder();</b>
+<i>131</i>&nbsp;
+<b class="nc"><i>132</i>&nbsp;        sb.append(super.getName());</b>
+<i>133</i>&nbsp;
+<b class="nc"><i>134</i>&nbsp;        if (sb.length() &gt; 0) {</b>
+<b class="nc"><i>135</i>&nbsp;            sb.append(&quot;+&quot;);</b>
+<i>136</i>&nbsp;        }
+<i>137</i>&nbsp;
+<b class="nc"><i>138</i>&nbsp;        return sb.append(code.getName()).toString();</b>
+<i>139</i>&nbsp;    }
+<i>140</i>&nbsp;
+<i>141</i>&nbsp;    /** {@inheritDoc} */
+<i>142</i>&nbsp;    @Override
+<i>143</i>&nbsp;    public String getDisplayText() {
+<b class="nc"><i>144</i>&nbsp;        StringBuilder sb = new StringBuilder();</b>
+<b class="nc"><i>145</i>&nbsp;        sb.append(super.getDisplayText());</b>
+<b class="nc"><i>146</i>&nbsp;        final int initialLength = sb.length();</b>
+<i>147</i>&nbsp;
+<b class="nc"><i>148</i>&nbsp;        char c = getSingleChar(code);</b>
+<b class="nc"><i>149</i>&nbsp;        if (c != 0) {</b>
+<b class="nc"><i>150</i>&nbsp;            sb.append(c);</b>
+<b class="nc"><i>151</i>&nbsp;            return sb.toString();</b>
+<i>152</i>&nbsp;        }
+<i>153</i>&nbsp;
+<i>154</i>&nbsp;        // Compute a name based on the enum name, e.g. F13 becomes F13 and
+<i>155</i>&nbsp;        // NUM_LOCK becomes Num Lock
+<b class="nc"><i>156</i>&nbsp;        String name = code.toString();</b>
+<i>157</i>&nbsp;
+<i>158</i>&nbsp;        // We only want the first letter to be upper-case, so we convert &#39;ENTER&#39;
+<i>159</i>&nbsp;        // to &#39;Enter&#39; -- and we also convert multiple words separated by _
+<i>160</i>&nbsp;        // such that each individual word is capitalized and the underline replaced
+<i>161</i>&nbsp;        // by spaces.
+<i>162</i>&nbsp;
+<b class="nc"><i>163</i>&nbsp;        String[] words = com.sun.javafx.util.Utils.split(name, &quot;_&quot;);</b>
+<b class="nc"><i>164</i>&nbsp;        for (String word : words) {</b>
+<b class="nc"><i>165</i>&nbsp;            if (sb.length() &gt; initialLength) {</b>
+<b class="nc"><i>166</i>&nbsp;                sb.append(&#39; &#39;);</b>
+<i>167</i>&nbsp;            }
+<b class="nc"><i>168</i>&nbsp;            sb.append(word.charAt(0));</b>
+<b class="nc"><i>169</i>&nbsp;            sb.append(word.substring(1).toLowerCase());</b>
+<i>170</i>&nbsp;        }
+<b class="nc"><i>171</i>&nbsp;        return sb.toString();</b>
+<i>172</i>&nbsp;    }
+<i>173</i>&nbsp;
+<i>174</i>&nbsp;    /**
+<i>175</i>&nbsp;     * Tests whether this {@code KeyCodeCombination} equals to the specified
+<i>176</i>&nbsp;     * object.
+<i>177</i>&nbsp;     *
+<i>178</i>&nbsp;     * @param obj the object to compare to
+<i>179</i>&nbsp;     * @return {@code true} if the objects are equal, {@code false} otherwise
+<i>180</i>&nbsp;     */
+<i>181</i>&nbsp;    @Override
+<i>182</i>&nbsp;    public boolean equals(final Object obj) {
+<b class="nc"><i>183</i>&nbsp;        if (this == obj) {</b>
+<b class="nc"><i>184</i>&nbsp;            return true;</b>
+<i>185</i>&nbsp;        }
+<i>186</i>&nbsp;
+<b class="nc"><i>187</i>&nbsp;        if (!(obj instanceof KeyCodeCombination)) {</b>
+<b class="nc"><i>188</i>&nbsp;            return false;</b>
+<i>189</i>&nbsp;        }
+<i>190</i>&nbsp;
+<b class="nc"><i>191</i>&nbsp;        return (this.getCode() == ((KeyCodeCombination) obj).getCode())</b>
+<b class="nc"><i>192</i>&nbsp;                   &amp;&amp; super.equals(obj);</b>
+<i>193</i>&nbsp;    }
+<i>194</i>&nbsp;
+<i>195</i>&nbsp;    /**
+<i>196</i>&nbsp;     * Returns a hash code value for this {@code KeyCodeCombination}.
+<i>197</i>&nbsp;     *
+<i>198</i>&nbsp;     * @return the hash code value
+<i>199</i>&nbsp;     */
+<i>200</i>&nbsp;    @Override
+<i>201</i>&nbsp;    public int hashCode() {
+<b class="nc"><i>202</i>&nbsp;        return 23 * super.hashCode() + code.hashCode();</b>
+<i>203</i>&nbsp;    }
+<i>204</i>&nbsp;
+<i>205</i>&nbsp;    private static void validateKeyCode(final KeyCode keyCode) {
+<b class="fc"><i>206</i>&nbsp;        if (keyCode == null) {</b>
+<b class="nc"><i>207</i>&nbsp;            throw new NullPointerException(&quot;Key code must not be null!&quot;);</b>
+<i>208</i>&nbsp;        }
+<i>209</i>&nbsp;
+<b class="fc"><i>210</i>&nbsp;        if (getModifier(keyCode.getName()) != null) {</b>
+<b class="nc"><i>211</i>&nbsp;            throw new IllegalArgumentException(</b>
+<i>212</i>&nbsp;                    &quot;Key code must not match modifier key!&quot;);
+<i>213</i>&nbsp;        }
+<i>214</i>&nbsp;
+<b class="fc"><i>215</i>&nbsp;        if (keyCode == KeyCode.UNDEFINED) {</b>
+<b class="nc"><i>216</i>&nbsp;            throw new IllegalArgumentException(</b>
+<i>217</i>&nbsp;                    &quot;Key code must differ from undefined value!&quot;);
+<i>218</i>&nbsp;        }
+<b class="fc"><i>219</i>&nbsp;    }</b>
+<i>220</i>&nbsp;
+<i>221</i>&nbsp;    /** Compute a single suitable char summarizing the code, if any, and 0 otherwise. */
+<i>222</i>&nbsp;    private static char getSingleChar(KeyCode code) {
+<b class="nc"><i>223</i>&nbsp;        switch (code) {</b>
+<b class="nc"><i>224</i>&nbsp;            case ENTER: return &#39;\u21B5&#39;;</b>
+<b class="nc"><i>225</i>&nbsp;            case LEFT: return &#39;\u2190&#39;;</b>
+<b class="nc"><i>226</i>&nbsp;            case UP: return &#39;\u2191&#39;;</b>
+<b class="nc"><i>227</i>&nbsp;            case RIGHT: return &#39;\u2192&#39;;</b>
+<b class="nc"><i>228</i>&nbsp;            case DOWN: return &#39;\u2193&#39;;</b>
+<b class="nc"><i>229</i>&nbsp;            case COMMA: return &#39;,&#39;;</b>
+<b class="nc"><i>230</i>&nbsp;            case MINUS: return &#39;-&#39;;</b>
+<b class="nc"><i>231</i>&nbsp;            case PERIOD: return &#39;.&#39;;</b>
+<b class="nc"><i>232</i>&nbsp;            case SLASH: return &#39;/&#39;;</b>
+<b class="nc"><i>233</i>&nbsp;            case SEMICOLON: return &#39;;&#39;;</b>
+<b class="nc"><i>234</i>&nbsp;            case EQUALS: return &#39;=&#39;;</b>
+<b class="nc"><i>235</i>&nbsp;            case OPEN_BRACKET: return &#39;[&#39;;</b>
+<b class="nc"><i>236</i>&nbsp;            case BACK_SLASH: return &#39;\\&#39;;</b>
+<b class="nc"><i>237</i>&nbsp;            case CLOSE_BRACKET: return &#39;]&#39;;</b>
+<b class="nc"><i>238</i>&nbsp;            case MULTIPLY: return &#39;*&#39;;</b>
+<b class="nc"><i>239</i>&nbsp;            case ADD: return &#39;+&#39;;</b>
+<b class="nc"><i>240</i>&nbsp;            case SUBTRACT: return &#39;-&#39;;</b>
+<b class="nc"><i>241</i>&nbsp;            case DECIMAL: return &#39;.&#39;;</b>
+<b class="nc"><i>242</i>&nbsp;            case DIVIDE: return &#39;/&#39;;</b>
+<b class="nc"><i>243</i>&nbsp;            case BACK_QUOTE: return &#39;`&#39;;</b>
+<b class="nc"><i>244</i>&nbsp;            case QUOTE: return &#39;&quot;&#39;;</b>
+<b class="nc"><i>245</i>&nbsp;            case AMPERSAND: return &#39;&amp;&#39;;</b>
+<b class="nc"><i>246</i>&nbsp;            case ASTERISK: return &#39;*&#39;;</b>
+<b class="nc"><i>247</i>&nbsp;            case LESS: return &#39;&lt;&#39;;</b>
+<b class="nc"><i>248</i>&nbsp;            case GREATER: return &#39;&gt;&#39;;</b>
+<b class="nc"><i>249</i>&nbsp;            case BRACELEFT: return &#39;{&#39;;</b>
+<b class="nc"><i>250</i>&nbsp;            case BRACERIGHT: return &#39;}&#39;;</b>
+<b class="nc"><i>251</i>&nbsp;            case AT: return &#39;@&#39;;</b>
+<b class="nc"><i>252</i>&nbsp;            case COLON: return &#39;:&#39;;</b>
+<b class="nc"><i>253</i>&nbsp;            case CIRCUMFLEX: return &#39;^&#39;;</b>
+<b class="nc"><i>254</i>&nbsp;            case DOLLAR: return &#39;$&#39;;</b>
+<b class="nc"><i>255</i>&nbsp;            case EURO_SIGN: return &#39;\u20AC&#39;;</b>
+<b class="nc"><i>256</i>&nbsp;            case EXCLAMATION_MARK: return &#39;!&#39;;</b>
+<b class="nc"><i>257</i>&nbsp;            case LEFT_PARENTHESIS: return &#39;(&#39;;</b>
+<b class="nc"><i>258</i>&nbsp;            case NUMBER_SIGN: return &#39;#&#39;;</b>
+<b class="nc"><i>259</i>&nbsp;            case PLUS: return &#39;+&#39;;</b>
+<b class="nc"><i>260</i>&nbsp;            case RIGHT_PARENTHESIS: return &#39;)&#39;;</b>
+<b class="nc"><i>261</i>&nbsp;            case UNDERSCORE: return &#39;_&#39;;</b>
+<b class="nc"><i>262</i>&nbsp;            case DIGIT0: return &#39;0&#39;;</b>
+<b class="nc"><i>263</i>&nbsp;            case DIGIT1: return &#39;1&#39;;</b>
+<b class="nc"><i>264</i>&nbsp;            case DIGIT2: return &#39;2&#39;;</b>
+<b class="nc"><i>265</i>&nbsp;            case DIGIT3: return &#39;3&#39;;</b>
+<b class="nc"><i>266</i>&nbsp;            case DIGIT4: return &#39;4&#39;;</b>
+<b class="nc"><i>267</i>&nbsp;            case DIGIT5: return &#39;5&#39;;</b>
+<b class="nc"><i>268</i>&nbsp;            case DIGIT6: return &#39;6&#39;;</b>
+<b class="nc"><i>269</i>&nbsp;            case DIGIT7: return &#39;7&#39;;</b>
+<b class="nc"><i>270</i>&nbsp;            case DIGIT8: return &#39;8&#39;;</b>
+<b class="nc"><i>271</i>&nbsp;            case DIGIT9: return &#39;9&#39;;</b>
+<i>272</i>&nbsp;            default:
+<i>273</i>&nbsp;                break;
+<i>274</i>&nbsp;        }
+<i>275</i>&nbsp;
+<i>276</i>&nbsp;        /*
+<i>277</i>&nbsp;        ** On Mac we display these unicode symbols,
+<i>278</i>&nbsp;        ** otherwise we default to the Text version of the char.
+<i>279</i>&nbsp;        */
+<b class="nc"><i>280</i>&nbsp;        if (com.sun.javafx.PlatformUtil.isMac()) {</b>
+<b class="nc"><i>281</i>&nbsp;            switch (code) {</b>
+<b class="nc"><i>282</i>&nbsp;                case BACK_SPACE: return &#39;\u232B&#39;;</b>
+<b class="nc"><i>283</i>&nbsp;                case ESCAPE: return &#39;\u238B&#39;;</b>
+<b class="nc"><i>284</i>&nbsp;                case DELETE: return &#39;\u2326&#39;;</b>
+<i>285</i>&nbsp;                default:
+<i>286</i>&nbsp;                    break;
+<i>287</i>&nbsp;            }
+<i>288</i>&nbsp;        }
+<b class="nc"><i>289</i>&nbsp;        return 0;</b>
+<i>290</i>&nbsp;    }
+<i>291</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2017-12-04 21:49</div>
+</div>
+</body>
+</html>

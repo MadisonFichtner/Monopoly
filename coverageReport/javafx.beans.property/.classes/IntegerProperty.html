@@ -1,0 +1,362 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: IntegerProperty</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">javafx.beans.property</a> ]
+</div>
+
+<h1>Coverage Summary for Class: IntegerProperty (javafx.beans.property)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">IntegerProperty</td>
+<td class="coverageStat">
+  <span class="percent">
+    14.3%
+  </span>
+  <span class="absValue">
+    (1/ 7)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    4.3%
+  </span>
+  <span class="absValue">
+    (1/ 23)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">IntegerProperty$1</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 5)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 12)
+  </span>
+</td>
+  </tr>
+  <tr>
+    <td class="name">IntegerProperty$2</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 5)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 12)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    5.9%
+  </span>
+  <span class="absValue">
+    (1/ 17)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    2.1%
+  </span>
+  <span class="absValue">
+    (1/ 47)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright (c) 2011, 2016, Oracle and/or its affiliates. All rights reserved.
+<i>3</i>&nbsp; * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+<i>4</i>&nbsp; *
+<i>5</i>&nbsp; *
+<i>6</i>&nbsp; *
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; *
+<i>11</i>&nbsp; *
+<i>12</i>&nbsp; *
+<i>13</i>&nbsp; *
+<i>14</i>&nbsp; *
+<i>15</i>&nbsp; *
+<i>16</i>&nbsp; *
+<i>17</i>&nbsp; *
+<i>18</i>&nbsp; *
+<i>19</i>&nbsp; *
+<i>20</i>&nbsp; *
+<i>21</i>&nbsp; *
+<i>22</i>&nbsp; *
+<i>23</i>&nbsp; *
+<i>24</i>&nbsp; */
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;package javafx.beans.property;
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;import com.sun.javafx.binding.BidirectionalBinding;
+<i>29</i>&nbsp;import javafx.beans.binding.Bindings;
+<i>30</i>&nbsp;import javafx.beans.value.ObservableValue;
+<i>31</i>&nbsp;import javafx.beans.value.WritableIntegerValue;
+<i>32</i>&nbsp;import com.sun.javafx.binding.Logging;
+<i>33</i>&nbsp;
+<i>34</i>&nbsp;import java.security.AccessControlContext;
+<i>35</i>&nbsp;import java.security.AccessController;
+<i>36</i>&nbsp;import java.security.PrivilegedAction;
+<i>37</i>&nbsp;
+<i>38</i>&nbsp;/**
+<i>39</i>&nbsp; * This class defines a {@link Property} wrapping an {@code int} value.
+<i>40</i>&nbsp; * &lt;p&gt;
+<i>41</i>&nbsp; * The value of an {@code IntegerProperty} can be get and set with {@link #get()},
+<i>42</i>&nbsp; * {@link #getValue()}, {@link #set(int)}, and {@link #setValue(Number)}.
+<i>43</i>&nbsp; * &lt;p&gt;
+<i>44</i>&nbsp; * A property can be bound and unbound unidirectional with
+<i>45</i>&nbsp; * {@link #bind(ObservableValue)} and {@link #unbind()}. Bidirectional bindings
+<i>46</i>&nbsp; * can be created and removed with {@link #bindBidirectional(Property)} and
+<i>47</i>&nbsp; * {@link #unbindBidirectional(Property)}.
+<i>48</i>&nbsp; * &lt;p&gt;
+<i>49</i>&nbsp; * The context of a {@code IntegerProperty} can be read with {@link #getBean()}
+<i>50</i>&nbsp; * and {@link #getName()}.
+<i>51</i>&nbsp; * &lt;p&gt;
+<i>52</i>&nbsp; * Note: setting or binding this property to a null value will set the property to &quot;0.0&quot;. See {@link #setValue(java.lang.Number) }.
+<i>53</i>&nbsp; *
+<i>54</i>&nbsp; * @see javafx.beans.value.ObservableIntegerValue
+<i>55</i>&nbsp; * @see javafx.beans.value.WritableIntegerValue
+<i>56</i>&nbsp; * @see ReadOnlyIntegerProperty
+<i>57</i>&nbsp; * @see Property
+<i>58</i>&nbsp; *
+<i>59</i>&nbsp; * @since JavaFX 2.0
+<i>60</i>&nbsp; */
+<b class="fc"><i>61</i>&nbsp;public abstract class IntegerProperty extends ReadOnlyIntegerProperty implements</b>
+<i>62</i>&nbsp;        Property&lt;Number&gt;, WritableIntegerValue {
+<i>63</i>&nbsp;
+<i>64</i>&nbsp;    /**
+<i>65</i>&nbsp;     * {@inheritDoc}
+<i>66</i>&nbsp;     */
+<i>67</i>&nbsp;    @Override
+<i>68</i>&nbsp;    public void setValue(Number v) {
+<b class="nc"><i>69</i>&nbsp;        if (v == null) {</b>
+<b class="nc"><i>70</i>&nbsp;            Logging.getLogger().fine(&quot;Attempt to set integer property to null, using default value instead.&quot;, new NullPointerException());</b>
+<b class="nc"><i>71</i>&nbsp;            set(0);</b>
+<i>72</i>&nbsp;        } else {
+<b class="nc"><i>73</i>&nbsp;            set(v.intValue());</b>
+<i>74</i>&nbsp;        }
+<b class="nc"><i>75</i>&nbsp;    }</b>
+<i>76</i>&nbsp;
+<i>77</i>&nbsp;    /**
+<i>78</i>&nbsp;     * {@inheritDoc}
+<i>79</i>&nbsp;     */
+<i>80</i>&nbsp;    @Override
+<i>81</i>&nbsp;    public void bindBidirectional(Property&lt;Number&gt; other) {
+<b class="nc"><i>82</i>&nbsp;        Bindings.bindBidirectional(this, other);</b>
+<b class="nc"><i>83</i>&nbsp;    }</b>
+<i>84</i>&nbsp;
+<i>85</i>&nbsp;    /**
+<i>86</i>&nbsp;     * {@inheritDoc}
+<i>87</i>&nbsp;     */
+<i>88</i>&nbsp;    @Override
+<i>89</i>&nbsp;    public void unbindBidirectional(Property&lt;Number&gt; other) {
+<b class="nc"><i>90</i>&nbsp;        Bindings.unbindBidirectional(this, other);</b>
+<b class="nc"><i>91</i>&nbsp;    }</b>
+<i>92</i>&nbsp;
+<i>93</i>&nbsp;    /**
+<i>94</i>&nbsp;     * Returns a string representation of this {@code IntegerProperty} object.
+<i>95</i>&nbsp;     * @return a string representation of this {@code IntegerProperty} object.
+<i>96</i>&nbsp;     */
+<i>97</i>&nbsp;    @Override
+<i>98</i>&nbsp;    public String toString() {
+<b class="nc"><i>99</i>&nbsp;        final Object bean = getBean();</b>
+<b class="nc"><i>100</i>&nbsp;        final String name = getName();</b>
+<b class="nc"><i>101</i>&nbsp;        final StringBuilder result = new StringBuilder(</b>
+<i>102</i>&nbsp;                &quot;IntegerProperty [&quot;);
+<b class="nc"><i>103</i>&nbsp;        if (bean != null) {</b>
+<b class="nc"><i>104</i>&nbsp;            result.append(&quot;bean: &quot;).append(bean).append(&quot;, &quot;);</b>
+<i>105</i>&nbsp;        }
+<b class="nc"><i>106</i>&nbsp;        if ((name != null) &amp;&amp; (!name.equals(&quot;&quot;))) {</b>
+<b class="nc"><i>107</i>&nbsp;            result.append(&quot;name: &quot;).append(name).append(&quot;, &quot;);</b>
+<i>108</i>&nbsp;        }
+<b class="nc"><i>109</i>&nbsp;        result.append(&quot;value: &quot;).append(get()).append(&quot;]&quot;);</b>
+<b class="nc"><i>110</i>&nbsp;        return result.toString();</b>
+<i>111</i>&nbsp;    }
+<i>112</i>&nbsp;
+<i>113</i>&nbsp;    /**
+<i>114</i>&nbsp;     * Returns a {@code IntegerProperty} that wraps a
+<i>115</i>&nbsp;     * {@link javafx.beans.property.Property} and is
+<i>116</i>&nbsp;     * bidirectionally bound to it.
+<i>117</i>&nbsp;     * Changing this property will result in a change of the original property.
+<i>118</i>&nbsp;     *
+<i>119</i>&nbsp;     * &lt;p&gt;
+<i>120</i>&nbsp;     * This is very useful when bidirectionally binding an ObjectProperty&amp;lt;Integer&amp;gt; and
+<i>121</i>&nbsp;     * a IntegerProperty.
+<i>122</i>&nbsp;     *
+<i>123</i>&nbsp;     * &lt;blockquote&gt;&lt;pre&gt;
+<i>124</i>&nbsp;     *   IntegerProperty integerProperty = new SimpleIntegerProperty(1);
+<i>125</i>&nbsp;     *   ObjectProperty&amp;lt;Integer&amp;gt; objectProperty = new SimpleObjectProperty&amp;lt;&amp;gt;(2);
+<i>126</i>&nbsp;     *
+<i>127</i>&nbsp;     *   // Need to keep the reference as bidirectional binding uses weak references
+<i>128</i>&nbsp;     *   IntegerProperty objectAsInteger = IntegerProperty.integerProperty(objectProperty);
+<i>129</i>&nbsp;     *
+<i>130</i>&nbsp;     *   integerProperty.bindBidirectional(objectAsInteger);
+<i>131</i>&nbsp;     *
+<i>132</i>&nbsp;     * &lt;/pre&gt;&lt;/blockquote&gt;
+<i>133</i>&nbsp;     *
+<i>134</i>&nbsp;     * Another approach is to convert the IntegerProperty to ObjectProperty using
+<i>135</i>&nbsp;     * {@link #asObject()} method.
+<i>136</i>&nbsp;     *
+<i>137</i>&nbsp;     * &lt;p&gt;
+<i>138</i>&nbsp;     * Note: null values in the source property will be interpreted as 0
+<i>139</i>&nbsp;     *
+<i>140</i>&nbsp;     * @param property
+<i>141</i>&nbsp;     *            The source {@code Property}
+<i>142</i>&nbsp;     * @return A {@code IntegerProperty} that wraps the
+<i>143</i>&nbsp;     *         {@code Property}
+<i>144</i>&nbsp;     * @throws NullPointerException
+<i>145</i>&nbsp;     *             if {@code property} is {@code null}
+<i>146</i>&nbsp;     * @see #asObject()
+<i>147</i>&nbsp;     * @since JavaFX 8.0
+<i>148</i>&nbsp;     */
+<i>149</i>&nbsp;     public static IntegerProperty integerProperty(final Property&lt;Integer&gt; property) {
+<b class="nc"><i>150</i>&nbsp;        if (property == null) {</b>
+<b class="nc"><i>151</i>&nbsp;            throw new NullPointerException(&quot;Property cannot be null&quot;);</b>
+<i>152</i>&nbsp;        }
+<b class="nc"><i>153</i>&nbsp;        return new IntegerPropertyBase() {</b>
+<b class="nc"><i>154</i>&nbsp;            private final AccessControlContext acc = AccessController.getContext();</b>
+<i>155</i>&nbsp;            {
+<b class="nc"><i>156</i>&nbsp;                BidirectionalBinding.bindNumber(this, property);</b>
+<b class="nc"><i>157</i>&nbsp;            }</b>
+<i>158</i>&nbsp;
+<i>159</i>&nbsp;            @Override
+<i>160</i>&nbsp;            public Object getBean() {
+<b class="nc"><i>161</i>&nbsp;                return null; // Virtual property, no bean</b>
+<i>162</i>&nbsp;            }
+<i>163</i>&nbsp;
+<i>164</i>&nbsp;            @Override
+<i>165</i>&nbsp;            public String getName() {
+<b class="nc"><i>166</i>&nbsp;                return property.getName();</b>
+<i>167</i>&nbsp;            }
+<i>168</i>&nbsp;
+<i>169</i>&nbsp;            @Override
+<i>170</i>&nbsp;            protected void finalize() throws Throwable {
+<i>171</i>&nbsp;                try {
+<b class="nc"><i>172</i>&nbsp;                    AccessController.doPrivileged((PrivilegedAction&lt;Void&gt;) () -&gt; {</b>
+<b class="nc"><i>173</i>&nbsp;                        BidirectionalBinding.unbindNumber(property, this);</b>
+<b class="nc"><i>174</i>&nbsp;                        return null;</b>
+<i>175</i>&nbsp;                    }, acc);
+<i>176</i>&nbsp;                } finally {
+<b class="nc"><i>177</i>&nbsp;                    super.finalize();</b>
+<b class="nc"><i>178</i>&nbsp;                }</b>
+<b class="nc"><i>179</i>&nbsp;            }</b>
+<i>180</i>&nbsp;        };
+<i>181</i>&nbsp;    }
+<i>182</i>&nbsp;
+<i>183</i>&nbsp;     /**
+<i>184</i>&nbsp;     * Creates an {@link javafx.beans.property.ObjectProperty}
+<i>185</i>&nbsp;     * that bidirectionally bound to this {@code IntegerProperty}. If the
+<i>186</i>&nbsp;     * value of this {@code IntegerProperty} changes, the value of the
+<i>187</i>&nbsp;     * {@code ObjectProperty} will be updated automatically and vice-versa.
+<i>188</i>&nbsp;     *
+<i>189</i>&nbsp;     * &lt;p&gt;
+<i>190</i>&nbsp;     * Can be used for binding an ObjectProperty to IntegerProperty.
+<i>191</i>&nbsp;     *
+<i>192</i>&nbsp;     * &lt;blockquote&gt;&lt;pre&gt;
+<i>193</i>&nbsp;     *   IntegerProperty integerProperty = new SimpleIntegerProperty(1);
+<i>194</i>&nbsp;     *   ObjectProperty&amp;lt;Integer&amp;gt; objectProperty = new SimpleObjectProperty&amp;lt;&amp;gt;(2);
+<i>195</i>&nbsp;     *
+<i>196</i>&nbsp;     *   objectProperty.bind(integerProperty.asObject());
+<i>197</i>&nbsp;     * &lt;/pre&gt;&lt;/blockquote&gt;
+<i>198</i>&nbsp;     *
+<i>199</i>&nbsp;     * @return the new {@code ObjectProperty}
+<i>200</i>&nbsp;     * @since JavaFX 8.0
+<i>201</i>&nbsp;     */
+<i>202</i>&nbsp;    @Override
+<i>203</i>&nbsp;    public ObjectProperty&lt;Integer&gt; asObject() {
+<b class="nc"><i>204</i>&nbsp;        return new ObjectPropertyBase&lt;Integer&gt; () {</b>
+<b class="nc"><i>205</i>&nbsp;            private final AccessControlContext acc = AccessController.getContext();</b>
+<i>206</i>&nbsp;            {
+<b class="nc"><i>207</i>&nbsp;                BidirectionalBinding.bindNumber(this, IntegerProperty.this);</b>
+<b class="nc"><i>208</i>&nbsp;            }</b>
+<i>209</i>&nbsp;
+<i>210</i>&nbsp;            @Override
+<i>211</i>&nbsp;            public Object getBean() {
+<b class="nc"><i>212</i>&nbsp;                return null; // Virtual property, does not exist on a bean</b>
+<i>213</i>&nbsp;            }
+<i>214</i>&nbsp;
+<i>215</i>&nbsp;            @Override
+<i>216</i>&nbsp;            public String getName() {
+<b class="nc"><i>217</i>&nbsp;                return IntegerProperty.this.getName();</b>
+<i>218</i>&nbsp;            }
+<i>219</i>&nbsp;
+<i>220</i>&nbsp;            @Override
+<i>221</i>&nbsp;            protected void finalize() throws Throwable {
+<i>222</i>&nbsp;                try {
+<b class="nc"><i>223</i>&nbsp;                    AccessController.doPrivileged((PrivilegedAction&lt;Void&gt;) () -&gt; {</b>
+<b class="nc"><i>224</i>&nbsp;                        BidirectionalBinding.unbindNumber(this, IntegerProperty.this);</b>
+<b class="nc"><i>225</i>&nbsp;                        return null;</b>
+<i>226</i>&nbsp;                    }, acc);
+<i>227</i>&nbsp;                } finally {
+<b class="nc"><i>228</i>&nbsp;                    super.finalize();</b>
+<b class="nc"><i>229</i>&nbsp;                }</b>
+<b class="nc"><i>230</i>&nbsp;            }</b>
+<i>231</i>&nbsp;
+<i>232</i>&nbsp;        };
+<i>233</i>&nbsp;    }
+<i>234</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2017-12-04 21:49</div>
+</div>
+</body>
+</html>

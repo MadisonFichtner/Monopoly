@@ -1,0 +1,434 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: PrismImageLoader2</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.javafx.tk.quantum</a> ]
+</div>
+
+<h1>Coverage Summary for Class: PrismImageLoader2 (com.sun.javafx.tk.quantum)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">PrismImageLoader2</td>
+<td class="coverageStat">
+  <span class="percent">
+    64.7%
+  </span>
+  <span class="absValue">
+    (11/ 17)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    57.5%
+  </span>
+  <span class="absValue">
+    (42/ 73)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">PrismImageLoader2$AsyncImageLoader</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 11)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 34)
+  </span>
+</td>
+  </tr>
+  <tr>
+    <td class="name">PrismImageLoader2$PrismLoadListener</td>
+<td class="coverageStat">
+  <span class="percent">
+    75%
+  </span>
+  <span class="absValue">
+    (3/ 4)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    60%
+  </span>
+  <span class="absValue">
+    (3/ 5)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    43.8%
+  </span>
+  <span class="absValue">
+    (14/ 32)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    40.2%
+  </span>
+  <span class="absValue">
+    (45/ 112)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright (c) 2011, 2015, Oracle and/or its affiliates. All rights reserved.
+<i>3</i>&nbsp; * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+<i>4</i>&nbsp; *
+<i>5</i>&nbsp; *
+<i>6</i>&nbsp; *
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; *
+<i>11</i>&nbsp; *
+<i>12</i>&nbsp; *
+<i>13</i>&nbsp; *
+<i>14</i>&nbsp; *
+<i>15</i>&nbsp; *
+<i>16</i>&nbsp; *
+<i>17</i>&nbsp; *
+<i>18</i>&nbsp; *
+<i>19</i>&nbsp; *
+<i>20</i>&nbsp; *
+<i>21</i>&nbsp; *
+<i>22</i>&nbsp; *
+<i>23</i>&nbsp; *
+<i>24</i>&nbsp; */
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;package com.sun.javafx.tk.quantum;
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;import java.io.IOException;
+<i>29</i>&nbsp;import java.io.InputStream;
+<i>30</i>&nbsp;
+<i>31</i>&nbsp;import com.sun.javafx.iio.ImageFrame;
+<i>32</i>&nbsp;import com.sun.javafx.iio.ImageLoadListener;
+<i>33</i>&nbsp;import com.sun.javafx.iio.ImageLoader;
+<i>34</i>&nbsp;import com.sun.javafx.iio.ImageMetadata;
+<i>35</i>&nbsp;import com.sun.javafx.iio.ImageStorage;
+<i>36</i>&nbsp;import com.sun.javafx.iio.ImageStorageException;
+<i>37</i>&nbsp;import com.sun.javafx.runtime.async.AbstractRemoteResource;
+<i>38</i>&nbsp;import com.sun.javafx.runtime.async.AsyncOperationListener;
+<i>39</i>&nbsp;import com.sun.javafx.tk.PlatformImage;
+<i>40</i>&nbsp;import com.sun.prism.Image;
+<i>41</i>&nbsp;import com.sun.prism.impl.PrismSettings;
+<i>42</i>&nbsp;import java.lang.reflect.UndeclaredThrowableException;
+<i>43</i>&nbsp;import java.security.AccessControlContext;
+<i>44</i>&nbsp;import java.security.AccessController;
+<i>45</i>&nbsp;import java.security.PrivilegedAction;
+<i>46</i>&nbsp;import java.security.PrivilegedActionException;
+<i>47</i>&nbsp;import java.security.PrivilegedExceptionAction;
+<i>48</i>&nbsp;import java.util.concurrent.ExecutorService;
+<i>49</i>&nbsp;import java.util.concurrent.Executors;
+<i>50</i>&nbsp;import java.util.concurrent.ThreadFactory;
+<i>51</i>&nbsp;import java.util.concurrent.ThreadPoolExecutor;
+<i>52</i>&nbsp;import java.util.concurrent.TimeUnit;
+<i>53</i>&nbsp;import sun.util.logging.PlatformLogger;
+<i>54</i>&nbsp;
+<b class="nc"><i>55</i>&nbsp;class PrismImageLoader2 implements com.sun.javafx.tk.ImageLoader {</b>
+<i>56</i>&nbsp;
+<b class="fc"><i>57</i>&nbsp;    private static PlatformLogger imageioLogger = null;</b>
+<i>58</i>&nbsp;
+<i>59</i>&nbsp;    private Image[] images;
+<i>60</i>&nbsp;    private int[] delayTimes;
+<i>61</i>&nbsp;    private int loopCount;
+<i>62</i>&nbsp;    private int width;
+<i>63</i>&nbsp;    private int height;
+<i>64</i>&nbsp;    private float pixelScale;
+<i>65</i>&nbsp;    private Exception exception;
+<i>66</i>&nbsp;
+<i>67</i>&nbsp;    public PrismImageLoader2(String url, int width, int height,
+<i>68</i>&nbsp;                             boolean preserveRatio, float pixelScale,
+<i>69</i>&nbsp;                             boolean smooth)
+<b class="fc"><i>70</i>&nbsp;    {</b>
+<b class="fc"><i>71</i>&nbsp;        loadAll(url, width, height, preserveRatio, pixelScale, smooth);</b>
+<b class="fc"><i>72</i>&nbsp;    }</b>
+<i>73</i>&nbsp;
+<i>74</i>&nbsp;    public PrismImageLoader2(InputStream stream, int width, int height,
+<i>75</i>&nbsp;                             boolean preserveRatio, boolean smooth)
+<b class="nc"><i>76</i>&nbsp;    {</b>
+<b class="nc"><i>77</i>&nbsp;        loadAll(stream, width, height, preserveRatio, smooth);</b>
+<b class="nc"><i>78</i>&nbsp;    }</b>
+<i>79</i>&nbsp;
+<i>80</i>&nbsp;    public int getWidth() {
+<b class="fc"><i>81</i>&nbsp;        return width;</b>
+<i>82</i>&nbsp;    }
+<i>83</i>&nbsp;
+<i>84</i>&nbsp;    public int getHeight() {
+<b class="fc"><i>85</i>&nbsp;        return height;</b>
+<i>86</i>&nbsp;    }
+<i>87</i>&nbsp;
+<i>88</i>&nbsp;    public int getFrameCount() {
+<b class="fc"><i>89</i>&nbsp;        if (images == null) {</b>
+<b class="nc"><i>90</i>&nbsp;            return 0;</b>
+<i>91</i>&nbsp;        }
+<b class="fc"><i>92</i>&nbsp;        return images.length;</b>
+<i>93</i>&nbsp;    }
+<i>94</i>&nbsp;
+<i>95</i>&nbsp;    public PlatformImage getFrame(int index) {
+<b class="fc"><i>96</i>&nbsp;        if (images == null) {</b>
+<b class="nc"><i>97</i>&nbsp;            return null;</b>
+<i>98</i>&nbsp;        }
+<b class="fc"><i>99</i>&nbsp;        return images[index];</b>
+<i>100</i>&nbsp;    }
+<i>101</i>&nbsp;
+<i>102</i>&nbsp;    public int getFrameDelay(int index) {
+<b class="nc"><i>103</i>&nbsp;        if (images == null) {</b>
+<b class="nc"><i>104</i>&nbsp;            return 0;</b>
+<i>105</i>&nbsp;        }
+<b class="nc"><i>106</i>&nbsp;        return delayTimes[index];</b>
+<i>107</i>&nbsp;    }
+<i>108</i>&nbsp;
+<i>109</i>&nbsp;    public int getLoopCount() {
+<b class="nc"><i>110</i>&nbsp;        if (images == null) {</b>
+<b class="nc"><i>111</i>&nbsp;            return 0;</b>
+<i>112</i>&nbsp;        }
+<b class="nc"><i>113</i>&nbsp;        return loopCount;</b>
+<i>114</i>&nbsp;    }
+<i>115</i>&nbsp;
+<i>116</i>&nbsp;    public Exception getException() {
+<b class="fc"><i>117</i>&nbsp;        return exception;</b>
+<i>118</i>&nbsp;    }
+<i>119</i>&nbsp;
+<i>120</i>&nbsp;    private void loadAll(String url, int w, int h,
+<i>121</i>&nbsp;                         boolean preserveRatio, float pixelScale,
+<i>122</i>&nbsp;                         boolean smooth)
+<i>123</i>&nbsp;    {
+<b class="fc"><i>124</i>&nbsp;        ImageLoadListener listener = new PrismLoadListener();</b>
+<i>125</i>&nbsp;        try {
+<b class="fc"><i>126</i>&nbsp;            ImageFrame[] imgFrames =</b>
+<b class="fc"><i>127</i>&nbsp;                ImageStorage.loadAll(url, listener, w, h, preserveRatio, pixelScale, smooth);</b>
+<b class="fc"><i>128</i>&nbsp;            convertAll(imgFrames);</b>
+<b class="fc"><i>129</i>&nbsp;        } catch (ImageStorageException e) {</b>
+<b class="fc"><i>130</i>&nbsp;            handleException(e);</b>
+<b class="nc"><i>131</i>&nbsp;        } catch (Exception e) {</b>
+<b class="nc"><i>132</i>&nbsp;            handleException(e);</b>
+<b class="fc"><i>133</i>&nbsp;        }</b>
+<b class="fc"><i>134</i>&nbsp;    }</b>
+<i>135</i>&nbsp;
+<i>136</i>&nbsp;    private void loadAll(InputStream stream, int w, int h,
+<i>137</i>&nbsp;                         boolean preserveRatio, boolean smooth)
+<i>138</i>&nbsp;    {
+<b class="nc"><i>139</i>&nbsp;        ImageLoadListener listener = new PrismLoadListener();</b>
+<i>140</i>&nbsp;        try {
+<b class="nc"><i>141</i>&nbsp;            ImageFrame[] imgFrames =</b>
+<b class="nc"><i>142</i>&nbsp;                ImageStorage.loadAll(stream, listener, w, h, preserveRatio, 1.0f, smooth);</b>
+<b class="nc"><i>143</i>&nbsp;            convertAll(imgFrames);</b>
+<b class="nc"><i>144</i>&nbsp;        } catch (ImageStorageException e) {</b>
+<b class="nc"><i>145</i>&nbsp;            handleException(e);</b>
+<b class="nc"><i>146</i>&nbsp;        } catch (Exception e) {</b>
+<b class="nc"><i>147</i>&nbsp;            handleException(e);</b>
+<b class="nc"><i>148</i>&nbsp;        }</b>
+<b class="nc"><i>149</i>&nbsp;    }</b>
+<i>150</i>&nbsp;
+<i>151</i>&nbsp;    private void handleException(final ImageStorageException isException) {
+<i>152</i>&nbsp;        // unwrap ImageStorageException if possible
+<b class="fc"><i>153</i>&nbsp;        final Throwable exceptionCause = isException.getCause();</b>
+<b class="fc"><i>154</i>&nbsp;        if (exceptionCause instanceof Exception) {</b>
+<b class="fc"><i>155</i>&nbsp;            handleException((Exception) exceptionCause);</b>
+<i>156</i>&nbsp;        } else {
+<b class="nc"><i>157</i>&nbsp;            handleException((Exception) isException);</b>
+<i>158</i>&nbsp;        }
+<b class="fc"><i>159</i>&nbsp;    }</b>
+<i>160</i>&nbsp;
+<i>161</i>&nbsp;    private void handleException(final Exception exception) {
+<b class="fc"><i>162</i>&nbsp;        if (PrismSettings.verbose) {</b>
+<b class="nc"><i>163</i>&nbsp;            exception.printStackTrace(System.err);</b>
+<i>164</i>&nbsp;        }
+<b class="fc"><i>165</i>&nbsp;        this.exception = exception;</b>
+<b class="fc"><i>166</i>&nbsp;    }</b>
+<i>167</i>&nbsp;
+<i>168</i>&nbsp;    private void convertAll(ImageFrame[] imgFrames) {
+<b class="fc"><i>169</i>&nbsp;        int numFrames = imgFrames.length;</b>
+<b class="fc"><i>170</i>&nbsp;        images = new Image[numFrames];</b>
+<b class="fc"><i>171</i>&nbsp;        delayTimes = new int[numFrames];</b>
+<b class="fc"><i>172</i>&nbsp;        for (int i = 0; i &lt; numFrames; i++) {</b>
+<b class="fc"><i>173</i>&nbsp;            ImageFrame frame = imgFrames[i];</b>
+<b class="fc"><i>174</i>&nbsp;            images[i] = com.sun.prism.Image.convertImageFrame(frame);</b>
+<b class="fc"><i>175</i>&nbsp;            ImageMetadata metadata = frame.getMetadata();</b>
+<b class="fc"><i>176</i>&nbsp;            if (metadata != null) {</b>
+<b class="fc"><i>177</i>&nbsp;                Integer delay = metadata.delayTime;</b>
+<b class="fc"><i>178</i>&nbsp;                if (delay != null) {</b>
+<b class="nc"><i>179</i>&nbsp;                    delayTimes[i] = delay.intValue();</b>
+<i>180</i>&nbsp;                }
+<b class="fc"><i>181</i>&nbsp;                Integer loopCount = metadata.loopCount;</b>
+<b class="fc"><i>182</i>&nbsp;                if (loopCount != null) {</b>
+<b class="nc"><i>183</i>&nbsp;                    this.loopCount = loopCount;</b>
+<i>184</i>&nbsp;                }
+<i>185</i>&nbsp;            }
+<b class="fc"><i>186</i>&nbsp;            if (i == 0) {</b>
+<b class="fc"><i>187</i>&nbsp;                width = frame.getWidth();</b>
+<b class="fc"><i>188</i>&nbsp;                height = frame.getHeight();</b>
+<i>189</i>&nbsp;            }
+<i>190</i>&nbsp;        }
+<b class="fc"><i>191</i>&nbsp;    }</b>
+<i>192</i>&nbsp;
+<i>193</i>&nbsp;    /**
+<i>194</i>&nbsp;     * Returns the PlatformLogger for logging imageio-related activities.
+<i>195</i>&nbsp;     */
+<i>196</i>&nbsp;    private static synchronized PlatformLogger getImageioLogger() {
+<b class="nc"><i>197</i>&nbsp;        if (imageioLogger == null) {</b>
+<b class="nc"><i>198</i>&nbsp;            imageioLogger = PlatformLogger.getLogger(&quot;javafx.scene.image&quot;);</b>
+<i>199</i>&nbsp;        }
+<i>200</i>&nbsp;
+<b class="nc"><i>201</i>&nbsp;        return imageioLogger;</b>
+<i>202</i>&nbsp;    }
+<i>203</i>&nbsp;
+<b class="fc"><i>204</i>&nbsp;    private class PrismLoadListener implements ImageLoadListener {</b>
+<i>205</i>&nbsp;        public void imageLoadWarning(ImageLoader loader, String message) {
+<b class="nc"><i>206</i>&nbsp;            getImageioLogger().warning(message);</b>
+<b class="nc"><i>207</i>&nbsp;        }</b>
+<i>208</i>&nbsp;
+<i>209</i>&nbsp;        public void imageLoadProgress(ImageLoader loader,
+<i>210</i>&nbsp;                                      float percentageComplete)
+<i>211</i>&nbsp;        {
+<i>212</i>&nbsp;            // progress only matters when backgroundLoading=true, but
+<i>213</i>&nbsp;            // currently we are relying on AbstractRemoteResource for tracking
+<i>214</i>&nbsp;            // progress of the InputStream, so there&#39;s no need to implement
+<i>215</i>&nbsp;            // this for now; eventually though we might want to consider
+<i>216</i>&nbsp;            // moving away from AbstractRemoteResource and instead use
+<i>217</i>&nbsp;            // the built-in support for progress in the javafx-iio library...
+<b class="fc"><i>218</i>&nbsp;        }</b>
+<i>219</i>&nbsp;
+<i>220</i>&nbsp;        public void imageLoadMetaData(ImageLoader loader, ImageMetadata metadata) {
+<i>221</i>&nbsp;            // We currently have no need to listen for ImageMetadata ready.
+<b class="fc"><i>222</i>&nbsp;        }</b>
+<i>223</i>&nbsp;    }
+<i>224</i>&nbsp;
+<b class="nc"><i>225</i>&nbsp;    static final class AsyncImageLoader</b>
+<i>226</i>&nbsp;        extends AbstractRemoteResource&lt;PrismImageLoader2&gt;
+<i>227</i>&nbsp;    {
+<b class="nc"><i>228</i>&nbsp;        private static final ExecutorService BG_LOADING_EXECUTOR =</b>
+<b class="nc"><i>229</i>&nbsp;                createExecutor();</b>
+<i>230</i>&nbsp;
+<i>231</i>&nbsp;        private final AccessControlContext acc;
+<i>232</i>&nbsp;
+<i>233</i>&nbsp;        int width, height;
+<i>234</i>&nbsp;        boolean preserveRatio;
+<i>235</i>&nbsp;        boolean smooth;
+<i>236</i>&nbsp;
+<i>237</i>&nbsp;        public AsyncImageLoader(
+<i>238</i>&nbsp;                AsyncOperationListener&lt;PrismImageLoader2&gt; listener,
+<i>239</i>&nbsp;                String url,
+<i>240</i>&nbsp;                int width, int height, boolean preserveRatio, boolean smooth)
+<i>241</i>&nbsp;        {
+<b class="nc"><i>242</i>&nbsp;            super(url, listener);</b>
+<b class="nc"><i>243</i>&nbsp;            this.width = width;</b>
+<b class="nc"><i>244</i>&nbsp;            this.height = height;</b>
+<b class="nc"><i>245</i>&nbsp;            this.preserveRatio = preserveRatio;</b>
+<b class="nc"><i>246</i>&nbsp;            this.smooth = smooth;</b>
+<b class="nc"><i>247</i>&nbsp;            this.acc = AccessController.getContext();</b>
+<b class="nc"><i>248</i>&nbsp;        }</b>
+<i>249</i>&nbsp;
+<i>250</i>&nbsp;        @Override
+<i>251</i>&nbsp;        protected PrismImageLoader2 processStream(InputStream stream) throws IOException {
+<b class="nc"><i>252</i>&nbsp;            return new PrismImageLoader2(stream, width, height, preserveRatio, smooth);</b>
+<i>253</i>&nbsp;        }
+<i>254</i>&nbsp;
+<i>255</i>&nbsp;        @Override
+<i>256</i>&nbsp;        public PrismImageLoader2 call() throws IOException {
+<i>257</i>&nbsp;            try {
+<b class="nc"><i>258</i>&nbsp;                return AccessController.doPrivileged(</b>
+<b class="nc"><i>259</i>&nbsp;                        (PrivilegedExceptionAction&lt;PrismImageLoader2&gt;) () -&gt; AsyncImageLoader.super.call(), acc);</b>
+<b class="nc"><i>260</i>&nbsp;            } catch (final PrivilegedActionException e) {</b>
+<b class="nc"><i>261</i>&nbsp;                final Throwable cause = e.getCause();</b>
+<i>262</i>&nbsp;
+<b class="nc"><i>263</i>&nbsp;                if (cause instanceof IOException) {</b>
+<b class="nc"><i>264</i>&nbsp;                    throw (IOException) cause;</b>
+<i>265</i>&nbsp;                }
+<i>266</i>&nbsp;
+<b class="nc"><i>267</i>&nbsp;                throw new UndeclaredThrowableException(cause);</b>
+<i>268</i>&nbsp;            }
+<i>269</i>&nbsp;        }
+<i>270</i>&nbsp;
+<i>271</i>&nbsp;        @Override
+<i>272</i>&nbsp;        public void start() {
+<b class="nc"><i>273</i>&nbsp;            BG_LOADING_EXECUTOR.execute(future);</b>
+<b class="nc"><i>274</i>&nbsp;        }</b>
+<i>275</i>&nbsp;
+<i>276</i>&nbsp;        private static ExecutorService createExecutor() {
+<b class="nc"><i>277</i>&nbsp;            final ThreadGroup bgLoadingThreadGroup =</b>
+<b class="nc"><i>278</i>&nbsp;                    AccessController.doPrivileged(</b>
+<b class="nc"><i>279</i>&nbsp;                            (PrivilegedAction&lt;ThreadGroup&gt;) () -&gt; new ThreadGroup(</b>
+<b class="nc"><i>280</i>&nbsp;                                QuantumToolkit.getFxUserThread()</b>
+<b class="nc"><i>281</i>&nbsp;                                              .getThreadGroup(),</b>
+<i>282</i>&nbsp;                                &quot;Background image loading thread pool&quot;)
+<i>283</i>&nbsp;                    );
+<i>284</i>&nbsp;
+<b class="nc"><i>285</i>&nbsp;            final ThreadFactory bgLoadingThreadFactory =</b>
+<b class="nc"><i>286</i>&nbsp;                    runnable -&gt; AccessController.doPrivileged(</b>
+<i>287</i>&nbsp;                            (PrivilegedAction&lt;Thread&gt;) () -&gt; {
+<b class="nc"><i>288</i>&nbsp;                                final Thread newThread =</b>
+<i>289</i>&nbsp;                                        new Thread(bgLoadingThreadGroup,
+<i>290</i>&nbsp;                                                   runnable);
+<b class="nc"><i>291</i>&nbsp;                                newThread.setPriority(</b>
+<i>292</i>&nbsp;                                              Thread.MIN_PRIORITY);
+<i>293</i>&nbsp;
+<b class="nc"><i>294</i>&nbsp;                                return newThread;</b>
+<i>295</i>&nbsp;                            }
+<i>296</i>&nbsp;                    );
+<i>297</i>&nbsp;
+<b class="nc"><i>298</i>&nbsp;            final ExecutorService bgLoadingExecutor =</b>
+<b class="nc"><i>299</i>&nbsp;                    Executors.newCachedThreadPool(bgLoadingThreadFactory);</b>
+<b class="nc"><i>300</i>&nbsp;            ((ThreadPoolExecutor) bgLoadingExecutor).setKeepAliveTime(</b>
+<i>301</i>&nbsp;                                                         1, TimeUnit.SECONDS);
+<i>302</i>&nbsp;
+<b class="nc"><i>303</i>&nbsp;            return bgLoadingExecutor;</b>
+<i>304</i>&nbsp;        }
+<i>305</i>&nbsp;    }
+<i>306</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2017-12-04 21:49</div>
+</div>
+</body>
+</html>

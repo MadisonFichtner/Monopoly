@@ -1,0 +1,436 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: WinSystemClipboard</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.glass.ui.win</a> ]
+</div>
+
+<h1>Coverage Summary for Class: WinSystemClipboard (com.sun.glass.ui.win)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">WinSystemClipboard</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    30%
+  </span>
+  <span class="absValue">
+    (3/ 10)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    7.1%
+  </span>
+  <span class="absValue">
+    (9/ 126)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright (c) 2010, 2017, Oracle and/or its affiliates. All rights reserved.
+<i>3</i>&nbsp; * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+<i>4</i>&nbsp; *
+<i>5</i>&nbsp; *
+<i>6</i>&nbsp; *
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; *
+<i>11</i>&nbsp; *
+<i>12</i>&nbsp; *
+<i>13</i>&nbsp; *
+<i>14</i>&nbsp; *
+<i>15</i>&nbsp; *
+<i>16</i>&nbsp; *
+<i>17</i>&nbsp; *
+<i>18</i>&nbsp; *
+<i>19</i>&nbsp; *
+<i>20</i>&nbsp; *
+<i>21</i>&nbsp; *
+<i>22</i>&nbsp; *
+<i>23</i>&nbsp; *
+<i>24</i>&nbsp; */
+<i>25</i>&nbsp;package com.sun.glass.ui.win;
+<i>26</i>&nbsp;
+<i>27</i>&nbsp;import com.sun.glass.ui.Application;
+<i>28</i>&nbsp;import com.sun.glass.ui.Pixels;
+<i>29</i>&nbsp;import com.sun.glass.ui.SystemClipboard;
+<i>30</i>&nbsp;import java.io.UnsupportedEncodingException;
+<i>31</i>&nbsp;import java.nio.ByteBuffer;
+<i>32</i>&nbsp;import java.security.AccessController;
+<i>33</i>&nbsp;import java.security.PrivilegedAction;
+<i>34</i>&nbsp;import java.util.HashMap;
+<i>35</i>&nbsp;import java.util.HashSet;
+<i>36</i>&nbsp;import java.util.Set;
+<i>37</i>&nbsp;
+<i>38</i>&nbsp;class WinSystemClipboard extends SystemClipboard {
+<i>39</i>&nbsp;
+<i>40</i>&nbsp;    private static native void initIDs();
+<i>41</i>&nbsp;    static {
+<b class="fc"><i>42</i>&nbsp;        initIDs();</b>
+<i>43</i>&nbsp;    }
+<i>44</i>&nbsp;
+<b class="fc"><i>45</i>&nbsp;    private long ptr = 0L; //native pointer</b>
+<i>46</i>&nbsp;
+<i>47</i>&nbsp;    protected WinSystemClipboard(String name) {
+<b class="fc"><i>48</i>&nbsp;        super(name);</b>
+<b class="fc"><i>49</i>&nbsp;        create();</b>
+<b class="fc"><i>50</i>&nbsp;    }</b>
+<i>51</i>&nbsp;
+<i>52</i>&nbsp;    protected final long getPtr() {
+<b class="nc"><i>53</i>&nbsp;        return ptr;</b>
+<i>54</i>&nbsp;    }
+<i>55</i>&nbsp;
+<i>56</i>&nbsp;    protected native boolean isOwner();
+<i>57</i>&nbsp;
+<i>58</i>&nbsp;    protected native void create();
+<i>59</i>&nbsp;    protected native void dispose();
+<i>60</i>&nbsp;
+<i>61</i>&nbsp;    /*
+<i>62</i>&nbsp;     * public mime types to system clipboard
+<i>63</i>&nbsp;     */
+<i>64</i>&nbsp;    protected native void push(Object[] keys, int supportedActions);
+<i>65</i>&nbsp;
+<i>66</i>&nbsp;    /*
+<i>67</i>&nbsp;     * extract clipboard snap-shot
+<i>68</i>&nbsp;     */
+<i>69</i>&nbsp;    protected native boolean pop();
+<i>70</i>&nbsp;
+<b class="fc"><i>71</i>&nbsp;    static final byte[] terminator = new byte[] { 0, 0 };</b>
+<i>72</i>&nbsp;    static final String defaultCharset = &quot;UTF-16LE&quot;;
+<i>73</i>&nbsp;    static final String RTFCharset = &quot;US-ASCII&quot;;
+<i>74</i>&nbsp;
+<i>75</i>&nbsp;    // Called from native code
+<i>76</i>&nbsp;    private byte[] fosSerialize(String mime, long index) {
+<b class="nc"><i>77</i>&nbsp;        Object data = getLocalData(mime);</b>
+<b class="nc"><i>78</i>&nbsp;        if (data instanceof ByteBuffer) {</b>
+<b class="nc"><i>79</i>&nbsp;            byte[] b = ((ByteBuffer)data).array();</b>
+<b class="nc"><i>80</i>&nbsp;            if (HTML_TYPE.equals(mime)) {</b>
+<b class="nc"><i>81</i>&nbsp;                b = WinHTMLCodec.encode(b);</b>
+<i>82</i>&nbsp;            }
+<b class="nc"><i>83</i>&nbsp;            return b;</b>
+<b class="nc"><i>84</i>&nbsp;        } else if (data instanceof String) {</b>
+<b class="nc"><i>85</i>&nbsp;            String st = ((String) data).replaceAll(&quot;(\r\n|\r|\n)&quot;, &quot;\r\n&quot;);</b>
+<b class="nc"><i>86</i>&nbsp;            if (HTML_TYPE.equals(mime)) {</b>
+<i>87</i>&nbsp;                try {
+<i>88</i>&nbsp;                    // NOTE: Transfer of HTML data on Windows uses UTF-8 encoding!
+<b class="nc"><i>89</i>&nbsp;                    byte[] bytes = st.getBytes(WinHTMLCodec.defaultCharset);</b>
+<b class="nc"><i>90</i>&nbsp;                    ByteBuffer ba = ByteBuffer.allocate(bytes.length + 1);</b>
+<b class="nc"><i>91</i>&nbsp;                    ba.put(bytes);</b>
+<b class="nc"><i>92</i>&nbsp;                    ba.put((byte)0);</b>
+<i>93</i>&nbsp;
+<b class="nc"><i>94</i>&nbsp;                    return WinHTMLCodec.encode(ba.array());</b>
+<b class="nc"><i>95</i>&nbsp;                } catch (UnsupportedEncodingException ex) {</b>
+<i>96</i>&nbsp;                    // never happen
+<b class="nc"><i>97</i>&nbsp;                    return null;</b>
+<i>98</i>&nbsp;                }
+<b class="nc"><i>99</i>&nbsp;            } else if (RTF_TYPE.equals(mime)) {</b>
+<i>100</i>&nbsp;                try {
+<i>101</i>&nbsp;                    // NOTE: Transfer of RTF data on Windows uses US-ASCII encoding!
+<b class="nc"><i>102</i>&nbsp;                    byte[] bytes = st.getBytes(RTFCharset);</b>
+<b class="nc"><i>103</i>&nbsp;                    ByteBuffer ba = ByteBuffer.allocate(bytes.length + 1);</b>
+<b class="nc"><i>104</i>&nbsp;                    ba.put(bytes);</b>
+<b class="nc"><i>105</i>&nbsp;                    ba.put((byte)0);</b>
+<b class="nc"><i>106</i>&nbsp;                    return ba.array();</b>
+<b class="nc"><i>107</i>&nbsp;                } catch (UnsupportedEncodingException ex) {</b>
+<i>108</i>&nbsp;                    // could happen on user error
+<b class="nc"><i>109</i>&nbsp;                    return null;</b>
+<i>110</i>&nbsp;                }
+<i>111</i>&nbsp;            } else {
+<b class="nc"><i>112</i>&nbsp;                ByteBuffer ba = ByteBuffer.allocate((st.length() + 1) * 2);</b>
+<i>113</i>&nbsp;                try {
+<b class="nc"><i>114</i>&nbsp;                    ba.put(st.getBytes(defaultCharset));</b>
+<b class="nc"><i>115</i>&nbsp;                } catch (UnsupportedEncodingException ex) {</b>
+<i>116</i>&nbsp;                    //never happen
+<b class="nc"><i>117</i>&nbsp;                }</b>
+<b class="nc"><i>118</i>&nbsp;                ba.put(terminator);</b>
+<b class="nc"><i>119</i>&nbsp;                return ba.array();</b>
+<i>120</i>&nbsp;            }
+<b class="nc"><i>121</i>&nbsp;        } else if (FILE_LIST_TYPE.equals(mime)) {</b>
+<b class="nc"><i>122</i>&nbsp;            String[] ast = ((String[]) data);</b>
+<b class="nc"><i>123</i>&nbsp;            if (ast != null &amp;&amp; ast.length &gt; 0) {</b>
+<b class="nc"><i>124</i>&nbsp;                int size = 0;</b>
+<b class="nc"><i>125</i>&nbsp;                for (String st : ast) {</b>
+<b class="nc"><i>126</i>&nbsp;                    size += (st.length() + 1) * 2;</b>
+<i>127</i>&nbsp;                }
+<b class="nc"><i>128</i>&nbsp;                size += 2;</b>
+<i>129</i>&nbsp;                try {
+<b class="nc"><i>130</i>&nbsp;                    ByteBuffer ba = ByteBuffer.allocate(size);</b>
+<b class="nc"><i>131</i>&nbsp;                    for (String st : ast) {</b>
+<b class="nc"><i>132</i>&nbsp;                        ba.put(st.getBytes(defaultCharset));</b>
+<b class="nc"><i>133</i>&nbsp;                        ba.put(terminator);</b>
+<i>134</i>&nbsp;                    }
+<b class="nc"><i>135</i>&nbsp;                    ba.put(terminator);</b>
+<b class="nc"><i>136</i>&nbsp;                    return ba.array();</b>
+<b class="nc"><i>137</i>&nbsp;                } catch (UnsupportedEncodingException ex) {</b>
+<i>138</i>&nbsp;                    //never happen
+<i>139</i>&nbsp;                }
+<i>140</i>&nbsp;            }
+<b class="nc"><i>141</i>&nbsp;        } else if (RAW_IMAGE_TYPE.equals(mime)) {</b>
+<b class="nc"><i>142</i>&nbsp;            Pixels pxls = (Pixels)data;</b>
+<b class="nc"><i>143</i>&nbsp;            if (pxls != null) {</b>
+<b class="nc"><i>144</i>&nbsp;                ByteBuffer ba = ByteBuffer.allocate(</b>
+<b class="nc"><i>145</i>&nbsp;                        pxls.getWidth() * pxls.getHeight() * 4 + 8);</b>
+<b class="nc"><i>146</i>&nbsp;                ba.putInt(pxls.getWidth());</b>
+<b class="nc"><i>147</i>&nbsp;                ba.putInt(pxls.getHeight());</b>
+<b class="nc"><i>148</i>&nbsp;                ba.put(pxls.asByteBuffer());</b>
+<b class="nc"><i>149</i>&nbsp;                return ba.array();</b>
+<i>150</i>&nbsp;            }
+<i>151</i>&nbsp;        }
+<i>152</i>&nbsp;        //TODO: customizes for OS specific cases
+<b class="nc"><i>153</i>&nbsp;        return null;</b>
+<i>154</i>&nbsp;    }
+<i>155</i>&nbsp;
+<i>156</i>&nbsp;    private static final class MimeTypeParser {
+<i>157</i>&nbsp;        protected static final String externalBodyMime = &quot;message/external-body&quot;;
+<i>158</i>&nbsp;        protected String mime;
+<i>159</i>&nbsp;        protected boolean bInMemoryFile;
+<i>160</i>&nbsp;        protected int index;
+<i>161</i>&nbsp;
+<i>162</i>&nbsp;        public MimeTypeParser() {
+<i>163</i>&nbsp;            parse(&quot;&quot;);
+<i>164</i>&nbsp;        }
+<i>165</i>&nbsp;
+<i>166</i>&nbsp;        public MimeTypeParser(String mimeFull) {
+<i>167</i>&nbsp;            parse(mimeFull);
+<i>168</i>&nbsp;        }
+<i>169</i>&nbsp;
+<i>170</i>&nbsp;        public void parse(String mimeFull) {
+<i>171</i>&nbsp;            mime = mimeFull;
+<i>172</i>&nbsp;            bInMemoryFile = false;
+<i>173</i>&nbsp;            index = -1;
+<i>174</i>&nbsp;            //we are limited here by [message/external-body] mime type with clipboard acess-type,
+<i>175</i>&nbsp;            //because NetBeans has a clipboard format that includes [;]
+<i>176</i>&nbsp;            if (mimeFull.startsWith(externalBodyMime)) {
+<i>177</i>&nbsp;                String mimeParts[] = mimeFull.split(&quot;;&quot;);
+<i>178</i>&nbsp;                String accessType = &quot;&quot;;
+<i>179</i>&nbsp;                int indexValue = -1;
+<i>180</i>&nbsp;                //RFC 1521 extension for [message/external-body] mime
+<i>181</i>&nbsp;                for (int i = 1; i &lt; mimeParts.length; ++i) {
+<i>182</i>&nbsp;                    String params[] = mimeParts[i].split(&quot;=&quot;);
+<i>183</i>&nbsp;                    if (params.length == 2) {
+<i>184</i>&nbsp;                        if( params[0].trim().equalsIgnoreCase(&quot;index&quot;) ) {
+<i>185</i>&nbsp;                            //that is OK to have the runtime-exception here
+<i>186</i>&nbsp;                            //we already have a chance to have an exception in WinHTMLCodec
+<i>187</i>&nbsp;                            indexValue = Integer.parseInt(params[1].trim());
+<i>188</i>&nbsp;                        } else if( params[0].trim().equalsIgnoreCase(&quot;access-type&quot;) ) {
+<i>189</i>&nbsp;                            accessType = params[1].trim();
+<i>190</i>&nbsp;                        }
+<i>191</i>&nbsp;                    }
+<i>192</i>&nbsp;                    if (indexValue != -1 &amp;&amp; !accessType.isEmpty()) {
+<i>193</i>&nbsp;                        //Better to stop here to avoid problem with &quot;index=100.url&quot; filename
+<i>194</i>&nbsp;                        //it is not a security problem - we can request any index without
+<i>195</i>&nbsp;                        //buffer overflow or null pointer exception
+<i>196</i>&nbsp;                        break;
+<i>197</i>&nbsp;                    }
+<i>198</i>&nbsp;                }
+<i>199</i>&nbsp;                //we are responsible only for FX synthetic access type!
+<i>200</i>&nbsp;                if (accessType.equalsIgnoreCase(&quot;clipboard&quot;)) {
+<i>201</i>&nbsp;                    bInMemoryFile = true;
+<i>202</i>&nbsp;                    mime = mimeParts[0];
+<i>203</i>&nbsp;                    index = indexValue;
+<i>204</i>&nbsp;                }
+<i>205</i>&nbsp;            }
+<i>206</i>&nbsp;        }
+<i>207</i>&nbsp;
+<i>208</i>&nbsp;        public String getMime() {
+<i>209</i>&nbsp;            return mime;
+<i>210</i>&nbsp;        }
+<i>211</i>&nbsp;
+<i>212</i>&nbsp;        public int getIndex() {
+<i>213</i>&nbsp;            return index;
+<i>214</i>&nbsp;        }
+<i>215</i>&nbsp;
+<i>216</i>&nbsp;        public boolean isInMemoryFile() {
+<i>217</i>&nbsp;            return bInMemoryFile;
+<i>218</i>&nbsp;        }
+<i>219</i>&nbsp;    }
+<i>220</i>&nbsp;
+<i>221</i>&nbsp;    protected final void pushToSystem(HashMap&lt;String, Object&gt; cacheData, int supportedActions) {
+<b class="nc"><i>222</i>&nbsp;        Set&lt;String&gt; mimes = cacheData.keySet();</b>
+<b class="nc"><i>223</i>&nbsp;        Set&lt;String&gt; mimesForSystem = new HashSet&lt;String&gt;();</b>
+<b class="nc"><i>224</i>&nbsp;        MimeTypeParser parser = new MimeTypeParser();</b>
+<b class="nc"><i>225</i>&nbsp;        for (String mime : mimes) {</b>
+<b class="nc"><i>226</i>&nbsp;            parser.parse(mime);</b>
+<b class="nc"><i>227</i>&nbsp;            if ( !parser.isInMemoryFile() ) {</b>
+<i>228</i>&nbsp;                //[message/external-body] mime with [access-type=clipboard]
+<i>229</i>&nbsp;                //could not be exported to the system due to synthetic nature (Win-API subst),
+<i>230</i>&nbsp;                //but it could be used for applcation-wide communication
+<b class="nc"><i>231</i>&nbsp;                mimesForSystem.add(mime);</b>
+<i>232</i>&nbsp;            }
+<b class="nc"><i>233</i>&nbsp;        }</b>
+<b class="nc"><i>234</i>&nbsp;        push(mimesForSystem.toArray(), supportedActions);</b>
+<b class="nc"><i>235</i>&nbsp;    }</b>
+<i>236</i>&nbsp;
+<i>237</i>&nbsp;    private native byte[] popBytes(String mime, long index);
+<i>238</i>&nbsp;    protected final Object popFromSystem(String mimeFull) {
+<i>239</i>&nbsp;        //we have to syncronize with system ones per
+<i>240</i>&nbsp;        //a popFromSystem function call, because
+<i>241</i>&nbsp;        //mime type data could be a collection of
+<i>242</i>&nbsp;        //sub-mimes likes &quot;ms-stuff/XXXX&quot;
+<b class="nc"><i>243</i>&nbsp;        if ( !pop() ) {</b>
+<b class="nc"><i>244</i>&nbsp;            return null;</b>
+<i>245</i>&nbsp;        }
+<i>246</i>&nbsp;
+<b class="nc"><i>247</i>&nbsp;        MimeTypeParser parser = new MimeTypeParser(mimeFull);</b>
+<b class="nc"><i>248</i>&nbsp;        String mime = parser.getMime();</b>
+<b class="nc"><i>249</i>&nbsp;        byte[] data = popBytes(mime, parser.getIndex());</b>
+<b class="nc"><i>250</i>&nbsp;        if (data != null) {</b>
+<b class="nc"><i>251</i>&nbsp;            if (TEXT_TYPE.equals(mime) || URI_TYPE.equals(mime)) {</b>
+<i>252</i>&nbsp;                try {
+<i>253</i>&nbsp;                    // RT-16199 - internal Windows data null terminated
+<b class="nc"><i>254</i>&nbsp;                    return new String(data, 0, data.length - 2, defaultCharset);</b>
+<b class="nc"><i>255</i>&nbsp;                } catch (UnsupportedEncodingException ex) {</b>
+<i>256</i>&nbsp;                    //never happen
+<b class="nc"><i>257</i>&nbsp;                }</b>
+<b class="nc"><i>258</i>&nbsp;            } else if (HTML_TYPE.equals(mime)) {</b>
+<i>259</i>&nbsp;                try {
+<b class="nc"><i>260</i>&nbsp;                    data = WinHTMLCodec.decode(data);</b>
+<b class="nc"><i>261</i>&nbsp;                    return new String(data, 0, data.length, WinHTMLCodec.defaultCharset);</b>
+<b class="nc"><i>262</i>&nbsp;                } catch (UnsupportedEncodingException ex) {</b>
+<i>263</i>&nbsp;                    //never happen
+<b class="nc"><i>264</i>&nbsp;                }</b>
+<b class="nc"><i>265</i>&nbsp;            } else if (RTF_TYPE.equals(mime)) {</b>
+<i>266</i>&nbsp;                try {
+<b class="nc"><i>267</i>&nbsp;                    return new String(data, 0, data.length, RTFCharset);</b>
+<b class="nc"><i>268</i>&nbsp;                } catch (UnsupportedEncodingException ex) {</b>
+<i>269</i>&nbsp;                    //can happen for bad system data
+<b class="nc"><i>270</i>&nbsp;                }</b>
+<b class="nc"><i>271</i>&nbsp;            } else if (FILE_LIST_TYPE.equals(mime)) {</b>
+<i>272</i>&nbsp;                try {
+<b class="nc"><i>273</i>&nbsp;                    String st = new String(data, 0, data.length, defaultCharset);</b>
+<b class="nc"><i>274</i>&nbsp;                    return st.split(&quot;\0&quot;);</b>
+<b class="nc"><i>275</i>&nbsp;                } catch (UnsupportedEncodingException ex) {</b>
+<i>276</i>&nbsp;                    //never happen
+<b class="nc"><i>277</i>&nbsp;                }</b>
+<b class="nc"><i>278</i>&nbsp;            } else if (RAW_IMAGE_TYPE.equals(mime)) {</b>
+<b class="nc"><i>279</i>&nbsp;                ByteBuffer size = ByteBuffer.wrap(data, 0, 8);</b>
+<b class="nc"><i>280</i>&nbsp;                return Application.GetApplication().createPixels(size.getInt(), size.getInt(),  ByteBuffer.wrap(data, 8, data.length - 8) );</b>
+<i>281</i>&nbsp;            } else {
+<b class="nc"><i>282</i>&nbsp;                return ByteBuffer.wrap(data);</b>
+<i>283</i>&nbsp;            }
+<i>284</i>&nbsp;        } else {
+<i>285</i>&nbsp;            //alternative extraction if any
+<b class="nc"><i>286</i>&nbsp;            if (URI_TYPE.equals(mime) || TEXT_TYPE.equals(mime)) {</b>
+<i>287</i>&nbsp;                //try 8bit version
+<b class="nc"><i>288</i>&nbsp;                data = popBytes(mime + &quot;;locale&quot;, parser.getIndex());</b>
+<b class="nc"><i>289</i>&nbsp;                if (data != null) {</b>
+<i>290</i>&nbsp;                    try {
+<i>291</i>&nbsp;                        // RT-16199 - internal Windows data null terminated
+<i>292</i>&nbsp;                        // Here we can request the &quot;ms-stuff/locale&quot; mime data
+<i>293</i>&nbsp;                        // from GlassClipbord for codepage detection, but
+<i>294</i>&nbsp;                        // for the most of cases [UTF-8] is ok.
+<b class="nc"><i>295</i>&nbsp;                        return new String(data, 0, data.length - 1, &quot;UTF-8&quot;);</b>
+<b class="nc"><i>296</i>&nbsp;                    } catch (UnsupportedEncodingException ex) {</b>
+<i>297</i>&nbsp;                        //could happen, but not a problem
+<i>298</i>&nbsp;                    }
+<i>299</i>&nbsp;                }
+<i>300</i>&nbsp;            }
+<b class="nc"><i>301</i>&nbsp;            if (URI_TYPE.equals(mime)) {</b>
+<i>302</i>&nbsp;                //we are here if [text/uri-list;locale] mime is absent or
+<i>303</i>&nbsp;                //URL could not be decoded from the [data] as String
+<b class="nc"><i>304</i>&nbsp;                String[] ret = (String[])popFromSystem(FILE_LIST_TYPE);</b>
+<b class="nc"><i>305</i>&nbsp;                if (ret != null) {</b>
+<b class="nc"><i>306</i>&nbsp;                    StringBuilder out = new StringBuilder();</b>
+<i>307</i>&nbsp;                    //&quot;text/uri-list&quot; spec: http://www.ietf.org/rfc/rfc2483.txt
+<b class="nc"><i>308</i>&nbsp;                    for (int i = 0; i &lt; ret.length; i++) {</b>
+<b class="nc"><i>309</i>&nbsp;                        String fileName = ret[i];</b>
+<b class="nc"><i>310</i>&nbsp;                        fileName = fileName.replace(&quot;\\&quot;, &quot;/&quot;);</b>
+<i>311</i>&nbsp;                        //fileName = fileName.replace(&quot; &quot;, &quot;%20&quot;);
+<b class="nc"><i>312</i>&nbsp;                        if (out.length() &gt; 0) {</b>
+<b class="nc"><i>313</i>&nbsp;                            out.append(&quot;\r\n&quot;);</b>
+<i>314</i>&nbsp;                        }
+<b class="nc"><i>315</i>&nbsp;                        out.append(&quot;file:/&quot;).append(fileName);</b>
+<i>316</i>&nbsp;                    }
+<b class="nc"><i>317</i>&nbsp;                    return out.toString();</b>
+<i>318</i>&nbsp;                }
+<i>319</i>&nbsp;            }
+<i>320</i>&nbsp;        }
+<b class="nc"><i>321</i>&nbsp;        return null;</b>
+<i>322</i>&nbsp;    }
+<i>323</i>&nbsp;
+<i>324</i>&nbsp;    private native String[] popMimesFromSystem();
+<i>325</i>&nbsp;    protected final String[] mimesFromSystem() {
+<i>326</i>&nbsp;        //we have to syncronize with system
+<i>327</i>&nbsp;        //if we heed to do it. DnD clipboard need not.
+<b class="nc"><i>328</i>&nbsp;        if (!pop()) {</b>
+<b class="nc"><i>329</i>&nbsp;            return null;</b>
+<i>330</i>&nbsp;        }
+<b class="nc"><i>331</i>&nbsp;        return popMimesFromSystem();</b>
+<i>332</i>&nbsp;    }
+<i>333</i>&nbsp;
+<i>334</i>&nbsp;    @Override public String toString() {
+<b class="nc"><i>335</i>&nbsp;        return &quot;Windows System Clipboard&quot;;</b>
+<i>336</i>&nbsp;    }
+<i>337</i>&nbsp;
+<i>338</i>&nbsp;    @Override protected final void close() {
+<b class="fc"><i>339</i>&nbsp;        dispose();</b>
+<b class="fc"><i>340</i>&nbsp;        ptr = 0L;</b>
+<b class="fc"><i>341</i>&nbsp;    }</b>
+<i>342</i>&nbsp;
+<i>343</i>&nbsp;    @Override protected native void pushTargetActionToSystem(int actionDone);
+<i>344</i>&nbsp;
+<i>345</i>&nbsp;    private native int popSupportedSourceActions();
+<i>346</i>&nbsp;    @Override protected int supportedSourceActionsFromSystem() {
+<b class="nc"><i>347</i>&nbsp;        if (!pop()) {</b>
+<b class="nc"><i>348</i>&nbsp;            return ACTION_NONE;</b>
+<i>349</i>&nbsp;        }
+<b class="nc"><i>350</i>&nbsp;        return popSupportedSourceActions();</b>
+<i>351</i>&nbsp;   }
+<i>352</i>&nbsp;}
+<i>353</i>&nbsp;
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2017-12-04 21:49</div>
+</div>
+</body>
+</html>

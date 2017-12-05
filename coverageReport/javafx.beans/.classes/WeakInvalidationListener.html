@@ -1,0 +1,174 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: WeakInvalidationListener</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">javafx.beans</a> ]
+</div>
+
+<h1>Coverage Summary for Class: WeakInvalidationListener (javafx.beans)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">WeakInvalidationListener</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (3/ 3)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    81.8%
+  </span>
+  <span class="absValue">
+    (9/ 11)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright (c) 2010, 2013, Oracle and/or its affiliates. All rights reserved.
+<i>3</i>&nbsp; * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+<i>4</i>&nbsp; *
+<i>5</i>&nbsp; *
+<i>6</i>&nbsp; *
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; *
+<i>11</i>&nbsp; *
+<i>12</i>&nbsp; *
+<i>13</i>&nbsp; *
+<i>14</i>&nbsp; *
+<i>15</i>&nbsp; *
+<i>16</i>&nbsp; *
+<i>17</i>&nbsp; *
+<i>18</i>&nbsp; *
+<i>19</i>&nbsp; *
+<i>20</i>&nbsp; *
+<i>21</i>&nbsp; *
+<i>22</i>&nbsp; *
+<i>23</i>&nbsp; *
+<i>24</i>&nbsp; */
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;package javafx.beans;
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;import java.lang.ref.WeakReference;
+<i>29</i>&nbsp;import javafx.beans.NamedArg;
+<i>30</i>&nbsp;
+<i>31</i>&nbsp;/**
+<i>32</i>&nbsp; * A {@code WeakInvalidationListener} can be used, if an {@link Observable}
+<i>33</i>&nbsp; * should only maintain a weak reference to the listener. This helps to avoid
+<i>34</i>&nbsp; * memory leaks, that can occur if observers are not unregistered from observed
+<i>35</i>&nbsp; * objects after use.
+<i>36</i>&nbsp; * &lt;p&gt;
+<i>37</i>&nbsp; * {@code WeakInvalidationListener} are created by passing in the original
+<i>38</i>&nbsp; * {@link InvalidationListener}. The {@code WeakInvalidationListener} should
+<i>39</i>&nbsp; * then be registered to listen for changes of the observed object.
+<i>40</i>&nbsp; * &lt;p&gt;
+<i>41</i>&nbsp; * Note: You have to keep a reference to the {@code InvalidationListener}, that
+<i>42</i>&nbsp; * was passed in as long as it is in use, otherwise it will be garbage collected
+<i>43</i>&nbsp; * to soon.
+<i>44</i>&nbsp; *
+<i>45</i>&nbsp; * @see InvalidationListener
+<i>46</i>&nbsp; * @see Observable
+<i>47</i>&nbsp; *
+<i>48</i>&nbsp; *
+<i>49</i>&nbsp; * @since JavaFX 2.0
+<i>50</i>&nbsp; */
+<i>51</i>&nbsp;public final class WeakInvalidationListener implements InvalidationListener, WeakListener {
+<i>52</i>&nbsp;
+<i>53</i>&nbsp;    private final WeakReference&lt;InvalidationListener&gt; ref;
+<i>54</i>&nbsp;
+<i>55</i>&nbsp;    /**
+<i>56</i>&nbsp;     * The constructor of {@code WeakInvalidationListener}.
+<i>57</i>&nbsp;     *
+<i>58</i>&nbsp;     * @param listener
+<i>59</i>&nbsp;     *            The original listener that should be notified
+<i>60</i>&nbsp;     */
+<b class="fc"><i>61</i>&nbsp;    public WeakInvalidationListener(@NamedArg(&quot;listener&quot;) InvalidationListener listener) {</b>
+<b class="fc"><i>62</i>&nbsp;        if (listener == null) {</b>
+<b class="nc"><i>63</i>&nbsp;            throw new NullPointerException(&quot;Listener must be specified.&quot;);</b>
+<i>64</i>&nbsp;        }
+<b class="fc"><i>65</i>&nbsp;        this.ref = new WeakReference&lt;InvalidationListener&gt;(listener);</b>
+<b class="fc"><i>66</i>&nbsp;    }</b>
+<i>67</i>&nbsp;
+<i>68</i>&nbsp;    /**
+<i>69</i>&nbsp;     * {@inheritDoc}
+<i>70</i>&nbsp;     */
+<i>71</i>&nbsp;    @Override
+<i>72</i>&nbsp;    public boolean wasGarbageCollected() {
+<b class="fc"><i>73</i>&nbsp;        return (ref.get() == null);</b>
+<i>74</i>&nbsp;    }
+<i>75</i>&nbsp;
+<i>76</i>&nbsp;    /**
+<i>77</i>&nbsp;     * {@inheritDoc}
+<i>78</i>&nbsp;     */
+<i>79</i>&nbsp;    @Override
+<i>80</i>&nbsp;    public void invalidated(Observable observable) {
+<b class="fc"><i>81</i>&nbsp;        InvalidationListener listener = ref.get();</b>
+<b class="fc"><i>82</i>&nbsp;        if (listener != null) {</b>
+<b class="fc"><i>83</i>&nbsp;            listener.invalidated(observable);</b>
+<i>84</i>&nbsp;        } else {
+<i>85</i>&nbsp;            // The weakly reference listener has been garbage collected,
+<i>86</i>&nbsp;            // so this WeakListener will now unhook itself from the
+<i>87</i>&nbsp;            // source bean
+<b class="nc"><i>88</i>&nbsp;            observable.removeListener(this);</b>
+<i>89</i>&nbsp;        }
+<b class="fc"><i>90</i>&nbsp;    }</b>
+<i>91</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2017-12-04 21:49</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,233 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: D3DResource</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.prism.d3d</a> ]
+</div>
+
+<h1>Coverage Summary for Class: D3DResource (com.sun.prism.d3d)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">D3DResource</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (2/ 2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (5/ 5)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">D3DResource$D3DRecord</td>
+<td class="coverageStat">
+  <span class="percent">
+    83.3%
+  </span>
+  <span class="absValue">
+    (5/ 6)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    88.9%
+  </span>
+  <span class="absValue">
+    (16/ 18)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    87.5%
+  </span>
+  <span class="absValue">
+    (7/ 8)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    91.3%
+  </span>
+  <span class="absValue">
+    (21/ 23)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright (c) 2010, 2013, Oracle and/or its affiliates. All rights reserved.
+<i>3</i>&nbsp; * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+<i>4</i>&nbsp; *
+<i>5</i>&nbsp; *
+<i>6</i>&nbsp; *
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; *
+<i>11</i>&nbsp; *
+<i>12</i>&nbsp; *
+<i>13</i>&nbsp; *
+<i>14</i>&nbsp; *
+<i>15</i>&nbsp; *
+<i>16</i>&nbsp; *
+<i>17</i>&nbsp; *
+<i>18</i>&nbsp; *
+<i>19</i>&nbsp; *
+<i>20</i>&nbsp; *
+<i>21</i>&nbsp; *
+<i>22</i>&nbsp; *
+<i>23</i>&nbsp; *
+<i>24</i>&nbsp; */
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;package com.sun.prism.d3d;
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;import com.sun.prism.impl.BaseGraphicsResource;
+<i>29</i>&nbsp;import com.sun.prism.impl.Disposer;
+<i>30</i>&nbsp;
+<i>31</i>&nbsp;/**
+<i>32</i>&nbsp; * This class provides base functionality for tracking and releasing native
+<i>33</i>&nbsp; * d3d-related resources.
+<i>34</i>&nbsp; *
+<i>35</i>&nbsp; * When a Direct3D resource (such as texture, swap chain or pixel shader) is
+<i>36</i>&nbsp; * created at the native level it is added to the list of resources (see
+<i>37</i>&nbsp; * D3DResourceManager.cc) on both native and java level.
+<i>38</i>&nbsp; *
+<i>39</i>&nbsp; * This is needed because if a d3d device is lost
+<i>40</i>&nbsp; * and needs to be reset we must release all resources created in the default
+<i>41</i>&nbsp; * pool first. We must have references to all allocated resources in order to
+<i>42</i>&nbsp; * do that. In some cases we need to release all resources (when the device
+<i>43</i>&nbsp; * needs to be released, which may happen when a monitor is added or removed).
+<i>44</i>&nbsp; *
+<i>45</i>&nbsp; * There are several different ways a resource could be disposed of:
+<i>46</i>&nbsp; *  - explicit disposal (dispose() is called) - the resource is released by the
+<i>47</i>&nbsp; * resource manager at the native level, disposer record is updated to reflect
+<i>48</i>&nbsp; * that
+<i>49</i>&nbsp; *  - resource became unreachable - then the disposer will eventulally call
+<i>50</i>&nbsp; * dispose() for this resource
+<i>51</i>&nbsp; *  - resource is disposed of at the native level when trying to reset the
+<i>52</i>&nbsp; * device. In this case the native code will call appropriate method to mark
+<i>53</i>&nbsp; * default pool or all resources as released (the release itself will happen
+<i>54</i>&nbsp; * at the native level) - see {@link D3DResourceManager}
+<i>55</i>&nbsp; *
+<i>56</i>&nbsp; * In all these cases resource disposal happens on the same thread (the
+<i>57</i>&nbsp; * Rendering Thread).
+<i>58</i>&nbsp; *
+<i>59</i>&nbsp; * Note that some d3d-related resources are not derived from this class - like
+<i>60</i>&nbsp; * D3DTexture. This is a bit confusing. But they do use this class&#39;s disposer
+<i>61</i>&nbsp; * record (they must).
+<i>62</i>&nbsp; */
+<i>63</i>&nbsp;class D3DResource extends BaseGraphicsResource {
+<i>64</i>&nbsp;
+<i>65</i>&nbsp;    protected final D3DRecord d3dResRecord;
+<i>66</i>&nbsp;
+<i>67</i>&nbsp;    D3DResource(D3DRecord disposerRecord) {
+<b class="fc"><i>68</i>&nbsp;        super(disposerRecord);</b>
+<b class="fc"><i>69</i>&nbsp;        this.d3dResRecord = disposerRecord;</b>
+<b class="fc"><i>70</i>&nbsp;    }</b>
+<i>71</i>&nbsp;
+<i>72</i>&nbsp;    @Override
+<i>73</i>&nbsp;    public void dispose() {
+<b class="fc"><i>74</i>&nbsp;        d3dResRecord.dispose();</b>
+<b class="fc"><i>75</i>&nbsp;    }</b>
+<i>76</i>&nbsp;
+<i>77</i>&nbsp;    static class D3DRecord implements Disposer.Record {
+<i>78</i>&nbsp;
+<i>79</i>&nbsp;        private final D3DContext context;
+<i>80</i>&nbsp;        private long pResource;
+<i>81</i>&nbsp;        private boolean isDefaultPool;
+<i>82</i>&nbsp;
+<b class="fc"><i>83</i>&nbsp;        D3DRecord(D3DContext context, long pResource) {</b>
+<b class="fc"><i>84</i>&nbsp;            this.context = context;</b>
+<b class="fc"><i>85</i>&nbsp;            this.pResource = pResource;</b>
+<b class="fc"><i>86</i>&nbsp;            if (pResource != 0L) {</b>
+<i>87</i>&nbsp;                // only add to the list of resources if there&#39;s something to
+<i>88</i>&nbsp;                // dispose of
+<b class="fc"><i>89</i>&nbsp;                context.getResourceFactory().addRecord(this);</b>
+<b class="fc"><i>90</i>&nbsp;                isDefaultPool = D3DResourceFactory.nIsDefaultPool(pResource);</b>
+<i>91</i>&nbsp;            } else {
+<b class="nc"><i>92</i>&nbsp;                isDefaultPool = false;</b>
+<i>93</i>&nbsp;            }
+<b class="fc"><i>94</i>&nbsp;        }</b>
+<i>95</i>&nbsp;
+<i>96</i>&nbsp;        long getResource() {
+<b class="fc"><i>97</i>&nbsp;            return pResource;</b>
+<i>98</i>&nbsp;        }
+<i>99</i>&nbsp;
+<i>100</i>&nbsp;        D3DContext getContext() {
+<b class="fc"><i>101</i>&nbsp;            return context;</b>
+<i>102</i>&nbsp;        }
+<i>103</i>&nbsp;
+<i>104</i>&nbsp;        boolean isDefaultPool() {
+<b class="nc"><i>105</i>&nbsp;            return isDefaultPool;</b>
+<i>106</i>&nbsp;        }
+<i>107</i>&nbsp;
+<i>108</i>&nbsp;        protected void markDisposed() {
+<b class="fc"><i>109</i>&nbsp;            pResource = 0L;</b>
+<b class="fc"><i>110</i>&nbsp;        }</b>
+<i>111</i>&nbsp;
+<i>112</i>&nbsp;        public void dispose() {
+<b class="fc"><i>113</i>&nbsp;            if (pResource != 0L) {</b>
+<b class="fc"><i>114</i>&nbsp;                context.getResourceFactory().removeRecord(this);</b>
+<b class="fc"><i>115</i>&nbsp;                D3DResourceFactory.nReleaseResource(context.getContextHandle(),</b>
+<i>116</i>&nbsp;                                                               pResource);
+<b class="fc"><i>117</i>&nbsp;                pResource = 0L;</b>
+<i>118</i>&nbsp;
+<i>119</i>&nbsp;                // res is always S_OK, no need to validate anything here
+<i>120</i>&nbsp;                // context.validate(res);
+<i>121</i>&nbsp;            }
+<b class="fc"><i>122</i>&nbsp;        }</b>
+<i>123</i>&nbsp;    }
+<i>124</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2017-12-04 21:49</div>
+</div>
+</body>
+</html>

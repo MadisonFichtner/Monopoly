@@ -1,0 +1,197 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: TransformUtils</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.javafx.scene.transform</a> ]
+</div>
+
+<h1>Coverage Summary for Class: TransformUtils (com.sun.javafx.scene.transform)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">TransformUtils</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    33.3%
+  </span>
+  <span class="absValue">
+    (2/ 6)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    41.7%
+  </span>
+  <span class="absValue">
+    (5/ 12)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright (c) 2011, 2016, Oracle and/or its affiliates. All rights reserved.
+<i>3</i>&nbsp; * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+<i>4</i>&nbsp; *
+<i>5</i>&nbsp; *
+<i>6</i>&nbsp; *
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; *
+<i>11</i>&nbsp; *
+<i>12</i>&nbsp; *
+<i>13</i>&nbsp; *
+<i>14</i>&nbsp; *
+<i>15</i>&nbsp; *
+<i>16</i>&nbsp; *
+<i>17</i>&nbsp; *
+<i>18</i>&nbsp; *
+<i>19</i>&nbsp; *
+<i>20</i>&nbsp; *
+<i>21</i>&nbsp; *
+<i>22</i>&nbsp; *
+<i>23</i>&nbsp; *
+<i>24</i>&nbsp; */
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;package com.sun.javafx.scene.transform;
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;import javafx.scene.transform.Transform;
+<i>29</i>&nbsp;
+<i>30</i>&nbsp;/**
+<i>31</i>&nbsp; * Internal utilities for transformations
+<i>32</i>&nbsp; */
+<b class="nc"><i>33</i>&nbsp;public class TransformUtils {</b>
+<i>34</i>&nbsp;
+<i>35</i>&nbsp;    /**
+<i>36</i>&nbsp;     * Creates an immutable arbitrary transformation.
+<i>37</i>&nbsp;     * This method is not intended for public use, users should use the Affine
+<i>38</i>&nbsp;     * class.
+<i>39</i>&nbsp;     */
+<i>40</i>&nbsp;    public static Transform immutableTransform(
+<i>41</i>&nbsp;                double mxx, double mxy, double mxz, double tx,
+<i>42</i>&nbsp;                double myx, double myy, double myz, double ty,
+<i>43</i>&nbsp;                double mzx, double mzy, double mzz, double tz) {
+<b class="nc"><i>44</i>&nbsp;        return TransformHelper.createImmutableTransform(</b>
+<i>45</i>&nbsp;                mxx, mxy, mxz, tx,
+<i>46</i>&nbsp;                myx, myy, myz, ty,
+<i>47</i>&nbsp;                mzx, mzy, mzz, tz);
+<i>48</i>&nbsp;    }
+<i>49</i>&nbsp;
+<i>50</i>&nbsp;    /**
+<i>51</i>&nbsp;     * Creates an immutable transformation filled with current values
+<i>52</i>&nbsp;     * from the given transformation.
+<i>53</i>&nbsp;     * This method is not intended for public use, users should use the Affine
+<i>54</i>&nbsp;     * class.
+<i>55</i>&nbsp;     */
+<i>56</i>&nbsp;    public static Transform immutableTransform(Transform t) {
+<b class="nc"><i>57</i>&nbsp;        return TransformHelper.createImmutableTransform(</b>
+<b class="nc"><i>58</i>&nbsp;                t.getMxx(), t.getMxy(), t.getMxz(), t.getTx(),</b>
+<b class="nc"><i>59</i>&nbsp;                t.getMyx(), t.getMyy(), t.getMyz(), t.getTy(),</b>
+<b class="nc"><i>60</i>&nbsp;                t.getMzx(), t.getMzy(), t.getMzz(), t.getTz());</b>
+<i>61</i>&nbsp;    }
+<i>62</i>&nbsp;
+<i>63</i>&nbsp;    /**
+<i>64</i>&nbsp;     * Creates an immutable arbitrary transformation.
+<i>65</i>&nbsp;     * If the given instance is not null, it is reused.
+<i>66</i>&nbsp;     * This method is not intended for public use, users should use the Affine
+<i>67</i>&nbsp;     * class.
+<i>68</i>&nbsp;     * @throws ClassCastException if the given transform to be reused
+<i>69</i>&nbsp;     *                            is not instance of ImmutableTransform
+<i>70</i>&nbsp;     */
+<i>71</i>&nbsp;    public static Transform immutableTransform(Transform reuse,
+<i>72</i>&nbsp;                double mxx, double mxy, double mxz, double tx,
+<i>73</i>&nbsp;                double myx, double myy, double myz, double ty,
+<i>74</i>&nbsp;                double mzx, double mzy, double mzz, double tz) {
+<i>75</i>&nbsp;
+<b class="fc"><i>76</i>&nbsp;        return TransformHelper.createImmutableTransform(reuse,</b>
+<i>77</i>&nbsp;                mxx, mxy, mxz, tx,
+<i>78</i>&nbsp;                myx, myy, myz, ty,
+<i>79</i>&nbsp;                mzx, mzy, mzz, tz);
+<i>80</i>&nbsp;    }
+<i>81</i>&nbsp;
+<i>82</i>&nbsp;    /**
+<i>83</i>&nbsp;     * Creates an immutable transformation filled with current values
+<i>84</i>&nbsp;     * from the given transformation.
+<i>85</i>&nbsp;     * If the given instance is not null, it is reused.
+<i>86</i>&nbsp;     * This method is not intended for public use, users should use the Affine
+<i>87</i>&nbsp;     * class.
+<i>88</i>&nbsp;     * @throws ClassCastException if the given transform to be reused
+<i>89</i>&nbsp;     *                            is not instance of ImmutableTransform
+<i>90</i>&nbsp;     */
+<i>91</i>&nbsp;    public static Transform immutableTransform(Transform reuse,
+<i>92</i>&nbsp;                Transform t) {
+<b class="fc"><i>93</i>&nbsp;        return TransformHelper.createImmutableTransform(reuse,</b>
+<b class="fc"><i>94</i>&nbsp;                t.getMxx(), t.getMxy(), t.getMxz(), t.getTx(),</b>
+<b class="fc"><i>95</i>&nbsp;                t.getMyx(), t.getMyy(), t.getMyz(), t.getTy(),</b>
+<b class="fc"><i>96</i>&nbsp;                t.getMzx(), t.getMzy(), t.getMzz(), t.getTz());</b>
+<i>97</i>&nbsp;    }
+<i>98</i>&nbsp;
+<i>99</i>&nbsp;    /**
+<i>100</i>&nbsp;     * Creates an immutable transformation filled with concatenation
+<i>101</i>&nbsp;     * of the given transformations.
+<i>102</i>&nbsp;     * If the given instance is not null, it is reused.
+<i>103</i>&nbsp;     * This method is not intended for public use, users should use the Affine
+<i>104</i>&nbsp;     * class.
+<i>105</i>&nbsp;     * @throws ClassCastException if one of the given transforms
+<i>106</i>&nbsp;     *                            is not instance of ImmutableTransform
+<i>107</i>&nbsp;     */
+<i>108</i>&nbsp;    public static Transform immutableTransform(Transform reuse,
+<i>109</i>&nbsp;            Transform left, Transform right) {
+<i>110</i>&nbsp;
+<b class="nc"><i>111</i>&nbsp;        return TransformHelper.createImmutableTransform(reuse, left, right);</b>
+<i>112</i>&nbsp;    }
+<i>113</i>&nbsp;
+<i>114</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2017-12-04 21:49</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,196 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: StageHelper</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.javafx.stage</a> ]
+</div>
+
+<h1>Coverage Summary for Class: StageHelper (com.sun.javafx.stage)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">StageHelper</td>
+<td class="coverageStat">
+  <span class="percent">
+    66.7%
+  </span>
+  <span class="absValue">
+    (8/ 12)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    69.2%
+  </span>
+  <span class="absValue">
+    (18/ 26)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">StageHelper$StageAccessor</td>
+  </tr>
+<tr>
+  <td class="name"><strong>total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    66.7%
+  </span>
+  <span class="absValue">
+    (8/ 12)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    69.2%
+  </span>
+  <span class="absValue">
+    (18/ 26)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright (c) 2012, 2016, Oracle and/or its affiliates. All rights reserved.
+<i>3</i>&nbsp; * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+<i>4</i>&nbsp; *
+<i>5</i>&nbsp; *
+<i>6</i>&nbsp; *
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; *
+<i>11</i>&nbsp; *
+<i>12</i>&nbsp; *
+<i>13</i>&nbsp; *
+<i>14</i>&nbsp; *
+<i>15</i>&nbsp; *
+<i>16</i>&nbsp; *
+<i>17</i>&nbsp; *
+<i>18</i>&nbsp; *
+<i>19</i>&nbsp; *
+<i>20</i>&nbsp; *
+<i>21</i>&nbsp; *
+<i>22</i>&nbsp; *
+<i>23</i>&nbsp; *
+<i>24</i>&nbsp; */
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;package com.sun.javafx.stage;
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;import com.sun.javafx.util.Utils;
+<i>29</i>&nbsp;import javafx.stage.Stage;
+<i>30</i>&nbsp;import javafx.stage.Window;
+<i>31</i>&nbsp;
+<i>32</i>&nbsp;/**
+<i>33</i>&nbsp; * Utility class class used for accessing certain implementation-specific
+<i>34</i>&nbsp; * runtime functionality.
+<i>35</i>&nbsp; */
+<b class="fc"><i>36</i>&nbsp;public class StageHelper extends WindowHelper {</b>
+<i>37</i>&nbsp;
+<i>38</i>&nbsp;    private static final StageHelper theInstance;
+<i>39</i>&nbsp;    private static StageAccessor stageAccessor;
+<i>40</i>&nbsp;
+<i>41</i>&nbsp;    static {
+<b class="fc"><i>42</i>&nbsp;        theInstance = new StageHelper();</b>
+<b class="fc"><i>43</i>&nbsp;        Utils.forceInit(Stage.class);</b>
+<b class="fc"><i>44</i>&nbsp;    }</b>
+<i>45</i>&nbsp;
+<i>46</i>&nbsp;    private static WindowHelper getInstance() {
+<b class="fc"><i>47</i>&nbsp;        return theInstance;</b>
+<i>48</i>&nbsp;    }
+<i>49</i>&nbsp;
+<i>50</i>&nbsp;    public static void initHelper(Stage stage) {
+<b class="fc"><i>51</i>&nbsp;        setHelper(stage, getInstance());</b>
+<b class="fc"><i>52</i>&nbsp;    }</b>
+<i>53</i>&nbsp;
+<i>54</i>&nbsp;    @Override
+<i>55</i>&nbsp;    protected String getMXWindowTypeImpl(Window window) {
+<b class="nc"><i>56</i>&nbsp;        return stageAccessor.doGetMXWindowType(window);</b>
+<i>57</i>&nbsp;    }
+<i>58</i>&nbsp;
+<i>59</i>&nbsp;    @Override
+<i>60</i>&nbsp;    protected void visibleChangingImpl(Window window, boolean visible) {
+<b class="fc"><i>61</i>&nbsp;        super.visibleChangingImpl(window, visible);</b>
+<b class="fc"><i>62</i>&nbsp;        stageAccessor.doVisibleChanging(window, visible);</b>
+<b class="fc"><i>63</i>&nbsp;    }</b>
+<i>64</i>&nbsp;
+<i>65</i>&nbsp;    @Override
+<i>66</i>&nbsp;    protected void visibleChangedImpl(Window window, boolean visible) {
+<b class="fc"><i>67</i>&nbsp;        super.visibleChangedImpl(window, visible);</b>
+<b class="fc"><i>68</i>&nbsp;        stageAccessor.doVisibleChanged(window, visible);</b>
+<b class="fc"><i>69</i>&nbsp;    }</b>
+<i>70</i>&nbsp;
+<i>71</i>&nbsp;    public static void initSecurityDialog(Stage stage, boolean securityDialog) {
+<b class="nc"><i>72</i>&nbsp;        stageAccessor.initSecurityDialog(stage, securityDialog);</b>
+<b class="nc"><i>73</i>&nbsp;    }</b>
+<i>74</i>&nbsp;
+<i>75</i>&nbsp;    public static void setPrimary(Stage stage, boolean primary) {
+<b class="fc"><i>76</i>&nbsp;        stageAccessor.setPrimary(stage, primary);</b>
+<b class="fc"><i>77</i>&nbsp;    }</b>
+<i>78</i>&nbsp;
+<i>79</i>&nbsp;    public static void setImportant(Stage stage, boolean important) {
+<b class="nc"><i>80</i>&nbsp;        stageAccessor.setImportant(stage, important);</b>
+<b class="nc"><i>81</i>&nbsp;    }</b>
+<i>82</i>&nbsp;
+<i>83</i>&nbsp;    public static void setStageAccessor(StageAccessor a) {
+<b class="fc"><i>84</i>&nbsp;        if (stageAccessor != null) {</b>
+<b class="nc"><i>85</i>&nbsp;            System.out.println(&quot;Warning: Stage accessor already set: &quot; + stageAccessor);</b>
+<b class="nc"><i>86</i>&nbsp;            Thread.dumpStack();</b>
+<i>87</i>&nbsp;        }
+<b class="fc"><i>88</i>&nbsp;        stageAccessor = a;</b>
+<b class="fc"><i>89</i>&nbsp;    }</b>
+<i>90</i>&nbsp;
+<i>91</i>&nbsp;    public static StageAccessor getStageAccessor() {
+<b class="nc"><i>92</i>&nbsp;        return stageAccessor;</b>
+<i>93</i>&nbsp;    }
+<i>94</i>&nbsp;
+<i>95</i>&nbsp;    public static interface StageAccessor {
+<i>96</i>&nbsp;        String doGetMXWindowType(Window window);
+<i>97</i>&nbsp;        void doVisibleChanging(Window window, boolean visible);
+<i>98</i>&nbsp;        void doVisibleChanged(Window window, boolean visible);
+<i>99</i>&nbsp;        public void initSecurityDialog(Stage stage, boolean securityDialog);
+<i>100</i>&nbsp;        public void setPrimary(Stage stage,  boolean primary);
+<i>101</i>&nbsp;        public void setImportant(Stage stage,  boolean important);
+<i>102</i>&nbsp;    }
+<i>103</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2017-12-04 21:49</div>
+</div>
+</body>
+</html>

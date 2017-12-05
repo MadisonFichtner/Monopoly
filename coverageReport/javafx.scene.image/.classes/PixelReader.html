@@ -1,0 +1,223 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: PixelReader</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">javafx.scene.image</a> ]
+</div>
+
+<h1>Coverage Summary for Class: PixelReader (javafx.scene.image)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+</tr>
+<tr>
+  <td class="name">PixelReader</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright (c) 2012, 2017, Oracle and/or its affiliates. All rights reserved.
+<i>3</i>&nbsp; * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+<i>4</i>&nbsp; *
+<i>5</i>&nbsp; *
+<i>6</i>&nbsp; *
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; *
+<i>11</i>&nbsp; *
+<i>12</i>&nbsp; *
+<i>13</i>&nbsp; *
+<i>14</i>&nbsp; *
+<i>15</i>&nbsp; *
+<i>16</i>&nbsp; *
+<i>17</i>&nbsp; *
+<i>18</i>&nbsp; *
+<i>19</i>&nbsp; *
+<i>20</i>&nbsp; *
+<i>21</i>&nbsp; *
+<i>22</i>&nbsp; *
+<i>23</i>&nbsp; *
+<i>24</i>&nbsp; */
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;package javafx.scene.image;
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;import java.nio.Buffer;
+<i>29</i>&nbsp;import java.nio.ByteBuffer;
+<i>30</i>&nbsp;import java.nio.IntBuffer;
+<i>31</i>&nbsp;import javafx.scene.paint.Color;
+<i>32</i>&nbsp;
+<i>33</i>&nbsp;/**
+<i>34</i>&nbsp; * This interface defines methods for retrieving the pixel data from an
+<i>35</i>&nbsp; * {@link Image} or other surface containing pixels.
+<i>36</i>&nbsp; * @since JavaFX 2.2
+<i>37</i>&nbsp; */
+<i>38</i>&nbsp;public interface PixelReader {
+<i>39</i>&nbsp;    /**
+<i>40</i>&nbsp;     * This method returns the {@code PixelFormat} in which the surface
+<i>41</i>&nbsp;     * stores its pixels, or a roughly equivalent pixel format into which
+<i>42</i>&nbsp;     * it can easily convert its pixels for purposes of reading them.
+<i>43</i>&nbsp;     *
+<i>44</i>&nbsp;     * @return the {@code PixelFormat} that best describes the underlying
+<i>45</i>&nbsp;     *         pixels
+<i>46</i>&nbsp;     */
+<i>47</i>&nbsp;    public PixelFormat getPixelFormat();
+<i>48</i>&nbsp;
+<i>49</i>&nbsp;    /**
+<i>50</i>&nbsp;     * Reads a 32-bit integer representation of the color of a pixel
+<i>51</i>&nbsp;     * from the specified coordinates in the surface.
+<i>52</i>&nbsp;     * The 32-bit integer will contain the 4 color components in separate
+<i>53</i>&nbsp;     * 8-bit fields in ARGB order from the most significant byte to the least
+<i>54</i>&nbsp;     * significant byte.
+<i>55</i>&nbsp;     *
+<i>56</i>&nbsp;     * @param x the X coordinate of the pixel color to read
+<i>57</i>&nbsp;     * @param y the Y coordinate of the pixel color to read
+<i>58</i>&nbsp;     * @return a 32-bit representation of the color in the format
+<i>59</i>&nbsp;     *         described by the {@link PixelFormat.Type#INT_ARGB INT_ARGB}
+<i>60</i>&nbsp;     *         PixelFormat type.
+<i>61</i>&nbsp;     */
+<i>62</i>&nbsp;    public int getArgb(int x, int y);
+<i>63</i>&nbsp;
+<i>64</i>&nbsp;    /**
+<i>65</i>&nbsp;     * Reads the color of a pixel from the specified coordinates in the
+<i>66</i>&nbsp;     * surface and returns the value as a {@link Color} object.
+<i>67</i>&nbsp;     *
+<i>68</i>&nbsp;     * @param x the X coordinate of the pixel color to read
+<i>69</i>&nbsp;     * @param y the Y coordinate of the pixel color to read
+<i>70</i>&nbsp;     * @return the Color object representing the color of the indicated
+<i>71</i>&nbsp;     *         pixel
+<i>72</i>&nbsp;     */
+<i>73</i>&nbsp;    public Color getColor(int x, int y);
+<i>74</i>&nbsp;
+<i>75</i>&nbsp;    /**
+<i>76</i>&nbsp;     * Reads pixel data from a rectangular region of the surface into the
+<i>77</i>&nbsp;     * specified buffer.
+<i>78</i>&nbsp;     * The format to be used for pixels in the buffer is defined by the
+<i>79</i>&nbsp;     * {@link PixelFormat} object and pixel format conversions will be
+<i>80</i>&nbsp;     * performed as needed to store the data in the indicated format.
+<i>81</i>&nbsp;     * The buffer is assumed to be positioned to the location where the
+<i>82</i>&nbsp;     * first pixel data from the image pixel at location {@code (x, y)}
+<i>83</i>&nbsp;     * will be stored.
+<i>84</i>&nbsp;     * Pixel data for a row will be stored in adjacent locations within
+<i>85</i>&nbsp;     * the buffer packed as tightly as possible for increasing X
+<i>86</i>&nbsp;     * coordinates.
+<i>87</i>&nbsp;     * Pixel data for adjacent rows will be stored offset from each other
+<i>88</i>&nbsp;     * by the number of buffer data elements defined by
+<i>89</i>&nbsp;     * {@code scanlineStride}.
+<i>90</i>&nbsp;     *
+<i>91</i>&nbsp;     * @param &lt;T&gt; the type of the buffer
+<i>92</i>&nbsp;     * @param x the X coordinate of the rectangular region to read
+<i>93</i>&nbsp;     * @param y the Y coordinate of the rectangular region to read
+<i>94</i>&nbsp;     * @param w the width of the rectangular region to read
+<i>95</i>&nbsp;     * @param h the height of the rectangular region to read
+<i>96</i>&nbsp;     * @param pixelformat the {@code PixelFormat} object defining the format
+<i>97</i>&nbsp;     *        to store the pixels into buffer
+<i>98</i>&nbsp;     * @param buffer a buffer of a type appropriate for the indicated
+<i>99</i>&nbsp;     *        {@code PixelFormat} object
+<i>100</i>&nbsp;     * @param scanlineStride the distance between the pixel data for the
+<i>101</i>&nbsp;     *        start of one row of data in the buffer to the start of the
+<i>102</i>&nbsp;     *        next row of data.
+<i>103</i>&nbsp;     */
+<i>104</i>&nbsp;    public &lt;T extends Buffer&gt;
+<i>105</i>&nbsp;        void getPixels(int x, int y, int w, int h,
+<i>106</i>&nbsp;                       WritablePixelFormat&lt;T&gt; pixelformat,
+<i>107</i>&nbsp;                       T buffer, int scanlineStride);
+<i>108</i>&nbsp;
+<i>109</i>&nbsp;    /**
+<i>110</i>&nbsp;     * Reads pixel data from a rectangular region of the surface into the
+<i>111</i>&nbsp;     * specified byte array.
+<i>112</i>&nbsp;     * The format to be used for pixels in the buffer is defined by the
+<i>113</i>&nbsp;     * {@link PixelFormat} object and pixel format conversions will be
+<i>114</i>&nbsp;     * performed as needed to store the data in the indicated format.
+<i>115</i>&nbsp;     * The {@code pixelformat} must be a compatible
+<i>116</i>&nbsp;     * {@code PixelFormat&lt;ByteBuffer&gt;} type.
+<i>117</i>&nbsp;     * The data for the first pixel at location {@code (x, y)} will be
+<i>118</i>&nbsp;     * read into the array index specified by the {@code offset} parameter.
+<i>119</i>&nbsp;     * Pixel data for a row will be stored in adjacent locations within
+<i>120</i>&nbsp;     * the array packed as tightly as possible for increasing X
+<i>121</i>&nbsp;     * coordinates.
+<i>122</i>&nbsp;     * Pixel data for adjacent rows will be stored offset from each other
+<i>123</i>&nbsp;     * by the number of byte array elements defined by
+<i>124</i>&nbsp;     * {@code scanlineStride}.
+<i>125</i>&nbsp;     *
+<i>126</i>&nbsp;     * @param x the X coordinate of the rectangular region to read
+<i>127</i>&nbsp;     * @param y the Y coordinate of the rectangular region to read
+<i>128</i>&nbsp;     * @param w the width of the rectangular region to read
+<i>129</i>&nbsp;     * @param h the height of the rectangular region to read
+<i>130</i>&nbsp;     * @param pixelformat the {@code PixelFormat&lt;ByteBuffer&gt;} object
+<i>131</i>&nbsp;     *        defining the byte format to store the pixels into buffer
+<i>132</i>&nbsp;     * @param buffer a byte array to store the returned pixel data
+<i>133</i>&nbsp;     * @param offset the offset into {@code buffer} to store the first
+<i>134</i>&nbsp;     *        pixel data
+<i>135</i>&nbsp;     * @param scanlineStride the distance between the pixel data for the
+<i>136</i>&nbsp;     *        start of one row of data in the buffer to the start of the
+<i>137</i>&nbsp;     *        next row of data
+<i>138</i>&nbsp;     */
+<i>139</i>&nbsp;    public void getPixels(int x, int y, int w, int h,
+<i>140</i>&nbsp;                          WritablePixelFormat&lt;ByteBuffer&gt; pixelformat,
+<i>141</i>&nbsp;                          byte buffer[], int offset, int scanlineStride);
+<i>142</i>&nbsp;
+<i>143</i>&nbsp;    /**
+<i>144</i>&nbsp;     * Reads pixel data from a rectangular region of the surface into the
+<i>145</i>&nbsp;     * specified int array.
+<i>146</i>&nbsp;     * The format to be used for pixels in the buffer is defined by the
+<i>147</i>&nbsp;     * {@link PixelFormat} object and pixel format conversions will be
+<i>148</i>&nbsp;     * performed as needed to store the data in the indicated format.
+<i>149</i>&nbsp;     * The {@code pixelformat} must be a compatible
+<i>150</i>&nbsp;     * {@code PixelFormat&lt;IntBuffer&gt;} type.
+<i>151</i>&nbsp;     * The data for the first pixel at location {@code (x, y)} will be
+<i>152</i>&nbsp;     * read into the array index specified by the {@code offset} parameter.
+<i>153</i>&nbsp;     * Pixel data for a row will be stored in adjacent locations within
+<i>154</i>&nbsp;     * the array packed as tightly as possible for increasing X
+<i>155</i>&nbsp;     * coordinates.
+<i>156</i>&nbsp;     * Pixel data for adjacent rows will be stored offset from each other
+<i>157</i>&nbsp;     * by the number of int array elements defined by
+<i>158</i>&nbsp;     * {@code scanlineStride}.
+<i>159</i>&nbsp;     *
+<i>160</i>&nbsp;     * @param x the X coordinate of the rectangular region to read
+<i>161</i>&nbsp;     * @param y the Y coordinate of the rectangular region to read
+<i>162</i>&nbsp;     * @param w the width of the rectangular region to read
+<i>163</i>&nbsp;     * @param h the height of the rectangular region to read
+<i>164</i>&nbsp;     * @param pixelformat the {@code PixelFormat&lt;IntBuffer&gt;} object
+<i>165</i>&nbsp;     *        defining the int format to store the pixels into buffer
+<i>166</i>&nbsp;     * @param buffer a int array to store the returned pixel data
+<i>167</i>&nbsp;     * @param offset the offset into {@code buffer} to store the first
+<i>168</i>&nbsp;     *        pixel data
+<i>169</i>&nbsp;     * @param scanlineStride the distance between the pixel data for the
+<i>170</i>&nbsp;     *        start of one row of data in the buffer to the start of the
+<i>171</i>&nbsp;     *        next row of data
+<i>172</i>&nbsp;     */
+<i>173</i>&nbsp;    public void getPixels(int x, int y, int w, int h,
+<i>174</i>&nbsp;                          WritablePixelFormat&lt;IntBuffer&gt; pixelformat,
+<i>175</i>&nbsp;                          int buffer[], int offset, int scanlineStride);
+<i>176</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2017-12-04 21:49</div>
+</div>
+</body>
+</html>

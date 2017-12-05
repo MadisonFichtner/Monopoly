@@ -1,0 +1,1620 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: Affine2D</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.javafx.geom.transform</a> ]
+</div>
+
+<h1>Coverage Summary for Class: Affine2D (com.sun.javafx.geom.transform)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">Affine2D</td>
+<td class="coverageStat">
+  <span class="percent">
+    18.2%
+  </span>
+  <span class="absValue">
+    (8/ 44)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    5.4%
+  </span>
+  <span class="absValue">
+    (31/ 579)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">Affine2D$1</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    20%
+  </span>
+  <span class="absValue">
+    (9/ 45)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    5.5%
+  </span>
+  <span class="absValue">
+    (32/ 580)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright (c) 1996, 2013, Oracle and/or its affiliates. All rights reserved.
+<i>3</i>&nbsp; * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+<i>4</i>&nbsp; *
+<i>5</i>&nbsp; *
+<i>6</i>&nbsp; *
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; *
+<i>11</i>&nbsp; *
+<i>12</i>&nbsp; *
+<i>13</i>&nbsp; *
+<i>14</i>&nbsp; *
+<i>15</i>&nbsp; *
+<i>16</i>&nbsp; *
+<i>17</i>&nbsp; *
+<i>18</i>&nbsp; *
+<i>19</i>&nbsp; *
+<i>20</i>&nbsp; *
+<i>21</i>&nbsp; *
+<i>22</i>&nbsp; *
+<i>23</i>&nbsp; *
+<i>24</i>&nbsp; */
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;package com.sun.javafx.geom.transform;
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;import com.sun.javafx.geom.Point2D;
+<i>29</i>&nbsp;
+<i>30</i>&nbsp;/**
+<i>31</i>&nbsp; * The &lt;code&gt;Affine2D&lt;/code&gt; class represents a 2D affine transform
+<i>32</i>&nbsp; * that performs a linear mapping from 2D coordinates to other 2D
+<i>33</i>&nbsp; * coordinates that preserves the &quot;straightness&quot; and
+<i>34</i>&nbsp; * &quot;parallelness&quot; of lines.  Affine transformations can be constructed
+<i>35</i>&nbsp; * using sequences of translations, scales, flips, rotations, and shears.
+<i>36</i>&nbsp; * &lt;p&gt;
+<i>37</i>&nbsp; * Such a coordinate transformation can be represented by a 3 row by
+<i>38</i>&nbsp; * 3 column matrix with an implied last row of [ 0 0 1 ].  This matrix
+<i>39</i>&nbsp; * transforms source coordinates {@code (x,y)} into
+<i>40</i>&nbsp; * destination coordinates {@code (x&#39;,y&#39;)} by considering
+<i>41</i>&nbsp; * them to be a column vector and multiplying the coordinate vector
+<i>42</i>&nbsp; * by the matrix according to the following process:
+<i>43</i>&nbsp; * &lt;pre&gt;
+<i>44</i>&nbsp; *  [ x&#39;]   [  m00  m01  m02  ] [ x ]   [ m00x + m01y + m02 ]
+<i>45</i>&nbsp; *  [ y&#39;] = [  m10  m11  m12  ] [ y ] = [ m10x + m11y + m12 ]
+<i>46</i>&nbsp; *  [ 1 ]   [   0    0    1   ] [ 1 ]   [         1         ]
+<i>47</i>&nbsp; * &lt;/pre&gt;
+<i>48</i>&nbsp; * &lt;p&gt;
+<i>49</i>&nbsp; * &lt;a name=&quot;quadrantapproximation&quot;&gt;&lt;h4&gt;Handling 90-Degree Rotations&lt;/h4&gt;&lt;/a&gt;
+<i>50</i>&nbsp; * &lt;p&gt;
+<i>51</i>&nbsp; * In some variations of the &lt;code&gt;rotate&lt;/code&gt; methods in the
+<i>52</i>&nbsp; * &lt;code&gt;Affine2D&lt;/code&gt; class, a double-precision argument
+<i>53</i>&nbsp; * specifies the angle of rotation in radians.
+<i>54</i>&nbsp; * These methods have special handling for rotations of approximately
+<i>55</i>&nbsp; * 90 degrees (including multiples such as 180, 270, and 360 degrees),
+<i>56</i>&nbsp; * so that the common case of quadrant rotation is handled more
+<i>57</i>&nbsp; * efficiently.
+<i>58</i>&nbsp; * This special handling can cause angles very close to multiples of
+<i>59</i>&nbsp; * 90 degrees to be treated as if they were exact multiples of
+<i>60</i>&nbsp; * 90 degrees.
+<i>61</i>&nbsp; * For small multiples of 90 degrees the range of angles treated
+<i>62</i>&nbsp; * as a quadrant rotation is approximately 0.00000121 degrees wide.
+<i>63</i>&nbsp; * This section explains why such special care is needed and how
+<i>64</i>&nbsp; * it is implemented.
+<i>65</i>&nbsp; * &lt;p&gt;
+<i>66</i>&nbsp; * Since 90 degrees is represented as &lt;code&gt;PI/2&lt;/code&gt; in radians,
+<i>67</i>&nbsp; * and since PI is a transcendental (and therefore irrational) number,
+<i>68</i>&nbsp; * it is not possible to exactly represent a multiple of 90 degrees as
+<i>69</i>&nbsp; * an exact double precision value measured in radians.
+<i>70</i>&nbsp; * As a result it is theoretically impossible to describe quadrant
+<i>71</i>&nbsp; * rotations (90, 180, 270 or 360 degrees) using these values.
+<i>72</i>&nbsp; * Double precision floating point values can get very close to
+<i>73</i>&nbsp; * non-zero multiples of &lt;code&gt;PI/2&lt;/code&gt; but never close enough
+<i>74</i>&nbsp; * for the sine or cosine to be exactly 0.0, 1.0 or -1.0.
+<i>75</i>&nbsp; * The implementations of &lt;code&gt;Math.sin()&lt;/code&gt; and
+<i>76</i>&nbsp; * &lt;code&gt;Math.cos()&lt;/code&gt; correspondingly never return 0.0
+<i>77</i>&nbsp; * for any case other than &lt;code&gt;Math.sin(0.0)&lt;/code&gt;.
+<i>78</i>&nbsp; * These same implementations do, however, return exactly 1.0 and
+<i>79</i>&nbsp; * -1.0 for some range of numbers around each multiple of 90
+<i>80</i>&nbsp; * degrees since the correct answer is so close to 1.0 or -1.0 that
+<i>81</i>&nbsp; * the double precision significand cannot represent the difference
+<i>82</i>&nbsp; * as accurately as it can for numbers that are near 0.0.
+<i>83</i>&nbsp; * &lt;p&gt;
+<i>84</i>&nbsp; * The net result of these issues is that if the
+<i>85</i>&nbsp; * &lt;code&gt;Math.sin()&lt;/code&gt; and &lt;code&gt;Math.cos()&lt;/code&gt; methods
+<i>86</i>&nbsp; * are used to directly generate the values for the matrix modifications
+<i>87</i>&nbsp; * during these radian-based rotation operations then the resulting
+<i>88</i>&nbsp; * transform is never strictly classifiable as a quadrant rotation
+<i>89</i>&nbsp; * even for a simple case like &lt;code&gt;rotate(Math.PI/2.0)&lt;/code&gt;,
+<i>90</i>&nbsp; * due to minor variations in the matrix caused by the non-0.0 values
+<i>91</i>&nbsp; * obtained for the sine and cosine.
+<i>92</i>&nbsp; * If these transforms are not classified as quadrant rotations then
+<i>93</i>&nbsp; * subsequent code which attempts to optimize further operations based
+<i>94</i>&nbsp; * upon the type of the transform will be relegated to its most general
+<i>95</i>&nbsp; * implementation.
+<i>96</i>&nbsp; * &lt;p&gt;
+<i>97</i>&nbsp; * Because quadrant rotations are fairly common,
+<i>98</i>&nbsp; * this class should handle these cases reasonably quickly, both in
+<i>99</i>&nbsp; * applying the rotations to the transform and in applying the resulting
+<i>100</i>&nbsp; * transform to the coordinates.
+<i>101</i>&nbsp; * To facilitate this optimal handling, the methods which take an angle
+<i>102</i>&nbsp; * of rotation measured in radians attempt to detect angles that are
+<i>103</i>&nbsp; * intended to be quadrant rotations and treat them as such.
+<i>104</i>&nbsp; * These methods therefore treat an angle &lt;em&gt;theta&lt;/em&gt; as a quadrant
+<i>105</i>&nbsp; * rotation if either &lt;code&gt;Math.sin(&lt;em&gt;theta&lt;/em&gt;)&lt;/code&gt; or
+<i>106</i>&nbsp; * &lt;code&gt;Math.cos(&lt;em&gt;theta&lt;/em&gt;)&lt;/code&gt; returns exactly 1.0 or -1.0.
+<i>107</i>&nbsp; * As a rule of thumb, this property holds true for a range of
+<i>108</i>&nbsp; * approximately 0.0000000211 radians (or 0.00000121 degrees) around
+<i>109</i>&nbsp; * small multiples of &lt;code&gt;Math.PI/2.0&lt;/code&gt;.
+<i>110</i>&nbsp; *
+<i>111</i>&nbsp; * @version 1.83, 05/05/07
+<i>112</i>&nbsp; */
+<i>113</i>&nbsp;public class Affine2D extends AffineBase {
+<i>114</i>&nbsp;    private Affine2D(double mxx, double myx,
+<i>115</i>&nbsp;                     double mxy, double myy,
+<i>116</i>&nbsp;                     double mxt, double myt,
+<i>117</i>&nbsp;                     int state)
+<b class="nc"><i>118</i>&nbsp;    {</b>
+<b class="nc"><i>119</i>&nbsp;        this.mxx = mxx;</b>
+<b class="nc"><i>120</i>&nbsp;        this.myx = myx;</b>
+<b class="nc"><i>121</i>&nbsp;        this.mxy = mxy;</b>
+<b class="nc"><i>122</i>&nbsp;        this.myy = myy;</b>
+<b class="nc"><i>123</i>&nbsp;        this.mxt = mxt;</b>
+<b class="nc"><i>124</i>&nbsp;        this.myt = myt;</b>
+<b class="nc"><i>125</i>&nbsp;        this.state = state;</b>
+<b class="nc"><i>126</i>&nbsp;        this.type = TYPE_UNKNOWN;</b>
+<b class="nc"><i>127</i>&nbsp;    }</b>
+<i>128</i>&nbsp;
+<i>129</i>&nbsp;    /**
+<i>130</i>&nbsp;     * Constructs a new &lt;code&gt;Affine2D&lt;/code&gt; representing the
+<i>131</i>&nbsp;     * Identity transformation.
+<i>132</i>&nbsp;     */
+<b class="fc"><i>133</i>&nbsp;    public Affine2D() {</b>
+<b class="fc"><i>134</i>&nbsp;        mxx = myy = 1.0;</b>
+<i>135</i>&nbsp;        // m01 = m10 = m02 = m12 = 0.0;     /* Not needed. */
+<i>136</i>&nbsp;        // state = APPLY_IDENTITY;      /* Not needed. */
+<i>137</i>&nbsp;        // type = TYPE_IDENTITY;        /* Not needed. */
+<b class="fc"><i>138</i>&nbsp;    }</b>
+<i>139</i>&nbsp;
+<i>140</i>&nbsp;    /**
+<i>141</i>&nbsp;     * Constructs a new &lt;code&gt;Affine2D&lt;/code&gt; that uses the same transform
+<i>142</i>&nbsp;     * as the specified &lt;code&gt;BaseTransform&lt;/code&gt; object.
+<i>143</i>&nbsp;     * @param Tx the &lt;code&gt;BaseTransform&lt;/code&gt; object to copy
+<i>144</i>&nbsp;     */
+<b class="fc"><i>145</i>&nbsp;    public Affine2D(BaseTransform Tx) {</b>
+<b class="fc"><i>146</i>&nbsp;        setTransform(Tx);</b>
+<b class="fc"><i>147</i>&nbsp;    }</b>
+<i>148</i>&nbsp;
+<i>149</i>&nbsp;    /**
+<i>150</i>&nbsp;     * Constructs a new &lt;code&gt;Affine2D&lt;/code&gt; from 6 floating point
+<i>151</i>&nbsp;     * values representing the 6 specifiable entries of the 3x3
+<i>152</i>&nbsp;     * transformation matrix.
+<i>153</i>&nbsp;     *
+<i>154</i>&nbsp;     * @param mxx the X coordinate scaling element of the 3x3 matrix
+<i>155</i>&nbsp;     * @param myx the Y coordinate shearing element of the 3x3 matrix
+<i>156</i>&nbsp;     * @param mxy the X coordinate shearing element of the 3x3 matrix
+<i>157</i>&nbsp;     * @param myy the Y coordinate scaling element of the 3x3 matrix
+<i>158</i>&nbsp;     * @param mxt the X coordinate translation element of the 3x3 matrix
+<i>159</i>&nbsp;     * @param myt the Y coordinate translation element of the 3x3 matrix
+<i>160</i>&nbsp;     */
+<i>161</i>&nbsp;    public Affine2D(float mxx, float myx,
+<i>162</i>&nbsp;                    float mxy, float myy,
+<i>163</i>&nbsp;                    float mxt, float myt)
+<b class="nc"><i>164</i>&nbsp;    {</b>
+<b class="nc"><i>165</i>&nbsp;        this.mxx = mxx;</b>
+<b class="nc"><i>166</i>&nbsp;        this.myx = myx;</b>
+<b class="nc"><i>167</i>&nbsp;        this.mxy = mxy;</b>
+<b class="nc"><i>168</i>&nbsp;        this.myy = myy;</b>
+<b class="nc"><i>169</i>&nbsp;        this.mxt = mxt;</b>
+<b class="nc"><i>170</i>&nbsp;        this.myt = myt;</b>
+<b class="nc"><i>171</i>&nbsp;        updateState2D();</b>
+<b class="nc"><i>172</i>&nbsp;    }</b>
+<i>173</i>&nbsp;
+<i>174</i>&nbsp;    /**
+<i>175</i>&nbsp;     * Constructs a new &lt;code&gt;Affine2D&lt;/code&gt; from 6 double
+<i>176</i>&nbsp;     * precision values representing the 6 specifiable entries of the 3x3
+<i>177</i>&nbsp;     * transformation matrix.
+<i>178</i>&nbsp;     *
+<i>179</i>&nbsp;     * @param mxx the X coordinate scaling element of the 3x3 matrix
+<i>180</i>&nbsp;     * @param myx the Y coordinate shearing element of the 3x3 matrix
+<i>181</i>&nbsp;     * @param mxy the X coordinate shearing element of the 3x3 matrix
+<i>182</i>&nbsp;     * @param myy the Y coordinate scaling element of the 3x3 matrix
+<i>183</i>&nbsp;     * @param mxt the X coordinate translation element of the 3x3 matrix
+<i>184</i>&nbsp;     * @param myt the Y coordinate translation element of the 3x3 matrix
+<i>185</i>&nbsp;     */
+<i>186</i>&nbsp;    public Affine2D(double mxx, double myx,
+<i>187</i>&nbsp;                    double mxy, double myy,
+<i>188</i>&nbsp;                    double mxt, double myt)
+<b class="nc"><i>189</i>&nbsp;    {</b>
+<b class="nc"><i>190</i>&nbsp;        this.mxx = mxx;</b>
+<b class="nc"><i>191</i>&nbsp;        this.myx = myx;</b>
+<b class="nc"><i>192</i>&nbsp;        this.mxy = mxy;</b>
+<b class="nc"><i>193</i>&nbsp;        this.myy = myy;</b>
+<b class="nc"><i>194</i>&nbsp;        this.mxt = mxt;</b>
+<b class="nc"><i>195</i>&nbsp;        this.myt = myt;</b>
+<b class="nc"><i>196</i>&nbsp;        updateState2D();</b>
+<b class="nc"><i>197</i>&nbsp;    }</b>
+<i>198</i>&nbsp;
+<i>199</i>&nbsp;    @Override
+<i>200</i>&nbsp;    public Degree getDegree() {
+<b class="fc"><i>201</i>&nbsp;        return Degree.AFFINE_2D;</b>
+<i>202</i>&nbsp;    }
+<i>203</i>&nbsp;
+<i>204</i>&nbsp;    @Override
+<b class="fc"><i>205</i>&nbsp;    protected void reset3Delements() { /* NOP for Affine2D */ }</b>
+<i>206</i>&nbsp;
+<i>207</i>&nbsp;    /**
+<i>208</i>&nbsp;     * Concatenates this transform with a transform that rotates
+<i>209</i>&nbsp;     * coordinates around an anchor point.
+<i>210</i>&nbsp;     * This operation is equivalent to translating the coordinates so
+<i>211</i>&nbsp;     * that the anchor point is at the origin (S1), then rotating them
+<i>212</i>&nbsp;     * about the new origin (S2), and finally translating so that the
+<i>213</i>&nbsp;     * intermediate origin is restored to the coordinates of the original
+<i>214</i>&nbsp;     * anchor point (S3).
+<i>215</i>&nbsp;     * &lt;p&gt;
+<i>216</i>&nbsp;     * This operation is equivalent to the following sequence of calls:
+<i>217</i>&nbsp;     * &lt;pre&gt;
+<i>218</i>&nbsp;     *     translate(anchorx, anchory);      // S3: final translation
+<i>219</i>&nbsp;     *     rotate(theta);                    // S2: rotate around anchor
+<i>220</i>&nbsp;     *     translate(-anchorx, -anchory);    // S1: translate anchor to origin
+<i>221</i>&nbsp;     * &lt;/pre&gt;
+<i>222</i>&nbsp;     * Rotating by a positive angle theta rotates points on the positive
+<i>223</i>&nbsp;     * X axis toward the positive Y axis.
+<i>224</i>&nbsp;     * Note also the discussion of
+<i>225</i>&nbsp;     * &lt;a href=&quot;#quadrantapproximation&quot;&gt;Handling 90-Degree Rotations&lt;/a&gt;
+<i>226</i>&nbsp;     * above.
+<i>227</i>&nbsp;     *
+<i>228</i>&nbsp;     * @param theta the angle of rotation measured in radians
+<i>229</i>&nbsp;     * @param anchorx the X coordinate of the rotation anchor point
+<i>230</i>&nbsp;     * @param anchory the Y coordinate of the rotation anchor point
+<i>231</i>&nbsp;     */
+<i>232</i>&nbsp;    public void rotate(double theta, double anchorx, double anchory) {
+<i>233</i>&nbsp;        // REMIND: Simple for now - optimize later
+<b class="nc"><i>234</i>&nbsp;        translate(anchorx, anchory);</b>
+<b class="nc"><i>235</i>&nbsp;        rotate(theta);</b>
+<b class="nc"><i>236</i>&nbsp;        translate(-anchorx, -anchory);</b>
+<b class="nc"><i>237</i>&nbsp;    }</b>
+<i>238</i>&nbsp;
+<i>239</i>&nbsp;    /**
+<i>240</i>&nbsp;     * Concatenates this transform with a transform that rotates
+<i>241</i>&nbsp;     * coordinates according to a rotation vector.
+<i>242</i>&nbsp;     * All coordinates rotate about the origin by the same amount.
+<i>243</i>&nbsp;     * The amount of rotation is such that coordinates along the former
+<i>244</i>&nbsp;     * positive X axis will subsequently align with the vector pointing
+<i>245</i>&nbsp;     * from the origin to the specified vector coordinates.
+<i>246</i>&nbsp;     * If both &lt;code&gt;vecx&lt;/code&gt; and &lt;code&gt;vecy&lt;/code&gt; are 0.0,
+<i>247</i>&nbsp;     * no additional rotation is added to this transform.
+<i>248</i>&nbsp;     * This operation is equivalent to calling:
+<i>249</i>&nbsp;     * &lt;pre&gt;
+<i>250</i>&nbsp;     *          rotate(Math.atan2(vecy, vecx));
+<i>251</i>&nbsp;     * &lt;/pre&gt;
+<i>252</i>&nbsp;     *
+<i>253</i>&nbsp;     * @param vecx the X coordinate of the rotation vector
+<i>254</i>&nbsp;     * @param vecy the Y coordinate of the rotation vector
+<i>255</i>&nbsp;     */
+<i>256</i>&nbsp;    public void rotate(double vecx, double vecy) {
+<b class="nc"><i>257</i>&nbsp;        if (vecy == 0.0) {</b>
+<b class="nc"><i>258</i>&nbsp;            if (vecx &lt; 0.0) {</b>
+<b class="nc"><i>259</i>&nbsp;                rotate180();</b>
+<i>260</i>&nbsp;            }
+<i>261</i>&nbsp;            // If vecx &gt; 0.0 - no rotation
+<i>262</i>&nbsp;            // If vecx == 0.0 - undefined rotation - treat as no rotation
+<b class="nc"><i>263</i>&nbsp;        } else if (vecx == 0.0) {</b>
+<b class="nc"><i>264</i>&nbsp;            if (vecy &gt; 0.0) {</b>
+<b class="nc"><i>265</i>&nbsp;                rotate90();</b>
+<i>266</i>&nbsp;            } else {  // vecy must be &lt; 0.0
+<b class="nc"><i>267</i>&nbsp;                rotate270();</b>
+<i>268</i>&nbsp;            }
+<i>269</i>&nbsp;        } else {
+<b class="nc"><i>270</i>&nbsp;            double len = Math.sqrt(vecx * vecx + vecy * vecy);</b>
+<b class="nc"><i>271</i>&nbsp;            double sin = vecy / len;</b>
+<b class="nc"><i>272</i>&nbsp;            double cos = vecx / len;</b>
+<i>273</i>&nbsp;            double M0, M1;
+<b class="nc"><i>274</i>&nbsp;            M0 = mxx;</b>
+<b class="nc"><i>275</i>&nbsp;            M1 = mxy;</b>
+<b class="nc"><i>276</i>&nbsp;            mxx =  cos * M0 + sin * M1;</b>
+<b class="nc"><i>277</i>&nbsp;            mxy = -sin * M0 + cos * M1;</b>
+<b class="nc"><i>278</i>&nbsp;            M0 = myx;</b>
+<b class="nc"><i>279</i>&nbsp;            M1 = myy;</b>
+<b class="nc"><i>280</i>&nbsp;            myx =  cos * M0 + sin * M1;</b>
+<b class="nc"><i>281</i>&nbsp;            myy = -sin * M0 + cos * M1;</b>
+<b class="nc"><i>282</i>&nbsp;            updateState2D();</b>
+<i>283</i>&nbsp;        }
+<b class="nc"><i>284</i>&nbsp;    }</b>
+<i>285</i>&nbsp;
+<i>286</i>&nbsp;    /**
+<i>287</i>&nbsp;     * Concatenates this transform with a transform that rotates
+<i>288</i>&nbsp;     * coordinates around an anchor point according to a rotation
+<i>289</i>&nbsp;     * vector.
+<i>290</i>&nbsp;     * All coordinates rotate about the specified anchor coordinates
+<i>291</i>&nbsp;     * by the same amount.
+<i>292</i>&nbsp;     * The amount of rotation is such that coordinates along the former
+<i>293</i>&nbsp;     * positive X axis will subsequently align with the vector pointing
+<i>294</i>&nbsp;     * from the origin to the specified vector coordinates.
+<i>295</i>&nbsp;     * If both &lt;code&gt;vecx&lt;/code&gt; and &lt;code&gt;vecy&lt;/code&gt; are 0.0,
+<i>296</i>&nbsp;     * the transform is not modified in any way.
+<i>297</i>&nbsp;     * This method is equivalent to calling:
+<i>298</i>&nbsp;     * &lt;pre&gt;
+<i>299</i>&nbsp;     *     rotate(Math.atan2(vecy, vecx), anchorx, anchory);
+<i>300</i>&nbsp;     * &lt;/pre&gt;
+<i>301</i>&nbsp;     *
+<i>302</i>&nbsp;     * @param vecx the X coordinate of the rotation vector
+<i>303</i>&nbsp;     * @param vecy the Y coordinate of the rotation vector
+<i>304</i>&nbsp;     * @param anchorx the X coordinate of the rotation anchor point
+<i>305</i>&nbsp;     * @param anchory the Y coordinate of the rotation anchor point
+<i>306</i>&nbsp;     */
+<i>307</i>&nbsp;    public void rotate(double vecx, double vecy,
+<i>308</i>&nbsp;                       double anchorx, double anchory)
+<i>309</i>&nbsp;    {
+<i>310</i>&nbsp;        // REMIND: Simple for now - optimize later
+<b class="nc"><i>311</i>&nbsp;        translate(anchorx, anchory);</b>
+<b class="nc"><i>312</i>&nbsp;        rotate(vecx, vecy);</b>
+<b class="nc"><i>313</i>&nbsp;        translate(-anchorx, -anchory);</b>
+<b class="nc"><i>314</i>&nbsp;    }</b>
+<i>315</i>&nbsp;
+<i>316</i>&nbsp;    /**
+<i>317</i>&nbsp;     * Concatenates this transform with a transform that rotates
+<i>318</i>&nbsp;     * coordinates by the specified number of quadrants.
+<i>319</i>&nbsp;     * This is equivalent to calling:
+<i>320</i>&nbsp;     * &lt;pre&gt;
+<i>321</i>&nbsp;     *     rotate(numquadrants * Math.PI / 2.0);
+<i>322</i>&nbsp;     * &lt;/pre&gt;
+<i>323</i>&nbsp;     * Rotating by a positive number of quadrants rotates points on
+<i>324</i>&nbsp;     * the positive X axis toward the positive Y axis.
+<i>325</i>&nbsp;     * @param numquadrants the number of 90 degree arcs to rotate by
+<i>326</i>&nbsp;     */
+<i>327</i>&nbsp;    public void quadrantRotate(int numquadrants) {
+<b class="nc"><i>328</i>&nbsp;        switch (numquadrants &amp; 3) {</b>
+<i>329</i>&nbsp;        case 0:
+<b class="nc"><i>330</i>&nbsp;            break;</b>
+<i>331</i>&nbsp;        case 1:
+<b class="nc"><i>332</i>&nbsp;            rotate90();</b>
+<b class="nc"><i>333</i>&nbsp;            break;</b>
+<i>334</i>&nbsp;        case 2:
+<b class="nc"><i>335</i>&nbsp;            rotate180();</b>
+<b class="nc"><i>336</i>&nbsp;            break;</b>
+<i>337</i>&nbsp;        case 3:
+<b class="nc"><i>338</i>&nbsp;            rotate270();</b>
+<i>339</i>&nbsp;            break;
+<i>340</i>&nbsp;        }
+<b class="nc"><i>341</i>&nbsp;    }</b>
+<i>342</i>&nbsp;
+<i>343</i>&nbsp;    /**
+<i>344</i>&nbsp;     * Concatenates this transform with a transform that rotates
+<i>345</i>&nbsp;     * coordinates by the specified number of quadrants around
+<i>346</i>&nbsp;     * the specified anchor point.
+<i>347</i>&nbsp;     * This method is equivalent to calling:
+<i>348</i>&nbsp;     * &lt;pre&gt;
+<i>349</i>&nbsp;     *     rotate(numquadrants * Math.PI / 2.0, anchorx, anchory);
+<i>350</i>&nbsp;     * &lt;/pre&gt;
+<i>351</i>&nbsp;     * Rotating by a positive number of quadrants rotates points on
+<i>352</i>&nbsp;     * the positive X axis toward the positive Y axis.
+<i>353</i>&nbsp;     *
+<i>354</i>&nbsp;     * @param numquadrants the number of 90 degree arcs to rotate by
+<i>355</i>&nbsp;     * @param anchorx the X coordinate of the rotation anchor point
+<i>356</i>&nbsp;     * @param anchory the Y coordinate of the rotation anchor point
+<i>357</i>&nbsp;     */
+<i>358</i>&nbsp;    public void quadrantRotate(int numquadrants,
+<i>359</i>&nbsp;                               double anchorx, double anchory)
+<i>360</i>&nbsp;    {
+<b class="nc"><i>361</i>&nbsp;        switch (numquadrants &amp; 3) {</b>
+<i>362</i>&nbsp;        case 0:
+<b class="nc"><i>363</i>&nbsp;            return;</b>
+<i>364</i>&nbsp;        case 1:
+<b class="nc"><i>365</i>&nbsp;            mxt += anchorx * (mxx - mxy) + anchory * (mxy + mxx);</b>
+<b class="nc"><i>366</i>&nbsp;            myt += anchorx * (myx - myy) + anchory * (myy + myx);</b>
+<b class="nc"><i>367</i>&nbsp;            rotate90();</b>
+<b class="nc"><i>368</i>&nbsp;            break;</b>
+<i>369</i>&nbsp;        case 2:
+<b class="nc"><i>370</i>&nbsp;            mxt += anchorx * (mxx + mxx) + anchory * (mxy + mxy);</b>
+<b class="nc"><i>371</i>&nbsp;            myt += anchorx * (myx + myx) + anchory * (myy + myy);</b>
+<b class="nc"><i>372</i>&nbsp;            rotate180();</b>
+<b class="nc"><i>373</i>&nbsp;            break;</b>
+<i>374</i>&nbsp;        case 3:
+<b class="nc"><i>375</i>&nbsp;            mxt += anchorx * (mxx + mxy) + anchory * (mxy - mxx);</b>
+<b class="nc"><i>376</i>&nbsp;            myt += anchorx * (myx + myy) + anchory * (myy - myx);</b>
+<b class="nc"><i>377</i>&nbsp;            rotate270();</b>
+<i>378</i>&nbsp;            break;
+<i>379</i>&nbsp;        }
+<b class="nc"><i>380</i>&nbsp;        if (mxt == 0.0 &amp;&amp; myt == 0.0) {</b>
+<b class="nc"><i>381</i>&nbsp;            state &amp;= ~APPLY_TRANSLATE;</b>
+<b class="nc"><i>382</i>&nbsp;            if (type != TYPE_UNKNOWN) {</b>
+<b class="nc"><i>383</i>&nbsp;                type &amp;= ~TYPE_TRANSLATION;</b>
+<i>384</i>&nbsp;            }
+<i>385</i>&nbsp;        } else {
+<b class="nc"><i>386</i>&nbsp;            state |= APPLY_TRANSLATE;</b>
+<b class="nc"><i>387</i>&nbsp;            type |= TYPE_TRANSLATION;</b>
+<i>388</i>&nbsp;        }
+<b class="nc"><i>389</i>&nbsp;    }</b>
+<i>390</i>&nbsp;
+<i>391</i>&nbsp;    /**
+<i>392</i>&nbsp;     * Sets this transform to a translation transformation.
+<i>393</i>&nbsp;     * The matrix representing this transform becomes:
+<i>394</i>&nbsp;     * &lt;pre&gt;
+<i>395</i>&nbsp;     *      [   1    0    tx  ]
+<i>396</i>&nbsp;     *      [   0    1    ty  ]
+<i>397</i>&nbsp;     *      [   0    0    1   ]
+<i>398</i>&nbsp;     * &lt;/pre&gt;
+<i>399</i>&nbsp;     * @param tx the distance by which coordinates are translated in the
+<i>400</i>&nbsp;     * X axis direction
+<i>401</i>&nbsp;     * @param ty the distance by which coordinates are translated in the
+<i>402</i>&nbsp;     * Y axis direction
+<i>403</i>&nbsp;     */
+<i>404</i>&nbsp;    public void setToTranslation(double tx, double ty) {
+<b class="nc"><i>405</i>&nbsp;        mxx = 1.0;</b>
+<b class="nc"><i>406</i>&nbsp;        myx = 0.0;</b>
+<b class="nc"><i>407</i>&nbsp;        mxy = 0.0;</b>
+<b class="nc"><i>408</i>&nbsp;        myy = 1.0;</b>
+<b class="nc"><i>409</i>&nbsp;        mxt = tx;</b>
+<b class="nc"><i>410</i>&nbsp;        myt = ty;</b>
+<b class="nc"><i>411</i>&nbsp;        if (tx != 0.0 || ty != 0.0) {</b>
+<b class="nc"><i>412</i>&nbsp;            state = APPLY_TRANSLATE;</b>
+<b class="nc"><i>413</i>&nbsp;            type = TYPE_TRANSLATION;</b>
+<i>414</i>&nbsp;        } else {
+<b class="nc"><i>415</i>&nbsp;            state = APPLY_IDENTITY;</b>
+<b class="nc"><i>416</i>&nbsp;            type = TYPE_IDENTITY;</b>
+<i>417</i>&nbsp;        }
+<b class="nc"><i>418</i>&nbsp;    }</b>
+<i>419</i>&nbsp;
+<i>420</i>&nbsp;    /**
+<i>421</i>&nbsp;     * Sets this transform to a rotation transformation.
+<i>422</i>&nbsp;     * The matrix representing this transform becomes:
+<i>423</i>&nbsp;     * &lt;pre&gt;
+<i>424</i>&nbsp;     *      [   cos(theta)    -sin(theta)    0   ]
+<i>425</i>&nbsp;     *      [   sin(theta)     cos(theta)    0   ]
+<i>426</i>&nbsp;     *      [       0              0         1   ]
+<i>427</i>&nbsp;     * &lt;/pre&gt;
+<i>428</i>&nbsp;     * Rotating by a positive angle theta rotates points on the positive
+<i>429</i>&nbsp;     * X axis toward the positive Y axis.
+<i>430</i>&nbsp;     * Note also the discussion of
+<i>431</i>&nbsp;     * &lt;a href=&quot;#quadrantapproximation&quot;&gt;Handling 90-Degree Rotations&lt;/a&gt;
+<i>432</i>&nbsp;     * above.
+<i>433</i>&nbsp;     * @param theta the angle of rotation measured in radians
+<i>434</i>&nbsp;     */
+<i>435</i>&nbsp;    public void setToRotation(double theta) {
+<b class="nc"><i>436</i>&nbsp;        double sin = Math.sin(theta);</b>
+<i>437</i>&nbsp;        double cos;
+<b class="nc"><i>438</i>&nbsp;        if (sin == 1.0 || sin == -1.0) {</b>
+<b class="nc"><i>439</i>&nbsp;            cos = 0.0;</b>
+<b class="nc"><i>440</i>&nbsp;            state = APPLY_SHEAR;</b>
+<b class="nc"><i>441</i>&nbsp;            type = TYPE_QUADRANT_ROTATION;</b>
+<i>442</i>&nbsp;        } else {
+<b class="nc"><i>443</i>&nbsp;            cos = Math.cos(theta);</b>
+<b class="nc"><i>444</i>&nbsp;            if (cos == -1.0) {</b>
+<b class="nc"><i>445</i>&nbsp;                sin = 0.0;</b>
+<b class="nc"><i>446</i>&nbsp;                state = APPLY_SCALE;</b>
+<b class="nc"><i>447</i>&nbsp;                type = TYPE_QUADRANT_ROTATION;</b>
+<b class="nc"><i>448</i>&nbsp;            } else if (cos == 1.0) {</b>
+<b class="nc"><i>449</i>&nbsp;                sin = 0.0;</b>
+<b class="nc"><i>450</i>&nbsp;                state = APPLY_IDENTITY;</b>
+<b class="nc"><i>451</i>&nbsp;                type = TYPE_IDENTITY;</b>
+<i>452</i>&nbsp;            } else {
+<b class="nc"><i>453</i>&nbsp;                state = APPLY_SHEAR | APPLY_SCALE;</b>
+<b class="nc"><i>454</i>&nbsp;                type = TYPE_GENERAL_ROTATION;</b>
+<i>455</i>&nbsp;            }
+<i>456</i>&nbsp;        }
+<b class="nc"><i>457</i>&nbsp;        mxx =  cos;</b>
+<b class="nc"><i>458</i>&nbsp;        myx =  sin;</b>
+<b class="nc"><i>459</i>&nbsp;        mxy = -sin;</b>
+<b class="nc"><i>460</i>&nbsp;        myy =  cos;</b>
+<b class="nc"><i>461</i>&nbsp;        mxt =  0.0;</b>
+<b class="nc"><i>462</i>&nbsp;        myt =  0.0;</b>
+<b class="nc"><i>463</i>&nbsp;    }</b>
+<i>464</i>&nbsp;
+<i>465</i>&nbsp;    /**
+<i>466</i>&nbsp;     * Sets this transform to a translated rotation transformation.
+<i>467</i>&nbsp;     * This operation is equivalent to translating the coordinates so
+<i>468</i>&nbsp;     * that the anchor point is at the origin (S1), then rotating them
+<i>469</i>&nbsp;     * about the new origin (S2), and finally translating so that the
+<i>470</i>&nbsp;     * intermediate origin is restored to the coordinates of the original
+<i>471</i>&nbsp;     * anchor point (S3).
+<i>472</i>&nbsp;     * &lt;p&gt;
+<i>473</i>&nbsp;     * This operation is equivalent to the following sequence of calls:
+<i>474</i>&nbsp;     * &lt;pre&gt;
+<i>475</i>&nbsp;     *     setToTranslation(anchorx, anchory); // S3: final translation
+<i>476</i>&nbsp;     *     rotate(theta);                      // S2: rotate around anchor
+<i>477</i>&nbsp;     *     translate(-anchorx, -anchory);      // S1: translate anchor to origin
+<i>478</i>&nbsp;     * &lt;/pre&gt;
+<i>479</i>&nbsp;     * The matrix representing this transform becomes:
+<i>480</i>&nbsp;     * &lt;pre&gt;
+<i>481</i>&nbsp;     *      [   cos(theta)    -sin(theta)    x-x*cos+y*sin  ]
+<i>482</i>&nbsp;     *      [   sin(theta)     cos(theta)    y-x*sin-y*cos  ]
+<i>483</i>&nbsp;     *      [       0              0               1        ]
+<i>484</i>&nbsp;     * &lt;/pre&gt;
+<i>485</i>&nbsp;     * Rotating by a positive angle theta rotates points on the positive
+<i>486</i>&nbsp;     * X axis toward the positive Y axis.
+<i>487</i>&nbsp;     * Note also the discussion of
+<i>488</i>&nbsp;     * &lt;a href=&quot;#quadrantapproximation&quot;&gt;Handling 90-Degree Rotations&lt;/a&gt;
+<i>489</i>&nbsp;     * above.
+<i>490</i>&nbsp;     *
+<i>491</i>&nbsp;     * @param theta the angle of rotation measured in radians
+<i>492</i>&nbsp;     * @param anchorx the X coordinate of the rotation anchor point
+<i>493</i>&nbsp;     * @param anchory the Y coordinate of the rotation anchor point
+<i>494</i>&nbsp;     */
+<i>495</i>&nbsp;    public void setToRotation(double theta, double anchorx, double anchory) {
+<b class="nc"><i>496</i>&nbsp;        setToRotation(theta);</b>
+<b class="nc"><i>497</i>&nbsp;        double sin = myx;</b>
+<b class="nc"><i>498</i>&nbsp;        double oneMinusCos = 1.0 - mxx;</b>
+<b class="nc"><i>499</i>&nbsp;        mxt = anchorx * oneMinusCos + anchory * sin;</b>
+<b class="nc"><i>500</i>&nbsp;        myt = anchory * oneMinusCos - anchorx * sin;</b>
+<b class="nc"><i>501</i>&nbsp;        if (mxt != 0.0 || myt != 0.0) {</b>
+<b class="nc"><i>502</i>&nbsp;            state |= APPLY_TRANSLATE;</b>
+<b class="nc"><i>503</i>&nbsp;            type |= TYPE_TRANSLATION;</b>
+<i>504</i>&nbsp;        }
+<b class="nc"><i>505</i>&nbsp;    }</b>
+<i>506</i>&nbsp;
+<i>507</i>&nbsp;    /**
+<i>508</i>&nbsp;     * Sets this transform to a rotation transformation that rotates
+<i>509</i>&nbsp;     * coordinates according to a rotation vector.
+<i>510</i>&nbsp;     * All coordinates rotate about the origin by the same amount.
+<i>511</i>&nbsp;     * The amount of rotation is such that coordinates along the former
+<i>512</i>&nbsp;     * positive X axis will subsequently align with the vector pointing
+<i>513</i>&nbsp;     * from the origin to the specified vector coordinates.
+<i>514</i>&nbsp;     * If both &lt;code&gt;vecx&lt;/code&gt; and &lt;code&gt;vecy&lt;/code&gt; are 0.0,
+<i>515</i>&nbsp;     * the transform is set to an identity transform.
+<i>516</i>&nbsp;     * This operation is equivalent to calling:
+<i>517</i>&nbsp;     * &lt;pre&gt;
+<i>518</i>&nbsp;     *     setToRotation(Math.atan2(vecy, vecx));
+<i>519</i>&nbsp;     * &lt;/pre&gt;
+<i>520</i>&nbsp;     *
+<i>521</i>&nbsp;     * @param vecx the X coordinate of the rotation vector
+<i>522</i>&nbsp;     * @param vecy the Y coordinate of the rotation vector
+<i>523</i>&nbsp;     */
+<i>524</i>&nbsp;    public void setToRotation(double vecx, double vecy) {
+<i>525</i>&nbsp;        double sin, cos;
+<b class="nc"><i>526</i>&nbsp;        if (vecy == 0) {</b>
+<b class="nc"><i>527</i>&nbsp;            sin = 0.0;</b>
+<b class="nc"><i>528</i>&nbsp;            if (vecx &lt; 0.0) {</b>
+<b class="nc"><i>529</i>&nbsp;                cos = -1.0;</b>
+<b class="nc"><i>530</i>&nbsp;                state = APPLY_SCALE;</b>
+<b class="nc"><i>531</i>&nbsp;                type = TYPE_QUADRANT_ROTATION;</b>
+<i>532</i>&nbsp;            } else {
+<b class="nc"><i>533</i>&nbsp;                cos = 1.0;</b>
+<b class="nc"><i>534</i>&nbsp;                state = APPLY_IDENTITY;</b>
+<b class="nc"><i>535</i>&nbsp;                type = TYPE_IDENTITY;</b>
+<i>536</i>&nbsp;            }
+<b class="nc"><i>537</i>&nbsp;        } else if (vecx == 0) {</b>
+<b class="nc"><i>538</i>&nbsp;            cos = 0.0;</b>
+<b class="nc"><i>539</i>&nbsp;            sin = (vecy &gt; 0.0) ? 1.0 : -1.0;</b>
+<b class="nc"><i>540</i>&nbsp;            state = APPLY_SHEAR;</b>
+<b class="nc"><i>541</i>&nbsp;            type = TYPE_QUADRANT_ROTATION;</b>
+<i>542</i>&nbsp;        } else {
+<b class="nc"><i>543</i>&nbsp;            double len = Math.sqrt(vecx * vecx + vecy * vecy);</b>
+<b class="nc"><i>544</i>&nbsp;            cos = vecx / len;</b>
+<b class="nc"><i>545</i>&nbsp;            sin = vecy / len;</b>
+<b class="nc"><i>546</i>&nbsp;            state = APPLY_SHEAR | APPLY_SCALE;</b>
+<b class="nc"><i>547</i>&nbsp;            type = TYPE_GENERAL_ROTATION;</b>
+<i>548</i>&nbsp;        }
+<b class="nc"><i>549</i>&nbsp;        mxx =  cos;</b>
+<b class="nc"><i>550</i>&nbsp;        myx =  sin;</b>
+<b class="nc"><i>551</i>&nbsp;        mxy = -sin;</b>
+<b class="nc"><i>552</i>&nbsp;        myy =  cos;</b>
+<b class="nc"><i>553</i>&nbsp;        mxt =  0.0;</b>
+<b class="nc"><i>554</i>&nbsp;        myt =  0.0;</b>
+<b class="nc"><i>555</i>&nbsp;    }</b>
+<i>556</i>&nbsp;
+<i>557</i>&nbsp;    /**
+<i>558</i>&nbsp;     * Sets this transform to a rotation transformation that rotates
+<i>559</i>&nbsp;     * coordinates around an anchor point according to a rotation
+<i>560</i>&nbsp;     * vector.
+<i>561</i>&nbsp;     * All coordinates rotate about the specified anchor coordinates
+<i>562</i>&nbsp;     * by the same amount.
+<i>563</i>&nbsp;     * The amount of rotation is such that coordinates along the former
+<i>564</i>&nbsp;     * positive X axis will subsequently align with the vector pointing
+<i>565</i>&nbsp;     * from the origin to the specified vector coordinates.
+<i>566</i>&nbsp;     * If both &lt;code&gt;vecx&lt;/code&gt; and &lt;code&gt;vecy&lt;/code&gt; are 0.0,
+<i>567</i>&nbsp;     * the transform is set to an identity transform.
+<i>568</i>&nbsp;     * This operation is equivalent to calling:
+<i>569</i>&nbsp;     * &lt;pre&gt;
+<i>570</i>&nbsp;     *     setToTranslation(Math.atan2(vecy, vecx), anchorx, anchory);
+<i>571</i>&nbsp;     * &lt;/pre&gt;
+<i>572</i>&nbsp;     *
+<i>573</i>&nbsp;     * @param vecx the X coordinate of the rotation vector
+<i>574</i>&nbsp;     * @param vecy the Y coordinate of the rotation vector
+<i>575</i>&nbsp;     * @param anchorx the X coordinate of the rotation anchor point
+<i>576</i>&nbsp;     * @param anchory the Y coordinate of the rotation anchor point
+<i>577</i>&nbsp;     */
+<i>578</i>&nbsp;    public void setToRotation(double vecx, double vecy,
+<i>579</i>&nbsp;                              double anchorx, double anchory)
+<i>580</i>&nbsp;    {
+<b class="nc"><i>581</i>&nbsp;        setToRotation(vecx, vecy);</b>
+<b class="nc"><i>582</i>&nbsp;        double sin = myx;</b>
+<b class="nc"><i>583</i>&nbsp;        double oneMinusCos = 1.0 - mxx;</b>
+<b class="nc"><i>584</i>&nbsp;        mxt = anchorx * oneMinusCos + anchory * sin;</b>
+<b class="nc"><i>585</i>&nbsp;        myt = anchory * oneMinusCos - anchorx * sin;</b>
+<b class="nc"><i>586</i>&nbsp;        if (mxt != 0.0 || myt != 0.0) {</b>
+<b class="nc"><i>587</i>&nbsp;            state |= APPLY_TRANSLATE;</b>
+<b class="nc"><i>588</i>&nbsp;            type |= TYPE_TRANSLATION;</b>
+<i>589</i>&nbsp;        }
+<b class="nc"><i>590</i>&nbsp;    }</b>
+<i>591</i>&nbsp;
+<i>592</i>&nbsp;    /**
+<i>593</i>&nbsp;     * Sets this transform to a rotation transformation that rotates
+<i>594</i>&nbsp;     * coordinates by the specified number of quadrants.
+<i>595</i>&nbsp;     * This operation is equivalent to calling:
+<i>596</i>&nbsp;     * &lt;pre&gt;
+<i>597</i>&nbsp;     *     setToRotation(numquadrants * Math.PI / 2.0);
+<i>598</i>&nbsp;     * &lt;/pre&gt;
+<i>599</i>&nbsp;     * Rotating by a positive number of quadrants rotates points on
+<i>600</i>&nbsp;     * the positive X axis toward the positive Y axis.
+<i>601</i>&nbsp;     * @param numquadrants the number of 90 degree arcs to rotate by
+<i>602</i>&nbsp;     */
+<i>603</i>&nbsp;    public void setToQuadrantRotation(int numquadrants) {
+<b class="nc"><i>604</i>&nbsp;        switch (numquadrants &amp; 3) {</b>
+<i>605</i>&nbsp;        case 0:
+<b class="nc"><i>606</i>&nbsp;            mxx =  1.0;</b>
+<b class="nc"><i>607</i>&nbsp;            myx =  0.0;</b>
+<b class="nc"><i>608</i>&nbsp;            mxy =  0.0;</b>
+<b class="nc"><i>609</i>&nbsp;            myy =  1.0;</b>
+<b class="nc"><i>610</i>&nbsp;            mxt =  0.0;</b>
+<b class="nc"><i>611</i>&nbsp;            myt =  0.0;</b>
+<b class="nc"><i>612</i>&nbsp;            state = APPLY_IDENTITY;</b>
+<b class="nc"><i>613</i>&nbsp;            type = TYPE_IDENTITY;</b>
+<b class="nc"><i>614</i>&nbsp;            break;</b>
+<i>615</i>&nbsp;        case 1:
+<b class="nc"><i>616</i>&nbsp;            mxx =  0.0;</b>
+<b class="nc"><i>617</i>&nbsp;            myx =  1.0;</b>
+<b class="nc"><i>618</i>&nbsp;            mxy = -1.0;</b>
+<b class="nc"><i>619</i>&nbsp;            myy =  0.0;</b>
+<b class="nc"><i>620</i>&nbsp;            mxt =  0.0;</b>
+<b class="nc"><i>621</i>&nbsp;            myt =  0.0;</b>
+<b class="nc"><i>622</i>&nbsp;            state = APPLY_SHEAR;</b>
+<b class="nc"><i>623</i>&nbsp;            type = TYPE_QUADRANT_ROTATION;</b>
+<b class="nc"><i>624</i>&nbsp;            break;</b>
+<i>625</i>&nbsp;        case 2:
+<b class="nc"><i>626</i>&nbsp;            mxx = -1.0;</b>
+<b class="nc"><i>627</i>&nbsp;            myx =  0.0;</b>
+<b class="nc"><i>628</i>&nbsp;            mxy =  0.0;</b>
+<b class="nc"><i>629</i>&nbsp;            myy = -1.0;</b>
+<b class="nc"><i>630</i>&nbsp;            mxt =  0.0;</b>
+<b class="nc"><i>631</i>&nbsp;            myt =  0.0;</b>
+<b class="nc"><i>632</i>&nbsp;            state = APPLY_SCALE;</b>
+<b class="nc"><i>633</i>&nbsp;            type = TYPE_QUADRANT_ROTATION;</b>
+<b class="nc"><i>634</i>&nbsp;            break;</b>
+<i>635</i>&nbsp;        case 3:
+<b class="nc"><i>636</i>&nbsp;            mxx =  0.0;</b>
+<b class="nc"><i>637</i>&nbsp;            myx = -1.0;</b>
+<b class="nc"><i>638</i>&nbsp;            mxy =  1.0;</b>
+<b class="nc"><i>639</i>&nbsp;            myy =  0.0;</b>
+<b class="nc"><i>640</i>&nbsp;            mxt =  0.0;</b>
+<b class="nc"><i>641</i>&nbsp;            myt =  0.0;</b>
+<b class="nc"><i>642</i>&nbsp;            state = APPLY_SHEAR;</b>
+<b class="nc"><i>643</i>&nbsp;            type = TYPE_QUADRANT_ROTATION;</b>
+<i>644</i>&nbsp;            break;
+<i>645</i>&nbsp;        }
+<b class="nc"><i>646</i>&nbsp;    }</b>
+<i>647</i>&nbsp;
+<i>648</i>&nbsp;    /**
+<i>649</i>&nbsp;     * Sets this transform to a translated rotation transformation
+<i>650</i>&nbsp;     * that rotates coordinates by the specified number of quadrants
+<i>651</i>&nbsp;     * around the specified anchor point.
+<i>652</i>&nbsp;     * This operation is equivalent to calling:
+<i>653</i>&nbsp;     * &lt;pre&gt;
+<i>654</i>&nbsp;     *     setToRotation(numquadrants * Math.PI / 2.0, anchorx, anchory);
+<i>655</i>&nbsp;     * &lt;/pre&gt;
+<i>656</i>&nbsp;     * Rotating by a positive number of quadrants rotates points on
+<i>657</i>&nbsp;     * the positive X axis toward the positive Y axis.
+<i>658</i>&nbsp;     *
+<i>659</i>&nbsp;     * @param numquadrants the number of 90 degree arcs to rotate by
+<i>660</i>&nbsp;     * @param anchorx the X coordinate of the rotation anchor point
+<i>661</i>&nbsp;     * @param anchory the Y coordinate of the rotation anchor point
+<i>662</i>&nbsp;     */
+<i>663</i>&nbsp;    public void setToQuadrantRotation(int numquadrants,
+<i>664</i>&nbsp;                                      double anchorx, double anchory)
+<i>665</i>&nbsp;    {
+<b class="nc"><i>666</i>&nbsp;        switch (numquadrants &amp; 3) {</b>
+<i>667</i>&nbsp;        case 0:
+<b class="nc"><i>668</i>&nbsp;            mxx =  1.0;</b>
+<b class="nc"><i>669</i>&nbsp;            myx =  0.0;</b>
+<b class="nc"><i>670</i>&nbsp;            mxy =  0.0;</b>
+<b class="nc"><i>671</i>&nbsp;            myy =  1.0;</b>
+<b class="nc"><i>672</i>&nbsp;            mxt =  0.0;</b>
+<b class="nc"><i>673</i>&nbsp;            myt =  0.0;</b>
+<b class="nc"><i>674</i>&nbsp;            state = APPLY_IDENTITY;</b>
+<b class="nc"><i>675</i>&nbsp;            type = TYPE_IDENTITY;</b>
+<b class="nc"><i>676</i>&nbsp;            break;</b>
+<i>677</i>&nbsp;        case 1:
+<b class="nc"><i>678</i>&nbsp;            mxx =  0.0;</b>
+<b class="nc"><i>679</i>&nbsp;            myx =  1.0;</b>
+<b class="nc"><i>680</i>&nbsp;            mxy = -1.0;</b>
+<b class="nc"><i>681</i>&nbsp;            myy =  0.0;</b>
+<b class="nc"><i>682</i>&nbsp;            mxt =  anchorx + anchory;</b>
+<b class="nc"><i>683</i>&nbsp;            myt =  anchory - anchorx;</b>
+<b class="nc"><i>684</i>&nbsp;            if (mxt == 0.0 &amp;&amp; myt == 0.0) {</b>
+<b class="nc"><i>685</i>&nbsp;                state = APPLY_SHEAR;</b>
+<b class="nc"><i>686</i>&nbsp;                type = TYPE_QUADRANT_ROTATION;</b>
+<i>687</i>&nbsp;            } else {
+<b class="nc"><i>688</i>&nbsp;                state = APPLY_SHEAR | APPLY_TRANSLATE;</b>
+<b class="nc"><i>689</i>&nbsp;                type = TYPE_QUADRANT_ROTATION | TYPE_TRANSLATION;</b>
+<i>690</i>&nbsp;            }
+<b class="nc"><i>691</i>&nbsp;            break;</b>
+<i>692</i>&nbsp;        case 2:
+<b class="nc"><i>693</i>&nbsp;            mxx = -1.0;</b>
+<b class="nc"><i>694</i>&nbsp;            myx =  0.0;</b>
+<b class="nc"><i>695</i>&nbsp;            mxy =  0.0;</b>
+<b class="nc"><i>696</i>&nbsp;            myy = -1.0;</b>
+<b class="nc"><i>697</i>&nbsp;            mxt =  anchorx + anchorx;</b>
+<b class="nc"><i>698</i>&nbsp;            myt =  anchory + anchory;</b>
+<b class="nc"><i>699</i>&nbsp;            if (mxt == 0.0 &amp;&amp; myt == 0.0) {</b>
+<b class="nc"><i>700</i>&nbsp;                state = APPLY_SCALE;</b>
+<b class="nc"><i>701</i>&nbsp;                type = TYPE_QUADRANT_ROTATION;</b>
+<i>702</i>&nbsp;            } else {
+<b class="nc"><i>703</i>&nbsp;                state = APPLY_SCALE | APPLY_TRANSLATE;</b>
+<b class="nc"><i>704</i>&nbsp;                type = TYPE_QUADRANT_ROTATION | TYPE_TRANSLATION;</b>
+<i>705</i>&nbsp;            }
+<b class="nc"><i>706</i>&nbsp;            break;</b>
+<i>707</i>&nbsp;        case 3:
+<b class="nc"><i>708</i>&nbsp;            mxx =  0.0;</b>
+<b class="nc"><i>709</i>&nbsp;            myx = -1.0;</b>
+<b class="nc"><i>710</i>&nbsp;            mxy =  1.0;</b>
+<b class="nc"><i>711</i>&nbsp;            myy =  0.0;</b>
+<b class="nc"><i>712</i>&nbsp;            mxt =  anchorx - anchory;</b>
+<b class="nc"><i>713</i>&nbsp;            myt =  anchory + anchorx;</b>
+<b class="nc"><i>714</i>&nbsp;            if (mxt == 0.0 &amp;&amp; myt == 0.0) {</b>
+<b class="nc"><i>715</i>&nbsp;                state = APPLY_SHEAR;</b>
+<b class="nc"><i>716</i>&nbsp;                type = TYPE_QUADRANT_ROTATION;</b>
+<i>717</i>&nbsp;            } else {
+<b class="nc"><i>718</i>&nbsp;                state = APPLY_SHEAR | APPLY_TRANSLATE;</b>
+<b class="nc"><i>719</i>&nbsp;                type = TYPE_QUADRANT_ROTATION | TYPE_TRANSLATION;</b>
+<i>720</i>&nbsp;            }
+<i>721</i>&nbsp;            break;
+<i>722</i>&nbsp;        }
+<b class="nc"><i>723</i>&nbsp;    }</b>
+<i>724</i>&nbsp;
+<i>725</i>&nbsp;    /**
+<i>726</i>&nbsp;     * Sets this transform to a scaling transformation.
+<i>727</i>&nbsp;     * The matrix representing this transform becomes:
+<i>728</i>&nbsp;     * &lt;pre&gt;
+<i>729</i>&nbsp;     *      [   sx   0    0   ]
+<i>730</i>&nbsp;     *      [   0    sy   0   ]
+<i>731</i>&nbsp;     *      [   0    0    1   ]
+<i>732</i>&nbsp;     * &lt;/pre&gt;
+<i>733</i>&nbsp;     * @param sx the factor by which coordinates are scaled along the
+<i>734</i>&nbsp;     * X axis direction
+<i>735</i>&nbsp;     * @param sy the factor by which coordinates are scaled along the
+<i>736</i>&nbsp;     * Y axis direction
+<i>737</i>&nbsp;     */
+<i>738</i>&nbsp;    public void setToScale(double sx, double sy) {
+<b class="nc"><i>739</i>&nbsp;        mxx = sx;</b>
+<b class="nc"><i>740</i>&nbsp;        myx = 0.0;</b>
+<b class="nc"><i>741</i>&nbsp;        mxy = 0.0;</b>
+<b class="nc"><i>742</i>&nbsp;        myy = sy;</b>
+<b class="nc"><i>743</i>&nbsp;        mxt = 0.0;</b>
+<b class="nc"><i>744</i>&nbsp;        myt = 0.0;</b>
+<b class="nc"><i>745</i>&nbsp;        if (sx != 1.0 || sy != 1.0) {</b>
+<b class="nc"><i>746</i>&nbsp;            state = APPLY_SCALE;</b>
+<b class="nc"><i>747</i>&nbsp;            type = TYPE_UNKNOWN;</b>
+<i>748</i>&nbsp;        } else {
+<b class="nc"><i>749</i>&nbsp;            state = APPLY_IDENTITY;</b>
+<b class="nc"><i>750</i>&nbsp;            type = TYPE_IDENTITY;</b>
+<i>751</i>&nbsp;        }
+<b class="nc"><i>752</i>&nbsp;    }</b>
+<i>753</i>&nbsp;
+<i>754</i>&nbsp;    /**
+<i>755</i>&nbsp;     * Sets this transform to a copy of the transform in the specified
+<i>756</i>&nbsp;     * &lt;code&gt;BaseTransform&lt;/code&gt; object.
+<i>757</i>&nbsp;     * @param Tx the &lt;code&gt;BaseTransform&lt;/code&gt; object from which to
+<i>758</i>&nbsp;     * copy the transform
+<i>759</i>&nbsp;     */
+<i>760</i>&nbsp;    public void setTransform(BaseTransform Tx) {
+<b class="fc"><i>761</i>&nbsp;        switch (Tx.getDegree()) {</b>
+<i>762</i>&nbsp;            case IDENTITY:
+<b class="nc"><i>763</i>&nbsp;                setToIdentity();</b>
+<b class="nc"><i>764</i>&nbsp;                break;</b>
+<i>765</i>&nbsp;            case TRANSLATE_2D:
+<b class="nc"><i>766</i>&nbsp;                setToTranslation(Tx.getMxt(), Tx.getMyt());</b>
+<b class="nc"><i>767</i>&nbsp;                break;</b>
+<i>768</i>&nbsp;            default:
+<b class="fc"><i>769</i>&nbsp;                if (Tx.getType() &gt; TYPE_AFFINE2D_MASK) {</b>
+<b class="nc"><i>770</i>&nbsp;                    System.out.println(Tx+&quot; is &quot;+Tx.getType());</b>
+<b class="nc"><i>771</i>&nbsp;                    System.out.print(&quot;  &quot;+Tx.getMxx());</b>
+<b class="nc"><i>772</i>&nbsp;                    System.out.print(&quot;, &quot;+Tx.getMxy());</b>
+<b class="nc"><i>773</i>&nbsp;                    System.out.print(&quot;, &quot;+Tx.getMxz());</b>
+<b class="nc"><i>774</i>&nbsp;                    System.out.print(&quot;, &quot;+Tx.getMxt());</b>
+<b class="nc"><i>775</i>&nbsp;                    System.out.println();</b>
+<b class="nc"><i>776</i>&nbsp;                    System.out.print(&quot;  &quot;+Tx.getMyx());</b>
+<b class="nc"><i>777</i>&nbsp;                    System.out.print(&quot;, &quot;+Tx.getMyy());</b>
+<b class="nc"><i>778</i>&nbsp;                    System.out.print(&quot;, &quot;+Tx.getMyz());</b>
+<b class="nc"><i>779</i>&nbsp;                    System.out.print(&quot;, &quot;+Tx.getMyt());</b>
+<b class="nc"><i>780</i>&nbsp;                    System.out.println();</b>
+<b class="nc"><i>781</i>&nbsp;                    System.out.print(&quot;  &quot;+Tx.getMzx());</b>
+<b class="nc"><i>782</i>&nbsp;                    System.out.print(&quot;, &quot;+Tx.getMzy());</b>
+<b class="nc"><i>783</i>&nbsp;                    System.out.print(&quot;, &quot;+Tx.getMzz());</b>
+<b class="nc"><i>784</i>&nbsp;                    System.out.print(&quot;, &quot;+Tx.getMzt());</b>
+<b class="nc"><i>785</i>&nbsp;                    System.out.println();</b>
+<i>786</i>&nbsp;                    // TODO: Should this be thrown before we modify anything?
+<i>787</i>&nbsp;                    // (RT-26801)
+<b class="nc"><i>788</i>&nbsp;                    degreeError(Degree.AFFINE_2D);</b>
+<i>789</i>&nbsp;                }
+<i>790</i>&nbsp;                /* No Break */
+<i>791</i>&nbsp;            case AFFINE_2D:
+<b class="fc"><i>792</i>&nbsp;                this.mxx = Tx.getMxx();</b>
+<b class="fc"><i>793</i>&nbsp;                this.myx = Tx.getMyx();</b>
+<b class="fc"><i>794</i>&nbsp;                this.mxy = Tx.getMxy();</b>
+<b class="fc"><i>795</i>&nbsp;                this.myy = Tx.getMyy();</b>
+<b class="fc"><i>796</i>&nbsp;                this.mxt = Tx.getMxt();</b>
+<b class="fc"><i>797</i>&nbsp;                this.myt = Tx.getMyt();</b>
+<b class="fc"><i>798</i>&nbsp;                if (Tx instanceof AffineBase) {</b>
+<b class="fc"><i>799</i>&nbsp;                    this.state = ((AffineBase) Tx).state;</b>
+<b class="fc"><i>800</i>&nbsp;                    this.type = ((AffineBase) Tx).type;</b>
+<i>801</i>&nbsp;                } else {
+<b class="nc"><i>802</i>&nbsp;                    updateState2D();</b>
+<i>803</i>&nbsp;                }
+<i>804</i>&nbsp;                break;
+<i>805</i>&nbsp;        }
+<b class="fc"><i>806</i>&nbsp;    }</b>
+<i>807</i>&nbsp;
+<i>808</i>&nbsp;    /**
+<i>809</i>&nbsp;     * Concatenates a &lt;code&gt;BaseTransform&lt;/code&gt; &lt;code&gt;Tx&lt;/code&gt; to
+<i>810</i>&nbsp;     * this &lt;code&gt;Affine2D&lt;/code&gt; Cx
+<i>811</i>&nbsp;     * in a less commonly used way such that &lt;code&gt;Tx&lt;/code&gt; modifies the
+<i>812</i>&nbsp;     * coordinate transformation relative to the absolute pixel
+<i>813</i>&nbsp;     * space rather than relative to the existing user space.
+<i>814</i>&nbsp;     * Cx is updated to perform the combined transformation.
+<i>815</i>&nbsp;     * Transforming a point p by the updated transform Cx&#39; is
+<i>816</i>&nbsp;     * equivalent to first transforming p by the original transform
+<i>817</i>&nbsp;     * Cx and then transforming the result by
+<i>818</i>&nbsp;     * &lt;code&gt;Tx&lt;/code&gt; like this:
+<i>819</i>&nbsp;     * Cx&#39;(p) = Tx(Cx(p))
+<i>820</i>&nbsp;     * In matrix notation, if this transform Cx
+<i>821</i>&nbsp;     * is represented by the matrix [this] and &lt;code&gt;Tx&lt;/code&gt; is
+<i>822</i>&nbsp;     * represented by the matrix [Tx] then this method does the
+<i>823</i>&nbsp;     * following:
+<i>824</i>&nbsp;     * &lt;pre&gt;
+<i>825</i>&nbsp;     *      [this] = [Tx] x [this]
+<i>826</i>&nbsp;     * &lt;/pre&gt;
+<i>827</i>&nbsp;     * @param Tx the &lt;code&gt;BaseTransform&lt;/code&gt; object to be
+<i>828</i>&nbsp;     * concatenated with this &lt;code&gt;Affine2D&lt;/code&gt; object.
+<i>829</i>&nbsp;     * @see #concatenate
+<i>830</i>&nbsp;     */
+<i>831</i>&nbsp;    public void preConcatenate(BaseTransform Tx) {
+<b class="nc"><i>832</i>&nbsp;        switch (Tx.getDegree()) {</b>
+<i>833</i>&nbsp;            case IDENTITY:
+<b class="nc"><i>834</i>&nbsp;                return;</b>
+<i>835</i>&nbsp;            case TRANSLATE_2D:
+<b class="nc"><i>836</i>&nbsp;                translate(Tx.getMxt(), Tx.getMyt());</b>
+<b class="nc"><i>837</i>&nbsp;                return;</b>
+<i>838</i>&nbsp;            case AFFINE_2D:
+<b class="nc"><i>839</i>&nbsp;                break;</b>
+<i>840</i>&nbsp;            default:
+<b class="nc"><i>841</i>&nbsp;                degreeError(Degree.AFFINE_2D);</b>
+<i>842</i>&nbsp;        }
+<i>843</i>&nbsp;        double M0, M1;
+<i>844</i>&nbsp;        double Txx, Txy, Tyx, Tyy;
+<i>845</i>&nbsp;        double Txt, Tyt;
+<b class="nc"><i>846</i>&nbsp;        int mystate = state;</b>
+<b class="nc"><i>847</i>&nbsp;        Affine2D at = (Affine2D) Tx;</b>
+<b class="nc"><i>848</i>&nbsp;        int txstate = at.state;</b>
+<b class="nc"><i>849</i>&nbsp;        switch ((txstate &lt;&lt; HI_SHIFT) | mystate) {</b>
+<i>850</i>&nbsp;        case (HI_IDENTITY | APPLY_IDENTITY):
+<i>851</i>&nbsp;        case (HI_IDENTITY | APPLY_TRANSLATE):
+<i>852</i>&nbsp;        case (HI_IDENTITY | APPLY_SCALE):
+<i>853</i>&nbsp;        case (HI_IDENTITY | APPLY_SCALE | APPLY_TRANSLATE):
+<i>854</i>&nbsp;        case (HI_IDENTITY | APPLY_SHEAR):
+<i>855</i>&nbsp;        case (HI_IDENTITY | APPLY_SHEAR | APPLY_TRANSLATE):
+<i>856</i>&nbsp;        case (HI_IDENTITY | APPLY_SHEAR | APPLY_SCALE):
+<i>857</i>&nbsp;        case (HI_IDENTITY | APPLY_SHEAR | APPLY_SCALE | APPLY_TRANSLATE):
+<i>858</i>&nbsp;            // Tx is IDENTITY...
+<b class="nc"><i>859</i>&nbsp;            return;</b>
+<i>860</i>&nbsp;
+<i>861</i>&nbsp;        case (HI_TRANSLATE | APPLY_IDENTITY):
+<i>862</i>&nbsp;        case (HI_TRANSLATE | APPLY_SCALE):
+<i>863</i>&nbsp;        case (HI_TRANSLATE | APPLY_SHEAR):
+<i>864</i>&nbsp;        case (HI_TRANSLATE | APPLY_SHEAR | APPLY_SCALE):
+<i>865</i>&nbsp;            // Tx is TRANSLATE, this has no TRANSLATE
+<b class="nc"><i>866</i>&nbsp;            mxt = at.mxt;</b>
+<b class="nc"><i>867</i>&nbsp;            myt = at.myt;</b>
+<b class="nc"><i>868</i>&nbsp;            state = mystate | APPLY_TRANSLATE;</b>
+<b class="nc"><i>869</i>&nbsp;            type |= TYPE_TRANSLATION;</b>
+<b class="nc"><i>870</i>&nbsp;            return;</b>
+<i>871</i>&nbsp;
+<i>872</i>&nbsp;        case (HI_TRANSLATE | APPLY_TRANSLATE):
+<i>873</i>&nbsp;        case (HI_TRANSLATE | APPLY_SCALE | APPLY_TRANSLATE):
+<i>874</i>&nbsp;        case (HI_TRANSLATE | APPLY_SHEAR | APPLY_TRANSLATE):
+<i>875</i>&nbsp;        case (HI_TRANSLATE | APPLY_SHEAR | APPLY_SCALE | APPLY_TRANSLATE):
+<i>876</i>&nbsp;            // Tx is TRANSLATE, this has one too
+<b class="nc"><i>877</i>&nbsp;            mxt = mxt + at.mxt;</b>
+<b class="nc"><i>878</i>&nbsp;            myt = myt + at.myt;</b>
+<b class="nc"><i>879</i>&nbsp;            return;</b>
+<i>880</i>&nbsp;
+<i>881</i>&nbsp;        case (HI_SCALE | APPLY_TRANSLATE):
+<i>882</i>&nbsp;        case (HI_SCALE | APPLY_IDENTITY):
+<i>883</i>&nbsp;            // Only these two existing states need a new state
+<b class="nc"><i>884</i>&nbsp;            state = mystate | APPLY_SCALE;</b>
+<i>885</i>&nbsp;            /* NOBREAK */
+<i>886</i>&nbsp;        case (HI_SCALE | APPLY_SHEAR | APPLY_SCALE | APPLY_TRANSLATE):
+<i>887</i>&nbsp;        case (HI_SCALE | APPLY_SHEAR | APPLY_SCALE):
+<i>888</i>&nbsp;        case (HI_SCALE | APPLY_SHEAR | APPLY_TRANSLATE):
+<i>889</i>&nbsp;        case (HI_SCALE | APPLY_SHEAR):
+<i>890</i>&nbsp;        case (HI_SCALE | APPLY_SCALE | APPLY_TRANSLATE):
+<i>891</i>&nbsp;        case (HI_SCALE | APPLY_SCALE):
+<i>892</i>&nbsp;            // Tx is SCALE, this is anything
+<b class="nc"><i>893</i>&nbsp;            Txx = at.mxx;</b>
+<b class="nc"><i>894</i>&nbsp;            Tyy = at.myy;</b>
+<b class="nc"><i>895</i>&nbsp;            if ((mystate &amp; APPLY_SHEAR) != 0) {</b>
+<b class="nc"><i>896</i>&nbsp;                mxy = mxy * Txx;</b>
+<b class="nc"><i>897</i>&nbsp;                myx = myx * Tyy;</b>
+<b class="nc"><i>898</i>&nbsp;                if ((mystate &amp; APPLY_SCALE) != 0) {</b>
+<b class="nc"><i>899</i>&nbsp;                    mxx = mxx * Txx;</b>
+<b class="nc"><i>900</i>&nbsp;                    myy = myy * Tyy;</b>
+<i>901</i>&nbsp;                }
+<i>902</i>&nbsp;            } else {
+<b class="nc"><i>903</i>&nbsp;                mxx = mxx * Txx;</b>
+<b class="nc"><i>904</i>&nbsp;                myy = myy * Tyy;</b>
+<i>905</i>&nbsp;            }
+<b class="nc"><i>906</i>&nbsp;            if ((mystate &amp; APPLY_TRANSLATE) != 0) {</b>
+<b class="nc"><i>907</i>&nbsp;                mxt = mxt * Txx;</b>
+<b class="nc"><i>908</i>&nbsp;                myt = myt * Tyy;</b>
+<i>909</i>&nbsp;            }
+<b class="nc"><i>910</i>&nbsp;            type = TYPE_UNKNOWN;</b>
+<b class="nc"><i>911</i>&nbsp;            return;</b>
+<i>912</i>&nbsp;        case (HI_SHEAR | APPLY_SHEAR | APPLY_TRANSLATE):
+<i>913</i>&nbsp;        case (HI_SHEAR | APPLY_SHEAR):
+<b class="nc"><i>914</i>&nbsp;            mystate = mystate | APPLY_SCALE;</b>
+<i>915</i>&nbsp;            /* NOBREAK */
+<i>916</i>&nbsp;        case (HI_SHEAR | APPLY_TRANSLATE):
+<i>917</i>&nbsp;        case (HI_SHEAR | APPLY_IDENTITY):
+<i>918</i>&nbsp;        case (HI_SHEAR | APPLY_SCALE | APPLY_TRANSLATE):
+<i>919</i>&nbsp;        case (HI_SHEAR | APPLY_SCALE):
+<b class="nc"><i>920</i>&nbsp;            state = mystate ^ APPLY_SHEAR;</b>
+<i>921</i>&nbsp;            /* NOBREAK */
+<i>922</i>&nbsp;        case (HI_SHEAR | APPLY_SHEAR | APPLY_SCALE | APPLY_TRANSLATE):
+<i>923</i>&nbsp;        case (HI_SHEAR | APPLY_SHEAR | APPLY_SCALE):
+<i>924</i>&nbsp;            // Tx is SHEAR, this is anything
+<b class="nc"><i>925</i>&nbsp;            Txy = at.mxy;</b>
+<b class="nc"><i>926</i>&nbsp;            Tyx = at.myx;</b>
+<i>927</i>&nbsp;
+<b class="nc"><i>928</i>&nbsp;            M0 = mxx;</b>
+<b class="nc"><i>929</i>&nbsp;            mxx = myx * Txy;</b>
+<b class="nc"><i>930</i>&nbsp;            myx = M0 * Tyx;</b>
+<i>931</i>&nbsp;
+<b class="nc"><i>932</i>&nbsp;            M0 = mxy;</b>
+<b class="nc"><i>933</i>&nbsp;            mxy = myy * Txy;</b>
+<b class="nc"><i>934</i>&nbsp;            myy = M0 * Tyx;</b>
+<i>935</i>&nbsp;
+<b class="nc"><i>936</i>&nbsp;            M0 = mxt;</b>
+<b class="nc"><i>937</i>&nbsp;            mxt = myt * Txy;</b>
+<b class="nc"><i>938</i>&nbsp;            myt = M0 * Tyx;</b>
+<b class="nc"><i>939</i>&nbsp;            type = TYPE_UNKNOWN;</b>
+<b class="nc"><i>940</i>&nbsp;            return;</b>
+<i>941</i>&nbsp;        }
+<i>942</i>&nbsp;        // If Tx has more than one attribute, it is not worth optimizing
+<i>943</i>&nbsp;        // all of those cases...
+<b class="nc"><i>944</i>&nbsp;        Txx = at.mxx; Txy = at.mxy; Txt = at.mxt;</b>
+<b class="nc"><i>945</i>&nbsp;        Tyx = at.myx; Tyy = at.myy; Tyt = at.myt;</b>
+<b class="nc"><i>946</i>&nbsp;        switch (mystate) {</b>
+<i>947</i>&nbsp;        default:
+<b class="nc"><i>948</i>&nbsp;            stateError();</b>
+<i>949</i>&nbsp;            /* NOTREACHED */
+<i>950</i>&nbsp;        case (APPLY_SHEAR | APPLY_SCALE | APPLY_TRANSLATE):
+<b class="nc"><i>951</i>&nbsp;            M0 = mxt;</b>
+<b class="nc"><i>952</i>&nbsp;            M1 = myt;</b>
+<b class="nc"><i>953</i>&nbsp;            Txt += M0 * Txx + M1 * Txy;</b>
+<b class="nc"><i>954</i>&nbsp;            Tyt += M0 * Tyx + M1 * Tyy;</b>
+<i>955</i>&nbsp;
+<i>956</i>&nbsp;            /* NOBREAK */
+<i>957</i>&nbsp;        case (APPLY_SHEAR | APPLY_SCALE):
+<b class="nc"><i>958</i>&nbsp;            mxt = Txt;</b>
+<b class="nc"><i>959</i>&nbsp;            myt = Tyt;</b>
+<i>960</i>&nbsp;
+<b class="nc"><i>961</i>&nbsp;            M0 = mxx;</b>
+<b class="nc"><i>962</i>&nbsp;            M1 = myx;</b>
+<b class="nc"><i>963</i>&nbsp;            mxx = M0 * Txx + M1 * Txy;</b>
+<b class="nc"><i>964</i>&nbsp;            myx = M0 * Tyx + M1 * Tyy;</b>
+<i>965</i>&nbsp;
+<b class="nc"><i>966</i>&nbsp;            M0 = mxy;</b>
+<b class="nc"><i>967</i>&nbsp;            M1 = myy;</b>
+<b class="nc"><i>968</i>&nbsp;            mxy = M0 * Txx + M1 * Txy;</b>
+<b class="nc"><i>969</i>&nbsp;            myy = M0 * Tyx + M1 * Tyy;</b>
+<b class="nc"><i>970</i>&nbsp;            break;</b>
+<i>971</i>&nbsp;
+<i>972</i>&nbsp;        case (APPLY_SHEAR | APPLY_TRANSLATE):
+<b class="nc"><i>973</i>&nbsp;            M0 = mxt;</b>
+<b class="nc"><i>974</i>&nbsp;            M1 = myt;</b>
+<b class="nc"><i>975</i>&nbsp;            Txt += M0 * Txx + M1 * Txy;</b>
+<b class="nc"><i>976</i>&nbsp;            Tyt += M0 * Tyx + M1 * Tyy;</b>
+<i>977</i>&nbsp;
+<i>978</i>&nbsp;            /* NOBREAK */
+<i>979</i>&nbsp;        case (APPLY_SHEAR):
+<b class="nc"><i>980</i>&nbsp;            mxt = Txt;</b>
+<b class="nc"><i>981</i>&nbsp;            myt = Tyt;</b>
+<i>982</i>&nbsp;
+<b class="nc"><i>983</i>&nbsp;            M0 = myx;</b>
+<b class="nc"><i>984</i>&nbsp;            mxx = M0 * Txy;</b>
+<b class="nc"><i>985</i>&nbsp;            myx = M0 * Tyy;</b>
+<i>986</i>&nbsp;
+<b class="nc"><i>987</i>&nbsp;            M0 = mxy;</b>
+<b class="nc"><i>988</i>&nbsp;            mxy = M0 * Txx;</b>
+<b class="nc"><i>989</i>&nbsp;            myy = M0 * Tyx;</b>
+<b class="nc"><i>990</i>&nbsp;            break;</b>
+<i>991</i>&nbsp;
+<i>992</i>&nbsp;        case (APPLY_SCALE | APPLY_TRANSLATE):
+<b class="nc"><i>993</i>&nbsp;            M0 = mxt;</b>
+<b class="nc"><i>994</i>&nbsp;            M1 = myt;</b>
+<b class="nc"><i>995</i>&nbsp;            Txt += M0 * Txx + M1 * Txy;</b>
+<b class="nc"><i>996</i>&nbsp;            Tyt += M0 * Tyx + M1 * Tyy;</b>
+<i>997</i>&nbsp;
+<i>998</i>&nbsp;            /* NOBREAK */
+<i>999</i>&nbsp;        case (APPLY_SCALE):
+<b class="nc"><i>1000</i>&nbsp;            mxt = Txt;</b>
+<b class="nc"><i>1001</i>&nbsp;            myt = Tyt;</b>
+<i>1002</i>&nbsp;
+<b class="nc"><i>1003</i>&nbsp;            M0 = mxx;</b>
+<b class="nc"><i>1004</i>&nbsp;            mxx = M0 * Txx;</b>
+<b class="nc"><i>1005</i>&nbsp;            myx = M0 * Tyx;</b>
+<i>1006</i>&nbsp;
+<b class="nc"><i>1007</i>&nbsp;            M0 = myy;</b>
+<b class="nc"><i>1008</i>&nbsp;            mxy = M0 * Txy;</b>
+<b class="nc"><i>1009</i>&nbsp;            myy = M0 * Tyy;</b>
+<b class="nc"><i>1010</i>&nbsp;            break;</b>
+<i>1011</i>&nbsp;
+<i>1012</i>&nbsp;        case (APPLY_TRANSLATE):
+<b class="nc"><i>1013</i>&nbsp;            M0 = mxt;</b>
+<b class="nc"><i>1014</i>&nbsp;            M1 = myt;</b>
+<b class="nc"><i>1015</i>&nbsp;            Txt += M0 * Txx + M1 * Txy;</b>
+<b class="nc"><i>1016</i>&nbsp;            Tyt += M0 * Tyx + M1 * Tyy;</b>
+<i>1017</i>&nbsp;
+<i>1018</i>&nbsp;            /* NOBREAK */
+<i>1019</i>&nbsp;        case (APPLY_IDENTITY):
+<b class="nc"><i>1020</i>&nbsp;            mxt = Txt;</b>
+<b class="nc"><i>1021</i>&nbsp;            myt = Tyt;</b>
+<i>1022</i>&nbsp;
+<b class="nc"><i>1023</i>&nbsp;            mxx = Txx;</b>
+<b class="nc"><i>1024</i>&nbsp;            myx = Tyx;</b>
+<i>1025</i>&nbsp;
+<b class="nc"><i>1026</i>&nbsp;            mxy = Txy;</b>
+<b class="nc"><i>1027</i>&nbsp;            myy = Tyy;</b>
+<i>1028</i>&nbsp;
+<b class="nc"><i>1029</i>&nbsp;            state = mystate | txstate;</b>
+<b class="nc"><i>1030</i>&nbsp;            type = TYPE_UNKNOWN;</b>
+<b class="nc"><i>1031</i>&nbsp;            return;</b>
+<i>1032</i>&nbsp;        }
+<b class="nc"><i>1033</i>&nbsp;        updateState2D();</b>
+<b class="nc"><i>1034</i>&nbsp;    }</b>
+<i>1035</i>&nbsp;
+<i>1036</i>&nbsp;    /**
+<i>1037</i>&nbsp;     * Returns an &lt;code&gt;Affine2D&lt;/code&gt; object representing the
+<i>1038</i>&nbsp;     * inverse transformation.
+<i>1039</i>&nbsp;     * The inverse transform Tx&#39; of this transform Tx
+<i>1040</i>&nbsp;     * maps coordinates transformed by Tx back
+<i>1041</i>&nbsp;     * to their original coordinates.
+<i>1042</i>&nbsp;     * In other words, Tx&#39;(Tx(p)) = p = Tx(Tx&#39;(p)).
+<i>1043</i>&nbsp;     * &lt;p&gt;
+<i>1044</i>&nbsp;     * If this transform maps all coordinates onto a point or a line
+<i>1045</i>&nbsp;     * then it will not have an inverse, since coordinates that do
+<i>1046</i>&nbsp;     * not lie on the destination point or line will not have an inverse
+<i>1047</i>&nbsp;     * mapping.
+<i>1048</i>&nbsp;     * The &lt;code&gt;getDeterminant&lt;/code&gt; method can be used to determine if this
+<i>1049</i>&nbsp;     * transform has no inverse, in which case an exception will be
+<i>1050</i>&nbsp;     * thrown if the &lt;code&gt;createInverse&lt;/code&gt; method is called.
+<i>1051</i>&nbsp;     * @return a new &lt;code&gt;Affine2D&lt;/code&gt; object representing the
+<i>1052</i>&nbsp;     * inverse transformation.
+<i>1053</i>&nbsp;     * @see #getDeterminant
+<i>1054</i>&nbsp;     * @exception NoninvertibleTransformException
+<i>1055</i>&nbsp;     * if the matrix cannot be inverted.
+<i>1056</i>&nbsp;     */
+<i>1057</i>&nbsp;    public Affine2D createInverse()
+<i>1058</i>&nbsp;        throws NoninvertibleTransformException
+<i>1059</i>&nbsp;    {
+<i>1060</i>&nbsp;        double det;
+<b class="nc"><i>1061</i>&nbsp;        switch (state) {</b>
+<i>1062</i>&nbsp;        default:
+<b class="nc"><i>1063</i>&nbsp;            stateError();</b>
+<i>1064</i>&nbsp;            /* NOTREACHED */
+<i>1065</i>&nbsp;        case (APPLY_SHEAR | APPLY_SCALE | APPLY_TRANSLATE):
+<b class="nc"><i>1066</i>&nbsp;            det = mxx * myy - mxy * myx;</b>
+<b class="nc"><i>1067</i>&nbsp;            if (det == 0 || Math.abs(det) &lt;= Double.MIN_VALUE) {</b>
+<b class="nc"><i>1068</i>&nbsp;                throw new NoninvertibleTransformException(&quot;Determinant is &quot;+</b>
+<i>1069</i>&nbsp;                                                          det);
+<i>1070</i>&nbsp;            }
+<b class="nc"><i>1071</i>&nbsp;            return new Affine2D( myy / det, -myx / det,</b>
+<i>1072</i>&nbsp;                                -mxy / det,  mxx / det,
+<i>1073</i>&nbsp;                                (mxy * myt - myy * mxt) / det,
+<i>1074</i>&nbsp;                                (myx * mxt - mxx * myt) / det,
+<i>1075</i>&nbsp;                                (APPLY_SHEAR |
+<i>1076</i>&nbsp;                                 APPLY_SCALE |
+<i>1077</i>&nbsp;                                 APPLY_TRANSLATE));
+<i>1078</i>&nbsp;        case (APPLY_SHEAR | APPLY_SCALE):
+<b class="nc"><i>1079</i>&nbsp;            det = mxx * myy - mxy * myx;</b>
+<b class="nc"><i>1080</i>&nbsp;            if (det == 0 || Math.abs(det) &lt;= Double.MIN_VALUE) {</b>
+<b class="nc"><i>1081</i>&nbsp;                throw new NoninvertibleTransformException(&quot;Determinant is &quot;+</b>
+<i>1082</i>&nbsp;                                                          det);
+<i>1083</i>&nbsp;            }
+<b class="nc"><i>1084</i>&nbsp;            return new Affine2D( myy / det, -myx / det,</b>
+<i>1085</i>&nbsp;                                -mxy / det,  mxx / det,
+<i>1086</i>&nbsp;                                 0.0,        0.0,
+<i>1087</i>&nbsp;                                (APPLY_SHEAR | APPLY_SCALE));
+<i>1088</i>&nbsp;        case (APPLY_SHEAR | APPLY_TRANSLATE):
+<b class="nc"><i>1089</i>&nbsp;            if (mxy == 0.0 || myx == 0.0) {</b>
+<b class="nc"><i>1090</i>&nbsp;                throw new NoninvertibleTransformException(&quot;Determinant is 0&quot;);</b>
+<i>1091</i>&nbsp;            }
+<b class="nc"><i>1092</i>&nbsp;            return new Affine2D( 0.0,        1.0 / mxy,</b>
+<i>1093</i>&nbsp;                                 1.0 / myx,  0.0,
+<i>1094</i>&nbsp;                                -myt / myx, -mxt / mxy,
+<i>1095</i>&nbsp;                                (APPLY_SHEAR | APPLY_TRANSLATE));
+<i>1096</i>&nbsp;        case (APPLY_SHEAR):
+<b class="nc"><i>1097</i>&nbsp;            if (mxy == 0.0 || myx == 0.0) {</b>
+<b class="nc"><i>1098</i>&nbsp;                throw new NoninvertibleTransformException(&quot;Determinant is 0&quot;);</b>
+<i>1099</i>&nbsp;            }
+<b class="nc"><i>1100</i>&nbsp;            return new Affine2D(0.0,       1.0 / mxy,</b>
+<i>1101</i>&nbsp;                                1.0 / myx, 0.0,
+<i>1102</i>&nbsp;                                0.0,       0.0,
+<i>1103</i>&nbsp;                                (APPLY_SHEAR));
+<i>1104</i>&nbsp;        case (APPLY_SCALE | APPLY_TRANSLATE):
+<b class="nc"><i>1105</i>&nbsp;            if (mxx == 0.0 || myy == 0.0) {</b>
+<b class="nc"><i>1106</i>&nbsp;                throw new NoninvertibleTransformException(&quot;Determinant is 0&quot;);</b>
+<i>1107</i>&nbsp;            }
+<b class="nc"><i>1108</i>&nbsp;            return new Affine2D( 1.0 / mxx,  0.0,</b>
+<i>1109</i>&nbsp;                                 0.0,        1.0 / myy,
+<i>1110</i>&nbsp;                                -mxt / mxx, -myt / myy,
+<i>1111</i>&nbsp;                                (APPLY_SCALE | APPLY_TRANSLATE));
+<i>1112</i>&nbsp;        case (APPLY_SCALE):
+<b class="nc"><i>1113</i>&nbsp;            if (mxx == 0.0 || myy == 0.0) {</b>
+<b class="nc"><i>1114</i>&nbsp;                throw new NoninvertibleTransformException(&quot;Determinant is 0&quot;);</b>
+<i>1115</i>&nbsp;            }
+<b class="nc"><i>1116</i>&nbsp;            return new Affine2D(1.0 / mxx, 0.0,</b>
+<i>1117</i>&nbsp;                                0.0,       1.0 / myy,
+<i>1118</i>&nbsp;                                0.0,       0.0,
+<i>1119</i>&nbsp;                                (APPLY_SCALE));
+<i>1120</i>&nbsp;        case (APPLY_TRANSLATE):
+<b class="nc"><i>1121</i>&nbsp;            return new Affine2D( 1.0,  0.0,</b>
+<i>1122</i>&nbsp;                                 0.0,  1.0,
+<i>1123</i>&nbsp;                                -mxt, -myt,
+<i>1124</i>&nbsp;                                (APPLY_TRANSLATE));
+<i>1125</i>&nbsp;        case (APPLY_IDENTITY):
+<b class="nc"><i>1126</i>&nbsp;            return new Affine2D();</b>
+<i>1127</i>&nbsp;        }
+<i>1128</i>&nbsp;
+<i>1129</i>&nbsp;        /* NOTREACHED */
+<i>1130</i>&nbsp;    }
+<i>1131</i>&nbsp;
+<i>1132</i>&nbsp;    /**
+<i>1133</i>&nbsp;     * Transforms an array of point objects by this transform.
+<i>1134</i>&nbsp;     * If any element of the &lt;code&gt;ptDst&lt;/code&gt; array is
+<i>1135</i>&nbsp;     * &lt;code&gt;null&lt;/code&gt;, a new &lt;code&gt;Point2D&lt;/code&gt; object is allocated
+<i>1136</i>&nbsp;     * and stored into that element before storing the results of the
+<i>1137</i>&nbsp;     * transformation.
+<i>1138</i>&nbsp;     * &lt;p&gt;
+<i>1139</i>&nbsp;     * Note that this method does not take any precautions to
+<i>1140</i>&nbsp;     * avoid problems caused by storing results into &lt;code&gt;Point2D&lt;/code&gt;
+<i>1141</i>&nbsp;     * objects that will be used as the source for calculations
+<i>1142</i>&nbsp;     * further down the source array.
+<i>1143</i>&nbsp;     * This method does guarantee that if a specified &lt;code&gt;Point2D&lt;/code&gt;
+<i>1144</i>&nbsp;     * object is both the source and destination for the same single point
+<i>1145</i>&nbsp;     * transform operation then the results will not be stored until
+<i>1146</i>&nbsp;     * the calculations are complete to avoid storing the results on
+<i>1147</i>&nbsp;     * top of the operands.
+<i>1148</i>&nbsp;     * If, however, the destination &lt;code&gt;Point2D&lt;/code&gt; object for one
+<i>1149</i>&nbsp;     * operation is the same object as the source &lt;code&gt;Point2D&lt;/code&gt;
+<i>1150</i>&nbsp;     * object for another operation further down the source array then
+<i>1151</i>&nbsp;     * the original coordinates in that point are overwritten before
+<i>1152</i>&nbsp;     * they can be converted.
+<i>1153</i>&nbsp;     * @param ptSrc the array containing the source point objects
+<i>1154</i>&nbsp;     * @param ptDst the array into which the transform point objects are
+<i>1155</i>&nbsp;     * returned
+<i>1156</i>&nbsp;     * @param srcOff the offset to the first point object to be
+<i>1157</i>&nbsp;     * transformed in the source array
+<i>1158</i>&nbsp;     * @param dstOff the offset to the location of the first
+<i>1159</i>&nbsp;     * transformed point object that is stored in the destination array
+<i>1160</i>&nbsp;     * @param numPts the number of point objects to be transformed
+<i>1161</i>&nbsp;     */
+<i>1162</i>&nbsp;    public void transform(Point2D[] ptSrc, int srcOff,
+<i>1163</i>&nbsp;                          Point2D[] ptDst, int dstOff,
+<i>1164</i>&nbsp;                          int numPts) {
+<b class="nc"><i>1165</i>&nbsp;        int mystate = this.state;</b>
+<b class="nc"><i>1166</i>&nbsp;        while (--numPts &gt;= 0) {</b>
+<i>1167</i>&nbsp;            // Copy source coords into local variables in case src == dst
+<b class="nc"><i>1168</i>&nbsp;            Point2D src = ptSrc[srcOff++];</b>
+<b class="nc"><i>1169</i>&nbsp;            double x = src.x;</b>
+<b class="nc"><i>1170</i>&nbsp;            double y = src.y;</b>
+<b class="nc"><i>1171</i>&nbsp;            Point2D dst = ptDst[dstOff++];</b>
+<b class="nc"><i>1172</i>&nbsp;            if (dst == null) {</b>
+<b class="nc"><i>1173</i>&nbsp;                dst = new Point2D();</b>
+<b class="nc"><i>1174</i>&nbsp;                ptDst[dstOff - 1] = dst;</b>
+<i>1175</i>&nbsp;            }
+<b class="nc"><i>1176</i>&nbsp;            switch (mystate) {</b>
+<i>1177</i>&nbsp;            default:
+<b class="nc"><i>1178</i>&nbsp;                stateError();</b>
+<i>1179</i>&nbsp;                /* NOTREACHED */
+<i>1180</i>&nbsp;            case (APPLY_SHEAR | APPLY_SCALE | APPLY_TRANSLATE):
+<b class="nc"><i>1181</i>&nbsp;                dst.setLocation((float)(x * mxx + y * mxy + mxt),</b>
+<i>1182</i>&nbsp;                                (float)(x * myx + y * myy + myt));
+<b class="nc"><i>1183</i>&nbsp;                break;</b>
+<i>1184</i>&nbsp;            case (APPLY_SHEAR | APPLY_SCALE):
+<b class="nc"><i>1185</i>&nbsp;                dst.setLocation((float)(x * mxx + y * mxy),</b>
+<i>1186</i>&nbsp;                                (float)(x * myx + y * myy));
+<b class="nc"><i>1187</i>&nbsp;                break;</b>
+<i>1188</i>&nbsp;            case (APPLY_SHEAR | APPLY_TRANSLATE):
+<b class="nc"><i>1189</i>&nbsp;                dst.setLocation((float)(y * mxy + mxt),</b>
+<i>1190</i>&nbsp;                                (float)(x * myx + myt));
+<b class="nc"><i>1191</i>&nbsp;                break;</b>
+<i>1192</i>&nbsp;            case (APPLY_SHEAR):
+<b class="nc"><i>1193</i>&nbsp;                dst.setLocation((float)(y * mxy), (float)(x * myx));</b>
+<b class="nc"><i>1194</i>&nbsp;                break;</b>
+<i>1195</i>&nbsp;            case (APPLY_SCALE | APPLY_TRANSLATE):
+<b class="nc"><i>1196</i>&nbsp;                dst.setLocation((float)(x * mxx + mxt), (float)(y * myy + myt));</b>
+<b class="nc"><i>1197</i>&nbsp;                break;</b>
+<i>1198</i>&nbsp;            case (APPLY_SCALE):
+<b class="nc"><i>1199</i>&nbsp;                dst.setLocation((float)(x * mxx), (float)(y * myy));</b>
+<b class="nc"><i>1200</i>&nbsp;                break;</b>
+<i>1201</i>&nbsp;            case (APPLY_TRANSLATE):
+<b class="nc"><i>1202</i>&nbsp;                dst.setLocation((float)(x + mxt), (float)(y + myt));</b>
+<b class="nc"><i>1203</i>&nbsp;                break;</b>
+<i>1204</i>&nbsp;            case (APPLY_IDENTITY):
+<b class="nc"><i>1205</i>&nbsp;                dst.setLocation((float) x, (float) y);</b>
+<i>1206</i>&nbsp;                break;
+<i>1207</i>&nbsp;            }
+<b class="nc"><i>1208</i>&nbsp;        }</b>
+<i>1209</i>&nbsp;
+<i>1210</i>&nbsp;        /* NOTREACHED */
+<b class="nc"><i>1211</i>&nbsp;    }</b>
+<i>1212</i>&nbsp;
+<i>1213</i>&nbsp;    /**
+<i>1214</i>&nbsp;     * Transforms the relative distance vector specified by
+<i>1215</i>&nbsp;     * &lt;code&gt;ptSrc&lt;/code&gt; and stores the result in &lt;code&gt;ptDst&lt;/code&gt;.
+<i>1216</i>&nbsp;     * A relative distance vector is transformed without applying the
+<i>1217</i>&nbsp;     * translation components of the affine transformation matrix
+<i>1218</i>&nbsp;     * using the following equations:
+<i>1219</i>&nbsp;     * &lt;pre&gt;
+<i>1220</i>&nbsp;     *  [  x&#39; ]   [  m00  m01 (m02) ] [  x  ]   [ m00x + m01y ]
+<i>1221</i>&nbsp;     *  [  y&#39; ] = [  m10  m11 (m12) ] [  y  ] = [ m10x + m11y ]
+<i>1222</i>&nbsp;     *  [ (1) ]   [  (0)  (0) ( 1 ) ] [ (1) ]   [     (1)     ]
+<i>1223</i>&nbsp;     * &lt;/pre&gt;
+<i>1224</i>&nbsp;     * If &lt;code&gt;ptDst&lt;/code&gt; is &lt;code&gt;null&lt;/code&gt;, a new
+<i>1225</i>&nbsp;     * &lt;code&gt;Point2D&lt;/code&gt; object is allocated and then the result of the
+<i>1226</i>&nbsp;     * transform is stored in this object.
+<i>1227</i>&nbsp;     * In either case, &lt;code&gt;ptDst&lt;/code&gt;, which contains the
+<i>1228</i>&nbsp;     * transformed point, is returned for convenience.
+<i>1229</i>&nbsp;     * If &lt;code&gt;ptSrc&lt;/code&gt; and &lt;code&gt;ptDst&lt;/code&gt; are the same object,
+<i>1230</i>&nbsp;     * the input point is correctly overwritten with the transformed
+<i>1231</i>&nbsp;     * point.
+<i>1232</i>&nbsp;     * @param ptSrc the distance vector to be delta transformed
+<i>1233</i>&nbsp;     * @param ptDst the resulting transformed distance vector
+<i>1234</i>&nbsp;     * @return &lt;code&gt;ptDst&lt;/code&gt;, which contains the result of the
+<i>1235</i>&nbsp;     * transformation.
+<i>1236</i>&nbsp;     */
+<i>1237</i>&nbsp;    public Point2D deltaTransform(Point2D ptSrc, Point2D ptDst) {
+<b class="nc"><i>1238</i>&nbsp;        if (ptDst == null) {</b>
+<b class="nc"><i>1239</i>&nbsp;            ptDst = new Point2D();</b>
+<i>1240</i>&nbsp;        }
+<i>1241</i>&nbsp;        // Copy source coords into local variables in case src == dst
+<b class="nc"><i>1242</i>&nbsp;        double x = ptSrc.x;</b>
+<b class="nc"><i>1243</i>&nbsp;        double y = ptSrc.y;</b>
+<b class="nc"><i>1244</i>&nbsp;        switch (state) {</b>
+<i>1245</i>&nbsp;        default:
+<b class="nc"><i>1246</i>&nbsp;            stateError();</b>
+<i>1247</i>&nbsp;            /* NOTREACHED */
+<i>1248</i>&nbsp;        case (APPLY_SHEAR | APPLY_SCALE | APPLY_TRANSLATE):
+<i>1249</i>&nbsp;        case (APPLY_SHEAR | APPLY_SCALE):
+<b class="nc"><i>1250</i>&nbsp;            ptDst.setLocation((float)(x * mxx + y * mxy), (float)(x * myx + y * myy));</b>
+<b class="nc"><i>1251</i>&nbsp;            return ptDst;</b>
+<i>1252</i>&nbsp;        case (APPLY_SHEAR | APPLY_TRANSLATE):
+<i>1253</i>&nbsp;        case (APPLY_SHEAR):
+<b class="nc"><i>1254</i>&nbsp;            ptDst.setLocation((float)(y * mxy), (float)(x * myx));</b>
+<b class="nc"><i>1255</i>&nbsp;            return ptDst;</b>
+<i>1256</i>&nbsp;        case (APPLY_SCALE | APPLY_TRANSLATE):
+<i>1257</i>&nbsp;        case (APPLY_SCALE):
+<b class="nc"><i>1258</i>&nbsp;            ptDst.setLocation((float)(x * mxx), (float)(y * myy));</b>
+<b class="nc"><i>1259</i>&nbsp;            return ptDst;</b>
+<i>1260</i>&nbsp;        case (APPLY_TRANSLATE):
+<i>1261</i>&nbsp;        case (APPLY_IDENTITY):
+<b class="nc"><i>1262</i>&nbsp;            ptDst.setLocation((float) x, (float) y);</b>
+<b class="nc"><i>1263</i>&nbsp;            return ptDst;</b>
+<i>1264</i>&nbsp;        }
+<i>1265</i>&nbsp;
+<i>1266</i>&nbsp;        /* NOTREACHED */
+<i>1267</i>&nbsp;    }
+<i>1268</i>&nbsp;
+<i>1269</i>&nbsp;    // Round values to sane precision for printing
+<i>1270</i>&nbsp;    // Note that Math.sin(Math.PI) has an error of about 10^-16
+<i>1271</i>&nbsp;    private static double _matround(double matval) {
+<b class="nc"><i>1272</i>&nbsp;        return Math.rint(matval * 1E15) / 1E15;</b>
+<i>1273</i>&nbsp;    }
+<i>1274</i>&nbsp;
+<i>1275</i>&nbsp;    /**
+<i>1276</i>&nbsp;     * Returns a &lt;code&gt;String&lt;/code&gt; that represents the value of this
+<i>1277</i>&nbsp;     * {@link Object}.
+<i>1278</i>&nbsp;     * @return a &lt;code&gt;String&lt;/code&gt; representing the value of this
+<i>1279</i>&nbsp;     * &lt;code&gt;Object&lt;/code&gt;.
+<i>1280</i>&nbsp;     */
+<i>1281</i>&nbsp;    @Override
+<i>1282</i>&nbsp;    public String toString() {
+<b class="nc"><i>1283</i>&nbsp;        return (&quot;Affine2D[[&quot;</b>
+<b class="nc"><i>1284</i>&nbsp;                + _matround(mxx) + &quot;, &quot;</b>
+<b class="nc"><i>1285</i>&nbsp;                + _matround(mxy) + &quot;, &quot;</b>
+<b class="nc"><i>1286</i>&nbsp;                + _matround(mxt) + &quot;], [&quot;</b>
+<b class="nc"><i>1287</i>&nbsp;                + _matround(myx) + &quot;, &quot;</b>
+<b class="nc"><i>1288</i>&nbsp;                + _matround(myy) + &quot;, &quot;</b>
+<b class="nc"><i>1289</i>&nbsp;                + _matround(myt) + &quot;]]&quot;);</b>
+<i>1290</i>&nbsp;    }
+<i>1291</i>&nbsp;
+<i>1292</i>&nbsp;    @Override
+<i>1293</i>&nbsp;    public boolean is2D() {
+<b class="nc"><i>1294</i>&nbsp;        return true;</b>
+<i>1295</i>&nbsp;    }
+<i>1296</i>&nbsp;
+<i>1297</i>&nbsp;    @Override
+<i>1298</i>&nbsp;    public void restoreTransform(double mxx, double myx,
+<i>1299</i>&nbsp;                                 double mxy, double myy,
+<i>1300</i>&nbsp;                                 double mxt, double myt)
+<i>1301</i>&nbsp;    {
+<b class="nc"><i>1302</i>&nbsp;        setTransform(mxx, myx, mxy, myy, mxt, myt);</b>
+<b class="nc"><i>1303</i>&nbsp;    }</b>
+<i>1304</i>&nbsp;
+<i>1305</i>&nbsp;    @Override
+<i>1306</i>&nbsp;    public void restoreTransform(double mxx, double mxy, double mxz, double mxt,
+<i>1307</i>&nbsp;                                 double myx, double myy, double myz, double myt,
+<i>1308</i>&nbsp;                                 double mzx, double mzy, double mzz, double mzt)
+<i>1309</i>&nbsp;    {
+<b class="nc"><i>1310</i>&nbsp;        if (                        mxz != 0 ||</b>
+<i>1311</i>&nbsp;                                    myz != 0 ||
+<i>1312</i>&nbsp;            mzx != 0 || mzy != 0 || mzz != 1 || mzt != 0.0)
+<i>1313</i>&nbsp;        {
+<b class="nc"><i>1314</i>&nbsp;            degreeError(Degree.AFFINE_2D);</b>
+<i>1315</i>&nbsp;        }
+<b class="nc"><i>1316</i>&nbsp;        setTransform(mxx, myx, mxy, myy, mxt, myt);</b>
+<b class="nc"><i>1317</i>&nbsp;    }</b>
+<i>1318</i>&nbsp;
+<i>1319</i>&nbsp;    @Override
+<i>1320</i>&nbsp;    public BaseTransform deriveWithTranslation(double mxt, double myt) {
+<b class="fc"><i>1321</i>&nbsp;        translate(mxt, myt);</b>
+<b class="fc"><i>1322</i>&nbsp;        return this;</b>
+<i>1323</i>&nbsp;    }
+<i>1324</i>&nbsp;
+<i>1325</i>&nbsp;    @Override
+<i>1326</i>&nbsp;    public BaseTransform deriveWithTranslation(double mxt, double myt, double mzt) {
+<b class="nc"><i>1327</i>&nbsp;        if (mzt == 0.0) {</b>
+<b class="nc"><i>1328</i>&nbsp;            translate(mxt, myt);</b>
+<b class="nc"><i>1329</i>&nbsp;            return this;</b>
+<i>1330</i>&nbsp;        }
+<b class="nc"><i>1331</i>&nbsp;        Affine3D a = new Affine3D(this);</b>
+<b class="nc"><i>1332</i>&nbsp;        a.translate(mxt, myt, mzt);</b>
+<b class="nc"><i>1333</i>&nbsp;        return a;</b>
+<i>1334</i>&nbsp;    }
+<i>1335</i>&nbsp;
+<i>1336</i>&nbsp;    @Override
+<i>1337</i>&nbsp;    public BaseTransform deriveWithScale(double mxx, double myy, double mzz) {
+<b class="nc"><i>1338</i>&nbsp;        if (mzz == 1.0) {</b>
+<b class="nc"><i>1339</i>&nbsp;            scale(mxx, myy);</b>
+<b class="nc"><i>1340</i>&nbsp;            return this;</b>
+<i>1341</i>&nbsp;        }
+<b class="nc"><i>1342</i>&nbsp;        Affine3D a = new Affine3D(this);</b>
+<b class="nc"><i>1343</i>&nbsp;        a.scale(mxx, myy, mzz);</b>
+<b class="nc"><i>1344</i>&nbsp;        return a;</b>
+<i>1345</i>&nbsp;
+<i>1346</i>&nbsp;    }
+<i>1347</i>&nbsp;
+<i>1348</i>&nbsp;    @Override
+<i>1349</i>&nbsp;    public BaseTransform deriveWithRotation(double theta,
+<i>1350</i>&nbsp;            double axisX, double axisY, double axisZ) {
+<b class="nc"><i>1351</i>&nbsp;        if (theta == 0.0) {</b>
+<b class="nc"><i>1352</i>&nbsp;            return this;</b>
+<i>1353</i>&nbsp;        }
+<b class="nc"><i>1354</i>&nbsp;        if (almostZero(axisX) &amp;&amp; almostZero(axisY)) {</b>
+<b class="nc"><i>1355</i>&nbsp;            if (axisZ &gt; 0) {</b>
+<b class="nc"><i>1356</i>&nbsp;                rotate(theta);</b>
+<b class="nc"><i>1357</i>&nbsp;            } else if (axisZ &lt; 0) {</b>
+<b class="nc"><i>1358</i>&nbsp;                rotate(-theta);</b>
+<i>1359</i>&nbsp;            } // else rotating about zero vector - NOP
+<b class="nc"><i>1360</i>&nbsp;            return this;</b>
+<i>1361</i>&nbsp;        }
+<b class="nc"><i>1362</i>&nbsp;        Affine3D a = new Affine3D(this);</b>
+<b class="nc"><i>1363</i>&nbsp;        a.rotate(theta, axisX, axisY, axisZ);</b>
+<b class="nc"><i>1364</i>&nbsp;        return a;</b>
+<i>1365</i>&nbsp;    }
+<i>1366</i>&nbsp;
+<i>1367</i>&nbsp;    @Override
+<i>1368</i>&nbsp;    public BaseTransform deriveWithPreTranslation(double mxt, double myt) {
+<b class="nc"><i>1369</i>&nbsp;        this.mxt += mxt;</b>
+<b class="nc"><i>1370</i>&nbsp;        this.myt += myt;</b>
+<b class="nc"><i>1371</i>&nbsp;        if (this.mxt != 0.0 || this.myt != 0.0) {</b>
+<b class="nc"><i>1372</i>&nbsp;            state |= APPLY_TRANSLATE;</b>
+<i>1373</i>&nbsp;//            if (type != TYPE_UNKNOWN) {
+<b class="nc"><i>1374</i>&nbsp;                type |= TYPE_TRANSLATION;</b>
+<i>1375</i>&nbsp;//            }
+<i>1376</i>&nbsp;        } else {
+<b class="nc"><i>1377</i>&nbsp;            state &amp;= ~APPLY_TRANSLATE;</b>
+<b class="nc"><i>1378</i>&nbsp;            if (type != TYPE_UNKNOWN) {</b>
+<b class="nc"><i>1379</i>&nbsp;                type &amp;= ~TYPE_TRANSLATION;</b>
+<i>1380</i>&nbsp;            }
+<i>1381</i>&nbsp;        }
+<b class="nc"><i>1382</i>&nbsp;        return this;</b>
+<i>1383</i>&nbsp;    }
+<i>1384</i>&nbsp;
+<i>1385</i>&nbsp;    @Override
+<i>1386</i>&nbsp;    public BaseTransform deriveWithConcatenation(double mxx, double myx,
+<i>1387</i>&nbsp;                                                 double mxy, double myy,
+<i>1388</i>&nbsp;                                                 double mxt, double myt)
+<i>1389</i>&nbsp;    {
+<i>1390</i>&nbsp;        // TODO: Simplify this (RT-26801)
+<b class="nc"><i>1391</i>&nbsp;        BaseTransform tmpTx = getInstance(mxx, myx,</b>
+<i>1392</i>&nbsp;                                          mxy, myy,
+<i>1393</i>&nbsp;                                          mxt, myt);
+<b class="nc"><i>1394</i>&nbsp;        concatenate(tmpTx);</b>
+<b class="nc"><i>1395</i>&nbsp;        return this;</b>
+<i>1396</i>&nbsp;    }
+<i>1397</i>&nbsp;
+<i>1398</i>&nbsp;    @Override
+<i>1399</i>&nbsp;    public BaseTransform deriveWithConcatenation(
+<i>1400</i>&nbsp;            double mxx,   double mxy,   double mxz,   double mxt,
+<i>1401</i>&nbsp;            double myx,   double myy,   double myz,   double myt,
+<i>1402</i>&nbsp;            double mzx,   double mzy,   double mzz,   double mzt) {
+<b class="nc"><i>1403</i>&nbsp;        if (                                   mxz == 0.0</b>
+<i>1404</i>&nbsp;                                            &amp;&amp; myz == 0.0
+<i>1405</i>&nbsp;                &amp;&amp; mzx == 0.0 &amp;&amp; mzy == 0.0 &amp;&amp; mzz == 1.0 &amp;&amp; mzt == 0.0) {
+<b class="nc"><i>1406</i>&nbsp;            concatenate(mxx, mxy,</b>
+<i>1407</i>&nbsp;                        mxt, myx,
+<i>1408</i>&nbsp;                        myy, myt);
+<b class="nc"><i>1409</i>&nbsp;            return this;</b>
+<i>1410</i>&nbsp;        }
+<i>1411</i>&nbsp;
+<b class="nc"><i>1412</i>&nbsp;        Affine3D t3d = new Affine3D(this);</b>
+<b class="nc"><i>1413</i>&nbsp;        t3d.concatenate(mxx, mxy, mxz, mxt,</b>
+<i>1414</i>&nbsp;                        myx, myy, myz, myt,
+<i>1415</i>&nbsp;                        mzx, mzy, mzz, mzt);
+<b class="nc"><i>1416</i>&nbsp;        return t3d;</b>
+<i>1417</i>&nbsp;    }
+<i>1418</i>&nbsp;
+<i>1419</i>&nbsp;    @Override
+<i>1420</i>&nbsp;    public BaseTransform deriveWithConcatenation(BaseTransform tx) {
+<b class="nc"><i>1421</i>&nbsp;        if (tx.is2D()) {</b>
+<b class="nc"><i>1422</i>&nbsp;            concatenate(tx);</b>
+<b class="nc"><i>1423</i>&nbsp;            return this;</b>
+<i>1424</i>&nbsp;        }
+<b class="nc"><i>1425</i>&nbsp;        Affine3D t3d = new Affine3D(this);</b>
+<b class="nc"><i>1426</i>&nbsp;        t3d.concatenate(tx);</b>
+<b class="nc"><i>1427</i>&nbsp;        return t3d;</b>
+<i>1428</i>&nbsp;    }
+<i>1429</i>&nbsp;
+<i>1430</i>&nbsp;    @Override
+<i>1431</i>&nbsp;    public BaseTransform deriveWithPreConcatenation(BaseTransform tx) {
+<b class="nc"><i>1432</i>&nbsp;        if (tx.is2D()) {</b>
+<b class="nc"><i>1433</i>&nbsp;            preConcatenate(tx);</b>
+<b class="nc"><i>1434</i>&nbsp;            return this;</b>
+<i>1435</i>&nbsp;        }
+<b class="nc"><i>1436</i>&nbsp;        Affine3D t3d = new Affine3D(this);</b>
+<b class="nc"><i>1437</i>&nbsp;        t3d.preConcatenate(tx);</b>
+<b class="nc"><i>1438</i>&nbsp;        return t3d;</b>
+<i>1439</i>&nbsp;    }
+<i>1440</i>&nbsp;
+<i>1441</i>&nbsp;    @Override
+<i>1442</i>&nbsp;    public BaseTransform deriveWithNewTransform(BaseTransform tx) {
+<b class="nc"><i>1443</i>&nbsp;        if (tx.is2D()) {</b>
+<b class="nc"><i>1444</i>&nbsp;            setTransform(tx);</b>
+<b class="nc"><i>1445</i>&nbsp;            return this;</b>
+<i>1446</i>&nbsp;        }
+<b class="nc"><i>1447</i>&nbsp;        return getInstance(tx);</b>
+<i>1448</i>&nbsp;    }
+<i>1449</i>&nbsp;
+<i>1450</i>&nbsp;    @Override
+<i>1451</i>&nbsp;    public BaseTransform copy() {
+<b class="fc"><i>1452</i>&nbsp;        return new Affine2D(this);</b>
+<i>1453</i>&nbsp;    }
+<i>1454</i>&nbsp;
+<i>1455</i>&nbsp;    private static final long BASE_HASH;
+<i>1456</i>&nbsp;    static {
+<b class="fc"><i>1457</i>&nbsp;        long bits = 0;</b>
+<b class="fc"><i>1458</i>&nbsp;        bits = bits * 31 + Double.doubleToLongBits(IDENTITY_TRANSFORM.getMzz());</b>
+<b class="fc"><i>1459</i>&nbsp;        bits = bits * 31 + Double.doubleToLongBits(IDENTITY_TRANSFORM.getMzy());</b>
+<b class="fc"><i>1460</i>&nbsp;        bits = bits * 31 + Double.doubleToLongBits(IDENTITY_TRANSFORM.getMzx());</b>
+<b class="fc"><i>1461</i>&nbsp;        bits = bits * 31 + Double.doubleToLongBits(IDENTITY_TRANSFORM.getMyz());</b>
+<b class="fc"><i>1462</i>&nbsp;        bits = bits * 31 + Double.doubleToLongBits(IDENTITY_TRANSFORM.getMxz());</b>
+<b class="fc"><i>1463</i>&nbsp;        BASE_HASH = bits;</b>
+<b class="fc"><i>1464</i>&nbsp;    }</b>
+<i>1465</i>&nbsp;
+<i>1466</i>&nbsp;    /**
+<i>1467</i>&nbsp;     * Returns the hashcode for this transform.  The base algorithm for
+<i>1468</i>&nbsp;     * computing the hashcode is defined by the implementation in
+<i>1469</i>&nbsp;     * the {@code BaseTransform} class.  This implementation is just a
+<i>1470</i>&nbsp;     * faster way of computing the same value knowing which elements of
+<i>1471</i>&nbsp;     * the transform matrix are populated.
+<i>1472</i>&nbsp;     * @return      a hash code for this transform.
+<i>1473</i>&nbsp;     */
+<i>1474</i>&nbsp;    @Override
+<i>1475</i>&nbsp;    public int hashCode() {
+<b class="nc"><i>1476</i>&nbsp;        if (isIdentity()) return 0;</b>
+<b class="nc"><i>1477</i>&nbsp;        long bits = BASE_HASH;</b>
+<b class="nc"><i>1478</i>&nbsp;        bits = bits * 31 + Double.doubleToLongBits(getMyy());</b>
+<b class="nc"><i>1479</i>&nbsp;        bits = bits * 31 + Double.doubleToLongBits(getMyx());</b>
+<b class="nc"><i>1480</i>&nbsp;        bits = bits * 31 + Double.doubleToLongBits(getMxy());</b>
+<b class="nc"><i>1481</i>&nbsp;        bits = bits * 31 + Double.doubleToLongBits(getMxx());</b>
+<b class="nc"><i>1482</i>&nbsp;        bits = bits * 31 + Double.doubleToLongBits(0.0); // mzt</b>
+<b class="nc"><i>1483</i>&nbsp;        bits = bits * 31 + Double.doubleToLongBits(getMyt());</b>
+<b class="nc"><i>1484</i>&nbsp;        bits = bits * 31 + Double.doubleToLongBits(getMxt());</b>
+<b class="nc"><i>1485</i>&nbsp;        return (((int) bits) ^ ((int) (bits &gt;&gt; 32)));</b>
+<i>1486</i>&nbsp;    }
+<i>1487</i>&nbsp;
+<i>1488</i>&nbsp;    /**
+<i>1489</i>&nbsp;     * Returns &lt;code&gt;true&lt;/code&gt; if this &lt;code&gt;Affine2D&lt;/code&gt;
+<i>1490</i>&nbsp;     * represents the same coordinate transform as the specified
+<i>1491</i>&nbsp;     * argument.
+<i>1492</i>&nbsp;     * @param obj the &lt;code&gt;Object&lt;/code&gt; to test for equality with this
+<i>1493</i>&nbsp;     * &lt;code&gt;Affine2D&lt;/code&gt;
+<i>1494</i>&nbsp;     * @return &lt;code&gt;true&lt;/code&gt; if &lt;code&gt;obj&lt;/code&gt; equals this
+<i>1495</i>&nbsp;     * &lt;code&gt;Affine2D&lt;/code&gt; object; &lt;code&gt;false&lt;/code&gt; otherwise.
+<i>1496</i>&nbsp;     */
+<i>1497</i>&nbsp;    @Override
+<i>1498</i>&nbsp;    public boolean equals(Object obj) {
+<b class="nc"><i>1499</i>&nbsp;        if (obj instanceof BaseTransform) {</b>
+<b class="nc"><i>1500</i>&nbsp;            BaseTransform a = (BaseTransform) obj;</b>
+<b class="nc"><i>1501</i>&nbsp;            return (a.getType() &lt;= TYPE_AFFINE2D_MASK &amp;&amp;</b>
+<b class="nc"><i>1502</i>&nbsp;                    a.getMxx() == this.mxx &amp;&amp;</b>
+<b class="nc"><i>1503</i>&nbsp;                    a.getMxy() == this.mxy &amp;&amp;</b>
+<b class="nc"><i>1504</i>&nbsp;                    a.getMxt() == this.mxt &amp;&amp;</b>
+<b class="nc"><i>1505</i>&nbsp;                    a.getMyx() == this.myx &amp;&amp;</b>
+<b class="nc"><i>1506</i>&nbsp;                    a.getMyy() == this.myy &amp;&amp;</b>
+<b class="nc"><i>1507</i>&nbsp;                    a.getMyt() == this.myt);</b>
+<i>1508</i>&nbsp;        }
+<b class="nc"><i>1509</i>&nbsp;        return false;</b>
+<i>1510</i>&nbsp;    }
+<i>1511</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2017-12-04 21:49</div>
+</div>
+</body>
+</html>

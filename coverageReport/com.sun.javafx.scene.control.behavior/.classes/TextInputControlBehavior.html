@@ -1,0 +1,869 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: TextInputControlBehavior</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.javafx.scene.control.behavior</a> ]
+</div>
+
+<h1>Coverage Summary for Class: TextInputControlBehavior (com.sun.javafx.scene.control.behavior)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">TextInputControlBehavior</td>
+<td class="coverageStat">
+  <span class="percent">
+    26.5%
+  </span>
+  <span class="absValue">
+    (13/ 49)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    47.4%
+  </span>
+  <span class="absValue">
+    (158/ 333)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">TextInputControlBehavior$1</td>
+<td class="coverageStat">
+  <span class="percent">
+    50%
+  </span>
+  <span class="absValue">
+    (1/ 2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    50%
+  </span>
+  <span class="absValue">
+    (1/ 2)
+  </span>
+</td>
+  </tr>
+  <tr>
+    <td class="name">TextInputControlBehavior$2</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+  </tr>
+  <tr>
+    <td class="name">TextInputControlBehavior$ContextMenuItem</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (3/ 3)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    30.2%
+  </span>
+  <span class="absValue">
+    (16/ 53)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    48.1%
+  </span>
+  <span class="absValue">
+    (163/ 339)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright (c) 2011, 2016, Oracle and/or its affiliates. All rights reserved.
+<i>3</i>&nbsp; * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+<i>4</i>&nbsp; *
+<i>5</i>&nbsp; *
+<i>6</i>&nbsp; *
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; *
+<i>11</i>&nbsp; *
+<i>12</i>&nbsp; *
+<i>13</i>&nbsp; *
+<i>14</i>&nbsp; *
+<i>15</i>&nbsp; *
+<i>16</i>&nbsp; *
+<i>17</i>&nbsp; *
+<i>18</i>&nbsp; *
+<i>19</i>&nbsp; *
+<i>20</i>&nbsp; *
+<i>21</i>&nbsp; *
+<i>22</i>&nbsp; *
+<i>23</i>&nbsp; *
+<i>24</i>&nbsp; */
+<i>25</i>&nbsp;package com.sun.javafx.scene.control.behavior;
+<i>26</i>&nbsp;
+<i>27</i>&nbsp;import com.sun.javafx.PlatformUtil;
+<i>28</i>&nbsp;import com.sun.javafx.application.PlatformImpl;
+<i>29</i>&nbsp;import com.sun.javafx.scene.control.Properties;
+<i>30</i>&nbsp;import com.sun.javafx.scene.control.skin.FXVK;
+<i>31</i>&nbsp;
+<i>32</i>&nbsp;import javafx.event.ActionEvent;
+<i>33</i>&nbsp;import javafx.event.Event;
+<i>34</i>&nbsp;import javafx.event.EventHandler;
+<i>35</i>&nbsp;import javafx.scene.control.skin.TextInputControlSkin;
+<i>36</i>&nbsp;import javafx.application.ConditionalFeature;
+<i>37</i>&nbsp;import javafx.beans.InvalidationListener;
+<i>38</i>&nbsp;import javafx.collections.ObservableList;
+<i>39</i>&nbsp;import javafx.geometry.NodeOrientation;
+<i>40</i>&nbsp;import javafx.scene.control.ContextMenu;
+<i>41</i>&nbsp;import javafx.scene.control.IndexRange;
+<i>42</i>&nbsp;import javafx.scene.control.MenuItem;
+<i>43</i>&nbsp;import javafx.scene.control.PasswordField;
+<i>44</i>&nbsp;import javafx.scene.control.SeparatorMenuItem;
+<i>45</i>&nbsp;import javafx.scene.control.TextInputControl;
+<i>46</i>&nbsp;import javafx.scene.input.ContextMenuEvent;
+<i>47</i>&nbsp;import javafx.scene.input.Clipboard;
+<i>48</i>&nbsp;import com.sun.javafx.scene.control.inputmap.InputMap;
+<i>49</i>&nbsp;import com.sun.javafx.scene.control.inputmap.KeyBinding;
+<i>50</i>&nbsp;import javafx.scene.input.KeyCode;
+<i>51</i>&nbsp;import javafx.scene.input.KeyEvent;
+<i>52</i>&nbsp;import javafx.scene.input.MouseEvent;
+<i>53</i>&nbsp;
+<i>54</i>&nbsp;import java.text.Bidi;
+<i>55</i>&nbsp;import java.util.function.Predicate;
+<i>56</i>&nbsp;
+<i>57</i>&nbsp;import static com.sun.javafx.PlatformUtil.isLinux;
+<i>58</i>&nbsp;import static com.sun.javafx.PlatformUtil.isMac;
+<i>59</i>&nbsp;import static com.sun.javafx.PlatformUtil.isWindows;
+<i>60</i>&nbsp;import static com.sun.javafx.scene.control.inputmap.KeyBinding.OptionalBoolean;
+<i>61</i>&nbsp;import static com.sun.javafx.scene.control.skin.resources.ControlResources.getString;
+<i>62</i>&nbsp;import static javafx.scene.control.skin.TextInputControlSkin.TextUnit;
+<i>63</i>&nbsp;import static javafx.scene.control.skin.TextInputControlSkin.Direction;
+<i>64</i>&nbsp;import static com.sun.javafx.scene.control.inputmap.InputMap.KeyMapping;
+<i>65</i>&nbsp;import static com.sun.javafx.scene.control.inputmap.InputMap.MouseMapping;
+<i>66</i>&nbsp;import static javafx.scene.input.KeyCode.*;
+<i>67</i>&nbsp;import static javafx.scene.input.KeyEvent.*;
+<i>68</i>&nbsp;
+<i>69</i>&nbsp;/**
+<i>70</i>&nbsp; * All of the &quot;button&quot; types (CheckBox, RadioButton, ToggleButton, and Button)
+<i>71</i>&nbsp; * and also maybe some other types like hyperlinks operate on the &quot;armed&quot;
+<i>72</i>&nbsp; * selection strategy, just like JButton. This behavior class encapsulates that
+<i>73</i>&nbsp; * logic in a way that can be reused and extended by each of the individual
+<i>74</i>&nbsp; * class behaviors.
+<i>75</i>&nbsp; *
+<i>76</i>&nbsp; */
+<i>77</i>&nbsp;public abstract class TextInputControlBehavior&lt;T extends TextInputControl&gt; extends BehaviorBase&lt;T&gt; {
+<i>78</i>&nbsp;
+<i>79</i>&nbsp;    /**
+<i>80</i>&nbsp;     * Specifies whether we ought to show handles. We should do it on touch platforms, but not
+<i>81</i>&nbsp;     * iOS (and maybe not Android either?)
+<i>82</i>&nbsp;     */
+<b class="fc"><i>83</i>&nbsp;    static final boolean SHOW_HANDLES = Properties.IS_TOUCH_SUPPORTED &amp;&amp; !PlatformUtil.isIOS();</b>
+<i>84</i>&nbsp;
+<i>85</i>&nbsp;    public static final String DISABLE_FORWARD_TO_PARENT = &quot;TextInputControlBehavior.disableForwardToParent&quot;;
+<i>86</i>&nbsp;
+<i>87</i>&nbsp;    /**************************************************************************
+<i>88</i>&nbsp;     * Fields                                                                 *
+<i>89</i>&nbsp;     *************************************************************************/
+<i>90</i>&nbsp;
+<i>91</i>&nbsp;    final T textInputControl;
+<i>92</i>&nbsp;
+<i>93</i>&nbsp;    protected ContextMenu contextMenu;
+<i>94</i>&nbsp;
+<b class="fc"><i>95</i>&nbsp;    private InvalidationListener textListener = observable -&gt; invalidateBidi();</b>
+<i>96</i>&nbsp;
+<i>97</i>&nbsp;    private final InputMap&lt;T&gt; inputMap;
+<i>98</i>&nbsp;
+<i>99</i>&nbsp;
+<i>100</i>&nbsp;
+<i>101</i>&nbsp;
+<i>102</i>&nbsp;    /***************************************************************************
+<i>103</i>&nbsp;     *                                                                         *
+<i>104</i>&nbsp;     * Constructors                                                            *
+<i>105</i>&nbsp;     *                                                                         *
+<i>106</i>&nbsp;     **************************************************************************/
+<i>107</i>&nbsp;
+<i>108</i>&nbsp;    public TextInputControlBehavior(T c) {
+<b class="fc"><i>109</i>&nbsp;        super(c);</b>
+<i>110</i>&nbsp;
+<b class="fc"><i>111</i>&nbsp;        this.textInputControl = c;</b>
+<i>112</i>&nbsp;
+<b class="fc"><i>113</i>&nbsp;        textInputControl.textProperty().addListener(textListener);</b>
+<i>114</i>&nbsp;
+<i>115</i>&nbsp;        // create a map for text input-specific mappings (this reuses the default
+<i>116</i>&nbsp;        // InputMap installed on the control, if it is non-null, allowing us to pick up any user-specified mappings)
+<b class="fc"><i>117</i>&nbsp;        inputMap = createInputMap();</b>
+<i>118</i>&nbsp;
+<i>119</i>&nbsp;        // some of the mappings are only valid when the control is editable, or
+<i>120</i>&nbsp;        // only on certain platforms, so we create the following predicates that filters out the mapping when the
+<i>121</i>&nbsp;        // control is not in the correct state / on the correct platform
+<b class="fc"><i>122</i>&nbsp;        final Predicate&lt;KeyEvent&gt; validWhenEditable = e -&gt; !c.isEditable();</b>
+<b class="fc"><i>123</i>&nbsp;        final Predicate&lt;KeyEvent&gt; validOnWindows = e -&gt; !PlatformUtil.isWindows();</b>
+<b class="fc"><i>124</i>&nbsp;        final Predicate&lt;KeyEvent&gt; validOnLinux = e -&gt; !PlatformUtil.isLinux();</b>
+<i>125</i>&nbsp;
+<i>126</i>&nbsp;        KeyMapping cancelEditMapping;
+<i>127</i>&nbsp;        KeyMapping consumeMostPressedEventsMapping;
+<i>128</i>&nbsp;
+<i>129</i>&nbsp;        // create a child input map for mappings which are applicable on all
+<i>130</i>&nbsp;        // platforms, and regardless of editing state
+<b class="fc"><i>131</i>&nbsp;        addDefaultMapping(inputMap,</b>
+<i>132</i>&nbsp;                // caret movement
+<b class="fc"><i>133</i>&nbsp;                keyMapping(RIGHT, e -&gt; nextCharacterVisually(true)),</b>
+<b class="fc"><i>134</i>&nbsp;                keyMapping(LEFT, e -&gt; nextCharacterVisually(false)),</b>
+<b class="fc"><i>135</i>&nbsp;                keyMapping(UP, e -&gt; c.home()),</b>
+<b class="fc"><i>136</i>&nbsp;                keyMapping(HOME, e -&gt; c.home()),</b>
+<b class="fc"><i>137</i>&nbsp;                keyMapping(DOWN, e -&gt; c.end()),</b>
+<b class="fc"><i>138</i>&nbsp;                keyMapping(END, e -&gt; c.end()),</b>
+<b class="fc"><i>139</i>&nbsp;                keyMapping(ENTER, this::fire),</b>
+<i>140</i>&nbsp;
+<b class="fc"><i>141</i>&nbsp;                keyMapping(new KeyBinding(HOME).shortcut(), e -&gt; c.home()),</b>
+<b class="fc"><i>142</i>&nbsp;                keyMapping(new KeyBinding(END).shortcut(), e -&gt; c.end()),</b>
+<i>143</i>&nbsp;
+<i>144</i>&nbsp;                // deletion (only applies when control is editable)
+<b class="fc"><i>145</i>&nbsp;                keyMapping(new KeyBinding(BACK_SPACE), e -&gt; deletePreviousChar(), validWhenEditable),</b>
+<b class="fc"><i>146</i>&nbsp;                keyMapping(new KeyBinding(BACK_SPACE).shift(), e -&gt; deletePreviousChar(), validWhenEditable),</b>
+<b class="fc"><i>147</i>&nbsp;                keyMapping(new KeyBinding(DELETE), e -&gt; deleteNextChar(), validWhenEditable),</b>
+<i>148</i>&nbsp;
+<i>149</i>&nbsp;                // cut (only applies when control is editable)
+<b class="fc"><i>150</i>&nbsp;                keyMapping(new KeyBinding(X).shortcut(), e -&gt; cut(), validWhenEditable),</b>
+<b class="fc"><i>151</i>&nbsp;                keyMapping(new KeyBinding(CUT), e -&gt; cut(), validWhenEditable),</b>
+<i>152</i>&nbsp;
+<i>153</i>&nbsp;                // copy
+<b class="fc"><i>154</i>&nbsp;                keyMapping(new KeyBinding(C).shortcut(), e -&gt; c.copy()),</b>
+<b class="fc"><i>155</i>&nbsp;                keyMapping(new KeyBinding(INSERT).shortcut(), e -&gt; c.copy()),</b>
+<b class="fc"><i>156</i>&nbsp;                keyMapping(COPY, e -&gt; c.copy()),</b>
+<i>157</i>&nbsp;
+<i>158</i>&nbsp;                // paste (only applies when control is editable)
+<b class="fc"><i>159</i>&nbsp;                keyMapping(new KeyBinding(V).shortcut(), e -&gt; paste(), validWhenEditable),</b>
+<b class="fc"><i>160</i>&nbsp;                keyMapping(new KeyBinding(PASTE), e -&gt; paste(), validWhenEditable),</b>
+<b class="fc"><i>161</i>&nbsp;                keyMapping(new KeyBinding(INSERT).shift(), e -&gt; paste(), validWhenEditable),</b>
+<i>162</i>&nbsp;
+<i>163</i>&nbsp;                // selection
+<b class="fc"><i>164</i>&nbsp;                keyMapping(new KeyBinding(RIGHT).shift(), e -&gt; selectRight()),</b>
+<b class="fc"><i>165</i>&nbsp;                keyMapping(new KeyBinding(LEFT).shift(), e -&gt; selectLeft()),</b>
+<b class="fc"><i>166</i>&nbsp;                keyMapping(new KeyBinding(UP).shift(), e -&gt; selectHome()),</b>
+<b class="fc"><i>167</i>&nbsp;                keyMapping(new KeyBinding(DOWN).shift(), e -&gt; selectEnd()),</b>
+<b class="fc"><i>168</i>&nbsp;                keyMapping(new KeyBinding(HOME).shortcut().shift(), e -&gt; selectHome()),</b>
+<b class="fc"><i>169</i>&nbsp;                keyMapping(new KeyBinding(END).shortcut().shift(), e -&gt; selectEnd()),</b>
+<b class="fc"><i>170</i>&nbsp;                keyMapping(new KeyBinding(A).shortcut(), e -&gt; c.selectAll()),</b>
+<i>171</i>&nbsp;
+<i>172</i>&nbsp;                // Traversal Bindings
+<i>173</i>&nbsp;                new KeyMapping(new KeyBinding(TAB), FocusTraversalInputMap::traverseNext),
+<b class="fc"><i>174</i>&nbsp;                new KeyMapping(new KeyBinding(TAB).shift(), FocusTraversalInputMap::traversePrevious),</b>
+<b class="fc"><i>175</i>&nbsp;                new KeyMapping(new KeyBinding(TAB).ctrl(), FocusTraversalInputMap::traverseNext),</b>
+<b class="fc"><i>176</i>&nbsp;                new KeyMapping(new KeyBinding(TAB).ctrl().shift(), FocusTraversalInputMap::traversePrevious),</b>
+<i>177</i>&nbsp;
+<i>178</i>&nbsp;                // The following keys are forwarded to the parent container
+<i>179</i>&nbsp;                cancelEditMapping = new KeyMapping(ESCAPE, this::cancelEdit),
+<i>180</i>&nbsp;
+<b class="fc"><i>181</i>&nbsp;                keyMapping(new KeyBinding(Z).shortcut(), e -&gt; undo()),</b>
+<i>182</i>&nbsp;
+<i>183</i>&nbsp;                // character input.
+<i>184</i>&nbsp;                // Any other key press first goes to normal text input
+<i>185</i>&nbsp;                // Note this is KEY_TYPED because otherwise the character is not available in the event.
+<b class="fc"><i>186</i>&nbsp;                keyMapping(new KeyBinding(null, KEY_TYPED)</b>
+<b class="fc"><i>187</i>&nbsp;                                    .alt(OptionalBoolean.ANY)</b>
+<b class="fc"><i>188</i>&nbsp;                                    .shift(OptionalBoolean.ANY)</b>
+<b class="fc"><i>189</i>&nbsp;                                    .ctrl(OptionalBoolean.ANY)</b>
+<b class="fc"><i>190</i>&nbsp;                                    .meta(OptionalBoolean.ANY),</b>
+<i>191</i>&nbsp;                           this::defaultKeyTyped),
+<i>192</i>&nbsp;
+<i>193</i>&nbsp;                // However, we want to consume other key press / release events too, for
+<i>194</i>&nbsp;                // things that would have been handled by the InputCharacter normally
+<i>195</i>&nbsp;                consumeMostPressedEventsMapping =
+<b class="fc"><i>196</i>&nbsp;                    keyMapping(new KeyBinding(null, KEY_PRESSED).shift(OptionalBoolean.ANY),</b>
+<b class="fc"><i>197</i>&nbsp;                               e -&gt; { if (!e.getCode().isFunctionKey()) e.consume(); }),</b>
+<i>198</i>&nbsp;
+<i>199</i>&nbsp;                // VK
+<b class="fc"><i>200</i>&nbsp;                new KeyMapping(new KeyBinding(DIGIT9).ctrl().shift(), e -&gt; {</b>
+<b class="nc"><i>201</i>&nbsp;                    FXVK.toggleUseVK(textInputControl);</b>
+<b class="fc"><i>202</i>&nbsp;                }, p -&gt; !PlatformImpl.isSupported(ConditionalFeature.VIRTUAL_KEYBOARD)),</b>
+<i>203</i>&nbsp;
+<i>204</i>&nbsp;                // mouse and context menu mappings
+<i>205</i>&nbsp;                new MouseMapping(MouseEvent.MOUSE_PRESSED, this::mousePressed),
+<i>206</i>&nbsp;                new MouseMapping(MouseEvent.MOUSE_DRAGGED, this::mouseDragged),
+<i>207</i>&nbsp;                new MouseMapping(MouseEvent.MOUSE_RELEASED, this::mouseReleased),
+<b class="fc"><i>208</i>&nbsp;                new InputMap.Mapping&lt;ContextMenuEvent&gt;(ContextMenuEvent.CONTEXT_MENU_REQUESTED, this::contextMenuRequested) {</b>
+<i>209</i>&nbsp;                    @Override public int getSpecificity(Event event) {
+<b class="nc"><i>210</i>&nbsp;                        return 1;</b>
+<i>211</i>&nbsp;                    }
+<i>212</i>&nbsp;                }
+<i>213</i>&nbsp;        );
+<i>214</i>&nbsp;
+<b class="fc"><i>215</i>&nbsp;        cancelEditMapping.setAutoConsume(false);</b>
+<b class="fc"><i>216</i>&nbsp;        consumeMostPressedEventsMapping.setAutoConsume(false);</b>
+<i>217</i>&nbsp;
+<i>218</i>&nbsp;        // mac os specific mappings
+<b class="fc"><i>219</i>&nbsp;        InputMap&lt;T&gt; macOsInputMap = new InputMap&lt;&gt;(c);</b>
+<b class="fc"><i>220</i>&nbsp;        macOsInputMap.setInterceptor(e -&gt; !PlatformUtil.isMac());</b>
+<b class="fc"><i>221</i>&nbsp;        macOsInputMap.getMappings().addAll(</b>
+<i>222</i>&nbsp;            // Mac OS specific mappings
+<b class="fc"><i>223</i>&nbsp;            keyMapping(new KeyBinding(HOME).shift(), e -&gt; selectHomeExtend()),</b>
+<b class="fc"><i>224</i>&nbsp;            keyMapping(new KeyBinding(END).shift(), e -&gt; selectEndExtend()),</b>
+<b class="fc"><i>225</i>&nbsp;            keyMapping(new KeyBinding(LEFT).shortcut(), e -&gt; c.home()),</b>
+<b class="fc"><i>226</i>&nbsp;            keyMapping(new KeyBinding(RIGHT).shortcut(), e -&gt; c.end()),</b>
+<b class="fc"><i>227</i>&nbsp;            keyMapping(new KeyBinding(LEFT).alt(), e -&gt; leftWord()),</b>
+<b class="fc"><i>228</i>&nbsp;            keyMapping(new KeyBinding(RIGHT).alt(), e -&gt; rightWord()),</b>
+<b class="fc"><i>229</i>&nbsp;            keyMapping(new KeyBinding(DELETE).alt(), e -&gt; deleteNextWord()),</b>
+<b class="fc"><i>230</i>&nbsp;            keyMapping(new KeyBinding(BACK_SPACE).alt(), e -&gt; deletePreviousWord()),</b>
+<b class="fc"><i>231</i>&nbsp;            keyMapping(new KeyBinding(BACK_SPACE).shortcut(), e -&gt; deleteFromLineStart()),</b>
+<b class="fc"><i>232</i>&nbsp;            keyMapping(new KeyBinding(Z).shortcut().shift(), e -&gt; redo()),</b>
+<b class="fc"><i>233</i>&nbsp;            keyMapping(new KeyBinding(LEFT).shortcut().shift(), e -&gt; selectHomeExtend()),</b>
+<b class="fc"><i>234</i>&nbsp;            keyMapping(new KeyBinding(RIGHT).shortcut().shift(), e -&gt; selectEndExtend()),</b>
+<i>235</i>&nbsp;
+<i>236</i>&nbsp;            // Mac OS specific selection mappings
+<b class="fc"><i>237</i>&nbsp;            keyMapping(new KeyBinding(LEFT).shift().alt(), e -&gt; selectLeftWord()),</b>
+<b class="fc"><i>238</i>&nbsp;            keyMapping(new KeyBinding(RIGHT).shift().alt(), e -&gt; selectRightWord())</b>
+<i>239</i>&nbsp;        );
+<b class="fc"><i>240</i>&nbsp;        addDefaultChildMap(inputMap, macOsInputMap);</b>
+<i>241</i>&nbsp;
+<i>242</i>&nbsp;        // windows / linux specific mappings
+<b class="fc"><i>243</i>&nbsp;        InputMap&lt;T&gt; nonMacOsInputMap = new InputMap&lt;&gt;(c);</b>
+<b class="fc"><i>244</i>&nbsp;        nonMacOsInputMap.setInterceptor(e -&gt; PlatformUtil.isMac());</b>
+<b class="fc"><i>245</i>&nbsp;        nonMacOsInputMap.getMappings().addAll(</b>
+<b class="fc"><i>246</i>&nbsp;            keyMapping(new KeyBinding(HOME).shift(), e -&gt; selectHome()),</b>
+<b class="fc"><i>247</i>&nbsp;            keyMapping(new KeyBinding(END).shift(), e -&gt; selectEnd()),</b>
+<b class="fc"><i>248</i>&nbsp;            keyMapping(new KeyBinding(LEFT).ctrl(), e -&gt; leftWord()),</b>
+<b class="fc"><i>249</i>&nbsp;            keyMapping(new KeyBinding(RIGHT).ctrl(), e -&gt; rightWord()),</b>
+<b class="fc"><i>250</i>&nbsp;            keyMapping(new KeyBinding(H).ctrl(), e -&gt; deletePreviousChar()),</b>
+<b class="fc"><i>251</i>&nbsp;            keyMapping(new KeyBinding(DELETE).ctrl(), e -&gt; deleteNextWord()),</b>
+<b class="fc"><i>252</i>&nbsp;            keyMapping(new KeyBinding(BACK_SPACE).ctrl(), e -&gt; deletePreviousWord()),</b>
+<b class="fc"><i>253</i>&nbsp;            keyMapping(new KeyBinding(BACK_SLASH).ctrl(), e -&gt; c.deselect()),</b>
+<b class="fc"><i>254</i>&nbsp;            keyMapping(new KeyBinding(Y).ctrl(), e -&gt; redo(), validOnWindows),</b>
+<b class="fc"><i>255</i>&nbsp;            keyMapping(new KeyBinding(Z).ctrl().shift(), e -&gt; redo(), validOnLinux),</b>
+<b class="fc"><i>256</i>&nbsp;            keyMapping(new KeyBinding(LEFT).ctrl().shift(), e -&gt; selectLeftWord()),</b>
+<b class="fc"><i>257</i>&nbsp;            keyMapping(new KeyBinding(RIGHT).ctrl().shift(), e -&gt; selectRightWord())</b>
+<i>258</i>&nbsp;        );
+<b class="fc"><i>259</i>&nbsp;        addDefaultChildMap(inputMap, nonMacOsInputMap);</b>
+<i>260</i>&nbsp;
+<b class="fc"><i>261</i>&nbsp;        addKeyPadMappings(inputMap);</b>
+<i>262</i>&nbsp;
+<b class="fc"><i>263</i>&nbsp;        textInputControl.textProperty().addListener(textListener);</b>
+<i>264</i>&nbsp;
+<b class="fc"><i>265</i>&nbsp;        contextMenu = new ContextMenu();</b>
+<b class="fc"><i>266</i>&nbsp;}</b>
+<i>267</i>&nbsp;
+<i>268</i>&nbsp;    @Override public InputMap&lt;T&gt; getInputMap() {
+<b class="nc"><i>269</i>&nbsp;        return inputMap;</b>
+<i>270</i>&nbsp;    }
+<i>271</i>&nbsp;
+<i>272</i>&nbsp;    /**
+<i>273</i>&nbsp;     * Bind keypad arrow keys to the same as the regular arrow keys.
+<i>274</i>&nbsp;     */
+<i>275</i>&nbsp;    protected void addKeyPadMappings(InputMap&lt;T&gt; map) {
+<i>276</i>&nbsp;        // First create a temporary map for the keypad mappings
+<b class="fc"><i>277</i>&nbsp;        InputMap&lt;T&gt; tmpMap = new InputMap&lt;&gt;(getNode());</b>
+<b class="fc"><i>278</i>&nbsp;        for (Object o : map.getMappings()) {</b>
+<b class="fc"><i>279</i>&nbsp;            if (o instanceof KeyMapping) {</b>
+<b class="fc"><i>280</i>&nbsp;                KeyMapping mapping = (KeyMapping)o;</b>
+<b class="fc"><i>281</i>&nbsp;                KeyBinding kb = (KeyBinding)mapping.getMappingKey();</b>
+<b class="fc"><i>282</i>&nbsp;                if (kb.getCode() != null) {</b>
+<b class="fc"><i>283</i>&nbsp;                    KeyCode newCode = null;</b>
+<b class="fc"><i>284</i>&nbsp;                    switch (kb.getCode()) {</b>
+<b class="fc"><i>285</i>&nbsp;                        case LEFT:  newCode = KP_LEFT;  break;</b>
+<b class="fc"><i>286</i>&nbsp;                        case RIGHT: newCode = KP_RIGHT; break;</b>
+<b class="fc"><i>287</i>&nbsp;                        case UP:    newCode = KP_UP;    break;</b>
+<b class="fc"><i>288</i>&nbsp;                        case DOWN:  newCode = KP_DOWN;  break;</b>
+<i>289</i>&nbsp;                        default:
+<i>290</i>&nbsp;                    }
+<b class="fc"><i>291</i>&nbsp;                    if (newCode != null) {</b>
+<b class="fc"><i>292</i>&nbsp;                        KeyBinding newkb = new KeyBinding(newCode).shift(kb.getShift())</b>
+<b class="fc"><i>293</i>&nbsp;                                                                  .ctrl(kb.getCtrl())</b>
+<b class="fc"><i>294</i>&nbsp;                                                                  .alt(kb.getAlt())</b>
+<b class="fc"><i>295</i>&nbsp;                                                                  .meta(kb.getMeta());</b>
+<b class="fc"><i>296</i>&nbsp;                        tmpMap.getMappings().add(new KeyMapping(newkb, mapping.getEventHandler()));</b>
+<i>297</i>&nbsp;                    }
+<i>298</i>&nbsp;                }
+<i>299</i>&nbsp;            }
+<b class="fc"><i>300</i>&nbsp;        }</b>
+<i>301</i>&nbsp;        // Install mappings
+<b class="fc"><i>302</i>&nbsp;        for (Object o : tmpMap.getMappings()) {</b>
+<b class="fc"><i>303</i>&nbsp;            map.getMappings().add((KeyMapping)o);</b>
+<b class="fc"><i>304</i>&nbsp;        }</b>
+<i>305</i>&nbsp;
+<i>306</i>&nbsp;        // Recursive call for child maps
+<b class="fc"><i>307</i>&nbsp;        for (Object o : map.getChildInputMaps()) {</b>
+<b class="fc"><i>308</i>&nbsp;            addKeyPadMappings((InputMap&lt;T&gt;)o);</b>
+<b class="fc"><i>309</i>&nbsp;        }</b>
+<b class="fc"><i>310</i>&nbsp;    }</b>
+<i>311</i>&nbsp;
+<i>312</i>&nbsp;
+<i>313</i>&nbsp;    /**
+<i>314</i>&nbsp;     * Wraps the event handler to pause caret blinking when
+<i>315</i>&nbsp;     * processing the key event.
+<i>316</i>&nbsp;     */
+<i>317</i>&nbsp;    protected KeyMapping keyMapping(final KeyCode keyCode, final EventHandler&lt;KeyEvent&gt; eventHandler) {
+<b class="fc"><i>318</i>&nbsp;        return keyMapping(new KeyBinding(keyCode), eventHandler);</b>
+<i>319</i>&nbsp;    }
+<i>320</i>&nbsp;
+<i>321</i>&nbsp;    protected KeyMapping keyMapping(KeyBinding keyBinding, final EventHandler&lt;KeyEvent&gt; eventHandler) {
+<b class="fc"><i>322</i>&nbsp;        return keyMapping(keyBinding, eventHandler, null);</b>
+<i>323</i>&nbsp;    }
+<i>324</i>&nbsp;
+<i>325</i>&nbsp;    protected KeyMapping keyMapping(KeyBinding keyBinding, final EventHandler&lt;KeyEvent&gt; eventHandler,
+<i>326</i>&nbsp;                                    Predicate&lt;KeyEvent&gt; interceptor) {
+<b class="fc"><i>327</i>&nbsp;        return new KeyMapping(keyBinding,</b>
+<i>328</i>&nbsp;                              e -&gt; {
+<b class="fc"><i>329</i>&nbsp;                                  setCaretAnimating(false);</b>
+<b class="fc"><i>330</i>&nbsp;                                  eventHandler.handle(e);</b>
+<b class="fc"><i>331</i>&nbsp;                                  setCaretAnimating(true);</b>
+<b class="fc"><i>332</i>&nbsp;                              },</b>
+<i>333</i>&nbsp;                              interceptor);
+<i>334</i>&nbsp;    }
+<i>335</i>&nbsp;
+<i>336</i>&nbsp;
+<i>337</i>&nbsp;
+<i>338</i>&nbsp;
+<i>339</i>&nbsp;
+<i>340</i>&nbsp;    /**************************************************************************
+<i>341</i>&nbsp;     * Disposal methods                                                       *
+<i>342</i>&nbsp;     *************************************************************************/
+<i>343</i>&nbsp;
+<i>344</i>&nbsp;    @Override public void dispose() {
+<b class="nc"><i>345</i>&nbsp;        textInputControl.textProperty().removeListener(textListener);</b>
+<b class="nc"><i>346</i>&nbsp;        super.dispose();</b>
+<b class="nc"><i>347</i>&nbsp;    }</b>
+<i>348</i>&nbsp;
+<i>349</i>&nbsp;    /**************************************************************************
+<i>350</i>&nbsp;     * Abstract methods                                                       *
+<i>351</i>&nbsp;     *************************************************************************/
+<i>352</i>&nbsp;
+<i>353</i>&nbsp;    protected abstract void deleteChar(boolean previous);
+<i>354</i>&nbsp;    protected abstract void replaceText(int start, int end, String txt);
+<i>355</i>&nbsp;    protected abstract void setCaretAnimating(boolean play);
+<i>356</i>&nbsp;    protected abstract void deleteFromLineStart();
+<i>357</i>&nbsp;
+<i>358</i>&nbsp;    protected abstract void mousePressed(MouseEvent e);
+<i>359</i>&nbsp;    protected abstract void mouseDragged(MouseEvent e);
+<i>360</i>&nbsp;    protected abstract void mouseReleased(MouseEvent e);
+<i>361</i>&nbsp;    protected abstract void contextMenuRequested(ContextMenuEvent e);
+<i>362</i>&nbsp;
+<i>363</i>&nbsp;    /**************************************************************************
+<i>364</i>&nbsp;     * Key handling implementation                                            *
+<i>365</i>&nbsp;     *************************************************************************/
+<i>366</i>&nbsp;
+<i>367</i>&nbsp;    /**
+<i>368</i>&nbsp;     * The default handler for a key typed event, which is called when none of
+<i>369</i>&nbsp;     * the other key bindings match. This is the method which handles basic
+<i>370</i>&nbsp;     * text entry.
+<i>371</i>&nbsp;     * @param event not null
+<i>372</i>&nbsp;     */
+<i>373</i>&nbsp;    private void defaultKeyTyped(KeyEvent event) {
+<b class="fc"><i>374</i>&nbsp;        final TextInputControl textInput = getNode();</b>
+<i>375</i>&nbsp;        // I&#39;m not sure this case can actually ever happen, maybe this
+<i>376</i>&nbsp;        // should be an assert instead?
+<b class="fc"><i>377</i>&nbsp;        if (!textInput.isEditable() || textInput.isDisabled()) return;</b>
+<i>378</i>&nbsp;
+<i>379</i>&nbsp;        // Sometimes we get events with no key character, in which case
+<i>380</i>&nbsp;        // we need to bail.
+<b class="fc"><i>381</i>&nbsp;        String character = event.getCharacter();</b>
+<b class="fc"><i>382</i>&nbsp;        if (character.length() == 0) return;</b>
+<i>383</i>&nbsp;
+<i>384</i>&nbsp;        // Filter out control keys except control+Alt on PC or Alt on Mac
+<b class="fc"><i>385</i>&nbsp;        if (event.isControlDown() || event.isAltDown() || (isMac() &amp;&amp; event.isMetaDown())) {</b>
+<b class="nc"><i>386</i>&nbsp;            if (!((event.isControlDown() || isMac()) &amp;&amp; event.isAltDown())) return;</b>
+<i>387</i>&nbsp;        }
+<i>388</i>&nbsp;
+<b class="fc"><i>389</i>&nbsp;        setEditing(true);</b>
+<i>390</i>&nbsp;
+<i>391</i>&nbsp;        // Ignore characters in the control range and the ASCII delete
+<i>392</i>&nbsp;        // character as well as meta key presses
+<b class="fc"><i>393</i>&nbsp;        if (character.charAt(0) &gt; 0x1F</b>
+<b class="fc"><i>394</i>&nbsp;                &amp;&amp; character.charAt(0) != 0x7F</b>
+<b class="fc"><i>395</i>&nbsp;                &amp;&amp; !event.isMetaDown()) { // Not sure about this one</b>
+<b class="fc"><i>396</i>&nbsp;            final IndexRange selection = textInput.getSelection();</b>
+<b class="fc"><i>397</i>&nbsp;            final int start = selection.getStart();</b>
+<b class="fc"><i>398</i>&nbsp;            final int end = selection.getEnd();</b>
+<i>399</i>&nbsp;
+<b class="fc"><i>400</i>&nbsp;            replaceText(start, end, character);</b>
+<i>401</i>&nbsp;        }
+<i>402</i>&nbsp;
+<b class="fc"><i>403</i>&nbsp;        setEditing(false);</b>
+<b class="fc"><i>404</i>&nbsp;    }</b>
+<i>405</i>&nbsp;
+<b class="fc"><i>406</i>&nbsp;    private Bidi bidi = null;</b>
+<b class="fc"><i>407</i>&nbsp;    private Boolean mixed = null;</b>
+<b class="fc"><i>408</i>&nbsp;    private Boolean rtlText = null;</b>
+<i>409</i>&nbsp;
+<i>410</i>&nbsp;    private void invalidateBidi() {
+<b class="fc"><i>411</i>&nbsp;        bidi = null;</b>
+<b class="fc"><i>412</i>&nbsp;        mixed = null;</b>
+<b class="fc"><i>413</i>&nbsp;        rtlText = null;</b>
+<b class="fc"><i>414</i>&nbsp;    }</b>
+<i>415</i>&nbsp;
+<i>416</i>&nbsp;    private Bidi getBidi() {
+<b class="nc"><i>417</i>&nbsp;        if (bidi == null) {</b>
+<b class="nc"><i>418</i>&nbsp;            bidi = new Bidi(textInputControl.textProperty().getValueSafe(),</b>
+<b class="nc"><i>419</i>&nbsp;                    (textInputControl.getEffectiveNodeOrientation() == NodeOrientation.RIGHT_TO_LEFT)</b>
+<b class="nc"><i>420</i>&nbsp;                            ? Bidi.DIRECTION_RIGHT_TO_LEFT</b>
+<b class="nc"><i>421</i>&nbsp;                            : Bidi.DIRECTION_LEFT_TO_RIGHT);</b>
+<i>422</i>&nbsp;        }
+<b class="nc"><i>423</i>&nbsp;        return bidi;</b>
+<i>424</i>&nbsp;    }
+<i>425</i>&nbsp;
+<i>426</i>&nbsp;    protected boolean isMixed() {
+<b class="nc"><i>427</i>&nbsp;        if (mixed == null) {</b>
+<b class="nc"><i>428</i>&nbsp;            mixed = getBidi().isMixed();</b>
+<i>429</i>&nbsp;        }
+<b class="nc"><i>430</i>&nbsp;        return mixed;</b>
+<i>431</i>&nbsp;    }
+<i>432</i>&nbsp;
+<i>433</i>&nbsp;    protected boolean isRTLText() {
+<b class="nc"><i>434</i>&nbsp;        if (rtlText == null) {</b>
+<b class="nc"><i>435</i>&nbsp;            Bidi bidi = getBidi();</b>
+<b class="nc"><i>436</i>&nbsp;            rtlText =</b>
+<b class="nc"><i>437</i>&nbsp;                    (bidi.isRightToLeft() ||</b>
+<b class="nc"><i>438</i>&nbsp;                            (isMixed() &amp;&amp;</b>
+<b class="nc"><i>439</i>&nbsp;                                    textInputControl.getEffectiveNodeOrientation() == NodeOrientation.RIGHT_TO_LEFT));</b>
+<i>440</i>&nbsp;        }
+<b class="nc"><i>441</i>&nbsp;        return rtlText;</b>
+<i>442</i>&nbsp;    }
+<i>443</i>&nbsp;
+<i>444</i>&nbsp;    private void nextCharacterVisually(boolean moveRight) {
+<b class="nc"><i>445</i>&nbsp;        if (isMixed()) {</b>
+<b class="nc"><i>446</i>&nbsp;            TextInputControlSkin&lt;?&gt; skin = (TextInputControlSkin&lt;?&gt;)textInputControl.getSkin();</b>
+<b class="nc"><i>447</i>&nbsp;            skin.moveCaret(TextUnit.CHARACTER, moveRight ? Direction.RIGHT : Direction.LEFT, false);</b>
+<b class="nc"><i>448</i>&nbsp;        } else if (moveRight != isRTLText()) {</b>
+<b class="nc"><i>449</i>&nbsp;            textInputControl.forward();</b>
+<i>450</i>&nbsp;        } else {
+<b class="nc"><i>451</i>&nbsp;            textInputControl.backward();</b>
+<i>452</i>&nbsp;        }
+<b class="nc"><i>453</i>&nbsp;    }</b>
+<i>454</i>&nbsp;
+<i>455</i>&nbsp;    private void selectLeft() {
+<b class="nc"><i>456</i>&nbsp;        if (isRTLText()) {</b>
+<b class="nc"><i>457</i>&nbsp;            textInputControl.selectForward();</b>
+<i>458</i>&nbsp;        } else {
+<b class="nc"><i>459</i>&nbsp;            textInputControl.selectBackward();</b>
+<i>460</i>&nbsp;        }
+<b class="nc"><i>461</i>&nbsp;    }</b>
+<i>462</i>&nbsp;
+<i>463</i>&nbsp;    private void selectRight() {
+<b class="nc"><i>464</i>&nbsp;        if (isRTLText()) {</b>
+<b class="nc"><i>465</i>&nbsp;            textInputControl.selectBackward();</b>
+<i>466</i>&nbsp;        } else {
+<b class="nc"><i>467</i>&nbsp;            textInputControl.selectForward();</b>
+<i>468</i>&nbsp;        }
+<b class="nc"><i>469</i>&nbsp;    }</b>
+<i>470</i>&nbsp;
+<i>471</i>&nbsp;    private void deletePreviousChar() {
+<b class="nc"><i>472</i>&nbsp;        setEditing(true);</b>
+<b class="nc"><i>473</i>&nbsp;        deleteChar(true);</b>
+<b class="nc"><i>474</i>&nbsp;        setEditing(false);</b>
+<b class="nc"><i>475</i>&nbsp;    }</b>
+<i>476</i>&nbsp;
+<i>477</i>&nbsp;    private void deleteNextChar() {
+<b class="nc"><i>478</i>&nbsp;        setEditing(true);</b>
+<b class="nc"><i>479</i>&nbsp;        deleteChar(false);</b>
+<b class="nc"><i>480</i>&nbsp;        setEditing(false);</b>
+<b class="nc"><i>481</i>&nbsp;    }</b>
+<i>482</i>&nbsp;
+<i>483</i>&nbsp;    protected void deletePreviousWord() {
+<b class="nc"><i>484</i>&nbsp;        setEditing(true);</b>
+<b class="nc"><i>485</i>&nbsp;        TextInputControl textInputControl = getNode();</b>
+<b class="nc"><i>486</i>&nbsp;        int end = textInputControl.getCaretPosition();</b>
+<i>487</i>&nbsp;
+<b class="nc"><i>488</i>&nbsp;        if (end &gt; 0) {</b>
+<b class="nc"><i>489</i>&nbsp;            textInputControl.previousWord();</b>
+<b class="nc"><i>490</i>&nbsp;            int start = textInputControl.getCaretPosition();</b>
+<b class="nc"><i>491</i>&nbsp;            replaceText(start, end, &quot;&quot;);</b>
+<i>492</i>&nbsp;        }
+<b class="nc"><i>493</i>&nbsp;        setEditing(false);</b>
+<b class="nc"><i>494</i>&nbsp;    }</b>
+<i>495</i>&nbsp;
+<i>496</i>&nbsp;    protected void deleteNextWord() {
+<b class="nc"><i>497</i>&nbsp;        setEditing(true);</b>
+<b class="nc"><i>498</i>&nbsp;        TextInputControl textInputControl = getNode();</b>
+<b class="nc"><i>499</i>&nbsp;        int start = textInputControl.getCaretPosition();</b>
+<i>500</i>&nbsp;
+<b class="nc"><i>501</i>&nbsp;        if (start &lt; textInputControl.getLength()) {</b>
+<b class="nc"><i>502</i>&nbsp;            nextWord();</b>
+<b class="nc"><i>503</i>&nbsp;            int end = textInputControl.getCaretPosition();</b>
+<b class="nc"><i>504</i>&nbsp;            replaceText(start, end, &quot;&quot;);</b>
+<i>505</i>&nbsp;        }
+<b class="nc"><i>506</i>&nbsp;        setEditing(false);</b>
+<b class="nc"><i>507</i>&nbsp;    }</b>
+<i>508</i>&nbsp;
+<i>509</i>&nbsp;    public void deleteSelection() {
+<b class="nc"><i>510</i>&nbsp;        setEditing(true);</b>
+<b class="nc"><i>511</i>&nbsp;        TextInputControl textInputControl = getNode();</b>
+<b class="nc"><i>512</i>&nbsp;        IndexRange selection = textInputControl.getSelection();</b>
+<i>513</i>&nbsp;
+<b class="nc"><i>514</i>&nbsp;        if (selection.getLength() &gt; 0) {</b>
+<b class="nc"><i>515</i>&nbsp;            deleteChar(false);</b>
+<i>516</i>&nbsp;        }
+<b class="nc"><i>517</i>&nbsp;        setEditing(false);</b>
+<b class="nc"><i>518</i>&nbsp;    }</b>
+<i>519</i>&nbsp;
+<i>520</i>&nbsp;    public void cut() {
+<b class="nc"><i>521</i>&nbsp;        setEditing(true);</b>
+<b class="nc"><i>522</i>&nbsp;        getNode().cut();</b>
+<b class="nc"><i>523</i>&nbsp;        setEditing(false);</b>
+<b class="nc"><i>524</i>&nbsp;    }</b>
+<i>525</i>&nbsp;
+<i>526</i>&nbsp;    public void paste() {
+<b class="nc"><i>527</i>&nbsp;        setEditing(true);</b>
+<b class="nc"><i>528</i>&nbsp;        getNode().paste();</b>
+<b class="nc"><i>529</i>&nbsp;        setEditing(false);</b>
+<b class="nc"><i>530</i>&nbsp;    }</b>
+<i>531</i>&nbsp;
+<i>532</i>&nbsp;    public void undo() {
+<b class="nc"><i>533</i>&nbsp;        setEditing(true);</b>
+<b class="nc"><i>534</i>&nbsp;        getNode().undo();</b>
+<b class="nc"><i>535</i>&nbsp;        setEditing(false);</b>
+<b class="nc"><i>536</i>&nbsp;    }</b>
+<i>537</i>&nbsp;
+<i>538</i>&nbsp;    public void redo() {
+<b class="nc"><i>539</i>&nbsp;        setEditing(true);</b>
+<b class="nc"><i>540</i>&nbsp;        getNode().redo();</b>
+<b class="nc"><i>541</i>&nbsp;        setEditing(false);</b>
+<b class="nc"><i>542</i>&nbsp;    }</b>
+<i>543</i>&nbsp;
+<i>544</i>&nbsp;    protected void selectPreviousWord() {
+<b class="nc"><i>545</i>&nbsp;        getNode().selectPreviousWord();</b>
+<b class="nc"><i>546</i>&nbsp;    }</b>
+<i>547</i>&nbsp;
+<i>548</i>&nbsp;    public void selectNextWord() {
+<b class="nc"><i>549</i>&nbsp;        TextInputControl textInputControl = getNode();</b>
+<b class="nc"><i>550</i>&nbsp;        if (isMac() || isLinux()) {</b>
+<b class="nc"><i>551</i>&nbsp;            textInputControl.selectEndOfNextWord();</b>
+<i>552</i>&nbsp;        } else {
+<b class="nc"><i>553</i>&nbsp;            textInputControl.selectNextWord();</b>
+<i>554</i>&nbsp;        }
+<b class="nc"><i>555</i>&nbsp;    }</b>
+<i>556</i>&nbsp;
+<i>557</i>&nbsp;    private void selectLeftWord() {
+<b class="nc"><i>558</i>&nbsp;        if (isRTLText()) {</b>
+<b class="nc"><i>559</i>&nbsp;            selectNextWord();</b>
+<i>560</i>&nbsp;        } else {
+<b class="nc"><i>561</i>&nbsp;            selectPreviousWord();</b>
+<i>562</i>&nbsp;        }
+<b class="nc"><i>563</i>&nbsp;    }</b>
+<i>564</i>&nbsp;
+<i>565</i>&nbsp;    private void selectRightWord() {
+<b class="nc"><i>566</i>&nbsp;        if (isRTLText()) {</b>
+<b class="nc"><i>567</i>&nbsp;            selectPreviousWord();</b>
+<i>568</i>&nbsp;        } else {
+<b class="nc"><i>569</i>&nbsp;            selectNextWord();</b>
+<i>570</i>&nbsp;        }
+<b class="nc"><i>571</i>&nbsp;    }</b>
+<i>572</i>&nbsp;
+<i>573</i>&nbsp;    protected void selectWord() {
+<b class="nc"><i>574</i>&nbsp;        final TextInputControl textInputControl = getNode();</b>
+<b class="nc"><i>575</i>&nbsp;        textInputControl.previousWord();</b>
+<b class="nc"><i>576</i>&nbsp;        if (isWindows()) {</b>
+<b class="nc"><i>577</i>&nbsp;            textInputControl.selectNextWord();</b>
+<i>578</i>&nbsp;        } else {
+<b class="nc"><i>579</i>&nbsp;            textInputControl.selectEndOfNextWord();</b>
+<i>580</i>&nbsp;        }
+<b class="nc"><i>581</i>&nbsp;        if (SHOW_HANDLES &amp;&amp; contextMenu.isShowing()) {</b>
+<b class="nc"><i>582</i>&nbsp;            populateContextMenu();</b>
+<i>583</i>&nbsp;        }
+<b class="nc"><i>584</i>&nbsp;    }</b>
+<i>585</i>&nbsp;
+<i>586</i>&nbsp;    protected void selectAll() {
+<b class="nc"><i>587</i>&nbsp;        getNode().selectAll();</b>
+<b class="nc"><i>588</i>&nbsp;        if (SHOW_HANDLES &amp;&amp; contextMenu.isShowing()) {</b>
+<b class="nc"><i>589</i>&nbsp;            populateContextMenu();</b>
+<i>590</i>&nbsp;        }
+<b class="nc"><i>591</i>&nbsp;    }</b>
+<i>592</i>&nbsp;
+<i>593</i>&nbsp;    protected void previousWord() {
+<b class="nc"><i>594</i>&nbsp;        getNode().previousWord();</b>
+<b class="nc"><i>595</i>&nbsp;    }</b>
+<i>596</i>&nbsp;
+<i>597</i>&nbsp;    protected void nextWord() {
+<b class="nc"><i>598</i>&nbsp;        TextInputControl textInputControl = getNode();</b>
+<b class="nc"><i>599</i>&nbsp;        if (isMac() || isLinux()) {</b>
+<b class="nc"><i>600</i>&nbsp;            textInputControl.endOfNextWord();</b>
+<i>601</i>&nbsp;        } else {
+<b class="nc"><i>602</i>&nbsp;            textInputControl.nextWord();</b>
+<i>603</i>&nbsp;        }
+<b class="nc"><i>604</i>&nbsp;    }</b>
+<i>605</i>&nbsp;
+<i>606</i>&nbsp;    private void leftWord() {
+<b class="nc"><i>607</i>&nbsp;        if (isRTLText()) {</b>
+<b class="nc"><i>608</i>&nbsp;            nextWord();</b>
+<i>609</i>&nbsp;        } else {
+<b class="nc"><i>610</i>&nbsp;            previousWord();</b>
+<i>611</i>&nbsp;        }
+<b class="nc"><i>612</i>&nbsp;    }</b>
+<i>613</i>&nbsp;
+<i>614</i>&nbsp;    private void rightWord() {
+<b class="nc"><i>615</i>&nbsp;        if (isRTLText()) {</b>
+<b class="nc"><i>616</i>&nbsp;            previousWord();</b>
+<i>617</i>&nbsp;        } else {
+<b class="nc"><i>618</i>&nbsp;            nextWord();</b>
+<i>619</i>&nbsp;        }
+<b class="nc"><i>620</i>&nbsp;    }</b>
+<i>621</i>&nbsp;
+<b class="nc"><i>622</i>&nbsp;    protected void fire(KeyEvent event) { } // TODO move to TextFieldBehavior</b>
+<b class="nc"><i>623</i>&nbsp;    protected void cancelEdit(KeyEvent event) { forwardToParent(event);} // not autoconsumed</b>
+<i>624</i>&nbsp;
+<i>625</i>&nbsp;    protected void forwardToParent(KeyEvent event) {
+<i>626</i>&nbsp;        // fix for JDK-8145515
+<b class="nc"><i>627</i>&nbsp;        if (getNode().getProperties().containsKey(DISABLE_FORWARD_TO_PARENT)) {</b>
+<b class="nc"><i>628</i>&nbsp;            return;</b>
+<i>629</i>&nbsp;        }
+<i>630</i>&nbsp;
+<b class="nc"><i>631</i>&nbsp;        if (getNode().getParent() != null) {</b>
+<b class="nc"><i>632</i>&nbsp;            getNode().getParent().fireEvent(event);</b>
+<i>633</i>&nbsp;        }
+<b class="nc"><i>634</i>&nbsp;    }</b>
+<i>635</i>&nbsp;
+<i>636</i>&nbsp;    protected void selectHome() {
+<b class="nc"><i>637</i>&nbsp;        getNode().selectHome();</b>
+<b class="nc"><i>638</i>&nbsp;    }</b>
+<i>639</i>&nbsp;
+<i>640</i>&nbsp;    protected void selectEnd() {
+<b class="nc"><i>641</i>&nbsp;        getNode().selectEnd();</b>
+<b class="nc"><i>642</i>&nbsp;    }</b>
+<i>643</i>&nbsp;
+<i>644</i>&nbsp;    protected void selectHomeExtend() {
+<b class="nc"><i>645</i>&nbsp;        getNode().extendSelection(0);</b>
+<b class="nc"><i>646</i>&nbsp;    }</b>
+<i>647</i>&nbsp;
+<i>648</i>&nbsp;    protected void selectEndExtend() {
+<b class="nc"><i>649</i>&nbsp;        TextInputControl textInputControl = getNode();</b>
+<b class="nc"><i>650</i>&nbsp;        textInputControl.extendSelection(textInputControl.getLength());</b>
+<b class="nc"><i>651</i>&nbsp;    }</b>
+<i>652</i>&nbsp;
+<b class="fc"><i>653</i>&nbsp;    private boolean editing = false;</b>
+<i>654</i>&nbsp;    protected void setEditing(boolean b) {
+<b class="fc"><i>655</i>&nbsp;        editing = b;</b>
+<b class="fc"><i>656</i>&nbsp;    }</b>
+<i>657</i>&nbsp;    public boolean isEditing() {
+<b class="fc"><i>658</i>&nbsp;        return editing;</b>
+<i>659</i>&nbsp;    }
+<i>660</i>&nbsp;
+<i>661</i>&nbsp;    protected void populateContextMenu() {
+<b class="nc"><i>662</i>&nbsp;        TextInputControl textInputControl = getNode();</b>
+<b class="nc"><i>663</i>&nbsp;        boolean editable = textInputControl.isEditable();</b>
+<b class="nc"><i>664</i>&nbsp;        boolean hasText = (textInputControl.getLength() &gt; 0);</b>
+<b class="nc"><i>665</i>&nbsp;        boolean hasSelection = (textInputControl.getSelection().getLength() &gt; 0);</b>
+<b class="nc"><i>666</i>&nbsp;        boolean allSelected = (textInputControl.getSelection().getLength() == textInputControl.getLength());</b>
+<b class="nc"><i>667</i>&nbsp;        boolean maskText = (textInputControl instanceof PasswordField); // (maskText(&quot;A&quot;) != &quot;A&quot;);</b>
+<b class="nc"><i>668</i>&nbsp;        ObservableList&lt;MenuItem&gt; items = contextMenu.getItems();</b>
+<i>669</i>&nbsp;
+<b class="nc"><i>670</i>&nbsp;        if (SHOW_HANDLES) {</b>
+<b class="nc"><i>671</i>&nbsp;            items.clear();</b>
+<b class="nc"><i>672</i>&nbsp;            if (!maskText &amp;&amp; hasSelection) {</b>
+<b class="nc"><i>673</i>&nbsp;                if (editable) {</b>
+<b class="nc"><i>674</i>&nbsp;                    items.add(cutMI);</b>
+<i>675</i>&nbsp;                }
+<b class="nc"><i>676</i>&nbsp;                items.add(copyMI);</b>
+<i>677</i>&nbsp;            }
+<b class="nc"><i>678</i>&nbsp;            if (editable &amp;&amp; Clipboard.getSystemClipboard().hasString()) {</b>
+<b class="nc"><i>679</i>&nbsp;                items.add(pasteMI);</b>
+<i>680</i>&nbsp;            }
+<b class="nc"><i>681</i>&nbsp;            if (hasText &amp;&amp; !allSelected) {</b>
+<b class="nc"><i>682</i>&nbsp;                if (!hasSelection &amp;&amp; !(textInputControl instanceof PasswordField)) {</b>
+<b class="nc"><i>683</i>&nbsp;                    items.add(selectWordMI);</b>
+<i>684</i>&nbsp;                }
+<b class="nc"><i>685</i>&nbsp;                items.add(selectAllMI);</b>
+<i>686</i>&nbsp;            }
+<b class="nc"><i>687</i>&nbsp;            selectWordMI.getProperties().put(&quot;refreshMenu&quot;, Boolean.TRUE);</b>
+<b class="nc"><i>688</i>&nbsp;            selectAllMI.getProperties().put(&quot;refreshMenu&quot;, Boolean.TRUE);</b>
+<i>689</i>&nbsp;        } else {
+<b class="nc"><i>690</i>&nbsp;            if (editable) {</b>
+<b class="nc"><i>691</i>&nbsp;                items.setAll(undoMI, redoMI, cutMI, copyMI, pasteMI, deleteMI,</b>
+<i>692</i>&nbsp;                        separatorMI, selectAllMI);
+<i>693</i>&nbsp;            } else {
+<b class="nc"><i>694</i>&nbsp;                items.setAll(copyMI, separatorMI, selectAllMI);</b>
+<i>695</i>&nbsp;            }
+<b class="nc"><i>696</i>&nbsp;            undoMI.setDisable(!getNode().isUndoable());</b>
+<b class="nc"><i>697</i>&nbsp;            redoMI.setDisable(!getNode().isRedoable());</b>
+<b class="nc"><i>698</i>&nbsp;            cutMI.setDisable(maskText || !hasSelection);</b>
+<b class="nc"><i>699</i>&nbsp;            copyMI.setDisable(maskText || !hasSelection);</b>
+<b class="nc"><i>700</i>&nbsp;            pasteMI.setDisable(!Clipboard.getSystemClipboard().hasString());</b>
+<b class="nc"><i>701</i>&nbsp;            deleteMI.setDisable(!hasSelection);</b>
+<i>702</i>&nbsp;        }
+<b class="nc"><i>703</i>&nbsp;    }</b>
+<i>704</i>&nbsp;
+<i>705</i>&nbsp;    private static class ContextMenuItem extends MenuItem {
+<i>706</i>&nbsp;        ContextMenuItem(final String action, EventHandler&lt;ActionEvent&gt; onAction) {
+<b class="fc"><i>707</i>&nbsp;            super(getString(&quot;TextInputControl.menu.&quot; + action));</b>
+<b class="fc"><i>708</i>&nbsp;            setOnAction(onAction);</b>
+<b class="fc"><i>709</i>&nbsp;        }</b>
+<i>710</i>&nbsp;    }
+<i>711</i>&nbsp;
+<b class="fc"><i>712</i>&nbsp;    private final MenuItem undoMI   = new ContextMenuItem(&quot;Undo&quot;, e -&gt; undo());</b>
+<b class="fc"><i>713</i>&nbsp;    private final MenuItem redoMI   = new ContextMenuItem(&quot;Redo&quot;, e -&gt; redo());</b>
+<b class="fc"><i>714</i>&nbsp;    private final MenuItem cutMI    = new ContextMenuItem(&quot;Cut&quot;, e -&gt; cut());</b>
+<b class="fc"><i>715</i>&nbsp;    private final MenuItem copyMI   = new ContextMenuItem(&quot;Copy&quot;, e -&gt; getNode().copy());</b>
+<b class="fc"><i>716</i>&nbsp;    private final MenuItem pasteMI  = new ContextMenuItem(&quot;Paste&quot;, e -&gt; paste());</b>
+<b class="fc"><i>717</i>&nbsp;    private final MenuItem deleteMI = new ContextMenuItem(&quot;DeleteSelection&quot;, e -&gt; deleteSelection());</b>
+<b class="fc"><i>718</i>&nbsp;    private final MenuItem selectWordMI = new ContextMenuItem(&quot;SelectWord&quot;, e -&gt; selectWord());</b>
+<b class="fc"><i>719</i>&nbsp;    private final MenuItem selectAllMI = new ContextMenuItem(&quot;SelectAll&quot;, e -&gt; selectAll());</b>
+<b class="fc"><i>720</i>&nbsp;    private final MenuItem separatorMI = new SeparatorMenuItem();</b>
+<i>721</i>&nbsp;
+<i>722</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2017-12-04 21:49</div>
+</div>
+</body>
+</html>

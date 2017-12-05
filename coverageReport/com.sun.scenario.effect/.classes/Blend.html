@@ -1,0 +1,733 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: Blend</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.scenario.effect</a> ]
+</div>
+
+<h1>Coverage Summary for Class: Blend (com.sun.scenario.effect)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">Blend</td>
+<td class="coverageStat">
+  <span class="percent">
+    38.5%
+  </span>
+  <span class="absValue">
+    (5/ 13)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    51.5%
+  </span>
+  <span class="absValue">
+    (17/ 33)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">Blend$Mode</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (2/ 2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (20/ 20)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    46.7%
+  </span>
+  <span class="absValue">
+    (7/ 15)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    69.8%
+  </span>
+  <span class="absValue">
+    (37/ 53)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright (c) 2008, 2014, Oracle and/or its affiliates. All rights reserved.
+<i>3</i>&nbsp; * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+<i>4</i>&nbsp; *
+<i>5</i>&nbsp; *
+<i>6</i>&nbsp; *
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; *
+<i>11</i>&nbsp; *
+<i>12</i>&nbsp; *
+<i>13</i>&nbsp; *
+<i>14</i>&nbsp; *
+<i>15</i>&nbsp; *
+<i>16</i>&nbsp; *
+<i>17</i>&nbsp; *
+<i>18</i>&nbsp; *
+<i>19</i>&nbsp; *
+<i>20</i>&nbsp; *
+<i>21</i>&nbsp; *
+<i>22</i>&nbsp; *
+<i>23</i>&nbsp; *
+<i>24</i>&nbsp; */
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;package com.sun.scenario.effect;
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;import com.sun.javafx.geom.Point2D;
+<i>29</i>&nbsp;import com.sun.javafx.geom.Rectangle;
+<i>30</i>&nbsp;import com.sun.javafx.geom.transform.BaseTransform;
+<i>31</i>&nbsp;import com.sun.scenario.effect.impl.state.RenderState;
+<i>32</i>&nbsp;
+<i>33</i>&nbsp;/**
+<i>34</i>&nbsp; * An effect that blends the two inputs together using one of the
+<i>35</i>&nbsp; * pre-defined {@code Mode}s.
+<i>36</i>&nbsp; */
+<i>37</i>&nbsp;public class Blend extends CoreEffect&lt;RenderState&gt; {
+<i>38</i>&nbsp;
+<i>39</i>&nbsp;    /**
+<i>40</i>&nbsp;     * A blending mode that defines the manner in which the inputs
+<i>41</i>&nbsp;     * are composited together.
+<i>42</i>&nbsp;     * Each {@code Mode} describes a mathematical equation that
+<i>43</i>&nbsp;     * combines premultiplied inputs to produce some premultiplied result.
+<i>44</i>&nbsp;     */
+<b class="fc"><i>45</i>&nbsp;    public enum Mode {</b>
+<i>46</i>&nbsp;        /**
+<i>47</i>&nbsp;         * The top input is blended over the bottom input.
+<i>48</i>&nbsp;         * (Equivalent to the Porter-Duff &quot;source over destination&quot; rule.)
+<i>49</i>&nbsp;         * &lt;p&gt;
+<i>50</i>&nbsp;         * Thus:
+<i>51</i>&nbsp;         * &lt;pre&gt;
+<i>52</i>&nbsp;         *      &lt;em&gt;A&lt;sub&gt;r&lt;/sub&gt;&lt;/em&gt; = &lt;em&gt;A&lt;sub&gt;top&lt;/sub&gt;&lt;/em&gt; + &lt;em&gt;A&lt;sub&gt;bot&lt;/sub&gt;&lt;/em&gt;*(1-&lt;em&gt;A&lt;sub&gt;top&lt;/sub&gt;&lt;/em&gt;)
+<i>53</i>&nbsp;         *      &lt;em&gt;C&lt;sub&gt;r&lt;/sub&gt;&lt;/em&gt; = &lt;em&gt;C&lt;sub&gt;top&lt;/sub&gt;&lt;/em&gt; + &lt;em&gt;C&lt;sub&gt;bot&lt;/sub&gt;&lt;/em&gt;*(1-&lt;em&gt;A&lt;sub&gt;top&lt;/sub&gt;&lt;/em&gt;)
+<i>54</i>&nbsp;         * &lt;/pre&gt;
+<i>55</i>&nbsp;         */
+<b class="fc"><i>56</i>&nbsp;        SRC_OVER,</b>
+<i>57</i>&nbsp;
+<i>58</i>&nbsp;        /**
+<i>59</i>&nbsp;         * The part of the top input lying inside of the bottom input
+<i>60</i>&nbsp;         * is kept in the resulting image.
+<i>61</i>&nbsp;         * (Equivalent to the Porter-Duff &quot;source in destination&quot; rule.)
+<i>62</i>&nbsp;         * &lt;p&gt;
+<i>63</i>&nbsp;         * Thus:
+<i>64</i>&nbsp;         * &lt;pre&gt;
+<i>65</i>&nbsp;         *      &lt;em&gt;A&lt;sub&gt;r&lt;/sub&gt;&lt;/em&gt; = &lt;em&gt;A&lt;sub&gt;top&lt;/sub&gt;&lt;/em&gt;*&lt;em&gt;A&lt;sub&gt;bot&lt;/sub&gt;&lt;/em&gt;
+<i>66</i>&nbsp;         *      &lt;em&gt;C&lt;sub&gt;r&lt;/sub&gt;&lt;/em&gt; = &lt;em&gt;C&lt;sub&gt;top&lt;/sub&gt;&lt;/em&gt;*&lt;em&gt;A&lt;sub&gt;bot&lt;/sub&gt;&lt;/em&gt;
+<i>67</i>&nbsp;         * &lt;/pre&gt;
+<i>68</i>&nbsp;         */
+<b class="fc"><i>69</i>&nbsp;        SRC_IN,</b>
+<i>70</i>&nbsp;
+<i>71</i>&nbsp;        /**
+<i>72</i>&nbsp;         * The part of the top input lying outside of the bottom input
+<i>73</i>&nbsp;         * is kept in the resulting image.
+<i>74</i>&nbsp;         * (Equivalent to the Porter-Duff &quot;source held out by destination&quot;
+<i>75</i>&nbsp;         * rule.)
+<i>76</i>&nbsp;         * &lt;p&gt;
+<i>77</i>&nbsp;         * Thus:
+<i>78</i>&nbsp;         * &lt;pre&gt;
+<i>79</i>&nbsp;         *      &lt;em&gt;A&lt;sub&gt;r&lt;/sub&gt;&lt;/em&gt; = &lt;em&gt;A&lt;sub&gt;top&lt;/sub&gt;&lt;/em&gt;*(1-&lt;em&gt;A&lt;sub&gt;bot&lt;/sub&gt;&lt;/em&gt;)
+<i>80</i>&nbsp;         *      &lt;em&gt;C&lt;sub&gt;r&lt;/sub&gt;&lt;/em&gt; = &lt;em&gt;C&lt;sub&gt;top&lt;/sub&gt;&lt;/em&gt;*(1-&lt;em&gt;A&lt;sub&gt;bot&lt;/sub&gt;&lt;/em&gt;)
+<i>81</i>&nbsp;         * &lt;/pre&gt;
+<i>82</i>&nbsp;         */
+<b class="fc"><i>83</i>&nbsp;        SRC_OUT,</b>
+<i>84</i>&nbsp;
+<i>85</i>&nbsp;        /**
+<i>86</i>&nbsp;         * The part of the top input lying inside of the bottom input
+<i>87</i>&nbsp;         * is blended with the bottom input.
+<i>88</i>&nbsp;         * (Equivalent to the Porter-Duff &quot;source atop destination&quot; rule.)
+<i>89</i>&nbsp;         * &lt;p&gt;
+<i>90</i>&nbsp;         * Thus:
+<i>91</i>&nbsp;         * &lt;pre&gt;
+<i>92</i>&nbsp;         *      &lt;em&gt;A&lt;sub&gt;r&lt;/sub&gt;&lt;/em&gt; = &lt;em&gt;A&lt;sub&gt;top&lt;/sub&gt;&lt;/em&gt;*&lt;em&gt;A&lt;sub&gt;bot&lt;/sub&gt;&lt;/em&gt; + &lt;em&gt;A&lt;sub&gt;bot&lt;/sub&gt;&lt;/em&gt;*(1-&lt;em&gt;A&lt;sub&gt;top&lt;/sub&gt;&lt;/em&gt;) = &lt;em&gt;A&lt;sub&gt;bot&lt;/sub&gt;&lt;/em&gt;
+<i>93</i>&nbsp;         *      &lt;em&gt;C&lt;sub&gt;r&lt;/sub&gt;&lt;/em&gt; = &lt;em&gt;C&lt;sub&gt;top&lt;/sub&gt;&lt;/em&gt;*&lt;em&gt;A&lt;sub&gt;bot&lt;/sub&gt;&lt;/em&gt; + &lt;em&gt;C&lt;sub&gt;bot&lt;/sub&gt;&lt;/em&gt;*(1-&lt;em&gt;A&lt;sub&gt;top&lt;/sub&gt;&lt;/em&gt;)
+<i>94</i>&nbsp;         * &lt;/pre&gt;
+<i>95</i>&nbsp;         */
+<b class="fc"><i>96</i>&nbsp;        SRC_ATOP,</b>
+<i>97</i>&nbsp;
+<i>98</i>&nbsp;        /**
+<i>99</i>&nbsp;         * The color and alpha components from the top input are
+<i>100</i>&nbsp;         * added to those from the bottom input.
+<i>101</i>&nbsp;         * The result is clamped to 1.0 if it exceeds the logical
+<i>102</i>&nbsp;         * maximum of 1.0.
+<i>103</i>&nbsp;         * &lt;p&gt;
+<i>104</i>&nbsp;         * Thus:
+<i>105</i>&nbsp;         * &lt;pre&gt;
+<i>106</i>&nbsp;         *      &lt;em&gt;A&lt;sub&gt;r&lt;/sub&gt;&lt;/em&gt; = min(1, &lt;em&gt;A&lt;sub&gt;top&lt;/sub&gt;&lt;/em&gt;+&lt;em&gt;A&lt;sub&gt;bot&lt;/sub&gt;&lt;/em&gt;)
+<i>107</i>&nbsp;         *      &lt;em&gt;C&lt;sub&gt;r&lt;/sub&gt;&lt;/em&gt; = min(1, &lt;em&gt;C&lt;sub&gt;top&lt;/sub&gt;&lt;/em&gt;+&lt;em&gt;C&lt;sub&gt;bot&lt;/sub&gt;&lt;/em&gt;)
+<i>108</i>&nbsp;         * &lt;/pre&gt;
+<i>109</i>&nbsp;         * &lt;p&gt;
+<i>110</i>&nbsp;         * Notes:
+<i>111</i>&nbsp;         * &lt;ul&gt;
+<i>112</i>&nbsp;         * &lt;li&gt;This mode is commutative (ordering of inputs
+<i>113</i>&nbsp;         * does not matter).
+<i>114</i>&nbsp;         * &lt;li&gt;This mode is sometimes referred to as &quot;linear dodge&quot; in
+<i>115</i>&nbsp;         * imaging software packages.
+<i>116</i>&nbsp;         * &lt;/ul&gt;
+<i>117</i>&nbsp;         */
+<b class="fc"><i>118</i>&nbsp;        ADD,</b>
+<i>119</i>&nbsp;
+<i>120</i>&nbsp;        /**
+<i>121</i>&nbsp;         * The color components from the first input are multiplied with those
+<i>122</i>&nbsp;         * from the second input.
+<i>123</i>&nbsp;         * The alpha components are blended according to
+<i>124</i>&nbsp;         * the {@link #SRC_OVER} equation.
+<i>125</i>&nbsp;         * &lt;p&gt;
+<i>126</i>&nbsp;         * Thus:
+<i>127</i>&nbsp;         * &lt;pre&gt;
+<i>128</i>&nbsp;         *      &lt;em&gt;A&lt;sub&gt;r&lt;/sub&gt;&lt;/em&gt; = &lt;em&gt;A&lt;sub&gt;top&lt;/sub&gt;&lt;/em&gt; + &lt;em&gt;A&lt;sub&gt;bot&lt;/sub&gt;&lt;/em&gt;*(1-&lt;em&gt;A&lt;sub&gt;top&lt;/sub&gt;&lt;/em&gt;)
+<i>129</i>&nbsp;         *      &lt;em&gt;C&lt;sub&gt;r&lt;/sub&gt;&lt;/em&gt; = &lt;em&gt;C&lt;sub&gt;top&lt;/sub&gt;&lt;/em&gt; * &lt;em&gt;C&lt;sub&gt;bot&lt;/sub&gt;&lt;/em&gt;
+<i>130</i>&nbsp;         * &lt;/pre&gt;
+<i>131</i>&nbsp;         * &lt;p&gt;
+<i>132</i>&nbsp;         * Notes:
+<i>133</i>&nbsp;         * &lt;ul&gt;
+<i>134</i>&nbsp;         * &lt;li&gt;This mode is commutative (ordering of inputs
+<i>135</i>&nbsp;         * does not matter).
+<i>136</i>&nbsp;         * &lt;li&gt;This mode is the mathematical opposite of
+<i>137</i>&nbsp;         * the {@link #SCREEN} mode.
+<i>138</i>&nbsp;         * &lt;li&gt;The resulting color is always at least as dark as either
+<i>139</i>&nbsp;         * of the input colors.
+<i>140</i>&nbsp;         * &lt;li&gt;Rendering with a completely black top input produces black;
+<i>141</i>&nbsp;         * rendering with a completely white top input produces a result
+<i>142</i>&nbsp;         * equivalent to the bottom input.
+<i>143</i>&nbsp;         * &lt;/ul&gt;
+<i>144</i>&nbsp;         */
+<b class="fc"><i>145</i>&nbsp;        MULTIPLY,</b>
+<i>146</i>&nbsp;
+<i>147</i>&nbsp;        /**
+<i>148</i>&nbsp;         * The color components from both of the inputs are
+<i>149</i>&nbsp;         * inverted, multiplied with each other, and that result
+<i>150</i>&nbsp;         * is again inverted to produce the resulting color.
+<i>151</i>&nbsp;         * The alpha components are blended according
+<i>152</i>&nbsp;         * to the {@link #SRC_OVER} equation.
+<i>153</i>&nbsp;         * &lt;p&gt;
+<i>154</i>&nbsp;         * Thus:
+<i>155</i>&nbsp;         * &lt;pre&gt;
+<i>156</i>&nbsp;         *      &lt;em&gt;A&lt;sub&gt;r&lt;/sub&gt;&lt;/em&gt; = &lt;em&gt;A&lt;sub&gt;top&lt;/sub&gt;&lt;/em&gt; + &lt;em&gt;A&lt;sub&gt;bot&lt;/sub&gt;&lt;/em&gt;*(1-&lt;em&gt;A&lt;sub&gt;top&lt;/sub&gt;&lt;/em&gt;)
+<i>157</i>&nbsp;         *      &lt;em&gt;C&lt;sub&gt;r&lt;/sub&gt;&lt;/em&gt; = 1 - ((1-&lt;em&gt;C&lt;sub&gt;top&lt;/sub&gt;&lt;/em&gt;) * (1-&lt;em&gt;C&lt;sub&gt;bot&lt;/sub&gt;&lt;/em&gt;))
+<i>158</i>&nbsp;         * &lt;/pre&gt;
+<i>159</i>&nbsp;         * &lt;p&gt;
+<i>160</i>&nbsp;         * Notes:
+<i>161</i>&nbsp;         * &lt;ul&gt;
+<i>162</i>&nbsp;         * &lt;li&gt;This mode is commutative (ordering of inputs
+<i>163</i>&nbsp;         * does not matter).
+<i>164</i>&nbsp;         * &lt;li&gt;This mode is the mathematical opposite of
+<i>165</i>&nbsp;         * the {@link #MULTIPLY} mode.
+<i>166</i>&nbsp;         * &lt;li&gt;The resulting color is always at least as light as either
+<i>167</i>&nbsp;         * of the input colors.
+<i>168</i>&nbsp;         * &lt;li&gt;Rendering with a completely white top input produces white;
+<i>169</i>&nbsp;         * rendering with a completely black top input produces a result
+<i>170</i>&nbsp;         * equivalent to the bottom input.
+<i>171</i>&nbsp;         * &lt;/ul&gt;
+<i>172</i>&nbsp;         */
+<b class="fc"><i>173</i>&nbsp;        SCREEN,</b>
+<i>174</i>&nbsp;
+<i>175</i>&nbsp;        /**
+<i>176</i>&nbsp;         * The input color components are either multiplied or screened,
+<i>177</i>&nbsp;         * depending on the bottom input color.
+<i>178</i>&nbsp;         * The alpha components are blended according
+<i>179</i>&nbsp;         * to the {@link #SRC_OVER} equation.
+<i>180</i>&nbsp;         * &lt;p&gt;
+<i>181</i>&nbsp;         * Thus:
+<i>182</i>&nbsp;         * &lt;pre&gt;
+<i>183</i>&nbsp;         *      &lt;em&gt;A&lt;sub&gt;r&lt;/sub&gt;&lt;/em&gt; = &lt;em&gt;A&lt;sub&gt;top&lt;/sub&gt;&lt;/em&gt; + &lt;em&gt;A&lt;sub&gt;bot&lt;/sub&gt;&lt;/em&gt;*(1-&lt;em&gt;A&lt;sub&gt;top&lt;/sub&gt;&lt;/em&gt;)
+<i>184</i>&nbsp;         *      REMIND: not sure how to express this succinctly yet...
+<i>185</i>&nbsp;         * &lt;/pre&gt;
+<i>186</i>&nbsp;         * &lt;p&gt;
+<i>187</i>&nbsp;         * Notes:
+<i>188</i>&nbsp;         * &lt;ul&gt;
+<i>189</i>&nbsp;         * &lt;li&gt;This mode is a combination of {@link #SCREEN} and
+<i>190</i>&nbsp;         * {@link #MULTIPLY}, depending on the bottom input color.
+<i>191</i>&nbsp;         * &lt;li&gt;This mode is the mathematical opposite of
+<i>192</i>&nbsp;         * the {@link #HARD_LIGHT} mode.
+<i>193</i>&nbsp;         * &lt;li&gt;In this mode, the top input colors &quot;overlay&quot; the bottom input
+<i>194</i>&nbsp;         * while preserving highlights and shadows of the latter.
+<i>195</i>&nbsp;         * &lt;/ul&gt;
+<i>196</i>&nbsp;         */
+<b class="fc"><i>197</i>&nbsp;        OVERLAY,</b>
+<i>198</i>&nbsp;
+<i>199</i>&nbsp;        /**
+<i>200</i>&nbsp;         * REMIND: cross check this formula with OpenVG spec...
+<i>201</i>&nbsp;         *
+<i>202</i>&nbsp;         * The darker of the color components from the two inputs are
+<i>203</i>&nbsp;         * selected to produce the resulting color.
+<i>204</i>&nbsp;         * The alpha components are blended according
+<i>205</i>&nbsp;         * to the {@link #SRC_OVER} equation.
+<i>206</i>&nbsp;         * &lt;p&gt;
+<i>207</i>&nbsp;         * Thus:
+<i>208</i>&nbsp;         * &lt;pre&gt;
+<i>209</i>&nbsp;         *      &lt;em&gt;A&lt;sub&gt;r&lt;/sub&gt;&lt;/em&gt; = &lt;em&gt;A&lt;sub&gt;top&lt;/sub&gt;&lt;/em&gt; + &lt;em&gt;A&lt;sub&gt;bot&lt;/sub&gt;&lt;/em&gt;*(1-&lt;em&gt;A&lt;sub&gt;top&lt;/sub&gt;&lt;/em&gt;)
+<i>210</i>&nbsp;         *      &lt;em&gt;C&lt;sub&gt;r&lt;/sub&gt;&lt;/em&gt; = min(&lt;em&gt;C&lt;sub&gt;top&lt;/sub&gt;&lt;/em&gt;, &lt;em&gt;C&lt;sub&gt;bot&lt;/sub&gt;&lt;/em&gt;)
+<i>211</i>&nbsp;         * &lt;/pre&gt;
+<i>212</i>&nbsp;         * &lt;p&gt;
+<i>213</i>&nbsp;         * Notes:
+<i>214</i>&nbsp;         * &lt;ul&gt;
+<i>215</i>&nbsp;         * &lt;li&gt;This mode is commutative (ordering of inputs
+<i>216</i>&nbsp;         * does not matter).
+<i>217</i>&nbsp;         * &lt;li&gt;This mode is the mathematical opposite of
+<i>218</i>&nbsp;         * the {@link #LIGHTEN} mode.
+<i>219</i>&nbsp;         * &lt;/ul&gt;
+<i>220</i>&nbsp;         */
+<b class="fc"><i>221</i>&nbsp;        DARKEN,</b>
+<i>222</i>&nbsp;
+<i>223</i>&nbsp;        /**
+<i>224</i>&nbsp;         * REMIND: cross check this formula with OpenVG spec...
+<i>225</i>&nbsp;         *
+<i>226</i>&nbsp;         * The lighter of the color components from the two inputs are
+<i>227</i>&nbsp;         * selected to produce the resulting color.
+<i>228</i>&nbsp;         * The alpha components are blended according
+<i>229</i>&nbsp;         * to the {@link #SRC_OVER} equation.
+<i>230</i>&nbsp;         * &lt;p&gt;
+<i>231</i>&nbsp;         * Thus:
+<i>232</i>&nbsp;         * &lt;pre&gt;
+<i>233</i>&nbsp;         *      &lt;em&gt;A&lt;sub&gt;r&lt;/sub&gt;&lt;/em&gt; = &lt;em&gt;A&lt;sub&gt;top&lt;/sub&gt;&lt;/em&gt; + &lt;em&gt;A&lt;sub&gt;bot&lt;/sub&gt;&lt;/em&gt;*(1-&lt;em&gt;A&lt;sub&gt;top&lt;/sub&gt;&lt;/em&gt;)
+<i>234</i>&nbsp;         *      &lt;em&gt;C&lt;sub&gt;r&lt;/sub&gt;&lt;/em&gt; = max(&lt;em&gt;C&lt;sub&gt;top&lt;/sub&gt;&lt;/em&gt;, &lt;em&gt;C&lt;sub&gt;bot&lt;/sub&gt;&lt;/em&gt;)
+<i>235</i>&nbsp;         * &lt;/pre&gt;
+<i>236</i>&nbsp;         * &lt;p&gt;
+<i>237</i>&nbsp;         * Notes:
+<i>238</i>&nbsp;         * &lt;ul&gt;
+<i>239</i>&nbsp;         * &lt;li&gt;This mode is commutative (ordering of inputs
+<i>240</i>&nbsp;         * does not matter).
+<i>241</i>&nbsp;         * &lt;li&gt;This mode is the mathematical opposite of
+<i>242</i>&nbsp;         * the {@link #DARKEN} mode.
+<i>243</i>&nbsp;         * &lt;/ul&gt;
+<i>244</i>&nbsp;         */
+<b class="fc"><i>245</i>&nbsp;        LIGHTEN,</b>
+<i>246</i>&nbsp;
+<i>247</i>&nbsp;        /**
+<i>248</i>&nbsp;         * The bottom input color components are divided by the inverse
+<i>249</i>&nbsp;         * of the top input color components to produce the resulting color.
+<i>250</i>&nbsp;         * The alpha components are blended according
+<i>251</i>&nbsp;         * to the {@link #SRC_OVER} equation.
+<i>252</i>&nbsp;         * &lt;p&gt;
+<i>253</i>&nbsp;         * Thus:
+<i>254</i>&nbsp;         * &lt;pre&gt;
+<i>255</i>&nbsp;         *      &lt;em&gt;A&lt;sub&gt;r&lt;/sub&gt;&lt;/em&gt; = &lt;em&gt;A&lt;sub&gt;top&lt;/sub&gt;&lt;/em&gt; + &lt;em&gt;A&lt;sub&gt;bot&lt;/sub&gt;&lt;/em&gt;*(1-&lt;em&gt;A&lt;sub&gt;top&lt;/sub&gt;&lt;/em&gt;)
+<i>256</i>&nbsp;         *      &lt;em&gt;C&lt;sub&gt;r&lt;/sub&gt;&lt;/em&gt; = &lt;em&gt;C&lt;sub&gt;bot&lt;/sub&gt;&lt;/em&gt; / (1-&lt;em&gt;C&lt;sub&gt;top&lt;/sub&gt;&lt;/em&gt;)
+<i>257</i>&nbsp;         * &lt;/pre&gt;
+<i>258</i>&nbsp;         */
+<b class="fc"><i>259</i>&nbsp;        COLOR_DODGE,</b>
+<i>260</i>&nbsp;
+<i>261</i>&nbsp;        /**
+<i>262</i>&nbsp;         * The inverse of the bottom input color components are divided by
+<i>263</i>&nbsp;         * the top input color components, all of which is then inverted
+<i>264</i>&nbsp;         * to produce the resulting color.
+<i>265</i>&nbsp;         * The alpha components are blended according
+<i>266</i>&nbsp;         * to the {@link #SRC_OVER} equation.
+<i>267</i>&nbsp;         * &lt;p&gt;
+<i>268</i>&nbsp;         * Thus:
+<i>269</i>&nbsp;         * &lt;pre&gt;
+<i>270</i>&nbsp;         *      &lt;em&gt;A&lt;sub&gt;r&lt;/sub&gt;&lt;/em&gt; = &lt;em&gt;A&lt;sub&gt;top&lt;/sub&gt;&lt;/em&gt; + &lt;em&gt;A&lt;sub&gt;bot&lt;/sub&gt;&lt;/em&gt;*(1-&lt;em&gt;A&lt;sub&gt;top&lt;/sub&gt;&lt;/em&gt;)
+<i>271</i>&nbsp;         *      &lt;em&gt;C&lt;sub&gt;r&lt;/sub&gt;&lt;/em&gt; = 1-((1-&lt;em&gt;C&lt;sub&gt;bot&lt;/sub&gt;&lt;/em&gt;) / &lt;em&gt;C&lt;sub&gt;top&lt;/sub&gt;&lt;/em&gt;)
+<i>272</i>&nbsp;         * &lt;/pre&gt;
+<i>273</i>&nbsp;         */
+<b class="fc"><i>274</i>&nbsp;        COLOR_BURN,</b>
+<i>275</i>&nbsp;
+<i>276</i>&nbsp;        /**
+<i>277</i>&nbsp;         * The input color components are either multiplied or screened,
+<i>278</i>&nbsp;         * depending on the top input color.
+<i>279</i>&nbsp;         * The alpha components are blended according
+<i>280</i>&nbsp;         * to the {@link #SRC_OVER} equation.
+<i>281</i>&nbsp;         * &lt;p&gt;
+<i>282</i>&nbsp;         * Thus:
+<i>283</i>&nbsp;         * &lt;pre&gt;
+<i>284</i>&nbsp;         *      &lt;em&gt;A&lt;sub&gt;r&lt;/sub&gt;&lt;/em&gt; = &lt;em&gt;A&lt;sub&gt;top&lt;/sub&gt;&lt;/em&gt; + &lt;em&gt;A&lt;sub&gt;bot&lt;/sub&gt;&lt;/em&gt;*(1-&lt;em&gt;A&lt;sub&gt;top&lt;/sub&gt;&lt;/em&gt;)
+<i>285</i>&nbsp;         *      REMIND: not sure how to express this succinctly yet...
+<i>286</i>&nbsp;         * &lt;/pre&gt;
+<i>287</i>&nbsp;         * &lt;p&gt;
+<i>288</i>&nbsp;         * Notes:
+<i>289</i>&nbsp;         * &lt;ul&gt;
+<i>290</i>&nbsp;         * &lt;li&gt;This mode is a combination of {@link #SCREEN} and
+<i>291</i>&nbsp;         * {@link #MULTIPLY}, depending on the top input color.
+<i>292</i>&nbsp;         * &lt;li&gt;This mode is the mathematical opposite of
+<i>293</i>&nbsp;         * the {@link #OVERLAY} mode.
+<i>294</i>&nbsp;         * &lt;/ul&gt;
+<i>295</i>&nbsp;         */
+<b class="fc"><i>296</i>&nbsp;        HARD_LIGHT,</b>
+<i>297</i>&nbsp;
+<i>298</i>&nbsp;        /**
+<i>299</i>&nbsp;         * REMIND: this is a complicated formula, TBD...
+<i>300</i>&nbsp;         */
+<b class="fc"><i>301</i>&nbsp;        SOFT_LIGHT,</b>
+<i>302</i>&nbsp;
+<i>303</i>&nbsp;        /**
+<i>304</i>&nbsp;         * The darker of the color components from the two inputs are
+<i>305</i>&nbsp;         * subtracted from the lighter ones to produce the resulting color.
+<i>306</i>&nbsp;         * The alpha components are blended according
+<i>307</i>&nbsp;         * to the {@link #SRC_OVER} equation.
+<i>308</i>&nbsp;         * &lt;p&gt;
+<i>309</i>&nbsp;         * Thus:
+<i>310</i>&nbsp;         * &lt;pre&gt;
+<i>311</i>&nbsp;         *      &lt;em&gt;A&lt;sub&gt;r&lt;/sub&gt;&lt;/em&gt; = &lt;em&gt;A&lt;sub&gt;top&lt;/sub&gt;&lt;/em&gt; + &lt;em&gt;A&lt;sub&gt;bot&lt;/sub&gt;&lt;/em&gt;*(1-&lt;em&gt;A&lt;sub&gt;top&lt;/sub&gt;&lt;/em&gt;)
+<i>312</i>&nbsp;         *      &lt;em&gt;C&lt;sub&gt;r&lt;/sub&gt;&lt;/em&gt; = abs(&lt;em&gt;C&lt;sub&gt;top&lt;/sub&gt;&lt;/em&gt;-&lt;em&gt;C&lt;sub&gt;bot&lt;/sub&gt;&lt;/em&gt;)
+<i>313</i>&nbsp;         * &lt;/pre&gt;
+<i>314</i>&nbsp;         * &lt;p&gt;
+<i>315</i>&nbsp;         * Notes:
+<i>316</i>&nbsp;         * &lt;ul&gt;
+<i>317</i>&nbsp;         * &lt;li&gt;This mode is commutative (ordering of inputs
+<i>318</i>&nbsp;         * does not matter).
+<i>319</i>&nbsp;         * &lt;li&gt;This mode can be used to invert parts of the bottom input
+<i>320</i>&nbsp;         * image, or to quickly compare two images (equal pixels will result
+<i>321</i>&nbsp;         * in black).
+<i>322</i>&nbsp;         * &lt;li&gt;Rendering with a completely white top input inverts the
+<i>323</i>&nbsp;         * bottom input; rendering with a completely black top input produces
+<i>324</i>&nbsp;         * a result equivalent to the bottom input.
+<i>325</i>&nbsp;         * &lt;/ul&gt;
+<i>326</i>&nbsp;         */
+<b class="fc"><i>327</i>&nbsp;        DIFFERENCE,</b>
+<i>328</i>&nbsp;
+<i>329</i>&nbsp;        /**
+<i>330</i>&nbsp;         * The color components from the two inputs are multiplied and
+<i>331</i>&nbsp;         * doubled, and then subtracted from the sum of the bottom input
+<i>332</i>&nbsp;         * color components, to produce the resulting color.
+<i>333</i>&nbsp;         * The alpha components are blended according
+<i>334</i>&nbsp;         * to the {@link #SRC_OVER} equation.
+<i>335</i>&nbsp;         * &lt;p&gt;
+<i>336</i>&nbsp;         * Thus:
+<i>337</i>&nbsp;         * &lt;pre&gt;
+<i>338</i>&nbsp;         *      &lt;em&gt;A&lt;sub&gt;r&lt;/sub&gt;&lt;/em&gt; = &lt;em&gt;A&lt;sub&gt;top&lt;/sub&gt;&lt;/em&gt; + &lt;em&gt;A&lt;sub&gt;bot&lt;/sub&gt;&lt;/em&gt;*(1-&lt;em&gt;A&lt;sub&gt;top&lt;/sub&gt;&lt;/em&gt;)
+<i>339</i>&nbsp;         *      &lt;em&gt;C&lt;sub&gt;r&lt;/sub&gt;&lt;/em&gt; = &lt;em&gt;C&lt;sub&gt;top&lt;/sub&gt;&lt;/em&gt; + &lt;em&gt;C&lt;sub&gt;bot&lt;/sub&gt;&lt;/em&gt; - (2*&lt;em&gt;C&lt;sub&gt;top&lt;/sub&gt;&lt;/em&gt;*&lt;em&gt;C&lt;sub&gt;bot&lt;/sub&gt;&lt;/em&gt;)
+<i>340</i>&nbsp;         * &lt;/pre&gt;
+<i>341</i>&nbsp;         * &lt;p&gt;
+<i>342</i>&nbsp;         * Notes:
+<i>343</i>&nbsp;         * &lt;ul&gt;
+<i>344</i>&nbsp;         * &lt;li&gt;This mode is commutative (ordering of inputs
+<i>345</i>&nbsp;         * does not matter).
+<i>346</i>&nbsp;         * &lt;li&gt;This mode can be used to invert parts of the bottom input.
+<i>347</i>&nbsp;         * &lt;li&gt;This mode produces results that are similar to those of
+<i>348</i>&nbsp;         * {@link #DIFFERENCE}, except with lower contrast.
+<i>349</i>&nbsp;         * &lt;li&gt;Rendering with a completely white top input inverts the
+<i>350</i>&nbsp;         * bottom input; rendering with a completely black top input produces
+<i>351</i>&nbsp;         * a result equivalent to the bottom input.
+<i>352</i>&nbsp;         * &lt;/ul&gt;
+<i>353</i>&nbsp;         */
+<b class="fc"><i>354</i>&nbsp;        EXCLUSION,</b>
+<i>355</i>&nbsp;
+<i>356</i>&nbsp;        /**
+<i>357</i>&nbsp;         * The red component of the bottom input is replaced with the
+<i>358</i>&nbsp;         * red component of the top input; the other color components
+<i>359</i>&nbsp;         * are unaffected.
+<i>360</i>&nbsp;         * The alpha components are blended according
+<i>361</i>&nbsp;         * to the {@link #SRC_OVER} equation.
+<i>362</i>&nbsp;         * &lt;p&gt;
+<i>363</i>&nbsp;         * Thus:
+<i>364</i>&nbsp;         * &lt;pre&gt;
+<i>365</i>&nbsp;         *      &lt;em&gt;A&lt;sub&gt;r&lt;/sub&gt;&lt;/em&gt; = &lt;em&gt;A&lt;sub&gt;top&lt;/sub&gt;&lt;/em&gt; + &lt;em&gt;A&lt;sub&gt;bot&lt;/sub&gt;&lt;/em&gt;*(1-&lt;em&gt;A&lt;sub&gt;top&lt;/sub&gt;&lt;/em&gt;)
+<i>366</i>&nbsp;         *      &lt;em&gt;R&lt;sub&gt;r&lt;/sub&gt;&lt;/em&gt; = &lt;em&gt;R&lt;sub&gt;top&lt;/sub&gt;&lt;/em&gt;
+<i>367</i>&nbsp;         *      &lt;em&gt;G&lt;sub&gt;r&lt;/sub&gt;&lt;/em&gt; = &lt;em&gt;G&lt;sub&gt;bot&lt;/sub&gt;&lt;/em&gt;
+<i>368</i>&nbsp;         *      &lt;em&gt;B&lt;sub&gt;r&lt;/sub&gt;&lt;/em&gt; = &lt;em&gt;B&lt;sub&gt;bot&lt;/sub&gt;&lt;/em&gt;
+<i>369</i>&nbsp;         * &lt;/pre&gt;
+<i>370</i>&nbsp;         */
+<b class="fc"><i>371</i>&nbsp;        RED,</b>
+<i>372</i>&nbsp;
+<i>373</i>&nbsp;        /**
+<i>374</i>&nbsp;         * The green component of the bottom input is replaced with the
+<i>375</i>&nbsp;         * green component of the top input; the other color components
+<i>376</i>&nbsp;         * are unaffected.
+<i>377</i>&nbsp;         * The alpha components are blended according
+<i>378</i>&nbsp;         * to the {@link #SRC_OVER} equation.
+<i>379</i>&nbsp;         * &lt;p&gt;
+<i>380</i>&nbsp;         * Thus:
+<i>381</i>&nbsp;         * &lt;pre&gt;
+<i>382</i>&nbsp;         *      &lt;em&gt;A&lt;sub&gt;r&lt;/sub&gt;&lt;/em&gt; = &lt;em&gt;A&lt;sub&gt;top&lt;/sub&gt;&lt;/em&gt; + &lt;em&gt;A&lt;sub&gt;bot&lt;/sub&gt;&lt;/em&gt;*(1-&lt;em&gt;A&lt;sub&gt;top&lt;/sub&gt;&lt;/em&gt;)
+<i>383</i>&nbsp;         *      &lt;em&gt;R&lt;sub&gt;r&lt;/sub&gt;&lt;/em&gt; = &lt;em&gt;R&lt;sub&gt;bot&lt;/sub&gt;&lt;/em&gt;
+<i>384</i>&nbsp;         *      &lt;em&gt;G&lt;sub&gt;r&lt;/sub&gt;&lt;/em&gt; = &lt;em&gt;G&lt;sub&gt;top&lt;/sub&gt;&lt;/em&gt;
+<i>385</i>&nbsp;         *      &lt;em&gt;B&lt;sub&gt;r&lt;/sub&gt;&lt;/em&gt; = &lt;em&gt;B&lt;sub&gt;bot&lt;/sub&gt;&lt;/em&gt;
+<i>386</i>&nbsp;         * &lt;/pre&gt;
+<i>387</i>&nbsp;         */
+<b class="fc"><i>388</i>&nbsp;        GREEN,</b>
+<i>389</i>&nbsp;
+<i>390</i>&nbsp;        /**
+<i>391</i>&nbsp;         * The blue component of the bottom input is replaced with the
+<i>392</i>&nbsp;         * blue component of the top input; the other color components
+<i>393</i>&nbsp;         * are unaffected.
+<i>394</i>&nbsp;         * The alpha components are blended according
+<i>395</i>&nbsp;         * to the {@link #SRC_OVER} equation.
+<i>396</i>&nbsp;         * &lt;p&gt;
+<i>397</i>&nbsp;         * Thus:
+<i>398</i>&nbsp;         * &lt;pre&gt;
+<i>399</i>&nbsp;         *      &lt;em&gt;A&lt;sub&gt;r&lt;/sub&gt;&lt;/em&gt; = &lt;em&gt;A&lt;sub&gt;top&lt;/sub&gt;&lt;/em&gt; + &lt;em&gt;A&lt;sub&gt;bot&lt;/sub&gt;&lt;/em&gt;*(1-&lt;em&gt;A&lt;sub&gt;top&lt;/sub&gt;&lt;/em&gt;)
+<i>400</i>&nbsp;         *      &lt;em&gt;R&lt;sub&gt;r&lt;/sub&gt;&lt;/em&gt; = &lt;em&gt;R&lt;sub&gt;bot&lt;/sub&gt;&lt;/em&gt;
+<i>401</i>&nbsp;         *      &lt;em&gt;G&lt;sub&gt;r&lt;/sub&gt;&lt;/em&gt; = &lt;em&gt;G&lt;sub&gt;bot&lt;/sub&gt;&lt;/em&gt;
+<i>402</i>&nbsp;         *      &lt;em&gt;B&lt;sub&gt;r&lt;/sub&gt;&lt;/em&gt; = &lt;em&gt;B&lt;sub&gt;top&lt;/sub&gt;&lt;/em&gt;
+<i>403</i>&nbsp;         * &lt;/pre&gt;
+<i>404</i>&nbsp;         */
+<b class="fc"><i>405</i>&nbsp;        BLUE,</b>
+<i>406</i>&nbsp;    }
+<i>407</i>&nbsp;
+<i>408</i>&nbsp;    private Mode mode;
+<i>409</i>&nbsp;    private float opacity;
+<i>410</i>&nbsp;
+<i>411</i>&nbsp;    /**
+<i>412</i>&nbsp;     * Constructs a new {@code Blend} effect with the given mode and the
+<i>413</i>&nbsp;     * default opacity (1.0).
+<i>414</i>&nbsp;     * Either or both inputs may be {@code null} to indicate that the default
+<i>415</i>&nbsp;     * input should be used.
+<i>416</i>&nbsp;     *
+<i>417</i>&nbsp;     * @param mode the blending mode
+<i>418</i>&nbsp;     * @param bottomInput the bottom input
+<i>419</i>&nbsp;     * @param topInput the top input
+<i>420</i>&nbsp;     * @throws IllegalArgumentException if {@code mode} is null
+<i>421</i>&nbsp;     */
+<i>422</i>&nbsp;    public Blend(Mode mode, Effect bottomInput, Effect topInput) {
+<b class="fc"><i>423</i>&nbsp;        super(bottomInput, topInput);</b>
+<b class="fc"><i>424</i>&nbsp;        setMode(mode);</b>
+<b class="fc"><i>425</i>&nbsp;        setOpacity(1f);</b>
+<b class="fc"><i>426</i>&nbsp;    }</b>
+<i>427</i>&nbsp;
+<i>428</i>&nbsp;    /**
+<i>429</i>&nbsp;     * Returns the bottom input for this {@code Effect}.
+<i>430</i>&nbsp;     *
+<i>431</i>&nbsp;     * @return the bottom input for this {@code Effect}
+<i>432</i>&nbsp;     */
+<i>433</i>&nbsp;    public final Effect getBottomInput() {
+<b class="nc"><i>434</i>&nbsp;        return getInputs().get(0);</b>
+<i>435</i>&nbsp;    }
+<i>436</i>&nbsp;
+<i>437</i>&nbsp;    /**
+<i>438</i>&nbsp;     * Sets the bottom input for this {@code Effect} to a specific
+<i>439</i>&nbsp;     * {@code Effect} or to the default input if {@code input} is
+<i>440</i>&nbsp;     * {@code null}.
+<i>441</i>&nbsp;     *
+<i>442</i>&nbsp;     * @param bottomInput the bottom input for this {@code Effect}
+<i>443</i>&nbsp;     */
+<i>444</i>&nbsp;    public void setBottomInput(Effect bottomInput) {
+<b class="fc"><i>445</i>&nbsp;        setInput(0, bottomInput);</b>
+<b class="fc"><i>446</i>&nbsp;    }</b>
+<i>447</i>&nbsp;
+<i>448</i>&nbsp;    /**
+<i>449</i>&nbsp;     * Returns the top input for this {@code Effect}.
+<i>450</i>&nbsp;     *
+<i>451</i>&nbsp;     * @return the top input for this {@code Effect}
+<i>452</i>&nbsp;     */
+<i>453</i>&nbsp;    public final Effect getTopInput() {
+<b class="nc"><i>454</i>&nbsp;        return getInputs().get(1);</b>
+<i>455</i>&nbsp;    }
+<i>456</i>&nbsp;
+<i>457</i>&nbsp;    /**
+<i>458</i>&nbsp;     * Sets the top input for this {@code Effect} to a specific
+<i>459</i>&nbsp;     * {@code Effect} or to the default input if {@code input} is
+<i>460</i>&nbsp;     * {@code null}.
+<i>461</i>&nbsp;     *
+<i>462</i>&nbsp;     * @param topInput the top input for this {@code Effect}
+<i>463</i>&nbsp;     */
+<i>464</i>&nbsp;    public void setTopInput(Effect topInput) {
+<b class="fc"><i>465</i>&nbsp;        setInput(1, topInput);</b>
+<b class="fc"><i>466</i>&nbsp;    }</b>
+<i>467</i>&nbsp;
+<i>468</i>&nbsp;    /**
+<i>469</i>&nbsp;     * Returns the {@code Mode} used to blend the two inputs together.
+<i>470</i>&nbsp;     *
+<i>471</i>&nbsp;     * @return the {@code Mode} used to blend the two inputs together.
+<i>472</i>&nbsp;     */
+<i>473</i>&nbsp;    public Mode getMode() {
+<b class="nc"><i>474</i>&nbsp;        return mode;</b>
+<i>475</i>&nbsp;    }
+<i>476</i>&nbsp;
+<i>477</i>&nbsp;    /**
+<i>478</i>&nbsp;     * Sets the {@code Mode} used to blend the two inputs together.
+<i>479</i>&nbsp;     * &lt;pre&gt;
+<i>480</i>&nbsp;     *       Min: n/a
+<i>481</i>&nbsp;     *       Max: n/a
+<i>482</i>&nbsp;     *   Default: Mode.SRC_OVER
+<i>483</i>&nbsp;     *  Identity: n/a
+<i>484</i>&nbsp;     * &lt;/pre&gt;
+<i>485</i>&nbsp;     *
+<i>486</i>&nbsp;     * @param mode the blending mode
+<i>487</i>&nbsp;     * @throws IllegalArgumentException if {@code mode} is null
+<i>488</i>&nbsp;     */
+<i>489</i>&nbsp;    public void setMode(Mode mode) {
+<b class="fc"><i>490</i>&nbsp;        if (mode == null) {</b>
+<b class="nc"><i>491</i>&nbsp;            throw new IllegalArgumentException(&quot;Mode must be non-null&quot;);</b>
+<i>492</i>&nbsp;        }
+<b class="fc"><i>493</i>&nbsp;        Blend.Mode old = this.mode;</b>
+<b class="fc"><i>494</i>&nbsp;        this.mode = mode;</b>
+<b class="fc"><i>495</i>&nbsp;        updatePeerKey(&quot;Blend_&quot; + mode.name());</b>
+<b class="fc"><i>496</i>&nbsp;    }</b>
+<i>497</i>&nbsp;
+<i>498</i>&nbsp;    /**
+<i>499</i>&nbsp;     * Returns the opacity value, which is modulated with the top input
+<i>500</i>&nbsp;     * prior to blending.
+<i>501</i>&nbsp;     *
+<i>502</i>&nbsp;     * @return the opacity value
+<i>503</i>&nbsp;     */
+<i>504</i>&nbsp;    public float getOpacity() {
+<b class="nc"><i>505</i>&nbsp;        return opacity;</b>
+<i>506</i>&nbsp;    }
+<i>507</i>&nbsp;
+<i>508</i>&nbsp;    /**
+<i>509</i>&nbsp;     * Sets the opacity value, which is modulated with the top input prior
+<i>510</i>&nbsp;     * to blending.
+<i>511</i>&nbsp;     * &lt;pre&gt;
+<i>512</i>&nbsp;     *       Min: 0.0
+<i>513</i>&nbsp;     *       Max: 1.0
+<i>514</i>&nbsp;     *   Default: 1.0
+<i>515</i>&nbsp;     *  Identity: 1.0
+<i>516</i>&nbsp;     * &lt;/pre&gt;
+<i>517</i>&nbsp;     *
+<i>518</i>&nbsp;     * @param opacity the opacity value
+<i>519</i>&nbsp;     * @throws IllegalArgumentException if {@code opacity} is outside the
+<i>520</i>&nbsp;     * allowable range
+<i>521</i>&nbsp;     */
+<i>522</i>&nbsp;    public void setOpacity(float opacity) {
+<b class="fc"><i>523</i>&nbsp;        if (opacity &lt; 0f || opacity &gt; 1f) {</b>
+<b class="nc"><i>524</i>&nbsp;            throw new IllegalArgumentException(&quot;Opacity must be in the range [0,1]&quot;);</b>
+<i>525</i>&nbsp;        }
+<b class="fc"><i>526</i>&nbsp;        float old = this.opacity;</b>
+<b class="fc"><i>527</i>&nbsp;        this.opacity = opacity;</b>
+<b class="fc"><i>528</i>&nbsp;    }</b>
+<i>529</i>&nbsp;
+<i>530</i>&nbsp;    /**
+<i>531</i>&nbsp;     * Transform the specified point {@code p} from the coordinate space
+<i>532</i>&nbsp;     * of the primary content input to the coordinate space of the effect
+<i>533</i>&nbsp;     * output.
+<i>534</i>&nbsp;     * In essence, this method asks the question &quot;Which output coordinate
+<i>535</i>&nbsp;     * is most affected by the data at the specified coordinate in the
+<i>536</i>&nbsp;     * primary source input?&quot;
+<i>537</i>&nbsp;     * &lt;p&gt;
+<i>538</i>&nbsp;     * The {@code Blend} effect delegates this operation to its {@code top}
+<i>539</i>&nbsp;     * input, or the {@code defaultInput} if the {@code top} input is
+<i>540</i>&nbsp;     * {@code null}.
+<i>541</i>&nbsp;     *
+<i>542</i>&nbsp;     * @param p the point in the coordinate space of the primary content
+<i>543</i>&nbsp;     *          input to be transformed
+<i>544</i>&nbsp;     * @param defaultInput the default input {@code Effect} to be used in
+<i>545</i>&nbsp;     *                     all cases where a filter has a null input
+<i>546</i>&nbsp;     * @return the transformed point in the coordinate space of the result
+<i>547</i>&nbsp;     */
+<i>548</i>&nbsp;    @Override
+<i>549</i>&nbsp;    public Point2D transform(Point2D p, Effect defaultInput) {
+<b class="nc"><i>550</i>&nbsp;        return getDefaultedInput(1, defaultInput).transform(p, defaultInput);</b>
+<i>551</i>&nbsp;    }
+<i>552</i>&nbsp;
+<i>553</i>&nbsp;    /**
+<i>554</i>&nbsp;     * Transform the specified point {@code p} from the coordinate space
+<i>555</i>&nbsp;     * of the output of the effect into the coordinate space of the
+<i>556</i>&nbsp;     * primary content input.
+<i>557</i>&nbsp;     * In essence, this method asks the question &quot;Which source coordinate
+<i>558</i>&nbsp;     * contributes most to the definition of the output at the specified
+<i>559</i>&nbsp;     * coordinate?&quot;
+<i>560</i>&nbsp;     * &lt;p&gt;
+<i>561</i>&nbsp;     * The {@code Blend} effect delegates this operation to its {@code top}
+<i>562</i>&nbsp;     * input, or the {@code defaultInput} if the {@code top} input is
+<i>563</i>&nbsp;     * {@code null}.
+<i>564</i>&nbsp;     *
+<i>565</i>&nbsp;     * @param p the point in the coordinate space of the result output
+<i>566</i>&nbsp;     *          to be transformed
+<i>567</i>&nbsp;     * @param defaultInput the default input {@code Effect} to be used in
+<i>568</i>&nbsp;     *                     all cases where a filter has a null input
+<i>569</i>&nbsp;     * @return the untransformed point in the coordinate space of the
+<i>570</i>&nbsp;     *         primary content input
+<i>571</i>&nbsp;     */
+<i>572</i>&nbsp;    @Override
+<i>573</i>&nbsp;    public Point2D untransform(Point2D p, Effect defaultInput) {
+<b class="nc"><i>574</i>&nbsp;        return getDefaultedInput(1, defaultInput).untransform(p, defaultInput);</b>
+<i>575</i>&nbsp;    }
+<i>576</i>&nbsp;
+<i>577</i>&nbsp;    @Override
+<i>578</i>&nbsp;    public RenderState getRenderState(FilterContext fctx,
+<i>579</i>&nbsp;                                      BaseTransform transform,
+<i>580</i>&nbsp;                                      Rectangle outputClip,
+<i>581</i>&nbsp;                                      Object renderHelper,
+<i>582</i>&nbsp;                                      Effect defaultInput)
+<i>583</i>&nbsp;    {
+<i>584</i>&nbsp;        // A blend operation operates on its inputs pixel-by-pixel
+<i>585</i>&nbsp;        // with no expansion or contraction.
+<i>586</i>&nbsp;        // RT-27563
+<i>587</i>&nbsp;        // TODO: The RenderSpaceRenderState object uses the output clip unchanged
+<i>588</i>&nbsp;        // for its inputs, but we could further restrict the amount we ask for
+<i>589</i>&nbsp;        // each input to the intersection of the two input bounds, but for now we
+<i>590</i>&nbsp;        // will simply let it pass along the output clip as the input clip.
+<b class="nc"><i>591</i>&nbsp;        return RenderState.RenderSpaceRenderState;</b>
+<i>592</i>&nbsp;    }
+<i>593</i>&nbsp;
+<i>594</i>&nbsp;    @Override
+<i>595</i>&nbsp;    public boolean reducesOpaquePixels() {
+<b class="nc"><i>596</i>&nbsp;        final Effect bottomInput = getBottomInput();</b>
+<b class="nc"><i>597</i>&nbsp;        final Effect topInput = getTopInput();</b>
+<b class="nc"><i>598</i>&nbsp;        switch (getMode()) {</b>
+<i>599</i>&nbsp;            case SRC_IN:
+<i>600</i>&nbsp;            case SRC_OUT:
+<b class="nc"><i>601</i>&nbsp;                return true;</b>
+<i>602</i>&nbsp;            case SRC_ATOP:
+<b class="nc"><i>603</i>&nbsp;                return bottomInput != null &amp;&amp; bottomInput.reducesOpaquePixels();</b>
+<i>604</i>&nbsp;            case SRC_OVER:
+<i>605</i>&nbsp;            case ADD:
+<i>606</i>&nbsp;            case MULTIPLY:
+<i>607</i>&nbsp;            case SCREEN:
+<i>608</i>&nbsp;            case OVERLAY:
+<i>609</i>&nbsp;            case DARKEN:
+<i>610</i>&nbsp;            case LIGHTEN:
+<i>611</i>&nbsp;            case COLOR_DODGE:
+<i>612</i>&nbsp;            case COLOR_BURN:
+<i>613</i>&nbsp;            case HARD_LIGHT:
+<i>614</i>&nbsp;            case SOFT_LIGHT:
+<i>615</i>&nbsp;            case DIFFERENCE:
+<i>616</i>&nbsp;            case EXCLUSION:
+<i>617</i>&nbsp;            case RED:
+<i>618</i>&nbsp;            case GREEN:
+<i>619</i>&nbsp;            case BLUE:
+<b class="nc"><i>620</i>&nbsp;                return topInput != null &amp;&amp; topInput.reducesOpaquePixels() &amp;&amp; bottomInput != null &amp;&amp; bottomInput.reducesOpaquePixels();</b>
+<i>621</i>&nbsp;        }
+<b class="nc"><i>622</i>&nbsp;        return true;</b>
+<i>623</i>&nbsp;    }
+<i>624</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2017-12-04 21:49</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,118 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: TraversalContext</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.javafx.scene.traversal</a> ]
+</div>
+
+<h1>Coverage Summary for Class: TraversalContext (com.sun.javafx.scene.traversal)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+</tr>
+<tr>
+  <td class="name">TraversalContext</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright (c) 2011, 2014, Oracle and/or its affiliates. All rights reserved.
+<i>3</i>&nbsp; * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+<i>4</i>&nbsp; *
+<i>5</i>&nbsp; *
+<i>6</i>&nbsp; *
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; *
+<i>11</i>&nbsp; *
+<i>12</i>&nbsp; *
+<i>13</i>&nbsp; *
+<i>14</i>&nbsp; *
+<i>15</i>&nbsp; *
+<i>16</i>&nbsp; *
+<i>17</i>&nbsp; *
+<i>18</i>&nbsp; *
+<i>19</i>&nbsp; *
+<i>20</i>&nbsp; *
+<i>21</i>&nbsp; *
+<i>22</i>&nbsp; *
+<i>23</i>&nbsp; *
+<i>24</i>&nbsp; */
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;package com.sun.javafx.scene.traversal;
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;import javafx.geometry.Bounds;
+<i>29</i>&nbsp;import javafx.scene.Node;
+<i>30</i>&nbsp;import javafx.scene.Parent;
+<i>31</i>&nbsp;
+<i>32</i>&nbsp;import java.util.List;
+<i>33</i>&nbsp;
+<i>34</i>&nbsp;public interface TraversalContext {
+<i>35</i>&nbsp;
+<i>36</i>&nbsp;    /**
+<i>37</i>&nbsp;     * Returns all possible targets within the context
+<i>38</i>&nbsp;     */
+<i>39</i>&nbsp;    List&lt;Node&gt; getAllTargetNodes();
+<i>40</i>&nbsp;
+<i>41</i>&nbsp;    /**
+<i>42</i>&nbsp;     * Returns layout bounds of the Node in the relevant (Sub)Scene. Note that these bounds are the most important for traversal
+<i>43</i>&nbsp;     * as they define the final position within the scene.
+<i>44</i>&nbsp;     */
+<i>45</i>&nbsp;    Bounds getSceneLayoutBounds(Node node);
+<i>46</i>&nbsp;
+<i>47</i>&nbsp;    /**
+<i>48</i>&nbsp;     * The root for this context, Traversal should be done only within the root
+<i>49</i>&nbsp;     */
+<i>50</i>&nbsp;    Parent getRoot();
+<i>51</i>&nbsp;
+<i>52</i>&nbsp;    /**
+<i>53</i>&nbsp;     * If the TraversalEngine does not want to handle traversal inside some inner child (Parent), it can use this method to apply
+<i>54</i>&nbsp;     * default algorithm inside that Parent and return the first Node
+<i>55</i>&nbsp;     */
+<i>56</i>&nbsp;    Node selectFirstInParent(Parent parent);
+<i>57</i>&nbsp;
+<i>58</i>&nbsp;    /**
+<i>59</i>&nbsp;     * If the TraversalEngine does not want to handle traversal inside some inner child (Parent), it can use this method to apply
+<i>60</i>&nbsp;     * default algorithm inside that Parent and return the last Node
+<i>61</i>&nbsp;     */
+<i>62</i>&nbsp;    Node selectLastInParent(Parent parent);
+<i>63</i>&nbsp;
+<i>64</i>&nbsp;    /**
+<i>65</i>&nbsp;     * If the TraversalEngine does not want to handle traversal inside some inner child (Parent), it can use this method to apply
+<i>66</i>&nbsp;     * default algorithm inside that Parent and return the next Node within the Parent or null if there&#39;s no successor.
+<i>67</i>&nbsp;     * @param  subTreeRoot this will be used as a root of the traversal. Should be a Node that is still handled by the current TraversalEngine,
+<i>68</i>&nbsp;     *                     but it&#39;s content is not.
+<i>69</i>&nbsp;     */
+<i>70</i>&nbsp;    Node selectInSubtree(Parent subTreeRoot, Node from, Direction dir);
+<i>71</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2017-12-04 21:49</div>
+</div>
+</body>
+</html>

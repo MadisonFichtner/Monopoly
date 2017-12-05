@@ -1,0 +1,181 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: ObservableValue</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">javafx.beans.value</a> ]
+</div>
+
+<h1>Coverage Summary for Class: ObservableValue (javafx.beans.value)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+</tr>
+<tr>
+  <td class="name">ObservableValue</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright (c) 2010, 2013, Oracle and/or its affiliates. All rights reserved.
+<i>3</i>&nbsp; * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+<i>4</i>&nbsp; *
+<i>5</i>&nbsp; *
+<i>6</i>&nbsp; *
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; *
+<i>11</i>&nbsp; *
+<i>12</i>&nbsp; *
+<i>13</i>&nbsp; *
+<i>14</i>&nbsp; *
+<i>15</i>&nbsp; *
+<i>16</i>&nbsp; *
+<i>17</i>&nbsp; *
+<i>18</i>&nbsp; *
+<i>19</i>&nbsp; *
+<i>20</i>&nbsp; *
+<i>21</i>&nbsp; *
+<i>22</i>&nbsp; *
+<i>23</i>&nbsp; *
+<i>24</i>&nbsp; */
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;package javafx.beans.value;
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;import javafx.beans.InvalidationListener;
+<i>29</i>&nbsp;import javafx.beans.Observable;
+<i>30</i>&nbsp;
+<i>31</i>&nbsp;/**
+<i>32</i>&nbsp; * An {@code ObservableValue} is an entity that wraps a value and allows to
+<i>33</i>&nbsp; * observe the value for changes. In general this interface should not be
+<i>34</i>&nbsp; * implemented directly but one of its sub-interfaces (
+<i>35</i>&nbsp; * {@code ObservableBooleanValue} etc.).
+<i>36</i>&nbsp; * &lt;p&gt;
+<i>37</i>&nbsp; * The value of the {@code ObservableValue} can be requested with
+<i>38</i>&nbsp; * {@link #getValue()}.
+<i>39</i>&nbsp; * &lt;p&gt;
+<i>40</i>&nbsp; * An implementation of {@code ObservableValue} may support lazy evaluation,
+<i>41</i>&nbsp; * which means that the value is not immediately recomputed after changes, but
+<i>42</i>&nbsp; * lazily the next time the value is requested. All bindings and properties in
+<i>43</i>&nbsp; * this library support lazy evaluation.
+<i>44</i>&nbsp; * &lt;p&gt;
+<i>45</i>&nbsp; * An {@code ObservableValue} generates two types of events: change events and
+<i>46</i>&nbsp; * invalidation events. A change event indicates that the value has changed. An
+<i>47</i>&nbsp; * invalidation event is generated, if the current value is not valid anymore.
+<i>48</i>&nbsp; * This distinction becomes important, if the {@code ObservableValue} supports
+<i>49</i>&nbsp; * lazy evaluation, because for a lazily evaluated value one does not know if an
+<i>50</i>&nbsp; * invalid value really has changed until it is recomputed. For this reason,
+<i>51</i>&nbsp; * generating change events requires eager evaluation while invalidation events
+<i>52</i>&nbsp; * can be generated for eager and lazy implementations.
+<i>53</i>&nbsp; * &lt;p&gt;
+<i>54</i>&nbsp; * Implementations of this class should strive to generate as few events as
+<i>55</i>&nbsp; * possible to avoid wasting too much time in event handlers. Implementations in
+<i>56</i>&nbsp; * this library mark themselves as invalid when the first invalidation event
+<i>57</i>&nbsp; * occurs. They do not generate anymore invalidation events until their value is
+<i>58</i>&nbsp; * recomputed and valid again.
+<i>59</i>&nbsp; * &lt;p&gt;
+<i>60</i>&nbsp; * Two types of listeners can be attached to an {@code ObservableValue}:
+<i>61</i>&nbsp; * {@link InvalidationListener} to listen to invalidation events and
+<i>62</i>&nbsp; * {@link ChangeListener} to listen to change events.
+<i>63</i>&nbsp; * &lt;p&gt;
+<i>64</i>&nbsp; * Important note: attaching a {@code ChangeListener} enforces eager computation
+<i>65</i>&nbsp; * even if the implementation of the {@code ObservableValue} supports lazy
+<i>66</i>&nbsp; * evaluation.
+<i>67</i>&nbsp; *
+<i>68</i>&nbsp; * @param &lt;T&gt;
+<i>69</i>&nbsp; *            The type of the wrapped value.
+<i>70</i>&nbsp; *
+<i>71</i>&nbsp; * @see ObservableBooleanValue
+<i>72</i>&nbsp; * @see ObservableDoubleValue
+<i>73</i>&nbsp; * @see ObservableFloatValue
+<i>74</i>&nbsp; * @see ObservableIntegerValue
+<i>75</i>&nbsp; * @see ObservableLongValue
+<i>76</i>&nbsp; * @see ObservableNumberValue
+<i>77</i>&nbsp; * @see ObservableObjectValue
+<i>78</i>&nbsp; * @see ObservableStringValue
+<i>79</i>&nbsp; *
+<i>80</i>&nbsp; *
+<i>81</i>&nbsp; * @since JavaFX 2.0
+<i>82</i>&nbsp; */
+<i>83</i>&nbsp;public interface ObservableValue&lt;T&gt; extends Observable {
+<i>84</i>&nbsp;
+<i>85</i>&nbsp;    /**
+<i>86</i>&nbsp;     * Adds a {@link ChangeListener} which will be notified whenever the value
+<i>87</i>&nbsp;     * of the {@code ObservableValue} changes. If the same listener is added
+<i>88</i>&nbsp;     * more than once, then it will be notified more than once. That is, no
+<i>89</i>&nbsp;     * check is made to ensure uniqueness.
+<i>90</i>&nbsp;     * &lt;p&gt;
+<i>91</i>&nbsp;     * Note that the same actual {@code ChangeListener} instance may be safely
+<i>92</i>&nbsp;     * registered for different {@code ObservableValues}.
+<i>93</i>&nbsp;     * &lt;p&gt;
+<i>94</i>&nbsp;     * The {@code ObservableValue} stores a strong reference to the listener
+<i>95</i>&nbsp;     * which will prevent the listener from being garbage collected and may
+<i>96</i>&nbsp;     * result in a memory leak. It is recommended to either unregister a
+<i>97</i>&nbsp;     * listener by calling {@link #removeListener(ChangeListener)
+<i>98</i>&nbsp;     * removeListener} after use or to use an instance of
+<i>99</i>&nbsp;     * {@link WeakChangeListener} avoid this situation.
+<i>100</i>&nbsp;     *
+<i>101</i>&nbsp;     * @see #removeListener(ChangeListener)
+<i>102</i>&nbsp;     *
+<i>103</i>&nbsp;     * @param listener
+<i>104</i>&nbsp;     *            The listener to register
+<i>105</i>&nbsp;     * @throws NullPointerException
+<i>106</i>&nbsp;     *             if the listener is null
+<i>107</i>&nbsp;     */
+<i>108</i>&nbsp;    void addListener(ChangeListener&lt;? super T&gt; listener);
+<i>109</i>&nbsp;
+<i>110</i>&nbsp;    /**
+<i>111</i>&nbsp;     * Removes the given listener from the list of listeners, that are notified
+<i>112</i>&nbsp;     * whenever the value of the {@code ObservableValue} changes.
+<i>113</i>&nbsp;     * &lt;p&gt;
+<i>114</i>&nbsp;     * If the given listener has not been previously registered (i.e. it was
+<i>115</i>&nbsp;     * never added) then this method call is a no-op. If it had been previously
+<i>116</i>&nbsp;     * added then it will be removed. If it had been added more than once, then
+<i>117</i>&nbsp;     * only the first occurrence will be removed.
+<i>118</i>&nbsp;     *
+<i>119</i>&nbsp;     * @see #addListener(ChangeListener)
+<i>120</i>&nbsp;     *
+<i>121</i>&nbsp;     * @param listener
+<i>122</i>&nbsp;     *            The listener to remove
+<i>123</i>&nbsp;     * @throws NullPointerException
+<i>124</i>&nbsp;     *             if the listener is null
+<i>125</i>&nbsp;     */
+<i>126</i>&nbsp;    void removeListener(ChangeListener&lt;? super T&gt; listener);
+<i>127</i>&nbsp;
+<i>128</i>&nbsp;    /**
+<i>129</i>&nbsp;     * Returns the current value of this {@code ObservableValue}
+<i>130</i>&nbsp;     *
+<i>131</i>&nbsp;     * @return The current value
+<i>132</i>&nbsp;     */
+<i>133</i>&nbsp;    T getValue();
+<i>134</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2017-12-04 21:49</div>
+</div>
+</body>
+</html>

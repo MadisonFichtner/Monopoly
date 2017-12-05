@@ -1,0 +1,647 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: BaseContext</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.prism.impl</a> ]
+</div>
+
+<h1>Coverage Summary for Class: BaseContext (com.sun.prism.impl)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">BaseContext</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    45.8%
+  </span>
+  <span class="absValue">
+    (11/ 24)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    30.5%
+  </span>
+  <span class="absValue">
+    (79/ 259)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright (c) 2009, 2016, Oracle and/or its affiliates. All rights reserved.
+<i>3</i>&nbsp; * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+<i>4</i>&nbsp; *
+<i>5</i>&nbsp; *
+<i>6</i>&nbsp; *
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; *
+<i>11</i>&nbsp; *
+<i>12</i>&nbsp; *
+<i>13</i>&nbsp; *
+<i>14</i>&nbsp; *
+<i>15</i>&nbsp; *
+<i>16</i>&nbsp; *
+<i>17</i>&nbsp; *
+<i>18</i>&nbsp; *
+<i>19</i>&nbsp; *
+<i>20</i>&nbsp; *
+<i>21</i>&nbsp; *
+<i>22</i>&nbsp; *
+<i>23</i>&nbsp; *
+<i>24</i>&nbsp; */
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;package com.sun.prism.impl;
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;import java.nio.ByteBuffer;
+<i>29</i>&nbsp;import java.util.HashMap;
+<i>30</i>&nbsp;import java.util.Iterator;
+<i>31</i>&nbsp;import java.util.Map;
+<i>32</i>&nbsp;import com.sun.glass.ui.Screen;
+<i>33</i>&nbsp;import com.sun.javafx.font.FontResource;
+<i>34</i>&nbsp;import com.sun.javafx.font.FontStrike;
+<i>35</i>&nbsp;import com.sun.javafx.geom.RectBounds;
+<i>36</i>&nbsp;import com.sun.javafx.geom.transform.BaseTransform;
+<i>37</i>&nbsp;import com.sun.javafx.image.ByteToBytePixelConverter;
+<i>38</i>&nbsp;import com.sun.javafx.image.impl.ByteGray;
+<i>39</i>&nbsp;import com.sun.javafx.sg.prism.NGCamera;
+<i>40</i>&nbsp;import com.sun.prism.PixelFormat;
+<i>41</i>&nbsp;import com.sun.prism.RTTexture;
+<i>42</i>&nbsp;import com.sun.prism.RenderTarget;
+<i>43</i>&nbsp;import com.sun.prism.ResourceFactory;
+<i>44</i>&nbsp;import com.sun.prism.Texture;
+<i>45</i>&nbsp;import com.sun.prism.Texture.WrapMode;
+<i>46</i>&nbsp;import com.sun.prism.impl.paint.PaintUtil;
+<i>47</i>&nbsp;import com.sun.prism.impl.shape.MaskData;
+<i>48</i>&nbsp;import com.sun.prism.paint.Gradient;
+<i>49</i>&nbsp;
+<i>50</i>&nbsp;public abstract class BaseContext {
+<i>51</i>&nbsp;
+<i>52</i>&nbsp;    private final Screen screen;
+<i>53</i>&nbsp;    private final ResourceFactory factory;
+<i>54</i>&nbsp;    private final VertexBuffer vertexBuffer;
+<i>55</i>&nbsp;
+<i>56</i>&nbsp;    private static final int MIN_MASK_DIM = 1024;
+<i>57</i>&nbsp;    private Texture maskTex;
+<i>58</i>&nbsp;    private ByteBuffer maskBuffer;
+<i>59</i>&nbsp;    private ByteBuffer clearBuffer;
+<i>60</i>&nbsp;    private int curMaskRow;
+<i>61</i>&nbsp;    private int nextMaskRow;
+<i>62</i>&nbsp;    private int curMaskCol;
+<i>63</i>&nbsp;    private int highMaskCol;
+<i>64</i>&nbsp;    private Texture paintTex;
+<i>65</i>&nbsp;    private int[] paintPixels;
+<i>66</i>&nbsp;    private ByteBuffer paintBuffer;
+<i>67</i>&nbsp;
+<i>68</i>&nbsp;    private Texture rectTex;
+<i>69</i>&nbsp;    private int rectTexMax;
+<i>70</i>&nbsp;    private Texture wrapRectTex;
+<i>71</i>&nbsp;    private Texture ovalTex;
+<i>72</i>&nbsp;
+<i>73</i>&nbsp;    // TODO: need to dispose these when the context is disposed... (RT-27421)
+<b class="fc"><i>74</i>&nbsp;    private final Map&lt;FontStrike, GlyphCache&gt;</b>
+<i>75</i>&nbsp;        greyGlyphCaches = new HashMap&lt;FontStrike, GlyphCache&gt;();
+<b class="fc"><i>76</i>&nbsp;    private final Map&lt;FontStrike, GlyphCache&gt;</b>
+<i>77</i>&nbsp;        lcdGlyphCaches = new HashMap&lt;FontStrike, GlyphCache&gt;();
+<i>78</i>&nbsp;
+<b class="fc"><i>79</i>&nbsp;    protected BaseContext(Screen screen, ResourceFactory factory, int vbQuads) {</b>
+<b class="fc"><i>80</i>&nbsp;        this.screen = screen;</b>
+<b class="fc"><i>81</i>&nbsp;        this.factory = factory;</b>
+<b class="fc"><i>82</i>&nbsp;        this.vertexBuffer = new VertexBuffer(this, vbQuads);</b>
+<b class="fc"><i>83</i>&nbsp;    }</b>
+<i>84</i>&nbsp;
+<b class="nc"><i>85</i>&nbsp;    protected void setDeviceParametersFor2D() {}</b>
+<b class="nc"><i>86</i>&nbsp;    protected void setDeviceParametersFor3D() {}</b>
+<i>87</i>&nbsp;
+<i>88</i>&nbsp;    public Screen getAssociatedScreen() {
+<b class="fc"><i>89</i>&nbsp;        return screen;</b>
+<i>90</i>&nbsp;    }
+<i>91</i>&nbsp;
+<i>92</i>&nbsp;    public ResourceFactory getResourceFactory() {
+<b class="nc"><i>93</i>&nbsp;        return factory;</b>
+<i>94</i>&nbsp;    }
+<i>95</i>&nbsp;
+<i>96</i>&nbsp;    public VertexBuffer getVertexBuffer() {
+<b class="fc"><i>97</i>&nbsp;        return vertexBuffer;</b>
+<i>98</i>&nbsp;    }
+<i>99</i>&nbsp;
+<i>100</i>&nbsp;    public void flushVertexBuffer() {
+<b class="fc"><i>101</i>&nbsp;        vertexBuffer.flush();</b>
+<b class="fc"><i>102</i>&nbsp;    }</b>
+<i>103</i>&nbsp;
+<i>104</i>&nbsp;    protected final void flushMask() {
+<b class="fc"><i>105</i>&nbsp;        if (curMaskRow &gt; 0 || curMaskCol &gt; 0) {</b>
+<b class="fc"><i>106</i>&nbsp;            maskTex.lock();</b>
+<i>107</i>&nbsp;            // assert !maskTex.isSurfaceLost();
+<i>108</i>&nbsp;            // since it was bound and unflushed...
+<b class="fc"><i>109</i>&nbsp;            maskTex.update(maskBuffer, maskTex.getPixelFormat(),</b>
+<i>110</i>&nbsp;                                       0, 0, 0, 0, highMaskCol, nextMaskRow,
+<b class="fc"><i>111</i>&nbsp;                                       maskTex.getContentWidth(), true);</b>
+<b class="fc"><i>112</i>&nbsp;            maskTex.unlock();</b>
+<b class="fc"><i>113</i>&nbsp;            curMaskRow = curMaskCol = nextMaskRow = highMaskCol = 0;</b>
+<i>114</i>&nbsp;        }
+<b class="fc"><i>115</i>&nbsp;    }</b>
+<i>116</i>&nbsp;
+<i>117</i>&nbsp;    public void drawQuads(float coordArray[], byte colorArray[], int numVertices) {
+<b class="fc"><i>118</i>&nbsp;        flushMask();</b>
+<b class="fc"><i>119</i>&nbsp;        renderQuads(coordArray, colorArray, numVertices);</b>
+<b class="fc"><i>120</i>&nbsp;    }</b>
+<i>121</i>&nbsp;
+<i>122</i>&nbsp;    protected abstract void renderQuads(float coordArray[], byte colorArray[], int numVertices);
+<i>123</i>&nbsp;
+<i>124</i>&nbsp;    /**
+<i>125</i>&nbsp;     *
+<i>126</i>&nbsp;     * This method will call releaseRenderTarget method to reset last
+<i>127</i>&nbsp;     * renderTarget and textures if g is null
+<i>128</i>&nbsp;     */
+<i>129</i>&nbsp;    public void setRenderTarget(BaseGraphics g) {
+<b class="fc"><i>130</i>&nbsp;        if (g != null) {</b>
+<b class="fc"><i>131</i>&nbsp;            setRenderTarget(g.getRenderTarget(), g.getCameraNoClone(),</b>
+<b class="fc"><i>132</i>&nbsp;                    g.isDepthTest() &amp;&amp; g.isDepthBuffer(), g.isState3D());</b>
+<i>133</i>&nbsp;        } else {
+<b class="nc"><i>134</i>&nbsp;            releaseRenderTarget();</b>
+<i>135</i>&nbsp;        }
+<b class="fc"><i>136</i>&nbsp;    }</b>
+<i>137</i>&nbsp;
+<i>138</i>&nbsp;    protected void releaseRenderTarget() {
+<i>139</i>&nbsp;        // Default implementation is a no-op. A pipeline may override if needed.
+<b class="nc"><i>140</i>&nbsp;    }</b>
+<i>141</i>&nbsp;
+<i>142</i>&nbsp;    protected abstract void setRenderTarget(RenderTarget target, NGCamera camera,
+<i>143</i>&nbsp;                                            boolean depthTest, boolean state3D);
+<i>144</i>&nbsp;
+<i>145</i>&nbsp;    public abstract void validateClearOp(BaseGraphics g);
+<i>146</i>&nbsp;
+<i>147</i>&nbsp;    public abstract void validatePaintOp(BaseGraphics g, BaseTransform xform,
+<i>148</i>&nbsp;                                         Texture maskTex,
+<i>149</i>&nbsp;                                         float bx, float by, float bw, float bh);
+<i>150</i>&nbsp;
+<i>151</i>&nbsp;    public abstract void validateTextureOp(BaseGraphics g, BaseTransform xform,
+<i>152</i>&nbsp;                                           Texture src, PixelFormat format);
+<i>153</i>&nbsp;
+<i>154</i>&nbsp;    public void clearGlyphCaches() {
+<b class="nc"><i>155</i>&nbsp;        clearCaches(greyGlyphCaches);</b>
+<b class="nc"><i>156</i>&nbsp;        clearCaches(lcdGlyphCaches);</b>
+<b class="nc"><i>157</i>&nbsp;    }</b>
+<i>158</i>&nbsp;
+<i>159</i>&nbsp;    private void clearCaches(Map&lt;FontStrike, GlyphCache&gt; glyphCaches) {
+<b class="nc"><i>160</i>&nbsp;        for (Iterator&lt;FontStrike&gt; iter = glyphCaches.keySet().iterator(); iter.hasNext();) {</b>
+<b class="nc"><i>161</i>&nbsp;            iter.next().clearDesc();</b>
+<i>162</i>&nbsp;        }
+<i>163</i>&nbsp;
+<b class="nc"><i>164</i>&nbsp;        for (GlyphCache cache : glyphCaches.values()) {</b>
+<b class="nc"><i>165</i>&nbsp;            if (cache != null) {</b>
+<b class="nc"><i>166</i>&nbsp;                cache.clear();</b>
+<i>167</i>&nbsp;            }
+<b class="nc"><i>168</i>&nbsp;        }</b>
+<b class="nc"><i>169</i>&nbsp;        glyphCaches.clear();</b>
+<b class="nc"><i>170</i>&nbsp;    }</b>
+<i>171</i>&nbsp;
+<i>172</i>&nbsp;    abstract public RTTexture getLCDBuffer();
+<i>173</i>&nbsp;
+<i>174</i>&nbsp;    public GlyphCache getGlyphCache(FontStrike strike) {
+<i>175</i>&nbsp;        Map&lt;FontStrike, GlyphCache&gt; glyphCaches =
+<b class="fc"><i>176</i>&nbsp;            (strike.getAAMode() ==FontResource.AA_LCD)</b>
+<b class="fc"><i>177</i>&nbsp;            ? lcdGlyphCaches : greyGlyphCaches;</b>
+<b class="fc"><i>178</i>&nbsp;        return getGlyphCache(strike, glyphCaches);</b>
+<i>179</i>&nbsp;    }
+<i>180</i>&nbsp;
+<i>181</i>&nbsp;    public boolean isSuperShaderEnabled() {
+<b class="nc"><i>182</i>&nbsp;        return false;</b>
+<i>183</i>&nbsp;    }
+<i>184</i>&nbsp;
+<i>185</i>&nbsp;    private GlyphCache getGlyphCache(FontStrike strike,
+<i>186</i>&nbsp;                                     Map&lt;FontStrike, GlyphCache&gt; glyphCaches) {
+<b class="fc"><i>187</i>&nbsp;        GlyphCache glyphCache = glyphCaches.get(strike);</b>
+<b class="fc"><i>188</i>&nbsp;        if (glyphCache == null) {</b>
+<b class="fc"><i>189</i>&nbsp;            glyphCache = new GlyphCache(this, strike);</b>
+<b class="fc"><i>190</i>&nbsp;            glyphCaches.put(strike, glyphCache);</b>
+<i>191</i>&nbsp;        }
+<b class="fc"><i>192</i>&nbsp;        return glyphCache;</b>
+<i>193</i>&nbsp;    }
+<i>194</i>&nbsp;
+<i>195</i>&nbsp;    public Texture validateMaskTexture(MaskData maskData, boolean canScale) {
+<b class="fc"><i>196</i>&nbsp;        int pad = canScale ? 1 : 0;</b>
+<b class="fc"><i>197</i>&nbsp;        int needW = maskData.getWidth() + pad + pad;</b>
+<b class="fc"><i>198</i>&nbsp;        int needH = maskData.getHeight() + pad + pad;</b>
+<b class="fc"><i>199</i>&nbsp;        int texW = 0, texH = 0;</b>
+<i>200</i>&nbsp;
+<b class="fc"><i>201</i>&nbsp;        if (maskTex != null) {</b>
+<b class="fc"><i>202</i>&nbsp;            maskTex.lock();</b>
+<b class="fc"><i>203</i>&nbsp;            if (maskTex.isSurfaceLost()) {</b>
+<b class="nc"><i>204</i>&nbsp;                maskTex = null;</b>
+<i>205</i>&nbsp;            } else {
+<b class="fc"><i>206</i>&nbsp;                texW = maskTex.getContentWidth();</b>
+<b class="fc"><i>207</i>&nbsp;                texH = maskTex.getContentHeight();</b>
+<i>208</i>&nbsp;            }
+<i>209</i>&nbsp;        }
+<i>210</i>&nbsp;
+<b class="fc"><i>211</i>&nbsp;        if (maskTex == null || texW &lt; needW || texH &lt; needH) {</b>
+<b class="fc"><i>212</i>&nbsp;            if (maskTex != null) {</b>
+<b class="nc"><i>213</i>&nbsp;                flushVertexBuffer();</b>
+<b class="nc"><i>214</i>&nbsp;                maskTex.dispose();</b>
+<b class="nc"><i>215</i>&nbsp;                maskTex = null;</b>
+<i>216</i>&nbsp;            }
+<b class="fc"><i>217</i>&nbsp;            maskBuffer = null;</b>
+<i>218</i>&nbsp;
+<i>219</i>&nbsp;            // grow the mask texture so that the new one is always
+<i>220</i>&nbsp;            // at least as large as the previous one; this avoids
+<i>221</i>&nbsp;            // lots of creation/disposal when the shapes alternate
+<i>222</i>&nbsp;            // between narrow/tall and wide/short
+<b class="fc"><i>223</i>&nbsp;            int newTexW = Math.max(MIN_MASK_DIM, Math.max(needW, texW));</b>
+<b class="fc"><i>224</i>&nbsp;            int newTexH = Math.max(MIN_MASK_DIM, Math.max(needH, texH));</b>
+<i>225</i>&nbsp;
+<b class="fc"><i>226</i>&nbsp;            maskTex = getResourceFactory().</b>
+<b class="fc"><i>227</i>&nbsp;                createMaskTexture(newTexW, newTexH, WrapMode.CLAMP_NOT_NEEDED);</b>
+<b class="fc"><i>228</i>&nbsp;            maskBuffer = ByteBuffer.allocate(newTexW * newTexH);</b>
+<b class="fc"><i>229</i>&nbsp;            if (clearBuffer == null || clearBuffer.capacity() &lt; newTexW) {</b>
+<b class="fc"><i>230</i>&nbsp;                clearBuffer = null;</b>
+<b class="fc"><i>231</i>&nbsp;                clearBuffer = ByteBuffer.allocate(newTexW);</b>
+<i>232</i>&nbsp;            }
+<b class="fc"><i>233</i>&nbsp;            curMaskRow = curMaskCol = nextMaskRow = highMaskCol = 0;</b>
+<i>234</i>&nbsp;        }
+<i>235</i>&nbsp;
+<b class="fc"><i>236</i>&nbsp;        return maskTex;</b>
+<i>237</i>&nbsp;    }
+<i>238</i>&nbsp;
+<i>239</i>&nbsp;    public void updateMaskTexture(MaskData maskData, RectBounds maskBounds, boolean canScale) {
+<i>240</i>&nbsp;        // assert maskTex bound as texture 1...
+<b class="fc"><i>241</i>&nbsp;        maskTex.assertLocked();</b>
+<b class="fc"><i>242</i>&nbsp;        int maskW = maskData.getWidth();</b>
+<b class="fc"><i>243</i>&nbsp;        int maskH = maskData.getHeight();</b>
+<b class="fc"><i>244</i>&nbsp;        int texW = maskTex.getContentWidth();</b>
+<b class="fc"><i>245</i>&nbsp;        int texH = maskTex.getContentHeight();</b>
+<b class="fc"><i>246</i>&nbsp;        int pad = canScale ? 1 : 0;</b>
+<b class="fc"><i>247</i>&nbsp;        int needW = maskW + pad + pad;</b>
+<b class="fc"><i>248</i>&nbsp;        int needH = maskH + pad + pad;</b>
+<b class="fc"><i>249</i>&nbsp;        if (curMaskCol + needW &gt; texW) {</b>
+<b class="nc"><i>250</i>&nbsp;            curMaskCol = 0;</b>
+<b class="nc"><i>251</i>&nbsp;            curMaskRow = nextMaskRow;</b>
+<i>252</i>&nbsp;        }
+<b class="fc"><i>253</i>&nbsp;        if (curMaskRow + needH &gt; texH) {</b>
+<b class="nc"><i>254</i>&nbsp;            flushVertexBuffer();</b>
+<i>255</i>&nbsp;        }
+<i>256</i>&nbsp;
+<b class="fc"><i>257</i>&nbsp;        int offset = curMaskRow * texW + curMaskCol;</b>
+<b class="fc"><i>258</i>&nbsp;        ByteToBytePixelConverter b2bpc = ByteGray.ToByteGrayConverter();</b>
+<b class="fc"><i>259</i>&nbsp;        if (canScale) {</b>
+<i>260</i>&nbsp;            // [UL =&gt; UR)
+<b class="nc"><i>261</i>&nbsp;            int off = offset;</b>
+<b class="nc"><i>262</i>&nbsp;            b2bpc.convert(clearBuffer, 0, 0, maskBuffer, off, texW, maskW + 1, 1);</b>
+<i>263</i>&nbsp;            // [UR =&gt; LR)
+<b class="nc"><i>264</i>&nbsp;            off = offset + maskW + 1;</b>
+<b class="nc"><i>265</i>&nbsp;            b2bpc.convert(clearBuffer, 0, 0, maskBuffer, off, texW, 1, maskH + 1);</b>
+<i>266</i>&nbsp;            // (UL =&gt; LL]
+<b class="nc"><i>267</i>&nbsp;            off = offset + texW;  // UL corner + 1 row</b>
+<b class="nc"><i>268</i>&nbsp;            b2bpc.convert(clearBuffer, 0, 0, maskBuffer, off, texW, 1, maskH + 1);</b>
+<i>269</i>&nbsp;            // (LL =&gt; LR]
+<b class="nc"><i>270</i>&nbsp;            off = offset + (maskH + 1) * texW + 1; // LL corner + 1 col</b>
+<b class="nc"><i>271</i>&nbsp;            b2bpc.convert(clearBuffer, 0, 0, maskBuffer, off, texW, maskW + 1, 1);</b>
+<b class="nc"><i>272</i>&nbsp;            offset += texW + 1;</b>
+<i>273</i>&nbsp;        }
+<b class="fc"><i>274</i>&nbsp;        b2bpc.convert(maskData.getMaskBuffer(), 0, maskW,</b>
+<i>275</i>&nbsp;                      maskBuffer, offset, texW,
+<i>276</i>&nbsp;                      maskW, maskH);
+<i>277</i>&nbsp;
+<b class="fc"><i>278</i>&nbsp;        float physW = maskTex.getPhysicalWidth();</b>
+<b class="fc"><i>279</i>&nbsp;        float physH = maskTex.getPhysicalHeight();</b>
+<b class="fc"><i>280</i>&nbsp;        maskBounds.setMinX((curMaskCol + pad        ) / physW);</b>
+<b class="fc"><i>281</i>&nbsp;        maskBounds.setMinY((curMaskRow + pad        ) / physH);</b>
+<b class="fc"><i>282</i>&nbsp;        maskBounds.setMaxX((curMaskCol + pad + maskW) / physW);</b>
+<b class="fc"><i>283</i>&nbsp;        maskBounds.setMaxY((curMaskRow + pad + maskH) / physH);</b>
+<i>284</i>&nbsp;
+<b class="fc"><i>285</i>&nbsp;        curMaskCol = curMaskCol + needW;</b>
+<b class="fc"><i>286</i>&nbsp;        if (highMaskCol &lt; curMaskCol) highMaskCol = curMaskCol;</b>
+<b class="fc"><i>287</i>&nbsp;        if (nextMaskRow &lt; curMaskRow + needH) nextMaskRow = curMaskRow + needH;</b>
+<b class="fc"><i>288</i>&nbsp;    }</b>
+<i>289</i>&nbsp;
+<i>290</i>&nbsp;    public int getRectTextureMaxSize() {
+<b class="nc"><i>291</i>&nbsp;        if (rectTex == null) {</b>
+<b class="nc"><i>292</i>&nbsp;            createRectTexture();</b>
+<i>293</i>&nbsp;        }
+<b class="nc"><i>294</i>&nbsp;        return rectTexMax;</b>
+<i>295</i>&nbsp;    }
+<i>296</i>&nbsp;
+<i>297</i>&nbsp;    public Texture getRectTexture() {
+<b class="nc"><i>298</i>&nbsp;        if (rectTex == null) {</b>
+<b class="nc"><i>299</i>&nbsp;            createRectTexture();</b>
+<i>300</i>&nbsp;        }
+<i>301</i>&nbsp;
+<i>302</i>&nbsp;        // rectTex is left permanent and locked so it never
+<i>303</i>&nbsp;        // goes away or needs to be checked for isSurfaceLost(), but we
+<i>304</i>&nbsp;        // add a lock here so that the caller can unlock without knowing
+<i>305</i>&nbsp;        // our inner implementation details
+<b class="nc"><i>306</i>&nbsp;        rectTex.lock();</b>
+<b class="nc"><i>307</i>&nbsp;        return rectTex;</b>
+<i>308</i>&nbsp;    }
+<i>309</i>&nbsp;
+<i>310</i>&nbsp;    private void createRectTexture() {
+<b class="nc"><i>311</i>&nbsp;        int texMax = PrismSettings.primTextureSize;</b>
+<b class="nc"><i>312</i>&nbsp;        if (texMax &lt; 0) texMax = getResourceFactory().getMaximumTextureSize();</b>
+<b class="nc"><i>313</i>&nbsp;        int texDim = 3;</b>
+<b class="nc"><i>314</i>&nbsp;        int nextCellSize = 2;</b>
+<b class="nc"><i>315</i>&nbsp;        while (texDim + nextCellSize + 1 &lt;= texMax) {</b>
+<b class="nc"><i>316</i>&nbsp;            rectTexMax = nextCellSize;</b>
+<b class="nc"><i>317</i>&nbsp;            texDim += ++nextCellSize;</b>
+<i>318</i>&nbsp;        }
+<b class="nc"><i>319</i>&nbsp;        byte mask[] = new byte[texDim * texDim];</b>
+<b class="nc"><i>320</i>&nbsp;        int cellY = 1;</b>
+<b class="nc"><i>321</i>&nbsp;        for (int cellH = 1; cellH &lt;= rectTexMax; cellH++) {</b>
+<b class="nc"><i>322</i>&nbsp;            int cellX = 1;</b>
+<b class="nc"><i>323</i>&nbsp;            for (int cellW = 1; cellW &lt;= rectTexMax; cellW++) {</b>
+<b class="nc"><i>324</i>&nbsp;                int index = cellY * texDim + cellX;</b>
+<b class="nc"><i>325</i>&nbsp;                for (int y = 0; y &lt; cellH; y++) {</b>
+<b class="nc"><i>326</i>&nbsp;                    for (int x = 0; x &lt; cellW; x++) {</b>
+<b class="nc"><i>327</i>&nbsp;                        mask[index + x] = (byte) 0xff;</b>
+<i>328</i>&nbsp;                    }
+<b class="nc"><i>329</i>&nbsp;                    index += texDim;</b>
+<i>330</i>&nbsp;                }
+<b class="nc"><i>331</i>&nbsp;                cellX += cellW + 1;</b>
+<i>332</i>&nbsp;            }
+<b class="nc"><i>333</i>&nbsp;            cellY += cellH + 1;</b>
+<i>334</i>&nbsp;        }
+<b class="nc"><i>335</i>&nbsp;        if (PrismSettings.verbose) {</b>
+<b class="nc"><i>336</i>&nbsp;            System.out.println(&quot;max rectangle texture cell size = &quot;+rectTexMax);</b>
+<i>337</i>&nbsp;        }
+<b class="nc"><i>338</i>&nbsp;        Texture tex =</b>
+<b class="nc"><i>339</i>&nbsp;            getResourceFactory().createMaskTexture(texDim, texDim,</b>
+<i>340</i>&nbsp;                                                   WrapMode.CLAMP_NOT_NEEDED);
+<i>341</i>&nbsp;        // rectTex remains permanently locked, useful, and permanent
+<i>342</i>&nbsp;        // an additional lock is added when a caller calls getWrapGreientTeture for
+<i>343</i>&nbsp;        // them to unlock
+<b class="nc"><i>344</i>&nbsp;        tex.contentsUseful();</b>
+<b class="nc"><i>345</i>&nbsp;        tex.makePermanent();</b>
+<b class="nc"><i>346</i>&nbsp;        PixelFormat pf = tex.getPixelFormat();</b>
+<b class="nc"><i>347</i>&nbsp;        int scan = texDim * pf.getBytesPerPixelUnit();</b>
+<b class="nc"><i>348</i>&nbsp;        tex.update(ByteBuffer.wrap(mask), pf,</b>
+<i>349</i>&nbsp;                   0, 0, 0, 0, texDim, texDim,
+<i>350</i>&nbsp;                   scan, false);
+<b class="nc"><i>351</i>&nbsp;        rectTex = tex;</b>
+<b class="nc"><i>352</i>&nbsp;    }</b>
+<i>353</i>&nbsp;
+<i>354</i>&nbsp;    public Texture getWrapRectTexture() {
+<b class="nc"><i>355</i>&nbsp;        if (wrapRectTex == null) {</b>
+<b class="nc"><i>356</i>&nbsp;            Texture tex =</b>
+<b class="nc"><i>357</i>&nbsp;                getResourceFactory().createMaskTexture(2, 2, WrapMode.CLAMP_TO_EDGE);</b>
+<i>358</i>&nbsp;            // wrapRectTex remains permanently locked, useful, and permanent
+<i>359</i>&nbsp;            // an additional lock is added when a caller calls getWrapGreientTeture for
+<i>360</i>&nbsp;            // them to unlock
+<b class="nc"><i>361</i>&nbsp;            tex.contentsUseful();</b>
+<b class="nc"><i>362</i>&nbsp;            tex.makePermanent();</b>
+<b class="nc"><i>363</i>&nbsp;            int w = tex.getPhysicalWidth();</b>
+<b class="nc"><i>364</i>&nbsp;            int h = tex.getPhysicalHeight();</b>
+<b class="nc"><i>365</i>&nbsp;            if (PrismSettings.verbose) {</b>
+<b class="nc"><i>366</i>&nbsp;                System.out.println(&quot;wrap rectangle texture = &quot;+w+&quot; x &quot;+h);</b>
+<i>367</i>&nbsp;            }
+<i>368</i>&nbsp;            // assert w == 2 &amp;&amp; h == 2?
+<b class="nc"><i>369</i>&nbsp;            byte mask[] = new byte[w * h];</b>
+<b class="nc"><i>370</i>&nbsp;            int off = w;</b>
+<b class="nc"><i>371</i>&nbsp;            for (int y = 1; y &lt; h; y++) {</b>
+<b class="nc"><i>372</i>&nbsp;                for (int x = 1; x &lt; h; x++) {</b>
+<b class="nc"><i>373</i>&nbsp;                    mask[off + x] = (byte) 0xff;</b>
+<i>374</i>&nbsp;                }
+<b class="nc"><i>375</i>&nbsp;                off += w;</b>
+<i>376</i>&nbsp;            }
+<b class="nc"><i>377</i>&nbsp;            PixelFormat pf = tex.getPixelFormat();</b>
+<b class="nc"><i>378</i>&nbsp;            int scan = w * pf.getBytesPerPixelUnit();</b>
+<b class="nc"><i>379</i>&nbsp;            tex.update(ByteBuffer.wrap(mask), pf,</b>
+<i>380</i>&nbsp;                       0, 0, 0, 0, w, h,
+<i>381</i>&nbsp;                       scan, false);
+<b class="nc"><i>382</i>&nbsp;            wrapRectTex = tex;</b>
+<i>383</i>&nbsp;        }
+<i>384</i>&nbsp;
+<i>385</i>&nbsp;        // wrapRectTex is left permanent and locked so it never
+<i>386</i>&nbsp;        // goes away or needs to be checked for isSurfaceLost(), but we
+<i>387</i>&nbsp;        // add a lock here so that the caller can unlock without knowing
+<i>388</i>&nbsp;        // our inner implementation details
+<b class="nc"><i>389</i>&nbsp;        wrapRectTex.lock();</b>
+<b class="nc"><i>390</i>&nbsp;        return wrapRectTex;</b>
+<i>391</i>&nbsp;    }
+<i>392</i>&nbsp;
+<i>393</i>&nbsp;    public Texture getOvalTexture() {
+<b class="nc"><i>394</i>&nbsp;        if (ovalTex == null) {</b>
+<b class="nc"><i>395</i>&nbsp;            int cellMax = getRectTextureMaxSize();</b>
+<b class="nc"><i>396</i>&nbsp;            int texDim = (cellMax * (cellMax + 1)) / 2;</b>
+<i>397</i>&nbsp;            // size now points at the start of the max-sized cell
+<b class="nc"><i>398</i>&nbsp;            texDim += cellMax + 1;</b>
+<i>399</i>&nbsp;            // size now points just past the empty row on the far side of the
+<i>400</i>&nbsp;            // max-sized cell - which is the dimension we want the texture...
+<b class="nc"><i>401</i>&nbsp;            byte mask[] = new byte[texDim * texDim];</b>
+<b class="nc"><i>402</i>&nbsp;            int cellY = 1;</b>
+<b class="nc"><i>403</i>&nbsp;            for (int cellH = 1; cellH &lt;= cellMax; cellH++) {</b>
+<b class="nc"><i>404</i>&nbsp;                int cellX = 1;</b>
+<b class="nc"><i>405</i>&nbsp;                for (int cellW = 1; cellW &lt;= cellMax; cellW++) {</b>
+<b class="nc"><i>406</i>&nbsp;                    int index = cellY * texDim + cellX;</b>
+<i>407</i>&nbsp;//                    System.out.println(&quot;rasterizing &quot;+cell_w+&quot; x &quot;+cell_h);
+<b class="nc"><i>408</i>&nbsp;                    for (int y = 0; y &lt; cellH; y++) {</b>
+<b class="nc"><i>409</i>&nbsp;                        if (y * 2 &gt;= cellH) {</b>
+<b class="nc"><i>410</i>&nbsp;                            int reflecty = cellH - 1 - y;</b>
+<i>411</i>&nbsp;                            // handle bottom half of ellipse via reflection
+<b class="nc"><i>412</i>&nbsp;                            int rindex = index + (reflecty - y) * texDim;</b>
+<b class="nc"><i>413</i>&nbsp;                            for (int x = 0; x &lt; cellW; x++) {</b>
+<b class="nc"><i>414</i>&nbsp;                                mask[index + x] = mask[rindex + x];</b>
+<i>415</i>&nbsp;                            }
+<b class="nc"><i>416</i>&nbsp;                        } else {</b>
+<i>417</i>&nbsp;                            // Use 8 sub-row samples
+<b class="nc"><i>418</i>&nbsp;                            float ovalY = y + 0.0625f;  // 1/16</b>
+<b class="nc"><i>419</i>&nbsp;                            for (int i = 0; i &lt; 8; i++) {</b>
+<b class="nc"><i>420</i>&nbsp;                                float ovalX = (ovalY / cellH) - 0.5f;</b>
+<b class="nc"><i>421</i>&nbsp;                                ovalX = (float) Math.sqrt(0.25f - ovalX * ovalX);</b>
+<b class="nc"><i>422</i>&nbsp;                                int oxi = Math.round(cellW * 4.0f * (1.0f - ovalX * 2.0f));</b>
+<b class="nc"><i>423</i>&nbsp;                                int edgeX = oxi &gt;&gt; 3;</b>
+<b class="nc"><i>424</i>&nbsp;                                int subX = oxi &amp; 0x7;</b>
+<i>425</i>&nbsp;//                                System.out.println(&quot;y = &quot;+oy+&quot;, mask[&quot;+rx+&quot;] += &quot;+(8-subx)+&quot;, mask[&quot;+(rx+1)+&quot;] += &quot;+subx);
+<b class="nc"><i>426</i>&nbsp;                                mask[index + edgeX] += 8 - subX;</b>
+<b class="nc"><i>427</i>&nbsp;                                mask[index + edgeX + 1] += subX;</b>
+<b class="nc"><i>428</i>&nbsp;                                ovalY += 0.125f;  // 1/8</b>
+<i>429</i>&nbsp;                            }
+<b class="nc"><i>430</i>&nbsp;                            int accum = 0;</b>
+<b class="nc"><i>431</i>&nbsp;                            for (int x = 0; x &lt; cellW; x++) {</b>
+<b class="nc"><i>432</i>&nbsp;                                if (x * 2 &gt;= cellW) {</b>
+<i>433</i>&nbsp;                                    // handle right half of ellipse via reflection
+<b class="nc"><i>434</i>&nbsp;                                    mask[index + x] = mask[index + cellW - 1 - x];</b>
+<i>435</i>&nbsp;                                } else {
+<b class="nc"><i>436</i>&nbsp;                                    accum += mask[index + x];</b>
+<i>437</i>&nbsp;//                                    System.out.println(&quot;accum[&quot;+rx+&quot;] = &quot;+accum);
+<b class="nc"><i>438</i>&nbsp;                                    mask[index + x] = (byte) ((accum * 255 + 32) / 64);</b>
+<i>439</i>&nbsp;                                }
+<i>440</i>&nbsp;                            }
+<i>441</i>&nbsp;                            // Sometimes for smaller ovals we leave some
+<i>442</i>&nbsp;                            // accumulation dirt just past the last cell
+<b class="nc"><i>443</i>&nbsp;                            mask[index + cellW] = 0;</b>
+<i>444</i>&nbsp;                        }
+<b class="nc"><i>445</i>&nbsp;                        index += texDim;</b>
+<i>446</i>&nbsp;                    }
+<b class="nc"><i>447</i>&nbsp;                    cellX += cellW + 1;</b>
+<i>448</i>&nbsp;                }
+<b class="nc"><i>449</i>&nbsp;                cellY += cellH + 1;</b>
+<i>450</i>&nbsp;            }
+<i>451</i>&nbsp;            if (false) {
+<i>452</i>&nbsp;                int index = 0;
+<i>453</i>&nbsp;                for (int y = 0; y &lt; texDim; y++) {
+<i>454</i>&nbsp;                    for (int x = 0; x &lt; texDim; x++) {
+<i>455</i>&nbsp;                        String s = Integer.toHexString((mask[index++] &amp; 0xff) | 0x100);
+<i>456</i>&nbsp;                        System.out.print(s.substring(1)+&quot; &quot;);
+<i>457</i>&nbsp;                    }
+<i>458</i>&nbsp;                    System.out.println();
+<i>459</i>&nbsp;                }
+<i>460</i>&nbsp;            }
+<b class="nc"><i>461</i>&nbsp;            Texture tex =</b>
+<b class="nc"><i>462</i>&nbsp;                getResourceFactory().createMaskTexture(texDim, texDim,</b>
+<i>463</i>&nbsp;                                                       WrapMode.CLAMP_NOT_NEEDED);
+<b class="nc"><i>464</i>&nbsp;            tex.contentsUseful();</b>
+<b class="nc"><i>465</i>&nbsp;            tex.makePermanent();</b>
+<b class="nc"><i>466</i>&nbsp;            PixelFormat pf = tex.getPixelFormat();</b>
+<b class="nc"><i>467</i>&nbsp;            int scan = texDim * pf.getBytesPerPixelUnit();</b>
+<b class="nc"><i>468</i>&nbsp;            tex.update(ByteBuffer.wrap(mask), pf,</b>
+<i>469</i>&nbsp;                       0, 0, 0, 0, texDim, texDim,
+<i>470</i>&nbsp;                       scan, false);
+<b class="nc"><i>471</i>&nbsp;            ovalTex = tex;</b>
+<i>472</i>&nbsp;        }
+<i>473</i>&nbsp;
+<i>474</i>&nbsp;        // ovalTex is left permanent and locked so it never
+<i>475</i>&nbsp;        // goes away or needs to be checked for isSurfaceLost(), but we
+<i>476</i>&nbsp;        // add a lock here so that the caller can unlock without knowing
+<i>477</i>&nbsp;        // our inner implementation details
+<b class="nc"><i>478</i>&nbsp;        ovalTex.lock();</b>
+<b class="nc"><i>479</i>&nbsp;        return ovalTex;</b>
+<i>480</i>&nbsp;    }
+<i>481</i>&nbsp;
+<i>482</i>&nbsp;    public Texture getGradientTexture(Gradient grad, BaseTransform xform,
+<i>483</i>&nbsp;                                      int paintW, int paintH,
+<i>484</i>&nbsp;                                      MaskData maskData,
+<i>485</i>&nbsp;                                      float bx, float by, float bw, float bh)
+<i>486</i>&nbsp;    {
+<b class="nc"><i>487</i>&nbsp;        int sizeInPixels = paintW * paintH;</b>
+<b class="nc"><i>488</i>&nbsp;        int sizeInBytes = sizeInPixels * 4;</b>
+<b class="nc"><i>489</i>&nbsp;        if (paintBuffer == null || paintBuffer.capacity() &lt; sizeInBytes) {</b>
+<b class="nc"><i>490</i>&nbsp;            paintPixels = new int[sizeInPixels];</b>
+<b class="nc"><i>491</i>&nbsp;            paintBuffer = ByteBuffer.wrap(new byte[sizeInBytes]);</b>
+<i>492</i>&nbsp;        }
+<i>493</i>&nbsp;
+<b class="nc"><i>494</i>&nbsp;        if (paintTex != null) {</b>
+<b class="nc"><i>495</i>&nbsp;            paintTex.lock();</b>
+<b class="nc"><i>496</i>&nbsp;            if (paintTex.isSurfaceLost()) {</b>
+<b class="nc"><i>497</i>&nbsp;                paintTex = null;</b>
+<i>498</i>&nbsp;            }
+<i>499</i>&nbsp;        }
+<i>500</i>&nbsp;
+<b class="nc"><i>501</i>&nbsp;        if (paintTex == null ||</b>
+<b class="nc"><i>502</i>&nbsp;            paintTex.getContentWidth()  &lt; paintW ||</b>
+<b class="nc"><i>503</i>&nbsp;            paintTex.getContentHeight() &lt; paintH)</b>
+<i>504</i>&nbsp;        {
+<b class="nc"><i>505</i>&nbsp;            int newTexW = paintW;</b>
+<b class="nc"><i>506</i>&nbsp;            int newTexH = paintH;</b>
+<b class="nc"><i>507</i>&nbsp;            if (paintTex != null) {</b>
+<i>508</i>&nbsp;                // grow the paint texture so that the new one is always
+<i>509</i>&nbsp;                // at least as large as the previous one; this avoids
+<i>510</i>&nbsp;                // lots of creation/disposal when the shapes alternate
+<i>511</i>&nbsp;                // between narrow/tall and wide/short
+<b class="nc"><i>512</i>&nbsp;                newTexW = Math.max(paintW, paintTex.getContentWidth());</b>
+<b class="nc"><i>513</i>&nbsp;                newTexH = Math.max(paintH, paintTex.getContentHeight());</b>
+<b class="nc"><i>514</i>&nbsp;                paintTex.dispose();</b>
+<i>515</i>&nbsp;            }
+<b class="nc"><i>516</i>&nbsp;            paintTex = getResourceFactory().</b>
+<b class="nc"><i>517</i>&nbsp;                createTexture(PixelFormat.BYTE_BGRA_PRE,</b>
+<i>518</i>&nbsp;                              Texture.Usage.DEFAULT,
+<i>519</i>&nbsp;                              Texture.WrapMode.CLAMP_NOT_NEEDED,
+<i>520</i>&nbsp;                              newTexW, newTexH);
+<i>521</i>&nbsp;        }
+<i>522</i>&nbsp;
+<i>523</i>&nbsp;        // note that the gradient will be tightly packed into paintImg
+<i>524</i>&nbsp;        // (i.e., no space at the end of each logical row) since there
+<i>525</i>&nbsp;        // is no way to control scanline stride for texture uploads in ES1
+<b class="nc"><i>526</i>&nbsp;        PaintUtil.fillImageWithGradient(paintPixels, grad, xform,</b>
+<i>527</i>&nbsp;                                        0, 0, paintW, paintH,
+<i>528</i>&nbsp;                                        bx, by, bw, bh);
+<i>529</i>&nbsp;
+<i>530</i>&nbsp;        // RT-27421
+<i>531</i>&nbsp;        // TODO: could save some work here if we converted the *GradientContext
+<i>532</i>&nbsp;        // classes to produce ByteRgbaPre data instead of IntArgbPre data...
+<b class="nc"><i>533</i>&nbsp;        byte[] bytePixels = paintBuffer.array();</b>
+<b class="nc"><i>534</i>&nbsp;        if (maskData != null) {</b>
+<i>535</i>&nbsp;            // modulate with the mask pixels while we convert from
+<i>536</i>&nbsp;            // IntArgbPre to ByteRgbaPre
+<b class="nc"><i>537</i>&nbsp;            byte[] maskPixels = maskData.getMaskBuffer().array();</b>
+<b class="nc"><i>538</i>&nbsp;            int j = 0;</b>
+<b class="nc"><i>539</i>&nbsp;            for (int i = 0; i &lt; sizeInPixels; i++) {</b>
+<b class="nc"><i>540</i>&nbsp;                int pixel = paintPixels[i];</b>
+<b class="nc"><i>541</i>&nbsp;                int maskA = maskPixels[i] &amp; 0xff;</b>
+<b class="nc"><i>542</i>&nbsp;                bytePixels[j++] = (byte)((((pixel       ) &amp; 0xff) * maskA) / 255);</b>
+<b class="nc"><i>543</i>&nbsp;                bytePixels[j++] = (byte)((((pixel &gt;&gt;   8) &amp; 0xff) * maskA) / 255);</b>
+<b class="nc"><i>544</i>&nbsp;                bytePixels[j++] = (byte)((((pixel &gt;&gt;  16) &amp; 0xff) * maskA) / 255);</b>
+<b class="nc"><i>545</i>&nbsp;                bytePixels[j++] = (byte)((((pixel &gt;&gt;&gt; 24)       ) * maskA) / 255);</b>
+<i>546</i>&nbsp;            }
+<b class="nc"><i>547</i>&nbsp;        } else {</b>
+<i>548</i>&nbsp;            // just convert from IntArgbPre to ByteRgbaPre
+<b class="nc"><i>549</i>&nbsp;            int j = 0;</b>
+<b class="nc"><i>550</i>&nbsp;            for (int i = 0; i &lt; sizeInPixels; i++) {</b>
+<b class="nc"><i>551</i>&nbsp;                int pixel = paintPixels[i];</b>
+<b class="nc"><i>552</i>&nbsp;                bytePixels[j++] = (byte)((pixel       ) &amp; 0xff);</b>
+<b class="nc"><i>553</i>&nbsp;                bytePixels[j++] = (byte)((pixel &gt;&gt;   8) &amp; 0xff);</b>
+<b class="nc"><i>554</i>&nbsp;                bytePixels[j++] = (byte)((pixel &gt;&gt;  16) &amp; 0xff);</b>
+<b class="nc"><i>555</i>&nbsp;                bytePixels[j++] = (byte)((pixel &gt;&gt;&gt; 24)       );</b>
+<i>556</i>&nbsp;            }
+<i>557</i>&nbsp;        }
+<i>558</i>&nbsp;
+<b class="nc"><i>559</i>&nbsp;        paintTex.update(paintBuffer, PixelFormat.BYTE_BGRA_PRE,</b>
+<i>560</i>&nbsp;                        0, 0, 0, 0, paintW, paintH, paintW*4, false);
+<i>561</i>&nbsp;
+<b class="nc"><i>562</i>&nbsp;        return paintTex;</b>
+<i>563</i>&nbsp;    }
+<i>564</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2017-12-04 21:49</div>
+</div>
+</body>
+</html>

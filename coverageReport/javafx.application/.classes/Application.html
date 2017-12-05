@@ -1,0 +1,637 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: Application</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">javafx.application</a> ]
+</div>
+
+<h1>Coverage Summary for Class: Application (javafx.application)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">Application</td>
+<td class="coverageStat">
+  <span class="percent">
+    54.5%
+  </span>
+  <span class="absValue">
+    (6/ 11)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    57.1%
+  </span>
+  <span class="absValue">
+    (28/ 49)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">Application$Parameters</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (2/ 2)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    58.3%
+  </span>
+  <span class="absValue">
+    (7/ 12)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    58.8%
+  </span>
+  <span class="absValue">
+    (30/ 51)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright (c) 2010, 2017, Oracle and/or its affiliates. All rights reserved.
+<i>3</i>&nbsp; * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+<i>4</i>&nbsp; *
+<i>5</i>&nbsp; *
+<i>6</i>&nbsp; *
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; *
+<i>11</i>&nbsp; *
+<i>12</i>&nbsp; *
+<i>13</i>&nbsp; *
+<i>14</i>&nbsp; *
+<i>15</i>&nbsp; *
+<i>16</i>&nbsp; *
+<i>17</i>&nbsp; *
+<i>18</i>&nbsp; *
+<i>19</i>&nbsp; *
+<i>20</i>&nbsp; *
+<i>21</i>&nbsp; *
+<i>22</i>&nbsp; *
+<i>23</i>&nbsp; *
+<i>24</i>&nbsp; */
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;package javafx.application;
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;import java.security.AccessController;
+<i>29</i>&nbsp;import java.security.PrivilegedAction;
+<i>30</i>&nbsp;import java.util.List;
+<i>31</i>&nbsp;import java.util.Map;
+<i>32</i>&nbsp;
+<i>33</i>&nbsp;import javafx.application.Preloader.PreloaderNotification;
+<i>34</i>&nbsp;import javafx.scene.Scene;
+<i>35</i>&nbsp;import javafx.stage.Stage;
+<i>36</i>&nbsp;
+<i>37</i>&nbsp;import com.sun.javafx.application.LauncherImpl;
+<i>38</i>&nbsp;import com.sun.javafx.application.ParametersImpl;
+<i>39</i>&nbsp;import com.sun.javafx.application.PlatformImpl;
+<i>40</i>&nbsp;import com.sun.javafx.css.StyleManager;
+<i>41</i>&nbsp;
+<i>42</i>&nbsp;/**
+<i>43</i>&nbsp; * Application class from which JavaFX applications extend.
+<i>44</i>&nbsp; *
+<i>45</i>&nbsp; * &lt;p&gt;&lt;b&gt;Life-cycle&lt;/b&gt;&lt;/p&gt;
+<i>46</i>&nbsp; * &lt;p&gt;
+<i>47</i>&nbsp; * The entry point for JavaFX applications is the Application class. The
+<i>48</i>&nbsp; * JavaFX runtime does the following, in order, whenever an application is
+<i>49</i>&nbsp; * launched:
+<i>50</i>&nbsp; * &lt;/p&gt;
+<i>51</i>&nbsp; * &lt;ol&gt;
+<i>52</i>&nbsp; * &lt;li&gt;Starts the JavaFX runtime, if not already started
+<i>53</i>&nbsp; * (see {@link Platform#startup(Runnable)} for more information)&lt;/li&gt;
+<i>54</i>&nbsp; * &lt;li&gt;Constructs an instance of the specified Application class&lt;/li&gt;
+<i>55</i>&nbsp; * &lt;li&gt;Calls the {@link #init} method&lt;/li&gt;
+<i>56</i>&nbsp; * &lt;li&gt;Calls the {@link #start} method&lt;/li&gt;
+<i>57</i>&nbsp; * &lt;li&gt;Waits for the application to finish, which happens when either of
+<i>58</i>&nbsp; * the following occur:
+<i>59</i>&nbsp; * &lt;ul&gt;
+<i>60</i>&nbsp; * &lt;li&gt;the application calls {@link Platform#exit}&lt;/li&gt;
+<i>61</i>&nbsp; * &lt;li&gt;the last window has been closed and the {@code implicitExit}
+<i>62</i>&nbsp; * attribute on {@code Platform} is true&lt;/li&gt;
+<i>63</i>&nbsp; * &lt;/ul&gt;&lt;/li&gt;
+<i>64</i>&nbsp; * &lt;li&gt;Calls the {@link #stop} method&lt;/li&gt;
+<i>65</i>&nbsp; * &lt;/ol&gt;
+<i>66</i>&nbsp; * &lt;p&gt;Note that the {@code start} method is abstract and must be overridden.
+<i>67</i>&nbsp; * The {@code init} and {@code stop} methods have concrete implementations
+<i>68</i>&nbsp; * that do nothing.&lt;/p&gt;
+<i>69</i>&nbsp; * &lt;p&gt;The {@code Application} subclass must be declared public and must have a
+<i>70</i>&nbsp; * public no-argument constructor.&lt;/p&gt;
+<i>71</i>&nbsp; *
+<i>72</i>&nbsp; * &lt;p&gt;Calling {@link Platform#exit} is the preferred way to explicitly terminate
+<i>73</i>&nbsp; * a JavaFX Application. Directly calling {@link System#exit} is
+<i>74</i>&nbsp; * an acceptable alternative, but doesn&#39;t allow the Application {@link #stop}
+<i>75</i>&nbsp; * method to run.
+<i>76</i>&nbsp; * &lt;/p&gt;
+<i>77</i>&nbsp; *
+<i>78</i>&nbsp; * &lt;p&gt;A JavaFX Application should not attempt to use JavaFX after the
+<i>79</i>&nbsp; * FX toolkit has terminated or from a ShutdownHook, that is, after the
+<i>80</i>&nbsp; * {@link #stop} method returns or {@link System#exit} is called.
+<i>81</i>&nbsp; * &lt;/p&gt;
+<i>82</i>&nbsp; *
+<i>83</i>&nbsp; * &lt;p&gt;&lt;b&gt;Deploying an Application as a Module&lt;/b&gt;&lt;/p&gt;
+<i>84</i>&nbsp; * &lt;p&gt;
+<i>85</i>&nbsp; * If the {@code Application} subclass is in a named module then that class
+<i>86</i>&nbsp; * must be accessible to the {@code javafx.graphics} module.
+<i>87</i>&nbsp; * Otherwise, an exception will be thrown when the application is launched.
+<i>88</i>&nbsp; * This means that
+<i>89</i>&nbsp; * in addition to the class itself being declared public, the module must
+<i>90</i>&nbsp; * {@link Module#isExported(String,Module) export}
+<i>91</i>&nbsp; * (or {@link Module#isOpen(String,Module) open}) the containing package to
+<i>92</i>&nbsp; * at least the {@code javafx.graphics} module.
+<i>93</i>&nbsp; * &lt;/p&gt;
+<i>94</i>&nbsp; * &lt;p&gt;
+<i>95</i>&nbsp; * For example, if {@code com.foo.MyApplication} is in the {@code foo.app}
+<i>96</i>&nbsp; * module, the {@code module-info.java} might look like this:
+<i>97</i>&nbsp; * &lt;/p&gt;
+<i>98</i>&nbsp;&lt;pre&gt;{@code module foo.app {
+<i>99</i>&nbsp;    exports com.foo to javafx.graphics;
+<i>100</i>&nbsp;}}&lt;/pre&gt;
+<i>101</i>&nbsp;*
+<i>102</i>&nbsp; * &lt;p&gt;&lt;b&gt;Parameters&lt;/b&gt;&lt;/p&gt;
+<i>103</i>&nbsp; * &lt;p&gt;
+<i>104</i>&nbsp; * Application parameters are available by calling the {@link #getParameters}
+<i>105</i>&nbsp; * method from the {@link #init} method, or any time after the {@code init}
+<i>106</i>&nbsp; * method has been called.
+<i>107</i>&nbsp; * &lt;/p&gt;
+<i>108</i>&nbsp; *
+<i>109</i>&nbsp; * &lt;p&gt;&lt;b&gt;Threading&lt;/b&gt;&lt;/p&gt;
+<i>110</i>&nbsp; * &lt;p&gt;
+<i>111</i>&nbsp; * JavaFX creates an application thread for running the application start
+<i>112</i>&nbsp; * method, processing input events, and running animation timelines. Creation
+<i>113</i>&nbsp; * of JavaFX {@link Scene} and {@link Stage} objects as well as modification of
+<i>114</i>&nbsp; * scene graph operations to &lt;em&gt;live&lt;/em&gt; objects (those objects already
+<i>115</i>&nbsp; * attached to a scene) must be done on the JavaFX application thread.
+<i>116</i>&nbsp; * &lt;/p&gt;
+<i>117</i>&nbsp; *
+<i>118</i>&nbsp; * &lt;p&gt;
+<i>119</i>&nbsp; * The Java launcher loads and initializes the specified Application class
+<i>120</i>&nbsp; * on the JavaFX Application Thread. If there is no main method in the
+<i>121</i>&nbsp; * Application class, or if the main method calls Application.launch(), then
+<i>122</i>&nbsp; * an instance of the Application is then constructed on the JavaFX Application
+<i>123</i>&nbsp; * Thread.
+<i>124</i>&nbsp; * &lt;/p&gt;
+<i>125</i>&nbsp; *
+<i>126</i>&nbsp; * &lt;p&gt;
+<i>127</i>&nbsp; * The {@code init} method is called on the launcher thread, not on the
+<i>128</i>&nbsp; * JavaFX Application Thread.
+<i>129</i>&nbsp; * This means that an application must not construct a {@link Scene}
+<i>130</i>&nbsp; * or a {@link Stage} in the {@code init} method.
+<i>131</i>&nbsp; * An application may construct other JavaFX objects in the {@code init}
+<i>132</i>&nbsp; * method.
+<i>133</i>&nbsp; * &lt;/p&gt;
+<i>134</i>&nbsp; *
+<i>135</i>&nbsp; * &lt;p&gt;
+<i>136</i>&nbsp; * All the unhandled exceptions on the JavaFX application thread that occur during
+<i>137</i>&nbsp; * event dispatching, running animation timelines, or any other code, are forwarded
+<i>138</i>&nbsp; * to the thread&#39;s {@link java.lang.Thread.UncaughtExceptionHandler uncaught
+<i>139</i>&nbsp; * exception handler}.
+<i>140</i>&nbsp; * &lt;/p&gt;
+<i>141</i>&nbsp; *
+<i>142</i>&nbsp; * &lt;p&gt;&lt;b&gt;Example&lt;/b&gt;&lt;/p&gt;
+<i>143</i>&nbsp; * &lt;p&gt;The following example will illustrate a simple JavaFX application.&lt;/p&gt;
+<i>144</i>&nbsp; * &lt;pre&gt;{@code
+<i>145</i>&nbsp;import javafx.application.Application;
+<i>146</i>&nbsp;import javafx.scene.Group;
+<i>147</i>&nbsp;import javafx.scene.Scene;
+<i>148</i>&nbsp;import javafx.scene.shape.Circle;
+<i>149</i>&nbsp;import javafx.stage.Stage;
+<i>150</i>&nbsp;
+<i>151</i>&nbsp;public class MyApp extends Application {
+<i>152</i>&nbsp;    public void start(Stage stage) {
+<i>153</i>&nbsp;        Circle circ = new Circle(40, 40, 30);
+<i>154</i>&nbsp;        Group root = new Group(circ);
+<i>155</i>&nbsp;        Scene scene = new Scene(root, 400, 300);
+<i>156</i>&nbsp;
+<i>157</i>&nbsp;        stage.setTitle(&quot;My JavaFX Application&quot;);
+<i>158</i>&nbsp;        stage.setScene(scene);
+<i>159</i>&nbsp;        stage.show();
+<i>160</i>&nbsp;    }
+<i>161</i>&nbsp;}
+<i>162</i>&nbsp; * }&lt;/pre&gt;
+<i>163</i>&nbsp; *
+<i>164</i>&nbsp; * &lt;p&gt;The above example will produce the following:&lt;/p&gt;
+<i>165</i>&nbsp; * &lt;p&gt;&lt;img src=&quot;doc-files/Application.png&quot; alt=&quot;A black circle in the top left
+<i>166</i>&nbsp; * corner of scene&quot;&gt;&lt;/p&gt;
+<i>167</i>&nbsp; *
+<i>168</i>&nbsp; * @see Platform
+<i>169</i>&nbsp; *
+<i>170</i>&nbsp; * @since JavaFX 2.0
+<i>171</i>&nbsp; */
+<i>172</i>&nbsp;public abstract class Application {
+<i>173</i>&nbsp;    /**
+<i>174</i>&nbsp;     * Constant for user agent stylesheet for the &quot;Caspian&quot; theme. Caspian
+<i>175</i>&nbsp;     * is the theme that shipped as default in JavaFX 2.x.
+<i>176</i>&nbsp;     * @since JavaFX 8.0
+<i>177</i>&nbsp;     */
+<i>178</i>&nbsp;    public static final String STYLESHEET_CASPIAN = &quot;CASPIAN&quot;;
+<i>179</i>&nbsp;    /**
+<i>180</i>&nbsp;     * Constant for user agent stylesheet for the &quot;Modena&quot; theme. Modena
+<i>181</i>&nbsp;     * is the default theme for JavaFX 8.x.
+<i>182</i>&nbsp;     * @since JavaFX 8.0
+<i>183</i>&nbsp;     */
+<i>184</i>&nbsp;    public static final String STYLESHEET_MODENA = &quot;MODENA&quot;;
+<i>185</i>&nbsp;
+<i>186</i>&nbsp;    /**
+<i>187</i>&nbsp;     * Launch a standalone application. This method is typically called
+<i>188</i>&nbsp;     * from the main method(). It must not be called more than once or an
+<i>189</i>&nbsp;     * exception will be thrown.
+<i>190</i>&nbsp;     *
+<i>191</i>&nbsp;     * &lt;p&gt;
+<i>192</i>&nbsp;     * The launch method does not return until the application has exited,
+<i>193</i>&nbsp;     * either via a call to Platform.exit or all of the application windows
+<i>194</i>&nbsp;     * have been closed.
+<i>195</i>&nbsp;     * The class specified by the {@code appClass} argument must be
+<i>196</i>&nbsp;     * a public subclass of {@code Application}
+<i>197</i>&nbsp;     * with a public no-argument constructor, in a package that is
+<i>198</i>&nbsp;     * {@link Module#isExported(String,Module) exported}
+<i>199</i>&nbsp;     * (or {@link Module#isOpen(String,Module) open}) to at least the
+<i>200</i>&nbsp;     * {@code javafx.graphics} module, or a RuntimeException will be thrown.
+<i>201</i>&nbsp;     *
+<i>202</i>&nbsp;     * &lt;p&gt;
+<i>203</i>&nbsp;     * Typical usage is:
+<i>204</i>&nbsp;     * &lt;pre&gt;
+<i>205</i>&nbsp;     *     public static void main(String[] args) {
+<i>206</i>&nbsp;     *         Application.launch(MyApp.class, args);
+<i>207</i>&nbsp;     *     }
+<i>208</i>&nbsp;     * &lt;/pre&gt;
+<i>209</i>&nbsp;     * where &lt;code&gt;MyApp&lt;/code&gt; is a subclass of Application.
+<i>210</i>&nbsp;     *
+<i>211</i>&nbsp;     * @param appClass the application class that is constructed and executed
+<i>212</i>&nbsp;     *        by the launcher.
+<i>213</i>&nbsp;     * @param args the command line arguments passed to the application.
+<i>214</i>&nbsp;     *             An application may get these parameters using the
+<i>215</i>&nbsp;     *             {@link #getParameters()} method.
+<i>216</i>&nbsp;     *
+<i>217</i>&nbsp;     * @throws IllegalStateException if this method is called more than once.
+<i>218</i>&nbsp;     * @throws IllegalArgumentException if &lt;code&gt;appClass&lt;/code&gt; is not a
+<i>219</i>&nbsp;     *         subclass of &lt;code&gt;Application&lt;/code&gt;.
+<i>220</i>&nbsp;     * @throws RuntimeException if there is an error launching the
+<i>221</i>&nbsp;     * JavaFX runtime, or if the application class cannot be constructed
+<i>222</i>&nbsp;     * (e.g., if the class is not public or is not in an exported package), or
+<i>223</i>&nbsp;     * if an Exception or Error is thrown by the Application constructor, init
+<i>224</i>&nbsp;     * method, start method, or stop method.
+<i>225</i>&nbsp;     */
+<i>226</i>&nbsp;    public static void launch(Class&lt;? extends Application&gt; appClass, String... args) {
+<b class="nc"><i>227</i>&nbsp;        LauncherImpl.launchApplication(appClass, args);</b>
+<b class="nc"><i>228</i>&nbsp;    }</b>
+<i>229</i>&nbsp;
+<i>230</i>&nbsp;    /**
+<i>231</i>&nbsp;     * Launch a standalone application. This method is typically called
+<i>232</i>&nbsp;     * from the main method(). It must not be called more than once or an
+<i>233</i>&nbsp;     * exception will be thrown.
+<i>234</i>&nbsp;     * This is equivalent to {@code launch(TheClass.class, args)} where
+<i>235</i>&nbsp;     * {@code TheClass} is the
+<i>236</i>&nbsp;     * immediately enclosing class of the method that called launch.
+<i>237</i>&nbsp;     * It must be a public subclass of {@code Application}
+<i>238</i>&nbsp;     * with a public no-argument constructor, in a package that is
+<i>239</i>&nbsp;     * {@link Module#isExported(String,Module) exported}
+<i>240</i>&nbsp;     * (or {@link Module#isOpen(String,Module) open}) to at least the
+<i>241</i>&nbsp;     * {@code javafx.graphics} module, or a RuntimeException will be thrown.
+<i>242</i>&nbsp;     *
+<i>243</i>&nbsp;     * &lt;p&gt;
+<i>244</i>&nbsp;     * The launch method does not return until the application has exited,
+<i>245</i>&nbsp;     * either via a call to Platform.exit or all of the application windows
+<i>246</i>&nbsp;     * have been closed.
+<i>247</i>&nbsp;     *
+<i>248</i>&nbsp;     * &lt;p&gt;
+<i>249</i>&nbsp;     * Typical usage is:
+<i>250</i>&nbsp;     * &lt;pre&gt;
+<i>251</i>&nbsp;     *     public static void main(String[] args) {
+<i>252</i>&nbsp;     *         Application.launch(args);
+<i>253</i>&nbsp;     *     }
+<i>254</i>&nbsp;     * &lt;/pre&gt;
+<i>255</i>&nbsp;     *
+<i>256</i>&nbsp;     * @param args the command line arguments passed to the application.
+<i>257</i>&nbsp;     *             An application may get these parameters using the
+<i>258</i>&nbsp;     *             {@link #getParameters()} method.
+<i>259</i>&nbsp;     *
+<i>260</i>&nbsp;     * @throws IllegalStateException if this method is called more than once.
+<i>261</i>&nbsp;     * @throws RuntimeException if there is an error launching the
+<i>262</i>&nbsp;     * JavaFX runtime, or if the application class cannot be constructed
+<i>263</i>&nbsp;     * (e.g., if the class is not public or is not in an exported package), or
+<i>264</i>&nbsp;     * if an Exception or Error is thrown by the Application constructor, init
+<i>265</i>&nbsp;     * method, start method, or stop method.
+<i>266</i>&nbsp;     */
+<i>267</i>&nbsp;    public static void launch(String... args) {
+<i>268</i>&nbsp;        // Figure out the right class to call
+<b class="fc"><i>269</i>&nbsp;        StackTraceElement[] cause = Thread.currentThread().getStackTrace();</b>
+<i>270</i>&nbsp;
+<b class="fc"><i>271</i>&nbsp;        boolean foundThisMethod = false;</b>
+<b class="fc"><i>272</i>&nbsp;        String callingClassName = null;</b>
+<b class="fc"><i>273</i>&nbsp;        for (StackTraceElement se : cause) {</b>
+<i>274</i>&nbsp;            // Skip entries until we get to the entry for this class
+<b class="fc"><i>275</i>&nbsp;            String className = se.getClassName();</b>
+<b class="fc"><i>276</i>&nbsp;            String methodName = se.getMethodName();</b>
+<b class="fc"><i>277</i>&nbsp;            if (foundThisMethod) {</b>
+<b class="fc"><i>278</i>&nbsp;                callingClassName = className;</b>
+<b class="fc"><i>279</i>&nbsp;                break;</b>
+<b class="fc"><i>280</i>&nbsp;            } else if (Application.class.getName().equals(className)</b>
+<b class="fc"><i>281</i>&nbsp;                    &amp;&amp; &quot;launch&quot;.equals(methodName)) {</b>
+<i>282</i>&nbsp;
+<b class="fc"><i>283</i>&nbsp;                foundThisMethod = true;</b>
+<i>284</i>&nbsp;            }
+<i>285</i>&nbsp;        }
+<i>286</i>&nbsp;
+<b class="fc"><i>287</i>&nbsp;        if (callingClassName == null) {</b>
+<b class="nc"><i>288</i>&nbsp;            throw new RuntimeException(&quot;Error: unable to determine Application class&quot;);</b>
+<i>289</i>&nbsp;        }
+<i>290</i>&nbsp;
+<i>291</i>&nbsp;        try {
+<b class="fc"><i>292</i>&nbsp;            Class theClass = Class.forName(callingClassName, false,</b>
+<b class="fc"><i>293</i>&nbsp;                               Thread.currentThread().getContextClassLoader());</b>
+<b class="fc"><i>294</i>&nbsp;            if (Application.class.isAssignableFrom(theClass)) {</b>
+<b class="fc"><i>295</i>&nbsp;                Class&lt;? extends Application&gt; appClass = theClass;</b>
+<b class="fc"><i>296</i>&nbsp;                LauncherImpl.launchApplication(appClass, args);</b>
+<b class="fc"><i>297</i>&nbsp;            } else {</b>
+<b class="nc"><i>298</i>&nbsp;                throw new RuntimeException(&quot;Error: &quot; + theClass</b>
+<i>299</i>&nbsp;                        + &quot; is not a subclass of javafx.application.Application&quot;);
+<i>300</i>&nbsp;            }
+<b class="nc"><i>301</i>&nbsp;        } catch (RuntimeException ex) {</b>
+<b class="nc"><i>302</i>&nbsp;            throw ex;</b>
+<b class="nc"><i>303</i>&nbsp;        } catch (Exception ex) {</b>
+<b class="nc"><i>304</i>&nbsp;            throw new RuntimeException(ex);</b>
+<b class="fc"><i>305</i>&nbsp;        }</b>
+<b class="fc"><i>306</i>&nbsp;    }</b>
+<i>307</i>&nbsp;
+<i>308</i>&nbsp;    /**
+<i>309</i>&nbsp;     * Constructs a new {@code Application} instance.
+<i>310</i>&nbsp;     */
+<b class="fc"><i>311</i>&nbsp;    public Application() {</b>
+<b class="fc"><i>312</i>&nbsp;    }</b>
+<i>313</i>&nbsp;
+<i>314</i>&nbsp;    /**
+<i>315</i>&nbsp;     * The application initialization method. This method is called immediately
+<i>316</i>&nbsp;     * after the Application class is loaded and constructed. An application may
+<i>317</i>&nbsp;     * override this method to perform initialization prior to the actual starting
+<i>318</i>&nbsp;     * of the application.
+<i>319</i>&nbsp;     *
+<i>320</i>&nbsp;     * &lt;p&gt;
+<i>321</i>&nbsp;     * The implementation of this method provided by the Application class does nothing.
+<i>322</i>&nbsp;     * &lt;/p&gt;
+<i>323</i>&nbsp;     *
+<i>324</i>&nbsp;     * &lt;p&gt;
+<i>325</i>&nbsp;     * NOTE: This method is not called on the JavaFX Application Thread. An
+<i>326</i>&nbsp;     * application must not construct a Scene or a Stage in this
+<i>327</i>&nbsp;     * method.
+<i>328</i>&nbsp;     * An application may construct other JavaFX objects in this method.
+<i>329</i>&nbsp;     * &lt;/p&gt;
+<i>330</i>&nbsp;     * @throws java.lang.Exception if something goes wrong
+<i>331</i>&nbsp;     */
+<i>332</i>&nbsp;    public void init() throws Exception {
+<b class="fc"><i>333</i>&nbsp;    }</b>
+<i>334</i>&nbsp;
+<i>335</i>&nbsp;    /**
+<i>336</i>&nbsp;     * The main entry point for all JavaFX applications.
+<i>337</i>&nbsp;     * The start method is called after the init method has returned,
+<i>338</i>&nbsp;     * and after the system is ready for the application to begin running.
+<i>339</i>&nbsp;     *
+<i>340</i>&nbsp;     * &lt;p&gt;
+<i>341</i>&nbsp;     * NOTE: This method is called on the JavaFX Application Thread.
+<i>342</i>&nbsp;     * &lt;/p&gt;
+<i>343</i>&nbsp;     *
+<i>344</i>&nbsp;     * @param primaryStage the primary stage for this application, onto which
+<i>345</i>&nbsp;     * the application scene can be set. The primary stage will be embedded in
+<i>346</i>&nbsp;     * the browser if the application was launched as an applet.
+<i>347</i>&nbsp;     * Applications may create other stages, if needed, but they will not be
+<i>348</i>&nbsp;     * primary stages and will not be embedded in the browser.
+<i>349</i>&nbsp;     * @throws java.lang.Exception if something goes wrong
+<i>350</i>&nbsp;     */
+<i>351</i>&nbsp;    public abstract void start(Stage primaryStage) throws Exception;
+<i>352</i>&nbsp;
+<i>353</i>&nbsp;    /**
+<i>354</i>&nbsp;     * This method is called when the application should stop, and provides a
+<i>355</i>&nbsp;     * convenient place to prepare for application exit and destroy resources.
+<i>356</i>&nbsp;     *
+<i>357</i>&nbsp;     * &lt;p&gt;
+<i>358</i>&nbsp;     * The implementation of this method provided by the Application class does nothing.
+<i>359</i>&nbsp;     * &lt;/p&gt;
+<i>360</i>&nbsp;     *
+<i>361</i>&nbsp;     * &lt;p&gt;
+<i>362</i>&nbsp;     * NOTE: This method is called on the JavaFX Application Thread.
+<i>363</i>&nbsp;     * &lt;/p&gt;
+<i>364</i>&nbsp;     * @throws java.lang.Exception if something goes wrong
+<i>365</i>&nbsp;     */
+<i>366</i>&nbsp;    public void stop() throws Exception {
+<b class="fc"><i>367</i>&nbsp;    }</b>
+<i>368</i>&nbsp;
+<b class="fc"><i>369</i>&nbsp;    private HostServices hostServices = null;</b>
+<i>370</i>&nbsp;
+<i>371</i>&nbsp;    /**
+<i>372</i>&nbsp;     * Gets the HostServices provider for this application. This provides
+<i>373</i>&nbsp;     * the ability to get the code base and document base for this application,
+<i>374</i>&nbsp;     * and to access the enclosing web page.
+<i>375</i>&nbsp;     *
+<i>376</i>&nbsp;     * @return the HostServices provider
+<i>377</i>&nbsp;     */
+<i>378</i>&nbsp;    public final HostServices getHostServices() {
+<b class="nc"><i>379</i>&nbsp;        synchronized (this) {</b>
+<b class="nc"><i>380</i>&nbsp;            if (hostServices == null) {</b>
+<b class="nc"><i>381</i>&nbsp;                hostServices = new HostServices(this);</b>
+<i>382</i>&nbsp;            }
+<b class="nc"><i>383</i>&nbsp;            return hostServices;</b>
+<b class="nc"><i>384</i>&nbsp;        }</b>
+<i>385</i>&nbsp;    }
+<i>386</i>&nbsp;
+<i>387</i>&nbsp;    /**
+<i>388</i>&nbsp;     * Retrieves the parameters for this Application, including any arguments
+<i>389</i>&nbsp;     * passed on the command line and any parameters specified in a JNLP file
+<i>390</i>&nbsp;     * for an applet or WebStart application.
+<i>391</i>&nbsp;     *
+<i>392</i>&nbsp;     * &lt;p&gt;
+<i>393</i>&nbsp;     * NOTE: this method should not be called from the Application constructor,
+<i>394</i>&nbsp;     * as it will return null. It may be called in the init() method or any
+<i>395</i>&nbsp;     * time after that.
+<i>396</i>&nbsp;     * &lt;/p&gt;
+<i>397</i>&nbsp;     *
+<i>398</i>&nbsp;     * @return the parameters for this Application, or null if called from the
+<i>399</i>&nbsp;     * constructor.
+<i>400</i>&nbsp;     */
+<i>401</i>&nbsp;    public final Parameters getParameters() {
+<b class="nc"><i>402</i>&nbsp;        return ParametersImpl.getParameters(this);</b>
+<i>403</i>&nbsp;    }
+<i>404</i>&nbsp;
+<i>405</i>&nbsp;    /**
+<i>406</i>&nbsp;     * Notifies the preloader with an application-generated notification.
+<i>407</i>&nbsp;     * Application code calls this method with a PreloaderNotification that is
+<i>408</i>&nbsp;     * delivered to the
+<i>409</i>&nbsp;     * {@link Preloader#handleApplicationNotification
+<i>410</i>&nbsp;     * Preloader.handleApplicationNotification} method.
+<i>411</i>&nbsp;     * This is primarily useful for cases where an application wants the
+<i>412</i>&nbsp;     * preloader to show progress during a long application initialization
+<i>413</i>&nbsp;     * step.
+<i>414</i>&nbsp;     *
+<i>415</i>&nbsp;     * &lt;p&gt;
+<i>416</i>&nbsp;     * NOTE: the notification will be delivered only to the preloader&#39;s
+<i>417</i>&nbsp;     * handleApplicationNotification() method; this means, for example, that
+<i>418</i>&nbsp;     * if this method is called with a ProgressNotification, that notification
+<i>419</i>&nbsp;     * will not be delivered to the {@link Preloader#handleProgressNotification
+<i>420</i>&nbsp;     * Preloader.handleProgressNotification}
+<i>421</i>&nbsp;     * method.
+<i>422</i>&nbsp;     * &lt;/p&gt;
+<i>423</i>&nbsp;     *
+<i>424</i>&nbsp;     * @param info the application-generated preloader notification
+<i>425</i>&nbsp;     */
+<i>426</i>&nbsp;    public final void notifyPreloader(PreloaderNotification info) {
+<b class="nc"><i>427</i>&nbsp;        LauncherImpl.notifyPreloader(this, info);</b>
+<b class="nc"><i>428</i>&nbsp;    }</b>
+<i>429</i>&nbsp;
+<i>430</i>&nbsp;    /**
+<i>431</i>&nbsp;     * Encapsulates the set of parameters for an application. This includes
+<i>432</i>&nbsp;     * arguments passed on the command line, unnamed parameters specified
+<i>433</i>&nbsp;     * in a JNLP file, and &amp;lt;name,value&amp;gt; pairs specified in a JNLP file.
+<i>434</i>&nbsp;     *
+<i>435</i>&nbsp;     * &lt;p&gt;
+<i>436</i>&nbsp;     * Note that the application and the preloader both get the same set
+<i>437</i>&nbsp;     * of parameters for a given run of an application.
+<i>438</i>&nbsp;     * &lt;/p&gt;
+<i>439</i>&nbsp;     * @since JavaFX 2.0
+<i>440</i>&nbsp;     */
+<i>441</i>&nbsp;    public static abstract class Parameters {
+<i>442</i>&nbsp;
+<i>443</i>&nbsp;        /**
+<i>444</i>&nbsp;         * Constructs a new {@code Parameters} instance.
+<i>445</i>&nbsp;         */
+<b class="fc"><i>446</i>&nbsp;        public Parameters() {</b>
+<b class="fc"><i>447</i>&nbsp;        }</b>
+<i>448</i>&nbsp;
+<i>449</i>&nbsp;        /**
+<i>450</i>&nbsp;         * Retrieves a read-only list of the raw arguments. This list
+<i>451</i>&nbsp;         * may be empty, but is never null. In the case of a standalone
+<i>452</i>&nbsp;         * application, it is the ordered list of arguments specified on the
+<i>453</i>&nbsp;         * command line. In the case of an applet or WebStart application,
+<i>454</i>&nbsp;         * it includes unnamed parameters as well as named parameters. For
+<i>455</i>&nbsp;         * named parameters, each &amp;lt;name,value&amp;gt; pair is represented as
+<i>456</i>&nbsp;         * a single argument of the form: &quot;--name=value&quot;.
+<i>457</i>&nbsp;         *
+<i>458</i>&nbsp;         * @return a read-only list of raw application arguments
+<i>459</i>&nbsp;         */
+<i>460</i>&nbsp;        public abstract List&lt;String&gt; getRaw();
+<i>461</i>&nbsp;
+<i>462</i>&nbsp;        /**
+<i>463</i>&nbsp;         * Retrieves a read-only list of the unnamed parameters. This list
+<i>464</i>&nbsp;         * may be empty, but is never null. The named parameters, that is
+<i>465</i>&nbsp;         * the parameters that are represented as &amp;lt;name,value&amp;gt; pairs, are
+<i>466</i>&nbsp;         * filtered out.
+<i>467</i>&nbsp;         *
+<i>468</i>&nbsp;         * @return a read-only list of unnamed parameters.
+<i>469</i>&nbsp;         */
+<i>470</i>&nbsp;        public abstract List&lt;String&gt; getUnnamed();
+<i>471</i>&nbsp;
+<i>472</i>&nbsp;        /**
+<i>473</i>&nbsp;         * Retrieves a read-only map of the named parameters. It may be
+<i>474</i>&nbsp;         * empty, but is never null.
+<i>475</i>&nbsp;         * Named parameters include those &amp;lt;name,value&amp;gt; pairs explicitly
+<i>476</i>&nbsp;         * specified in a JNLP file. It also includes any command line
+<i>477</i>&nbsp;         * arguments of the form: &quot;--name=value&quot;.
+<i>478</i>&nbsp;         *
+<i>479</i>&nbsp;         * @return a read-only map of named parameters.
+<i>480</i>&nbsp;         */
+<i>481</i>&nbsp;        public abstract Map&lt;String, String&gt; getNamed();
+<i>482</i>&nbsp;
+<i>483</i>&nbsp;    }
+<i>484</i>&nbsp;
+<b class="fc"><i>485</i>&nbsp;    private static String userAgentStylesheet = null;</b>
+<i>486</i>&nbsp;
+<i>487</i>&nbsp;    /**
+<i>488</i>&nbsp;     * Get the user agent stylesheet used by the whole application. This is
+<i>489</i>&nbsp;     * used to provide default styling for all ui controls and other nodes.
+<i>490</i>&nbsp;     * A value of null means the platform default stylesheet is being used.
+<i>491</i>&nbsp;     * &lt;p&gt;
+<i>492</i>&nbsp;     * NOTE: This method must be called on the JavaFX Application Thread.
+<i>493</i>&nbsp;     * &lt;/p&gt;
+<i>494</i>&nbsp;     *
+<i>495</i>&nbsp;     * @return The URL to the stylesheet as a String.
+<i>496</i>&nbsp;     * @since JavaFX 8.0
+<i>497</i>&nbsp;     */
+<i>498</i>&nbsp;    public static String getUserAgentStylesheet() {
+<b class="fc"><i>499</i>&nbsp;        return userAgentStylesheet;</b>
+<i>500</i>&nbsp;    }
+<i>501</i>&nbsp;
+<i>502</i>&nbsp;    /**
+<i>503</i>&nbsp;     * Set the user agent stylesheet used by the whole application. This is used
+<i>504</i>&nbsp;     * to provide default styling for all ui controls and other nodes. Each
+<i>505</i>&nbsp;     * release of JavaFX may have a new default value for this so if you need
+<i>506</i>&nbsp;     * to guarantee consistency you will need to call this method and choose
+<i>507</i>&nbsp;     * what default you would like for your application. A value of null will
+<i>508</i>&nbsp;     * restore the platform default stylesheet. This property can also be set
+<i>509</i>&nbsp;     * on the command line with {@code -Djavafx.userAgentStylesheetUrl=[URL]}
+<i>510</i>&nbsp;     * Setting it on the command line overrides anything set using this method
+<i>511</i>&nbsp;     * in code.
+<i>512</i>&nbsp;     * &lt;p&gt;
+<i>513</i>&nbsp;     * NOTE: This method must be called on the JavaFX Application Thread.
+<i>514</i>&nbsp;     * &lt;/p&gt;
+<i>515</i>&nbsp;     *
+<i>516</i>&nbsp;     *
+<i>517</i>&nbsp;     * @param url The URL to the stylesheet as a String.
+<i>518</i>&nbsp;     * @since JavaFX 8.0
+<i>519</i>&nbsp;     */
+<i>520</i>&nbsp;    public static void setUserAgentStylesheet(String url) {
+<b class="nc"><i>521</i>&nbsp;        userAgentStylesheet = url;</b>
+<b class="nc"><i>522</i>&nbsp;        if (url == null) {</b>
+<b class="nc"><i>523</i>&nbsp;            PlatformImpl.setDefaultPlatformUserAgentStylesheet();</b>
+<i>524</i>&nbsp;        } else {
+<b class="nc"><i>525</i>&nbsp;            PlatformImpl.setPlatformUserAgentStylesheet(url);</b>
+<i>526</i>&nbsp;        }
+<b class="nc"><i>527</i>&nbsp;    }</b>
+<i>528</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2017-12-04 21:49</div>
+</div>
+</body>
+</html>

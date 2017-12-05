@@ -1,0 +1,207 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: WinGestureSupport</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.glass.ui.win</a> ]
+</div>
+
+<h1>Coverage Summary for Class: WinGestureSupport (com.sun.glass.ui.win)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">WinGestureSupport</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    12.5%
+  </span>
+  <span class="absValue">
+    (1/ 8)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    13.3%
+  </span>
+  <span class="absValue">
+    (4/ 30)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright (c) 2012, 2013, Oracle and/or its affiliates. All rights reserved.
+<i>3</i>&nbsp; * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+<i>4</i>&nbsp; *
+<i>5</i>&nbsp; *
+<i>6</i>&nbsp; *
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; *
+<i>11</i>&nbsp; *
+<i>12</i>&nbsp; *
+<i>13</i>&nbsp; *
+<i>14</i>&nbsp; *
+<i>15</i>&nbsp; *
+<i>16</i>&nbsp; *
+<i>17</i>&nbsp; *
+<i>18</i>&nbsp; *
+<i>19</i>&nbsp; *
+<i>20</i>&nbsp; *
+<i>21</i>&nbsp; *
+<i>22</i>&nbsp; *
+<i>23</i>&nbsp; *
+<i>24</i>&nbsp; */
+<i>25</i>&nbsp;package com.sun.glass.ui.win;
+<i>26</i>&nbsp;
+<i>27</i>&nbsp;import com.sun.glass.ui.TouchInputSupport;
+<i>28</i>&nbsp;import com.sun.glass.ui.GestureSupport;
+<i>29</i>&nbsp;import com.sun.glass.ui.Application;
+<i>30</i>&nbsp;import com.sun.glass.ui.View;
+<i>31</i>&nbsp;import java.security.AccessController;
+<i>32</i>&nbsp;import java.security.PrivilegedAction;
+<i>33</i>&nbsp;
+<b class="nc"><i>34</i>&nbsp;final class WinGestureSupport {</b>
+<i>35</i>&nbsp;
+<i>36</i>&nbsp;    private native static void _initIDs();
+<i>37</i>&nbsp;    static {
+<b class="fc"><i>38</i>&nbsp;        _initIDs();</b>
+<i>39</i>&nbsp;    }
+<i>40</i>&nbsp;
+<i>41</i>&nbsp;    // The multiplier used to convert scroll units to pixels
+<i>42</i>&nbsp;    private static final double multiplier = 1.0;
+<i>43</i>&nbsp;
+<b class="fc"><i>44</i>&nbsp;    private final static GestureSupport gestures = new GestureSupport(true);</b>
+<b class="fc"><i>45</i>&nbsp;    private final static TouchInputSupport touches =</b>
+<b class="fc"><i>46</i>&nbsp;            new TouchInputSupport(gestures.createTouchCountListener(), true);</b>
+<i>47</i>&nbsp;    private static int modifiers;
+<i>48</i>&nbsp;    private static boolean isDirect;
+<i>49</i>&nbsp;
+<i>50</i>&nbsp;    public static void notifyBeginTouchEvent(View view, int modifiers,
+<i>51</i>&nbsp;                                             boolean isDirect,
+<i>52</i>&nbsp;                                             int touchEventCount) {
+<b class="nc"><i>53</i>&nbsp;        touches.notifyBeginTouchEvent(view, modifiers, isDirect, touchEventCount);</b>
+<b class="nc"><i>54</i>&nbsp;    }</b>
+<i>55</i>&nbsp;
+<i>56</i>&nbsp;    public static void notifyNextTouchEvent(View view, int state, long id, int x,
+<i>57</i>&nbsp;                                            int y, int xAbs, int yAbs) {
+<b class="nc"><i>58</i>&nbsp;        touches.notifyNextTouchEvent(view, state, id, x, y, xAbs, yAbs);</b>
+<b class="nc"><i>59</i>&nbsp;    }</b>
+<i>60</i>&nbsp;
+<i>61</i>&nbsp;    public static void notifyEndTouchEvent(View view) {
+<b class="nc"><i>62</i>&nbsp;        touches.notifyEndTouchEvent(view);</b>
+<b class="nc"><i>63</i>&nbsp;        gestureFinished(view, touches.getTouchCount(), false);</b>
+<b class="nc"><i>64</i>&nbsp;    }</b>
+<i>65</i>&nbsp;
+<i>66</i>&nbsp;    private static void gestureFinished(View view, int touchCount,
+<i>67</i>&nbsp;                                        boolean isInertia) {
+<b class="nc"><i>68</i>&nbsp;        if (gestures.isScrolling() &amp;&amp; touchCount == 0) {</b>
+<b class="nc"><i>69</i>&nbsp;            gestures.handleScrollingEnd(view, modifiers, touchCount, isDirect,</b>
+<i>70</i>&nbsp;                                        isInertia,
+<i>71</i>&nbsp;                                        View.GESTURE_NO_VALUE,
+<i>72</i>&nbsp;                                        View.GESTURE_NO_VALUE,
+<i>73</i>&nbsp;                                        View.GESTURE_NO_VALUE,
+<i>74</i>&nbsp;                                        View.GESTURE_NO_VALUE);
+<i>75</i>&nbsp;        }
+<i>76</i>&nbsp;
+<b class="nc"><i>77</i>&nbsp;        if (gestures.isRotating() &amp;&amp; touchCount &lt; 2) {</b>
+<b class="nc"><i>78</i>&nbsp;            gestures.handleRotationEnd(view, modifiers, isDirect, isInertia,</b>
+<i>79</i>&nbsp;                                       View.GESTURE_NO_VALUE,
+<i>80</i>&nbsp;                                       View.GESTURE_NO_VALUE,
+<i>81</i>&nbsp;                                       View.GESTURE_NO_VALUE,
+<i>82</i>&nbsp;                                       View.GESTURE_NO_VALUE);
+<i>83</i>&nbsp;        }
+<i>84</i>&nbsp;
+<b class="nc"><i>85</i>&nbsp;        if (gestures.isZooming() &amp;&amp; touchCount &lt; 2) {</b>
+<b class="nc"><i>86</i>&nbsp;            gestures.handleZoomingEnd(view, modifiers, isDirect, isInertia,</b>
+<i>87</i>&nbsp;                                      View.GESTURE_NO_VALUE,
+<i>88</i>&nbsp;                                      View.GESTURE_NO_VALUE,
+<i>89</i>&nbsp;                                      View.GESTURE_NO_VALUE,
+<i>90</i>&nbsp;                                      View.GESTURE_NO_VALUE);
+<i>91</i>&nbsp;        }
+<b class="nc"><i>92</i>&nbsp;    }</b>
+<i>93</i>&nbsp;
+<i>94</i>&nbsp;    public static void inertiaGestureFinished(View view) {
+<b class="nc"><i>95</i>&nbsp;        gestureFinished(view, 0, true);</b>
+<b class="nc"><i>96</i>&nbsp;    }</b>
+<i>97</i>&nbsp;
+<i>98</i>&nbsp;    public static void gesturePerformed(View view, int modifiers,
+<i>99</i>&nbsp;                                        boolean isDirect, boolean isInertia,
+<i>100</i>&nbsp;                                        int x, int y, int xAbs,
+<i>101</i>&nbsp;                                        int yAbs, float dx, float dy,
+<i>102</i>&nbsp;                                        float totaldx, float totaldy,
+<i>103</i>&nbsp;                                        float totalscale, float totalexpansion,
+<i>104</i>&nbsp;                                        float totalrotation) {
+<b class="nc"><i>105</i>&nbsp;        WinGestureSupport.modifiers = modifiers;</b>
+<b class="nc"><i>106</i>&nbsp;        WinGestureSupport.isDirect = isDirect;</b>
+<i>107</i>&nbsp;
+<b class="nc"><i>108</i>&nbsp;        final int touchCount = touches.getTouchCount();</b>
+<i>109</i>&nbsp;
+<b class="nc"><i>110</i>&nbsp;        if (touchCount &gt;= 2) {</b>
+<b class="nc"><i>111</i>&nbsp;            gestures.handleTotalZooming(view, modifiers, isDirect, isInertia, x,</b>
+<i>112</i>&nbsp;                                        y, xAbs, yAbs, totalscale,
+<i>113</i>&nbsp;                                        totalexpansion);
+<i>114</i>&nbsp;
+<b class="nc"><i>115</i>&nbsp;            gestures.handleTotalRotation(view, modifiers, isDirect, isInertia, x,</b>
+<b class="nc"><i>116</i>&nbsp;                                         y, xAbs, yAbs, Math.toDegrees(</b>
+<i>117</i>&nbsp;                    totalrotation));
+<i>118</i>&nbsp;        }
+<i>119</i>&nbsp;
+<b class="nc"><i>120</i>&nbsp;        gestures.handleTotalScrolling(view, modifiers, isDirect, isInertia,</b>
+<i>121</i>&nbsp;                                      touchCount, x, y, xAbs, yAbs, totaldx,
+<i>122</i>&nbsp;                                      totaldy, multiplier, multiplier);
+<b class="nc"><i>123</i>&nbsp;    }</b>
+<i>124</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2017-12-04 21:49</div>
+</div>
+</body>
+</html>

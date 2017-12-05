@@ -1,0 +1,1134 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: Toolkit</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.javafx.tk</a> ]
+</div>
+
+<h1>Coverage Summary for Class: Toolkit (com.sun.javafx.tk)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">Toolkit</td>
+<td class="coverageStat">
+  <span class="percent">
+    59.6%
+  </span>
+  <span class="absValue">
+    (34/ 57)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    54.3%
+  </span>
+  <span class="absValue">
+    (150/ 276)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">Toolkit$1</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+  </tr>
+  <tr>
+    <td class="name">Toolkit$ImageAccessor</td>
+  </tr>
+  <tr>
+    <td class="name">Toolkit$PaintAccessor</td>
+  </tr>
+<tr>
+  <td class="name"><strong>total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    60.3%
+  </span>
+  <span class="absValue">
+    (35/ 58)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    54.5%
+  </span>
+  <span class="absValue">
+    (151/ 277)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright (c) 2010, 2017, Oracle and/or its affiliates. All rights reserved.
+<i>3</i>&nbsp; * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+<i>4</i>&nbsp; *
+<i>5</i>&nbsp; *
+<i>6</i>&nbsp; *
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; *
+<i>11</i>&nbsp; *
+<i>12</i>&nbsp; *
+<i>13</i>&nbsp; *
+<i>14</i>&nbsp; *
+<i>15</i>&nbsp; *
+<i>16</i>&nbsp; *
+<i>17</i>&nbsp; *
+<i>18</i>&nbsp; *
+<i>19</i>&nbsp; *
+<i>20</i>&nbsp; *
+<i>21</i>&nbsp; *
+<i>22</i>&nbsp; *
+<i>23</i>&nbsp; *
+<i>24</i>&nbsp; */
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;package com.sun.javafx.tk;
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;import javafx.application.ConditionalFeature;
+<i>29</i>&nbsp;import javafx.beans.property.ReadOnlyObjectProperty;
+<i>30</i>&nbsp;import javafx.geometry.Dimension2D;
+<i>31</i>&nbsp;import javafx.scene.Scene;
+<i>32</i>&nbsp;import javafx.scene.effect.BlurType;
+<i>33</i>&nbsp;import javafx.scene.image.Image;
+<i>34</i>&nbsp;import javafx.scene.image.PixelFormat;
+<i>35</i>&nbsp;import javafx.scene.image.WritableImage;
+<i>36</i>&nbsp;import javafx.scene.input.Dragboard;
+<i>37</i>&nbsp;import javafx.scene.input.InputMethodRequests;
+<i>38</i>&nbsp;import javafx.scene.input.KeyCode;
+<i>39</i>&nbsp;import javafx.scene.input.KeyEvent;
+<i>40</i>&nbsp;import javafx.scene.input.TransferMode;
+<i>41</i>&nbsp;import javafx.scene.paint.Color;
+<i>42</i>&nbsp;import javafx.scene.paint.ImagePattern;
+<i>43</i>&nbsp;import javafx.scene.paint.LinearGradient;
+<i>44</i>&nbsp;import javafx.scene.paint.Paint;
+<i>45</i>&nbsp;import javafx.scene.paint.RadialGradient;
+<i>46</i>&nbsp;import javafx.scene.paint.Stop;
+<i>47</i>&nbsp;import javafx.scene.shape.PathElement;
+<i>48</i>&nbsp;import javafx.scene.shape.SVGPath;
+<i>49</i>&nbsp;import javafx.scene.shape.StrokeLineCap;
+<i>50</i>&nbsp;import javafx.scene.shape.StrokeLineJoin;
+<i>51</i>&nbsp;import javafx.scene.shape.StrokeType;
+<i>52</i>&nbsp;import javafx.stage.FileChooser.ExtensionFilter;
+<i>53</i>&nbsp;import javafx.stage.Modality;
+<i>54</i>&nbsp;import javafx.stage.Stage;
+<i>55</i>&nbsp;import javafx.stage.StageStyle;
+<i>56</i>&nbsp;import javafx.stage.Window;
+<i>57</i>&nbsp;import java.io.File;
+<i>58</i>&nbsp;import java.io.IOException;
+<i>59</i>&nbsp;import java.io.InputStream;
+<i>60</i>&nbsp;import java.nio.ByteBuffer;
+<i>61</i>&nbsp;import java.security.AccessControlContext;
+<i>62</i>&nbsp;import java.security.AccessController;
+<i>63</i>&nbsp;import java.security.PrivilegedAction;
+<i>64</i>&nbsp;import java.util.ArrayList;
+<i>65</i>&nbsp;import java.util.HashSet;
+<i>66</i>&nbsp;import java.util.Iterator;
+<i>67</i>&nbsp;import java.util.List;
+<i>68</i>&nbsp;import java.util.Map;
+<i>69</i>&nbsp;import java.util.Set;
+<i>70</i>&nbsp;import java.util.WeakHashMap;
+<i>71</i>&nbsp;import java.util.concurrent.CountDownLatch;
+<i>72</i>&nbsp;import java.util.concurrent.Future;
+<i>73</i>&nbsp;import com.sun.glass.ui.CommonDialogs.FileChooserResult;
+<i>74</i>&nbsp;import com.sun.glass.utils.NativeLibLoader;
+<i>75</i>&nbsp;import com.sun.javafx.PlatformUtil;
+<i>76</i>&nbsp;import com.sun.javafx.beans.event.AbstractNotifyListener;
+<i>77</i>&nbsp;import com.sun.javafx.embed.HostInterface;
+<i>78</i>&nbsp;import com.sun.javafx.geom.Path2D;
+<i>79</i>&nbsp;import com.sun.javafx.geom.transform.BaseTransform;
+<i>80</i>&nbsp;import com.sun.javafx.jmx.HighlightRegion;
+<i>81</i>&nbsp;import com.sun.javafx.perf.PerformanceTracker;
+<i>82</i>&nbsp;import com.sun.javafx.runtime.VersionInfo;
+<i>83</i>&nbsp;import com.sun.javafx.runtime.async.AsyncOperation;
+<i>84</i>&nbsp;import com.sun.javafx.runtime.async.AsyncOperationListener;
+<i>85</i>&nbsp;import com.sun.javafx.scene.SceneHelper;
+<i>86</i>&nbsp;import com.sun.javafx.scene.text.TextLayoutFactory;
+<i>87</i>&nbsp;import com.sun.javafx.sg.prism.NGCamera;
+<i>88</i>&nbsp;import com.sun.javafx.sg.prism.NGLightBase;
+<i>89</i>&nbsp;import com.sun.javafx.sg.prism.NGNode;
+<i>90</i>&nbsp;import com.sun.javafx.util.Utils;
+<i>91</i>&nbsp;import com.sun.scenario.DelayedRunnable;
+<i>92</i>&nbsp;import com.sun.scenario.animation.AbstractMasterTimer;
+<i>93</i>&nbsp;import com.sun.scenario.effect.AbstractShadow.ShadowMode;
+<i>94</i>&nbsp;import com.sun.scenario.effect.Color4f;
+<i>95</i>&nbsp;import com.sun.scenario.effect.FilterContext;
+<i>96</i>&nbsp;import com.sun.scenario.effect.Filterable;
+<i>97</i>&nbsp;
+<i>98</i>&nbsp;
+<i>99</i>&nbsp;public abstract class Toolkit {
+<i>100</i>&nbsp;    private static String tk;
+<i>101</i>&nbsp;    private static Toolkit TOOLKIT;
+<b class="fc"><i>102</i>&nbsp;    private static Thread fxUserThread = null;</b>
+<i>103</i>&nbsp;
+<i>104</i>&nbsp;    private static final String QUANTUM_TOOLKIT     = &quot;com.sun.javafx.tk.quantum.QuantumToolkit&quot;;
+<i>105</i>&nbsp;    private static final String DEFAULT_TOOLKIT     = QUANTUM_TOOLKIT;
+<i>106</i>&nbsp;
+<b class="fc"><i>107</i>&nbsp;    private static final Map gradientMap = new WeakHashMap();</b>
+<i>108</i>&nbsp;
+<b class="fc"><i>109</i>&nbsp;    private static final boolean verbose = AccessController.doPrivileged((PrivilegedAction&lt;Boolean&gt;) () -&gt; Boolean.getBoolean(&quot;javafx.verbose&quot;));</b>
+<i>110</i>&nbsp;
+<b class="fc"><i>111</i>&nbsp;    private static final String[] msLibNames = {</b>
+<i>112</i>&nbsp;        &quot;api-ms-win-core-console-l1-1-0&quot;,
+<i>113</i>&nbsp;        &quot;api-ms-win-core-datetime-l1-1-0&quot;,
+<i>114</i>&nbsp;        &quot;api-ms-win-core-debug-l1-1-0&quot;,
+<i>115</i>&nbsp;        &quot;api-ms-win-core-errorhandling-l1-1-0&quot;,
+<i>116</i>&nbsp;        &quot;api-ms-win-core-file-l1-1-0&quot;,
+<i>117</i>&nbsp;        &quot;api-ms-win-core-file-l1-2-0&quot;,
+<i>118</i>&nbsp;        &quot;api-ms-win-core-file-l2-1-0&quot;,
+<i>119</i>&nbsp;        &quot;api-ms-win-core-handle-l1-1-0&quot;,
+<i>120</i>&nbsp;        &quot;api-ms-win-core-heap-l1-1-0&quot;,
+<i>121</i>&nbsp;        &quot;api-ms-win-core-interlocked-l1-1-0&quot;,
+<i>122</i>&nbsp;        &quot;api-ms-win-core-libraryloader-l1-1-0&quot;,
+<i>123</i>&nbsp;        &quot;api-ms-win-core-localization-l1-2-0&quot;,
+<i>124</i>&nbsp;        &quot;api-ms-win-core-memory-l1-1-0&quot;,
+<i>125</i>&nbsp;        &quot;api-ms-win-core-namedpipe-l1-1-0&quot;,
+<i>126</i>&nbsp;        &quot;api-ms-win-core-processenvironment-l1-1-0&quot;,
+<i>127</i>&nbsp;        &quot;api-ms-win-core-processthreads-l1-1-0&quot;,
+<i>128</i>&nbsp;        &quot;api-ms-win-core-processthreads-l1-1-1&quot;,
+<i>129</i>&nbsp;        &quot;api-ms-win-core-profile-l1-1-0&quot;,
+<i>130</i>&nbsp;        &quot;api-ms-win-core-rtlsupport-l1-1-0&quot;,
+<i>131</i>&nbsp;        &quot;api-ms-win-core-string-l1-1-0&quot;,
+<i>132</i>&nbsp;        &quot;api-ms-win-core-synch-l1-1-0&quot;,
+<i>133</i>&nbsp;        &quot;api-ms-win-core-synch-l1-2-0&quot;,
+<i>134</i>&nbsp;        &quot;api-ms-win-core-sysinfo-l1-1-0&quot;,
+<i>135</i>&nbsp;        &quot;api-ms-win-core-timezone-l1-1-0&quot;,
+<i>136</i>&nbsp;        &quot;api-ms-win-core-util-l1-1-0&quot;,
+<i>137</i>&nbsp;        &quot;api-ms-win-crt-conio-l1-1-0&quot;,
+<i>138</i>&nbsp;        &quot;api-ms-win-crt-convert-l1-1-0&quot;,
+<i>139</i>&nbsp;        &quot;api-ms-win-crt-environment-l1-1-0&quot;,
+<i>140</i>&nbsp;        &quot;api-ms-win-crt-filesystem-l1-1-0&quot;,
+<i>141</i>&nbsp;        &quot;api-ms-win-crt-heap-l1-1-0&quot;,
+<i>142</i>&nbsp;        &quot;api-ms-win-crt-locale-l1-1-0&quot;,
+<i>143</i>&nbsp;        &quot;api-ms-win-crt-math-l1-1-0&quot;,
+<i>144</i>&nbsp;        &quot;api-ms-win-crt-multibyte-l1-1-0&quot;,
+<i>145</i>&nbsp;        &quot;api-ms-win-crt-private-l1-1-0&quot;,
+<i>146</i>&nbsp;        &quot;api-ms-win-crt-process-l1-1-0&quot;,
+<i>147</i>&nbsp;        &quot;api-ms-win-crt-runtime-l1-1-0&quot;,
+<i>148</i>&nbsp;        &quot;api-ms-win-crt-stdio-l1-1-0&quot;,
+<i>149</i>&nbsp;        &quot;api-ms-win-crt-string-l1-1-0&quot;,
+<i>150</i>&nbsp;        &quot;api-ms-win-crt-time-l1-1-0&quot;,
+<i>151</i>&nbsp;        &quot;api-ms-win-crt-utility-l1-1-0&quot;,
+<i>152</i>&nbsp;        &quot;ucrtbase&quot;,
+<i>153</i>&nbsp;
+<i>154</i>&nbsp;        // Finally load VS 2017 DLLs in the following order
+<i>155</i>&nbsp;        &quot;vcruntime140&quot;,
+<i>156</i>&nbsp;        &quot;msvcp140&quot;,
+<i>157</i>&nbsp;        &quot;concrt140&quot;
+<i>158</i>&nbsp;};
+<i>159</i>&nbsp;
+<i>160</i>&nbsp;    private static String lookupToolkitClass(String name) {
+<b class="nc"><i>161</i>&nbsp;        if (&quot;prism&quot;.equalsIgnoreCase(name)) {</b>
+<b class="nc"><i>162</i>&nbsp;            return QUANTUM_TOOLKIT;</b>
+<b class="nc"><i>163</i>&nbsp;        } else if (&quot;quantum&quot;.equalsIgnoreCase(name)) {</b>
+<b class="nc"><i>164</i>&nbsp;            return QUANTUM_TOOLKIT;</b>
+<i>165</i>&nbsp;        }
+<b class="nc"><i>166</i>&nbsp;        return name;</b>
+<i>167</i>&nbsp;    }
+<i>168</i>&nbsp;
+<i>169</i>&nbsp;    public static synchronized void loadMSWindowsLibraries() {
+<b class="fc"><i>170</i>&nbsp;        for (String libName : msLibNames) {</b>
+<i>171</i>&nbsp;            try {
+<b class="fc"><i>172</i>&nbsp;                NativeLibLoader.loadLibrary(libName);</b>
+<b class="nc"><i>173</i>&nbsp;            } catch (Throwable t) {</b>
+<b class="nc"><i>174</i>&nbsp;                if (verbose) {</b>
+<b class="nc"><i>175</i>&nbsp;                    System.err.println(&quot;Error: failed to load &quot;</b>
+<i>176</i>&nbsp;                            + libName + &quot;.dll : &quot; + t);
+<i>177</i>&nbsp;                }
+<b class="fc"><i>178</i>&nbsp;            }</b>
+<i>179</i>&nbsp;        }
+<b class="fc"><i>180</i>&nbsp;    }</b>
+<i>181</i>&nbsp;
+<i>182</i>&nbsp;    private static String getDefaultToolkit() {
+<b class="fc"><i>183</i>&nbsp;        if (PlatformUtil.isWindows()) {</b>
+<b class="fc"><i>184</i>&nbsp;            return DEFAULT_TOOLKIT;</b>
+<b class="nc"><i>185</i>&nbsp;        } else if (PlatformUtil.isMac()) {</b>
+<b class="nc"><i>186</i>&nbsp;            return DEFAULT_TOOLKIT;</b>
+<b class="nc"><i>187</i>&nbsp;        } else if (PlatformUtil.isLinux()) {</b>
+<b class="nc"><i>188</i>&nbsp;            return DEFAULT_TOOLKIT;</b>
+<b class="nc"><i>189</i>&nbsp;        } else if (PlatformUtil.isIOS()) {</b>
+<b class="nc"><i>190</i>&nbsp;            return DEFAULT_TOOLKIT;</b>
+<b class="nc"><i>191</i>&nbsp;        } else if (PlatformUtil.isAndroid()) {</b>
+<b class="nc"><i>192</i>&nbsp;           return DEFAULT_TOOLKIT;</b>
+<i>193</i>&nbsp;        }
+<i>194</i>&nbsp;
+<b class="nc"><i>195</i>&nbsp;        throw new UnsupportedOperationException(System.getProperty(&quot;os.name&quot;) + &quot; is not supported&quot;);</b>
+<i>196</i>&nbsp;    }
+<i>197</i>&nbsp;
+<i>198</i>&nbsp;    public static synchronized Toolkit getToolkit() {
+<b class="fc"><i>199</i>&nbsp;        if (TOOLKIT != null) {</b>
+<b class="fc"><i>200</i>&nbsp;            return TOOLKIT;</b>
+<i>201</i>&nbsp;        }
+<i>202</i>&nbsp;
+<i>203</i>&nbsp;        // This loading of msvcp140.dll and vcruntime140.dll (VS2017) is required on Windows platforms
+<b class="fc"><i>204</i>&nbsp;        if (PlatformUtil.isWindows()) {</b>
+<b class="fc"><i>205</i>&nbsp;            loadMSWindowsLibraries();</b>
+<i>206</i>&nbsp;        }
+<i>207</i>&nbsp;
+<b class="fc"><i>208</i>&nbsp;        AccessController.doPrivileged((PrivilegedAction&lt;Object&gt;) () -&gt; {</b>
+<i>209</i>&nbsp;            // Get the javafx.version and javafx.runtime.version from a preconstructed
+<i>210</i>&nbsp;            // java class, VersionInfo, created at build time.
+<b class="fc"><i>211</i>&nbsp;            VersionInfo.setupSystemProperties();</b>
+<b class="fc"><i>212</i>&nbsp;            return null;</b>
+<i>213</i>&nbsp;        });
+<i>214</i>&nbsp;
+<b class="fc"><i>215</i>&nbsp;        boolean userSpecifiedToolkit = true;</b>
+<i>216</i>&nbsp;
+<i>217</i>&nbsp;        // Check a system property to see if there is a specific toolkit to use.
+<i>218</i>&nbsp;        // This is not a doPriviledged check so that applets cannot use this.
+<b class="fc"><i>219</i>&nbsp;        String forcedToolkit = null;</b>
+<i>220</i>&nbsp;        try {
+<b class="fc"><i>221</i>&nbsp;            forcedToolkit = System.getProperty(&quot;javafx.toolkit&quot;);</b>
+<b class="fc"><i>222</i>&nbsp;        } catch (SecurityException ex) {}</b>
+<i>223</i>&nbsp;
+<b class="fc"><i>224</i>&nbsp;        if (forcedToolkit == null) {</b>
+<b class="fc"><i>225</i>&nbsp;            forcedToolkit = tk;</b>
+<i>226</i>&nbsp;        }
+<b class="fc"><i>227</i>&nbsp;        if (forcedToolkit == null) {</b>
+<b class="fc"><i>228</i>&nbsp;            userSpecifiedToolkit = false;</b>
+<b class="fc"><i>229</i>&nbsp;            forcedToolkit = getDefaultToolkit();</b>
+<i>230</i>&nbsp;        }
+<i>231</i>&nbsp;
+<b class="fc"><i>232</i>&nbsp;        if (forcedToolkit.indexOf(&#39;.&#39;) == -1) {</b>
+<i>233</i>&nbsp;            // Turn a short name into a fully qualified classname
+<b class="nc"><i>234</i>&nbsp;            forcedToolkit = lookupToolkitClass(forcedToolkit);</b>
+<i>235</i>&nbsp;        }
+<i>236</i>&nbsp;
+<b class="fc"><i>237</i>&nbsp;        boolean printToolkit = verbose</b>
+<b class="nc"><i>238</i>&nbsp;                || (userSpecifiedToolkit &amp;&amp; !forcedToolkit.endsWith(&quot;StubToolkit&quot;));</b>
+<i>239</i>&nbsp;
+<i>240</i>&nbsp;        try {
+<b class="fc"><i>241</i>&nbsp;            Class clz = null;</b>
+<i>242</i>&nbsp;
+<i>243</i>&nbsp;            try {
+<i>244</i>&nbsp;                // try our priveledged loader first
+<b class="fc"><i>245</i>&nbsp;                final ClassLoader loader = Toolkit.class.getClassLoader();</b>
+<b class="fc"><i>246</i>&nbsp;                clz = Class.forName(forcedToolkit, false, loader);</b>
+<b class="nc"><i>247</i>&nbsp;            } catch (ClassNotFoundException e) {</b>
+<i>248</i>&nbsp;                // fall back and try the application class loader
+<b class="nc"><i>249</i>&nbsp;                final ClassLoader loader = Thread.currentThread().getContextClassLoader();</b>
+<b class="nc"><i>250</i>&nbsp;                clz = Class.forName(forcedToolkit, false, loader);</b>
+<b class="fc"><i>251</i>&nbsp;            }</b>
+<i>252</i>&nbsp;
+<i>253</i>&nbsp;            // Check that clz is a subclass of Toolkit
+<b class="fc"><i>254</i>&nbsp;            if (!Toolkit.class.isAssignableFrom(clz)) {</b>
+<b class="nc"><i>255</i>&nbsp;                throw new IllegalArgumentException(&quot;Unrecognized FX Toolkit class: &quot;</b>
+<i>256</i>&nbsp;                        + forcedToolkit);
+<i>257</i>&nbsp;            }
+<i>258</i>&nbsp;
+<b class="fc"><i>259</i>&nbsp;            TOOLKIT = (Toolkit)clz.newInstance();</b>
+<b class="fc"><i>260</i>&nbsp;            if (TOOLKIT.init()) {</b>
+<b class="fc"><i>261</i>&nbsp;                if (printToolkit) {</b>
+<b class="nc"><i>262</i>&nbsp;                    System.err.println(&quot;JavaFX: using &quot; + forcedToolkit);</b>
+<i>263</i>&nbsp;                }
+<b class="fc"><i>264</i>&nbsp;                return TOOLKIT;</b>
+<i>265</i>&nbsp;            }
+<b class="nc"><i>266</i>&nbsp;            TOOLKIT = null;</b>
+<b class="nc"><i>267</i>&nbsp;        } catch (Exception any) {</b>
+<b class="nc"><i>268</i>&nbsp;            TOOLKIT = null;</b>
+<b class="nc"><i>269</i>&nbsp;            any.printStackTrace();</b>
+<b class="nc"><i>270</i>&nbsp;        }</b>
+<i>271</i>&nbsp;
+<b class="nc"><i>272</i>&nbsp;        throw new RuntimeException(&quot;No toolkit found&quot;);</b>
+<i>273</i>&nbsp;    }
+<i>274</i>&nbsp;
+<i>275</i>&nbsp;    protected static Thread getFxUserThread() {
+<b class="nc"><i>276</i>&nbsp;        return fxUserThread;</b>
+<i>277</i>&nbsp;    }
+<i>278</i>&nbsp;
+<i>279</i>&nbsp;    protected static void setFxUserThread(Thread t) {
+<b class="fc"><i>280</i>&nbsp;        if (fxUserThread != null) {</b>
+<b class="nc"><i>281</i>&nbsp;            throw new IllegalStateException(&quot;Error: FX User Thread already initialized&quot;);</b>
+<i>282</i>&nbsp;        }
+<i>283</i>&nbsp;
+<b class="fc"><i>284</i>&nbsp;        fxUserThread = t;</b>
+<b class="fc"><i>285</i>&nbsp;    }</b>
+<i>286</i>&nbsp;
+<i>287</i>&nbsp;    public void checkFxUserThread() {
+<i>288</i>&nbsp;        // Throw exception if not on FX user thread
+<b class="fc"><i>289</i>&nbsp;        if (!isFxUserThread()) {</b>
+<b class="nc"><i>290</i>&nbsp;            throw new IllegalStateException(&quot;Not on FX application thread; currentThread = &quot;</b>
+<b class="nc"><i>291</i>&nbsp;                    + Thread.currentThread().getName());</b>
+<i>292</i>&nbsp;        }
+<b class="fc"><i>293</i>&nbsp;    }</b>
+<i>294</i>&nbsp;
+<i>295</i>&nbsp;    // Toolkit can override this if needed
+<i>296</i>&nbsp;    public boolean isFxUserThread() {
+<b class="fc"><i>297</i>&nbsp;        return Thread.currentThread() == fxUserThread;</b>
+<i>298</i>&nbsp;    }
+<i>299</i>&nbsp;
+<b class="fc"><i>300</i>&nbsp;    protected Toolkit() {</b>
+<b class="fc"><i>301</i>&nbsp;    }</b>
+<i>302</i>&nbsp;
+<i>303</i>&nbsp;    public abstract boolean init();
+<i>304</i>&nbsp;
+<i>305</i>&nbsp;    /**
+<i>306</i>&nbsp;     * Indicates whether or not a nested event loop can be started
+<i>307</i>&nbsp;     * from the current thread in the current state. Note that a nested
+<i>308</i>&nbsp;     * event loop is not allowed outside of an event handler.
+<i>309</i>&nbsp;     *
+<i>310</i>&nbsp;     * @return flag indicating whether a nested event loop can be started.
+<i>311</i>&nbsp;     */
+<i>312</i>&nbsp;    public abstract boolean canStartNestedEventLoop();
+<i>313</i>&nbsp;
+<i>314</i>&nbsp;    /**
+<i>315</i>&nbsp;     * Enter a nested event loop and block until the corresponding
+<i>316</i>&nbsp;     * exitNestedEventLoop call is made.
+<i>317</i>&nbsp;     * The key passed into this method is used to
+<i>318</i>&nbsp;     * uniquely identify the matched enter/exit pair. This method creates a
+<i>319</i>&nbsp;     * new nested event loop and blocks until the corresponding
+<i>320</i>&nbsp;     * exitNestedEventLoop method is called with the same key.
+<i>321</i>&nbsp;     * The return value of this method will be the {@code rval}
+<i>322</i>&nbsp;     * object supplied to the exitNestedEventLoop method call that unblocks it.
+<i>323</i>&nbsp;     *
+<i>324</i>&nbsp;     * @param key the Object that identifies the nested event loop, which
+<i>325</i>&nbsp;     * must not be null
+<i>326</i>&nbsp;     *
+<i>327</i>&nbsp;     * @throws IllegalArgumentException if the specified key is associated
+<i>328</i>&nbsp;     * with a nested event loop that has not yet returned
+<i>329</i>&nbsp;     *
+<i>330</i>&nbsp;     * @throws NullPointerException if the key is null
+<i>331</i>&nbsp;     *
+<i>332</i>&nbsp;     * @throws IllegalStateException if this method is called on a thread
+<i>333</i>&nbsp;     * other than the FX Application thread
+<i>334</i>&nbsp;     *
+<i>335</i>&nbsp;     * @return the value passed into the corresponding call to exitEventLoop
+<i>336</i>&nbsp;     */
+<i>337</i>&nbsp;    public abstract Object enterNestedEventLoop(Object key);
+<i>338</i>&nbsp;
+<i>339</i>&nbsp;    /**
+<i>340</i>&nbsp;     * Exit a nested event loop and unblock the caller of the
+<i>341</i>&nbsp;     * corresponding enterNestedEventLoop.
+<i>342</i>&nbsp;     * The key passed into this method is used to
+<i>343</i>&nbsp;     * uniquely identify the matched enter/exit pair. This method causes the
+<i>344</i>&nbsp;     * nested event loop that was previously created with the key to exit and
+<i>345</i>&nbsp;     * return control to the caller. If the specified nested event loop is not
+<i>346</i>&nbsp;     * the inner-most loop then it will not return until all other inner loops
+<i>347</i>&nbsp;     * also exit.
+<i>348</i>&nbsp;     *
+<i>349</i>&nbsp;     * @param key the Object that identifies the nested event loop, which
+<i>350</i>&nbsp;     * must not be null
+<i>351</i>&nbsp;     *
+<i>352</i>&nbsp;     * @param rval an Object that is returned to the caller of the
+<i>353</i>&nbsp;     * corresponding enterNestedEventLoop. This may be null.
+<i>354</i>&nbsp;     *
+<i>355</i>&nbsp;     * @throws IllegalArgumentException if the specified key is not associated
+<i>356</i>&nbsp;     * with an active nested event loop
+<i>357</i>&nbsp;     *
+<i>358</i>&nbsp;     * @throws NullPointerException if the key is null
+<i>359</i>&nbsp;     *
+<i>360</i>&nbsp;     * @throws IllegalStateException if this method is called on a thread
+<i>361</i>&nbsp;     * other than the FX Application thread
+<i>362</i>&nbsp;     */
+<i>363</i>&nbsp;    public abstract void exitNestedEventLoop(Object key, Object rval);
+<i>364</i>&nbsp;
+<i>365</i>&nbsp;    public abstract boolean isNestedLoopRunning();
+<i>366</i>&nbsp;
+<i>367</i>&nbsp;    public abstract TKStage createTKStage(Window peerWindow, boolean securityDialog, StageStyle stageStyle, boolean primary, Modality modality, TKStage owner, boolean rtl, AccessControlContext acc);
+<i>368</i>&nbsp;
+<i>369</i>&nbsp;    public abstract TKStage createTKPopupStage(Window peerWindow, StageStyle popupStyle, TKStage owner, AccessControlContext acc);
+<i>370</i>&nbsp;    public abstract TKStage createTKEmbeddedStage(HostInterface host, AccessControlContext acc);
+<i>371</i>&nbsp;
+<i>372</i>&nbsp;    /**
+<i>373</i>&nbsp;     * Creates an AppletWindow using the provided window pointer as the parent
+<i>374</i>&nbsp;     * window.
+<i>375</i>&nbsp;     *
+<i>376</i>&nbsp;     * @param parent the native parent which will contain the primary stage
+<i>377</i>&nbsp;     * window(s). Used on Windows/Linux platforms.
+<i>378</i>&nbsp;     *
+<i>379</i>&nbsp;     * @param serverName the name of CARemoteLayerServer which
+<i>380</i>&nbsp;     * will be used to register native layer. Used on Mac platform.
+<i>381</i>&nbsp;     */
+<i>382</i>&nbsp;    public abstract AppletWindow createAppletWindow(long parent, String serverName);
+<i>383</i>&nbsp;
+<i>384</i>&nbsp;    /**
+<i>385</i>&nbsp;     * Perform cleanup in preparation for applet termination, including closing
+<i>386</i>&nbsp;     * the applet window.
+<i>387</i>&nbsp;     */
+<i>388</i>&nbsp;    public abstract void closeAppletWindow();
+<i>389</i>&nbsp;
+<b class="fc"><i>390</i>&nbsp;    private final Map&lt;TKPulseListener,AccessControlContext&gt; stagePulseListeners =</b>
+<i>391</i>&nbsp;            new WeakHashMap&lt;TKPulseListener,AccessControlContext&gt;();
+<b class="fc"><i>392</i>&nbsp;    private final Map&lt;TKPulseListener,AccessControlContext&gt; scenePulseListeners =</b>
+<i>393</i>&nbsp;            new WeakHashMap&lt;TKPulseListener,AccessControlContext&gt;();
+<b class="fc"><i>394</i>&nbsp;    private final Map&lt;TKPulseListener,AccessControlContext&gt; postScenePulseListeners =</b>
+<i>395</i>&nbsp;            new WeakHashMap&lt;TKPulseListener,AccessControlContext&gt;();
+<b class="fc"><i>396</i>&nbsp;    private final Map&lt;TKListener,AccessControlContext&gt; toolkitListeners =</b>
+<i>397</i>&nbsp;            new WeakHashMap&lt;TKListener,AccessControlContext&gt;();
+<i>398</i>&nbsp;
+<i>399</i>&nbsp;    // The set of shutdown hooks is strongly held to avoid premature GC.
+<b class="fc"><i>400</i>&nbsp;    private final Set&lt;Runnable&gt; shutdownHooks = new HashSet&lt;Runnable&gt;();</b>
+<i>401</i>&nbsp;
+<i>402</i>&nbsp;    private void runPulse(final TKPulseListener listener,
+<i>403</i>&nbsp;            final AccessControlContext acc) {
+<i>404</i>&nbsp;
+<b class="fc"><i>405</i>&nbsp;        if (acc == null) {</b>
+<b class="nc"><i>406</i>&nbsp;            throw new IllegalStateException(&quot;Invalid AccessControlContext&quot;);</b>
+<i>407</i>&nbsp;        }
+<i>408</i>&nbsp;
+<b class="fc"><i>409</i>&nbsp;        AccessController.doPrivileged((PrivilegedAction&lt;Void&gt;) () -&gt; {</b>
+<b class="fc"><i>410</i>&nbsp;            listener.pulse();</b>
+<b class="fc"><i>411</i>&nbsp;            return null;</b>
+<i>412</i>&nbsp;        }, acc);
+<b class="fc"><i>413</i>&nbsp;    }</b>
+<i>414</i>&nbsp;
+<i>415</i>&nbsp;    public void firePulse() {
+<i>416</i>&nbsp;        // Stages need to be notified of pulses before scenes so the Stage can resized
+<i>417</i>&nbsp;        // and those changes propogated to scene before it gets its pulse to update
+<i>418</i>&nbsp;
+<i>419</i>&nbsp;        // Copy of listener map
+<b class="fc"><i>420</i>&nbsp;        final Map&lt;TKPulseListener,AccessControlContext&gt; stagePulseList =</b>
+<i>421</i>&nbsp;                new WeakHashMap&lt;TKPulseListener,AccessControlContext&gt;();
+<b class="fc"><i>422</i>&nbsp;        final Map&lt;TKPulseListener,AccessControlContext&gt; scenePulseList =</b>
+<i>423</i>&nbsp;                new WeakHashMap&lt;TKPulseListener,AccessControlContext&gt;();
+<b class="fc"><i>424</i>&nbsp;        final Map&lt;TKPulseListener,AccessControlContext&gt; postScenePulseList =</b>
+<i>425</i>&nbsp;                new WeakHashMap&lt;TKPulseListener,AccessControlContext&gt;();
+<i>426</i>&nbsp;
+<b class="fc"><i>427</i>&nbsp;        synchronized (this) {</b>
+<b class="fc"><i>428</i>&nbsp;            stagePulseList.putAll(stagePulseListeners);</b>
+<b class="fc"><i>429</i>&nbsp;            scenePulseList.putAll(scenePulseListeners);</b>
+<b class="fc"><i>430</i>&nbsp;            postScenePulseList.putAll(postScenePulseListeners);</b>
+<b class="fc"><i>431</i>&nbsp;        }</b>
+<b class="fc"><i>432</i>&nbsp;        for (Map.Entry&lt;TKPulseListener,AccessControlContext&gt; entry : stagePulseList.entrySet()) {</b>
+<b class="fc"><i>433</i>&nbsp;            runPulse(entry.getKey(), entry.getValue());</b>
+<b class="fc"><i>434</i>&nbsp;        }</b>
+<b class="fc"><i>435</i>&nbsp;        for (Map.Entry&lt;TKPulseListener,AccessControlContext&gt; entry : scenePulseList.entrySet()) {</b>
+<b class="fc"><i>436</i>&nbsp;            runPulse(entry.getKey(), entry.getValue());</b>
+<b class="fc"><i>437</i>&nbsp;        }</b>
+<b class="fc"><i>438</i>&nbsp;        for (Map.Entry&lt;TKPulseListener,AccessControlContext&gt; entry : postScenePulseList.entrySet()) {</b>
+<b class="nc"><i>439</i>&nbsp;            runPulse(entry.getKey(), entry.getValue());</b>
+<b class="nc"><i>440</i>&nbsp;        }</b>
+<i>441</i>&nbsp;
+<b class="fc"><i>442</i>&nbsp;        if (lastTkPulseListener != null) {</b>
+<b class="nc"><i>443</i>&nbsp;            runPulse(lastTkPulseListener, lastTkPulseAcc);</b>
+<i>444</i>&nbsp;        }
+<b class="fc"><i>445</i>&nbsp;    }</b>
+<i>446</i>&nbsp;    public void addStageTkPulseListener(TKPulseListener listener) {
+<b class="fc"><i>447</i>&nbsp;        if (listener == null) {</b>
+<b class="nc"><i>448</i>&nbsp;            return;</b>
+<i>449</i>&nbsp;        }
+<b class="fc"><i>450</i>&nbsp;        synchronized (this) {</b>
+<b class="fc"><i>451</i>&nbsp;            AccessControlContext acc = AccessController.getContext();</b>
+<b class="fc"><i>452</i>&nbsp;            stagePulseListeners.put(listener, acc);</b>
+<b class="fc"><i>453</i>&nbsp;        }</b>
+<b class="fc"><i>454</i>&nbsp;    }</b>
+<i>455</i>&nbsp;    public void removeStageTkPulseListener(TKPulseListener listener) {
+<b class="fc"><i>456</i>&nbsp;        synchronized (this) {</b>
+<b class="fc"><i>457</i>&nbsp;            stagePulseListeners.remove(listener);</b>
+<b class="fc"><i>458</i>&nbsp;        }</b>
+<b class="fc"><i>459</i>&nbsp;    }</b>
+<i>460</i>&nbsp;    public void addSceneTkPulseListener(TKPulseListener listener) {
+<b class="fc"><i>461</i>&nbsp;        if (listener == null) {</b>
+<b class="nc"><i>462</i>&nbsp;            return;</b>
+<i>463</i>&nbsp;        }
+<b class="fc"><i>464</i>&nbsp;        synchronized (this) {</b>
+<b class="fc"><i>465</i>&nbsp;            AccessControlContext acc = AccessController.getContext();</b>
+<b class="fc"><i>466</i>&nbsp;            scenePulseListeners.put(listener, acc);</b>
+<b class="fc"><i>467</i>&nbsp;        }</b>
+<b class="fc"><i>468</i>&nbsp;    }</b>
+<i>469</i>&nbsp;    public void removeSceneTkPulseListener(TKPulseListener listener) {
+<b class="fc"><i>470</i>&nbsp;        synchronized (this) {</b>
+<b class="fc"><i>471</i>&nbsp;            scenePulseListeners.remove(listener);</b>
+<b class="fc"><i>472</i>&nbsp;        }</b>
+<b class="fc"><i>473</i>&nbsp;    }</b>
+<i>474</i>&nbsp;    public void addPostSceneTkPulseListener(TKPulseListener listener) {
+<b class="nc"><i>475</i>&nbsp;        if (listener == null) {</b>
+<b class="nc"><i>476</i>&nbsp;            return;</b>
+<i>477</i>&nbsp;        }
+<b class="nc"><i>478</i>&nbsp;        synchronized (this) {</b>
+<b class="nc"><i>479</i>&nbsp;            AccessControlContext acc = AccessController.getContext();</b>
+<b class="nc"><i>480</i>&nbsp;            postScenePulseListeners.put(listener, acc);</b>
+<b class="nc"><i>481</i>&nbsp;        }</b>
+<b class="nc"><i>482</i>&nbsp;    }</b>
+<i>483</i>&nbsp;    public void removePostSceneTkPulseListener(TKPulseListener listener) {
+<b class="nc"><i>484</i>&nbsp;        synchronized (this) {</b>
+<b class="nc"><i>485</i>&nbsp;            postScenePulseListeners.remove(listener);</b>
+<b class="nc"><i>486</i>&nbsp;        }</b>
+<b class="nc"><i>487</i>&nbsp;    }</b>
+<i>488</i>&nbsp;
+<i>489</i>&nbsp;    public void addTkListener(TKListener listener) {
+<b class="fc"><i>490</i>&nbsp;        if (listener == null) {</b>
+<b class="nc"><i>491</i>&nbsp;            return;</b>
+<i>492</i>&nbsp;        }
+<b class="fc"><i>493</i>&nbsp;        AccessControlContext acc = AccessController.getContext();</b>
+<b class="fc"><i>494</i>&nbsp;        toolkitListeners.put(listener, acc);</b>
+<b class="fc"><i>495</i>&nbsp;    }</b>
+<i>496</i>&nbsp;
+<i>497</i>&nbsp;    public void removeTkListener(TKListener listener) {
+<b class="fc"><i>498</i>&nbsp;        toolkitListeners.remove(listener);</b>
+<b class="fc"><i>499</i>&nbsp;    }</b>
+<i>500</i>&nbsp;
+<b class="fc"><i>501</i>&nbsp;    private TKPulseListener lastTkPulseListener = null;</b>
+<b class="fc"><i>502</i>&nbsp;    private AccessControlContext lastTkPulseAcc = null;</b>
+<i>503</i>&nbsp;    public void setLastTkPulseListener(TKPulseListener listener) {
+<b class="nc"><i>504</i>&nbsp;        lastTkPulseAcc = AccessController.getContext();</b>
+<b class="nc"><i>505</i>&nbsp;        lastTkPulseListener = listener;</b>
+<b class="nc"><i>506</i>&nbsp;    }</b>
+<i>507</i>&nbsp;
+<i>508</i>&nbsp;    public void addShutdownHook(Runnable hook) {
+<b class="nc"><i>509</i>&nbsp;        if (hook == null) {</b>
+<b class="nc"><i>510</i>&nbsp;            return;</b>
+<i>511</i>&nbsp;        }
+<b class="nc"><i>512</i>&nbsp;        synchronized (shutdownHooks) {</b>
+<b class="nc"><i>513</i>&nbsp;            shutdownHooks.add(hook);</b>
+<b class="nc"><i>514</i>&nbsp;        }</b>
+<b class="nc"><i>515</i>&nbsp;    }</b>
+<i>516</i>&nbsp;
+<i>517</i>&nbsp;    public void removeShutdownHook(Runnable hook) {
+<b class="nc"><i>518</i>&nbsp;        synchronized (shutdownHooks) {</b>
+<b class="nc"><i>519</i>&nbsp;            shutdownHooks.remove(hook);</b>
+<b class="nc"><i>520</i>&nbsp;        }</b>
+<b class="nc"><i>521</i>&nbsp;    }</b>
+<i>522</i>&nbsp;
+<i>523</i>&nbsp;    protected void notifyShutdownHooks() {
+<i>524</i>&nbsp;        List&lt;Runnable&gt; hooks;
+<b class="fc"><i>525</i>&nbsp;        synchronized (shutdownHooks) {</b>
+<b class="fc"><i>526</i>&nbsp;            hooks = new ArrayList&lt;Runnable&gt;(shutdownHooks);</b>
+<b class="fc"><i>527</i>&nbsp;            shutdownHooks.clear();</b>
+<b class="fc"><i>528</i>&nbsp;        }</b>
+<i>529</i>&nbsp;
+<b class="fc"><i>530</i>&nbsp;        for (Runnable hook : hooks) {</b>
+<b class="nc"><i>531</i>&nbsp;            hook.run();</b>
+<b class="nc"><i>532</i>&nbsp;        }</b>
+<b class="fc"><i>533</i>&nbsp;    }</b>
+<i>534</i>&nbsp;
+<i>535</i>&nbsp;    public void notifyWindowListeners(final List&lt;TKStage&gt; windows) {
+<b class="fc"><i>536</i>&nbsp;        for (Map.Entry&lt;TKListener,AccessControlContext&gt; entry : toolkitListeners.entrySet()) {</b>
+<b class="fc"><i>537</i>&nbsp;            final TKListener listener = entry.getKey();</b>
+<b class="fc"><i>538</i>&nbsp;            final AccessControlContext acc = entry.getValue();</b>
+<b class="fc"><i>539</i>&nbsp;            if (acc == null) {</b>
+<b class="nc"><i>540</i>&nbsp;                throw new IllegalStateException(&quot;Invalid AccessControlContext&quot;);</b>
+<i>541</i>&nbsp;            }
+<i>542</i>&nbsp;
+<b class="fc"><i>543</i>&nbsp;            AccessController.doPrivileged((PrivilegedAction&lt;Void&gt;) () -&gt; {</b>
+<b class="fc"><i>544</i>&nbsp;                listener.changedTopLevelWindows(windows);</b>
+<b class="fc"><i>545</i>&nbsp;                return null;</b>
+<i>546</i>&nbsp;            }, acc);
+<b class="fc"><i>547</i>&nbsp;        }</b>
+<b class="fc"><i>548</i>&nbsp;    }</b>
+<i>549</i>&nbsp;
+<i>550</i>&nbsp;    public void notifyLastNestedLoopExited() {
+<b class="nc"><i>551</i>&nbsp;        for (TKListener listener: toolkitListeners.keySet()) {</b>
+<b class="nc"><i>552</i>&nbsp;            listener.exitedLastNestedLoop();</b>
+<b class="nc"><i>553</i>&nbsp;        }</b>
+<b class="nc"><i>554</i>&nbsp;    }</b>
+<i>555</i>&nbsp;
+<i>556</i>&nbsp;    // notify the pulse timer code that we need the next pulse to happen
+<i>557</i>&nbsp;    // this flag is cleared each cycle so subsequent pulses must be requested
+<i>558</i>&nbsp;    public abstract void requestNextPulse();
+<i>559</i>&nbsp;
+<i>560</i>&nbsp;    public abstract Future addRenderJob(RenderJob rj);
+<i>561</i>&nbsp;
+<i>562</i>&nbsp;    public abstract ImageLoader loadImage(String url,
+<i>563</i>&nbsp;                                          int width, int height,
+<i>564</i>&nbsp;                                          boolean preserveRatio,
+<i>565</i>&nbsp;                                          boolean smooth);
+<i>566</i>&nbsp;    public abstract ImageLoader loadImage(InputStream stream,
+<i>567</i>&nbsp;                                          int width, int height,
+<i>568</i>&nbsp;                                          boolean preserveRatio,
+<i>569</i>&nbsp;                                          boolean smooth);
+<i>570</i>&nbsp;    public abstract AsyncOperation loadImageAsync(
+<i>571</i>&nbsp;                                          AsyncOperationListener&lt;? extends ImageLoader&gt; listener,
+<i>572</i>&nbsp;                                          String url,
+<i>573</i>&nbsp;                                          int width, int height,
+<i>574</i>&nbsp;                                          boolean preserveRatio,
+<i>575</i>&nbsp;                                          boolean smooth);
+<i>576</i>&nbsp;
+<i>577</i>&nbsp;    /*
+<i>578</i>&nbsp;     * The loadPlatformImage method supports the following image types:
+<i>579</i>&nbsp;     *   - an object returned by the renderToImage method
+<i>580</i>&nbsp;     *   - an instance of com.sun.prism.Image (in case of prism)
+<i>581</i>&nbsp;     *   - an instance of an external image object, which can be a BufferedImage
+<i>582</i>&nbsp;     * If JavaFX Image had one more constructor Image(ImageLoader),
+<i>583</i>&nbsp;     * we could introduce a different method for external image loading support.
+<i>584</i>&nbsp;     */
+<i>585</i>&nbsp;
+<i>586</i>&nbsp;    public abstract ImageLoader loadPlatformImage(Object platformImage);
+<i>587</i>&nbsp;
+<i>588</i>&nbsp;    public abstract PlatformImage createPlatformImage(int w, int h);
+<i>589</i>&nbsp;
+<i>590</i>&nbsp;    // Indicates the default state of smooth for ImageView and MediaView
+<i>591</i>&nbsp;    // Subclasses may override this to provide a platform-specific default
+<b class="fc"><i>592</i>&nbsp;    public boolean getDefaultImageSmooth() { return true; }</b>
+<i>593</i>&nbsp;
+<i>594</i>&nbsp;    public abstract void startup(Runnable runnable);
+<i>595</i>&nbsp;    public abstract void defer(Runnable runnable);
+<i>596</i>&nbsp;    public void exit() {
+<b class="fc"><i>597</i>&nbsp;        fxUserThread = null;</b>
+<b class="fc"><i>598</i>&nbsp;    }</b>
+<i>599</i>&nbsp;
+<i>600</i>&nbsp;    public abstract Map&lt;Object, Object&gt; getContextMap();
+<i>601</i>&nbsp;    public abstract int getRefreshRate();
+<i>602</i>&nbsp;    public abstract void setAnimationRunnable(DelayedRunnable animationRunnable);
+<i>603</i>&nbsp;    public abstract PerformanceTracker getPerformanceTracker();
+<i>604</i>&nbsp;    public abstract PerformanceTracker createPerformanceTracker();
+<i>605</i>&nbsp;
+<i>606</i>&nbsp;    //to be used for testing only
+<i>607</i>&nbsp;    public abstract void waitFor(Task t);
+<i>608</i>&nbsp;
+<i>609</i>&nbsp;    private Object checkSingleColor(List&lt;Stop&gt; stops) {
+<b class="fc"><i>610</i>&nbsp;        if (stops.size() == 2) {</b>
+<b class="fc"><i>611</i>&nbsp;            Color c = stops.get(0).getColor();</b>
+<b class="fc"><i>612</i>&nbsp;            if (c.equals(stops.get(1).getColor())) {</b>
+<b class="nc"><i>613</i>&nbsp;                return Toolkit.getPaintAccessor().getPlatformPaint(c);</b>
+<i>614</i>&nbsp;            }
+<i>615</i>&nbsp;        }
+<b class="fc"><i>616</i>&nbsp;        return null;</b>
+<i>617</i>&nbsp;    }
+<i>618</i>&nbsp;
+<i>619</i>&nbsp;    private Object getPaint(LinearGradient paint) {
+<b class="fc"><i>620</i>&nbsp;        Object p = gradientMap.get(paint);</b>
+<b class="fc"><i>621</i>&nbsp;        if (p != null) {</b>
+<b class="fc"><i>622</i>&nbsp;            return p;</b>
+<i>623</i>&nbsp;        }
+<b class="fc"><i>624</i>&nbsp;        p = checkSingleColor(paint.getStops());</b>
+<b class="fc"><i>625</i>&nbsp;        if (p == null) {</b>
+<b class="fc"><i>626</i>&nbsp;            p = createLinearGradientPaint(paint);</b>
+<i>627</i>&nbsp;        }
+<b class="fc"><i>628</i>&nbsp;        gradientMap.put(paint, p);</b>
+<b class="fc"><i>629</i>&nbsp;        return p;</b>
+<i>630</i>&nbsp;    }
+<i>631</i>&nbsp;
+<i>632</i>&nbsp;    private Object getPaint(RadialGradient paint) {
+<b class="nc"><i>633</i>&nbsp;        Object p = gradientMap.get(paint);</b>
+<b class="nc"><i>634</i>&nbsp;        if (p != null) {</b>
+<b class="nc"><i>635</i>&nbsp;            return p;</b>
+<i>636</i>&nbsp;        }
+<b class="nc"><i>637</i>&nbsp;        p = checkSingleColor(paint.getStops());</b>
+<b class="nc"><i>638</i>&nbsp;        if (p == null) {</b>
+<b class="nc"><i>639</i>&nbsp;            p = createRadialGradientPaint(paint);</b>
+<i>640</i>&nbsp;        }
+<b class="nc"><i>641</i>&nbsp;        gradientMap.put(paint, p);</b>
+<b class="nc"><i>642</i>&nbsp;        return p;</b>
+<i>643</i>&nbsp;    }
+<i>644</i>&nbsp;
+<i>645</i>&nbsp;    public Object getPaint(Paint paint) {
+<b class="fc"><i>646</i>&nbsp;        if (paint instanceof Color) {</b>
+<b class="fc"><i>647</i>&nbsp;            return createColorPaint((Color) paint);</b>
+<i>648</i>&nbsp;        }
+<i>649</i>&nbsp;
+<b class="fc"><i>650</i>&nbsp;        if (paint instanceof LinearGradient) {</b>
+<b class="fc"><i>651</i>&nbsp;            return getPaint((LinearGradient) paint);</b>
+<i>652</i>&nbsp;        }
+<i>653</i>&nbsp;
+<b class="nc"><i>654</i>&nbsp;        if (paint instanceof RadialGradient) {</b>
+<b class="nc"><i>655</i>&nbsp;            return getPaint((RadialGradient) paint);</b>
+<i>656</i>&nbsp;        }
+<i>657</i>&nbsp;
+<b class="nc"><i>658</i>&nbsp;        if (paint instanceof ImagePattern) {</b>
+<b class="nc"><i>659</i>&nbsp;            return createImagePatternPaint((ImagePattern) paint);</b>
+<i>660</i>&nbsp;        }
+<i>661</i>&nbsp;
+<b class="nc"><i>662</i>&nbsp;        return null;</b>
+<i>663</i>&nbsp;    }
+<i>664</i>&nbsp;
+<i>665</i>&nbsp;    protected static final double clampStopOffset(double offset) {
+<b class="nc"><i>666</i>&nbsp;        return (offset &gt; 1.0) ? 1.0 :</b>
+<b class="nc"><i>667</i>&nbsp;               (offset &lt; 0.0) ? 0.0 : offset;</b>
+<i>668</i>&nbsp;    }
+<i>669</i>&nbsp;
+<i>670</i>&nbsp;    protected abstract Object createColorPaint(Color paint);
+<i>671</i>&nbsp;    protected abstract Object createLinearGradientPaint(LinearGradient paint);
+<i>672</i>&nbsp;    protected abstract Object createRadialGradientPaint(RadialGradient paint);
+<i>673</i>&nbsp;    protected abstract Object createImagePatternPaint(ImagePattern paint);
+<i>674</i>&nbsp;
+<i>675</i>&nbsp;    public abstract void
+<i>676</i>&nbsp;        accumulateStrokeBounds(com.sun.javafx.geom.Shape shape,
+<i>677</i>&nbsp;                               float bbox[],
+<i>678</i>&nbsp;                               StrokeType type,
+<i>679</i>&nbsp;                               double strokewidth,
+<i>680</i>&nbsp;                               StrokeLineCap cap,
+<i>681</i>&nbsp;                               StrokeLineJoin join,
+<i>682</i>&nbsp;                               float miterLimit,
+<i>683</i>&nbsp;                               BaseTransform tx);
+<i>684</i>&nbsp;
+<i>685</i>&nbsp;    public abstract boolean
+<i>686</i>&nbsp;        strokeContains(com.sun.javafx.geom.Shape shape,
+<i>687</i>&nbsp;                       double x, double y,
+<i>688</i>&nbsp;                       StrokeType type,
+<i>689</i>&nbsp;                       double strokewidth,
+<i>690</i>&nbsp;                       StrokeLineCap cap,
+<i>691</i>&nbsp;                       StrokeLineJoin join,
+<i>692</i>&nbsp;                       float miterLimit);
+<i>693</i>&nbsp;
+<i>694</i>&nbsp;    public abstract com.sun.javafx.geom.Shape
+<i>695</i>&nbsp;        createStrokedShape(com.sun.javafx.geom.Shape shape,
+<i>696</i>&nbsp;                           StrokeType type,
+<i>697</i>&nbsp;                           double strokewidth,
+<i>698</i>&nbsp;                           StrokeLineCap cap,
+<i>699</i>&nbsp;                           StrokeLineJoin join,
+<i>700</i>&nbsp;                           float miterLimit,
+<i>701</i>&nbsp;                           float[] dashArray,
+<i>702</i>&nbsp;                           float dashOffset);
+<i>703</i>&nbsp;
+<i>704</i>&nbsp;    public abstract int getKeyCodeForChar(String character);
+<i>705</i>&nbsp;    public abstract Dimension2D getBestCursorSize(int preferredWidth, int preferredHeight);
+<i>706</i>&nbsp;    public abstract int getMaximumCursorColors();
+<i>707</i>&nbsp;    public abstract PathElement[] convertShapeToFXPath(Object shape);
+<i>708</i>&nbsp;
+<i>709</i>&nbsp;    public abstract Filterable toFilterable(Image img);
+<i>710</i>&nbsp;    public abstract FilterContext getFilterContext(Object config);
+<i>711</i>&nbsp;
+<i>712</i>&nbsp;    public abstract boolean isForwardTraversalKey(KeyEvent e);
+<i>713</i>&nbsp;    public abstract boolean isBackwardTraversalKey(KeyEvent e);
+<i>714</i>&nbsp;
+<i>715</i>&nbsp;    public abstract AbstractMasterTimer getMasterTimer();
+<i>716</i>&nbsp;
+<i>717</i>&nbsp;    public abstract FontLoader getFontLoader();
+<i>718</i>&nbsp;    public abstract TextLayoutFactory getTextLayoutFactory();
+<i>719</i>&nbsp;
+<i>720</i>&nbsp;    public abstract Object createSVGPathObject(SVGPath svgpath);
+<i>721</i>&nbsp;    public abstract Path2D createSVGPath2D(SVGPath svgpath);
+<i>722</i>&nbsp;
+<i>723</i>&nbsp;    /**
+<i>724</i>&nbsp;     * Tests whether the pixel on the given coordinates in the given image
+<i>725</i>&nbsp;     * is non-empty (not fully transparent). Return value is not defined
+<i>726</i>&nbsp;     * for pixels out of the image bounds.
+<i>727</i>&nbsp;     */
+<i>728</i>&nbsp;    public abstract boolean imageContains(Object image, float x, float y);
+<i>729</i>&nbsp;
+<i>730</i>&nbsp;    public abstract TKClipboard getSystemClipboard();
+<i>731</i>&nbsp;
+<i>732</i>&nbsp;    public TKClipboard createLocalClipboard() {
+<b class="nc"><i>733</i>&nbsp;        return new LocalClipboard();</b>
+<i>734</i>&nbsp;    }
+<i>735</i>&nbsp;
+<i>736</i>&nbsp;    public abstract TKSystemMenu getSystemMenu();
+<i>737</i>&nbsp;
+<i>738</i>&nbsp;    public abstract TKClipboard getNamedClipboard(String name);
+<i>739</i>&nbsp;
+<b class="nc"><i>740</i>&nbsp;    public boolean isSupported(ConditionalFeature feature) { return false; }</b>
+<i>741</i>&nbsp;
+<b class="nc"><i>742</i>&nbsp;    public boolean isMSAASupported() { return false; }</b>
+<i>743</i>&nbsp;
+<i>744</i>&nbsp;    public abstract ScreenConfigurationAccessor setScreenConfigurationListener(TKScreenConfigurationListener listener);
+<i>745</i>&nbsp;
+<i>746</i>&nbsp;    public abstract Object getPrimaryScreen();
+<i>747</i>&nbsp;
+<i>748</i>&nbsp;    public abstract List&lt;?&gt; getScreens();
+<i>749</i>&nbsp;
+<i>750</i>&nbsp;    public abstract ScreenConfigurationAccessor getScreenConfigurationAccessor();
+<i>751</i>&nbsp;
+<i>752</i>&nbsp;    public abstract void registerDragGestureListener(TKScene s, Set&lt;TransferMode&gt; tm, TKDragGestureListener l);
+<i>753</i>&nbsp;
+<i>754</i>&nbsp;    /**
+<i>755</i>&nbsp;     * This function is called when a drag originates within a JavaFX application.
+<i>756</i>&nbsp;     * This means that drags that originate in other applications / from the OS
+<i>757</i>&nbsp;     * do not call this function.
+<i>758</i>&nbsp;     * The argument o represents an object used to identify a scene on which
+<i>759</i>&nbsp;     * the drag has started.
+<i>760</i>&nbsp;     */
+<i>761</i>&nbsp;    public abstract void startDrag(TKScene scene, Set&lt;TransferMode&gt; tm, TKDragSourceListener l, Dragboard dragboard);
+<i>762</i>&nbsp;
+<i>763</i>&nbsp;    // template function which can be implemented by toolkit impls such that they
+<i>764</i>&nbsp;    // can be informed when a drag and drop operation has completed. This allows
+<i>765</i>&nbsp;    // for any cleanup that may need to be done.
+<i>766</i>&nbsp;    public void stopDrag(Dragboard dragboard) {
+<i>767</i>&nbsp;        // no-op
+<b class="nc"><i>768</i>&nbsp;    }</b>
+<i>769</i>&nbsp;
+<i>770</i>&nbsp;    public abstract void enableDrop(TKScene s, TKDropTargetListener l);
+<i>771</i>&nbsp;
+<i>772</i>&nbsp;    public interface Task {
+<i>773</i>&nbsp;        boolean isFinished();
+<i>774</i>&nbsp;    }
+<i>775</i>&nbsp;
+<i>776</i>&nbsp;    public Color4f toColor4f(Color color) {
+<b class="fc"><i>777</i>&nbsp;        return new Color4f((float)color.getRed(), (float)color.getGreen(), (float)color.getBlue(), (float)color.getOpacity());</b>
+<i>778</i>&nbsp;    }
+<i>779</i>&nbsp;
+<i>780</i>&nbsp;
+<i>781</i>&nbsp;    public ShadowMode toShadowMode(BlurType blurType) {
+<b class="fc"><i>782</i>&nbsp;        switch (blurType) {</b>
+<i>783</i>&nbsp;            case ONE_PASS_BOX:
+<b class="nc"><i>784</i>&nbsp;                return ShadowMode.ONE_PASS_BOX;</b>
+<i>785</i>&nbsp;            case TWO_PASS_BOX:
+<b class="fc"><i>786</i>&nbsp;                return ShadowMode.TWO_PASS_BOX;</b>
+<i>787</i>&nbsp;            case THREE_PASS_BOX:
+<b class="nc"><i>788</i>&nbsp;                return ShadowMode.THREE_PASS_BOX;</b>
+<i>789</i>&nbsp;            default:
+<b class="fc"><i>790</i>&nbsp;                return ShadowMode.GAUSSIAN;</b>
+<i>791</i>&nbsp;        }
+<i>792</i>&nbsp;    }
+<i>793</i>&nbsp;
+<i>794</i>&nbsp;    public abstract void installInputMethodRequests(TKScene scene, InputMethodRequests requests);
+<i>795</i>&nbsp;
+<i>796</i>&nbsp;    /*
+<i>797</i>&nbsp;     * ImageRenderingContext holds the many parameters passed to
+<i>798</i>&nbsp;     * the renderToImage method.
+<i>799</i>&nbsp;     * The use of the parameters is specified by the renderToImage
+<i>800</i>&nbsp;     * method.
+<i>801</i>&nbsp;     * @see #renderToImage
+<i>802</i>&nbsp;     */
+<i>803</i>&nbsp;    public static class ImageRenderingContext {
+<i>804</i>&nbsp;        // Node to be rendered
+<i>805</i>&nbsp;        public NGNode root;
+<i>806</i>&nbsp;
+<i>807</i>&nbsp;        // Viewport for rendering
+<i>808</i>&nbsp;        public int x;
+<i>809</i>&nbsp;        public int y;
+<i>810</i>&nbsp;        public int width;
+<i>811</i>&nbsp;        public int height;
+<i>812</i>&nbsp;
+<i>813</i>&nbsp;        // Initial transform for root node
+<i>814</i>&nbsp;        public BaseTransform transform;
+<i>815</i>&nbsp;
+<i>816</i>&nbsp;        // Rendering parameters either from Scene or SnapShotParams
+<i>817</i>&nbsp;        public boolean depthBuffer;
+<i>818</i>&nbsp;        public Object platformPaint;
+<i>819</i>&nbsp;        public NGCamera camera;
+<i>820</i>&nbsp;        public NGLightBase[] lights;
+<i>821</i>&nbsp;
+<i>822</i>&nbsp;        // PlatformImage into which to render or null
+<i>823</i>&nbsp;        public Object platformImage;
+<i>824</i>&nbsp;    }
+<i>825</i>&nbsp;
+<i>826</i>&nbsp;    /*
+<i>827</i>&nbsp;     * This method renders a PG-graph to a platform image object.
+<i>828</i>&nbsp;     * The returned object can be turned into a useable
+<i>829</i>&nbsp;     * scene graph image using the appropriate factor of the
+<i>830</i>&nbsp;     * Image class.
+<i>831</i>&nbsp;     * The scale specified in the params is used to scale the
+<i>832</i>&nbsp;     * entire rendering before any transforms in the nodes are
+<i>833</i>&nbsp;     * applied.
+<i>834</i>&nbsp;     * The width and height specified in the params represent
+<i>835</i>&nbsp;     * the user space dimensions to be rendered.  The returned
+<i>836</i>&nbsp;     * image will be large enough to hold these dimensions
+<i>837</i>&nbsp;     * scaled by the scale parameter.
+<i>838</i>&nbsp;     * The depthBuffer specified in the params is used to determine
+<i>839</i>&nbsp;     * with or without depthBuffer rendering should be performed.
+<i>840</i>&nbsp;     * The root node is the root of a tree of toolkit-specific
+<i>841</i>&nbsp;     * scene graph peer nodes to be rendered and should have
+<i>842</i>&nbsp;     * been previously created by this toolkit.
+<i>843</i>&nbsp;     * The platformPaint specified in the params must be
+<i>844</i>&nbsp;     * generated by the appropriate Toolkit.createPaint method
+<i>845</i>&nbsp;     * and is used to fill the background of the image before
+<i>846</i>&nbsp;     * rendering the scene graph.
+<i>847</i>&nbsp;     * The platformImage specified in the params may be non-null
+<i>848</i>&nbsp;     * and should be a previous return value from this method.
+<i>849</i>&nbsp;     * If it is non-null then it may be reused as the return value
+<i>850</i>&nbsp;     * of this method if it is still valid and large enough to
+<i>851</i>&nbsp;     * hold the requested size.
+<i>852</i>&nbsp;     *
+<i>853</i>&nbsp;     * @param context a ImageRenderingContext instance specifying
+<i>854</i>&nbsp;     *               the various rendering parameters
+<i>855</i>&nbsp;     * @return a platform specific image object
+<i>856</i>&nbsp;     * @see Toolkit.getImageAccessor().fromPlatformImage
+<i>857</i>&nbsp;     */
+<i>858</i>&nbsp;
+<i>859</i>&nbsp;    public abstract Object renderToImage(ImageRenderingContext context);
+<i>860</i>&nbsp;
+<i>861</i>&nbsp;    /**
+<i>862</i>&nbsp;     * Returns the key code for the key which is commonly used on the
+<i>863</i>&nbsp;     * corresponding platform as a modifier key in shortcuts. For example
+<i>864</i>&nbsp;     * it is {@code KeyCode.CONTROL} on Windows (Ctrl + C, Ctrl + V ...) and
+<i>865</i>&nbsp;     * {@code KeyCode.META} on MacOS (Cmd + C, Cmd + V ...).
+<i>866</i>&nbsp;     *
+<i>867</i>&nbsp;     * @return the key code for shortcut modifier key
+<i>868</i>&nbsp;     */
+<i>869</i>&nbsp;    public KeyCode getPlatformShortcutKey() {
+<b class="fc"><i>870</i>&nbsp;        return PlatformUtil.isMac() ? KeyCode.META : KeyCode.CONTROL;</b>
+<i>871</i>&nbsp;    }
+<i>872</i>&nbsp;
+<i>873</i>&nbsp;    public abstract FileChooserResult showFileChooser(
+<i>874</i>&nbsp;            TKStage ownerWindow,
+<i>875</i>&nbsp;            String title,
+<i>876</i>&nbsp;            File initialDirectory,
+<i>877</i>&nbsp;            String initialFileName,
+<i>878</i>&nbsp;            FileChooserType fileChooserType,
+<i>879</i>&nbsp;            List&lt;ExtensionFilter&gt; extensionFilters,
+<i>880</i>&nbsp;            ExtensionFilter selectedFilter);
+<i>881</i>&nbsp;
+<i>882</i>&nbsp;    public abstract File showDirectoryChooser(
+<i>883</i>&nbsp;            TKStage ownerWindow,
+<i>884</i>&nbsp;            String title,
+<i>885</i>&nbsp;            File initialDirectory);
+<i>886</i>&nbsp;
+<i>887</i>&nbsp;    /*
+<i>888</i>&nbsp;     * Methods for obtaining &quot;double-click&quot; speed value.
+<i>889</i>&nbsp;     */
+<i>890</i>&nbsp;    public abstract long getMultiClickTime();
+<i>891</i>&nbsp;    public abstract int getMultiClickMaxX();
+<i>892</i>&nbsp;    public abstract int getMultiClickMaxY();
+<i>893</i>&nbsp;
+<b class="fc"><i>894</i>&nbsp;    private CountDownLatch pauseScenesLatch = null;</b>
+<i>895</i>&nbsp;
+<i>896</i>&nbsp;    /*
+<i>897</i>&nbsp;     * Causes all scenes to stop by removing its TKPulseListener from Toolkit.
+<i>898</i>&nbsp;     * It is used by Scenegraph-JMX bean.
+<i>899</i>&nbsp;     */
+<i>900</i>&nbsp;    public void pauseScenes() {
+<b class="nc"><i>901</i>&nbsp;        pauseScenesLatch = new CountDownLatch(1);</b>
+<b class="nc"><i>902</i>&nbsp;        Window.getWindows().stream().forEach(window -&gt; {</b>
+<b class="nc"><i>903</i>&nbsp;            final Scene scene = window.getScene();</b>
+<b class="nc"><i>904</i>&nbsp;            if (scene != null) {</b>
+<b class="nc"><i>905</i>&nbsp;                this.removeSceneTkPulseListener(SceneHelper.getScenePulseListener(scene));</b>
+<i>906</i>&nbsp;            }
+<b class="nc"><i>907</i>&nbsp;        });</b>
+<b class="nc"><i>908</i>&nbsp;        this.getMasterTimer().pause();</b>
+<b class="nc"><i>909</i>&nbsp;        SceneHelper.setPaused(true);</b>
+<b class="nc"><i>910</i>&nbsp;    }</b>
+<i>911</i>&nbsp;
+<i>912</i>&nbsp;    /*
+<i>913</i>&nbsp;     * Resume all scenes by registering its TKPulseListener back to Toolkit.
+<i>914</i>&nbsp;     * It is used by Scenegraph-JMX bean.
+<i>915</i>&nbsp;     */
+<i>916</i>&nbsp;    public void resumeScenes() {
+<b class="nc"><i>917</i>&nbsp;        SceneHelper.setPaused(false);</b>
+<b class="nc"><i>918</i>&nbsp;        this.getMasterTimer().resume();</b>
+<b class="nc"><i>919</i>&nbsp;        Window.getWindows().stream().forEach(window -&gt; {</b>
+<b class="nc"><i>920</i>&nbsp;            final Scene scene = window.getScene();</b>
+<b class="nc"><i>921</i>&nbsp;            if (scene != null) {</b>
+<b class="nc"><i>922</i>&nbsp;                this.addSceneTkPulseListener(SceneHelper.getScenePulseListener(scene));</b>
+<i>923</i>&nbsp;            }
+<b class="nc"><i>924</i>&nbsp;        });</b>
+<b class="nc"><i>925</i>&nbsp;        pauseScenesLatch.countDown();</b>
+<b class="nc"><i>926</i>&nbsp;        pauseScenesLatch = null;</b>
+<b class="nc"><i>927</i>&nbsp;    }</b>
+<i>928</i>&nbsp;
+<i>929</i>&nbsp;    /**
+<i>930</i>&nbsp;     * Used to pause current thread when the Scene-graph is in &quot;PAUSED&quot; mode.
+<i>931</i>&nbsp;     * It is mainly used by {@link javafx.application.Platform#runLater(Runnable)}
+<i>932</i>&nbsp;     * to block the thread and not to pass the runnable to FX event queue.
+<i>933</i>&nbsp;     */
+<i>934</i>&nbsp;    public void pauseCurrentThread() {
+<b class="nc"><i>935</i>&nbsp;        final CountDownLatch cdl = pauseScenesLatch;</b>
+<b class="nc"><i>936</i>&nbsp;        if (cdl == null) {</b>
+<b class="nc"><i>937</i>&nbsp;            return;</b>
+<i>938</i>&nbsp;        }
+<i>939</i>&nbsp;        try {
+<b class="nc"><i>940</i>&nbsp;            cdl.await();</b>
+<b class="nc"><i>941</i>&nbsp;        } catch (InterruptedException e) { }</b>
+<b class="nc"><i>942</i>&nbsp;    }</b>
+<i>943</i>&nbsp;
+<i>944</i>&nbsp;    private Set&lt;HighlightRegion&gt; highlightRegions;
+<i>945</i>&nbsp;
+<i>946</i>&nbsp;    /**
+<i>947</i>&nbsp;     * Getter for the set of regions to be highlighted using the JMX tooling
+<i>948</i>&nbsp;     * interface.
+<i>949</i>&nbsp;     *
+<i>950</i>&nbsp;     * @return the set of regions to be highlighted.
+<i>951</i>&nbsp;     */
+<i>952</i>&nbsp;    public Set&lt;HighlightRegion&gt; getHighlightedRegions() {
+<b class="nc"><i>953</i>&nbsp;        if (highlightRegions == null) {</b>
+<b class="nc"><i>954</i>&nbsp;            highlightRegions = new HashSet&lt;HighlightRegion&gt;();</b>
+<i>955</i>&nbsp;        }
+<b class="nc"><i>956</i>&nbsp;        return highlightRegions;</b>
+<i>957</i>&nbsp;    }
+<i>958</i>&nbsp;
+<i>959</i>&nbsp;    public interface WritableImageAccessor {
+<i>960</i>&nbsp;        public void loadTkImage(WritableImage wimg, Object loader);
+<i>961</i>&nbsp;        public Object getTkImageLoader(WritableImage wimg);
+<i>962</i>&nbsp;    }
+<i>963</i>&nbsp;
+<b class="fc"><i>964</i>&nbsp;    private static WritableImageAccessor writableImageAccessor = null;</b>
+<i>965</i>&nbsp;
+<i>966</i>&nbsp;    public static void setWritableImageAccessor(WritableImageAccessor accessor) {
+<b class="nc"><i>967</i>&nbsp;        writableImageAccessor = accessor;</b>
+<b class="nc"><i>968</i>&nbsp;    }</b>
+<i>969</i>&nbsp;
+<i>970</i>&nbsp;    public static WritableImageAccessor getWritableImageAccessor() {
+<b class="nc"><i>971</i>&nbsp;        return writableImageAccessor;</b>
+<i>972</i>&nbsp;    }
+<i>973</i>&nbsp;
+<i>974</i>&nbsp;    public interface PaintAccessor {
+<i>975</i>&nbsp;        public boolean isMutable(Paint paint);
+<i>976</i>&nbsp;        public Object getPlatformPaint(Paint paint);
+<i>977</i>&nbsp;        public void addListener(Paint paint, AbstractNotifyListener platformChangeListener);
+<i>978</i>&nbsp;        public void removeListener(Paint paint, AbstractNotifyListener platformChangeListener);
+<i>979</i>&nbsp;    }
+<i>980</i>&nbsp;
+<b class="fc"><i>981</i>&nbsp;    private static PaintAccessor paintAccessor = null;</b>
+<i>982</i>&nbsp;
+<i>983</i>&nbsp;    public static void setPaintAccessor(PaintAccessor accessor) {
+<b class="fc"><i>984</i>&nbsp;        paintAccessor = accessor;</b>
+<b class="fc"><i>985</i>&nbsp;    }</b>
+<i>986</i>&nbsp;
+<i>987</i>&nbsp;    public static PaintAccessor getPaintAccessor() {
+<b class="fc"><i>988</i>&nbsp;        return paintAccessor;</b>
+<i>989</i>&nbsp;    }
+<i>990</i>&nbsp;
+<i>991</i>&nbsp;    public interface ImageAccessor {
+<i>992</i>&nbsp;        public boolean isAnimation(Image image);
+<i>993</i>&nbsp;        public ReadOnlyObjectProperty&lt;PlatformImage&gt;getImageProperty(Image image);
+<i>994</i>&nbsp;        public int[] getPreColors(PixelFormat&lt;ByteBuffer&gt; pf);
+<i>995</i>&nbsp;        public int[] getNonPreColors(PixelFormat&lt;ByteBuffer&gt; pf);
+<i>996</i>&nbsp;        public Object getPlatformImage(Image image);
+<i>997</i>&nbsp;        public Image fromPlatformImage(Object image);
+<i>998</i>&nbsp;    }
+<i>999</i>&nbsp;
+<i>1000</i>&nbsp;    private static ImageAccessor imageAccessor;
+<i>1001</i>&nbsp;
+<i>1002</i>&nbsp;    static {
+<i>1003</i>&nbsp;        // Need to ensure that the Image class is loaded since Toolkit class
+<i>1004</i>&nbsp;        // is the provider of getImageAccessor method and sets the accessor.
+<b class="fc"><i>1005</i>&nbsp;        Utils.forceInit(Image.class);</b>
+<b class="fc"><i>1006</i>&nbsp;    }</b>
+<i>1007</i>&nbsp;
+<i>1008</i>&nbsp;    public static void setImageAccessor(ImageAccessor accessor) {
+<b class="fc"><i>1009</i>&nbsp;        imageAccessor = accessor;</b>
+<b class="fc"><i>1010</i>&nbsp;    }</b>
+<i>1011</i>&nbsp;
+<i>1012</i>&nbsp;    public static ImageAccessor getImageAccessor() {
+<b class="fc"><i>1013</i>&nbsp;        return imageAccessor;</b>
+<i>1014</i>&nbsp;    }
+<i>1015</i>&nbsp;
+<i>1016</i>&nbsp;    public String getThemeName() {
+<b class="nc"><i>1017</i>&nbsp;        return null;</b>
+<i>1018</i>&nbsp;    }
+<i>1019</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2017-12-04 21:49</div>
+</div>
+</body>
+</html>

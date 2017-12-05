@@ -1,0 +1,173 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: LadderConverter</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">javafx.css.converter</a> ]
+</div>
+
+<h1>Coverage Summary for Class: LadderConverter (javafx.css.converter)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">LadderConverter</td>
+<td class="coverageStat">
+  <span class="percent">
+    80%
+  </span>
+  <span class="absValue">
+    (4/ 5)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    90.9%
+  </span>
+  <span class="absValue">
+    (10/ 11)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">LadderConverter$Holder</td>
+<td class="coverageStat">
+  <span class="percent">
+    50%
+  </span>
+  <span class="absValue">
+    (1/ 2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    50%
+  </span>
+  <span class="absValue">
+    (1/ 2)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    71.4%
+  </span>
+  <span class="absValue">
+    (5/ 7)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    84.6%
+  </span>
+  <span class="absValue">
+    (11/ 13)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright (c) 2011, 2015, Oracle and/or its affiliates. All rights reserved.
+<i>3</i>&nbsp; * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+<i>4</i>&nbsp; *
+<i>5</i>&nbsp; *
+<i>6</i>&nbsp; *
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; *
+<i>11</i>&nbsp; *
+<i>12</i>&nbsp; *
+<i>13</i>&nbsp; *
+<i>14</i>&nbsp; *
+<i>15</i>&nbsp; *
+<i>16</i>&nbsp; *
+<i>17</i>&nbsp; *
+<i>18</i>&nbsp; *
+<i>19</i>&nbsp; *
+<i>20</i>&nbsp; *
+<i>21</i>&nbsp; *
+<i>22</i>&nbsp; *
+<i>23</i>&nbsp; *
+<i>24</i>&nbsp; */
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;package javafx.css.converter;
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;import javafx.css.ParsedValue;
+<i>29</i>&nbsp;import javafx.css.StyleConverter;
+<i>30</i>&nbsp;import javafx.scene.paint.Color;
+<i>31</i>&nbsp;import javafx.scene.paint.Stop;
+<i>32</i>&nbsp;import javafx.scene.text.Font;
+<i>33</i>&nbsp;
+<b class="fc"><i>34</i>&nbsp;public final class LadderConverter extends StyleConverter&lt;ParsedValue[], Color&gt; {</b>
+<i>35</i>&nbsp;
+<i>36</i>&nbsp;    // lazy, thread-safe instatiation
+<b class="nc"><i>37</i>&nbsp;    private static class Holder {</b>
+<b class="fc"><i>38</i>&nbsp;        static final LadderConverter INSTANCE = new LadderConverter();</b>
+<i>39</i>&nbsp;    }
+<i>40</i>&nbsp;
+<i>41</i>&nbsp;    public static LadderConverter getInstance() {
+<b class="fc"><i>42</i>&nbsp;        return Holder.INSTANCE;</b>
+<i>43</i>&nbsp;    }
+<i>44</i>&nbsp;
+<i>45</i>&nbsp;    private LadderConverter() {
+<b class="fc"><i>46</i>&nbsp;        super();</b>
+<b class="fc"><i>47</i>&nbsp;    }</b>
+<i>48</i>&nbsp;
+<i>49</i>&nbsp;    @Override
+<i>50</i>&nbsp;    public Color convert(ParsedValue&lt;ParsedValue[], Color&gt; value, Font font) {
+<b class="fc"><i>51</i>&nbsp;        final ParsedValue[] values = value.getValue();</b>
+<b class="fc"><i>52</i>&nbsp;        final Color color = (Color) values[0].convert(font);</b>
+<b class="fc"><i>53</i>&nbsp;        Stop[] stops = new Stop[values.length - 1];</b>
+<b class="fc"><i>54</i>&nbsp;        for (int v = 1; v &lt; values.length; v++) {</b>
+<b class="fc"><i>55</i>&nbsp;            stops[v - 1] = (Stop) values[v].convert(font);</b>
+<i>56</i>&nbsp;        }
+<b class="fc"><i>57</i>&nbsp;        return com.sun.javafx.util.Utils.ladder(color, stops);</b>
+<i>58</i>&nbsp;    }
+<i>59</i>&nbsp;
+<i>60</i>&nbsp;    @Override
+<i>61</i>&nbsp;    public String toString() {
+<b class="nc"><i>62</i>&nbsp;        return &quot;LadderConverter&quot;;</b>
+<i>63</i>&nbsp;    }
+<i>64</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2017-12-04 21:49</div>
+</div>
+</body>
+</html>

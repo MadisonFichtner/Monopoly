@@ -1,0 +1,207 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: ParsedValue</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">javafx.css</a> ]
+</div>
+
+<h1>Coverage Summary for Class: ParsedValue (javafx.css)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">ParsedValue</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    50%
+  </span>
+  <span class="absValue">
+    (3/ 6)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    66.7%
+  </span>
+  <span class="absValue">
+    (6/ 9)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright (c) 2010, 2017, Oracle and/or its affiliates. All rights reserved.
+<i>3</i>&nbsp; * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+<i>4</i>&nbsp; *
+<i>5</i>&nbsp; *
+<i>6</i>&nbsp; *
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; *
+<i>11</i>&nbsp; *
+<i>12</i>&nbsp; *
+<i>13</i>&nbsp; *
+<i>14</i>&nbsp; *
+<i>15</i>&nbsp; *
+<i>16</i>&nbsp; *
+<i>17</i>&nbsp; *
+<i>18</i>&nbsp; *
+<i>19</i>&nbsp; *
+<i>20</i>&nbsp; *
+<i>21</i>&nbsp; *
+<i>22</i>&nbsp; *
+<i>23</i>&nbsp; *
+<i>24</i>&nbsp; */
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;package javafx.css;
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;import javafx.scene.text.Font;
+<i>29</i>&nbsp;
+<i>30</i>&nbsp;/**
+<i>31</i>&nbsp; * A representation of a parsed CSS value. {@code V} is the type of the parsed
+<i>32</i>&nbsp; * value, {@code T} is the {@code StyleableProperty} type of the converted value.
+<i>33</i>&nbsp; * Instances of {@code ParsedValue} are created by the CSS parser. For example,
+<i>34</i>&nbsp; * the parser creates a {@code ParsedValue&lt;String,Color&gt;} when it parses a
+<i>35</i>&nbsp; * web Color.
+<i>36</i>&nbsp; * &lt;p&gt;
+<i>37</i>&nbsp; * A ParsedValue is meaningful to the code that calculates actual values from
+<i>38</i>&nbsp; * parsed CSS values. Elsewhere the value returned by
+<i>39</i>&nbsp; * {@link #getValue()} is likely to be obscure, abstruse and perplexing.
+<i>40</i>&nbsp; * @since JavaFX 8.0
+<i>41</i>&nbsp; */
+<i>42</i>&nbsp;public class ParsedValue&lt;V, T&gt; {
+<i>43</i>&nbsp;
+<i>44</i>&nbsp;    /**
+<i>45</i>&nbsp;     * The CSS property value as created by the parser.
+<i>46</i>&nbsp;     */
+<i>47</i>&nbsp;    final protected V value;
+<i>48</i>&nbsp;
+<i>49</i>&nbsp;    /**
+<i>50</i>&nbsp;     * @return The CSS property value as created by the parser, which may be null
+<i>51</i>&nbsp;     * or otherwise incomprehensible.
+<i>52</i>&nbsp;     */
+<b class="fc"><i>53</i>&nbsp;    public final V getValue() { return value; }</b>
+<i>54</i>&nbsp;
+<i>55</i>&nbsp;    /**
+<i>56</i>&nbsp;     * The {@code StyleConverter} which converts the parsed value to
+<i>57</i>&nbsp;     * the type of the {@link StyleableProperty}. This may be null, in which
+<i>58</i>&nbsp;     * case {@link #convert(javafx.scene.text.Font) convert}
+<i>59</i>&nbsp;     * will return {@link #getValue() getValue()}
+<i>60</i>&nbsp;     */
+<i>61</i>&nbsp;    final protected StyleConverter&lt;V, T&gt; converter;
+<i>62</i>&nbsp;
+<i>63</i>&nbsp;    /**
+<i>64</i>&nbsp;     * A {@code StyleConverter} converts the parsed value to
+<i>65</i>&nbsp;     * the type of the {@link StyleableProperty}. If the {@code StyleConverter}
+<i>66</i>&nbsp;     * is null, {@link #convert(javafx.scene.text.Font)}
+<i>67</i>&nbsp;     * will return {@link #getValue()}
+<i>68</i>&nbsp;     * @return The {@code StyleConverter} which converts the parsed value to
+<i>69</i>&nbsp;     * the type of the {@link StyleableProperty}. May return null.
+<i>70</i>&nbsp;     */
+<b class="fc"><i>71</i>&nbsp;    public final StyleConverter&lt;V, T&gt; getConverter() { return converter; }</b>
+<i>72</i>&nbsp;
+<i>73</i>&nbsp;    /**
+<i>74</i>&nbsp;     * Convenience method for calling
+<i>75</i>&nbsp;     * {@link StyleConverter#convert(javafx.css.ParsedValue, javafx.scene.text.Font) convert}
+<i>76</i>&nbsp;     * on this {@code ParsedValue}.
+<i>77</i>&nbsp;     * @param font         The {@link Font} to use when converting a
+<i>78</i>&nbsp;     * &lt;a href=&quot;http://www.w3.org/TR/css3-values/#relative-lengths&quot;&gt;relative&lt;/a&gt;
+<i>79</i>&nbsp;     * value.
+<i>80</i>&nbsp;     * @return The value converted to the type of the {@link StyleableProperty}
+<i>81</i>&nbsp;     * @see #getConverter()
+<i>82</i>&nbsp;     */
+<i>83</i>&nbsp;    @SuppressWarnings(&quot;unchecked&quot;)
+<i>84</i>&nbsp;    public T convert(Font font) {
+<i>85</i>&nbsp;        // unchecked!
+<b class="nc"><i>86</i>&nbsp;        return (T)((converter != null) ? converter.convert(this, font) : value);</b>
+<i>87</i>&nbsp;    }
+<i>88</i>&nbsp;
+<i>89</i>&nbsp;    /**
+<i>90</i>&nbsp;     * If value is itself a ParsedValue or sequence of values, and should any of
+<i>91</i>&nbsp;     * those values need to be looked up, then this flag is set. This
+<i>92</i>&nbsp;     * does not mean that this particular value needs to be looked up, but
+<i>93</i>&nbsp;     * that this value contains a value that needs to be looked up.
+<i>94</i>&nbsp;     *
+<i>95</i>&nbsp;     * @return true if this value contains a value that needs to be looked up,
+<i>96</i>&nbsp;     * otherwise false
+<i>97</i>&nbsp;     * @since 9
+<i>98</i>&nbsp;     */
+<b class="nc"><i>99</i>&nbsp;    public boolean isContainsLookups() { return false; }</b>
+<i>100</i>&nbsp;
+<i>101</i>&nbsp;     /**
+<i>102</i>&nbsp;     * If value references another property, then the real value needs to
+<i>103</i>&nbsp;     * be looked up.
+<i>104</i>&nbsp;     *
+<i>105</i>&nbsp;     * @return true if value references another property, otherwise false
+<i>106</i>&nbsp;     * @since 9
+<i>107</i>&nbsp;     */
+<b class="nc"><i>108</i>&nbsp;    public boolean isLookup() { return false; }</b>
+<i>109</i>&nbsp;
+<i>110</i>&nbsp;    /**
+<i>111</i>&nbsp;     * Create an instance of ParsedValue where the value type V is converted to
+<i>112</i>&nbsp;     * the target type T using the given converter.
+<i>113</i>&nbsp;     * If {@code converter} is null, then it is assumed that the type of value
+<i>114</i>&nbsp;     * {@code V} and the type of target {@code T} are the same and
+<i>115</i>&nbsp;     * do not need converted.
+<i>116</i>&nbsp;     * @param value the value to be converted
+<i>117</i>&nbsp;     * @param converter the converter
+<i>118</i>&nbsp;     */
+<b class="fc"><i>119</i>&nbsp;    protected ParsedValue(V value, StyleConverter&lt;V, T&gt; converter) {</b>
+<b class="fc"><i>120</i>&nbsp;        this.value = value;</b>
+<b class="fc"><i>121</i>&nbsp;        this.converter = converter;</b>
+<b class="fc"><i>122</i>&nbsp;    }</b>
+<i>123</i>&nbsp;
+<i>124</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2017-12-04 21:49</div>
+</div>
+</body>
+</html>

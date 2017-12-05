@@ -1,0 +1,301 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: ReadOnlyDoubleProperty</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">javafx.beans.property</a> ]
+</div>
+
+<h1>Coverage Summary for Class: ReadOnlyDoubleProperty (javafx.beans.property)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">ReadOnlyDoubleProperty</td>
+<td class="coverageStat">
+  <span class="percent">
+    25%
+  </span>
+  <span class="absValue">
+    (1/ 4)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    12.5%
+  </span>
+  <span class="absValue">
+    (2/ 16)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">ReadOnlyDoubleProperty$1</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 5)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 14)
+  </span>
+</td>
+  </tr>
+  <tr>
+    <td class="name">ReadOnlyDoubleProperty$2</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 5)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 13)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    7.1%
+  </span>
+  <span class="absValue">
+    (1/ 14)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    4.7%
+  </span>
+  <span class="absValue">
+    (2/ 43)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright (c) 2011, 2017, Oracle and/or its affiliates. All rights reserved.
+<i>3</i>&nbsp; * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+<i>4</i>&nbsp; *
+<i>5</i>&nbsp; *
+<i>6</i>&nbsp; *
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; *
+<i>11</i>&nbsp; *
+<i>12</i>&nbsp; *
+<i>13</i>&nbsp; *
+<i>14</i>&nbsp; *
+<i>15</i>&nbsp; *
+<i>16</i>&nbsp; *
+<i>17</i>&nbsp; *
+<i>18</i>&nbsp; *
+<i>19</i>&nbsp; *
+<i>20</i>&nbsp; *
+<i>21</i>&nbsp; *
+<i>22</i>&nbsp; *
+<i>23</i>&nbsp; *
+<i>24</i>&nbsp; */
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;package javafx.beans.property;
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;import javafx.beans.InvalidationListener;
+<i>29</i>&nbsp;import javafx.beans.Observable;
+<i>30</i>&nbsp;import javafx.beans.WeakInvalidationListener;
+<i>31</i>&nbsp;import javafx.beans.binding.DoubleExpression;
+<i>32</i>&nbsp;
+<i>33</i>&nbsp;/**
+<i>34</i>&nbsp; * Superclass for all readonly properties wrapping a {@code double}.
+<i>35</i>&nbsp; *
+<i>36</i>&nbsp; * @see javafx.beans.value.ObservableDoubleValue
+<i>37</i>&nbsp; * @see javafx.beans.binding.DoubleExpression
+<i>38</i>&nbsp; * @see ReadOnlyProperty
+<i>39</i>&nbsp; *
+<i>40</i>&nbsp; * @since JavaFX 2.0
+<i>41</i>&nbsp; */
+<i>42</i>&nbsp;public abstract class ReadOnlyDoubleProperty extends DoubleExpression implements
+<i>43</i>&nbsp;        ReadOnlyProperty&lt;Number&gt; {
+<i>44</i>&nbsp;
+<i>45</i>&nbsp;    /**
+<i>46</i>&nbsp;     * The constructor of {@code ReadOnlyDoubleProperty}.
+<i>47</i>&nbsp;     */
+<b class="fc"><i>48</i>&nbsp;    public ReadOnlyDoubleProperty() {</b>
+<b class="fc"><i>49</i>&nbsp;    }</b>
+<i>50</i>&nbsp;
+<i>51</i>&nbsp;    /**
+<i>52</i>&nbsp;     * Returns a string representation of this {@code ReadOnlyDoubleProperty} object.
+<i>53</i>&nbsp;     * @return a string representation of this {@code ReadOnlyDoubleProperty} object.
+<i>54</i>&nbsp;     */
+<i>55</i>&nbsp;    @Override
+<i>56</i>&nbsp;    public String toString() {
+<b class="nc"><i>57</i>&nbsp;        final Object bean = getBean();</b>
+<b class="nc"><i>58</i>&nbsp;        final String name = getName();</b>
+<b class="nc"><i>59</i>&nbsp;        final StringBuilder result = new StringBuilder(</b>
+<i>60</i>&nbsp;                &quot;ReadOnlyDoubleProperty [&quot;);
+<b class="nc"><i>61</i>&nbsp;        if (bean != null) {</b>
+<b class="nc"><i>62</i>&nbsp;            result.append(&quot;bean: &quot;).append(bean).append(&quot;, &quot;);</b>
+<i>63</i>&nbsp;        }
+<b class="nc"><i>64</i>&nbsp;        if ((name != null) &amp;&amp; !name.equals(&quot;&quot;)) {</b>
+<b class="nc"><i>65</i>&nbsp;            result.append(&quot;name: &quot;).append(name).append(&quot;, &quot;);</b>
+<i>66</i>&nbsp;        }
+<b class="nc"><i>67</i>&nbsp;        result.append(&quot;value: &quot;).append(get()).append(&quot;]&quot;);</b>
+<b class="nc"><i>68</i>&nbsp;        return result.toString();</b>
+<i>69</i>&nbsp;    }
+<i>70</i>&nbsp;
+<i>71</i>&nbsp;    /**
+<i>72</i>&nbsp;     * Returns a {@code ReadOnlyDoubleProperty} that wraps a
+<i>73</i>&nbsp;     * {@link javafx.beans.property.ReadOnlyProperty}. If the
+<i>74</i>&nbsp;     * {@code ReadOnlyProperty} is already a {@code ReadOnlyDoubleProperty}, it
+<i>75</i>&nbsp;     * will be returned. Otherwise a new
+<i>76</i>&nbsp;     * {@code ReadOnlyDoubleProperty} is created that is bound to
+<i>77</i>&nbsp;     * the {@code ReadOnlyProperty}.
+<i>78</i>&nbsp;     *
+<i>79</i>&nbsp;     * Note: null values will be interpreted as 0.0
+<i>80</i>&nbsp;     *
+<i>81</i>&nbsp;     * @param &lt;T&gt; The type of Number to be wrapped
+<i>82</i>&nbsp;     * @param property
+<i>83</i>&nbsp;     *            The source {@code ReadOnlyProperty}
+<i>84</i>&nbsp;     * @return A {@code ReadOnlyDoubleProperty} that wraps the
+<i>85</i>&nbsp;     *         {@code ReadOnlyProperty} if necessary
+<i>86</i>&nbsp;     * @throws NullPointerException
+<i>87</i>&nbsp;     *             if {@code property} is {@code null}
+<i>88</i>&nbsp;     * @since JavaFX 8.0
+<i>89</i>&nbsp;     */
+<i>90</i>&nbsp;    public static &lt;T extends Number&gt; ReadOnlyDoubleProperty readOnlyDoubleProperty(final ReadOnlyProperty&lt;T&gt; property) {
+<b class="nc"><i>91</i>&nbsp;        if (property == null) {</b>
+<b class="nc"><i>92</i>&nbsp;            throw new NullPointerException(&quot;Property cannot be null&quot;);</b>
+<i>93</i>&nbsp;        }
+<i>94</i>&nbsp;
+<b class="nc"><i>95</i>&nbsp;        return property instanceof ReadOnlyDoubleProperty ? (ReadOnlyDoubleProperty) property:</b>
+<b class="nc"><i>96</i>&nbsp;           new ReadOnlyDoublePropertyBase() {</b>
+<b class="nc"><i>97</i>&nbsp;            private boolean valid = true;</b>
+<b class="nc"><i>98</i>&nbsp;            private final InvalidationListener listener = observable -&gt; {</b>
+<b class="nc"><i>99</i>&nbsp;                if (valid) {</b>
+<b class="nc"><i>100</i>&nbsp;                    valid = false;</b>
+<b class="nc"><i>101</i>&nbsp;                    fireValueChangedEvent();</b>
+<i>102</i>&nbsp;                }
+<b class="nc"><i>103</i>&nbsp;            };</b>
+<i>104</i>&nbsp;
+<i>105</i>&nbsp;            {
+<b class="nc"><i>106</i>&nbsp;                property.addListener(new WeakInvalidationListener(listener));</b>
+<b class="nc"><i>107</i>&nbsp;            }</b>
+<i>108</i>&nbsp;
+<i>109</i>&nbsp;            @Override
+<i>110</i>&nbsp;            public double get() {
+<b class="nc"><i>111</i>&nbsp;                valid = true;</b>
+<b class="nc"><i>112</i>&nbsp;                final T value = property.getValue();</b>
+<b class="nc"><i>113</i>&nbsp;                return value == null ? 0.0 : value.doubleValue();</b>
+<i>114</i>&nbsp;            }
+<i>115</i>&nbsp;
+<i>116</i>&nbsp;            @Override
+<i>117</i>&nbsp;            public Object getBean() {
+<b class="nc"><i>118</i>&nbsp;                return null; // Virtual property, no bean</b>
+<i>119</i>&nbsp;            }
+<i>120</i>&nbsp;
+<i>121</i>&nbsp;            @Override
+<i>122</i>&nbsp;            public String getName() {
+<b class="nc"><i>123</i>&nbsp;                return property.getName();</b>
+<i>124</i>&nbsp;            }
+<i>125</i>&nbsp;        };
+<i>126</i>&nbsp;    }
+<i>127</i>&nbsp;
+<i>128</i>&nbsp;    /**
+<i>129</i>&nbsp;     * Creates a {@link javafx.beans.property.ReadOnlyObjectProperty} that holds the value
+<i>130</i>&nbsp;     * of this {@code ReadOnlyDoubleProperty}. If the
+<i>131</i>&nbsp;     * value of this {@code ReadOnlyDoubleProperty} changes, the value of the
+<i>132</i>&nbsp;     * {@code ReadOnlyObjectProperty} will be updated automatically.
+<i>133</i>&nbsp;     *
+<i>134</i>&nbsp;     * @return the new {@code ReadOnlyObjectProperty}
+<i>135</i>&nbsp;     * @since JavaFX 8.0
+<i>136</i>&nbsp;     */
+<i>137</i>&nbsp;    @Override
+<i>138</i>&nbsp;    public ReadOnlyObjectProperty&lt;Double&gt; asObject() {
+<b class="nc"><i>139</i>&nbsp;        return new ReadOnlyObjectPropertyBase&lt;Double&gt;() {</b>
+<i>140</i>&nbsp;
+<b class="nc"><i>141</i>&nbsp;            private boolean valid = true;</b>
+<b class="nc"><i>142</i>&nbsp;            private final InvalidationListener listener = observable -&gt; {</b>
+<b class="nc"><i>143</i>&nbsp;                if (valid) {</b>
+<b class="nc"><i>144</i>&nbsp;                    valid = false;</b>
+<b class="nc"><i>145</i>&nbsp;                    fireValueChangedEvent();</b>
+<i>146</i>&nbsp;                }
+<b class="nc"><i>147</i>&nbsp;            };</b>
+<i>148</i>&nbsp;
+<i>149</i>&nbsp;            {
+<b class="nc"><i>150</i>&nbsp;                ReadOnlyDoubleProperty.this.addListener(new WeakInvalidationListener(listener));</b>
+<b class="nc"><i>151</i>&nbsp;            }</b>
+<i>152</i>&nbsp;
+<i>153</i>&nbsp;            @Override
+<i>154</i>&nbsp;            public Object getBean() {
+<b class="nc"><i>155</i>&nbsp;                return null; // Virtual property, does not exist on a bean</b>
+<i>156</i>&nbsp;            }
+<i>157</i>&nbsp;
+<i>158</i>&nbsp;            @Override
+<i>159</i>&nbsp;            public String getName() {
+<b class="nc"><i>160</i>&nbsp;                return ReadOnlyDoubleProperty.this.getName();</b>
+<i>161</i>&nbsp;            }
+<i>162</i>&nbsp;
+<i>163</i>&nbsp;            @Override
+<i>164</i>&nbsp;            public Double get() {
+<b class="nc"><i>165</i>&nbsp;                valid = true;</b>
+<b class="nc"><i>166</i>&nbsp;                return ReadOnlyDoubleProperty.this.getValue();</b>
+<i>167</i>&nbsp;            }
+<i>168</i>&nbsp;        };
+<i>169</i>&nbsp;    };
+<i>170</i>&nbsp;
+<i>171</i>&nbsp;
+<i>172</i>&nbsp;
+<i>173</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2017-12-04 21:49</div>
+</div>
+</body>
+</html>

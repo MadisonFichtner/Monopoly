@@ -58,10 +58,10 @@
 </td>
 <td class="coverageStat">
   <span class="percent">
-    21.3%
+    21.1%
   </span>
   <span class="absValue">
-    (42/ 197)
+    (42/ 199)
   </span>
 </td>
 </tr>
@@ -76,113 +76,113 @@
 <i>2</i>&nbsp;
 <i>3</i>&nbsp;import java.util.ArrayList;
 <i>4</i>&nbsp;import java.util.Arrays;
-<i>5</i>&nbsp;
-<i>6</i>&nbsp;public class Board {
-<i>7</i>&nbsp;
-<i>8</i>&nbsp;	int numHotelsRemaining;
-<i>9</i>&nbsp;	int numHousesRemaining;
-<b class="fc"><i>10</i>&nbsp;	Deed[] deedBoard = new Deed[40];</b>
-<b class="fc"><i>11</i>&nbsp;	ArrayList&lt;Card&gt; communityChest = new ArrayList&lt;Card&gt;();</b>
-<b class="fc"><i>12</i>&nbsp;	ArrayList&lt;Card&gt; chance = new ArrayList&lt;Card&gt;();</b>
-<i>13</i>&nbsp;	Player current;
-<i>14</i>&nbsp;	int position;
-<b class="fc"><i>15</i>&nbsp;	int[] bids = { 0, 0, 0, 0 };</b>
-<b class="fc"><i>16</i>&nbsp;	int highestBid = 50;</b>
-<i>17</i>&nbsp;	int doublesRolled; // Keeps track of how many times player has rolled doubles
-<i>18</i>&nbsp;	Player[] users;
-<i>19</i>&nbsp;
-<i>20</i>&nbsp;	public Player getCurrent() {
-<b class="fc"><i>21</i>&nbsp;		return current;</b>
-<i>22</i>&nbsp;	}
-<i>23</i>&nbsp;
-<i>24</i>&nbsp;	public void setCurrent(Player current) {
-<b class="nc"><i>25</i>&nbsp;		this.current = current;</b>
-<b class="nc"><i>26</i>&nbsp;	}</b>
-<i>27</i>&nbsp;
-<b class="fc"><i>28</i>&nbsp;	public Board(Player[] users, Deed[] newBoard, ArrayList&lt;Card&gt; communityChest, ArrayList&lt;Card&gt; chance) {</b>
-<b class="fc"><i>29</i>&nbsp;		this.numHotelsRemaining = 12;</b>
-<b class="fc"><i>30</i>&nbsp;		this.numHousesRemaining = 32;</b>
-<b class="fc"><i>31</i>&nbsp;		deedBoard = newBoard;</b>
-<b class="fc"><i>32</i>&nbsp;		this.users = users;</b>
-<b class="fc"><i>33</i>&nbsp;		this.communityChest = communityChest;</b>
-<b class="fc"><i>34</i>&nbsp;		this.chance = chance;</b>
-<b class="fc"><i>35</i>&nbsp;	}</b>
-<i>36</i>&nbsp;
-<i>37</i>&nbsp;	// Reset all the variables for a players turn and gives them the option to roll
-<i>38</i>&nbsp;	// if they are not in jail
-<i>39</i>&nbsp;	// The ui for escaping jail still needs to be created and connected to
-<i>40</i>&nbsp;	// moveToSpace()
-<i>41</i>&nbsp;	public void beginTurn(Player player) {
-<b class="fc"><i>42</i>&nbsp;		current = player;</b>
-<i>43</i>&nbsp;		try {
-<b class="fc"><i>44</i>&nbsp;			GUIHelper.setMessage(&quot;It is &quot; + current.name + &quot;&#39;s turn.&quot;);</b>
-<b class="fc"><i>45</i>&nbsp;		} catch (Exception e) {</b>
-<b class="fc"><i>46</i>&nbsp;			System.out.println(&quot;You might be testing, otherwise your GUI has crashed&quot;);</b>
-<b class="fc"><i>47</i>&nbsp;			e.printStackTrace();</b>
-<b class="nc"><i>48</i>&nbsp;		}</b>
-<b class="fc"><i>49</i>&nbsp;		position = current.position;</b>
-<b class="fc"><i>50</i>&nbsp;		doublesRolled = 0; // Keeps track of how many times player has rolled doubles</b>
-<b class="fc"><i>51</i>&nbsp;		if (player.inJail == true) {</b>
-<i>52</i>&nbsp;			// give option to roll dice for doubles or pay $50
-<b class="nc"><i>53</i>&nbsp;			player.turnsInJail++;</b>
-<b class="nc"><i>54</i>&nbsp;			if (player.turnsInJail &gt;= 3) {</b>
-<b class="nc"><i>55</i>&nbsp;				player.payBail();</b>
-<i>56</i>&nbsp;			} else {
-<i>57</i>&nbsp;				try {
-<b class="nc"><i>58</i>&nbsp;					GUIHelper.openWindow(&quot;jail&quot;);</b>
-<b class="nc"><i>59</i>&nbsp;				} catch (Exception e) {</b>
-<b class="nc"><i>60</i>&nbsp;					System.out.println(&quot;You might be testing, otherwise your GUI has crashed&quot;);</b>
-<b class="nc"><i>61</i>&nbsp;					e.printStackTrace();</b>
-<b class="nc"><i>62</i>&nbsp;				}</b>
-<i>63</i>&nbsp;			}
-<i>64</i>&nbsp;		} else {
-<i>65</i>&nbsp;			try {
-<b class="fc"><i>66</i>&nbsp;				moveToSpace(false);</b>
-<b class="fc"><i>67</i>&nbsp;			} catch (Exception e) {</b>
-<b class="fc"><i>68</i>&nbsp;				System.out.println(&quot;You might be testing, otherwise your GUI has crashed&quot;);</b>
-<b class="fc"><i>69</i>&nbsp;				e.printStackTrace();</b>
-<b class="nc"><i>70</i>&nbsp;			}</b>
-<i>71</i>&nbsp;		}
-<b class="fc"><i>72</i>&nbsp;	}</b>
-<i>73</i>&nbsp;
-<i>74</i>&nbsp;	// Move the player and deals with what happens at that space. If the player
-<i>75</i>&nbsp;	// started the turn in jail, don&#39;t roll.
-<i>76</i>&nbsp;	public void moveToSpace(boolean fromJail) {
-<b class="fc"><i>77</i>&nbsp;		if (fromJail &amp;&amp; current.inJail == true) {</b>
-<b class="nc"><i>78</i>&nbsp;			current.rollDice();</b>
-<i>79</i>&nbsp;
-<b class="nc"><i>80</i>&nbsp;			if (current.dice[0] == current.dice[1]) // If doubles are rolled</b>
-<i>81</i>&nbsp;			{
-<i>82</i>&nbsp;				try {
-<b class="nc"><i>83</i>&nbsp;					GUIHelper.setMessage(&quot;You rolled doubles. Gratz.&quot;);</b>
-<b class="nc"><i>84</i>&nbsp;				} catch (Exception e) {</b>
-<b class="nc"><i>85</i>&nbsp;					System.out.println(&quot;You might be testing, otherwise your GUI has crashed&quot;);</b>
-<b class="nc"><i>86</i>&nbsp;					e.printStackTrace();</b>
-<b class="nc"><i>87</i>&nbsp;				}</b>
-<b class="nc"><i>88</i>&nbsp;				current.inJail = false;</b>
-<b class="nc"><i>89</i>&nbsp;				current.turnsInJail = 0;</b>
-<b class="nc"><i>90</i>&nbsp;				current.move();</b>
-<i>91</i>&nbsp;			} else // If doubles are not rolled
-<i>92</i>&nbsp;			{
-<i>93</i>&nbsp;				try {
-<b class="nc"><i>94</i>&nbsp;					GUIHelper.setMessage(&quot;You did not roll doubles...&quot;);</b>
-<b class="nc"><i>95</i>&nbsp;					GUIHelper.enableTurnGUI();</b>
-<b class="nc"><i>96</i>&nbsp;				} catch (Exception e) {</b>
-<b class="nc"><i>97</i>&nbsp;					System.out.println(&quot;You might be testing, otherwise your GUI has crashed&quot;);</b>
-<b class="nc"><i>98</i>&nbsp;					e.printStackTrace();</b>
-<b class="nc"><i>99</i>&nbsp;				}</b>
-<b class="nc"><i>100</i>&nbsp;				return;</b>
-<i>101</i>&nbsp;			}
-<i>102</i>&nbsp;		} else {
-<b class="fc"><i>103</i>&nbsp;			current.rollDice(); // Player rolls dice, dice values are stored in player class</b>
-<i>104</i>&nbsp;			try {
-<b class="fc"><i>105</i>&nbsp;				current.move();</b>
-<b class="nc"><i>106</i>&nbsp;			} catch (Exception e) {</b>
-<b class="nc"><i>107</i>&nbsp;				System.out.println(&quot;You might be testing, otherwise your GUI has crashed&quot;);</b>
-<b class="nc"><i>108</i>&nbsp;				e.printStackTrace();</b>
-<b class="fc"><i>109</i>&nbsp;			}</b>
-<i>110</i>&nbsp;		}
-<i>111</i>&nbsp;
+<i>5</i>&nbsp;import java.util.Collections;
+<i>6</i>&nbsp;
+<i>7</i>&nbsp;public class Board {
+<i>8</i>&nbsp;
+<i>9</i>&nbsp;	int numHotelsRemaining;
+<i>10</i>&nbsp;	int numHousesRemaining;
+<b class="fc"><i>11</i>&nbsp;	Deed[] deedBoard = new Deed[40];</b>
+<b class="fc"><i>12</i>&nbsp;	ArrayList&lt;Card&gt; communityChest = new ArrayList&lt;Card&gt;();</b>
+<b class="fc"><i>13</i>&nbsp;	ArrayList&lt;Card&gt; chance = new ArrayList&lt;Card&gt;();</b>
+<i>14</i>&nbsp;	Player current;
+<i>15</i>&nbsp;	int position;
+<b class="fc"><i>16</i>&nbsp;	int[] bids = { 0, 0, 0, 0 };</b>
+<b class="fc"><i>17</i>&nbsp;	int highestBid = 50;</b>
+<i>18</i>&nbsp;	int doublesRolled; // Keeps track of how many times player has rolled doubles
+<i>19</i>&nbsp;	Player[] users;
+<i>20</i>&nbsp;
+<i>21</i>&nbsp;	public Player getCurrent() {
+<b class="fc"><i>22</i>&nbsp;		return current;</b>
+<i>23</i>&nbsp;	}
+<i>24</i>&nbsp;
+<i>25</i>&nbsp;	public void setCurrent(Player current) {
+<b class="nc"><i>26</i>&nbsp;		this.current = current;</b>
+<b class="nc"><i>27</i>&nbsp;	}</b>
+<i>28</i>&nbsp;
+<b class="fc"><i>29</i>&nbsp;	public Board(Player[] users, Deed[] newBoard, ArrayList&lt;Card&gt; communityChest, ArrayList&lt;Card&gt; chance) {</b>
+<b class="fc"><i>30</i>&nbsp;		this.numHotelsRemaining = 12;</b>
+<b class="fc"><i>31</i>&nbsp;		this.numHousesRemaining = 32;</b>
+<b class="fc"><i>32</i>&nbsp;		deedBoard = newBoard;</b>
+<b class="fc"><i>33</i>&nbsp;		this.users = users;</b>
+<b class="fc"><i>34</i>&nbsp;		this.communityChest = communityChest;</b>
+<b class="fc"><i>35</i>&nbsp;		this.chance = chance;</b>
+<b class="fc"><i>36</i>&nbsp;	}</b>
+<i>37</i>&nbsp;
+<i>38</i>&nbsp;	// Reset all the variables for a players turn and gives them the option to roll
+<i>39</i>&nbsp;	// if they are not in jail
+<i>40</i>&nbsp;	// The ui for escaping jail still needs to be created and connected to
+<i>41</i>&nbsp;	// moveToSpace()
+<i>42</i>&nbsp;	public void beginTurn(Player player) {
+<b class="fc"><i>43</i>&nbsp;		current = player;</b>
+<i>44</i>&nbsp;		try {
+<b class="fc"><i>45</i>&nbsp;			GUIHelper.setMessage(&quot;It is &quot; + current.name + &quot;&#39;s turn.&quot;);</b>
+<b class="fc"><i>46</i>&nbsp;		} catch (Exception e) {</b>
+<b class="fc"><i>47</i>&nbsp;			System.out.println(&quot;You might be testing, otherwise your GUI has crashed&quot;);</b>
+<b class="fc"><i>48</i>&nbsp;			e.printStackTrace();</b>
+<b class="nc"><i>49</i>&nbsp;		}</b>
+<b class="fc"><i>50</i>&nbsp;		position = current.position;</b>
+<b class="fc"><i>51</i>&nbsp;		doublesRolled = 0; // Keeps track of how many times player has rolled doubles</b>
+<b class="fc"><i>52</i>&nbsp;		if (player.inJail == true) {</b>
+<i>53</i>&nbsp;			// give option to roll dice for doubles or pay $50
+<b class="nc"><i>54</i>&nbsp;			player.turnsInJail++;</b>
+<b class="nc"><i>55</i>&nbsp;			if (player.turnsInJail &gt;= 3) {</b>
+<b class="nc"><i>56</i>&nbsp;				player.payBail();</b>
+<i>57</i>&nbsp;			} else {
+<i>58</i>&nbsp;				try {
+<b class="nc"><i>59</i>&nbsp;					GUIHelper.openWindow(&quot;jail&quot;);</b>
+<b class="nc"><i>60</i>&nbsp;				} catch (Exception e) {</b>
+<b class="nc"><i>61</i>&nbsp;					System.out.println(&quot;You might be testing, otherwise your GUI has crashed&quot;);</b>
+<b class="nc"><i>62</i>&nbsp;					e.printStackTrace();</b>
+<b class="nc"><i>63</i>&nbsp;				}</b>
+<i>64</i>&nbsp;			}
+<i>65</i>&nbsp;		} else {
+<i>66</i>&nbsp;			try {
+<b class="fc"><i>67</i>&nbsp;				moveToSpace(false);</b>
+<b class="fc"><i>68</i>&nbsp;			} catch (Exception e) {</b>
+<b class="fc"><i>69</i>&nbsp;				System.out.println(&quot;You might be testing, otherwise your GUI has crashed&quot;);</b>
+<b class="fc"><i>70</i>&nbsp;				e.printStackTrace();</b>
+<b class="nc"><i>71</i>&nbsp;			}</b>
+<i>72</i>&nbsp;		}
+<b class="fc"><i>73</i>&nbsp;	}</b>
+<i>74</i>&nbsp;
+<i>75</i>&nbsp;	// Move the player and deals with what happens at that space. If the player
+<i>76</i>&nbsp;	// started the turn in jail, don&#39;t roll.
+<i>77</i>&nbsp;	public void moveToSpace(boolean fromJail) {
+<b class="fc"><i>78</i>&nbsp;		if (fromJail &amp;&amp; current.inJail == true) {</b>
+<b class="nc"><i>79</i>&nbsp;			current.rollDice();</b>
+<i>80</i>&nbsp;
+<b class="nc"><i>81</i>&nbsp;			if (current.dice[0] == current.dice[1]) // If doubles are rolled</b>
+<i>82</i>&nbsp;			{
+<i>83</i>&nbsp;				try {
+<b class="nc"><i>84</i>&nbsp;					GUIHelper.setMessage(&quot;You rolled doubles. Gratz.&quot;);</b>
+<b class="nc"><i>85</i>&nbsp;				} catch (Exception e) {</b>
+<b class="nc"><i>86</i>&nbsp;					System.out.println(&quot;You might be testing, otherwise your GUI has crashed&quot;);</b>
+<b class="nc"><i>87</i>&nbsp;					e.printStackTrace();</b>
+<b class="nc"><i>88</i>&nbsp;				}</b>
+<b class="nc"><i>89</i>&nbsp;				current.inJail = false;</b>
+<b class="nc"><i>90</i>&nbsp;				current.turnsInJail = 0;</b>
+<b class="nc"><i>91</i>&nbsp;				current.move();</b>
+<i>92</i>&nbsp;			} else // If doubles are not rolled
+<i>93</i>&nbsp;			{
+<i>94</i>&nbsp;				try {
+<b class="nc"><i>95</i>&nbsp;					GUIHelper.setMessage(&quot;You did not roll doubles...&quot;);</b>
+<b class="nc"><i>96</i>&nbsp;					GUIHelper.enableTurnGUI();</b>
+<b class="nc"><i>97</i>&nbsp;				} catch (Exception e) {</b>
+<b class="nc"><i>98</i>&nbsp;					System.out.println(&quot;You might be testing, otherwise your GUI has crashed&quot;);</b>
+<b class="nc"><i>99</i>&nbsp;					e.printStackTrace();</b>
+<b class="nc"><i>100</i>&nbsp;				}</b>
+<b class="nc"><i>101</i>&nbsp;				return;</b>
+<i>102</i>&nbsp;			}
+<i>103</i>&nbsp;		} else {
+<b class="fc"><i>104</i>&nbsp;			current.rollDice(); // Player rolls dice, dice values are stored in player class</b>
+<i>105</i>&nbsp;			try {
+<b class="fc"><i>106</i>&nbsp;				current.move();</b>
+<b class="nc"><i>107</i>&nbsp;			} catch (Exception e) {</b>
+<b class="nc"><i>108</i>&nbsp;				System.out.println(&quot;You might be testing, otherwise your GUI has crashed&quot;);</b>
+<b class="nc"><i>109</i>&nbsp;				e.printStackTrace();</b>
+<b class="fc"><i>110</i>&nbsp;			}</b>
+<i>111</i>&nbsp;		}
 <b class="fc"><i>112</i>&nbsp;		position = current.position;</b>
 <i>113</i>&nbsp;
 <i>114</i>&nbsp;		// If player lands on free parking, GO, or Jail set is_free_parking to true, and
@@ -244,166 +244,168 @@
 <b class="nc"><i>170</i>&nbsp;				System.out.println(&quot;You might be testing, otherwise your GUI has crashed&quot;);</b>
 <b class="nc"><i>171</i>&nbsp;				e.printStackTrace();</b>
 <b class="nc"><i>172</i>&nbsp;			}</b>
-<b class="nc"><i>173</i>&nbsp;			current.communityChest(chance.get(0), users, deedBoard);</b>
-<b class="nc"><i>174</i>&nbsp;		} else if (deedBoard[current.position].name.equals(&quot;Chance&quot;)) {</b>
-<i>175</i>&nbsp;			try {
-<b class="nc"><i>176</i>&nbsp;				GUIHelper.setMessage(&quot;You landed on Chance! Drawing and playing a card.&quot;);</b>
-<b class="nc"><i>177</i>&nbsp;			} catch (Exception e) {</b>
-<b class="nc"><i>178</i>&nbsp;				System.out.println(&quot;You might be testing, otherwise your GUI has crashed&quot;);</b>
-<b class="nc"><i>179</i>&nbsp;				e.printStackTrace();</b>
-<b class="nc"><i>180</i>&nbsp;			}</b>
-<b class="nc"><i>181</i>&nbsp;			int case18case19 = 0;</b>
-<b class="nc"><i>182</i>&nbsp;			case18case19 = current.chance(chance.get(0), users, deedBoard);</b>
-<b class="nc"><i>183</i>&nbsp;			if (case18case19 != 0) {</b>
-<b class="nc"><i>184</i>&nbsp;				twoCases(case18case19);</b>
-<i>185</i>&nbsp;			}
-<b class="nc"><i>186</i>&nbsp;		}</b>
-<i>187</i>&nbsp;		// If player lands on property owned by somebody else, they pay rent
-<b class="nc"><i>188</i>&nbsp;		else if (deedBoard[current.position].owner != null) {</b>
-<b class="nc"><i>189</i>&nbsp;			Deed deed = deedBoard[current.position];</b>
-<b class="nc"><i>190</i>&nbsp;			current.payRent(deed);</b>
-<b class="nc"><i>191</i>&nbsp;		}</b>
-<i>192</i>&nbsp;		// If there is no owner of the deed landed on and it&#39;s not free parking, allow
-<i>193</i>&nbsp;		// user to buy the property, or it will be auctioned
-<b class="nc"><i>194</i>&nbsp;		else if (deedBoard[current.position].owner == null) {// &amp;&amp; is_free_parking == false)</b>
-<b class="nc"><i>195</i>&nbsp;			if (current.money &gt; deedBoard[current.position].price) {</b>
-<i>196</i>&nbsp;				try {
-<b class="nc"><i>197</i>&nbsp;					GUIHelper.openWindow(&quot;purchase&quot;);</b>
-<b class="nc"><i>198</i>&nbsp;				} catch (Exception e) {</b>
-<b class="nc"><i>199</i>&nbsp;					System.out.println(&quot;You might be testing, otherwise your GUI has crashed&quot;);</b>
-<b class="nc"><i>200</i>&nbsp;					e.printStackTrace();</b>
-<b class="nc"><i>201</i>&nbsp;				}</b>
-<i>202</i>&nbsp;			} else {
-<b class="nc"><i>203</i>&nbsp;				auctionProperty();</b>
-<i>204</i>&nbsp;			}
-<i>205</i>&nbsp;
-<i>206</i>&nbsp;			// boolean bought = false;
-<i>207</i>&nbsp;			// bought = current.buy_property(deed);
-<i>208</i>&nbsp;
-<i>209</i>&nbsp;		}
+<b class="nc"><i>173</i>&nbsp;			current.communityChest(communityChest.get(0), users, deedBoard);</b>
+<b class="nc"><i>174</i>&nbsp;			Collections.shuffle(communityChest);</b>
+<b class="nc"><i>175</i>&nbsp;		} else if (deedBoard[current.position].name.equals(&quot;Chance&quot;)) {</b>
+<i>176</i>&nbsp;			try {
+<b class="nc"><i>177</i>&nbsp;				GUIHelper.setMessage(&quot;You landed on Chance! Drawing and playing a card.&quot;);</b>
+<b class="nc"><i>178</i>&nbsp;			} catch (Exception e) {</b>
+<b class="nc"><i>179</i>&nbsp;				System.out.println(&quot;You might be testing, otherwise your GUI has crashed&quot;);</b>
+<b class="nc"><i>180</i>&nbsp;				e.printStackTrace();</b>
+<b class="nc"><i>181</i>&nbsp;			}</b>
+<b class="nc"><i>182</i>&nbsp;			int case18case19 = 0;</b>
+<b class="nc"><i>183</i>&nbsp;			case18case19 = current.chance(chance.get(0), users, deedBoard);</b>
+<b class="nc"><i>184</i>&nbsp;			if (case18case19 != 0) {</b>
+<b class="nc"><i>185</i>&nbsp;				twoCases(case18case19);</b>
+<i>186</i>&nbsp;			}
+<b class="nc"><i>187</i>&nbsp;			Collections.shuffle(chance);</b>
+<b class="nc"><i>188</i>&nbsp;		}</b>
+<i>189</i>&nbsp;		// If player lands on property owned by somebody else, they pay rent
+<b class="nc"><i>190</i>&nbsp;		else if (deedBoard[current.position].owner != null) {</b>
+<b class="nc"><i>191</i>&nbsp;			Deed deed = deedBoard[current.position];</b>
+<b class="nc"><i>192</i>&nbsp;			current.payRent(deed);</b>
+<b class="nc"><i>193</i>&nbsp;		}</b>
+<i>194</i>&nbsp;		// If there is no owner of the deed landed on and it&#39;s not free parking, allow
+<i>195</i>&nbsp;		// user to buy the property, or it will be auctioned
+<b class="nc"><i>196</i>&nbsp;		else if (deedBoard[current.position].owner == null) {// &amp;&amp; is_free_parking == false)</b>
+<b class="nc"><i>197</i>&nbsp;			if (current.money &gt; deedBoard[current.position].price) {</b>
+<i>198</i>&nbsp;				try {
+<b class="nc"><i>199</i>&nbsp;					GUIHelper.openWindow(&quot;purchase&quot;);</b>
+<b class="nc"><i>200</i>&nbsp;				} catch (Exception e) {</b>
+<b class="nc"><i>201</i>&nbsp;					System.out.println(&quot;You might be testing, otherwise your GUI has crashed&quot;);</b>
+<b class="nc"><i>202</i>&nbsp;					e.printStackTrace();</b>
+<b class="nc"><i>203</i>&nbsp;				}</b>
+<i>204</i>&nbsp;			} else {
+<b class="nc"><i>205</i>&nbsp;				auctionProperty();</b>
+<i>206</i>&nbsp;			}
+<i>207</i>&nbsp;
+<i>208</i>&nbsp;			// boolean bought = false;
+<i>209</i>&nbsp;			// bought = current.buy_property(deed);
 <i>210</i>&nbsp;
-<b class="nc"><i>211</i>&nbsp;		checkForDoubles(fromJail);</b>
-<b class="nc"><i>212</i>&nbsp;	}</b>
-<i>213</i>&nbsp;
-<i>214</i>&nbsp;	// This determines if an auction should be held after a player has had the
-<i>215</i>&nbsp;	// chance to buy it
-<i>216</i>&nbsp;	// The ui for auction has been started but the code has not.
-<i>217</i>&nbsp;	// After the auction is done Main.test.enableButtons() need to be called.
-<i>218</i>&nbsp;	public void auctionProperty() {
-<b class="nc"><i>219</i>&nbsp;		if (current.money &lt; deedBoard[current.position].price) {</b>
-<b class="nc"><i>220</i>&nbsp;			GUIHelper.setMessage(current.name + &quot; did not have enough money to buy &quot; + deedBoard[position].name + &quot; so &quot;</b>
-<i>221</i>&nbsp;					+ deedBoard[position].name + &quot; will be auctioned.&quot;);
-<i>222</i>&nbsp;		} else {
-<b class="nc"><i>223</i>&nbsp;			GUIHelper.setMessage(current.name + &quot; did not buy &quot; + deedBoard[position].name + &quot; so &quot;</b>
-<i>224</i>&nbsp;					+ deedBoard[position].name + &quot; will be auctioned.&quot;);
-<i>225</i>&nbsp;		}
-<i>226</i>&nbsp;		try {
-<b class="nc"><i>227</i>&nbsp;			GUIHelper.openWindow(&quot;auction&quot;);</b>
-<b class="nc"><i>228</i>&nbsp;		} catch (Exception e) {</b>
-<b class="nc"><i>229</i>&nbsp;			System.out.println(&quot;You might be testing, otherwise your GUI has crashed&quot;);</b>
-<b class="nc"><i>230</i>&nbsp;			e.printStackTrace();</b>
-<b class="nc"><i>231</i>&nbsp;		}</b>
-<b class="nc"><i>232</i>&nbsp;	}</b>
-<i>233</i>&nbsp;
-<i>234</i>&nbsp;	public void checkForDoubles(boolean fromJail) {
-<i>235</i>&nbsp;		// Doubles were rolled, does the same thing as above, just repeats if doubles
-<i>236</i>&nbsp;		// are rolled
-<b class="nc"><i>237</i>&nbsp;		if (fromJail == false &amp;&amp; current.dice[0] == current.dice[1]) {</b>
-<b class="nc"><i>238</i>&nbsp;			GUIHelper.setMessage(&quot;You rolled doubles. Rolling again.&quot;);</b>
-<b class="nc"><i>239</i>&nbsp;			doublesRolled++;</b>
-<b class="nc"><i>240</i>&nbsp;			if (doublesRolled == 2) { // if doubles have been rolled twice, go to jail</b>
-<b class="nc"><i>241</i>&nbsp;				GUIHelper.setMessage(&quot;You rolled doubles. Twice. Go to jail. Now.&quot;);</b>
-<b class="nc"><i>242</i>&nbsp;				current.moveToJail();</b>
-<i>243</i>&nbsp;			} else {
-<b class="nc"><i>244</i>&nbsp;				moveToSpace(false);</b>
-<i>245</i>&nbsp;			}
-<i>246</i>&nbsp;		}
-<i>247</i>&nbsp;		try {
-<b class="nc"><i>248</i>&nbsp;			GUIHelper.enableTurnGUI();</b>
-<b class="nc"><i>249</i>&nbsp;		} catch (Exception e) {</b>
-<b class="nc"><i>250</i>&nbsp;			System.out.println(&quot;You might be testing, otherwise your GUI has crashed&quot;);</b>
-<b class="nc"><i>251</i>&nbsp;			e.printStackTrace();</b>
-<b class="nc"><i>252</i>&nbsp;		}</b>
-<b class="nc"><i>253</i>&nbsp;	}</b>
-<i>254</i>&nbsp;
-<i>255</i>&nbsp;	public void auction(int[] bids, int highestBid, Deed deed) {
-<b class="nc"><i>256</i>&nbsp;		int displayedHighest = highestBid;</b>
-<b class="nc"><i>257</i>&nbsp;		int playersInterested = 0;</b>
-<b class="nc"><i>258</i>&nbsp;		for (int i = 0; i &lt; bids.length; i++) {</b>
-<b class="nc"><i>259</i>&nbsp;			if (bids[i] &gt;= highestBid) {</b>
-<b class="nc"><i>260</i>&nbsp;				highestBid = bids[i];</b>
-<b class="nc"><i>261</i>&nbsp;				playersInterested++;</b>
-<b class="nc"><i>262</i>&nbsp;			} else if (bids[i] &gt; displayedHighest) {</b>
+<i>211</i>&nbsp;		}
+<i>212</i>&nbsp;
+<b class="nc"><i>213</i>&nbsp;		checkForDoubles(fromJail);</b>
+<b class="nc"><i>214</i>&nbsp;	}</b>
+<i>215</i>&nbsp;
+<i>216</i>&nbsp;	// This determines if an auction should be held after a player has had the
+<i>217</i>&nbsp;	// chance to buy it
+<i>218</i>&nbsp;	// The ui for auction has been started but the code has not.
+<i>219</i>&nbsp;	// After the auction is done Main.test.enableButtons() need to be called.
+<i>220</i>&nbsp;	public void auctionProperty() {
+<b class="nc"><i>221</i>&nbsp;		if (current.money &lt; deedBoard[current.position].price) {</b>
+<b class="nc"><i>222</i>&nbsp;			GUIHelper.setMessage(current.name + &quot; did not have enough money to buy &quot; + deedBoard[position].name + &quot; so &quot;</b>
+<i>223</i>&nbsp;					+ deedBoard[position].name + &quot; will be auctioned.&quot;);
+<i>224</i>&nbsp;		} else {
+<b class="nc"><i>225</i>&nbsp;			GUIHelper.setMessage(current.name + &quot; did not buy &quot; + deedBoard[position].name + &quot; so &quot;</b>
+<i>226</i>&nbsp;					+ deedBoard[position].name + &quot; will be auctioned.&quot;);
+<i>227</i>&nbsp;		}
+<i>228</i>&nbsp;		try {
+<b class="nc"><i>229</i>&nbsp;			GUIHelper.openWindow(&quot;auction&quot;);</b>
+<b class="nc"><i>230</i>&nbsp;		} catch (Exception e) {</b>
+<b class="nc"><i>231</i>&nbsp;			System.out.println(&quot;You might be testing, otherwise your GUI has crashed&quot;);</b>
+<b class="nc"><i>232</i>&nbsp;			e.printStackTrace();</b>
+<b class="nc"><i>233</i>&nbsp;		}</b>
+<b class="nc"><i>234</i>&nbsp;	}</b>
+<i>235</i>&nbsp;
+<i>236</i>&nbsp;	public void checkForDoubles(boolean fromJail) {
+<i>237</i>&nbsp;		// Doubles were rolled, does the same thing as above, just repeats if doubles
+<i>238</i>&nbsp;		// are rolled
+<b class="nc"><i>239</i>&nbsp;		if (fromJail == false &amp;&amp; current.dice[0] == current.dice[1]) {</b>
+<b class="nc"><i>240</i>&nbsp;			GUIHelper.setMessage(&quot;You rolled doubles. Rolling again.&quot;);</b>
+<b class="nc"><i>241</i>&nbsp;			doublesRolled++;</b>
+<b class="nc"><i>242</i>&nbsp;			if (doublesRolled == 2) { // if doubles have been rolled twice, go to jail</b>
+<b class="nc"><i>243</i>&nbsp;				GUIHelper.setMessage(&quot;You rolled doubles. Twice. Go to jail. Now.&quot;);</b>
+<b class="nc"><i>244</i>&nbsp;				current.moveToJail();</b>
+<i>245</i>&nbsp;			} else {
+<b class="nc"><i>246</i>&nbsp;				moveToSpace(false);</b>
+<i>247</i>&nbsp;			}
+<i>248</i>&nbsp;		}
+<i>249</i>&nbsp;		try {
+<b class="nc"><i>250</i>&nbsp;			GUIHelper.enableTurnGUI();</b>
+<b class="nc"><i>251</i>&nbsp;		} catch (Exception e) {</b>
+<b class="nc"><i>252</i>&nbsp;			System.out.println(&quot;You might be testing, otherwise your GUI has crashed&quot;);</b>
+<b class="nc"><i>253</i>&nbsp;			e.printStackTrace();</b>
+<b class="nc"><i>254</i>&nbsp;		}</b>
+<b class="nc"><i>255</i>&nbsp;	}</b>
+<i>256</i>&nbsp;
+<i>257</i>&nbsp;	public void auction(int[] bids, int highestBid, Deed deed) {
+<b class="nc"><i>258</i>&nbsp;		int displayedHighest = highestBid;</b>
+<b class="nc"><i>259</i>&nbsp;		int playersInterested = 0;</b>
+<b class="nc"><i>260</i>&nbsp;		for (int i = 0; i &lt; bids.length; i++) {</b>
+<b class="nc"><i>261</i>&nbsp;			if (bids[i] &gt;= highestBid) {</b>
+<b class="nc"><i>262</i>&nbsp;				highestBid = bids[i];</b>
 <b class="nc"><i>263</i>&nbsp;				playersInterested++;</b>
-<i>264</i>&nbsp;			}
-<i>265</i>&nbsp;		}
-<b class="nc"><i>266</i>&nbsp;		if (playersInterested == 1) {</b>
-<b class="nc"><i>267</i>&nbsp;			for (int i = 0; i &lt; bids.length; i++) {</b>
-<b class="nc"><i>268</i>&nbsp;				if (highestBid == bids[i]) {</b>
-<b class="nc"><i>269</i>&nbsp;					Arrays.fill(bids, 0);</b>
-<b class="nc"><i>270</i>&nbsp;					GUIHelper.setMessage(users[i].name + &quot; won &quot; + deed.name + &quot; for $&quot; + highestBid);</b>
-<b class="nc"><i>271</i>&nbsp;					users[i].buyAuction(deed, highestBid);</b>
-<b class="nc"><i>272</i>&nbsp;					highestBid = 50;</b>
-<i>273</i>&nbsp;				}
-<i>274</i>&nbsp;			}
-<b class="nc"><i>275</i>&nbsp;		} else if (playersInterested &gt; 1) {</b>
-<b class="nc"><i>276</i>&nbsp;			this.highestBid = highestBid;</b>
-<b class="nc"><i>277</i>&nbsp;			this.bids = bids;</b>
-<b class="nc"><i>278</i>&nbsp;			GUIHelper.openWindow(&quot;auction&quot;);</b>
-<i>279</i>&nbsp;		}
-<b class="nc"><i>280</i>&nbsp;	}</b>
-<i>281</i>&nbsp;
-<i>282</i>&nbsp;	public Player gameOver() {
-<b class="fc"><i>283</i>&nbsp;		int currentHigh = -1;</b>
-<b class="fc"><i>284</i>&nbsp;		int highPlayer = -1;</b>
-<i>285</i>&nbsp;		
-<b class="fc"><i>286</i>&nbsp;		for (int i = 0; i &lt; users.length; i++) {</b>
-<b class="fc"><i>287</i>&nbsp;			users[i].calculateNetWorth();</b>
-<b class="fc"><i>288</i>&nbsp;			if (users[i].netWorth &gt; currentHigh) {</b>
-<b class="fc"><i>289</i>&nbsp;				highPlayer = i;</b>
-<b class="fc"><i>290</i>&nbsp;				currentHigh = users[i].netWorth;</b>
-<i>291</i>&nbsp;			}
-<i>292</i>&nbsp;		}
-<b class="fc"><i>293</i>&nbsp;		System.out.println(users[highPlayer].name + &quot; is the winner with a net worth of: &quot; + currentHigh);</b>
-<b class="fc"><i>294</i>&nbsp;		return users[highPlayer];</b>
-<i>295</i>&nbsp;	}
-<i>296</i>&nbsp;
-<i>297</i>&nbsp;	public void twoCases(int whichCase) {
-<b class="nc"><i>298</i>&nbsp;		if (whichCase == 18) {</b>
-<b class="nc"><i>299</i>&nbsp;			if (deedBoard[current.position].owner == null) {// &amp;&amp; is_free_parking == false)</b>
-<b class="nc"><i>300</i>&nbsp;				if (current.money &gt; deedBoard[current.position].price) {</b>
-<b class="nc"><i>301</i>&nbsp;					GUIHelper.openWindow(&quot;purchase&quot;);</b>
-<i>302</i>&nbsp;				} else {
-<b class="nc"><i>303</i>&nbsp;					auctionProperty();</b>
-<i>304</i>&nbsp;				}
-<b class="nc"><i>305</i>&nbsp;			} else if (deedBoard[current.position].owner != null) {</b>
-<b class="nc"><i>306</i>&nbsp;				Deed deed = deedBoard[current.position];</b>
-<b class="nc"><i>307</i>&nbsp;				current.payRent(deed);</b>
-<b class="nc"><i>308</i>&nbsp;			}</b>
-<i>309</i>&nbsp;		}
-<i>310</i>&nbsp;
-<b class="nc"><i>311</i>&nbsp;		else if (whichCase == 19) {</b>
-<b class="nc"><i>312</i>&nbsp;			if (deedBoard[current.position].owner == null) {// &amp;&amp; is_free_parking == false)</b>
-<b class="nc"><i>313</i>&nbsp;				if (current.money &gt; deedBoard[current.position].price) {</b>
-<b class="nc"><i>314</i>&nbsp;					GUIHelper.openWindow(&quot;purchase&quot;);</b>
-<b class="nc"><i>315</i>&nbsp;				} else if (deedBoard[current.position].owner != null) {</b>
-<b class="nc"><i>316</i>&nbsp;					Deed deed = deedBoard[current.position];</b>
-<b class="nc"><i>317</i>&nbsp;					current.payRent(deed);</b>
-<i>318</i>&nbsp;				}
-<i>319</i>&nbsp;			}
-<i>320</i>&nbsp;		}
-<b class="nc"><i>321</i>&nbsp;	}</b>
-<i>322</i>&nbsp;
-<i>323</i>&nbsp;	public Deed[] getDeedBoard() {
-<b class="nc"><i>324</i>&nbsp;		return deedBoard;</b>
-<i>325</i>&nbsp;	}
-<i>326</i>&nbsp;}
+<b class="nc"><i>264</i>&nbsp;			} else if (bids[i] &gt; displayedHighest) {</b>
+<b class="nc"><i>265</i>&nbsp;				playersInterested++;</b>
+<i>266</i>&nbsp;			}
+<i>267</i>&nbsp;		}
+<b class="nc"><i>268</i>&nbsp;		if (playersInterested == 1) {</b>
+<b class="nc"><i>269</i>&nbsp;			for (int i = 0; i &lt; bids.length; i++) {</b>
+<b class="nc"><i>270</i>&nbsp;				if (highestBid == bids[i]) {</b>
+<b class="nc"><i>271</i>&nbsp;					Arrays.fill(bids, 0);</b>
+<b class="nc"><i>272</i>&nbsp;					GUIHelper.setMessage(users[i].name + &quot; won &quot; + deed.name + &quot; for $&quot; + highestBid);</b>
+<b class="nc"><i>273</i>&nbsp;					users[i].buyAuction(deed, highestBid);</b>
+<b class="nc"><i>274</i>&nbsp;					highestBid = 50;</b>
+<i>275</i>&nbsp;				}
+<i>276</i>&nbsp;			}
+<b class="nc"><i>277</i>&nbsp;		} else if (playersInterested &gt; 1) {</b>
+<b class="nc"><i>278</i>&nbsp;			this.highestBid = highestBid;</b>
+<b class="nc"><i>279</i>&nbsp;			this.bids = bids;</b>
+<b class="nc"><i>280</i>&nbsp;			GUIHelper.openWindow(&quot;auction&quot;);</b>
+<i>281</i>&nbsp;		}
+<b class="nc"><i>282</i>&nbsp;	}</b>
+<i>283</i>&nbsp;
+<i>284</i>&nbsp;	public Player gameOver() {
+<b class="fc"><i>285</i>&nbsp;		int currentHigh = -1;</b>
+<b class="fc"><i>286</i>&nbsp;		int highPlayer = -1;</b>
+<i>287</i>&nbsp;		
+<b class="fc"><i>288</i>&nbsp;		for (int i = 0; i &lt; users.length; i++) {</b>
+<b class="fc"><i>289</i>&nbsp;			users[i].calculateNetWorth();</b>
+<b class="fc"><i>290</i>&nbsp;			if (users[i].netWorth &gt; currentHigh) {</b>
+<b class="fc"><i>291</i>&nbsp;				highPlayer = i;</b>
+<b class="fc"><i>292</i>&nbsp;				currentHigh = users[i].netWorth;</b>
+<i>293</i>&nbsp;			}
+<i>294</i>&nbsp;		}
+<b class="fc"><i>295</i>&nbsp;		System.out.println(users[highPlayer].name + &quot; is the winner with a net worth of: &quot; + currentHigh);</b>
+<b class="fc"><i>296</i>&nbsp;		return users[highPlayer];</b>
+<i>297</i>&nbsp;	}
+<i>298</i>&nbsp;
+<i>299</i>&nbsp;	public void twoCases(int whichCase) {
+<b class="nc"><i>300</i>&nbsp;		if (whichCase == 18) {</b>
+<b class="nc"><i>301</i>&nbsp;			if (deedBoard[current.position].owner == null) {// &amp;&amp; is_free_parking == false)</b>
+<b class="nc"><i>302</i>&nbsp;				if (current.money &gt; deedBoard[current.position].price) {</b>
+<b class="nc"><i>303</i>&nbsp;					GUIHelper.openWindow(&quot;purchase&quot;);</b>
+<i>304</i>&nbsp;				} else {
+<b class="nc"><i>305</i>&nbsp;					auctionProperty();</b>
+<i>306</i>&nbsp;				}
+<b class="nc"><i>307</i>&nbsp;			} else if (deedBoard[current.position].owner != null) {</b>
+<b class="nc"><i>308</i>&nbsp;				Deed deed = deedBoard[current.position];</b>
+<b class="nc"><i>309</i>&nbsp;				current.payRent(deed);</b>
+<b class="nc"><i>310</i>&nbsp;			}</b>
+<i>311</i>&nbsp;		}
+<i>312</i>&nbsp;
+<b class="nc"><i>313</i>&nbsp;		else if (whichCase == 19) {</b>
+<b class="nc"><i>314</i>&nbsp;			if (deedBoard[current.position].owner == null) {// &amp;&amp; is_free_parking == false)</b>
+<b class="nc"><i>315</i>&nbsp;				if (current.money &gt; deedBoard[current.position].price) {</b>
+<b class="nc"><i>316</i>&nbsp;					GUIHelper.openWindow(&quot;purchase&quot;);</b>
+<b class="nc"><i>317</i>&nbsp;				} else if (deedBoard[current.position].owner != null) {</b>
+<b class="nc"><i>318</i>&nbsp;					Deed deed = deedBoard[current.position];</b>
+<b class="nc"><i>319</i>&nbsp;					current.payRent(deed);</b>
+<i>320</i>&nbsp;				}
+<i>321</i>&nbsp;			}
+<i>322</i>&nbsp;		}
+<b class="nc"><i>323</i>&nbsp;	}</b>
+<i>324</i>&nbsp;
+<i>325</i>&nbsp;	public Deed[] getDeedBoard() {
+<b class="nc"><i>326</i>&nbsp;		return deedBoard;</b>
+<i>327</i>&nbsp;	}
+<i>328</i>&nbsp;}
 </div>
 </div>
 
 <div class="footer">
     
-    <div style="float:right;">generated on 2017-12-04 14:26</div>
+    <div style="float:right;">generated on 2017-12-04 21:54</div>
 </div>
 </body>
 </html>

@@ -1,0 +1,170 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: FontStrikeDesc</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.javafx.font</a> ]
+</div>
+
+<h1>Coverage Summary for Class: FontStrikeDesc (com.sun.javafx.font)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">FontStrikeDesc</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (3/ 3)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (20/ 20)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright (c) 2011, 2013, Oracle and/or its affiliates. All rights reserved.
+<i>3</i>&nbsp; * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+<i>4</i>&nbsp; *
+<i>5</i>&nbsp; *
+<i>6</i>&nbsp; *
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; *
+<i>11</i>&nbsp; *
+<i>12</i>&nbsp; *
+<i>13</i>&nbsp; *
+<i>14</i>&nbsp; *
+<i>15</i>&nbsp; *
+<i>16</i>&nbsp; *
+<i>17</i>&nbsp; *
+<i>18</i>&nbsp; *
+<i>19</i>&nbsp; *
+<i>20</i>&nbsp; *
+<i>21</i>&nbsp; *
+<i>22</i>&nbsp; *
+<i>23</i>&nbsp; *
+<i>24</i>&nbsp; */
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;package com.sun.javafx.font;
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;import com.sun.javafx.geom.transform.BaseTransform;
+<i>29</i>&nbsp;
+<i>30</i>&nbsp;public class FontStrikeDesc {
+<i>31</i>&nbsp;
+<i>32</i>&nbsp;    // We don&#39;t need to reference the font resource here so
+<i>33</i>&nbsp;    // long as the map is stored on a resource.
+<i>34</i>&nbsp;    float[] matrix;
+<i>35</i>&nbsp;    float size;
+<i>36</i>&nbsp;    int aaMode; // grey scale or LCD.
+<i>37</i>&nbsp;    // TBD .. other rendering attributes.
+<i>38</i>&nbsp;
+<b class="fc"><i>39</i>&nbsp;    public FontStrikeDesc(float fontSize, BaseTransform transform, int aaMode) {</b>
+<i>40</i>&nbsp;
+<i>41</i>&nbsp;        //Affine2D tx2d = new Affine2D(transform);
+<i>42</i>&nbsp;        //tx2d.scale((double)fontSize, (double)fontSize);
+<b class="fc"><i>43</i>&nbsp;        BaseTransform tx2d = transform;</b>
+<b class="fc"><i>44</i>&nbsp;        size = fontSize;</b>
+<b class="fc"><i>45</i>&nbsp;        this.aaMode = aaMode;</b>
+<b class="fc"><i>46</i>&nbsp;        matrix = new float[4];</b>
+<b class="fc"><i>47</i>&nbsp;        matrix[0] = (float)tx2d.getMxx();</b>
+<b class="fc"><i>48</i>&nbsp;        matrix[1] = (float)tx2d.getMxy();</b>
+<b class="fc"><i>49</i>&nbsp;        matrix[2] = (float)tx2d.getMyx();</b>
+<b class="fc"><i>50</i>&nbsp;        matrix[3] = (float)tx2d.getMyy();</b>
+<b class="fc"><i>51</i>&nbsp;    }</b>
+<i>52</i>&nbsp;
+<i>53</i>&nbsp;    private int hash;
+<i>54</i>&nbsp;    @Override
+<i>55</i>&nbsp;    public int hashCode() {
+<b class="fc"><i>56</i>&nbsp;        if (hash == 0) {</b>
+<b class="fc"><i>57</i>&nbsp;            hash =</b>
+<i>58</i>&nbsp;                aaMode+
+<b class="fc"><i>59</i>&nbsp;                Float.floatToIntBits(size)+</b>
+<b class="fc"><i>60</i>&nbsp;                Float.floatToIntBits((float)matrix[0])+</b>
+<b class="fc"><i>61</i>&nbsp;                Float.floatToIntBits((float)matrix[1])+</b>
+<b class="fc"><i>62</i>&nbsp;                Float.floatToIntBits((float)matrix[2])+</b>
+<b class="fc"><i>63</i>&nbsp;                Float.floatToIntBits((float)matrix[3]);</b>
+<i>64</i>&nbsp;        }
+<b class="fc"><i>65</i>&nbsp;        return hash;</b>
+<i>66</i>&nbsp;    }
+<i>67</i>&nbsp;
+<i>68</i>&nbsp;    /*
+<i>69</i>&nbsp;     * Seems like in some performance cases, its possible
+<i>70</i>&nbsp;     * to measure a difference between comparing floats
+<i>71</i>&nbsp;     * and doubles. I think if they are equal as floats
+<i>72</i>&nbsp;     * that&#39;s enough precision. Maybe we don&#39;t even need
+<i>73</i>&nbsp;     * that much precision.
+<i>74</i>&nbsp;     */
+<i>75</i>&nbsp;    @Override
+<i>76</i>&nbsp;    public boolean equals(Object o) {
+<b class="fc"><i>77</i>&nbsp;        FontStrikeDesc other = (FontStrikeDesc)o;</b>
+<b class="fc"><i>78</i>&nbsp;        return</b>
+<i>79</i>&nbsp;            this.aaMode == other.aaMode &amp;&amp;
+<i>80</i>&nbsp;            this.matrix[0] == other.matrix[0] &amp;&amp;
+<i>81</i>&nbsp;            this.matrix[1] == other.matrix[1] &amp;&amp;
+<i>82</i>&nbsp;            this.matrix[2] == other.matrix[2] &amp;&amp;
+<i>83</i>&nbsp;            this.matrix[3] == other.matrix[3] &amp;&amp;
+<i>84</i>&nbsp;            this.size == other.size;
+<i>85</i>&nbsp;    }
+<i>86</i>&nbsp;
+<i>87</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2017-12-04 21:49</div>
+</div>
+</body>
+</html>

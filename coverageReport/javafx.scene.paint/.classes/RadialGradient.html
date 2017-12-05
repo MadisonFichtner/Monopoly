@@ -1,0 +1,591 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: RadialGradient</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">javafx.scene.paint</a> ]
+</div>
+
+<h1>Coverage Summary for Class: RadialGradient (javafx.scene.paint)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">RadialGradient</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 17)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 123)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright (c) 2010, 2017, Oracle and/or its affiliates. All rights reserved.
+<i>3</i>&nbsp; * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+<i>4</i>&nbsp; *
+<i>5</i>&nbsp; *
+<i>6</i>&nbsp; *
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; *
+<i>11</i>&nbsp; *
+<i>12</i>&nbsp; *
+<i>13</i>&nbsp; *
+<i>14</i>&nbsp; *
+<i>15</i>&nbsp; *
+<i>16</i>&nbsp; *
+<i>17</i>&nbsp; *
+<i>18</i>&nbsp; *
+<i>19</i>&nbsp; *
+<i>20</i>&nbsp; *
+<i>21</i>&nbsp; *
+<i>22</i>&nbsp; *
+<i>23</i>&nbsp; *
+<i>24</i>&nbsp; */
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;package javafx.scene.paint;
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;import java.util.List;
+<i>29</i>&nbsp;
+<i>30</i>&nbsp;import com.sun.javafx.scene.paint.GradientUtils;
+<i>31</i>&nbsp;import com.sun.javafx.tk.Toolkit;
+<i>32</i>&nbsp;import javafx.beans.NamedArg;
+<i>33</i>&nbsp;
+<i>34</i>&nbsp;/**
+<i>35</i>&nbsp; * The {@code RadialGradient} class provides a way to fill a shape
+<i>36</i>&nbsp; * with a circular radial color gradient pattern.
+<i>37</i>&nbsp; * The user may specify 2 or more gradient colors,
+<i>38</i>&nbsp; * and this paint will provide an interpolation between each color.
+<i>39</i>&nbsp; * &lt;p&gt;
+<i>40</i>&nbsp; * The user must specify the circle controlling the gradient pattern,
+<i>41</i>&nbsp; * which is defined by a center point and a radius.
+<i>42</i>&nbsp; * The user can also specify a separate focus point within that circle,
+<i>43</i>&nbsp; * which controls the location of the first color of the gradient.
+<i>44</i>&nbsp; * By default the focus is set to be the center of the circle.
+<i>45</i>&nbsp; * &lt;p&gt;
+<i>46</i>&nbsp; * The center and radius are specified
+<i>47</i>&nbsp; * relative to a unit square, unless the &lt;code&gt;proportional&lt;/code&gt;
+<i>48</i>&nbsp; * variable is false.  By default proportional is true, and the
+<i>49</i>&nbsp; * gradient will be scaled to fill whatever shape it is applied to.
+<i>50</i>&nbsp; * The focus point is always specified relative to the center point
+<i>51</i>&nbsp; * by an angle and a distance relative to the radius.
+<i>52</i>&nbsp; * &lt;p&gt;
+<i>53</i>&nbsp; * This paint will map the first color of the gradient to the focus point,
+<i>54</i>&nbsp; * and the last color to the perimeter of the circle,
+<i>55</i>&nbsp; * interpolating smoothly for any in-between colors specified by the user.
+<i>56</i>&nbsp; * Any line drawn from the focus point to the circumference will
+<i>57</i>&nbsp; * thus span all of the gradient colors.
+<i>58</i>&nbsp; * &lt;p&gt;
+<i>59</i>&nbsp; * The focus distance will be clamped to the range {@code (-1, 1)}
+<i>60</i>&nbsp; * so that the focus point is always strictly inside the circle.
+<i>61</i>&nbsp; * &lt;p&gt;
+<i>62</i>&nbsp; * The application provides an array of {@code Stop}s specifying how to distribute
+<i>63</i>&nbsp; * the colors along the gradient. The {@code Stop#offset} variable must be
+<i>64</i>&nbsp; * the range 0.0 to 1.0 and act like keyframes along the gradient.
+<i>65</i>&nbsp; * They mark where the gradient should be exactly a particular color.
+<i>66</i>&nbsp; * @since JavaFX 2.0
+<i>67</i>&nbsp; */
+<i>68</i>&nbsp;public final class RadialGradient extends Paint {
+<i>69</i>&nbsp;    private double focusAngle;
+<i>70</i>&nbsp;
+<i>71</i>&nbsp;    /**
+<i>72</i>&nbsp;     * Defines the angle in degrees from the center of the gradient
+<i>73</i>&nbsp;     * to the focus point to which the first color is mapped.
+<i>74</i>&nbsp;     * @return the angle in degrees from the center of the gradient
+<i>75</i>&nbsp;     * to the focus point to which the first color is mapped
+<i>76</i>&nbsp;     */
+<i>77</i>&nbsp;    public final double getFocusAngle() {
+<b class="nc"><i>78</i>&nbsp;        return focusAngle;</b>
+<i>79</i>&nbsp;    }
+<i>80</i>&nbsp;
+<i>81</i>&nbsp;    private double focusDistance;
+<i>82</i>&nbsp;
+<i>83</i>&nbsp;    /**
+<i>84</i>&nbsp;     * Defines the distance from the center of the gradient to the
+<i>85</i>&nbsp;     * focus point to which the first color is mapped.
+<i>86</i>&nbsp;     * A distance of 0.0 will be at the center of the gradient circle.
+<i>87</i>&nbsp;     * A distance of 1.0 will be on the circumference of the gradient circle.
+<i>88</i>&nbsp;     * @return the distance from the center of the gradient to the
+<i>89</i>&nbsp;     * focus point to which the first color is mapped
+<i>90</i>&nbsp;     */
+<i>91</i>&nbsp;    public final double getFocusDistance() {
+<b class="nc"><i>92</i>&nbsp;        return focusDistance;</b>
+<i>93</i>&nbsp;    }
+<i>94</i>&nbsp;
+<i>95</i>&nbsp;    private double centerX;
+<i>96</i>&nbsp;
+<i>97</i>&nbsp;    /**
+<i>98</i>&nbsp;     * Defines the X coordinate of the center point of the circle defining the gradient.
+<i>99</i>&nbsp;     * If proportional is true (the default), this value specifies a
+<i>100</i>&nbsp;     * point on a unit square that will be scaled to match the size of the
+<i>101</i>&nbsp;     * the shape that the gradient fills.
+<i>102</i>&nbsp;     * The last color of the gradient is mapped to the perimeter of this circle.
+<i>103</i>&nbsp;     *
+<i>104</i>&nbsp;     * @return the X coordinate of the center point of the circle defining the
+<i>105</i>&nbsp;     * gradient
+<i>106</i>&nbsp;     * @defaultValue 0.0
+<i>107</i>&nbsp;     */
+<i>108</i>&nbsp;    public final double getCenterX() {
+<b class="nc"><i>109</i>&nbsp;        return centerX;</b>
+<i>110</i>&nbsp;    }
+<i>111</i>&nbsp;
+<i>112</i>&nbsp;    private double centerY;
+<i>113</i>&nbsp;
+<i>114</i>&nbsp;    /**
+<i>115</i>&nbsp;     * Defines the X coordinate of the center point of the circle defining the gradient.
+<i>116</i>&nbsp;     * If proportional is true (the default), this value specifies a
+<i>117</i>&nbsp;     * point on a unit square that will be scaled to match the size of the
+<i>118</i>&nbsp;     * the shape that the gradient fills.
+<i>119</i>&nbsp;     * The last color of the gradient is mapped to the perimeter of this circle.
+<i>120</i>&nbsp;     *
+<i>121</i>&nbsp;     * @return the X coordinate of the center point of the circle defining the
+<i>122</i>&nbsp;     * gradient
+<i>123</i>&nbsp;     * @defaultValue 0.0
+<i>124</i>&nbsp;     */
+<i>125</i>&nbsp;    public final double getCenterY() {
+<b class="nc"><i>126</i>&nbsp;        return centerY;</b>
+<i>127</i>&nbsp;    }
+<i>128</i>&nbsp;
+<i>129</i>&nbsp;    private double radius;
+<i>130</i>&nbsp;
+<i>131</i>&nbsp;    /**
+<i>132</i>&nbsp;     * Specifies the radius of the circle defining the extents of the color gradient.
+<i>133</i>&nbsp;     * If proportional is true (the default), this value specifies a
+<i>134</i>&nbsp;     * size relative to  unit square that will be scaled to match the size of the
+<i>135</i>&nbsp;     * the shape that the gradient fills.
+<i>136</i>&nbsp;     *
+<i>137</i>&nbsp;     * @return the radius of the circle defining the extents of the color
+<i>138</i>&nbsp;     * gradient
+<i>139</i>&nbsp;     * @defaultValue 1.0
+<i>140</i>&nbsp;     */
+<i>141</i>&nbsp;    public final double getRadius() {
+<b class="nc"><i>142</i>&nbsp;        return radius;</b>
+<i>143</i>&nbsp;    }
+<i>144</i>&nbsp;
+<i>145</i>&nbsp;    private boolean proportional;
+<i>146</i>&nbsp;
+<i>147</i>&nbsp;    /**
+<i>148</i>&nbsp;     * Indicates whether the center and radius values are proportional or
+<i>149</i>&nbsp;     * absolute.
+<i>150</i>&nbsp;     * If this flag is true, the center point and radius are defined
+<i>151</i>&nbsp;     * in a coordinate space where coordinates in the range {@code [0..1]}
+<i>152</i>&nbsp;     * are scaled to map onto the bounds of the shape that the gradient fills.
+<i>153</i>&nbsp;     * If this flag is false, then the center coordinates and the radius are
+<i>154</i>&nbsp;     * specified in the local coordinate system of the node.
+<i>155</i>&nbsp;     *
+<i>156</i>&nbsp;     * @return true if the center and radius values are proportional, otherwise
+<i>157</i>&nbsp;     * absolute
+<i>158</i>&nbsp;     * @defaultValue true
+<i>159</i>&nbsp;     */
+<i>160</i>&nbsp;    public final boolean isProportional() {
+<b class="nc"><i>161</i>&nbsp;        return proportional;</b>
+<i>162</i>&nbsp;    }
+<i>163</i>&nbsp;
+<i>164</i>&nbsp;    private CycleMethod cycleMethod;
+<i>165</i>&nbsp;
+<i>166</i>&nbsp;    /**
+<i>167</i>&nbsp;     * Defines the cycle method applied
+<i>168</i>&nbsp;     * to the {@code RadialGradient}. One of: {@code CycleMethod.NO_CYCLE},
+<i>169</i>&nbsp;     * {@code CycleMethod.REFLECT}, or {@code CycleMethod.REPEAT}.
+<i>170</i>&nbsp;     *
+<i>171</i>&nbsp;     * @return the cycle method applied to this radial gradient
+<i>172</i>&nbsp;     * @defaultValue NO_CYCLE
+<i>173</i>&nbsp;     */
+<i>174</i>&nbsp;    public final CycleMethod getCycleMethod() {
+<b class="nc"><i>175</i>&nbsp;        return cycleMethod;</b>
+<i>176</i>&nbsp;    }
+<i>177</i>&nbsp;
+<i>178</i>&nbsp;    private List&lt;Stop&gt; stops;
+<i>179</i>&nbsp;
+<i>180</i>&nbsp;    /**
+<i>181</i>&nbsp;     * A sequence of 2 or more {@code Stop} values specifying how to distribute
+<i>182</i>&nbsp;     * the colors along the gradient. These values must be in the range
+<i>183</i>&nbsp;     * 0.0 to 1.0. They act like keyframes along the gradient: they mark where the
+<i>184</i>&nbsp;     * gradient should be exactly a particular color.
+<i>185</i>&nbsp;     *
+<i>186</i>&nbsp;     * &lt;p&gt;Each stop in the sequence must have an offset that is greater than the previous
+<i>187</i>&nbsp;     * stop in the sequence.&lt;/p&gt;
+<i>188</i>&nbsp;     *
+<i>189</i>&nbsp;     * &lt;p&gt;The list is unmodifiable and will throw
+<i>190</i>&nbsp;     * {@code UnsupportedOperationException} on each modification attempt.&lt;/p&gt;
+<i>191</i>&nbsp;     *
+<i>192</i>&nbsp;     * @return the list of Stop values
+<i>193</i>&nbsp;     * @defaultValue empty
+<i>194</i>&nbsp;     */
+<i>195</i>&nbsp;    public final List&lt;Stop&gt; getStops() {
+<b class="nc"><i>196</i>&nbsp;        return stops;</b>
+<i>197</i>&nbsp;    }
+<i>198</i>&nbsp;
+<i>199</i>&nbsp;    /**
+<i>200</i>&nbsp;     * {@inheritDoc}
+<i>201</i>&nbsp;     * @since JavaFX 8.0
+<i>202</i>&nbsp;     */
+<i>203</i>&nbsp;    @Override public final boolean isOpaque() {
+<b class="nc"><i>204</i>&nbsp;        return opaque;</b>
+<i>205</i>&nbsp;    }
+<i>206</i>&nbsp;
+<i>207</i>&nbsp;    private final boolean opaque;
+<i>208</i>&nbsp;
+<i>209</i>&nbsp;    /**
+<i>210</i>&nbsp;     * A cached reference to the platform paint, no point recomputing twice
+<i>211</i>&nbsp;     */
+<i>212</i>&nbsp;    private Object platformPaint;
+<i>213</i>&nbsp;
+<i>214</i>&nbsp;    /**
+<i>215</i>&nbsp;     * The cached hash code, used to improve performance in situations where
+<i>216</i>&nbsp;     * we cache gradients, such as in the CSS routines.
+<i>217</i>&nbsp;     */
+<i>218</i>&nbsp;    private int hash;
+<i>219</i>&nbsp;
+<i>220</i>&nbsp;    /**
+<i>221</i>&nbsp;     * Creates a new instance of RadialGradient.
+<i>222</i>&nbsp;     * @param focusAngle the angle in degrees from the center of the gradient
+<i>223</i>&nbsp;     * to the focus point to which the first color is mapped
+<i>224</i>&nbsp;     * @param focusDistance the distance from the center of the gradient to the
+<i>225</i>&nbsp;     * focus point to which the first color is mapped
+<i>226</i>&nbsp;     * @param centerX the X coordinate of the center point of the gradient&#39;s circle
+<i>227</i>&nbsp;     * @param centerY the Y coordinate of the center point of the gradient&#39;s circle
+<i>228</i>&nbsp;     * @param radius the radius of the circle defining the extents of the color gradient
+<i>229</i>&nbsp;     * @param proportional whether the coordinates and sizes are proportional
+<i>230</i>&nbsp;     * to the shape which this gradient fills
+<i>231</i>&nbsp;     * @param cycleMethod cycle method applied to the gradient
+<i>232</i>&nbsp;     * @param stops the gradient&#39;s color specification
+<i>233</i>&nbsp;     */
+<i>234</i>&nbsp;    public RadialGradient(
+<i>235</i>&nbsp;            @NamedArg(&quot;focusAngle&quot;) double focusAngle,
+<i>236</i>&nbsp;            @NamedArg(&quot;focusDistance&quot;) double focusDistance,
+<i>237</i>&nbsp;            @NamedArg(&quot;centerX&quot;) double centerX,
+<i>238</i>&nbsp;            @NamedArg(&quot;centerY&quot;) double centerY,
+<i>239</i>&nbsp;            @NamedArg(value=&quot;radius&quot;, defaultValue=&quot;1&quot;) double radius,
+<i>240</i>&nbsp;            @NamedArg(value=&quot;proportional&quot;, defaultValue=&quot;true&quot;) boolean proportional,
+<i>241</i>&nbsp;            @NamedArg(&quot;cycleMethod&quot;) CycleMethod cycleMethod,
+<b class="nc"><i>242</i>&nbsp;            @NamedArg(&quot;stops&quot;) Stop... stops) {</b>
+<b class="nc"><i>243</i>&nbsp;        this.focusAngle = focusAngle;</b>
+<b class="nc"><i>244</i>&nbsp;        this.focusDistance = focusDistance;</b>
+<b class="nc"><i>245</i>&nbsp;        this.centerX = centerX;</b>
+<b class="nc"><i>246</i>&nbsp;        this.centerY = centerY;</b>
+<b class="nc"><i>247</i>&nbsp;        this.radius = radius;</b>
+<b class="nc"><i>248</i>&nbsp;        this.proportional = proportional;</b>
+<b class="nc"><i>249</i>&nbsp;        this.cycleMethod = (cycleMethod == null) ? CycleMethod.NO_CYCLE : cycleMethod;</b>
+<b class="nc"><i>250</i>&nbsp;        this.stops = Stop.normalize(stops);</b>
+<b class="nc"><i>251</i>&nbsp;        this.opaque = determineOpacity();</b>
+<b class="nc"><i>252</i>&nbsp;    }</b>
+<i>253</i>&nbsp;
+<i>254</i>&nbsp;    /**
+<i>255</i>&nbsp;     * Creates a new instance of RadialGradient.
+<i>256</i>&nbsp;     * @param focusAngle the angle in degrees from the center of the gradient
+<i>257</i>&nbsp;     * to the focus point to which the first color is mapped
+<i>258</i>&nbsp;     * @param focusDistance the distance from the center of the gradient to the
+<i>259</i>&nbsp;     * focus point to which the first color is mapped
+<i>260</i>&nbsp;     * @param centerX the X coordinate of the center point of the gradient&#39;s circle
+<i>261</i>&nbsp;     * @param centerY the Y coordinate of the center point of the gradient&#39;s circle
+<i>262</i>&nbsp;     * @param radius the radius of the circle defining the extents of the color gradient
+<i>263</i>&nbsp;     * @param proportional whether the coordinates and sizes are proportional
+<i>264</i>&nbsp;     * to the shape which this gradient fills
+<i>265</i>&nbsp;     * @param cycleMethod cycle method applied to the gradient
+<i>266</i>&nbsp;     * @param stops the gradient&#39;s color specification
+<i>267</i>&nbsp;     */
+<i>268</i>&nbsp;    public RadialGradient(
+<i>269</i>&nbsp;            @NamedArg(&quot;focusAngle&quot;) double focusAngle,
+<i>270</i>&nbsp;            @NamedArg(&quot;focusDistance&quot;) double focusDistance,
+<i>271</i>&nbsp;            @NamedArg(&quot;centerX&quot;) double centerX,
+<i>272</i>&nbsp;            @NamedArg(&quot;centerY&quot;) double centerY,
+<i>273</i>&nbsp;            @NamedArg(value=&quot;radius&quot;, defaultValue=&quot;1&quot;) double radius,
+<i>274</i>&nbsp;            @NamedArg(value=&quot;proportional&quot;, defaultValue=&quot;true&quot;) boolean proportional,
+<i>275</i>&nbsp;            @NamedArg(&quot;cycleMethod&quot;) CycleMethod cycleMethod,
+<b class="nc"><i>276</i>&nbsp;            @NamedArg(&quot;stops&quot;) List&lt;Stop&gt; stops) {</b>
+<b class="nc"><i>277</i>&nbsp;        this.focusAngle = focusAngle;</b>
+<b class="nc"><i>278</i>&nbsp;        this.focusDistance = focusDistance;</b>
+<b class="nc"><i>279</i>&nbsp;        this.centerX = centerX;</b>
+<b class="nc"><i>280</i>&nbsp;        this.centerY = centerY;</b>
+<b class="nc"><i>281</i>&nbsp;        this.radius = radius;</b>
+<b class="nc"><i>282</i>&nbsp;        this.proportional = proportional;</b>
+<b class="nc"><i>283</i>&nbsp;        this.cycleMethod = (cycleMethod == null) ? CycleMethod.NO_CYCLE : cycleMethod;</b>
+<b class="nc"><i>284</i>&nbsp;        this.stops = Stop.normalize(stops);</b>
+<b class="nc"><i>285</i>&nbsp;        this.opaque = determineOpacity();</b>
+<b class="nc"><i>286</i>&nbsp;    }</b>
+<i>287</i>&nbsp;
+<i>288</i>&nbsp;    /**
+<i>289</i>&nbsp;     * Iterate over all the stops. If any one of them has a transparent
+<i>290</i>&nbsp;     * color, then we return false. If there are no stops, we return false.
+<i>291</i>&nbsp;     * Otherwise, we return true. Note that this is called AFTER Stop.normalize,
+<i>292</i>&nbsp;     * which ensures that we always have at least 2 stops.
+<i>293</i>&nbsp;     *
+<i>294</i>&nbsp;     * @return Whether this gradient is opaque
+<i>295</i>&nbsp;     */
+<i>296</i>&nbsp;    private boolean determineOpacity() {
+<b class="nc"><i>297</i>&nbsp;        final int numStops = this.stops.size();</b>
+<b class="nc"><i>298</i>&nbsp;        for (int i = 0; i &lt; numStops; i++) {</b>
+<b class="nc"><i>299</i>&nbsp;            if (!stops.get(i).getColor().isOpaque()) {</b>
+<b class="nc"><i>300</i>&nbsp;                return false;</b>
+<i>301</i>&nbsp;            }
+<i>302</i>&nbsp;        }
+<b class="nc"><i>303</i>&nbsp;        return true;</b>
+<i>304</i>&nbsp;    }
+<i>305</i>&nbsp;
+<i>306</i>&nbsp;    @Override
+<i>307</i>&nbsp;    Object acc_getPlatformPaint() {
+<b class="nc"><i>308</i>&nbsp;        if (platformPaint == null) {</b>
+<b class="nc"><i>309</i>&nbsp;            platformPaint = Toolkit.getToolkit().getPaint(this);</b>
+<i>310</i>&nbsp;        }
+<b class="nc"><i>311</i>&nbsp;        return platformPaint;</b>
+<i>312</i>&nbsp;    }
+<i>313</i>&nbsp;
+<i>314</i>&nbsp;    /**
+<i>315</i>&nbsp;     * Indicates whether some other object is &quot;equal to&quot; this one.
+<i>316</i>&nbsp;     * @param obj the reference object with which to compare.
+<i>317</i>&nbsp;     * @return {@code true} if this object is equal to the {@code obj} argument; {@code false} otherwise.
+<i>318</i>&nbsp;     */
+<i>319</i>&nbsp;    @Override public boolean equals(Object obj) {
+<b class="nc"><i>320</i>&nbsp;        if (obj == this) return true;</b>
+<b class="nc"><i>321</i>&nbsp;        if (obj instanceof RadialGradient) {</b>
+<b class="nc"><i>322</i>&nbsp;            final RadialGradient other = (RadialGradient) obj;</b>
+<b class="nc"><i>323</i>&nbsp;            if ((focusAngle != other.focusAngle) ||</b>
+<i>324</i>&nbsp;                (focusDistance != other.focusDistance) ||
+<i>325</i>&nbsp;                (centerX != other.centerX) ||
+<i>326</i>&nbsp;                (centerY != other.centerY) ||
+<i>327</i>&nbsp;                (radius != other.radius) ||
+<i>328</i>&nbsp;                (proportional != other.proportional) ||
+<b class="nc"><i>329</i>&nbsp;                (cycleMethod != other.cycleMethod)) return false;</b>
+<b class="nc"><i>330</i>&nbsp;            if (!stops.equals(other.stops)) return false;</b>
+<b class="nc"><i>331</i>&nbsp;            return true;</b>
+<b class="nc"><i>332</i>&nbsp;        } else return false;</b>
+<i>333</i>&nbsp;    }
+<i>334</i>&nbsp;
+<i>335</i>&nbsp;    /**
+<i>336</i>&nbsp;     * Returns a hash code for this {@code RadialGradient} object.
+<i>337</i>&nbsp;     * @return a hash code for this {@code RadialGradient} object.
+<i>338</i>&nbsp;     */
+<i>339</i>&nbsp;    @Override public int hashCode() {
+<i>340</i>&nbsp;        // We should be able to just call focusAngle.hashCode(),
+<i>341</i>&nbsp;        // see http://javafx-jira.kenai.com/browse/JFXC-4247
+<b class="nc"><i>342</i>&nbsp;        if (hash == 0) {</b>
+<b class="nc"><i>343</i>&nbsp;            long bits = 17;</b>
+<b class="nc"><i>344</i>&nbsp;            bits = 37 * bits + Double.doubleToLongBits(focusAngle);</b>
+<b class="nc"><i>345</i>&nbsp;            bits = 37 * bits + Double.doubleToLongBits(focusDistance);</b>
+<b class="nc"><i>346</i>&nbsp;            bits = 37 * bits + Double.doubleToLongBits(centerX);</b>
+<b class="nc"><i>347</i>&nbsp;            bits = 37 * bits + Double.doubleToLongBits(centerY);</b>
+<b class="nc"><i>348</i>&nbsp;            bits = 37 * bits + Double.doubleToLongBits(radius);</b>
+<b class="nc"><i>349</i>&nbsp;            bits = 37 * bits + (proportional ? 1231 : 1237);</b>
+<b class="nc"><i>350</i>&nbsp;            bits = 37 * bits + cycleMethod.hashCode();</b>
+<b class="nc"><i>351</i>&nbsp;            for (Stop stop: stops) {</b>
+<b class="nc"><i>352</i>&nbsp;                bits = 37 * bits + stop.hashCode();</b>
+<b class="nc"><i>353</i>&nbsp;            }</b>
+<b class="nc"><i>354</i>&nbsp;            hash = (int) (bits ^ (bits &gt;&gt; 32));</b>
+<i>355</i>&nbsp;        }
+<b class="nc"><i>356</i>&nbsp;        return hash;</b>
+<i>357</i>&nbsp;    }
+<i>358</i>&nbsp;
+<i>359</i>&nbsp;    /**
+<i>360</i>&nbsp;     * Returns a string representation of this {@code RadialGradient} object.
+<i>361</i>&nbsp;     * @return a string representation of this {@code RadialGradient} object.
+<i>362</i>&nbsp;     */
+<i>363</i>&nbsp;    @Override public String toString() {
+<b class="nc"><i>364</i>&nbsp;        final StringBuilder s = new StringBuilder(&quot;radial-gradient(focus-angle &quot;).append(focusAngle)</b>
+<b class="nc"><i>365</i>&nbsp;                .append(&quot;deg, focus-distance &quot;).append(focusDistance * 100)</b>
+<b class="nc"><i>366</i>&nbsp;                .append(&quot;% , center &quot;).append(GradientUtils.lengthToString(centerX, proportional))</b>
+<b class="nc"><i>367</i>&nbsp;                .append(&quot; &quot;).append(GradientUtils.lengthToString(centerY, proportional))</b>
+<b class="nc"><i>368</i>&nbsp;                .append(&quot;, radius &quot;).append(GradientUtils.lengthToString(radius, proportional))</b>
+<b class="nc"><i>369</i>&nbsp;                .append(&quot;, &quot;);</b>
+<i>370</i>&nbsp;
+<b class="nc"><i>371</i>&nbsp;        switch (cycleMethod) {</b>
+<i>372</i>&nbsp;            case REFLECT:
+<b class="nc"><i>373</i>&nbsp;                s.append(&quot;reflect&quot;).append(&quot;, &quot;);</b>
+<b class="nc"><i>374</i>&nbsp;                break;</b>
+<i>375</i>&nbsp;            case REPEAT:
+<b class="nc"><i>376</i>&nbsp;                s.append(&quot;repeat&quot;).append(&quot;, &quot;);</b>
+<i>377</i>&nbsp;                break;
+<i>378</i>&nbsp;        }
+<i>379</i>&nbsp;
+<b class="nc"><i>380</i>&nbsp;        for (Stop stop : stops) {</b>
+<b class="nc"><i>381</i>&nbsp;            s.append(stop).append(&quot;, &quot;);</b>
+<b class="nc"><i>382</i>&nbsp;        }</b>
+<i>383</i>&nbsp;
+<b class="nc"><i>384</i>&nbsp;        s.delete(s.length() - 2, s.length());</b>
+<b class="nc"><i>385</i>&nbsp;        s.append(&quot;)&quot;);</b>
+<i>386</i>&nbsp;
+<b class="nc"><i>387</i>&nbsp;        return s.toString();</b>
+<i>388</i>&nbsp;    }
+<i>389</i>&nbsp;
+<i>390</i>&nbsp;    /**
+<i>391</i>&nbsp;     * Creates a radial gradient value from a string representation.
+<i>392</i>&nbsp;     * &lt;p&gt;The format of the string representation is based on
+<i>393</i>&nbsp;     * JavaFX CSS specification for radial gradient which is
+<i>394</i>&nbsp;     * &lt;pre&gt;
+<i>395</i>&nbsp;     * radial-gradient([focus-angle &amp;lt;angle&amp;gt;, ]?
+<i>396</i>&nbsp;     *                 [focus-distance &amp;lt;percentage&amp;gt;, ]?
+<i>397</i>&nbsp;     *                 [center &amp;lt;point&amp;gt;, ]?
+<i>398</i>&nbsp;     *                 radius [&amp;lt;length&amp;gt; | &amp;lt;percentage&amp;gt;],
+<i>399</i>&nbsp;     *                 [[repeat | reflect],]?
+<i>400</i>&nbsp;     *                 &amp;lt;color-stop&amp;gt;[, &amp;lt;color-stop&amp;gt;]+)
+<i>401</i>&nbsp;     * &lt;/pre&gt;
+<i>402</i>&nbsp;     * where
+<i>403</i>&nbsp;     * &lt;pre&gt;
+<i>404</i>&nbsp;     * &amp;lt;point&amp;gt; = [ [ &amp;lt;length&amp;gt; &amp;lt;length&amp;gt; ] | [ &amp;lt;percentage&amp;gt; | &amp;lt;percentage&amp;gt; ] ]
+<i>405</i>&nbsp;     * &amp;lt;color-stop&amp;gt; = [ &amp;lt;color&amp;gt; [ &amp;lt;percentage&amp;gt; | &amp;lt;length&amp;gt;]? ]
+<i>406</i>&nbsp;     * &lt;/pre&gt;
+<i>407</i>&nbsp;     * &lt;p&gt;Currently length can be only specified in px, the specification of unit can be omited.
+<i>408</i>&nbsp;     * Format of color representation is the one used in {@link Color#web(String color)}.
+<i>409</i>&nbsp;     * The radial-gradient keyword can be omited.
+<i>410</i>&nbsp;     * For additional information about the format of string representation, see the
+<i>411</i>&nbsp;     * &lt;a href=&quot;../doc-files/cssref.html&quot;&gt;CSS Reference Guide&lt;/a&gt;.
+<i>412</i>&nbsp;     * &lt;/p&gt;
+<i>413</i>&nbsp;     *
+<i>414</i>&nbsp;     * Examples:
+<i>415</i>&nbsp;     * &lt;pre&gt;{@code
+<i>416</i>&nbsp;     * RadialGradient g
+<i>417</i>&nbsp;     *      = RadialGradient.valueOf(&quot;radial-gradient(center 100px 100px, radius 200px, red  0%, blue 30%, black 100%)&quot;);
+<i>418</i>&nbsp;     * RadialGradient g
+<i>419</i>&nbsp;     *      = RadialGradient.valueOf(&quot;center 100px 100px, radius 200px, red  0%, blue 30%, black 100%&quot;);
+<i>420</i>&nbsp;     * RadialGradient g
+<i>421</i>&nbsp;     *      = RadialGradient.valueOf(&quot;radial-gradient(center 50% 50%, radius 50%,  cyan, violet 75%, magenta)&quot;);
+<i>422</i>&nbsp;     * RadialGradient g
+<i>423</i>&nbsp;     *      = RadialGradient.valueOf(&quot;center 50% 50%, radius 50%,  cyan, violet 75%, magenta&quot;);
+<i>424</i>&nbsp;     * }&lt;/pre&gt;
+<i>425</i>&nbsp;     *
+<i>426</i>&nbsp;     * @param value the string to convert
+<i>427</i>&nbsp;     * @throws NullPointerException if the {@code value} is {@code null}
+<i>428</i>&nbsp;     * @throws IllegalArgumentException if the {@code value} cannot be parsed
+<i>429</i>&nbsp;     * @return a {@code RadialGradient} object holding the value represented
+<i>430</i>&nbsp;     * by the string argument.
+<i>431</i>&nbsp;     * @since JavaFX 2.1
+<i>432</i>&nbsp;     */
+<i>433</i>&nbsp;    public static RadialGradient valueOf(String value) {
+<b class="nc"><i>434</i>&nbsp;        if (value == null) {</b>
+<b class="nc"><i>435</i>&nbsp;            throw new NullPointerException(&quot;gradient must be specified&quot;);</b>
+<i>436</i>&nbsp;        }
+<i>437</i>&nbsp;
+<b class="nc"><i>438</i>&nbsp;        String start = &quot;radial-gradient(&quot;;</b>
+<b class="nc"><i>439</i>&nbsp;        String end = &quot;)&quot;;</b>
+<b class="nc"><i>440</i>&nbsp;        if (value.startsWith(start)) {</b>
+<b class="nc"><i>441</i>&nbsp;            if (!value.endsWith(end)) {</b>
+<b class="nc"><i>442</i>&nbsp;                throw new IllegalArgumentException(&quot;Invalid gradient specification,&quot;</b>
+<i>443</i>&nbsp;                        + &quot; must end with \&quot;&quot; + end + &#39;&quot;&#39;);
+<i>444</i>&nbsp;            }
+<b class="nc"><i>445</i>&nbsp;            value = value.substring(start.length(), value.length() - end.length());</b>
+<i>446</i>&nbsp;        }
+<i>447</i>&nbsp;
+<b class="nc"><i>448</i>&nbsp;        GradientUtils.Parser parser = new GradientUtils.Parser(value);</b>
+<b class="nc"><i>449</i>&nbsp;        if (parser.getSize() &lt; 2) {</b>
+<b class="nc"><i>450</i>&nbsp;            throw new IllegalArgumentException(&quot;Invalid gradient specification&quot;);</b>
+<i>451</i>&nbsp;        }
+<i>452</i>&nbsp;
+<b class="nc"><i>453</i>&nbsp;        double angle = 0, distance = 0;</b>
+<i>454</i>&nbsp;        GradientUtils.Point centerX, centerY, radius;
+<i>455</i>&nbsp;
+<b class="nc"><i>456</i>&nbsp;        String[] tokens = parser.splitCurrentToken();</b>
+<b class="nc"><i>457</i>&nbsp;        if (&quot;focus-angle&quot;.equals(tokens[0])) {</b>
+<b class="nc"><i>458</i>&nbsp;            GradientUtils.Parser.checkNumberOfArguments(tokens, 1);</b>
+<b class="nc"><i>459</i>&nbsp;            angle = GradientUtils.Parser.parseAngle(tokens[1]);</b>
+<b class="nc"><i>460</i>&nbsp;            parser.shift();</b>
+<i>461</i>&nbsp;        }
+<i>462</i>&nbsp;
+<b class="nc"><i>463</i>&nbsp;        tokens = parser.splitCurrentToken();</b>
+<b class="nc"><i>464</i>&nbsp;        if (&quot;focus-distance&quot;.equals(tokens[0])) {</b>
+<b class="nc"><i>465</i>&nbsp;            GradientUtils.Parser.checkNumberOfArguments(tokens, 1);</b>
+<b class="nc"><i>466</i>&nbsp;            distance = GradientUtils.Parser.parsePercentage(tokens[1]);</b>
+<i>467</i>&nbsp;
+<b class="nc"><i>468</i>&nbsp;            parser.shift();</b>
+<i>469</i>&nbsp;        }
+<i>470</i>&nbsp;
+<b class="nc"><i>471</i>&nbsp;        tokens = parser.splitCurrentToken();</b>
+<b class="nc"><i>472</i>&nbsp;        if (&quot;center&quot;.equals(tokens[0])) {</b>
+<b class="nc"><i>473</i>&nbsp;            GradientUtils.Parser.checkNumberOfArguments(tokens, 2);</b>
+<b class="nc"><i>474</i>&nbsp;            centerX = parser.parsePoint(tokens[1]);</b>
+<b class="nc"><i>475</i>&nbsp;            centerY = parser.parsePoint(tokens[2]);</b>
+<b class="nc"><i>476</i>&nbsp;            parser.shift();</b>
+<i>477</i>&nbsp;        } else {
+<b class="nc"><i>478</i>&nbsp;            centerX = GradientUtils.Point.MIN;</b>
+<b class="nc"><i>479</i>&nbsp;            centerY = GradientUtils.Point.MIN;</b>
+<i>480</i>&nbsp;        }
+<i>481</i>&nbsp;
+<b class="nc"><i>482</i>&nbsp;        tokens = parser.splitCurrentToken();</b>
+<b class="nc"><i>483</i>&nbsp;        if (&quot;radius&quot;.equals(tokens[0])) {</b>
+<b class="nc"><i>484</i>&nbsp;            GradientUtils.Parser.checkNumberOfArguments(tokens, 1);</b>
+<b class="nc"><i>485</i>&nbsp;            radius = parser.parsePoint(tokens[1]);</b>
+<b class="nc"><i>486</i>&nbsp;            parser.shift();</b>
+<i>487</i>&nbsp;        } else {
+<b class="nc"><i>488</i>&nbsp;            throw new IllegalArgumentException(&quot;Invalid gradient specification: &quot;</b>
+<i>489</i>&nbsp;                    + &quot;radius must be specified&quot;);
+<i>490</i>&nbsp;        }
+<i>491</i>&nbsp;
+<b class="nc"><i>492</i>&nbsp;        CycleMethod method = CycleMethod.NO_CYCLE;</b>
+<b class="nc"><i>493</i>&nbsp;        String currentToken = parser.getCurrentToken();</b>
+<b class="nc"><i>494</i>&nbsp;        if (&quot;repeat&quot;.equals(currentToken)) {</b>
+<b class="nc"><i>495</i>&nbsp;            method = CycleMethod.REPEAT;</b>
+<b class="nc"><i>496</i>&nbsp;            parser.shift();</b>
+<b class="nc"><i>497</i>&nbsp;        } else if (&quot;reflect&quot;.equals(currentToken)) {</b>
+<b class="nc"><i>498</i>&nbsp;            method = CycleMethod.REFLECT;</b>
+<b class="nc"><i>499</i>&nbsp;            parser.shift();</b>
+<i>500</i>&nbsp;        }
+<i>501</i>&nbsp;
+<b class="nc"><i>502</i>&nbsp;        Stop[] stops = parser.parseStops(radius.proportional, radius.value);</b>
+<i>503</i>&nbsp;
+<b class="nc"><i>504</i>&nbsp;        return new RadialGradient(angle, distance, centerX.value, centerY.value,</b>
+<i>505</i>&nbsp;                                  radius.value, radius.proportional, method, stops);
+<i>506</i>&nbsp;    }
+<i>507</i>&nbsp;
+<i>508</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2017-12-04 21:49</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,823 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: Line2D</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.javafx.geom</a> ]
+</div>
+
+<h1>Coverage Summary for Class: Line2D (com.sun.javafx.geom)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">Line2D</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    2.9%
+  </span>
+  <span class="absValue">
+    (1/ 34)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0.9%
+  </span>
+  <span class="absValue">
+    (1/ 112)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright (c) 1997, 2013, Oracle and/or its affiliates. All rights reserved.
+<i>3</i>&nbsp; * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+<i>4</i>&nbsp; *
+<i>5</i>&nbsp; *
+<i>6</i>&nbsp; *
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; *
+<i>11</i>&nbsp; *
+<i>12</i>&nbsp; *
+<i>13</i>&nbsp; *
+<i>14</i>&nbsp; *
+<i>15</i>&nbsp; *
+<i>16</i>&nbsp; *
+<i>17</i>&nbsp; *
+<i>18</i>&nbsp; *
+<i>19</i>&nbsp; *
+<i>20</i>&nbsp; *
+<i>21</i>&nbsp; *
+<i>22</i>&nbsp; *
+<i>23</i>&nbsp; *
+<i>24</i>&nbsp; */
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;package com.sun.javafx.geom;
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;import com.sun.javafx.geom.transform.BaseTransform;
+<i>29</i>&nbsp;
+<i>30</i>&nbsp;/**
+<i>31</i>&nbsp; * This &lt;code&gt;Line2D&lt;/code&gt; represents a line segment in {@code (x,y)}
+<i>32</i>&nbsp; * coordinate space.  This class, like all of the Java 2D API, uses a
+<i>33</i>&nbsp; * default coordinate system called &lt;i&gt;user space&lt;/i&gt; in which the y-axis
+<i>34</i>&nbsp; * values increase downward and x-axis values increase to the right.  For
+<i>35</i>&nbsp; * more information on the user space coordinate system, see the
+<i>36</i>&nbsp; * &lt;a href=&quot;http://java.sun.com/j2se/1.3/docs/guide/2d/spec/j2d-intro.fm2.html#61857&quot;&gt;
+<i>37</i>&nbsp; * Coordinate Systems&lt;/a&gt; section of the Java 2D Programmer&#39;s Guide.
+<i>38</i>&nbsp; *
+<i>39</i>&nbsp; * @version     1.37, 05/05/07
+<i>40</i>&nbsp; */
+<i>41</i>&nbsp;public class Line2D extends Shape {
+<i>42</i>&nbsp;    /**
+<i>43</i>&nbsp;     * The X coordinate of the start point of the line segment.
+<i>44</i>&nbsp;     */
+<i>45</i>&nbsp;    public float x1;
+<i>46</i>&nbsp;
+<i>47</i>&nbsp;    /**
+<i>48</i>&nbsp;     * The Y coordinate of the start point of the line segment.
+<i>49</i>&nbsp;     */
+<i>50</i>&nbsp;    public float y1;
+<i>51</i>&nbsp;
+<i>52</i>&nbsp;    /**
+<i>53</i>&nbsp;     * The X coordinate of the end point of the line segment.
+<i>54</i>&nbsp;     */
+<i>55</i>&nbsp;    public float x2;
+<i>56</i>&nbsp;
+<i>57</i>&nbsp;    /**
+<i>58</i>&nbsp;     * The Y coordinate of the end point of the line segment.
+<i>59</i>&nbsp;     */
+<i>60</i>&nbsp;    public float y2;
+<i>61</i>&nbsp;
+<i>62</i>&nbsp;    /**
+<i>63</i>&nbsp;     * Constructs and initializes a Line with coordinates (0, 0) -&gt; (0, 0).
+<i>64</i>&nbsp;     */
+<b class="fc"><i>65</i>&nbsp;    public Line2D() { }</b>
+<i>66</i>&nbsp;
+<i>67</i>&nbsp;    /**
+<i>68</i>&nbsp;     * Constructs and initializes a Line from the specified coordinates.
+<i>69</i>&nbsp;     * @param x1 the X coordinate of the start point
+<i>70</i>&nbsp;     * @param y1 the Y coordinate of the start point
+<i>71</i>&nbsp;     * @param x2 the X coordinate of the end point
+<i>72</i>&nbsp;     * @param y2 the Y coordinate of the end point
+<i>73</i>&nbsp;     */
+<b class="nc"><i>74</i>&nbsp;    public Line2D(float x1, float y1, float x2, float y2) {</b>
+<b class="nc"><i>75</i>&nbsp;        setLine(x1, y1, x2, y2);</b>
+<b class="nc"><i>76</i>&nbsp;    }</b>
+<i>77</i>&nbsp;
+<i>78</i>&nbsp;    /**
+<i>79</i>&nbsp;     * Constructs and initializes a &lt;code&gt;Line2D&lt;/code&gt; from the
+<i>80</i>&nbsp;     * specified &lt;code&gt;Point2D&lt;/code&gt; objects.
+<i>81</i>&nbsp;     * @param p1 the start &lt;code&gt;Point2D&lt;/code&gt; of this line segment
+<i>82</i>&nbsp;     * @param p2 the end &lt;code&gt;Point2D&lt;/code&gt; of this line segment
+<i>83</i>&nbsp;     */
+<b class="nc"><i>84</i>&nbsp;    public Line2D(Point2D p1, Point2D p2) {</b>
+<b class="nc"><i>85</i>&nbsp;        setLine(p1, p2);</b>
+<b class="nc"><i>86</i>&nbsp;    }</b>
+<i>87</i>&nbsp;
+<i>88</i>&nbsp;    /**
+<i>89</i>&nbsp;     * Sets the location of the end points of this &lt;code&gt;Line2D&lt;/code&gt;
+<i>90</i>&nbsp;     * to the specified float coordinates.
+<i>91</i>&nbsp;     * @param x1 the X coordinate of the start point
+<i>92</i>&nbsp;     * @param y1 the Y coordinate of the start point
+<i>93</i>&nbsp;     * @param x2 the X coordinate of the end point
+<i>94</i>&nbsp;     * @param y2 the Y coordinate of the end point
+<i>95</i>&nbsp;     */
+<i>96</i>&nbsp;    public void setLine(float x1, float y1, float x2, float y2) {
+<b class="nc"><i>97</i>&nbsp;        this.x1 = x1;</b>
+<b class="nc"><i>98</i>&nbsp;        this.y1 = y1;</b>
+<b class="nc"><i>99</i>&nbsp;        this.x2 = x2;</b>
+<b class="nc"><i>100</i>&nbsp;        this.y2 = y2;</b>
+<b class="nc"><i>101</i>&nbsp;    }</b>
+<i>102</i>&nbsp;
+<i>103</i>&nbsp;    /**
+<i>104</i>&nbsp;     * Sets the location of the end points of this &lt;code&gt;Line2D&lt;/code&gt; to
+<i>105</i>&nbsp;     * the specified &lt;code&gt;Point2D&lt;/code&gt; coordinates.
+<i>106</i>&nbsp;     * @param p1 the start &lt;code&gt;Point2D&lt;/code&gt; of the line segment
+<i>107</i>&nbsp;     * @param p2 the end &lt;code&gt;Point2D&lt;/code&gt; of the line segment
+<i>108</i>&nbsp;     */
+<i>109</i>&nbsp;    public void setLine(Point2D p1, Point2D p2) {
+<b class="nc"><i>110</i>&nbsp;        setLine(p1.x, p1.y, p2.x, p2.y);</b>
+<b class="nc"><i>111</i>&nbsp;    }</b>
+<i>112</i>&nbsp;
+<i>113</i>&nbsp;    /**
+<i>114</i>&nbsp;     * Sets the location of the end points of this &lt;code&gt;Line2D&lt;/code&gt; to
+<i>115</i>&nbsp;     * the same as those end points of the specified &lt;code&gt;Line2D&lt;/code&gt;.
+<i>116</i>&nbsp;     * @param l the specified &lt;code&gt;Line2D&lt;/code&gt;
+<i>117</i>&nbsp;     */
+<i>118</i>&nbsp;    public void setLine(Line2D l) {
+<b class="nc"><i>119</i>&nbsp;        setLine(l.x1, l.y1, l.x2, l.y2);</b>
+<b class="nc"><i>120</i>&nbsp;    }</b>
+<i>121</i>&nbsp;
+<i>122</i>&nbsp;    /**
+<i>123</i>&nbsp;     * {@inheritDoc}
+<i>124</i>&nbsp;     */
+<i>125</i>&nbsp;    public RectBounds getBounds() {
+<b class="nc"><i>126</i>&nbsp;        RectBounds b = new RectBounds();</b>
+<b class="nc"><i>127</i>&nbsp;        b.setBoundsAndSort(x1, y1, x2, y2);</b>
+<b class="nc"><i>128</i>&nbsp;        return b;</b>
+<i>129</i>&nbsp;    }
+<i>130</i>&nbsp;
+<i>131</i>&nbsp;    /**
+<i>132</i>&nbsp;     * @inheritDoc
+<i>133</i>&nbsp;     */
+<i>134</i>&nbsp;    @Override
+<b class="nc"><i>135</i>&nbsp;    public boolean contains(float x, float y) { return false; }</b>
+<i>136</i>&nbsp;
+<i>137</i>&nbsp;    /**
+<i>138</i>&nbsp;     * @inheritDoc
+<i>139</i>&nbsp;     */
+<i>140</i>&nbsp;    @Override
+<b class="nc"><i>141</i>&nbsp;    public boolean contains(float x, float y, float w, float h) { return false; }</b>
+<i>142</i>&nbsp;
+<i>143</i>&nbsp;    /**
+<i>144</i>&nbsp;     * @inheritDoc
+<i>145</i>&nbsp;     */
+<i>146</i>&nbsp;    @Override
+<b class="nc"><i>147</i>&nbsp;    public boolean contains(Point2D p) { return false; }</b>
+<i>148</i>&nbsp;
+<i>149</i>&nbsp;    /**
+<i>150</i>&nbsp;     * @inheritDoc
+<i>151</i>&nbsp;     */
+<i>152</i>&nbsp;    @Override
+<i>153</i>&nbsp;    public boolean intersects(float x, float y, float w, float h) {
+<i>154</i>&nbsp;        int out1, out2;
+<b class="nc"><i>155</i>&nbsp;        if ((out2 = outcode(x, y, w, h, x2, y2)) == 0) {</b>
+<b class="nc"><i>156</i>&nbsp;            return true;</b>
+<i>157</i>&nbsp;        }
+<b class="nc"><i>158</i>&nbsp;        float px = x1;</b>
+<b class="nc"><i>159</i>&nbsp;        float py = y1;</b>
+<b class="nc"><i>160</i>&nbsp;        while ((out1 = outcode(x, y, w, h, px, py)) != 0) {</b>
+<b class="nc"><i>161</i>&nbsp;            if ((out1 &amp; out2) != 0) {</b>
+<b class="nc"><i>162</i>&nbsp;                return false;</b>
+<i>163</i>&nbsp;            }
+<b class="nc"><i>164</i>&nbsp;            if ((out1 &amp; (OUT_LEFT | OUT_RIGHT)) != 0) {</b>
+<b class="nc"><i>165</i>&nbsp;                px = x;</b>
+<b class="nc"><i>166</i>&nbsp;                if ((out1 &amp; OUT_RIGHT) != 0) {</b>
+<b class="nc"><i>167</i>&nbsp;                    px += w;</b>
+<i>168</i>&nbsp;                }
+<b class="nc"><i>169</i>&nbsp;                py = y1 + (px - x1) * (y2 - y1) / (x2 - x1);</b>
+<i>170</i>&nbsp;            } else {
+<b class="nc"><i>171</i>&nbsp;                py = y;</b>
+<b class="nc"><i>172</i>&nbsp;                if ((out1 &amp; OUT_BOTTOM) != 0) {</b>
+<b class="nc"><i>173</i>&nbsp;                    py += h;</b>
+<i>174</i>&nbsp;                }
+<b class="nc"><i>175</i>&nbsp;                px = x1 + (py - y1) * (x2 - x1) / (y2 - y1);</b>
+<i>176</i>&nbsp;            }
+<i>177</i>&nbsp;        }
+<b class="nc"><i>178</i>&nbsp;        return true;</b>
+<i>179</i>&nbsp;    }
+<i>180</i>&nbsp;
+<i>181</i>&nbsp;    /**
+<i>182</i>&nbsp;     * Returns an indicator of where the specified point
+<i>183</i>&nbsp;     * {@code (px,py)} lies with respect to the line segment from
+<i>184</i>&nbsp;     * {@code (x1,y1)} to {@code (x2,y2)}.
+<i>185</i>&nbsp;     * The return value can be either 1, -1, or 0 and indicates
+<i>186</i>&nbsp;     * in which direction the specified line must pivot around its
+<i>187</i>&nbsp;     * first end point, {@code (x1,y1)}, in order to point at the
+<i>188</i>&nbsp;     * specified point {@code (px,py)}.
+<i>189</i>&nbsp;     * &lt;p&gt;A return value of 1 indicates that the line segment must
+<i>190</i>&nbsp;     * turn in the direction that takes the positive X axis towards
+<i>191</i>&nbsp;     * the negative Y axis.  In the default coordinate system used by
+<i>192</i>&nbsp;     * Java 2D, this direction is counterclockwise.
+<i>193</i>&nbsp;     * &lt;p&gt;A return value of -1 indicates that the line segment must
+<i>194</i>&nbsp;     * turn in the direction that takes the positive X axis towards
+<i>195</i>&nbsp;     * the positive Y axis.  In the default coordinate system, this
+<i>196</i>&nbsp;     * direction is clockwise.
+<i>197</i>&nbsp;     * &lt;p&gt;A return value of 0 indicates that the point lies
+<i>198</i>&nbsp;     * exactly on the line segment.  Note that an indicator value
+<i>199</i>&nbsp;     * of 0 is rare and not useful for determining colinearity
+<i>200</i>&nbsp;     * because of floating point rounding issues.
+<i>201</i>&nbsp;     * &lt;p&gt;If the point is colinear with the line segment, but
+<i>202</i>&nbsp;     * not between the end points, then the value will be -1 if the point
+<i>203</i>&nbsp;     * lies &quot;beyond {@code (x1,y1)}&quot; or 1 if the point lies
+<i>204</i>&nbsp;     * &quot;beyond {@code (x2,y2)}&quot;.
+<i>205</i>&nbsp;     *
+<i>206</i>&nbsp;     * @param x1 the X coordinate of the start point of the
+<i>207</i>&nbsp;     *           specified line segment
+<i>208</i>&nbsp;     * @param y1 the Y coordinate of the start point of the
+<i>209</i>&nbsp;     *           specified line segment
+<i>210</i>&nbsp;     * @param x2 the X coordinate of the end point of the
+<i>211</i>&nbsp;     *           specified line segment
+<i>212</i>&nbsp;     * @param y2 the Y coordinate of the end point of the
+<i>213</i>&nbsp;     *           specified line segment
+<i>214</i>&nbsp;     * @param px the X coordinate of the specified point to be
+<i>215</i>&nbsp;     *           compared with the specified line segment
+<i>216</i>&nbsp;     * @param py the Y coordinate of the specified point to be
+<i>217</i>&nbsp;     *           compared with the specified line segment
+<i>218</i>&nbsp;     * @return an integer that indicates the position of the third specified
+<i>219</i>&nbsp;     *          coordinates with respect to the line segment formed
+<i>220</i>&nbsp;     *          by the first two specified coordinates.
+<i>221</i>&nbsp;     */
+<i>222</i>&nbsp;    public static int relativeCCW(float x1, float y1,
+<i>223</i>&nbsp;                  float x2, float y2,
+<i>224</i>&nbsp;                  float px, float py)
+<i>225</i>&nbsp;    {
+<b class="nc"><i>226</i>&nbsp;        x2 -= x1;</b>
+<b class="nc"><i>227</i>&nbsp;        y2 -= y1;</b>
+<b class="nc"><i>228</i>&nbsp;        px -= x1;</b>
+<b class="nc"><i>229</i>&nbsp;        py -= y1;</b>
+<b class="nc"><i>230</i>&nbsp;        float ccw = px * y2 - py * x2;</b>
+<b class="nc"><i>231</i>&nbsp;        if (ccw == 0.0f) {</b>
+<i>232</i>&nbsp;            // The point is colinear, classify based on which side of
+<i>233</i>&nbsp;            // the segment the point falls on.  We can calculate a
+<i>234</i>&nbsp;            // relative value using the projection of px,py onto the
+<i>235</i>&nbsp;            // segment - a negative value indicates the point projects
+<i>236</i>&nbsp;            // outside of the segment in the direction of the particular
+<i>237</i>&nbsp;            // endpoint used as the origin for the projection.
+<b class="nc"><i>238</i>&nbsp;            ccw = px * x2 + py * y2;</b>
+<b class="nc"><i>239</i>&nbsp;            if (ccw &gt; 0.0f) {</b>
+<i>240</i>&nbsp;            // Reverse the projection to be relative to the original x2,y2
+<i>241</i>&nbsp;            // x2 and y2 are simply negated.
+<i>242</i>&nbsp;            // px and py need to have (x2 - x1) or (y2 - y1) subtracted
+<i>243</i>&nbsp;            //    from them (based on the original values)
+<i>244</i>&nbsp;            // Since we really want to get a positive answer when the
+<i>245</i>&nbsp;            //    point is &quot;beyond (x2,y2)&quot;, then we want to calculate
+<i>246</i>&nbsp;            //    the inverse anyway - thus we leave x2 &amp; y2 negated.
+<b class="nc"><i>247</i>&nbsp;            px -= x2;</b>
+<b class="nc"><i>248</i>&nbsp;            py -= y2;</b>
+<b class="nc"><i>249</i>&nbsp;            ccw = px * x2 + py * y2;</b>
+<b class="nc"><i>250</i>&nbsp;            if (ccw &lt; 0.0f) {</b>
+<b class="nc"><i>251</i>&nbsp;                ccw = 0.0f;</b>
+<i>252</i>&nbsp;            }
+<i>253</i>&nbsp;            }
+<i>254</i>&nbsp;        }
+<b class="nc"><i>255</i>&nbsp;        return (ccw &lt; 0.0f) ? -1 : ((ccw &gt; 0.0f) ? 1 : 0);</b>
+<i>256</i>&nbsp;    }
+<i>257</i>&nbsp;
+<i>258</i>&nbsp;    /**
+<i>259</i>&nbsp;     * Returns an indicator of where the specified point
+<i>260</i>&nbsp;     * {@code (px,py)} lies with respect to this line segment.
+<i>261</i>&nbsp;     * See the method comments of
+<i>262</i>&nbsp;     * {@link #relativeCCW(double, double, double, double, double, double)}
+<i>263</i>&nbsp;     * to interpret the return value.
+<i>264</i>&nbsp;     * @param px the X coordinate of the specified point
+<i>265</i>&nbsp;     *           to be compared with this &lt;code&gt;Line2D&lt;/code&gt;
+<i>266</i>&nbsp;     * @param py the Y coordinate of the specified point
+<i>267</i>&nbsp;     *           to be compared with this &lt;code&gt;Line2D&lt;/code&gt;
+<i>268</i>&nbsp;     * @return an integer that indicates the position of the specified
+<i>269</i>&nbsp;     *         coordinates with respect to this &lt;code&gt;Line2D&lt;/code&gt;
+<i>270</i>&nbsp;     * @see #relativeCCW(double, double, double, double, double, double)
+<i>271</i>&nbsp;     */
+<i>272</i>&nbsp;    public int relativeCCW(float px, float py) {
+<b class="nc"><i>273</i>&nbsp;        return relativeCCW(x1, y1, x2, y2, px, py);</b>
+<i>274</i>&nbsp;    }
+<i>275</i>&nbsp;
+<i>276</i>&nbsp;    /**
+<i>277</i>&nbsp;     * Returns an indicator of where the specified &lt;code&gt;Point2D&lt;/code&gt;
+<i>278</i>&nbsp;     * lies with respect to this line segment.
+<i>279</i>&nbsp;     * See the method comments of
+<i>280</i>&nbsp;     * {@link #relativeCCW(double, double, double, double, double, double)}
+<i>281</i>&nbsp;     * to interpret the return value.
+<i>282</i>&nbsp;     * @param p the specified &lt;code&gt;Point2D&lt;/code&gt; to be compared
+<i>283</i>&nbsp;     *          with this &lt;code&gt;Line2D&lt;/code&gt;
+<i>284</i>&nbsp;     * @return an integer that indicates the position of the specified
+<i>285</i>&nbsp;     *         &lt;code&gt;Point2D&lt;/code&gt; with respect to this &lt;code&gt;Line2D&lt;/code&gt;
+<i>286</i>&nbsp;     * @see #relativeCCW(double, double, double, double, double, double)
+<i>287</i>&nbsp;     */
+<i>288</i>&nbsp;    public int relativeCCW(Point2D p) {
+<b class="nc"><i>289</i>&nbsp;        return relativeCCW(x1, y1, x2, y2, p.x, p.y);</b>
+<i>290</i>&nbsp;    }
+<i>291</i>&nbsp;
+<i>292</i>&nbsp;    /**
+<i>293</i>&nbsp;     * Tests if the line segment from {@code (x1,y1)} to
+<i>294</i>&nbsp;     * {@code (x2,y2)} intersects the line segment from {@code (x3,y3)}
+<i>295</i>&nbsp;     * to {@code (x4,y4)}.
+<i>296</i>&nbsp;     *
+<i>297</i>&nbsp;     * @param x1 the X coordinate of the start point of the first
+<i>298</i>&nbsp;     *           specified line segment
+<i>299</i>&nbsp;     * @param y1 the Y coordinate of the start point of the first
+<i>300</i>&nbsp;     *           specified line segment
+<i>301</i>&nbsp;     * @param x2 the X coordinate of the end point of the first
+<i>302</i>&nbsp;     *           specified line segment
+<i>303</i>&nbsp;     * @param y2 the Y coordinate of the end point of the first
+<i>304</i>&nbsp;     *           specified line segment
+<i>305</i>&nbsp;     * @param x3 the X coordinate of the start point of the second
+<i>306</i>&nbsp;     *           specified line segment
+<i>307</i>&nbsp;     * @param y3 the Y coordinate of the start point of the second
+<i>308</i>&nbsp;     *           specified line segment
+<i>309</i>&nbsp;     * @param x4 the X coordinate of the end point of the second
+<i>310</i>&nbsp;     *           specified line segment
+<i>311</i>&nbsp;     * @param y4 the Y coordinate of the end point of the second
+<i>312</i>&nbsp;     *           specified line segment
+<i>313</i>&nbsp;     * @return &lt;code&gt;true&lt;/code&gt; if the first specified line segment
+<i>314</i>&nbsp;     *          and the second specified line segment intersect
+<i>315</i>&nbsp;     *          each other; &lt;code&gt;false&lt;/code&gt; otherwise.
+<i>316</i>&nbsp;     */
+<i>317</i>&nbsp;    public static boolean linesIntersect(float x1, float y1,
+<i>318</i>&nbsp;                     float x2, float y2,
+<i>319</i>&nbsp;                     float x3, float y3,
+<i>320</i>&nbsp;                     float x4, float y4)
+<i>321</i>&nbsp;    {
+<b class="nc"><i>322</i>&nbsp;    return ((relativeCCW(x1, y1, x2, y2, x3, y3) *</b>
+<b class="nc"><i>323</i>&nbsp;         relativeCCW(x1, y1, x2, y2, x4, y4) &lt;= 0)</b>
+<b class="nc"><i>324</i>&nbsp;        &amp;&amp; (relativeCCW(x3, y3, x4, y4, x1, y1) *</b>
+<b class="nc"><i>325</i>&nbsp;            relativeCCW(x3, y3, x4, y4, x2, y2) &lt;= 0));</b>
+<i>326</i>&nbsp;    }
+<i>327</i>&nbsp;
+<i>328</i>&nbsp;    /**
+<i>329</i>&nbsp;     * Tests if the line segment from {@code (x1,y1)} to
+<i>330</i>&nbsp;     * {@code (x2,y2)} intersects this line segment.
+<i>331</i>&nbsp;     *
+<i>332</i>&nbsp;     * @param x1 the X coordinate of the start point of the
+<i>333</i>&nbsp;     *           specified line segment
+<i>334</i>&nbsp;     * @param y1 the Y coordinate of the start point of the
+<i>335</i>&nbsp;     *           specified line segment
+<i>336</i>&nbsp;     * @param x2 the X coordinate of the end point of the
+<i>337</i>&nbsp;     *           specified line segment
+<i>338</i>&nbsp;     * @param y2 the Y coordinate of the end point of the
+<i>339</i>&nbsp;     *           specified line segment
+<i>340</i>&nbsp;     * @return &lt;true&gt; if this line segment and the specified line segment
+<i>341</i>&nbsp;     *          intersect each other; &lt;code&gt;false&lt;/code&gt; otherwise.
+<i>342</i>&nbsp;     */
+<i>343</i>&nbsp;    public boolean intersectsLine(float x1, float y1, float x2, float y2) {
+<b class="nc"><i>344</i>&nbsp;        return linesIntersect(x1, y1, x2, y2, this.x1, this.y1, this.x2, this.y2);</b>
+<i>345</i>&nbsp;    }
+<i>346</i>&nbsp;
+<i>347</i>&nbsp;    /**
+<i>348</i>&nbsp;     * Tests if the specified line segment intersects this line segment.
+<i>349</i>&nbsp;     * @param l the specified &lt;code&gt;Line2D&lt;/code&gt;
+<i>350</i>&nbsp;     * @return &lt;code&gt;true&lt;/code&gt; if this line segment and the specified line
+<i>351</i>&nbsp;     *          segment intersect each other;
+<i>352</i>&nbsp;     *          &lt;code&gt;false&lt;/code&gt; otherwise.
+<i>353</i>&nbsp;     */
+<i>354</i>&nbsp;    public boolean intersectsLine(Line2D l) {
+<b class="nc"><i>355</i>&nbsp;        return linesIntersect(l.x1, l.y1, l.x2, l.y2, this.x1, this.y1, this.x2, this.y2);</b>
+<i>356</i>&nbsp;    }
+<i>357</i>&nbsp;
+<i>358</i>&nbsp;    /**
+<i>359</i>&nbsp;     * Returns the square of the distance from a point to a line segment.
+<i>360</i>&nbsp;     * The distance measured is the distance between the specified
+<i>361</i>&nbsp;     * point and the closest point between the specified end points.
+<i>362</i>&nbsp;     * If the specified point intersects the line segment in between the
+<i>363</i>&nbsp;     * end points, this method returns 0.0.
+<i>364</i>&nbsp;     *
+<i>365</i>&nbsp;     * @param x1 the X coordinate of the start point of the
+<i>366</i>&nbsp;     *           specified line segment
+<i>367</i>&nbsp;     * @param y1 the Y coordinate of the start point of the
+<i>368</i>&nbsp;     *           specified line segment
+<i>369</i>&nbsp;     * @param x2 the X coordinate of the end point of the
+<i>370</i>&nbsp;     *           specified line segment
+<i>371</i>&nbsp;     * @param y2 the Y coordinate of the end point of the
+<i>372</i>&nbsp;     *           specified line segment
+<i>373</i>&nbsp;     * @param px the X coordinate of the specified point being
+<i>374</i>&nbsp;     *           measured against the specified line segment
+<i>375</i>&nbsp;     * @param py the Y coordinate of the specified point being
+<i>376</i>&nbsp;     *           measured against the specified line segment
+<i>377</i>&nbsp;     * @return a double value that is the square of the distance from the
+<i>378</i>&nbsp;     *          specified point to the specified line segment.
+<i>379</i>&nbsp;     * @see #ptLineDistSq(double, double, double, double, double, double)
+<i>380</i>&nbsp;     */
+<i>381</i>&nbsp;    public static float ptSegDistSq(float x1, float y1,
+<i>382</i>&nbsp;                     float x2, float y2,
+<i>383</i>&nbsp;                     float px, float py)
+<i>384</i>&nbsp;    {
+<i>385</i>&nbsp;        // Adjust vectors relative to x1,y1
+<i>386</i>&nbsp;        // x2,y2 becomes relative vector from x1,y1 to end of segment
+<b class="nc"><i>387</i>&nbsp;        x2 -= x1;</b>
+<b class="nc"><i>388</i>&nbsp;        y2 -= y1;</b>
+<i>389</i>&nbsp;        // px,py becomes relative vector from x1,y1 to test point
+<b class="nc"><i>390</i>&nbsp;        px -= x1;</b>
+<b class="nc"><i>391</i>&nbsp;        py -= y1;</b>
+<b class="nc"><i>392</i>&nbsp;        float dotprod = px * x2 + py * y2;</b>
+<i>393</i>&nbsp;        float projlenSq;
+<b class="nc"><i>394</i>&nbsp;        if (dotprod &lt;= 0f) {</b>
+<i>395</i>&nbsp;            // px,py is on the side of x1,y1 away from x2,y2
+<i>396</i>&nbsp;            // distance to segment is length of px,py vector
+<i>397</i>&nbsp;            // &quot;length of its (clipped) projection&quot; is now 0.0
+<b class="nc"><i>398</i>&nbsp;            projlenSq = 0f;</b>
+<i>399</i>&nbsp;        } else {
+<i>400</i>&nbsp;            // switch to backwards vectors relative to x2,y2
+<i>401</i>&nbsp;            // x2,y2 are already the negative of x1,y1=&gt;x2,y2
+<i>402</i>&nbsp;            // to get px,py to be the negative of px,py=&gt;x2,y2
+<i>403</i>&nbsp;            // the dot product of two negated vectors is the same
+<i>404</i>&nbsp;            // as the dot product of the two normal vectors
+<b class="nc"><i>405</i>&nbsp;            px = x2 - px;</b>
+<b class="nc"><i>406</i>&nbsp;            py = y2 - py;</b>
+<b class="nc"><i>407</i>&nbsp;            dotprod = px * x2 + py * y2;</b>
+<b class="nc"><i>408</i>&nbsp;            if (dotprod &lt;= 0f) {</b>
+<i>409</i>&nbsp;                // px,py is on the side of x2,y2 away from x1,y1
+<i>410</i>&nbsp;                // distance to segment is length of (backwards) px,py vector
+<i>411</i>&nbsp;                // &quot;length of its (clipped) projection&quot; is now 0.0
+<b class="nc"><i>412</i>&nbsp;                projlenSq = 0f;</b>
+<i>413</i>&nbsp;            } else {
+<i>414</i>&nbsp;                // px,py is between x1,y1 and x2,y2
+<i>415</i>&nbsp;                // dotprod is the length of the px,py vector
+<i>416</i>&nbsp;                // projected on the x2,y2=&gt;x1,y1 vector times the
+<i>417</i>&nbsp;                // length of the x2,y2=&gt;x1,y1 vector
+<b class="nc"><i>418</i>&nbsp;                projlenSq = dotprod * dotprod / (x2 * x2 + y2 * y2);</b>
+<i>419</i>&nbsp;            }
+<i>420</i>&nbsp;        }
+<i>421</i>&nbsp;        // Distance to line is now the length of the relative point
+<i>422</i>&nbsp;        // vector minus the length of its projection onto the line
+<i>423</i>&nbsp;        // (which is zero if the projection falls outside the range
+<i>424</i>&nbsp;        //  of the line segment).
+<b class="nc"><i>425</i>&nbsp;        float lenSq = px * px + py * py - projlenSq;</b>
+<b class="nc"><i>426</i>&nbsp;        if (lenSq &lt; 0f) {</b>
+<b class="nc"><i>427</i>&nbsp;            lenSq = 0f;</b>
+<i>428</i>&nbsp;        }
+<b class="nc"><i>429</i>&nbsp;        return lenSq;</b>
+<i>430</i>&nbsp;    }
+<i>431</i>&nbsp;
+<i>432</i>&nbsp;    /**
+<i>433</i>&nbsp;     * Returns the distance from a point to a line segment.
+<i>434</i>&nbsp;     * The distance measured is the distance between the specified
+<i>435</i>&nbsp;     * point and the closest point between the specified end points.
+<i>436</i>&nbsp;     * If the specified point intersects the line segment in between the
+<i>437</i>&nbsp;     * end points, this method returns 0.0.
+<i>438</i>&nbsp;     *
+<i>439</i>&nbsp;     * @param x1 the X coordinate of the start point of the
+<i>440</i>&nbsp;     *           specified line segment
+<i>441</i>&nbsp;     * @param y1 the Y coordinate of the start point of the
+<i>442</i>&nbsp;     *           specified line segment
+<i>443</i>&nbsp;     * @param x2 the X coordinate of the end point of the
+<i>444</i>&nbsp;     *           specified line segment
+<i>445</i>&nbsp;     * @param y2 the Y coordinate of the end point of the
+<i>446</i>&nbsp;     *           specified line segment
+<i>447</i>&nbsp;     * @param px the X coordinate of the specified point being
+<i>448</i>&nbsp;     *           measured against the specified line segment
+<i>449</i>&nbsp;     * @param py the Y coordinate of the specified point being
+<i>450</i>&nbsp;     *           measured against the specified line segment
+<i>451</i>&nbsp;     * @return a double value that is the distance from the specified point
+<i>452</i>&nbsp;     *              to the specified line segment.
+<i>453</i>&nbsp;     * @see #ptLineDist(double, double, double, double, double, double)
+<i>454</i>&nbsp;     */
+<i>455</i>&nbsp;    public static float ptSegDist(float x1, float y1,
+<i>456</i>&nbsp;                   float x2, float y2,
+<i>457</i>&nbsp;                   float px, float py)
+<i>458</i>&nbsp;    {
+<b class="nc"><i>459</i>&nbsp;        return (float) Math.sqrt(ptSegDistSq(x1, y1, x2, y2, px, py));</b>
+<i>460</i>&nbsp;    }
+<i>461</i>&nbsp;
+<i>462</i>&nbsp;    /**
+<i>463</i>&nbsp;     * Returns the square of the distance from a point to this line segment.
+<i>464</i>&nbsp;     * The distance measured is the distance between the specified
+<i>465</i>&nbsp;     * point and the closest point between the current line&#39;s end points.
+<i>466</i>&nbsp;     * If the specified point intersects the line segment in between the
+<i>467</i>&nbsp;     * end points, this method returns 0.0.
+<i>468</i>&nbsp;     *
+<i>469</i>&nbsp;     * @param px the X coordinate of the specified point being
+<i>470</i>&nbsp;     *           measured against this line segment
+<i>471</i>&nbsp;     * @param py the Y coordinate of the specified point being
+<i>472</i>&nbsp;     *           measured against this line segment
+<i>473</i>&nbsp;     * @return a double value that is the square of the distance from the
+<i>474</i>&nbsp;     *          specified point to the current line segment.
+<i>475</i>&nbsp;     * @see #ptLineDistSq(double, double)
+<i>476</i>&nbsp;     */
+<i>477</i>&nbsp;    public float ptSegDistSq(float px, float py) {
+<b class="nc"><i>478</i>&nbsp;        return ptSegDistSq(x1, y1, x2, y2, px, py);</b>
+<i>479</i>&nbsp;    }
+<i>480</i>&nbsp;
+<i>481</i>&nbsp;    /**
+<i>482</i>&nbsp;     * Returns the square of the distance from a &lt;code&gt;Point2D&lt;/code&gt; to
+<i>483</i>&nbsp;     * this line segment.
+<i>484</i>&nbsp;     * The distance measured is the distance between the specified
+<i>485</i>&nbsp;     * point and the closest point between the current line&#39;s end points.
+<i>486</i>&nbsp;     * If the specified point intersects the line segment in between the
+<i>487</i>&nbsp;     * end points, this method returns 0.0.
+<i>488</i>&nbsp;     * @param pt the specified &lt;code&gt;Point2D&lt;/code&gt; being measured against
+<i>489</i>&nbsp;     *           this line segment.
+<i>490</i>&nbsp;     * @return a double value that is the square of the distance from the
+<i>491</i>&nbsp;     *          specified &lt;code&gt;Point2D&lt;/code&gt; to the current
+<i>492</i>&nbsp;     *          line segment.
+<i>493</i>&nbsp;     * @see #ptLineDistSq(Point2D)
+<i>494</i>&nbsp;     */
+<i>495</i>&nbsp;    public float ptSegDistSq(Point2D pt) {
+<b class="nc"><i>496</i>&nbsp;        return ptSegDistSq(x1, y1, x2, y2, pt.x, pt.y);</b>
+<i>497</i>&nbsp;    }
+<i>498</i>&nbsp;
+<i>499</i>&nbsp;    /**
+<i>500</i>&nbsp;     * Returns the distance from a point to this line segment.
+<i>501</i>&nbsp;     * The distance measured is the distance between the specified
+<i>502</i>&nbsp;     * point and the closest point between the current line&#39;s end points.
+<i>503</i>&nbsp;     * If the specified point intersects the line segment in between the
+<i>504</i>&nbsp;     * end points, this method returns 0.0.
+<i>505</i>&nbsp;     *
+<i>506</i>&nbsp;     * @param px the X coordinate of the specified point being
+<i>507</i>&nbsp;     *           measured against this line segment
+<i>508</i>&nbsp;     * @param py the Y coordinate of the specified point being
+<i>509</i>&nbsp;     *           measured against this line segment
+<i>510</i>&nbsp;     * @return a double value that is the distance from the specified
+<i>511</i>&nbsp;     *          point to the current line segment.
+<i>512</i>&nbsp;     * @see #ptLineDist(double, double)
+<i>513</i>&nbsp;     */
+<i>514</i>&nbsp;    public double ptSegDist(float px, float py) {
+<b class="nc"><i>515</i>&nbsp;        return ptSegDist(x1, y1, x2, y2, px, py);</b>
+<i>516</i>&nbsp;    }
+<i>517</i>&nbsp;
+<i>518</i>&nbsp;    /**
+<i>519</i>&nbsp;     * Returns the distance from a &lt;code&gt;Point2D&lt;/code&gt; to this line
+<i>520</i>&nbsp;     * segment.
+<i>521</i>&nbsp;     * The distance measured is the distance between the specified
+<i>522</i>&nbsp;     * point and the closest point between the current line&#39;s end points.
+<i>523</i>&nbsp;     * If the specified point intersects the line segment in between the
+<i>524</i>&nbsp;     * end points, this method returns 0.0.
+<i>525</i>&nbsp;     * @param pt the specified &lt;code&gt;Point2D&lt;/code&gt; being measured
+<i>526</i>&nbsp;     *      against this line segment
+<i>527</i>&nbsp;     * @return a double value that is the distance from the specified
+<i>528</i>&nbsp;     *              &lt;code&gt;Point2D&lt;/code&gt; to the current line
+<i>529</i>&nbsp;     *              segment.
+<i>530</i>&nbsp;     * @see #ptLineDist(Point2D)
+<i>531</i>&nbsp;     */
+<i>532</i>&nbsp;    public float ptSegDist(Point2D pt) {
+<b class="nc"><i>533</i>&nbsp;        return ptSegDist(x1, y1, x2, y2, pt.x, pt.y);</b>
+<i>534</i>&nbsp;    }
+<i>535</i>&nbsp;
+<i>536</i>&nbsp;    /**
+<i>537</i>&nbsp;     * Returns the square of the distance from a point to a line.
+<i>538</i>&nbsp;     * The distance measured is the distance between the specified
+<i>539</i>&nbsp;     * point and the closest point on the infinitely-extended line
+<i>540</i>&nbsp;     * defined by the specified coordinates.  If the specified point
+<i>541</i>&nbsp;     * intersects the line, this method returns 0.0.
+<i>542</i>&nbsp;     *
+<i>543</i>&nbsp;     * @param x1 the X coordinate of the start point of the specified line
+<i>544</i>&nbsp;     * @param y1 the Y coordinate of the start point of the specified line
+<i>545</i>&nbsp;     * @param x2 the X coordinate of the end point of the specified line
+<i>546</i>&nbsp;     * @param y2 the Y coordinate of the end point of the specified line
+<i>547</i>&nbsp;     * @param px the X coordinate of the specified point being
+<i>548</i>&nbsp;     *           measured against the specified line
+<i>549</i>&nbsp;     * @param py the Y coordinate of the specified point being
+<i>550</i>&nbsp;     *           measured against the specified line
+<i>551</i>&nbsp;     * @return a double value that is the square of the distance from the
+<i>552</i>&nbsp;     *          specified point to the specified line.
+<i>553</i>&nbsp;     * @see #ptSegDistSq(double, double, double, double, double, double)
+<i>554</i>&nbsp;     */
+<i>555</i>&nbsp;    public static float ptLineDistSq(float x1, float y1,
+<i>556</i>&nbsp;                      float x2, float y2,
+<i>557</i>&nbsp;                      float px, float py)
+<i>558</i>&nbsp;    {
+<i>559</i>&nbsp;        // Adjust vectors relative to x1,y1
+<i>560</i>&nbsp;        // x2,y2 becomes relative vector from x1,y1 to end of segment
+<b class="nc"><i>561</i>&nbsp;        x2 -= x1;</b>
+<b class="nc"><i>562</i>&nbsp;        y2 -= y1;</b>
+<i>563</i>&nbsp;        // px,py becomes relative vector from x1,y1 to test point
+<b class="nc"><i>564</i>&nbsp;        px -= x1;</b>
+<b class="nc"><i>565</i>&nbsp;        py -= y1;</b>
+<b class="nc"><i>566</i>&nbsp;        float dotprod = px * x2 + py * y2;</b>
+<i>567</i>&nbsp;        // dotprod is the length of the px,py vector
+<i>568</i>&nbsp;        // projected on the x1,y1=&gt;x2,y2 vector times the
+<i>569</i>&nbsp;        // length of the x1,y1=&gt;x2,y2 vector
+<b class="nc"><i>570</i>&nbsp;        float projlenSq = dotprod * dotprod / (x2 * x2 + y2 * y2);</b>
+<i>571</i>&nbsp;        // Distance to line is now the length of the relative point
+<i>572</i>&nbsp;        // vector minus the length of its projection onto the line
+<b class="nc"><i>573</i>&nbsp;        float lenSq = px * px + py * py - projlenSq;</b>
+<b class="nc"><i>574</i>&nbsp;        if (lenSq &lt; 0f) {</b>
+<b class="nc"><i>575</i>&nbsp;            lenSq = 0f;</b>
+<i>576</i>&nbsp;        }
+<b class="nc"><i>577</i>&nbsp;        return lenSq;</b>
+<i>578</i>&nbsp;    }
+<i>579</i>&nbsp;
+<i>580</i>&nbsp;    /**
+<i>581</i>&nbsp;     * Returns the distance from a point to a line.
+<i>582</i>&nbsp;     * The distance measured is the distance between the specified
+<i>583</i>&nbsp;     * point and the closest point on the infinitely-extended line
+<i>584</i>&nbsp;     * defined by the specified coordinates.  If the specified point
+<i>585</i>&nbsp;     * intersects the line, this method returns 0.0.
+<i>586</i>&nbsp;     *
+<i>587</i>&nbsp;     * @param x1 the X coordinate of the start point of the specified line
+<i>588</i>&nbsp;     * @param y1 the Y coordinate of the start point of the specified line
+<i>589</i>&nbsp;     * @param x2 the X coordinate of the end point of the specified line
+<i>590</i>&nbsp;     * @param y2 the Y coordinate of the end point of the specified line
+<i>591</i>&nbsp;     * @param px the X coordinate of the specified point being
+<i>592</i>&nbsp;     *           measured against the specified line
+<i>593</i>&nbsp;     * @param py the Y coordinate of the specified point being
+<i>594</i>&nbsp;     *           measured against the specified line
+<i>595</i>&nbsp;     * @return a double value that is the distance from the specified
+<i>596</i>&nbsp;     *           point to the specified line.
+<i>597</i>&nbsp;     * @see #ptSegDist(double, double, double, double, double, double)
+<i>598</i>&nbsp;     */
+<i>599</i>&nbsp;    public static float ptLineDist(float x1, float y1,
+<i>600</i>&nbsp;                    float x2, float y2,
+<i>601</i>&nbsp;                    float px, float py)
+<i>602</i>&nbsp;    {
+<b class="nc"><i>603</i>&nbsp;        return (float) Math.sqrt(ptLineDistSq(x1, y1, x2, y2, px, py));</b>
+<i>604</i>&nbsp;    }
+<i>605</i>&nbsp;
+<i>606</i>&nbsp;    /**
+<i>607</i>&nbsp;     * Returns the square of the distance from a point to this line.
+<i>608</i>&nbsp;     * The distance measured is the distance between the specified
+<i>609</i>&nbsp;     * point and the closest point on the infinitely-extended line
+<i>610</i>&nbsp;     * defined by this &lt;code&gt;Line2D&lt;/code&gt;.  If the specified point
+<i>611</i>&nbsp;     * intersects the line, this method returns 0.0.
+<i>612</i>&nbsp;     *
+<i>613</i>&nbsp;     * @param px the X coordinate of the specified point being
+<i>614</i>&nbsp;     *           measured against this line
+<i>615</i>&nbsp;     * @param py the Y coordinate of the specified point being
+<i>616</i>&nbsp;     *           measured against this line
+<i>617</i>&nbsp;     * @return a double value that is the square of the distance from a
+<i>618</i>&nbsp;     *          specified point to the current line.
+<i>619</i>&nbsp;     * @see #ptSegDistSq(double, double)
+<i>620</i>&nbsp;     */
+<i>621</i>&nbsp;    public float ptLineDistSq(float px, float py) {
+<b class="nc"><i>622</i>&nbsp;        return ptLineDistSq(x1, y1, x2, y2, px, py);</b>
+<i>623</i>&nbsp;    }
+<i>624</i>&nbsp;
+<i>625</i>&nbsp;    /**
+<i>626</i>&nbsp;     * Returns the square of the distance from a specified
+<i>627</i>&nbsp;     * &lt;code&gt;Point2D&lt;/code&gt; to this line.
+<i>628</i>&nbsp;     * The distance measured is the distance between the specified
+<i>629</i>&nbsp;     * point and the closest point on the infinitely-extended line
+<i>630</i>&nbsp;     * defined by this &lt;code&gt;Line2D&lt;/code&gt;.  If the specified point
+<i>631</i>&nbsp;     * intersects the line, this method returns 0.0.
+<i>632</i>&nbsp;     * @param pt the specified &lt;code&gt;Point2D&lt;/code&gt; being measured
+<i>633</i>&nbsp;     *           against this line
+<i>634</i>&nbsp;     * @return a double value that is the square of the distance from a
+<i>635</i>&nbsp;     *          specified &lt;code&gt;Point2D&lt;/code&gt; to the current
+<i>636</i>&nbsp;     *          line.
+<i>637</i>&nbsp;     * @see #ptSegDistSq(Point2D)
+<i>638</i>&nbsp;     */
+<i>639</i>&nbsp;    public float ptLineDistSq(Point2D pt) {
+<b class="nc"><i>640</i>&nbsp;        return ptLineDistSq(x1, y1, x2, y2, pt.x, pt.y);</b>
+<i>641</i>&nbsp;    }
+<i>642</i>&nbsp;
+<i>643</i>&nbsp;    /**
+<i>644</i>&nbsp;     * Returns the distance from a point to this line.
+<i>645</i>&nbsp;     * The distance measured is the distance between the specified
+<i>646</i>&nbsp;     * point and the closest point on the infinitely-extended line
+<i>647</i>&nbsp;     * defined by this &lt;code&gt;Line2D&lt;/code&gt;.  If the specified point
+<i>648</i>&nbsp;     * intersects the line, this method returns 0.0.
+<i>649</i>&nbsp;     *
+<i>650</i>&nbsp;     * @param px the X coordinate of the specified point being
+<i>651</i>&nbsp;     *           measured against this line
+<i>652</i>&nbsp;     * @param py the Y coordinate of the specified point being
+<i>653</i>&nbsp;     *           measured against this line
+<i>654</i>&nbsp;     * @return a double value that is the distance from a specified point
+<i>655</i>&nbsp;     *          to the current line.
+<i>656</i>&nbsp;     * @see #ptSegDist(double, double)
+<i>657</i>&nbsp;     */
+<i>658</i>&nbsp;    public float ptLineDist(float px, float py) {
+<b class="nc"><i>659</i>&nbsp;        return ptLineDist(x1, y1, x2, y2, px, py);</b>
+<i>660</i>&nbsp;    }
+<i>661</i>&nbsp;
+<i>662</i>&nbsp;    /**
+<i>663</i>&nbsp;     * Returns the distance from a &lt;code&gt;Point2D&lt;/code&gt; to this line.
+<i>664</i>&nbsp;     * The distance measured is the distance between the specified
+<i>665</i>&nbsp;     * point and the closest point on the infinitely-extended line
+<i>666</i>&nbsp;     * defined by this &lt;code&gt;Line2D&lt;/code&gt;.  If the specified point
+<i>667</i>&nbsp;     * intersects the line, this method returns 0.0.
+<i>668</i>&nbsp;     * @param pt the specified &lt;code&gt;Point2D&lt;/code&gt; being measured
+<i>669</i>&nbsp;     * @return a double value that is the distance from a specified
+<i>670</i>&nbsp;     *          &lt;code&gt;Point2D&lt;/code&gt; to the current line.
+<i>671</i>&nbsp;     * @see #ptSegDist(Point2D)
+<i>672</i>&nbsp;     */
+<i>673</i>&nbsp;    public float ptLineDist(Point2D pt) {
+<b class="nc"><i>674</i>&nbsp;        return ptLineDist(x1, y1, x2, y2, pt.x, pt.y);</b>
+<i>675</i>&nbsp;    }
+<i>676</i>&nbsp;
+<i>677</i>&nbsp;    /**
+<i>678</i>&nbsp;     * Returns an iteration object that defines the boundary of this
+<i>679</i>&nbsp;     * &lt;code&gt;Line2D&lt;/code&gt;.
+<i>680</i>&nbsp;     * The iterator for this class is not multi-threaded safe,
+<i>681</i>&nbsp;     * which means that this &lt;code&gt;Line2D&lt;/code&gt; class does not
+<i>682</i>&nbsp;     * guarantee that modifications to the geometry of this
+<i>683</i>&nbsp;     * &lt;code&gt;Line2D&lt;/code&gt; object do not affect any iterations of that
+<i>684</i>&nbsp;     * geometry that are already in process.
+<i>685</i>&nbsp;     * @param tx the specified {@link BaseTransform}
+<i>686</i>&nbsp;     * @return a {@link PathIterator} that defines the boundary of this
+<i>687</i>&nbsp;     *      &lt;code&gt;Line2D&lt;/code&gt;.
+<i>688</i>&nbsp;     */
+<i>689</i>&nbsp;    public PathIterator getPathIterator(BaseTransform tx) {
+<b class="nc"><i>690</i>&nbsp;        return new LineIterator(this, tx);</b>
+<i>691</i>&nbsp;    }
+<i>692</i>&nbsp;
+<i>693</i>&nbsp;    /**
+<i>694</i>&nbsp;     * Returns an iteration object that defines the boundary of this
+<i>695</i>&nbsp;     * flattened &lt;code&gt;Line2D&lt;/code&gt;.
+<i>696</i>&nbsp;     * The iterator for this class is not multi-threaded safe,
+<i>697</i>&nbsp;     * which means that this &lt;code&gt;Line2D&lt;/code&gt; class does not
+<i>698</i>&nbsp;     * guarantee that modifications to the geometry of this
+<i>699</i>&nbsp;     * &lt;code&gt;Line2D&lt;/code&gt; object do not affect any iterations of that
+<i>700</i>&nbsp;     * geometry that are already in process.
+<i>701</i>&nbsp;     * @param tx the specified &lt;code&gt;BaseTransform&lt;/code&gt;
+<i>702</i>&nbsp;     * @param flatness the maximum amount that the control points for a
+<i>703</i>&nbsp;     *      given curve can vary from colinear before a subdivided
+<i>704</i>&nbsp;     *      curve is replaced by a straight line connecting the
+<i>705</i>&nbsp;     *      end points.  Since a &lt;code&gt;Line2D&lt;/code&gt; object is
+<i>706</i>&nbsp;     *          always flat, this parameter is ignored.
+<i>707</i>&nbsp;     * @return a &lt;code&gt;PathIterator&lt;/code&gt; that defines the boundary of the
+<i>708</i>&nbsp;     *          flattened &lt;code&gt;Line2D&lt;/code&gt;
+<i>709</i>&nbsp;     */
+<i>710</i>&nbsp;    public PathIterator getPathIterator(BaseTransform tx, float flatness) {
+<b class="nc"><i>711</i>&nbsp;        return new LineIterator(this, tx);</b>
+<i>712</i>&nbsp;    }
+<i>713</i>&nbsp;
+<i>714</i>&nbsp;    @Override
+<i>715</i>&nbsp;    public Line2D copy() {
+<b class="nc"><i>716</i>&nbsp;        return new Line2D(x1, y1, x2, y2);</b>
+<i>717</i>&nbsp;    }
+<i>718</i>&nbsp;
+<i>719</i>&nbsp;    @Override
+<i>720</i>&nbsp;    public int hashCode() {
+<b class="nc"><i>721</i>&nbsp;        int bits = java.lang.Float.floatToIntBits(x1);</b>
+<b class="nc"><i>722</i>&nbsp;        bits += java.lang.Float.floatToIntBits(y1) * 37;</b>
+<b class="nc"><i>723</i>&nbsp;        bits += java.lang.Float.floatToIntBits(x2) * 43;</b>
+<b class="nc"><i>724</i>&nbsp;        bits += java.lang.Float.floatToIntBits(y2) * 47;</b>
+<b class="nc"><i>725</i>&nbsp;        return bits;</b>
+<i>726</i>&nbsp;    }
+<i>727</i>&nbsp;
+<i>728</i>&nbsp;    @Override
+<i>729</i>&nbsp;    public boolean equals(Object obj) {
+<b class="nc"><i>730</i>&nbsp;        if (obj == this) {</b>
+<b class="nc"><i>731</i>&nbsp;            return true;</b>
+<i>732</i>&nbsp;        }
+<b class="nc"><i>733</i>&nbsp;        if (obj instanceof Line2D) {</b>
+<b class="nc"><i>734</i>&nbsp;            Line2D line = (Line2D) obj;</b>
+<b class="nc"><i>735</i>&nbsp;            return ((x1 == line.x1) &amp;&amp; (y1 == line.y1) &amp;&amp;</b>
+<i>736</i>&nbsp;                    (x2 == line.x2) &amp;&amp; (y2 == line.y2));
+<i>737</i>&nbsp;        }
+<b class="nc"><i>738</i>&nbsp;        return false;</b>
+<i>739</i>&nbsp;    }
+<i>740</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2017-12-04 21:49</div>
+</div>
+</body>
+</html>

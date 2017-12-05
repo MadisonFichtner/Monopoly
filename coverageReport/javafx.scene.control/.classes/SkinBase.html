@@ -1,0 +1,1119 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: SkinBase</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">javafx.scene.control</a> ]
+</div>
+
+<h1>Coverage Summary for Class: SkinBase (javafx.scene.control)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">SkinBase</td>
+<td class="coverageStat">
+  <span class="percent">
+    58.5%
+  </span>
+  <span class="absValue">
+    (24/ 41)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    43%
+  </span>
+  <span class="absValue">
+    (58/ 135)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">SkinBase$StyleableProperties</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (2/ 2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (3/ 3)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    60.5%
+  </span>
+  <span class="absValue">
+    (26/ 43)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    44.2%
+  </span>
+  <span class="absValue">
+    (61/ 138)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright (c) 2012, 2017, Oracle and/or its affiliates. All rights reserved.
+<i>3</i>&nbsp; * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+<i>4</i>&nbsp; *
+<i>5</i>&nbsp; *
+<i>6</i>&nbsp; *
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; *
+<i>11</i>&nbsp; *
+<i>12</i>&nbsp; *
+<i>13</i>&nbsp; *
+<i>14</i>&nbsp; *
+<i>15</i>&nbsp; *
+<i>16</i>&nbsp; *
+<i>17</i>&nbsp; *
+<i>18</i>&nbsp; *
+<i>19</i>&nbsp; *
+<i>20</i>&nbsp; *
+<i>21</i>&nbsp; *
+<i>22</i>&nbsp; *
+<i>23</i>&nbsp; *
+<i>24</i>&nbsp; */
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;package javafx.scene.control;
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;import com.sun.javafx.scene.control.LambdaMultiplePropertyChangeListenerHandler;
+<i>29</i>&nbsp;import javafx.beans.value.ObservableValue;
+<i>30</i>&nbsp;import javafx.css.CssMetaData;
+<i>31</i>&nbsp;import javafx.css.PseudoClass;
+<i>32</i>&nbsp;import java.util.Collections;
+<i>33</i>&nbsp;import java.util.List;
+<i>34</i>&nbsp;import java.util.function.Consumer;
+<i>35</i>&nbsp;
+<i>36</i>&nbsp;import javafx.collections.ObservableList;
+<i>37</i>&nbsp;import javafx.css.Styleable;
+<i>38</i>&nbsp;import javafx.event.EventHandler;
+<i>39</i>&nbsp;import javafx.geometry.HPos;
+<i>40</i>&nbsp;import javafx.geometry.Insets;
+<i>41</i>&nbsp;import javafx.geometry.VPos;
+<i>42</i>&nbsp;import javafx.scene.AccessibleAction;
+<i>43</i>&nbsp;import javafx.scene.AccessibleAttribute;
+<i>44</i>&nbsp;import javafx.scene.Node;
+<i>45</i>&nbsp;import javafx.scene.input.MouseEvent;
+<i>46</i>&nbsp;import javafx.scene.layout.Region;
+<i>47</i>&nbsp;
+<i>48</i>&nbsp;/**
+<i>49</i>&nbsp; * Base implementation class for defining the visual representation of user
+<i>50</i>&nbsp; * interface controls by defining a scene graph of nodes to represent the
+<i>51</i>&nbsp; * {@link Skin skin}.
+<i>52</i>&nbsp; * A user interface control is abstracted behind the {@link Skinnable} interface.
+<i>53</i>&nbsp; *
+<i>54</i>&nbsp; * @since JavaFX 8.0
+<i>55</i>&nbsp; */
+<i>56</i>&nbsp;public abstract class SkinBase&lt;C extends Control&gt; implements Skin&lt;C&gt; {
+<i>57</i>&nbsp;
+<i>58</i>&nbsp;    /***************************************************************************
+<i>59</i>&nbsp;     *                                                                         *
+<i>60</i>&nbsp;     * Private fields                                                          *
+<i>61</i>&nbsp;     *                                                                         *
+<i>62</i>&nbsp;     **************************************************************************/
+<i>63</i>&nbsp;
+<i>64</i>&nbsp;    /**
+<i>65</i>&nbsp;     * The {@code Control} that is referencing this Skin. There is a
+<i>66</i>&nbsp;     * one-to-one relationship between a {@code Skin} and a {@code Control}.
+<i>67</i>&nbsp;     * When a {@code Skin} is set on a {@code Control}, this variable is
+<i>68</i>&nbsp;     * automatically updated.
+<i>69</i>&nbsp;     */
+<i>70</i>&nbsp;    private C control;
+<i>71</i>&nbsp;
+<i>72</i>&nbsp;    /**
+<i>73</i>&nbsp;     * A local field that directly refers to the children list inside the Control.
+<i>74</i>&nbsp;     */
+<i>75</i>&nbsp;    private ObservableList&lt;Node&gt; children;
+<i>76</i>&nbsp;
+<i>77</i>&nbsp;    /**
+<i>78</i>&nbsp;     * This is part of the workaround introduced during delomboking. We probably will
+<i>79</i>&nbsp;     * want to adjust the way listeners are added rather than continuing to use this
+<i>80</i>&nbsp;     * map (although it doesn&#39;t really do much harm).
+<i>81</i>&nbsp;     */
+<i>82</i>&nbsp;    private LambdaMultiplePropertyChangeListenerHandler lambdaChangeListenerHandler;
+<i>83</i>&nbsp;
+<i>84</i>&nbsp;
+<i>85</i>&nbsp;
+<i>86</i>&nbsp;    /***************************************************************************
+<i>87</i>&nbsp;     *                                                                         *
+<i>88</i>&nbsp;     * Event Handlers / Listeners                                              *
+<i>89</i>&nbsp;     *                                                                         *
+<i>90</i>&nbsp;     **************************************************************************/
+<i>91</i>&nbsp;
+<i>92</i>&nbsp;    /**
+<i>93</i>&nbsp;     * Mouse handler used for consuming all mouse events (preventing them
+<i>94</i>&nbsp;     * from bubbling up to parent)
+<i>95</i>&nbsp;     */
+<b class="fc"><i>96</i>&nbsp;    private static final EventHandler&lt;MouseEvent&gt; mouseEventConsumer = event -&gt; {</b>
+<i>97</i>&nbsp;        /*
+<i>98</i>&nbsp;        ** we used to consume mouse wheel rotations here,
+<i>99</i>&nbsp;        ** be we&#39;ve switched to ScrollEvents, and only consume those which we use.
+<i>100</i>&nbsp;        ** See RT-13995 &amp; RT-14480
+<i>101</i>&nbsp;        */
+<b class="fc"><i>102</i>&nbsp;        event.consume();</b>
+<b class="fc"><i>103</i>&nbsp;    };</b>
+<i>104</i>&nbsp;
+<i>105</i>&nbsp;
+<i>106</i>&nbsp;
+<i>107</i>&nbsp;    /***************************************************************************
+<i>108</i>&nbsp;     *                                                                         *
+<i>109</i>&nbsp;     * Constructor                                                             *
+<i>110</i>&nbsp;     *                                                                         *
+<i>111</i>&nbsp;     **************************************************************************/
+<i>112</i>&nbsp;
+<i>113</i>&nbsp;    /**
+<i>114</i>&nbsp;     * Constructor for all SkinBase instances.
+<i>115</i>&nbsp;     *
+<i>116</i>&nbsp;     * @param control The control for which this Skin should attach to.
+<i>117</i>&nbsp;     */
+<b class="fc"><i>118</i>&nbsp;    protected SkinBase(final C control) {</b>
+<b class="fc"><i>119</i>&nbsp;        if (control == null) {</b>
+<b class="nc"><i>120</i>&nbsp;            throw new IllegalArgumentException(&quot;Cannot pass null for control&quot;);</b>
+<i>121</i>&nbsp;        }
+<i>122</i>&nbsp;
+<i>123</i>&nbsp;        // Update the control and behavior
+<b class="fc"><i>124</i>&nbsp;        this.control = control;</b>
+<b class="fc"><i>125</i>&nbsp;        this.children = control.getControlChildren();</b>
+<i>126</i>&nbsp;
+<i>127</i>&nbsp;        // Default behavior for controls is to consume all mouse events
+<b class="fc"><i>128</i>&nbsp;        consumeMouseEvents(true);</b>
+<b class="fc"><i>129</i>&nbsp;    }</b>
+<i>130</i>&nbsp;
+<i>131</i>&nbsp;
+<i>132</i>&nbsp;
+<i>133</i>&nbsp;    /***************************************************************************
+<i>134</i>&nbsp;     *                                                                         *
+<i>135</i>&nbsp;     * Public API (from Skin)                                                  *
+<i>136</i>&nbsp;     *                                                                         *
+<i>137</i>&nbsp;     **************************************************************************/
+<i>138</i>&nbsp;
+<i>139</i>&nbsp;    /** {@inheritDoc} */
+<i>140</i>&nbsp;    @Override public final C getSkinnable() {
+<b class="fc"><i>141</i>&nbsp;        return control;</b>
+<i>142</i>&nbsp;    }
+<i>143</i>&nbsp;
+<i>144</i>&nbsp;    /** {@inheritDoc} */
+<i>145</i>&nbsp;    @Override public final Node getNode() {
+<b class="nc"><i>146</i>&nbsp;        return control;</b>
+<i>147</i>&nbsp;    }
+<i>148</i>&nbsp;
+<i>149</i>&nbsp;    /** {@inheritDoc} */
+<i>150</i>&nbsp;    @Override public void dispose() {
+<i>151</i>&nbsp;//        control.removeEventHandler(ContextMenuEvent.CONTEXT_MENU_REQUESTED, contextMenuHandler);
+<i>152</i>&nbsp;
+<i>153</i>&nbsp;        // unhook listeners
+<b class="nc"><i>154</i>&nbsp;        if (lambdaChangeListenerHandler != null) {</b>
+<b class="nc"><i>155</i>&nbsp;            lambdaChangeListenerHandler.dispose();</b>
+<i>156</i>&nbsp;        }
+<i>157</i>&nbsp;
+<b class="nc"><i>158</i>&nbsp;        this.control = null;</b>
+<b class="nc"><i>159</i>&nbsp;    }</b>
+<i>160</i>&nbsp;
+<i>161</i>&nbsp;
+<i>162</i>&nbsp;
+<i>163</i>&nbsp;    /***************************************************************************
+<i>164</i>&nbsp;     *                                                                         *
+<i>165</i>&nbsp;     * Public API                                                              *
+<i>166</i>&nbsp;     *                                                                         *
+<i>167</i>&nbsp;     **************************************************************************/
+<i>168</i>&nbsp;
+<i>169</i>&nbsp;    /**
+<i>170</i>&nbsp;     * Returns the children of the skin.
+<i>171</i>&nbsp;     * @return the children of the skin
+<i>172</i>&nbsp;     */
+<i>173</i>&nbsp;    public final ObservableList&lt;Node&gt; getChildren() {
+<b class="fc"><i>174</i>&nbsp;        return children;</b>
+<i>175</i>&nbsp;    }
+<i>176</i>&nbsp;
+<i>177</i>&nbsp;    /**
+<i>178</i>&nbsp;     * Called during the layout pass of the scenegraph.
+<i>179</i>&nbsp;     * @param contentX the x position
+<i>180</i>&nbsp;     * @param contentY the y position
+<i>181</i>&nbsp;     * @param contentWidth the width
+<i>182</i>&nbsp;     * @param contentHeight the height
+<i>183</i>&nbsp;     */
+<i>184</i>&nbsp;    protected void layoutChildren(final double contentX, final double contentY,
+<i>185</i>&nbsp;            final double contentWidth, final double contentHeight) {
+<i>186</i>&nbsp;        // By default simply sizes all managed children to fit within the space provided
+<b class="fc"><i>187</i>&nbsp;        for (int i=0, max=children.size(); i&lt;max; i++) {</b>
+<b class="fc"><i>188</i>&nbsp;            Node child = children.get(i);</b>
+<b class="fc"><i>189</i>&nbsp;            if (child.isManaged()) {</b>
+<b class="fc"><i>190</i>&nbsp;                layoutInArea(child, contentX, contentY, contentWidth, contentHeight, -1, HPos.CENTER, VPos.CENTER);</b>
+<i>191</i>&nbsp;            }
+<i>192</i>&nbsp;        }
+<b class="fc"><i>193</i>&nbsp;    }</b>
+<i>194</i>&nbsp;
+<i>195</i>&nbsp;    /**
+<i>196</i>&nbsp;     * Determines whether all mouse events should be automatically consumed.
+<i>197</i>&nbsp;     * @param value the consume mouse events flag
+<i>198</i>&nbsp;     */
+<i>199</i>&nbsp;    protected final void consumeMouseEvents(boolean value) {
+<b class="fc"><i>200</i>&nbsp;        if (value) {</b>
+<b class="fc"><i>201</i>&nbsp;            control.addEventHandler(MouseEvent.ANY, mouseEventConsumer);</b>
+<i>202</i>&nbsp;        } else {
+<b class="fc"><i>203</i>&nbsp;            control.removeEventHandler(MouseEvent.ANY, mouseEventConsumer);</b>
+<i>204</i>&nbsp;        }
+<b class="fc"><i>205</i>&nbsp;    }</b>
+<i>206</i>&nbsp;
+<i>207</i>&nbsp;
+<i>208</i>&nbsp;    /**
+<i>209</i>&nbsp;     * Subclasses can invoke this method to register that they want to listen to
+<i>210</i>&nbsp;     * property change events for the given property. Registered {@link Consumer} instances
+<i>211</i>&nbsp;     * will be executed in the order in which they are registered.
+<i>212</i>&nbsp;     * @param property the property
+<i>213</i>&nbsp;     * @param consumer the consumer
+<i>214</i>&nbsp;     */
+<i>215</i>&nbsp;    protected final void registerChangeListener(ObservableValue&lt;?&gt; property, Consumer&lt;ObservableValue&lt;?&gt;&gt; consumer) {
+<b class="fc"><i>216</i>&nbsp;        if (lambdaChangeListenerHandler == null) {</b>
+<b class="fc"><i>217</i>&nbsp;            lambdaChangeListenerHandler = new LambdaMultiplePropertyChangeListenerHandler();</b>
+<i>218</i>&nbsp;        }
+<b class="fc"><i>219</i>&nbsp;        lambdaChangeListenerHandler.registerChangeListener(property, consumer);</b>
+<b class="fc"><i>220</i>&nbsp;    }</b>
+<i>221</i>&nbsp;
+<i>222</i>&nbsp;    /**
+<i>223</i>&nbsp;     * Unregisters all change listeners that have been registered using {@link #registerChangeListener(ObservableValue, Consumer)}
+<i>224</i>&nbsp;     * for the given property. The end result is that the given property is no longer observed by any of the change
+<i>225</i>&nbsp;     * listeners, but it may still have additional listeners registered on it through means outside of
+<i>226</i>&nbsp;     * {@link #registerChangeListener(ObservableValue, Consumer)}.
+<i>227</i>&nbsp;     *
+<i>228</i>&nbsp;     * @param property The property for which all listeners should be removed.
+<i>229</i>&nbsp;     * @return A single chained {@link Consumer} consisting of all {@link Consumer consumers} registered through
+<i>230</i>&nbsp;     *      {@link #registerChangeListener(ObservableValue, Consumer)}. If no consumers have been registered on this
+<i>231</i>&nbsp;     *      property, null will be returned.
+<i>232</i>&nbsp;     * @since 9
+<i>233</i>&nbsp;     */
+<i>234</i>&nbsp;    protected final Consumer&lt;ObservableValue&lt;?&gt;&gt; unregisterChangeListeners(ObservableValue&lt;?&gt; property) {
+<b class="nc"><i>235</i>&nbsp;        if (lambdaChangeListenerHandler == null) {</b>
+<b class="nc"><i>236</i>&nbsp;            return null;</b>
+<i>237</i>&nbsp;        }
+<b class="nc"><i>238</i>&nbsp;        return lambdaChangeListenerHandler.unregisterChangeListeners(property);</b>
+<i>239</i>&nbsp;    }
+<i>240</i>&nbsp;
+<i>241</i>&nbsp;
+<i>242</i>&nbsp;
+<i>243</i>&nbsp;
+<i>244</i>&nbsp;    /***************************************************************************
+<i>245</i>&nbsp;     *                                                                         *
+<i>246</i>&nbsp;     * Public Layout-related API                                               *
+<i>247</i>&nbsp;     *                                                                         *
+<i>248</i>&nbsp;     **************************************************************************/
+<i>249</i>&nbsp;
+<i>250</i>&nbsp;    /**
+<i>251</i>&nbsp;     * Computes the minimum allowable width of the Skin, based on the provided
+<i>252</i>&nbsp;     * height.
+<i>253</i>&nbsp;     *
+<i>254</i>&nbsp;     * @param height The height of the Skin, in case this value might dictate
+<i>255</i>&nbsp;     *      the minimum width.
+<i>256</i>&nbsp;     * @param topInset the pixel snapped top inset
+<i>257</i>&nbsp;     * @param rightInset the pixel snapped right inset
+<i>258</i>&nbsp;     * @param bottomInset the pixel snapped bottom inset
+<i>259</i>&nbsp;     * @param leftInset  the pixel snapped left inset
+<i>260</i>&nbsp;     * @return A double representing the minimum width of this Skin.
+<i>261</i>&nbsp;     */
+<i>262</i>&nbsp;    protected double computeMinWidth(double height, double topInset, double rightInset, double bottomInset, double leftInset) {
+<i>263</i>&nbsp;
+<b class="fc"><i>264</i>&nbsp;        double minX = 0;</b>
+<b class="fc"><i>265</i>&nbsp;        double maxX = 0;</b>
+<b class="fc"><i>266</i>&nbsp;        boolean firstManagedChild = true;</b>
+<b class="fc"><i>267</i>&nbsp;        for (int i = 0; i &lt; children.size(); i++) {</b>
+<b class="fc"><i>268</i>&nbsp;            Node node = children.get(i);</b>
+<b class="fc"><i>269</i>&nbsp;            if (node.isManaged()) {</b>
+<b class="fc"><i>270</i>&nbsp;                final double x = node.getLayoutBounds().getMinX() + node.getLayoutX();</b>
+<b class="fc"><i>271</i>&nbsp;                if (!firstManagedChild) {  // branch prediction favors most often used condition</b>
+<b class="nc"><i>272</i>&nbsp;                    minX = Math.min(minX, x);</b>
+<b class="nc"><i>273</i>&nbsp;                    maxX = Math.max(maxX, x + node.minWidth(-1));</b>
+<i>274</i>&nbsp;                } else {
+<b class="fc"><i>275</i>&nbsp;                    minX = x;</b>
+<b class="fc"><i>276</i>&nbsp;                    maxX = x + node.minWidth(-1);</b>
+<b class="fc"><i>277</i>&nbsp;                    firstManagedChild = false;</b>
+<i>278</i>&nbsp;                }
+<i>279</i>&nbsp;            }
+<i>280</i>&nbsp;        }
+<b class="fc"><i>281</i>&nbsp;        double minWidth = maxX - minX;</b>
+<b class="fc"><i>282</i>&nbsp;        return leftInset + minWidth + rightInset;</b>
+<i>283</i>&nbsp;    }
+<i>284</i>&nbsp;
+<i>285</i>&nbsp;    /**
+<i>286</i>&nbsp;     * Computes the minimum allowable height of the Skin, based on the provided
+<i>287</i>&nbsp;     * width.
+<i>288</i>&nbsp;     *
+<i>289</i>&nbsp;     * @param width The width of the Skin, in case this value might dictate
+<i>290</i>&nbsp;     *      the minimum height.
+<i>291</i>&nbsp;     * @param topInset the pixel snapped top inset
+<i>292</i>&nbsp;     * @param rightInset the pixel snapped right inset
+<i>293</i>&nbsp;     * @param bottomInset the pixel snapped bottom inset
+<i>294</i>&nbsp;     * @param leftInset  the pixel snapped left inset
+<i>295</i>&nbsp;     * @return A double representing the minimum height of this Skin.
+<i>296</i>&nbsp;     */
+<i>297</i>&nbsp;    protected double computeMinHeight(double width, double topInset, double rightInset, double bottomInset, double leftInset) {
+<i>298</i>&nbsp;
+<b class="nc"><i>299</i>&nbsp;        double minY = 0;</b>
+<b class="nc"><i>300</i>&nbsp;        double maxY = 0;</b>
+<b class="nc"><i>301</i>&nbsp;        boolean firstManagedChild = true;</b>
+<b class="nc"><i>302</i>&nbsp;        for (int i = 0; i &lt; children.size(); i++) {</b>
+<b class="nc"><i>303</i>&nbsp;            Node node = children.get(i);</b>
+<b class="nc"><i>304</i>&nbsp;            if (node.isManaged()) {</b>
+<b class="nc"><i>305</i>&nbsp;                final double y = node.getLayoutBounds().getMinY() + node.getLayoutY();</b>
+<b class="nc"><i>306</i>&nbsp;                if (!firstManagedChild) {  // branch prediction favors most often used condition</b>
+<b class="nc"><i>307</i>&nbsp;                    minY = Math.min(minY, y);</b>
+<b class="nc"><i>308</i>&nbsp;                    maxY = Math.max(maxY, y + node.minHeight(-1));</b>
+<i>309</i>&nbsp;                } else {
+<b class="nc"><i>310</i>&nbsp;                    minY = y;</b>
+<b class="nc"><i>311</i>&nbsp;                    maxY = y + node.minHeight(-1);</b>
+<b class="nc"><i>312</i>&nbsp;                    firstManagedChild = false;</b>
+<i>313</i>&nbsp;                }
+<i>314</i>&nbsp;            }
+<i>315</i>&nbsp;        }
+<b class="nc"><i>316</i>&nbsp;        double minHeight = maxY - minY;</b>
+<b class="nc"><i>317</i>&nbsp;        return topInset + minHeight + bottomInset;</b>
+<i>318</i>&nbsp;    }
+<i>319</i>&nbsp;
+<i>320</i>&nbsp;    /**
+<i>321</i>&nbsp;     * Computes the maximum allowable width of the Skin, based on the provided
+<i>322</i>&nbsp;     * height.
+<i>323</i>&nbsp;     *
+<i>324</i>&nbsp;     * @param height The height of the Skin, in case this value might dictate
+<i>325</i>&nbsp;     *      the maximum width.
+<i>326</i>&nbsp;     * @param topInset the pixel snapped top inset
+<i>327</i>&nbsp;     * @param rightInset the pixel snapped right inset
+<i>328</i>&nbsp;     * @param bottomInset the pixel snapped bottom inset
+<i>329</i>&nbsp;     * @param leftInset  the pixel snapped left inset
+<i>330</i>&nbsp;     * @return A double representing the maximum width of this Skin.
+<i>331</i>&nbsp;     */
+<i>332</i>&nbsp;    protected double computeMaxWidth(double height, double topInset, double rightInset, double bottomInset, double leftInset) {
+<b class="fc"><i>333</i>&nbsp;        return Double.MAX_VALUE;</b>
+<i>334</i>&nbsp;    }
+<i>335</i>&nbsp;
+<i>336</i>&nbsp;    /**
+<i>337</i>&nbsp;     * Computes the maximum allowable height of the Skin, based on the provided
+<i>338</i>&nbsp;     * width.
+<i>339</i>&nbsp;     *
+<i>340</i>&nbsp;     * @param width The width of the Skin, in case this value might dictate
+<i>341</i>&nbsp;     *      the maximum height.
+<i>342</i>&nbsp;     * @param topInset the pixel snapped top inset
+<i>343</i>&nbsp;     * @param rightInset the pixel snapped right inset
+<i>344</i>&nbsp;     * @param bottomInset the pixel snapped bottom inset
+<i>345</i>&nbsp;     * @param leftInset  the pixel snapped left inset
+<i>346</i>&nbsp;     * @return A double representing the maximum height of this Skin.
+<i>347</i>&nbsp;     */
+<i>348</i>&nbsp;    protected double computeMaxHeight(double width, double topInset, double rightInset, double bottomInset, double leftInset) {
+<b class="nc"><i>349</i>&nbsp;        return Double.MAX_VALUE;</b>
+<i>350</i>&nbsp;    }
+<i>351</i>&nbsp;
+<i>352</i>&nbsp;    // PENDING_DOC_REVIEW
+<i>353</i>&nbsp;    /**
+<i>354</i>&nbsp;     * Calculates the preferred width of this {@code SkinBase}. The default
+<i>355</i>&nbsp;     * implementation calculates this width as the width of the area occupied
+<i>356</i>&nbsp;     * by its managed children when they are positioned at their
+<i>357</i>&nbsp;     * current positions at their preferred widths.
+<i>358</i>&nbsp;     *
+<i>359</i>&nbsp;     * @param height the height that should be used if preferred width depends on it
+<i>360</i>&nbsp;     * @param topInset the pixel snapped top inset
+<i>361</i>&nbsp;     * @param rightInset the pixel snapped right inset
+<i>362</i>&nbsp;     * @param bottomInset the pixel snapped bottom inset
+<i>363</i>&nbsp;     * @param leftInset  the pixel snapped left inset
+<i>364</i>&nbsp;     * @return the calculated preferred width
+<i>365</i>&nbsp;     */
+<i>366</i>&nbsp;    protected double computePrefWidth(double height, double topInset, double rightInset, double bottomInset, double leftInset) {
+<i>367</i>&nbsp;
+<b class="nc"><i>368</i>&nbsp;        double minX = 0;</b>
+<b class="nc"><i>369</i>&nbsp;        double maxX = 0;</b>
+<b class="nc"><i>370</i>&nbsp;        boolean firstManagedChild = true;</b>
+<b class="nc"><i>371</i>&nbsp;        for (int i = 0; i &lt; children.size(); i++) {</b>
+<b class="nc"><i>372</i>&nbsp;            Node node = children.get(i);</b>
+<b class="nc"><i>373</i>&nbsp;            if (node.isManaged()) {</b>
+<b class="nc"><i>374</i>&nbsp;                final double x = node.getLayoutBounds().getMinX() + node.getLayoutX();</b>
+<b class="nc"><i>375</i>&nbsp;                if (!firstManagedChild) {  // branch prediction favors most often used condition</b>
+<b class="nc"><i>376</i>&nbsp;                    minX = Math.min(minX, x);</b>
+<b class="nc"><i>377</i>&nbsp;                    maxX = Math.max(maxX, x + node.prefWidth(-1));</b>
+<i>378</i>&nbsp;                } else {
+<b class="nc"><i>379</i>&nbsp;                    minX = x;</b>
+<b class="nc"><i>380</i>&nbsp;                    maxX = x + node.prefWidth(-1);</b>
+<b class="nc"><i>381</i>&nbsp;                    firstManagedChild = false;</b>
+<i>382</i>&nbsp;                }
+<i>383</i>&nbsp;            }
+<i>384</i>&nbsp;        }
+<b class="nc"><i>385</i>&nbsp;        return maxX - minX;</b>
+<i>386</i>&nbsp;    }
+<i>387</i>&nbsp;
+<i>388</i>&nbsp;    // PENDING_DOC_REVIEW
+<i>389</i>&nbsp;    /**
+<i>390</i>&nbsp;     * Calculates the preferred height of this {@code SkinBase}. The default
+<i>391</i>&nbsp;     * implementation calculates this height as the height of the area occupied
+<i>392</i>&nbsp;     * by its managed children when they are positioned at their current
+<i>393</i>&nbsp;     * positions at their preferred heights.
+<i>394</i>&nbsp;     *
+<i>395</i>&nbsp;     * @param width the width that should be used if preferred height depends on it
+<i>396</i>&nbsp;     * @param topInset the pixel snapped top inset
+<i>397</i>&nbsp;     * @param rightInset the pixel snapped right inset
+<i>398</i>&nbsp;     * @param bottomInset the pixel snapped bottom inset
+<i>399</i>&nbsp;     * @param leftInset  the pixel snapped left inset
+<i>400</i>&nbsp;     * @return the calculated preferred height
+<i>401</i>&nbsp;     */
+<i>402</i>&nbsp;    protected double computePrefHeight(double width, double topInset, double rightInset, double bottomInset, double leftInset) {
+<i>403</i>&nbsp;
+<b class="nc"><i>404</i>&nbsp;        double minY = 0;</b>
+<b class="nc"><i>405</i>&nbsp;        double maxY = 0;</b>
+<b class="nc"><i>406</i>&nbsp;        boolean firstManagedChild = true;</b>
+<b class="nc"><i>407</i>&nbsp;        for (int i = 0; i &lt; children.size(); i++) {</b>
+<b class="nc"><i>408</i>&nbsp;            Node node = children.get(i);</b>
+<b class="nc"><i>409</i>&nbsp;            if (node.isManaged()) {</b>
+<b class="nc"><i>410</i>&nbsp;                final double y = node.getLayoutBounds().getMinY() + node.getLayoutY();</b>
+<b class="nc"><i>411</i>&nbsp;                if (!firstManagedChild) {  // branch prediction favors most often used condition</b>
+<b class="nc"><i>412</i>&nbsp;                    minY = Math.min(minY, y);</b>
+<b class="nc"><i>413</i>&nbsp;                    maxY = Math.max(maxY, y + node.prefHeight(-1));</b>
+<i>414</i>&nbsp;                } else {
+<b class="nc"><i>415</i>&nbsp;                    minY = y;</b>
+<b class="nc"><i>416</i>&nbsp;                    maxY = y + node.prefHeight(-1);</b>
+<b class="nc"><i>417</i>&nbsp;                    firstManagedChild = false;</b>
+<i>418</i>&nbsp;                }
+<i>419</i>&nbsp;            }
+<i>420</i>&nbsp;        }
+<b class="nc"><i>421</i>&nbsp;        return maxY - minY;</b>
+<i>422</i>&nbsp;    }
+<i>423</i>&nbsp;
+<i>424</i>&nbsp;    /**
+<i>425</i>&nbsp;     * Calculates the baseline offset based on the first managed child. If there
+<i>426</i>&nbsp;     * is no such child, returns {@link Node#getBaselineOffset()}.
+<i>427</i>&nbsp;     *
+<i>428</i>&nbsp;     * @param topInset the pixel snapped top inset
+<i>429</i>&nbsp;     * @param rightInset the pixel snapped right inset
+<i>430</i>&nbsp;     * @param bottomInset the pixel snapped bottom inset
+<i>431</i>&nbsp;     * @param leftInset  the pixel snapped left inset
+<i>432</i>&nbsp;     * @return baseline offset
+<i>433</i>&nbsp;     */
+<i>434</i>&nbsp;    protected double computeBaselineOffset(double topInset, double rightInset, double bottomInset, double leftInset) {
+<b class="nc"><i>435</i>&nbsp;        int size = children.size();</b>
+<b class="nc"><i>436</i>&nbsp;        for (int i = 0; i &lt; size; ++i) {</b>
+<b class="nc"><i>437</i>&nbsp;            Node child = children.get(i);</b>
+<b class="nc"><i>438</i>&nbsp;            if (child.isManaged()) {</b>
+<b class="nc"><i>439</i>&nbsp;                double offset = child.getBaselineOffset();</b>
+<b class="nc"><i>440</i>&nbsp;                if (offset == Node.BASELINE_OFFSET_SAME_AS_HEIGHT) {</b>
+<b class="nc"><i>441</i>&nbsp;                    continue;</b>
+<i>442</i>&nbsp;                }
+<b class="nc"><i>443</i>&nbsp;                return child.getLayoutBounds().getMinY() + child.getLayoutY() + offset;</b>
+<i>444</i>&nbsp;            }
+<i>445</i>&nbsp;        }
+<b class="nc"><i>446</i>&nbsp;        return Node.BASELINE_OFFSET_SAME_AS_HEIGHT;</b>
+<i>447</i>&nbsp;    }
+<i>448</i>&nbsp;
+<i>449</i>&nbsp;
+<i>450</i>&nbsp;    /***************************************************************************
+<i>451</i>&nbsp;     *                                                                         *
+<i>452</i>&nbsp;     * (Mostly ugly) Skin -&gt; Control forwarding API                            *
+<i>453</i>&nbsp;     *                                                                         *
+<i>454</i>&nbsp;     **************************************************************************/
+<i>455</i>&nbsp;
+<i>456</i>&nbsp;    /**
+<i>457</i>&nbsp;     * Utility method to get the top inset which includes padding and border
+<i>458</i>&nbsp;     * inset. Then snapped to whole pixels if getSkinnable().isSnapToPixel() is true.
+<i>459</i>&nbsp;     *
+<i>460</i>&nbsp;     * @return Rounded up insets top
+<i>461</i>&nbsp;     */
+<i>462</i>&nbsp;    protected double snappedTopInset() {
+<b class="fc"><i>463</i>&nbsp;        return control.snappedTopInset();</b>
+<i>464</i>&nbsp;    }
+<i>465</i>&nbsp;
+<i>466</i>&nbsp;    /**
+<i>467</i>&nbsp;     * Utility method to get the bottom inset which includes padding and border
+<i>468</i>&nbsp;     * inset. Then snapped to whole pixels if getSkinnable().isSnapToPixel() is true.
+<i>469</i>&nbsp;     *
+<i>470</i>&nbsp;     * @return Rounded up insets bottom
+<i>471</i>&nbsp;     */
+<i>472</i>&nbsp;    protected double snappedBottomInset() {
+<b class="fc"><i>473</i>&nbsp;        return control.snappedBottomInset();</b>
+<i>474</i>&nbsp;    }
+<i>475</i>&nbsp;
+<i>476</i>&nbsp;    /**
+<i>477</i>&nbsp;     * Utility method to get the left inset which includes padding and border
+<i>478</i>&nbsp;     * inset. Then snapped to whole pixels if getSkinnable().isSnapToPixel() is true.
+<i>479</i>&nbsp;     *
+<i>480</i>&nbsp;     * @return Rounded up insets left
+<i>481</i>&nbsp;     */
+<i>482</i>&nbsp;    protected double snappedLeftInset() {
+<b class="fc"><i>483</i>&nbsp;        return control.snappedLeftInset();</b>
+<i>484</i>&nbsp;    }
+<i>485</i>&nbsp;
+<i>486</i>&nbsp;    /**
+<i>487</i>&nbsp;     * Utility method to get the right inset which includes padding and border
+<i>488</i>&nbsp;     * inset. Then snapped to whole pixels if getSkinnable().isSnapToPixel() is true.
+<i>489</i>&nbsp;     *
+<i>490</i>&nbsp;     * @return Rounded up insets right
+<i>491</i>&nbsp;     */
+<i>492</i>&nbsp;    protected double snappedRightInset() {
+<b class="fc"><i>493</i>&nbsp;        return control.snappedRightInset();</b>
+<i>494</i>&nbsp;    }
+<i>495</i>&nbsp;
+<i>496</i>&nbsp;    /**
+<i>497</i>&nbsp;     * If {@code getSkinnable().isSnapToPixel()} is false, this method
+<i>498</i>&nbsp;     * returns the same value, else it tries to return a value rounded to
+<i>499</i>&nbsp;     * the nearest pixel, but since there is no indication if the value is
+<i>500</i>&nbsp;     * a vertical or horizontal measurement then it may be snapped to the
+<i>501</i>&nbsp;     * wrong pixel size metric on screens with different horizontal and
+<i>502</i>&nbsp;     * vertical scales.
+<i>503</i>&nbsp;     * @param value the space value to be snapped
+<i>504</i>&nbsp;     * @return value rounded to nearest pixel
+<i>505</i>&nbsp;     * @deprecated replaced by {@code snapSpaceX()} and {@code snapSpaceY()}
+<i>506</i>&nbsp;     */
+<i>507</i>&nbsp;    @Deprecated(since=&quot;9&quot;)
+<i>508</i>&nbsp;    protected double snapSpace(double value) {
+<b class="nc"><i>509</i>&nbsp;        return control.snapSpaceX(value);</b>
+<i>510</i>&nbsp;    }
+<i>511</i>&nbsp;
+<i>512</i>&nbsp;    /**
+<i>513</i>&nbsp;     * Convenience method for accessing the
+<i>514</i>&nbsp;     * {@link Region#snapSpaceX(double) snapSpaceX()}
+<i>515</i>&nbsp;     * method on the skinnable.
+<i>516</i>&nbsp;     * It is equivalent to calling
+<i>517</i>&nbsp;     * {@code getSkinnable().snapSpaceX(value)}.
+<i>518</i>&nbsp;     * @param value the space value to be snapped
+<i>519</i>&nbsp;     * @return value rounded to nearest pixel
+<i>520</i>&nbsp;     * @see Region#snapSpaceX(double)
+<i>521</i>&nbsp;     * @since 9
+<i>522</i>&nbsp;     */
+<i>523</i>&nbsp;    protected double snapSpaceX(double value) {
+<b class="nc"><i>524</i>&nbsp;        return control.snapSpaceX(value);</b>
+<i>525</i>&nbsp;    }
+<i>526</i>&nbsp;
+<i>527</i>&nbsp;    /**
+<i>528</i>&nbsp;     * Convenience method for accessing the
+<i>529</i>&nbsp;     * {@link Region#snapSpaceY(double) snapSpaceY()}
+<i>530</i>&nbsp;     * method on the skinnable.
+<i>531</i>&nbsp;     * It is equivalent to calling
+<i>532</i>&nbsp;     * {@code getSkinnable().snapSpaceY(value)}.
+<i>533</i>&nbsp;     * @param value the space value to be snapped
+<i>534</i>&nbsp;     * @return value rounded to nearest pixel
+<i>535</i>&nbsp;     * @see Region#snapSpaceY(double)
+<i>536</i>&nbsp;     * @since 9
+<i>537</i>&nbsp;     */
+<i>538</i>&nbsp;    protected double snapSpaceY(double value) {
+<b class="nc"><i>539</i>&nbsp;        return control.snapSpaceY(value);</b>
+<i>540</i>&nbsp;    }
+<i>541</i>&nbsp;
+<i>542</i>&nbsp;    /**
+<i>543</i>&nbsp;     * If {@code getSkinnable().isSnapToPixel()} is false, this method
+<i>544</i>&nbsp;     * returns the same value, else it tries to return a value ceiled to
+<i>545</i>&nbsp;     * the nearest pixel, but since there is no indication if the value is
+<i>546</i>&nbsp;     * a vertical or horizontal measurement then it may be snapped to the
+<i>547</i>&nbsp;     * wrong pixel size metric on screens with different horizontal and
+<i>548</i>&nbsp;     * vertical scales.
+<i>549</i>&nbsp;     * @param value the size value to be snapped
+<i>550</i>&nbsp;     * @return value ceiled to nearest pixel
+<i>551</i>&nbsp;     * @deprecated replaced by {@code snapSizeX()} and {@code snapSizeY()}
+<i>552</i>&nbsp;     */
+<i>553</i>&nbsp;    @Deprecated(since=&quot;9&quot;)
+<i>554</i>&nbsp;    protected double snapSize(double value) {
+<b class="nc"><i>555</i>&nbsp;        return control.snapSizeX(value);</b>
+<i>556</i>&nbsp;    }
+<i>557</i>&nbsp;
+<i>558</i>&nbsp;    /**
+<i>559</i>&nbsp;     * Convenience method for accessing the
+<i>560</i>&nbsp;     * {@link Region#snapSizeX(double) snapSizeX()}
+<i>561</i>&nbsp;     * method on the skinnable.
+<i>562</i>&nbsp;     * It is equivalent to calling
+<i>563</i>&nbsp;     * {@code getSkinnable().snapSizeX(value)}.
+<i>564</i>&nbsp;     * @param value the size value to be snapped
+<i>565</i>&nbsp;     * @return value ceiled to nearest pixel
+<i>566</i>&nbsp;     * @see Region#snapSizeX(double)
+<i>567</i>&nbsp;     * @since 9
+<i>568</i>&nbsp;     */
+<i>569</i>&nbsp;    protected double snapSizeX(double value) {
+<b class="fc"><i>570</i>&nbsp;        return control.snapSizeX(value);</b>
+<i>571</i>&nbsp;    }
+<i>572</i>&nbsp;
+<i>573</i>&nbsp;    /**
+<i>574</i>&nbsp;     * Convenience method for accessing the
+<i>575</i>&nbsp;     * {@link Region#snapSizeY(double) snapSizeY()}
+<i>576</i>&nbsp;     * method on the skinnable.
+<i>577</i>&nbsp;     * It is equivalent to calling
+<i>578</i>&nbsp;     * {@code getSkinnable().snapSizeY(value)}.
+<i>579</i>&nbsp;     * @param value the size value to be snapped
+<i>580</i>&nbsp;     * @return value ceiled to nearest pixel
+<i>581</i>&nbsp;     * @see Region#snapSizeY(double)
+<i>582</i>&nbsp;     * @since 9
+<i>583</i>&nbsp;     */
+<i>584</i>&nbsp;    protected double snapSizeY(double value) {
+<b class="fc"><i>585</i>&nbsp;        return control.snapSizeY(value);</b>
+<i>586</i>&nbsp;    }
+<i>587</i>&nbsp;
+<i>588</i>&nbsp;    /**
+<i>589</i>&nbsp;     * If {@code getSkinnable().isSnapToPixel()} is false, this method
+<i>590</i>&nbsp;     * returns the same value, else it tries to return a value rounded to
+<i>591</i>&nbsp;     * the nearest pixel, but since there is no indication if the value is
+<i>592</i>&nbsp;     * a vertical or horizontal measurement then it may be snapped to the
+<i>593</i>&nbsp;     * wrong pixel size metric on screens with different horizontal and
+<i>594</i>&nbsp;     * vertical scales.
+<i>595</i>&nbsp;     * @param value the position value to be snapped
+<i>596</i>&nbsp;     * @return value rounded to nearest pixel
+<i>597</i>&nbsp;     * @deprecated replaced by {@code snapPositionX()} and {@code snapPositionY()}
+<i>598</i>&nbsp;     */
+<i>599</i>&nbsp;    @Deprecated(since=&quot;9&quot;)
+<i>600</i>&nbsp;    protected double snapPosition(double value) {
+<b class="nc"><i>601</i>&nbsp;        return control.snapPositionX(value);</b>
+<i>602</i>&nbsp;    }
+<i>603</i>&nbsp;
+<i>604</i>&nbsp;    /**
+<i>605</i>&nbsp;     * Convenience method for accessing the
+<i>606</i>&nbsp;     * {@link Region#snapPositionX(double) snapPositionX()}
+<i>607</i>&nbsp;     * method on the skinnable.
+<i>608</i>&nbsp;     * It is equivalent to calling
+<i>609</i>&nbsp;     * {@code getSkinnable().snapPositionX(value)}.
+<i>610</i>&nbsp;     * @param value the position value to be snapped
+<i>611</i>&nbsp;     * @return value rounded to nearest pixel
+<i>612</i>&nbsp;     * @see Region#snapPositionX(double)
+<i>613</i>&nbsp;     * @since 9
+<i>614</i>&nbsp;     */
+<i>615</i>&nbsp;    protected double snapPositionX(double value) {
+<b class="fc"><i>616</i>&nbsp;        return control.snapPositionX(value);</b>
+<i>617</i>&nbsp;    }
+<i>618</i>&nbsp;
+<i>619</i>&nbsp;    /**
+<i>620</i>&nbsp;     * Convenience method for accessing the
+<i>621</i>&nbsp;     * {@link Region#snapPositionY(double) snapPositionY()}
+<i>622</i>&nbsp;     * method on the skinnable.
+<i>623</i>&nbsp;     * It is equivalent to calling
+<i>624</i>&nbsp;     * {@code getSkinnable().snapPositionY(value)}.
+<i>625</i>&nbsp;     * @param value the position value to be snapped
+<i>626</i>&nbsp;     * @return value rounded to nearest pixel
+<i>627</i>&nbsp;     * @see Region#snapPositionY(double)
+<i>628</i>&nbsp;     * @since 9
+<i>629</i>&nbsp;     */
+<i>630</i>&nbsp;    protected double snapPositionY(double value) {
+<b class="fc"><i>631</i>&nbsp;        return control.snapPositionY(value);</b>
+<i>632</i>&nbsp;    }
+<i>633</i>&nbsp;
+<i>634</i>&nbsp;    /**
+<i>635</i>&nbsp;     * Utility method which positions the child within an area of this
+<i>636</i>&nbsp;     * skin defined by {@code areaX}, {@code areaY}, {@code areaWidth} x {@code areaHeight},
+<i>637</i>&nbsp;     * with a baseline offset relative to that area.
+<i>638</i>&nbsp;     * &lt;p&gt;
+<i>639</i>&nbsp;     * This function does &lt;i&gt;not&lt;/i&gt; resize the node and uses the node&#39;s layout bounds
+<i>640</i>&nbsp;     * width and height to determine how it should be positioned within the area.
+<i>641</i>&nbsp;     * &lt;p&gt;
+<i>642</i>&nbsp;     * If the vertical alignment is {@code VPos.BASELINE} then it
+<i>643</i>&nbsp;     * will position the node so that its own baseline aligns with the passed in
+<i>644</i>&nbsp;     * {@code baselineOffset}, otherwise the baseline parameter is ignored.
+<i>645</i>&nbsp;     * &lt;p&gt;
+<i>646</i>&nbsp;     * If {@code snapToPixel} is {@code true} for this skin, then the x/y position
+<i>647</i>&nbsp;     * values will be rounded to their nearest pixel boundaries.
+<i>648</i>&nbsp;     *
+<i>649</i>&nbsp;     * @param child the child being positioned within this skin
+<i>650</i>&nbsp;     * @param areaX the horizontal offset of the layout area relative to this skin
+<i>651</i>&nbsp;     * @param areaY the vertical offset of the layout area relative to this skin
+<i>652</i>&nbsp;     * @param areaWidth  the width of the layout area
+<i>653</i>&nbsp;     * @param areaHeight the height of the layout area
+<i>654</i>&nbsp;     * @param areaBaselineOffset the baseline offset to be used if VPos is BASELINE
+<i>655</i>&nbsp;     * @param halignment the horizontal alignment for the child within the area
+<i>656</i>&nbsp;     * @param valignment the vertical alignment for the child within the area
+<i>657</i>&nbsp;     *
+<i>658</i>&nbsp;     */
+<i>659</i>&nbsp;    protected void positionInArea(Node child, double areaX, double areaY,
+<i>660</i>&nbsp;            double areaWidth, double areaHeight, double areaBaselineOffset,
+<i>661</i>&nbsp;            HPos halignment, VPos valignment) {
+<b class="fc"><i>662</i>&nbsp;        positionInArea(child, areaX, areaY, areaWidth, areaHeight,</b>
+<i>663</i>&nbsp;                areaBaselineOffset, Insets.EMPTY, halignment, valignment);
+<b class="fc"><i>664</i>&nbsp;    }</b>
+<i>665</i>&nbsp;
+<i>666</i>&nbsp;    /**
+<i>667</i>&nbsp;     * Utility method which positions the child within an area of this
+<i>668</i>&nbsp;     * skin defined by {@code areaX}, {@code areaY}, {@code areaWidth} x {@code areaHeight},
+<i>669</i>&nbsp;     * with a baseline offset relative to that area.
+<i>670</i>&nbsp;     * &lt;p&gt;
+<i>671</i>&nbsp;     * This function does &lt;i&gt;not&lt;/i&gt; resize the node and uses the node&#39;s layout bounds
+<i>672</i>&nbsp;     * width and height to determine how it should be positioned within the area.
+<i>673</i>&nbsp;     * &lt;p&gt;
+<i>674</i>&nbsp;     * If the vertical alignment is {@code VPos.BASELINE} then it
+<i>675</i>&nbsp;     * will position the node so that its own baseline aligns with the passed in
+<i>676</i>&nbsp;     * {@code baselineOffset},  otherwise the baseline parameter is ignored.
+<i>677</i>&nbsp;     * &lt;p&gt;
+<i>678</i>&nbsp;     * If {@code snapToPixel} is {@code true} for this skin, then the x/y position
+<i>679</i>&nbsp;     * values will be rounded to their nearest pixel boundaries.
+<i>680</i>&nbsp;     * &lt;p&gt;
+<i>681</i>&nbsp;     * If {@code margin} is non-null, then that space will be allocated around the
+<i>682</i>&nbsp;     * child within the layout area.  margin may be null.
+<i>683</i>&nbsp;     *
+<i>684</i>&nbsp;     * @param child the child being positioned within this skin
+<i>685</i>&nbsp;     * @param areaX the horizontal offset of the layout area relative to this skin
+<i>686</i>&nbsp;     * @param areaY the vertical offset of the layout area relative to this skin
+<i>687</i>&nbsp;     * @param areaWidth  the width of the layout area
+<i>688</i>&nbsp;     * @param areaHeight the height of the layout area
+<i>689</i>&nbsp;     * @param areaBaselineOffset the baseline offset to be used if VPos is BASELINE
+<i>690</i>&nbsp;     * @param margin the margin of space to be allocated around the child
+<i>691</i>&nbsp;     * @param halignment the horizontal alignment for the child within the area
+<i>692</i>&nbsp;     * @param valignment the vertical alignment for the child within the area
+<i>693</i>&nbsp;     *
+<i>694</i>&nbsp;     * @since JavaFX 8.0
+<i>695</i>&nbsp;     */
+<i>696</i>&nbsp;    protected void positionInArea(Node child, double areaX, double areaY,
+<i>697</i>&nbsp;            double areaWidth, double areaHeight, double areaBaselineOffset,
+<i>698</i>&nbsp;            Insets margin, HPos halignment, VPos valignment) {
+<b class="fc"><i>699</i>&nbsp;        Region.positionInArea(child, areaX, areaY, areaWidth, areaHeight,</b>
+<i>700</i>&nbsp;                areaBaselineOffset, margin, halignment, valignment,
+<b class="fc"><i>701</i>&nbsp;                control.isSnapToPixel());</b>
+<b class="fc"><i>702</i>&nbsp;    }</b>
+<i>703</i>&nbsp;
+<i>704</i>&nbsp;    /**
+<i>705</i>&nbsp;     * Utility method which lays out the child within an area of this
+<i>706</i>&nbsp;     * skin defined by {@code areaX}, {@code areaY}, {@code areaWidth} x {@code areaHeight},
+<i>707</i>&nbsp;     * with a baseline offset relative to that area.
+<i>708</i>&nbsp;     * &lt;p&gt;
+<i>709</i>&nbsp;     * If the child is resizable, this method will resize it to fill the specified
+<i>710</i>&nbsp;     * area unless the node&#39;s maximum size prevents it.  If the node&#39;s maximum
+<i>711</i>&nbsp;     * size preference is less than the area size, the maximum size will be used.
+<i>712</i>&nbsp;     * If node&#39;s maximum is greater than the area size, then the node will be
+<i>713</i>&nbsp;     * resized to fit within the area, unless its minimum size prevents it.
+<i>714</i>&nbsp;     * &lt;p&gt;
+<i>715</i>&nbsp;     * If the child has a non-null contentBias, then this method will use it when
+<i>716</i>&nbsp;     * resizing the child.  If the contentBias is horizontal, it will set its width
+<i>717</i>&nbsp;     * first to the area&#39;s width (up to the child&#39;s max width limit) and then pass
+<i>718</i>&nbsp;     * that value to compute the child&#39;s height.  If child&#39;s contentBias is vertical,
+<i>719</i>&nbsp;     * then it will set its height to the area height (up to child&#39;s max height limit)
+<i>720</i>&nbsp;     * and pass that height to compute the child&#39;s width.  If the child&#39;s contentBias
+<i>721</i>&nbsp;     * is null, then it&#39;s width and height have no dependencies on each other.
+<i>722</i>&nbsp;     * &lt;p&gt;
+<i>723</i>&nbsp;     * If the child is not resizable (Shape, Group, etc) then it will only be
+<i>724</i>&nbsp;     * positioned and not resized.
+<i>725</i>&nbsp;     * &lt;p&gt;
+<i>726</i>&nbsp;     * If the child&#39;s resulting size differs from the area&#39;s size (either
+<i>727</i>&nbsp;     * because it was not resizable or it&#39;s sizing preferences prevented it), then
+<i>728</i>&nbsp;     * this function will align the node relative to the area using horizontal and
+<i>729</i>&nbsp;     * vertical alignment values.
+<i>730</i>&nbsp;     * If valignment is {@code VPos.BASELINE} then the node&#39;s baseline will be aligned
+<i>731</i>&nbsp;     * with the area baseline offset parameter, otherwise the baseline parameter
+<i>732</i>&nbsp;     * is ignored.
+<i>733</i>&nbsp;     * &lt;p&gt;
+<i>734</i>&nbsp;     * If {@code snapToPixel} is {@code true} for this skin, then the resulting x,y
+<i>735</i>&nbsp;     * values will be rounded to their nearest pixel boundaries and the
+<i>736</i>&nbsp;     * width/height values will be ceiled to the next pixel boundary.
+<i>737</i>&nbsp;     *
+<i>738</i>&nbsp;     * @param child the child being positioned within this skin
+<i>739</i>&nbsp;     * @param areaX the horizontal offset of the layout area relative to this skin
+<i>740</i>&nbsp;     * @param areaY the vertical offset of the layout area relative to this skin
+<i>741</i>&nbsp;     * @param areaWidth  the width of the layout area
+<i>742</i>&nbsp;     * @param areaHeight the height of the layout area
+<i>743</i>&nbsp;     * @param areaBaselineOffset the baseline offset to be used if VPos is BASELINE
+<i>744</i>&nbsp;     * @param halignment the horizontal alignment for the child within the area
+<i>745</i>&nbsp;     * @param valignment the vertical alignment for the child within the area
+<i>746</i>&nbsp;     *
+<i>747</i>&nbsp;     */
+<i>748</i>&nbsp;    protected void layoutInArea(Node child, double areaX, double areaY,
+<i>749</i>&nbsp;                               double areaWidth, double areaHeight,
+<i>750</i>&nbsp;                               double areaBaselineOffset,
+<i>751</i>&nbsp;                               HPos halignment, VPos valignment) {
+<b class="fc"><i>752</i>&nbsp;        layoutInArea(child, areaX, areaY, areaWidth, areaHeight, areaBaselineOffset,</b>
+<i>753</i>&nbsp;                Insets.EMPTY, true, true, halignment, valignment);
+<b class="fc"><i>754</i>&nbsp;    }</b>
+<i>755</i>&nbsp;
+<i>756</i>&nbsp;    /**
+<i>757</i>&nbsp;     * Utility method which lays out the child within an area of this
+<i>758</i>&nbsp;     * skin defined by {@code areaX}, {@code areaY}, {@code areaWidth} x {@code areaHeight},
+<i>759</i>&nbsp;     * with a baseline offset relative to that area.
+<i>760</i>&nbsp;     * &lt;p&gt;
+<i>761</i>&nbsp;     * If the child is resizable, this method will resize it to fill the specified
+<i>762</i>&nbsp;     * area unless the node&#39;s maximum size prevents it.  If the node&#39;s maximum
+<i>763</i>&nbsp;     * size preference is less than the area size, the maximum size will be used.
+<i>764</i>&nbsp;     * If node&#39;s maximum is greater than the area size, then the node will be
+<i>765</i>&nbsp;     * resized to fit within the area, unless its minimum size prevents it.
+<i>766</i>&nbsp;     * &lt;p&gt;
+<i>767</i>&nbsp;     * If the child has a non-null contentBias, then this method will use it when
+<i>768</i>&nbsp;     * resizing the child.  If the contentBias is horizontal, it will set its width
+<i>769</i>&nbsp;     * first to the area&#39;s width (up to the child&#39;s max width limit) and then pass
+<i>770</i>&nbsp;     * that value to compute the child&#39;s height.  If child&#39;s contentBias is vertical,
+<i>771</i>&nbsp;     * then it will set its height to the area height (up to child&#39;s max height limit)
+<i>772</i>&nbsp;     * and pass that height to compute the child&#39;s width.  If the child&#39;s contentBias
+<i>773</i>&nbsp;     * is null, then it&#39;s width and height have no dependencies on each other.
+<i>774</i>&nbsp;     * &lt;p&gt;
+<i>775</i>&nbsp;     * If the child is not resizable (Shape, Group, etc) then it will only be
+<i>776</i>&nbsp;     * positioned and not resized.
+<i>777</i>&nbsp;     * &lt;p&gt;
+<i>778</i>&nbsp;     * If the child&#39;s resulting size differs from the area&#39;s size (either
+<i>779</i>&nbsp;     * because it was not resizable or it&#39;s sizing preferences prevented it), then
+<i>780</i>&nbsp;     * this function will align the node relative to the area using horizontal and
+<i>781</i>&nbsp;     * vertical alignment values.
+<i>782</i>&nbsp;     * If valignment is {@code VPos.BASELINE} then the node&#39;s baseline will be aligned
+<i>783</i>&nbsp;     * with the area baseline offset parameter, otherwise the baseline parameter
+<i>784</i>&nbsp;     * is ignored.
+<i>785</i>&nbsp;     * &lt;p&gt;
+<i>786</i>&nbsp;     * If {@code margin} is non-null, then that space will be allocated around the
+<i>787</i>&nbsp;     * child within the layout area.  margin may be null.
+<i>788</i>&nbsp;     * &lt;p&gt;
+<i>789</i>&nbsp;     * If {@code snapToPixel} is {@code true} for this skin, then the resulting x,y
+<i>790</i>&nbsp;     * values will be rounded to their nearest pixel boundaries and the
+<i>791</i>&nbsp;     * width/height values will be ceiled to the next pixel boundary.
+<i>792</i>&nbsp;     *
+<i>793</i>&nbsp;     * @param child the child being positioned within this skin
+<i>794</i>&nbsp;     * @param areaX the horizontal offset of the layout area relative to this skin
+<i>795</i>&nbsp;     * @param areaY the vertical offset of the layout area relative to this skin
+<i>796</i>&nbsp;     * @param areaWidth  the width of the layout area
+<i>797</i>&nbsp;     * @param areaHeight the height of the layout area
+<i>798</i>&nbsp;     * @param areaBaselineOffset the baseline offset to be used if VPos is BASELINE
+<i>799</i>&nbsp;     * @param margin the margin of space to be allocated around the child
+<i>800</i>&nbsp;     * @param halignment the horizontal alignment for the child within the area
+<i>801</i>&nbsp;     * @param valignment the vertical alignment for the child within the area
+<i>802</i>&nbsp;     */
+<i>803</i>&nbsp;    protected void layoutInArea(Node child, double areaX, double areaY,
+<i>804</i>&nbsp;                               double areaWidth, double areaHeight,
+<i>805</i>&nbsp;                               double areaBaselineOffset,
+<i>806</i>&nbsp;                               Insets margin,
+<i>807</i>&nbsp;                               HPos halignment, VPos valignment) {
+<b class="nc"><i>808</i>&nbsp;        layoutInArea(child, areaX, areaY, areaWidth, areaHeight, areaBaselineOffset,</b>
+<i>809</i>&nbsp;                margin, true, true, halignment, valignment);
+<b class="nc"><i>810</i>&nbsp;    }</b>
+<i>811</i>&nbsp;
+<i>812</i>&nbsp;    /**
+<i>813</i>&nbsp;     * Utility method which lays out the child within an area of this
+<i>814</i>&nbsp;     * skin defined by {@code areaX}, {@code areaY}, {@code areaWidth} x {@code areaHeight},
+<i>815</i>&nbsp;     * with a baseline offset relative to that area.
+<i>816</i>&nbsp;     * &lt;p&gt;
+<i>817</i>&nbsp;     * If the child is resizable, this method will use {@code fillWidth} and {@code fillHeight}
+<i>818</i>&nbsp;     * to determine whether to resize it to fill the area or keep the child at its
+<i>819</i>&nbsp;     * preferred dimension.  If fillWidth/fillHeight are true, then this method
+<i>820</i>&nbsp;     * will only resize the child up to its max size limits.  If the node&#39;s maximum
+<i>821</i>&nbsp;     * size preference is less than the area size, the maximum size will be used.
+<i>822</i>&nbsp;     * If node&#39;s maximum is greater than the area size, then the node will be
+<i>823</i>&nbsp;     * resized to fit within the area, unless its minimum size prevents it.
+<i>824</i>&nbsp;     * &lt;p&gt;
+<i>825</i>&nbsp;     * If the child has a non-null contentBias, then this method will use it when
+<i>826</i>&nbsp;     * resizing the child.  If the contentBias is horizontal, it will set its width
+<i>827</i>&nbsp;     * first and then pass that value to compute the child&#39;s height.  If child&#39;s
+<i>828</i>&nbsp;     * contentBias is vertical, then it will set its height first
+<i>829</i>&nbsp;     * and pass that value to compute the child&#39;s width.  If the child&#39;s contentBias
+<i>830</i>&nbsp;     * is null, then it&#39;s width and height have no dependencies on each other.
+<i>831</i>&nbsp;     * &lt;p&gt;
+<i>832</i>&nbsp;     * If the child is not resizable (Shape, Group, etc) then it will only be
+<i>833</i>&nbsp;     * positioned and not resized.
+<i>834</i>&nbsp;     * &lt;p&gt;
+<i>835</i>&nbsp;     * If the child&#39;s resulting size differs from the area&#39;s size (either
+<i>836</i>&nbsp;     * because it was not resizable or it&#39;s sizing preferences prevented it), then
+<i>837</i>&nbsp;     * this function will align the node relative to the area using horizontal and
+<i>838</i>&nbsp;     * vertical alignment values.
+<i>839</i>&nbsp;     * If valignment is {@code VPos.BASELINE} then the node&#39;s baseline will be aligned
+<i>840</i>&nbsp;     * with the area baseline offset parameter, otherwise the baseline parameter
+<i>841</i>&nbsp;     * is ignored.
+<i>842</i>&nbsp;     * &lt;p&gt;
+<i>843</i>&nbsp;     * If {@code margin} is non-null, then that space will be allocated around the
+<i>844</i>&nbsp;     * child within the layout area.  margin may be null.
+<i>845</i>&nbsp;     * &lt;p&gt;
+<i>846</i>&nbsp;     * If {@code snapToPixel} is {@code true} for this skin, then the resulting x,y
+<i>847</i>&nbsp;     * values will be rounded to their nearest pixel boundaries and the
+<i>848</i>&nbsp;     * width/height values will be ceiled to the next pixel boundary.
+<i>849</i>&nbsp;     *
+<i>850</i>&nbsp;     * @param child the child being positioned within this skin
+<i>851</i>&nbsp;     * @param areaX the horizontal offset of the layout area relative to this skin
+<i>852</i>&nbsp;     * @param areaY the vertical offset of the layout area relative to this skin
+<i>853</i>&nbsp;     * @param areaWidth  the width of the layout area
+<i>854</i>&nbsp;     * @param areaHeight the height of the layout area
+<i>855</i>&nbsp;     * @param areaBaselineOffset the baseline offset to be used if VPos is BASELINE
+<i>856</i>&nbsp;     * @param margin the margin of space to be allocated around the child
+<i>857</i>&nbsp;     * @param fillWidth whether or not the child should be resized to fill the area width or kept to its preferred width
+<i>858</i>&nbsp;     * @param fillHeight whether or not the child should e resized to fill the area height or kept to its preferred height
+<i>859</i>&nbsp;     * @param halignment the horizontal alignment for the child within the area
+<i>860</i>&nbsp;     * @param valignment the vertical alignment for the child within the area
+<i>861</i>&nbsp;     */
+<i>862</i>&nbsp;    protected void layoutInArea(Node child, double areaX, double areaY,
+<i>863</i>&nbsp;                               double areaWidth, double areaHeight,
+<i>864</i>&nbsp;                               double areaBaselineOffset,
+<i>865</i>&nbsp;                               Insets margin, boolean fillWidth, boolean fillHeight,
+<i>866</i>&nbsp;                               HPos halignment, VPos valignment) {
+<b class="fc"><i>867</i>&nbsp;        Region.layoutInArea(child, areaX, areaY, areaWidth, areaHeight,</b>
+<i>868</i>&nbsp;                areaBaselineOffset, margin, fillWidth, fillHeight, halignment,
+<b class="fc"><i>869</i>&nbsp;                valignment, control.isSnapToPixel());</b>
+<b class="fc"><i>870</i>&nbsp;    }</b>
+<i>871</i>&nbsp;
+<i>872</i>&nbsp;
+<i>873</i>&nbsp;
+<i>874</i>&nbsp;    /***************************************************************************
+<i>875</i>&nbsp;     *                                                                         *
+<i>876</i>&nbsp;     * Private Implementation                                                  *
+<i>877</i>&nbsp;     *                                                                         *
+<i>878</i>&nbsp;     **************************************************************************/
+<i>879</i>&nbsp;
+<i>880</i>&nbsp;
+<i>881</i>&nbsp;
+<i>882</i>&nbsp;     /**************************************************************************
+<i>883</i>&nbsp;      *                                                                        *
+<i>884</i>&nbsp;      * Specialization of CSS handling code                                    *
+<i>885</i>&nbsp;      *                                                                        *
+<i>886</i>&nbsp;     **************************************************************************/
+<i>887</i>&nbsp;
+<b class="fc"><i>888</i>&nbsp;    private static class StyleableProperties {</b>
+<i>889</i>&nbsp;        private static final List&lt;CssMetaData&lt;? extends Styleable, ?&gt;&gt; STYLEABLES;
+<i>890</i>&nbsp;
+<i>891</i>&nbsp;        static {
+<b class="fc"><i>892</i>&nbsp;            STYLEABLES = Collections.unmodifiableList(Control.getClassCssMetaData());</b>
+<b class="fc"><i>893</i>&nbsp;        }</b>
+<i>894</i>&nbsp;    }
+<i>895</i>&nbsp;
+<i>896</i>&nbsp;    /**
+<i>897</i>&nbsp;     * Returns the CssMetaData associated with this class, which may include the
+<i>898</i>&nbsp;     * CssMetaData of its superclasses.
+<i>899</i>&nbsp;     * @return the CssMetaData associated with this class, which may include the
+<i>900</i>&nbsp;     * CssMetaData of its superclasses
+<i>901</i>&nbsp;     */
+<i>902</i>&nbsp;    public static List&lt;CssMetaData&lt;? extends Styleable, ?&gt;&gt; getClassCssMetaData() {
+<b class="fc"><i>903</i>&nbsp;        return SkinBase.StyleableProperties.STYLEABLES;</b>
+<i>904</i>&nbsp;    }
+<i>905</i>&nbsp;
+<i>906</i>&nbsp;    /**
+<i>907</i>&nbsp;     * This method should delegate to {@link Node#getClassCssMetaData()} so that
+<i>908</i>&nbsp;     * a Node&#39;s CssMetaData can be accessed without the need for reflection.
+<i>909</i>&nbsp;     * @return The CssMetaData associated with this node, which may include the
+<i>910</i>&nbsp;     * CssMetaData of its superclasses.
+<i>911</i>&nbsp;     */
+<i>912</i>&nbsp;    public List&lt;CssMetaData&lt;? extends Styleable, ?&gt;&gt; getCssMetaData() {
+<b class="fc"><i>913</i>&nbsp;        return getClassCssMetaData();</b>
+<i>914</i>&nbsp;    }
+<i>915</i>&nbsp;
+<i>916</i>&nbsp;    /**
+<i>917</i>&nbsp;     * Used to specify that a pseudo-class of this Node has changed. If the
+<i>918</i>&nbsp;     * pseudo-class is used in a CSS selector that matches this Node, CSS will
+<i>919</i>&nbsp;     * be reapplied. Typically, this method is called from the {@code invalidated}
+<i>920</i>&nbsp;     * method of a property that is used as a pseudo-class. For example:
+<i>921</i>&nbsp;     * &lt;pre&gt;&lt;code&gt;
+<i>922</i>&nbsp;     *
+<i>923</i>&nbsp;     *     private static final PseudoClass MY_PSEUDO_CLASS_STATE = PseudoClass.getPseudoClass(&quot;my-state&quot;);
+<i>924</i>&nbsp;     *
+<i>925</i>&nbsp;     *     BooleanProperty myPseudoClassState = new BooleanPropertyBase(false) {
+<i>926</i>&nbsp;     *
+<i>927</i>&nbsp;     *           {@literal @}Override public void invalidated() {
+<i>928</i>&nbsp;     *                pseudoClassStateChanged(MY_PSEUDO_CLASS_STATE, get());
+<i>929</i>&nbsp;     *           }
+<i>930</i>&nbsp;     *
+<i>931</i>&nbsp;     *           {@literal @}Override public Object getBean() {
+<i>932</i>&nbsp;     *               return MyControl.this;
+<i>933</i>&nbsp;     *           }
+<i>934</i>&nbsp;     *
+<i>935</i>&nbsp;     *           {@literal @}Override public String getName() {
+<i>936</i>&nbsp;     *               return &quot;myPseudoClassState&quot;;
+<i>937</i>&nbsp;     *           }
+<i>938</i>&nbsp;     *       };
+<i>939</i>&nbsp;     * &lt;/code&gt;&lt;/pre&gt;
+<i>940</i>&nbsp;     *
+<i>941</i>&nbsp;     * @see Node#pseudoClassStateChanged
+<i>942</i>&nbsp;     * @param pseudoClass the pseudo-class that has changed state
+<i>943</i>&nbsp;     * @param active whether or not the state is active
+<i>944</i>&nbsp;     * @since JavaFX 8.0
+<i>945</i>&nbsp;     */
+<i>946</i>&nbsp;    public final void pseudoClassStateChanged(PseudoClass pseudoClass, boolean active) {
+<b class="nc"><i>947</i>&nbsp;        Control ctl = getSkinnable();</b>
+<b class="nc"><i>948</i>&nbsp;        if (ctl != null) {</b>
+<b class="nc"><i>949</i>&nbsp;            ctl.pseudoClassStateChanged(pseudoClass, active);</b>
+<i>950</i>&nbsp;        }
+<b class="nc"><i>951</i>&nbsp;    }</b>
+<i>952</i>&nbsp;
+<i>953</i>&nbsp;
+<i>954</i>&nbsp;    /***************************************************************************
+<i>955</i>&nbsp;     *                                                                         *
+<i>956</i>&nbsp;     * Accessibility handling                                                  *
+<i>957</i>&nbsp;     *                                                                         *
+<i>958</i>&nbsp;     **************************************************************************/
+<i>959</i>&nbsp;
+<i>960</i>&nbsp;    /**
+<i>961</i>&nbsp;     * This method is called by the assistive technology to request
+<i>962</i>&nbsp;     * the value for an attribute.
+<i>963</i>&nbsp;     * &lt;p&gt;
+<i>964</i>&nbsp;     * This method is commonly overridden by subclasses to implement
+<i>965</i>&nbsp;     * attributes that are required for a specific role.&lt;br&gt;
+<i>966</i>&nbsp;     * If a particular attribute is not handled, the superclass implementation
+<i>967</i>&nbsp;     * must be called.
+<i>968</i>&nbsp;     * &lt;/p&gt;
+<i>969</i>&nbsp;     *
+<i>970</i>&nbsp;     * @param attribute the requested attribute
+<i>971</i>&nbsp;     * @param parameters optional list of parameters
+<i>972</i>&nbsp;     * @return the value for the requested attribute
+<i>973</i>&nbsp;     *
+<i>974</i>&nbsp;     * @see AccessibleAttribute
+<i>975</i>&nbsp;     * @see Node#queryAccessibleAttribute
+<i>976</i>&nbsp;     *
+<i>977</i>&nbsp;     * @since JavaFX 8u40
+<i>978</i>&nbsp;     */
+<i>979</i>&nbsp;    protected Object queryAccessibleAttribute(AccessibleAttribute attribute, Object... parameters) {
+<b class="nc"><i>980</i>&nbsp;        return null;</b>
+<i>981</i>&nbsp;    }
+<i>982</i>&nbsp;
+<i>983</i>&nbsp;    /**
+<i>984</i>&nbsp;     * This method is called by the assistive technology to request the action
+<i>985</i>&nbsp;     * indicated by the argument should be executed.
+<i>986</i>&nbsp;     * &lt;p&gt;
+<i>987</i>&nbsp;     * This method is commonly overridden by subclasses to implement
+<i>988</i>&nbsp;     * action that are required for a specific role.&lt;br&gt;
+<i>989</i>&nbsp;     * If a particular action is not handled, the superclass implementation
+<i>990</i>&nbsp;     * must be called.
+<i>991</i>&nbsp;     * &lt;/p&gt;
+<i>992</i>&nbsp;     *
+<i>993</i>&nbsp;     * @param action the action to execute
+<i>994</i>&nbsp;     * @param parameters optional list of parameters
+<i>995</i>&nbsp;     *
+<i>996</i>&nbsp;     * @see AccessibleAction
+<i>997</i>&nbsp;     * @see Node#executeAccessibleAction
+<i>998</i>&nbsp;     *
+<i>999</i>&nbsp;     * @since JavaFX 8u40
+<i>1000</i>&nbsp;     */
+<i>1001</i>&nbsp;    protected void executeAccessibleAction(AccessibleAction action, Object... parameters) {
+<b class="nc"><i>1002</i>&nbsp;    }</b>
+<i>1003</i>&nbsp;
+<i>1004</i>&nbsp;    /***************************************************************************
+<i>1005</i>&nbsp;     *                                                                         *
+<i>1006</i>&nbsp;     * Testing-only API                                                        *
+<i>1007</i>&nbsp;     *                                                                         *
+<i>1008</i>&nbsp;     **************************************************************************/
+<i>1009</i>&nbsp;
+<i>1010</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2017-12-04 21:49</div>
+</div>
+</body>
+</html>

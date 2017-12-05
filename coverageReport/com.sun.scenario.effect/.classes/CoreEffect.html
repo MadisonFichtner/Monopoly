@@ -1,0 +1,200 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: CoreEffect</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.scenario.effect</a> ]
+</div>
+
+<h1>Coverage Summary for Class: CoreEffect (com.sun.scenario.effect)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">CoreEffect</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    55.6%
+  </span>
+  <span class="absValue">
+    (5/ 9)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    41.7%
+  </span>
+  <span class="absValue">
+    (10/ 24)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright (c) 2008, 2014, Oracle and/or its affiliates. All rights reserved.
+<i>3</i>&nbsp; * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+<i>4</i>&nbsp; *
+<i>5</i>&nbsp; *
+<i>6</i>&nbsp; *
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; *
+<i>11</i>&nbsp; *
+<i>12</i>&nbsp; *
+<i>13</i>&nbsp; *
+<i>14</i>&nbsp; *
+<i>15</i>&nbsp; *
+<i>16</i>&nbsp; *
+<i>17</i>&nbsp; *
+<i>18</i>&nbsp; *
+<i>19</i>&nbsp; *
+<i>20</i>&nbsp; *
+<i>21</i>&nbsp; *
+<i>22</i>&nbsp; *
+<i>23</i>&nbsp; *
+<i>24</i>&nbsp; */
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;package com.sun.scenario.effect;
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;import com.sun.scenario.effect.impl.EffectPeer;
+<i>29</i>&nbsp;import com.sun.scenario.effect.impl.Renderer;
+<i>30</i>&nbsp;import com.sun.javafx.geom.Rectangle;
+<i>31</i>&nbsp;import com.sun.javafx.geom.transform.BaseTransform;
+<i>32</i>&nbsp;import com.sun.scenario.effect.impl.state.RenderState;
+<i>33</i>&nbsp;
+<i>34</i>&nbsp;/**
+<i>35</i>&nbsp; * Package-private base class for built-in effects, i.e., those that are
+<i>36</i>&nbsp; * backed by an EffectPeer implementation.
+<i>37</i>&nbsp; */
+<i>38</i>&nbsp;abstract class CoreEffect&lt;T extends RenderState&gt; extends FilterEffect&lt;T&gt; {
+<i>39</i>&nbsp;
+<i>40</i>&nbsp;    private String peerKey;
+<b class="fc"><i>41</i>&nbsp;    private int peerCount = -1;</b>
+<i>42</i>&nbsp;
+<i>43</i>&nbsp;    CoreEffect() {
+<b class="nc"><i>44</i>&nbsp;        super();</b>
+<b class="nc"><i>45</i>&nbsp;    }</b>
+<i>46</i>&nbsp;
+<i>47</i>&nbsp;    CoreEffect(Effect input) {
+<b class="fc"><i>48</i>&nbsp;        super(input);</b>
+<b class="fc"><i>49</i>&nbsp;    }</b>
+<i>50</i>&nbsp;
+<i>51</i>&nbsp;    CoreEffect(Effect input1, Effect input2) {
+<b class="fc"><i>52</i>&nbsp;        super(input1, input2);</b>
+<b class="fc"><i>53</i>&nbsp;    }</b>
+<i>54</i>&nbsp;
+<i>55</i>&nbsp;    final void updatePeerKey(String key) {
+<b class="fc"><i>56</i>&nbsp;        updatePeerKey(key, -1);</b>
+<b class="fc"><i>57</i>&nbsp;    }</b>
+<i>58</i>&nbsp;
+<i>59</i>&nbsp;    final void updatePeerKey(String key, int unrollCount) {
+<b class="fc"><i>60</i>&nbsp;        this.peerKey = key;</b>
+<b class="fc"><i>61</i>&nbsp;        this.peerCount = unrollCount;</b>
+<b class="fc"><i>62</i>&nbsp;    }</b>
+<i>63</i>&nbsp;
+<i>64</i>&nbsp;    private EffectPeer getPeer(FilterContext fctx, int approxW, int approxH) {
+<b class="nc"><i>65</i>&nbsp;        return Renderer.getRenderer(fctx, this, approxW, approxH).</b>
+<b class="nc"><i>66</i>&nbsp;            getPeerInstance(fctx, peerKey, peerCount);</b>
+<i>67</i>&nbsp;    }
+<i>68</i>&nbsp;
+<i>69</i>&nbsp;    /**
+<i>70</i>&nbsp;     * Returns an {@code EffectPeer} that is most optimal for the size
+<i>71</i>&nbsp;     * of the operation, which is inferred from the given inputs.
+<i>72</i>&nbsp;     * For example, smaller operations may run faster in software (by
+<i>73</i>&nbsp;     * avoiding high overhead of shader-based operations) so here we choose
+<i>74</i>&nbsp;     * an appropriate Renderer/EffectPeer combination based on the
+<i>75</i>&nbsp;     * dimensions of the first input.
+<i>76</i>&nbsp;     */
+<i>77</i>&nbsp;    final EffectPeer getPeer(FilterContext fctx, ImageData[] inputs) {
+<i>78</i>&nbsp;        // RT-27395
+<i>79</i>&nbsp;        // TODO: we would be much better off using getResultBounds() here
+<i>80</i>&nbsp;        // to infer the size of the operation since some effects (e.g. Flood)
+<i>81</i>&nbsp;        // do not have any inputs to consult...
+<i>82</i>&nbsp;        int approxW, approxH;
+<b class="nc"><i>83</i>&nbsp;        if (inputs.length &gt; 0) {</b>
+<b class="nc"><i>84</i>&nbsp;            Rectangle approxBounds = inputs[0].getUntransformedBounds();</b>
+<b class="nc"><i>85</i>&nbsp;            approxW = approxBounds.width;</b>
+<b class="nc"><i>86</i>&nbsp;            approxH = approxBounds.height;</b>
+<b class="nc"><i>87</i>&nbsp;        } else {</b>
+<i>88</i>&nbsp;            // NOTE: temporary hack until we start using result bounds
+<i>89</i>&nbsp;            // (see comment above)...
+<b class="nc"><i>90</i>&nbsp;            approxW = approxH = 500;</b>
+<i>91</i>&nbsp;        }
+<b class="nc"><i>92</i>&nbsp;        return getPeer(fctx, approxW, approxH);</b>
+<i>93</i>&nbsp;    }
+<i>94</i>&nbsp;
+<i>95</i>&nbsp;    /**
+<i>96</i>&nbsp;     * Convenience method that sends the given input data through the
+<i>97</i>&nbsp;     * current peer, and then attempts to release the input image data.
+<i>98</i>&nbsp;     */
+<i>99</i>&nbsp;    @Override
+<i>100</i>&nbsp;    public ImageData filterImageDatas(FilterContext fctx,
+<i>101</i>&nbsp;                                      BaseTransform transform,
+<i>102</i>&nbsp;                                      Rectangle outputClip,
+<i>103</i>&nbsp;                                      T rstate,
+<i>104</i>&nbsp;                                      ImageData... inputs)
+<i>105</i>&nbsp;    {
+<b class="nc"><i>106</i>&nbsp;        return getPeer(fctx, inputs).filter(this, rstate, transform, outputClip, inputs);</b>
+<i>107</i>&nbsp;    }
+<i>108</i>&nbsp;
+<i>109</i>&nbsp;    @Override
+<i>110</i>&nbsp;    public AccelType getAccelType(FilterContext fctx) {
+<i>111</i>&nbsp;        // We choose relatively large (yet arbitrary) values for approxW/H
+<i>112</i>&nbsp;        // here so that we get the AccelType for the &quot;ideal&quot; case where
+<i>113</i>&nbsp;        // hardware acceleration is used.
+<b class="nc"><i>114</i>&nbsp;        EffectPeer peer = getPeer(fctx, 1024, 1024);</b>
+<b class="nc"><i>115</i>&nbsp;        return peer.getAccelType();</b>
+<i>116</i>&nbsp;    }
+<i>117</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2017-12-04 21:49</div>
+</div>
+</body>
+</html>

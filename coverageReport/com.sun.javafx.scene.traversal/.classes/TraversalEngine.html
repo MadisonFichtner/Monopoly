@@ -1,0 +1,386 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: TraversalEngine</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.javafx.scene.traversal</a> ]
+</div>
+
+<h1>Coverage Summary for Class: TraversalEngine (com.sun.javafx.scene.traversal)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">TraversalEngine</td>
+<td class="coverageStat">
+  <span class="percent">
+    45.5%
+  </span>
+  <span class="absValue">
+    (5/ 11)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    42.9%
+  </span>
+  <span class="absValue">
+    (12/ 28)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">TraversalEngine$BaseEngineContext</td>
+<td class="coverageStat">
+  <span class="percent">
+    14.3%
+  </span>
+  <span class="absValue">
+    (1/ 7)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    5.3%
+  </span>
+  <span class="absValue">
+    (1/ 19)
+  </span>
+</td>
+  </tr>
+  <tr>
+    <td class="name">TraversalEngine$EngineContext</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (2/ 2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (2/ 2)
+  </span>
+</td>
+  </tr>
+  <tr>
+    <td class="name">TraversalEngine$TempEngineContext</td>
+<td class="coverageStat">
+  <span class="percent">
+    33.3%
+  </span>
+  <span class="absValue">
+    (1/ 3)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    25%
+  </span>
+  <span class="absValue">
+    (1/ 4)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    39.1%
+  </span>
+  <span class="absValue">
+    (9/ 23)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    30.2%
+  </span>
+  <span class="absValue">
+    (16/ 53)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright (c) 2010, 2016, Oracle and/or its affiliates. All rights reserved.
+<i>3</i>&nbsp; * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+<i>4</i>&nbsp; *
+<i>5</i>&nbsp; *
+<i>6</i>&nbsp; *
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; *
+<i>11</i>&nbsp; *
+<i>12</i>&nbsp; *
+<i>13</i>&nbsp; *
+<i>14</i>&nbsp; *
+<i>15</i>&nbsp; *
+<i>16</i>&nbsp; *
+<i>17</i>&nbsp; *
+<i>18</i>&nbsp; *
+<i>19</i>&nbsp; *
+<i>20</i>&nbsp; *
+<i>21</i>&nbsp; *
+<i>22</i>&nbsp; *
+<i>23</i>&nbsp; *
+<i>24</i>&nbsp; */
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;package com.sun.javafx.scene.traversal;
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;import com.sun.javafx.application.PlatformImpl;
+<i>29</i>&nbsp;import com.sun.javafx.scene.NodeHelper;
+<i>30</i>&nbsp;import javafx.geometry.BoundingBox;
+<i>31</i>&nbsp;import javafx.geometry.Bounds;
+<i>32</i>&nbsp;import javafx.scene.Node;
+<i>33</i>&nbsp;import javafx.scene.Parent;
+<i>34</i>&nbsp;
+<i>35</i>&nbsp;import java.util.ArrayList;
+<i>36</i>&nbsp;import java.util.List;
+<i>37</i>&nbsp;
+<i>38</i>&nbsp;/**
+<i>39</i>&nbsp; * This is abstract class for a traversal engine. There are 2 types : {@link com.sun.javafx.scene.traversal.ParentTraversalEngine}
+<i>40</i>&nbsp; * to be used in {@link Parent#setTraversalEngine(ParentTraversalEngine)} to override default behavior
+<i>41</i>&nbsp; * and {@link com.sun.javafx.scene.traversal.TopMostTraversalEngine} that is the default traversal engine for scene and subscene.
+<i>42</i>&nbsp; *
+<i>43</i>&nbsp; * Every engine is basically a wrapper of an algorithm + some specific parent (or scene/subscene), which define engine&#39;s root.
+<i>44</i>&nbsp; */
+<b class="nc"><i>45</i>&nbsp;public abstract class TraversalEngine{</b>
+<i>46</i>&nbsp;
+<i>47</i>&nbsp;    /**
+<i>48</i>&nbsp;     * This is the default algorithm for the running platform. It&#39;s the algorithm that&#39;s used in TopMostTraversalEngine
+<i>49</i>&nbsp;     */
+<b class="fc"><i>50</i>&nbsp;    static final Algorithm DEFAULT_ALGORITHM = PlatformImpl.isContextual2DNavigation() ? new Hueristic2D() : new ContainerTabOrder();</b>
+<i>51</i>&nbsp;
+<b class="fc"><i>52</i>&nbsp;    private final TraversalContext context = new EngineContext(); // This is the context used in calls to this engine&#39;s algorithm</b>
+<i>53</i>&nbsp;    // This is a special context that&#39;s used when invoking select &quot;callbacks&quot; to default algorithm in other contexts
+<b class="fc"><i>54</i>&nbsp;    private final TempEngineContext tempEngineContext = new TempEngineContext();</b>
+<i>55</i>&nbsp;    protected final Algorithm algorithm;
+<i>56</i>&nbsp;
+<b class="fc"><i>57</i>&nbsp;    private final Bounds initialBounds =  new BoundingBox(0, 0, 1, 1);</b>
+<b class="fc"><i>58</i>&nbsp;    private final ArrayList&lt;TraverseListener&gt; listeners = new ArrayList&lt;&gt;();</b>
+<i>59</i>&nbsp;
+<i>60</i>&nbsp;    /**
+<i>61</i>&nbsp;     * Creates engine with the specified algorithm
+<i>62</i>&nbsp;     * @param algorithm
+<i>63</i>&nbsp;     */
+<b class="fc"><i>64</i>&nbsp;    protected TraversalEngine(Algorithm algorithm) {</b>
+<b class="fc"><i>65</i>&nbsp;        this.algorithm = algorithm;</b>
+<b class="fc"><i>66</i>&nbsp;    }</b>
+<i>67</i>&nbsp;
+<i>68</i>&nbsp;    /**
+<i>69</i>&nbsp;     * Creates engine with no algorithm. This makes all the select* calls invalid.
+<i>70</i>&nbsp;     * @see #canTraverse()
+<i>71</i>&nbsp;     */
+<b class="nc"><i>72</i>&nbsp;    protected TraversalEngine() {</b>
+<b class="nc"><i>73</i>&nbsp;        this.algorithm = null;</b>
+<b class="nc"><i>74</i>&nbsp;    }</b>
+<i>75</i>&nbsp;
+<i>76</i>&nbsp;    /**
+<i>77</i>&nbsp;     * Add a listener to traversal engine. The listener is notified whenever focus is changed by traversal inside the associated scene or parent.
+<i>78</i>&nbsp;     * This can be used with ParentTraversalEngine that has no algorithm to observe changes to the focus inside the parent.
+<i>79</i>&nbsp;     * @param listener
+<i>80</i>&nbsp;     */
+<i>81</i>&nbsp;    public final void addTraverseListener(TraverseListener listener) {
+<b class="nc"><i>82</i>&nbsp;        listeners.add(listener);</b>
+<b class="nc"><i>83</i>&nbsp;    }</b>
+<i>84</i>&nbsp;
+<i>85</i>&nbsp;    /**
+<i>86</i>&nbsp;     * Fire notifications for listeners. This is called from the TopMostTraversalEngine
+<i>87</i>&nbsp;     * @param newNode the node which has been focused
+<i>88</i>&nbsp;     */
+<i>89</i>&nbsp;    final void notifyTraversedTo(Node newNode) {
+<b class="fc"><i>90</i>&nbsp;        for (TraverseListener l : listeners) {</b>
+<b class="nc"><i>91</i>&nbsp;            l.onTraverse(newNode, getLayoutBounds(newNode, getRoot()));</b>
+<b class="nc"><i>92</i>&nbsp;        }</b>
+<b class="fc"><i>93</i>&nbsp;    }</b>
+<i>94</i>&nbsp;
+<i>95</i>&nbsp;    /**
+<i>96</i>&nbsp;     * Returns the node that is in the direction {@code dir} starting from the Node {@code from} using the engine&#39;s algorithm.
+<i>97</i>&nbsp;     * Null means there is no Node in that direction
+<i>98</i>&nbsp;     * @param from the node to start traversal from
+<i>99</i>&nbsp;     * @param dir the direction of traversal
+<i>100</i>&nbsp;     * @return the subsequent node in the specified direction or null if none
+<i>101</i>&nbsp;     * @throws java.lang.NullPointerException if there is no algorithm
+<i>102</i>&nbsp;     */
+<i>103</i>&nbsp;    public final Node select(Node from, Direction dir) {
+<b class="fc"><i>104</i>&nbsp;        return algorithm.select(from, dir, context);</b>
+<i>105</i>&nbsp;    }
+<i>106</i>&nbsp;
+<i>107</i>&nbsp;    /**
+<i>108</i>&nbsp;     * Returns the first node in this engine&#39;s context (scene/parent) using the engine&#39;s algorithm.
+<i>109</i>&nbsp;     * This can be null only if there are no traversable nodes
+<i>110</i>&nbsp;     * @return The first node or null if none exists
+<i>111</i>&nbsp;     * @throws java.lang.NullPointerException if there is no algorithm
+<i>112</i>&nbsp;     */
+<i>113</i>&nbsp;    public final Node selectFirst() {
+<b class="fc"><i>114</i>&nbsp;        return algorithm.selectFirst(context);</b>
+<i>115</i>&nbsp;    }
+<i>116</i>&nbsp;
+<i>117</i>&nbsp;    /**
+<i>118</i>&nbsp;     * Returns the last node in this engine&#39;s context (scene/parent) using the engine&#39;s algorithm.
+<i>119</i>&nbsp;     * This can be null only if there are no traversable nodes
+<i>120</i>&nbsp;     * @return The last node or null if none exists
+<i>121</i>&nbsp;     * @throws java.lang.NullPointerException if there is no algorithm
+<i>122</i>&nbsp;     */
+<i>123</i>&nbsp;    public final Node selectLast() {
+<b class="nc"><i>124</i>&nbsp;        return algorithm.selectLast(context);</b>
+<i>125</i>&nbsp;    }
+<i>126</i>&nbsp;
+<i>127</i>&nbsp;    /**
+<i>128</i>&nbsp;     * The root of this engine&#39;s context. This is the node that is the root of the tree that is traversed by this engine.
+<i>129</i>&nbsp;     * @return This engine&#39;s root
+<i>130</i>&nbsp;     */
+<i>131</i>&nbsp;    protected abstract Parent getRoot();
+<i>132</i>&nbsp;
+<i>133</i>&nbsp;    /**
+<i>134</i>&nbsp;     * Returns true only if there&#39;s specified algorithm for this engine. Otherwise, this engine cannot be used for traversal.
+<i>135</i>&nbsp;     * The engine might be still useful however, e.g. for listening on traversal changes.
+<i>136</i>&nbsp;     * @return
+<i>137</i>&nbsp;     */
+<i>138</i>&nbsp;    public final boolean canTraverse() {
+<b class="nc"><i>139</i>&nbsp;        return algorithm != null;</b>
+<i>140</i>&nbsp;    }
+<i>141</i>&nbsp;
+<i>142</i>&nbsp;    /**
+<i>143</i>&nbsp;     * Gets the appropriate bounds for the given node, transformed into
+<i>144</i>&nbsp;     * the scene&#39;s or the specified node&#39;s coordinates.
+<i>145</i>&nbsp;     * @return bounds of node in {@code forParent} coordinates or scene coordinates if {@code forParent} is null
+<i>146</i>&nbsp;     */
+<i>147</i>&nbsp;    private Bounds getLayoutBounds(Node n, Parent forParent) {
+<i>148</i>&nbsp;        final Bounds bounds;
+<b class="nc"><i>149</i>&nbsp;        if (n != null) {</b>
+<b class="nc"><i>150</i>&nbsp;            if (forParent == null) {</b>
+<b class="nc"><i>151</i>&nbsp;                bounds = n.localToScene(n.getLayoutBounds());</b>
+<i>152</i>&nbsp;            } else {
+<b class="nc"><i>153</i>&nbsp;                bounds = forParent.sceneToLocal(n.localToScene(n.getLayoutBounds()));</b>
+<i>154</i>&nbsp;            }
+<i>155</i>&nbsp;        } else {
+<b class="nc"><i>156</i>&nbsp;            bounds = initialBounds;</b>
+<i>157</i>&nbsp;        }
+<b class="nc"><i>158</i>&nbsp;        return bounds;</b>
+<i>159</i>&nbsp;    }
+<i>160</i>&nbsp;
+<i>161</i>&nbsp;    // This is the engine context passed algorithm on select calls
+<b class="fc"><i>162</i>&nbsp;    private final class EngineContext extends BaseEngineContext {</b>
+<i>163</i>&nbsp;        @Override
+<i>164</i>&nbsp;        public Parent getRoot() {
+<b class="fc"><i>165</i>&nbsp;            return TraversalEngine.this.getRoot();</b>
+<i>166</i>&nbsp;        }
+<i>167</i>&nbsp;    }
+<i>168</i>&nbsp;
+<i>169</i>&nbsp;    // This is the engine context passed to algorithm on select callbacks from other contexts.
+<i>170</i>&nbsp;    // It can change the root to the node defined in &quot;selectFirstInParent&quot;, &quot;selectLastInParent&quot; or
+<i>171</i>&nbsp;    // &quot;selectInSubtree&quot; methods
+<b class="fc"><i>172</i>&nbsp;    private final class TempEngineContext extends BaseEngineContext {</b>
+<i>173</i>&nbsp;        private Parent root;
+<i>174</i>&nbsp;
+<i>175</i>&nbsp;        @Override
+<i>176</i>&nbsp;        public Parent getRoot() {
+<b class="nc"><i>177</i>&nbsp;            return root;</b>
+<i>178</i>&nbsp;        }
+<i>179</i>&nbsp;
+<i>180</i>&nbsp;        public void setRoot(Parent root) {
+<b class="nc"><i>181</i>&nbsp;            this.root = root;</b>
+<b class="nc"><i>182</i>&nbsp;        }</b>
+<i>183</i>&nbsp;    }
+<i>184</i>&nbsp;
+<i>185</i>&nbsp;    /**
+<i>186</i>&nbsp;     * The base class for all engine contexts
+<i>187</i>&nbsp;     */
+<b class="fc"><i>188</i>&nbsp;    private abstract class BaseEngineContext implements TraversalContext {</b>
+<i>189</i>&nbsp;
+<i>190</i>&nbsp;        /**
+<i>191</i>&nbsp;         * Returns all traversable nodes in the context&#39;s (engine&#39;s) root
+<i>192</i>&nbsp;         */
+<i>193</i>&nbsp;        @Override
+<i>194</i>&nbsp;        public List&lt;Node&gt; getAllTargetNodes() {
+<b class="nc"><i>195</i>&nbsp;            final List&lt;Node&gt; targetNodes = new ArrayList&lt;&gt;();</b>
+<b class="nc"><i>196</i>&nbsp;            addFocusableChildrenToList(targetNodes, getRoot());</b>
+<b class="nc"><i>197</i>&nbsp;            return targetNodes;</b>
+<i>198</i>&nbsp;        }
+<i>199</i>&nbsp;
+<i>200</i>&nbsp;        @Override
+<i>201</i>&nbsp;        public Bounds getSceneLayoutBounds(Node n) {
+<b class="nc"><i>202</i>&nbsp;            return getLayoutBounds(n, null);</b>
+<i>203</i>&nbsp;        }
+<i>204</i>&nbsp;
+<i>205</i>&nbsp;        private void addFocusableChildrenToList(List&lt;Node&gt; list, Parent parent) {
+<b class="nc"><i>206</i>&nbsp;            List&lt;Node&gt; parentsNodes = parent.getChildrenUnmodifiable();</b>
+<b class="nc"><i>207</i>&nbsp;            for (Node n : parentsNodes) {</b>
+<b class="nc"><i>208</i>&nbsp;                if (n.isFocusTraversable() &amp;&amp; !n.isFocused() &amp;&amp; NodeHelper.isTreeVisible(n) &amp;&amp; !n.isDisabled()) {</b>
+<b class="nc"><i>209</i>&nbsp;                    list.add(n);</b>
+<i>210</i>&nbsp;                }
+<b class="nc"><i>211</i>&nbsp;                if (n instanceof Parent) {</b>
+<b class="nc"><i>212</i>&nbsp;                    addFocusableChildrenToList(list, (Parent)n);</b>
+<i>213</i>&nbsp;                }
+<b class="nc"><i>214</i>&nbsp;            }</b>
+<b class="nc"><i>215</i>&nbsp;        }</b>
+<i>216</i>&nbsp;
+<i>217</i>&nbsp;        // All of the methods below are callbacks from traversal context to the default algorithm.
+<i>218</i>&nbsp;        // They can be used to obtain &quot;default&quot; result for the specified subtree.
+<i>219</i>&nbsp;        // This is useful when there is some algorithm that overrides behavior for a Parent but parent&#39;s children
+<i>220</i>&nbsp;        // should be again traversed by default algorithm.
+<i>221</i>&nbsp;        @Override
+<i>222</i>&nbsp;        public Node selectFirstInParent(Parent parent) {
+<b class="nc"><i>223</i>&nbsp;            tempEngineContext.setRoot(parent);</b>
+<b class="nc"><i>224</i>&nbsp;            return DEFAULT_ALGORITHM.selectFirst(tempEngineContext);</b>
+<i>225</i>&nbsp;        }
+<i>226</i>&nbsp;
+<i>227</i>&nbsp;        @Override
+<i>228</i>&nbsp;        public Node selectLastInParent(Parent parent) {
+<b class="nc"><i>229</i>&nbsp;            tempEngineContext.setRoot(parent);</b>
+<b class="nc"><i>230</i>&nbsp;            return DEFAULT_ALGORITHM.selectLast(tempEngineContext);</b>
+<i>231</i>&nbsp;        }
+<i>232</i>&nbsp;
+<i>233</i>&nbsp;        @Override
+<i>234</i>&nbsp;        public Node selectInSubtree(Parent subTreeRoot, Node from, Direction dir) {
+<b class="nc"><i>235</i>&nbsp;            tempEngineContext.setRoot(subTreeRoot);</b>
+<b class="nc"><i>236</i>&nbsp;            return DEFAULT_ALGORITHM.select(from, dir, tempEngineContext);</b>
+<i>237</i>&nbsp;        }
+<i>238</i>&nbsp;    }
+<i>239</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2017-12-04 21:49</div>
+</div>
+</body>
+</html>

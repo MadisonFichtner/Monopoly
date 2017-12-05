@@ -1,0 +1,343 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: ZoomEvent</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">javafx.scene.input</a> ]
+</div>
+
+<h1>Coverage Summary for Class: ZoomEvent (javafx.scene.input)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">ZoomEvent</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 9)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 41)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright (c) 2010, 2017, Oracle and/or its affiliates. All rights reserved.
+<i>3</i>&nbsp; * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+<i>4</i>&nbsp; *
+<i>5</i>&nbsp; *
+<i>6</i>&nbsp; *
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; *
+<i>11</i>&nbsp; *
+<i>12</i>&nbsp; *
+<i>13</i>&nbsp; *
+<i>14</i>&nbsp; *
+<i>15</i>&nbsp; *
+<i>16</i>&nbsp; *
+<i>17</i>&nbsp; *
+<i>18</i>&nbsp; *
+<i>19</i>&nbsp; *
+<i>20</i>&nbsp; *
+<i>21</i>&nbsp; *
+<i>22</i>&nbsp; *
+<i>23</i>&nbsp; *
+<i>24</i>&nbsp; */
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;package javafx.scene.input;
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;import javafx.beans.NamedArg;
+<i>29</i>&nbsp;import javafx.event.EventTarget;
+<i>30</i>&nbsp;import javafx.event.EventType;
+<i>31</i>&nbsp;
+<i>32</i>&nbsp;/**
+<i>33</i>&nbsp; * Zoom event indicates that user performed zooming gesture such as
+<i>34</i>&nbsp; * dragging two fingers apart on track pad, touch screen or other
+<i>35</i>&nbsp; * similar device.
+<i>36</i>&nbsp; * &lt;p&gt;
+<i>37</i>&nbsp; * The event is delivered to the top-most
+<i>38</i>&nbsp; * node picked on the gesture coordinates in time of the gesture start - the
+<i>39</i>&nbsp; * whole gesture is delivered to the same node even if the coordinates change
+<i>40</i>&nbsp; * during the gesture.
+<i>41</i>&nbsp; * &lt;p&gt;
+<i>42</i>&nbsp; * The event provides two values: {@code zoomFactor} is the zooming amount
+<i>43</i>&nbsp; * of this event, {@code totalZoomFactor} is the zooming amount of the whole
+<i>44</i>&nbsp; * gesture. The values work well when multiplied with the node&#39;s {@code scale}
+<i>45</i>&nbsp; * properties (values greater than {@code 1} for zooming in).
+<i>46</i>&nbsp; * &lt;p&gt;
+<i>47</i>&nbsp; * As all gestures, zooming can be direct (performed directly at
+<i>48</i>&nbsp; * the concrete coordinates as on touch screen - the center point among all
+<i>49</i>&nbsp; * the touches is usually used as the gesture coordinates) or indirect (performed
+<i>50</i>&nbsp; * indirectly as on track pad - the mouse cursor location is usually used
+<i>51</i>&nbsp; * as the gesture coordinates).
+<i>52</i>&nbsp; * &lt;p&gt;
+<i>53</i>&nbsp; * The gesture&#39;s {@code ZOOM} events are surounded by {@code ZOOM_STARTED}
+<i>54</i>&nbsp; * and {@code ZOOM_FINISHED} events. If zooming inertia is active on the
+<i>55</i>&nbsp; * given platform, some {@code ZOOM} events with {@code isInertia()} returning
+<i>56</i>&nbsp; * {@code true} can come after {@code ZOOM_FINISHED}.
+<i>57</i>&nbsp; *
+<i>58</i>&nbsp; * @since JavaFX 2.2
+<i>59</i>&nbsp; */
+<i>60</i>&nbsp;public final class ZoomEvent extends GestureEvent {
+<i>61</i>&nbsp;
+<i>62</i>&nbsp;    private static final long serialVersionUID = 20121107L;
+<i>63</i>&nbsp;
+<i>64</i>&nbsp;    /**
+<i>65</i>&nbsp;     * Common supertype for all zoom event types.
+<i>66</i>&nbsp;     */
+<b class="nc"><i>67</i>&nbsp;    public static final EventType&lt;ZoomEvent&gt; ANY =</b>
+<i>68</i>&nbsp;            new EventType&lt;ZoomEvent&gt;(GestureEvent.ANY, &quot;ANY_ZOOM&quot;);
+<i>69</i>&nbsp;
+<i>70</i>&nbsp;    /**
+<i>71</i>&nbsp;     * This event occurs when user performs a zooming gesture such as
+<i>72</i>&nbsp;     * dragging two fingers apart.
+<i>73</i>&nbsp;     */
+<b class="nc"><i>74</i>&nbsp;    public static final EventType&lt;ZoomEvent&gt; ZOOM =</b>
+<i>75</i>&nbsp;            new EventType&lt;ZoomEvent&gt;(ZoomEvent.ANY, &quot;ZOOM&quot;);
+<i>76</i>&nbsp;
+<i>77</i>&nbsp;    /**
+<i>78</i>&nbsp;     * This event occurs when a zooming gesture is detected.
+<i>79</i>&nbsp;     */
+<b class="nc"><i>80</i>&nbsp;    public static final EventType&lt;ZoomEvent&gt; ZOOM_STARTED =</b>
+<i>81</i>&nbsp;            new EventType&lt;ZoomEvent&gt;(ZoomEvent.ANY, &quot;ZOOM_STARTED&quot;);
+<i>82</i>&nbsp;
+<i>83</i>&nbsp;    /**
+<i>84</i>&nbsp;     * This event occurs when a zooming gesture ends.
+<i>85</i>&nbsp;     */
+<b class="nc"><i>86</i>&nbsp;    public static final EventType&lt;ZoomEvent&gt; ZOOM_FINISHED =</b>
+<i>87</i>&nbsp;            new EventType&lt;ZoomEvent&gt;(ZoomEvent.ANY, &quot;ZOOM_FINISHED&quot;);
+<i>88</i>&nbsp;
+<i>89</i>&nbsp;    /**
+<i>90</i>&nbsp;     * Constructs new ZoomEvent event.
+<i>91</i>&nbsp;     * @param source the source of the event. Can be null.
+<i>92</i>&nbsp;     * @param target the target of the event. Can be null.
+<i>93</i>&nbsp;     * @param eventType The type of the event.
+<i>94</i>&nbsp;     * @param x The x with respect to the scene.
+<i>95</i>&nbsp;     * @param y The y with respect to the scene.
+<i>96</i>&nbsp;     * @param screenX The x coordinate relative to screen.
+<i>97</i>&nbsp;     * @param screenY The y coordinate relative to screen.
+<i>98</i>&nbsp;     * @param shiftDown true if shift modifier was pressed.
+<i>99</i>&nbsp;     * @param controlDown true if control modifier was pressed.
+<i>100</i>&nbsp;     * @param altDown true if alt modifier was pressed.
+<i>101</i>&nbsp;     * @param metaDown true if meta modifier was pressed.
+<i>102</i>&nbsp;     * @param direct true if the event was caused by direct input device. See {@link #isDirect() }
+<i>103</i>&nbsp;     * @param inertia if represents inertia of an already finished gesture.
+<i>104</i>&nbsp;     * @param zoomFactor zoom amount
+<i>105</i>&nbsp;     * @param totalZoomFactor cumulative zoom amount
+<i>106</i>&nbsp;     * @param pickResult pick result. Can be null, in this case a 2D pick result
+<i>107</i>&nbsp;     *                   without any further values is constructed
+<i>108</i>&nbsp;     *                   based on the scene coordinates and the target
+<i>109</i>&nbsp;     * @since JavaFX 8.0
+<i>110</i>&nbsp;     */
+<i>111</i>&nbsp;    public ZoomEvent(@NamedArg(&quot;source&quot;) Object source, @NamedArg(&quot;target&quot;) EventTarget target, final @NamedArg(&quot;eventType&quot;) EventType&lt;ZoomEvent&gt; eventType,
+<i>112</i>&nbsp;            @NamedArg(&quot;x&quot;) double x, @NamedArg(&quot;y&quot;) double y,
+<i>113</i>&nbsp;            @NamedArg(&quot;screenX&quot;) double screenX, @NamedArg(&quot;screenY&quot;) double screenY,
+<i>114</i>&nbsp;            @NamedArg(&quot;shiftDown&quot;) boolean shiftDown,
+<i>115</i>&nbsp;            @NamedArg(&quot;controlDown&quot;) boolean controlDown,
+<i>116</i>&nbsp;            @NamedArg(&quot;altDown&quot;) boolean altDown,
+<i>117</i>&nbsp;            @NamedArg(&quot;metaDown&quot;) boolean metaDown,
+<i>118</i>&nbsp;            @NamedArg(&quot;direct&quot;) boolean direct,
+<i>119</i>&nbsp;            @NamedArg(&quot;inertia&quot;) boolean inertia,
+<i>120</i>&nbsp;            @NamedArg(&quot;zoomFactor&quot;) double zoomFactor,
+<i>121</i>&nbsp;            @NamedArg(&quot;totalZoomFactor&quot;) double totalZoomFactor,
+<i>122</i>&nbsp;            @NamedArg(&quot;pickResult&quot;) PickResult pickResult) {
+<i>123</i>&nbsp;
+<b class="nc"><i>124</i>&nbsp;        super(source, target, eventType, x, y, screenX, screenY,</b>
+<i>125</i>&nbsp;                shiftDown, controlDown, altDown, metaDown, direct, inertia, pickResult);
+<b class="nc"><i>126</i>&nbsp;        this.zoomFactor = zoomFactor;</b>
+<b class="nc"><i>127</i>&nbsp;        this.totalZoomFactor = totalZoomFactor;</b>
+<b class="nc"><i>128</i>&nbsp;    }</b>
+<i>129</i>&nbsp;
+<i>130</i>&nbsp;    /**
+<i>131</i>&nbsp;     * Constructs new ZoomEvent event with null source and target.
+<i>132</i>&nbsp;     * @param eventType The type of the event.
+<i>133</i>&nbsp;     * @param x The x with respect to the scene.
+<i>134</i>&nbsp;     * @param y The y with respect to the scene.
+<i>135</i>&nbsp;     * @param screenX The x coordinate relative to screen.
+<i>136</i>&nbsp;     * @param screenY The y coordinate relative to screen.
+<i>137</i>&nbsp;     * @param shiftDown true if shift modifier was pressed.
+<i>138</i>&nbsp;     * @param controlDown true if control modifier was pressed.
+<i>139</i>&nbsp;     * @param altDown true if alt modifier was pressed.
+<i>140</i>&nbsp;     * @param metaDown true if meta modifier was pressed.
+<i>141</i>&nbsp;     * @param direct true if the event was caused by direct input device. See {@link #isDirect() }
+<i>142</i>&nbsp;     * @param inertia if represents inertia of an already finished gesture.
+<i>143</i>&nbsp;     * @param zoomFactor zoom amount
+<i>144</i>&nbsp;     * @param totalZoomFactor cumulative zoom amount
+<i>145</i>&nbsp;     * @param pickResult pick result. Can be null, in this case a 2D pick result
+<i>146</i>&nbsp;     *                   without any further values is constructed
+<i>147</i>&nbsp;     *                   based on the scene coordinates
+<i>148</i>&nbsp;     * @since JavaFX 8.0
+<i>149</i>&nbsp;     */
+<i>150</i>&nbsp;    public ZoomEvent(final @NamedArg(&quot;eventType&quot;) EventType&lt;ZoomEvent&gt; eventType,
+<i>151</i>&nbsp;            @NamedArg(&quot;x&quot;) double x, @NamedArg(&quot;y&quot;) double y,
+<i>152</i>&nbsp;            @NamedArg(&quot;screenX&quot;) double screenX, @NamedArg(&quot;screenY&quot;) double screenY,
+<i>153</i>&nbsp;            @NamedArg(&quot;shiftDown&quot;) boolean shiftDown,
+<i>154</i>&nbsp;            @NamedArg(&quot;controlDown&quot;) boolean controlDown,
+<i>155</i>&nbsp;            @NamedArg(&quot;altDown&quot;) boolean altDown,
+<i>156</i>&nbsp;            @NamedArg(&quot;metaDown&quot;) boolean metaDown,
+<i>157</i>&nbsp;            @NamedArg(&quot;direct&quot;) boolean direct,
+<i>158</i>&nbsp;            @NamedArg(&quot;inertia&quot;) boolean inertia,
+<i>159</i>&nbsp;            @NamedArg(&quot;zoomFactor&quot;) double zoomFactor,
+<i>160</i>&nbsp;            @NamedArg(&quot;totalZoomFactor&quot;) double totalZoomFactor,
+<i>161</i>&nbsp;            @NamedArg(&quot;pickResult&quot;) PickResult pickResult) {
+<b class="nc"><i>162</i>&nbsp;        this(null, null, eventType, x, y, screenX, screenY, shiftDown, controlDown,</b>
+<i>163</i>&nbsp;                altDown, metaDown, direct, inertia, zoomFactor, totalZoomFactor,
+<i>164</i>&nbsp;                pickResult);
+<b class="nc"><i>165</i>&nbsp;    }</b>
+<i>166</i>&nbsp;
+<i>167</i>&nbsp;    private final double zoomFactor;
+<i>168</i>&nbsp;
+<i>169</i>&nbsp;    /**
+<i>170</i>&nbsp;     * Gets the zooming amount of this event. The factor value works well when
+<i>171</i>&nbsp;     * multiplied with the node&#39;s {@code scale} properties (values greater
+<i>172</i>&nbsp;     * than {@code 1} for zooming in, values between {@code 0} and {@code 1}
+<i>173</i>&nbsp;     * for zooming out).
+<i>174</i>&nbsp;     * @return The zooming amount of this event
+<i>175</i>&nbsp;     */
+<i>176</i>&nbsp;    public double getZoomFactor() {
+<b class="nc"><i>177</i>&nbsp;        return zoomFactor;</b>
+<i>178</i>&nbsp;    }
+<i>179</i>&nbsp;
+<i>180</i>&nbsp;    private final double totalZoomFactor;
+<i>181</i>&nbsp;
+<i>182</i>&nbsp;    /**
+<i>183</i>&nbsp;     * Gets the zooming amount of this gesture. The factor value works well when
+<i>184</i>&nbsp;     * multiplied with the node&#39;s {@code scale} properties (values greater
+<i>185</i>&nbsp;     * than {@code 1} for zooming in, values between {@code 0} and {@code 1}
+<i>186</i>&nbsp;     * for zooming out).
+<i>187</i>&nbsp;     * @return The cumulative zooming amount of this gesture
+<i>188</i>&nbsp;     */
+<i>189</i>&nbsp;    public double getTotalZoomFactor() {
+<b class="nc"><i>190</i>&nbsp;        return totalZoomFactor;</b>
+<i>191</i>&nbsp;    }
+<i>192</i>&nbsp;
+<i>193</i>&nbsp;    /**
+<i>194</i>&nbsp;     * Returns a string representation of this {@code ZoomEvent} object.
+<i>195</i>&nbsp;     * @return a string representation of this {@code ZoomEvent} object.
+<i>196</i>&nbsp;     */
+<i>197</i>&nbsp;    @Override public String toString() {
+<b class="nc"><i>198</i>&nbsp;        final StringBuilder sb = new StringBuilder(&quot;ZoomEvent [&quot;);</b>
+<i>199</i>&nbsp;
+<b class="nc"><i>200</i>&nbsp;        sb.append(&quot;source = &quot;).append(getSource());</b>
+<b class="nc"><i>201</i>&nbsp;        sb.append(&quot;, target = &quot;).append(getTarget());</b>
+<b class="nc"><i>202</i>&nbsp;        sb.append(&quot;, eventType = &quot;).append(getEventType());</b>
+<b class="nc"><i>203</i>&nbsp;        sb.append(&quot;, consumed = &quot;).append(isConsumed());</b>
+<i>204</i>&nbsp;
+<b class="nc"><i>205</i>&nbsp;        sb.append(&quot;, zoomFactor = &quot;).append(getZoomFactor());</b>
+<b class="nc"><i>206</i>&nbsp;        sb.append(&quot;, totalZoomFactor = &quot;).append(getTotalZoomFactor());</b>
+<b class="nc"><i>207</i>&nbsp;        sb.append(&quot;, x = &quot;).append(getX()).append(&quot;, y = &quot;).append(getY())</b>
+<b class="nc"><i>208</i>&nbsp;                .append(&quot;, z = &quot;).append(getZ());</b>
+<b class="nc"><i>209</i>&nbsp;        sb.append(isDirect() ? &quot;, direct&quot; : &quot;, indirect&quot;);</b>
+<i>210</i>&nbsp;
+<b class="nc"><i>211</i>&nbsp;        if (isInertia()) {</b>
+<b class="nc"><i>212</i>&nbsp;            sb.append(&quot;, inertia&quot;);</b>
+<i>213</i>&nbsp;        }
+<i>214</i>&nbsp;
+<b class="nc"><i>215</i>&nbsp;        if (isShiftDown()) {</b>
+<b class="nc"><i>216</i>&nbsp;            sb.append(&quot;, shiftDown&quot;);</b>
+<i>217</i>&nbsp;        }
+<b class="nc"><i>218</i>&nbsp;        if (isControlDown()) {</b>
+<b class="nc"><i>219</i>&nbsp;            sb.append(&quot;, controlDown&quot;);</b>
+<i>220</i>&nbsp;        }
+<b class="nc"><i>221</i>&nbsp;        if (isAltDown()) {</b>
+<b class="nc"><i>222</i>&nbsp;            sb.append(&quot;, altDown&quot;);</b>
+<i>223</i>&nbsp;        }
+<b class="nc"><i>224</i>&nbsp;        if (isMetaDown()) {</b>
+<b class="nc"><i>225</i>&nbsp;            sb.append(&quot;, metaDown&quot;);</b>
+<i>226</i>&nbsp;        }
+<b class="nc"><i>227</i>&nbsp;        if (isShortcutDown()) {</b>
+<b class="nc"><i>228</i>&nbsp;            sb.append(&quot;, shortcutDown&quot;);</b>
+<i>229</i>&nbsp;        }
+<b class="nc"><i>230</i>&nbsp;        sb.append(&quot;, pickResult = &quot;).append(getPickResult());</b>
+<i>231</i>&nbsp;
+<b class="nc"><i>232</i>&nbsp;        return sb.append(&quot;]&quot;).toString();</b>
+<i>233</i>&nbsp;    }
+<i>234</i>&nbsp;
+<i>235</i>&nbsp;    @Override
+<i>236</i>&nbsp;    public ZoomEvent copyFor(Object newSource, EventTarget newTarget) {
+<b class="nc"><i>237</i>&nbsp;        return (ZoomEvent) super.copyFor(newSource, newTarget);</b>
+<i>238</i>&nbsp;    }
+<i>239</i>&nbsp;
+<i>240</i>&nbsp;    /**
+<i>241</i>&nbsp;     * Creates a copy of the given event with the given fields substituted.
+<i>242</i>&nbsp;     * @param newSource the new source of the copied event
+<i>243</i>&nbsp;     * @param newTarget the new target of the copied event
+<i>244</i>&nbsp;     * @param type the new eventType
+<i>245</i>&nbsp;     * @return the event copy with the fields substituted
+<i>246</i>&nbsp;     * @since JavaFX 8.0
+<i>247</i>&nbsp;     */
+<i>248</i>&nbsp;    public ZoomEvent copyFor(Object newSource, EventTarget newTarget, EventType&lt;ZoomEvent&gt; type) {
+<b class="nc"><i>249</i>&nbsp;        ZoomEvent e = copyFor(newSource, newTarget);</b>
+<b class="nc"><i>250</i>&nbsp;        e.eventType = type;</b>
+<b class="nc"><i>251</i>&nbsp;        return e;</b>
+<i>252</i>&nbsp;    }
+<i>253</i>&nbsp;
+<i>254</i>&nbsp;    @Override
+<i>255</i>&nbsp;    public EventType&lt;ZoomEvent&gt; getEventType() {
+<b class="nc"><i>256</i>&nbsp;        return (EventType&lt;ZoomEvent&gt;) super.getEventType();</b>
+<i>257</i>&nbsp;    }
+<i>258</i>&nbsp;
+<i>259</i>&nbsp;
+<i>260</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2017-12-04 21:49</div>
+</div>
+</body>
+</html>

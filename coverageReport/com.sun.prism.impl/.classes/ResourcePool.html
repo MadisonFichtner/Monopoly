@@ -1,0 +1,233 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: ResourcePool</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.prism.impl</a> ]
+</div>
+
+<h1>Coverage Summary for Class: ResourcePool (com.sun.prism.impl)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+</tr>
+<tr>
+  <td class="name">ResourcePool</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright (c) 2013, 2014, Oracle and/or its affiliates. All rights reserved.
+<i>3</i>&nbsp; * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+<i>4</i>&nbsp; *
+<i>5</i>&nbsp; *
+<i>6</i>&nbsp; *
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; *
+<i>11</i>&nbsp; *
+<i>12</i>&nbsp; *
+<i>13</i>&nbsp; *
+<i>14</i>&nbsp; *
+<i>15</i>&nbsp; *
+<i>16</i>&nbsp; *
+<i>17</i>&nbsp; *
+<i>18</i>&nbsp; *
+<i>19</i>&nbsp; *
+<i>20</i>&nbsp; *
+<i>21</i>&nbsp; *
+<i>22</i>&nbsp; *
+<i>23</i>&nbsp; *
+<i>24</i>&nbsp; */
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;package com.sun.prism.impl;
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;/**
+<i>29</i>&nbsp; * An interface for tracking the usage of a particular resource from which
+<i>30</i>&nbsp; * managed resources are allocated.
+<i>31</i>&nbsp; * A given resource pool may share its underlying space with another
+<i>32</i>&nbsp; * resource pool, such as the case of allocating textures from the Java
+<i>33</i>&nbsp; * heap.
+<i>34</i>&nbsp; * In the case of a shared resource, the {@link used()} and {@link max()}
+<i>35</i>&nbsp; * methods will return absolute values indicating the amounts used or
+<i>36</i>&nbsp; * available for all resources that come from the shared pool, but the
+<i>37</i>&nbsp; * {@link managed()} method will only indicate the amount of the resource
+<i>38</i>&nbsp; * used for managed resources and the {@link target()} method will return
+<i>39</i>&nbsp; * the amount of the total shared resource that the allocation methods
+<i>40</i>&nbsp; * should attempt to stay under.
+<i>41</i>&nbsp; * &lt;pre&gt;
+<i>42</i>&nbsp; *     long newsize = ...; // size of new resource allocation
+<i>43</i>&nbsp; *     if (pool.used() + newsize &gt;= pool.target()) {
+<i>44</i>&nbsp; *         cleanup(pool);
+<i>45</i>&nbsp; *         // possibly multiple passes of increasing aggressiveness
+<i>46</i>&nbsp; *     }
+<i>47</i>&nbsp; *     if (pool.used() + newsize &gt;= pool.max()) {
+<i>48</i>&nbsp; *         throw OOM();
+<i>49</i>&nbsp; *     }
+<i>50</i>&nbsp; *     allocate(newsize);
+<i>51</i>&nbsp; * &lt;/pre&gt;
+<i>52</i>&nbsp; * The amounts and sizes returned from the methods should all be in the
+<i>53</i>&nbsp; * same units, usually bytes.
+<i>54</i>&nbsp; *
+<i>55</i>&nbsp; * @param &lt;T&gt; the type of resource stored in this pool
+<i>56</i>&nbsp; * @see ManagedResource
+<i>57</i>&nbsp; */
+<i>58</i>&nbsp;public interface ResourcePool&lt;T&gt; {
+<i>59</i>&nbsp;    /**
+<i>60</i>&nbsp;     * Check that all resources are in the correct state for an idle condition
+<i>61</i>&nbsp;     * and free any resources which were disposed from a non-resource thread.
+<i>62</i>&nbsp;     * This method must be called on a thread that is appropriate for disposing
+<i>63</i>&nbsp;     * and managing resources for this resource pool.
+<i>64</i>&nbsp;     * The boolean {@code forgiveStaleLocks} parameter is used to indicate that
+<i>65</i>&nbsp;     * an exceptional condition occurred which caused the caller to abort a
+<i>66</i>&nbsp;     * cycle of resource usage, potentially with outstanding resource locks.
+<i>67</i>&nbsp;     * This method will unlock all non-permanent resources that have outstanding
+<i>68</i>&nbsp;     * locks if {@code forgiveStaleLocks} is {@code true}, or it will print out
+<i>69</i>&nbsp;     * a warning and a resource summary if that parameter is {@code false}.
+<i>70</i>&nbsp;     *
+<i>71</i>&nbsp;     * @param forgiveStaleLocks {@code true} if the caller wishes to forgive
+<i>72</i>&nbsp;     *         and unlock all outstanding locks on non-permanent resources
+<i>73</i>&nbsp;     */
+<i>74</i>&nbsp;    public void freeDisposalRequestedAndCheckResources(boolean forgiveStaleLocks);
+<i>75</i>&nbsp;
+<i>76</i>&nbsp;    /**
+<i>77</i>&nbsp;     * True if Thread.currentThread() is a thread that created this ResourcePool
+<i>78</i>&nbsp;     * @return true if Thread.currentThread() is a thread that created this ResourcePool
+<i>79</i>&nbsp;     */
+<i>80</i>&nbsp;    public boolean isManagerThread();
+<i>81</i>&nbsp;
+<i>82</i>&nbsp;    /**
+<i>83</i>&nbsp;     * The amount of a resource currently being used to hold any kind of
+<i>84</i>&nbsp;     * resource, whether managed or not.
+<i>85</i>&nbsp;     * @return the amount being used
+<i>86</i>&nbsp;     */
+<i>87</i>&nbsp;    public long used();
+<i>88</i>&nbsp;
+<i>89</i>&nbsp;    /**
+<i>90</i>&nbsp;     * The amount of this resource currently being used to hold managed
+<i>91</i>&nbsp;     * resources.
+<i>92</i>&nbsp;     * This amount may be less than the amount returned by the {@link used()}
+<i>93</i>&nbsp;     * method if the pool is shared amongst other resources.
+<i>94</i>&nbsp;     * @return the amount being used to hold managed resources
+<i>95</i>&nbsp;     */
+<i>96</i>&nbsp;    public long managed();
+<i>97</i>&nbsp;
+<i>98</i>&nbsp;    /**
+<i>99</i>&nbsp;     * The total space available in this pool for allocating any kind of
+<i>100</i>&nbsp;     * resource, even unmanaged resources, and including those resources
+<i>101</i>&nbsp;     * already allocated.
+<i>102</i>&nbsp;     * @return the maximum amount of the resource
+<i>103</i>&nbsp;     */
+<i>104</i>&nbsp;    public long max();
+<i>105</i>&nbsp;
+<i>106</i>&nbsp;    /**
+<i>107</i>&nbsp;     * The current target of the maximum amount of space in this resource pool
+<i>108</i>&nbsp;     * that should be used so as to be friendly to other parts of the system.
+<i>109</i>&nbsp;     * This number must be less than or equal to the amount returned by the
+<i>110</i>&nbsp;     * {@link max()} method, larger than the amount returned by the
+<i>111</i>&nbsp;     * {@link origTarget()} method, and may change over time.
+<i>112</i>&nbsp;     * @return the current target amount of the resource to be used
+<i>113</i>&nbsp;     * @see #setTarget(long)
+<i>114</i>&nbsp;     */
+<i>115</i>&nbsp;    public long target();
+<i>116</i>&nbsp;
+<i>117</i>&nbsp;    /**
+<i>118</i>&nbsp;     * The initial target of the maximum amount of space in this resource pool
+<i>119</i>&nbsp;     * that should be used so as to be friendly to other parts of the system.
+<i>120</i>&nbsp;     * This number must be less than or equal to the amount returned by the
+<i>121</i>&nbsp;     * {@link max()} method.
+<i>122</i>&nbsp;     * @return the initial target amount of the resource to be used
+<i>123</i>&nbsp;     */
+<i>124</i>&nbsp;    public long origTarget();
+<i>125</i>&nbsp;
+<i>126</i>&nbsp;    /**
+<i>127</i>&nbsp;     * Sets a new current target of the maximum amount of space in this
+<i>128</i>&nbsp;     * resource pool that should be used so as to be friendly to other parts
+<i>129</i>&nbsp;     * of the system.
+<i>130</i>&nbsp;     * The specified {@code newTarget} number must be less than or equal to
+<i>131</i>&nbsp;     * the amount returned by the {@link max()} method, larger than the amount
+<i>132</i>&nbsp;     * returned by the {@link origTarget()} method.
+<i>133</i>&nbsp;     * @param newTarget the new current target to be set
+<i>134</i>&nbsp;     */
+<i>135</i>&nbsp;    public void setTarget(long newTarget);
+<i>136</i>&nbsp;
+<i>137</i>&nbsp;    /**
+<i>138</i>&nbsp;     * The estimated size of the indicated resource.
+<i>139</i>&nbsp;     *
+<i>140</i>&nbsp;     * @param resource the resource to be measured
+<i>141</i>&nbsp;     * @return the space within this resource pool that the object occupies.
+<i>142</i>&nbsp;     */
+<i>143</i>&nbsp;    public long size(T resource);
+<i>144</i>&nbsp;
+<i>145</i>&nbsp;    /**
+<i>146</i>&nbsp;     * Record the indicated amount of the resource as being allocated for
+<i>147</i>&nbsp;     * a {@link ManagedResource}.
+<i>148</i>&nbsp;     *
+<i>149</i>&nbsp;     * @param size the amount of the resource to be indicated as managed.
+<i>150</i>&nbsp;     */
+<i>151</i>&nbsp;    public void recordAllocated(long size);
+<i>152</i>&nbsp;
+<i>153</i>&nbsp;    /**
+<i>154</i>&nbsp;     * Record the indicated amount of the resource as no longer being
+<i>155</i>&nbsp;     * held in a {@link ManagedResource}.
+<i>156</i>&nbsp;     *
+<i>157</i>&nbsp;     * @param size the amount of the resource to remove from the managed amount.
+<i>158</i>&nbsp;     */
+<i>159</i>&nbsp;    public void recordFree(long size);
+<i>160</i>&nbsp;
+<i>161</i>&nbsp;    /**
+<i>162</i>&nbsp;     * Record the {@link ManagedResource} object as being currently managed
+<i>163</i>&nbsp;     * by this pool.
+<i>164</i>&nbsp;     *
+<i>165</i>&nbsp;     * @param resource the resource that is now being managed
+<i>166</i>&nbsp;     */
+<i>167</i>&nbsp;    public void resourceManaged(ManagedResource&lt;T&gt; resource);
+<i>168</i>&nbsp;
+<i>169</i>&nbsp;    /**
+<i>170</i>&nbsp;     * Record the {@link ManagedResource} object as no longer being managed
+<i>171</i>&nbsp;     * by this pool.
+<i>172</i>&nbsp;     *
+<i>173</i>&nbsp;     * @param resource the resource that is freed, no longer being managed
+<i>174</i>&nbsp;     */
+<i>175</i>&nbsp;    public void resourceFreed(ManagedResource&lt;T&gt; resource);
+<i>176</i>&nbsp;
+<i>177</i>&nbsp;    /**
+<i>178</i>&nbsp;     * Prepare for an allocation of a resource from this pool of the
+<i>179</i>&nbsp;     * indicated size by freeing up uninteresting resources until the
+<i>180</i>&nbsp;     * allocation fits within the target() or max() sizes.
+<i>181</i>&nbsp;     *
+<i>182</i>&nbsp;     * @param size the size of the resource that is about to be allocated
+<i>183</i>&nbsp;     * @return true if there is room for the indicated resource
+<i>184</i>&nbsp;     */
+<i>185</i>&nbsp;    public boolean prepareForAllocation(long size);
+<i>186</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2017-12-04 21:49</div>
+</div>
+</body>
+</html>

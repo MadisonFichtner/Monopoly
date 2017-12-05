@@ -1,0 +1,227 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: InputEventUtils</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.javafx.scene.input</a> ]
+</div>
+
+<h1>Coverage Summary for Class: InputEventUtils (com.sun.javafx.scene.input)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">InputEventUtils</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    50%
+  </span>
+  <span class="absValue">
+    (2/ 4)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    54.1%
+  </span>
+  <span class="absValue">
+    (20/ 37)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright (c) 2000, 2013, Oracle and/or its affiliates. All rights reserved.
+<i>3</i>&nbsp; * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+<i>4</i>&nbsp; *
+<i>5</i>&nbsp; *
+<i>6</i>&nbsp; *
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; *
+<i>11</i>&nbsp; *
+<i>12</i>&nbsp; *
+<i>13</i>&nbsp; *
+<i>14</i>&nbsp; *
+<i>15</i>&nbsp; *
+<i>16</i>&nbsp; *
+<i>17</i>&nbsp; *
+<i>18</i>&nbsp; *
+<i>19</i>&nbsp; *
+<i>20</i>&nbsp; *
+<i>21</i>&nbsp; *
+<i>22</i>&nbsp; *
+<i>23</i>&nbsp; *
+<i>24</i>&nbsp; */
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;package com.sun.javafx.scene.input;
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;import com.sun.javafx.scene.CameraHelper;
+<i>29</i>&nbsp;import com.sun.javafx.scene.NodeHelper;
+<i>30</i>&nbsp;import com.sun.javafx.scene.SceneHelper;
+<i>31</i>&nbsp;import com.sun.javafx.scene.SceneUtils;
+<i>32</i>&nbsp;import com.sun.javafx.scene.SubSceneHelper;
+<i>33</i>&nbsp;import java.util.Arrays;
+<i>34</i>&nbsp;import java.util.List;
+<i>35</i>&nbsp;import java.util.Collections;
+<i>36</i>&nbsp;import javafx.geometry.Point2D;
+<i>37</i>&nbsp;import javafx.geometry.Point3D;
+<i>38</i>&nbsp;import javafx.scene.Node;
+<i>39</i>&nbsp;import javafx.scene.SubScene;
+<i>40</i>&nbsp;import javafx.scene.input.PickResult;
+<i>41</i>&nbsp;import javafx.scene.input.TransferMode;
+<i>42</i>&nbsp;
+<i>43</i>&nbsp;/**
+<i>44</i>&nbsp; * Utility class for helper methods needed by input events.
+<i>45</i>&nbsp; */
+<b class="nc"><i>46</i>&nbsp;public class InputEventUtils {</b>
+<i>47</i>&nbsp;
+<i>48</i>&nbsp;    /**
+<i>49</i>&nbsp;     * Recomputes event coordinates for a different node.
+<i>50</i>&nbsp;     * @param coordinates Coordinates to recompute
+<i>51</i>&nbsp;     * @param oldSource Node in whose coordinate system the coordinates are
+<i>52</i>&nbsp;     * @param newSource Node to whose coordinate system to recompute
+<i>53</i>&nbsp;     * @return the recomputed coordinates
+<i>54</i>&nbsp;     */
+<i>55</i>&nbsp;    public static Point3D recomputeCoordinates(PickResult result,
+<i>56</i>&nbsp;            Object newSource) {
+<i>57</i>&nbsp;
+<b class="fc"><i>58</i>&nbsp;        Point3D coordinates = result.getIntersectedPoint();</b>
+<b class="fc"><i>59</i>&nbsp;        if (coordinates == null) {</b>
+<b class="nc"><i>60</i>&nbsp;            return new Point3D(Double.NaN, Double.NaN, Double.NaN);</b>
+<i>61</i>&nbsp;        }
+<i>62</i>&nbsp;
+<b class="fc"><i>63</i>&nbsp;        final Node oldSourceNode = result.getIntersectedNode();</b>
+<i>64</i>&nbsp;
+<i>65</i>&nbsp;        final Node newSourceNode =
+<b class="fc"><i>66</i>&nbsp;                (newSource instanceof Node) ? (Node) newSource : null;</b>
+<i>67</i>&nbsp;
+<i>68</i>&nbsp;        final SubScene oldSubScene =
+<b class="fc"><i>69</i>&nbsp;                (oldSourceNode == null ? null : NodeHelper.getSubScene(oldSourceNode));</b>
+<i>70</i>&nbsp;        final SubScene newSubScene =
+<b class="fc"><i>71</i>&nbsp;                (newSourceNode == null ? null : NodeHelper.getSubScene(newSourceNode));</b>
+<b class="fc"><i>72</i>&nbsp;        final boolean subScenesDiffer = (oldSubScene != newSubScene);</b>
+<i>73</i>&nbsp;
+<b class="fc"><i>74</i>&nbsp;        if (oldSourceNode != null) {</b>
+<i>75</i>&nbsp;            // transform to scene/nearest-subScene coordinates
+<b class="fc"><i>76</i>&nbsp;            coordinates = oldSourceNode.localToScene(coordinates);</b>
+<b class="fc"><i>77</i>&nbsp;            if (subScenesDiffer &amp;&amp; oldSubScene != null) {</b>
+<i>78</i>&nbsp;                // transform to scene coordiantes
+<b class="nc"><i>79</i>&nbsp;                coordinates = SceneUtils.subSceneToScene(oldSubScene, coordinates);</b>
+<i>80</i>&nbsp;            }
+<i>81</i>&nbsp;        }
+<i>82</i>&nbsp;
+<b class="fc"><i>83</i>&nbsp;        if (newSourceNode != null) {</b>
+<b class="fc"><i>84</i>&nbsp;            if (subScenesDiffer &amp;&amp; newSubScene != null) {</b>
+<i>85</i>&nbsp;                // flatten the coords to flat mouse coordinates - project
+<i>86</i>&nbsp;                // by scene&#39;s camera
+<b class="nc"><i>87</i>&nbsp;                Point2D planeCoords = CameraHelper.project(</b>
+<b class="nc"><i>88</i>&nbsp;                        SceneHelper.getEffectiveCamera(newSourceNode.getScene()),</b>
+<i>89</i>&nbsp;                        coordinates);
+<i>90</i>&nbsp;                // convert the point to subScene coordinates
+<b class="nc"><i>91</i>&nbsp;                planeCoords = SceneUtils.sceneToSubScenePlane(newSubScene, planeCoords);</b>
+<i>92</i>&nbsp;                // compute inner intersection with the subScene&#39;s camera
+<i>93</i>&nbsp;                // projection plane
+<b class="nc"><i>94</i>&nbsp;                if (planeCoords == null) {</b>
+<b class="nc"><i>95</i>&nbsp;                    coordinates = null;</b>
+<i>96</i>&nbsp;                } else {
+<b class="nc"><i>97</i>&nbsp;                    coordinates = CameraHelper.pickProjectPlane(</b>
+<b class="nc"><i>98</i>&nbsp;                            SubSceneHelper.getEffectiveCamera(newSubScene),</b>
+<b class="nc"><i>99</i>&nbsp;                            planeCoords.getX(), planeCoords.getY());</b>
+<i>100</i>&nbsp;                }
+<i>101</i>&nbsp;            }
+<i>102</i>&nbsp;            // transform the point to source&#39;s local coordinates
+<b class="fc"><i>103</i>&nbsp;            if (coordinates != null) {</b>
+<b class="fc"><i>104</i>&nbsp;                coordinates = newSourceNode.sceneToLocal(coordinates);</b>
+<i>105</i>&nbsp;            }
+<b class="fc"><i>106</i>&nbsp;            if (coordinates == null) {</b>
+<b class="nc"><i>107</i>&nbsp;                coordinates = new Point3D(Double.NaN, Double.NaN, Double.NaN);</b>
+<i>108</i>&nbsp;            }
+<i>109</i>&nbsp;        }
+<i>110</i>&nbsp;
+<b class="fc"><i>111</i>&nbsp;        return coordinates;</b>
+<i>112</i>&nbsp;    }
+<i>113</i>&nbsp;
+<b class="fc"><i>114</i>&nbsp;    private static final List&lt;TransferMode&gt; TM_ANY =</b>
+<b class="fc"><i>115</i>&nbsp;            Collections.unmodifiableList(Arrays.asList(</b>
+<i>116</i>&nbsp;                TransferMode.COPY,
+<i>117</i>&nbsp;                TransferMode.MOVE,
+<i>118</i>&nbsp;                TransferMode.LINK
+<i>119</i>&nbsp;            ));
+<i>120</i>&nbsp;
+<b class="fc"><i>121</i>&nbsp;    private static final List&lt;TransferMode&gt; TM_COPY_OR_MOVE =</b>
+<b class="fc"><i>122</i>&nbsp;            Collections.unmodifiableList(Arrays.asList(</b>
+<i>123</i>&nbsp;                TransferMode.COPY,
+<i>124</i>&nbsp;                TransferMode.MOVE
+<i>125</i>&nbsp;            ));
+<i>126</i>&nbsp;
+<i>127</i>&nbsp;    /**
+<i>128</i>&nbsp;     * Makes sure changes to the static arrays specified in TransferMode
+<i>129</i>&nbsp;     * don&#39;t have any effect on the transfer modes used.
+<i>130</i>&nbsp;     * @param modes Modes passed in by user
+<i>131</i>&nbsp;     * @return list containing the passed modes. If one of the static arrays
+<i>132</i>&nbsp;     *         is passed, the expected modes are returned regardless of the
+<i>133</i>&nbsp;     *         values in those arrays.
+<i>134</i>&nbsp;     */
+<i>135</i>&nbsp;    public static List&lt;TransferMode&gt; safeTransferModes(TransferMode[] modes) {
+<b class="nc"><i>136</i>&nbsp;        if (modes == TransferMode.ANY) {</b>
+<b class="nc"><i>137</i>&nbsp;            return TM_ANY;</b>
+<b class="nc"><i>138</i>&nbsp;        } else if (modes == TransferMode.COPY_OR_MOVE) {</b>
+<b class="nc"><i>139</i>&nbsp;            return TM_COPY_OR_MOVE;</b>
+<i>140</i>&nbsp;        } else {
+<b class="nc"><i>141</i>&nbsp;            return Arrays.asList(modes);</b>
+<i>142</i>&nbsp;        }
+<i>143</i>&nbsp;    }
+<i>144</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2017-12-04 21:49</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,156 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: SliceSequenceConverter</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.javafx.scene.layout.region</a> ]
+</div>
+
+<h1>Coverage Summary for Class: SliceSequenceConverter (com.sun.javafx.scene.layout.region)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">SliceSequenceConverter</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    60%
+  </span>
+  <span class="absValue">
+    (3/ 5)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    33.3%
+  </span>
+  <span class="absValue">
+    (3/ 9)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright (c) 2012, 2015, Oracle and/or its affiliates. All rights reserved.
+<i>3</i>&nbsp; * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+<i>4</i>&nbsp; *
+<i>5</i>&nbsp; *
+<i>6</i>&nbsp; *
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; *
+<i>11</i>&nbsp; *
+<i>12</i>&nbsp; *
+<i>13</i>&nbsp; *
+<i>14</i>&nbsp; *
+<i>15</i>&nbsp; *
+<i>16</i>&nbsp; *
+<i>17</i>&nbsp; *
+<i>18</i>&nbsp; *
+<i>19</i>&nbsp; *
+<i>20</i>&nbsp; *
+<i>21</i>&nbsp; *
+<i>22</i>&nbsp; *
+<i>23</i>&nbsp; *
+<i>24</i>&nbsp; */
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;package com.sun.javafx.scene.layout.region;
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;import javafx.scene.text.Font;
+<i>29</i>&nbsp;import javafx.css.ParsedValue;
+<i>30</i>&nbsp;import javafx.css.StyleConverter;
+<i>31</i>&nbsp;
+<i>32</i>&nbsp;/**
+<i>33</i>&nbsp; * [&lt;size&gt; | &lt;size&gt; &lt;size&gt; &lt;size&gt; &lt;size&gt;] &lt;fill&gt;? [ , [ &lt;size&gt; | &lt;size&gt; &lt;size&gt; &lt;size&gt; &lt;size&gt;] &lt;fill&gt;? ]*
+<i>34</i>&nbsp; */
+<b class="fc"><i>35</i>&nbsp;public final class SliceSequenceConverter extends StyleConverter&lt;ParsedValue&lt;ParsedValue[], BorderImageSlices&gt;[], BorderImageSlices[]&gt; {</b>
+<b class="fc"><i>36</i>&nbsp;    private static final SliceSequenceConverter BORDER_IMAGE_SLICE_SEQUENCE_CONVERTER =</b>
+<i>37</i>&nbsp;            new SliceSequenceConverter();
+<i>38</i>&nbsp;
+<i>39</i>&nbsp;    public static SliceSequenceConverter getInstance() {
+<b class="fc"><i>40</i>&nbsp;        return BORDER_IMAGE_SLICE_SEQUENCE_CONVERTER;</b>
+<i>41</i>&nbsp;    }
+<i>42</i>&nbsp;
+<i>43</i>&nbsp;    @Override
+<i>44</i>&nbsp;    public BorderImageSlices[] convert(ParsedValue&lt;ParsedValue&lt;ParsedValue[], BorderImageSlices&gt;[], BorderImageSlices[]&gt; value, Font font) {
+<i>45</i>&nbsp;        // For &#39;border-image-slice: 10% fill, 20% 30%&#39;, the value arg will be
+<i>46</i>&nbsp;        // ParsedValue { values: [
+<i>47</i>&nbsp;        //     ParsedValue { values: [ ParsedValue {parsed: 10%}, ParsedValue {parsed: fill}] } ,
+<i>48</i>&nbsp;        //     ParsedValue { values: [ ParsedValue {parsed: 20%}, ParsedValue {parsed: 30%}] }
+<i>49</i>&nbsp;        // ]}
+<i>50</i>&nbsp;        //
+<i>51</i>&nbsp;        // For &#39;border-image-slice: 10% fill&#39;, the value arg will be
+<i>52</i>&nbsp;        // ParsedValue { values: [ ParsedValue {parsed: 10%}, ParsedValue {parsed: fill}] }
+<i>53</i>&nbsp;        //
+<i>54</i>&nbsp;        // For &#39;border-image-slice: 10%&#39;, the value arg will be
+<i>55</i>&nbsp;        // ParsedValue {parsed: 10%}
+<i>56</i>&nbsp;        //
+<i>57</i>&nbsp;        // where the sizes are actually Size objects.
+<i>58</i>&nbsp;        //
+<i>59</i>&nbsp;        // If the value arg contains multiple layers, unwind the nested
+<i>60</i>&nbsp;        // values by one level.
+<b class="nc"><i>61</i>&nbsp;        ParsedValue&lt;ParsedValue[], BorderImageSlices&gt;[] layers = value.getValue();</b>
+<b class="nc"><i>62</i>&nbsp;        BorderImageSlices[] borderImageSlices = new BorderImageSlices[layers.length];</b>
+<b class="nc"><i>63</i>&nbsp;        for (int l = 0; l &lt; layers.length; l++) {</b>
+<b class="nc"><i>64</i>&nbsp;            borderImageSlices[l] = BorderImageSliceConverter.getInstance().convert(layers[l], font);</b>
+<i>65</i>&nbsp;        }
+<b class="nc"><i>66</i>&nbsp;        return borderImageSlices;</b>
+<i>67</i>&nbsp;    }
+<i>68</i>&nbsp;
+<i>69</i>&nbsp;    @Override
+<i>70</i>&nbsp;    public String toString() {
+<b class="nc"><i>71</i>&nbsp;        return &quot;BorderImageSliceSequenceConverter&quot;;</b>
+<i>72</i>&nbsp;    }
+<i>73</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2017-12-04 21:49</div>
+</div>
+</body>
+</html>

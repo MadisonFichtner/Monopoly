@@ -1,0 +1,1208 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: Tooltip</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">javafx.scene.control</a> ]
+</div>
+
+<h1>Coverage Summary for Class: Tooltip (javafx.scene.control)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">Tooltip</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 47)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 118)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright (c) 2010, 2017, Oracle and/or its affiliates. All rights reserved.
+<i>3</i>&nbsp; * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+<i>4</i>&nbsp; *
+<i>5</i>&nbsp; *
+<i>6</i>&nbsp; *
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; *
+<i>11</i>&nbsp; *
+<i>12</i>&nbsp; *
+<i>13</i>&nbsp; *
+<i>14</i>&nbsp; *
+<i>15</i>&nbsp; *
+<i>16</i>&nbsp; *
+<i>17</i>&nbsp; *
+<i>18</i>&nbsp; *
+<i>19</i>&nbsp; *
+<i>20</i>&nbsp; *
+<i>21</i>&nbsp; *
+<i>22</i>&nbsp; *
+<i>23</i>&nbsp; *
+<i>24</i>&nbsp; */
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;package javafx.scene.control;
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;
+<i>29</i>&nbsp;import com.sun.javafx.beans.IDProperty;
+<i>30</i>&nbsp;import com.sun.javafx.css.StyleManager;
+<i>31</i>&nbsp;import com.sun.javafx.scene.NodeHelper;
+<i>32</i>&nbsp;import com.sun.javafx.stage.PopupWindowHelper;
+<i>33</i>&nbsp;
+<i>34</i>&nbsp;import javafx.css.SimpleStyleableBooleanProperty;
+<i>35</i>&nbsp;import javafx.css.SimpleStyleableDoubleProperty;
+<i>36</i>&nbsp;import javafx.css.SimpleStyleableObjectProperty;
+<i>37</i>&nbsp;import javafx.css.StyleOrigin;
+<i>38</i>&nbsp;import javafx.css.StyleableObjectProperty;
+<i>39</i>&nbsp;import javafx.css.StyleableStringProperty;
+<i>40</i>&nbsp;
+<i>41</i>&nbsp;import javafx.css.converter.BooleanConverter;
+<i>42</i>&nbsp;import javafx.css.converter.EnumConverter;
+<i>43</i>&nbsp;import javafx.css.converter.SizeConverter;
+<i>44</i>&nbsp;import javafx.css.converter.StringConverter;
+<i>45</i>&nbsp;import javafx.css.converter.DurationConverter;
+<i>46</i>&nbsp;import javafx.scene.control.skin.TooltipSkin;
+<i>47</i>&nbsp;
+<i>48</i>&nbsp;import java.util.ArrayList;
+<i>49</i>&nbsp;import java.util.Collections;
+<i>50</i>&nbsp;import java.util.List;
+<i>51</i>&nbsp;
+<i>52</i>&nbsp;import javafx.animation.KeyFrame;
+<i>53</i>&nbsp;import javafx.animation.Timeline;
+<i>54</i>&nbsp;import javafx.beans.property.*;
+<i>55</i>&nbsp;import javafx.beans.value.WritableValue;
+<i>56</i>&nbsp;import javafx.css.CssMetaData;
+<i>57</i>&nbsp;import javafx.css.FontCssMetaData;
+<i>58</i>&nbsp;import javafx.css.Styleable;
+<i>59</i>&nbsp;import javafx.css.StyleableProperty;
+<i>60</i>&nbsp;import javafx.event.EventHandler;
+<i>61</i>&nbsp;import javafx.geometry.NodeOrientation;
+<i>62</i>&nbsp;import javafx.scene.AccessibleRole;
+<i>63</i>&nbsp;import javafx.scene.Node;
+<i>64</i>&nbsp;import javafx.scene.Parent;
+<i>65</i>&nbsp;import javafx.scene.Scene;
+<i>66</i>&nbsp;import javafx.scene.image.Image;
+<i>67</i>&nbsp;import javafx.scene.image.ImageView;
+<i>68</i>&nbsp;import javafx.scene.input.MouseEvent;
+<i>69</i>&nbsp;import javafx.scene.text.Font;
+<i>70</i>&nbsp;import javafx.scene.text.TextAlignment;
+<i>71</i>&nbsp;import javafx.stage.Window;
+<i>72</i>&nbsp;import javafx.util.Duration;
+<i>73</i>&nbsp;
+<i>74</i>&nbsp;
+<i>75</i>&nbsp;/**
+<i>76</i>&nbsp; * Tooltips are common UI elements which are typically used for showing
+<i>77</i>&nbsp; * additional information about a Node in the scenegraph when the Node is
+<i>78</i>&nbsp; * hovered over by the mouse. Any Node can show a tooltip. In most cases a
+<i>79</i>&nbsp; * Tooltip is created and its {@link #textProperty() text} property is modified
+<i>80</i>&nbsp; * to show plain text to the user. However, a Tooltip is able to show within it
+<i>81</i>&nbsp; * an arbitrary scenegraph of nodes - this is done by creating the scenegraph
+<i>82</i>&nbsp; * and setting it inside the Tooltip {@link #graphicProperty() graphic}
+<i>83</i>&nbsp; * property.
+<i>84</i>&nbsp; *
+<i>85</i>&nbsp; * &lt;p&gt;You use the following approach to set a Tooltip on any node:
+<i>86</i>&nbsp; *
+<i>87</i>&nbsp; * &lt;pre&gt;
+<i>88</i>&nbsp; * Rectangle rect = new Rectangle(0, 0, 100, 100);
+<i>89</i>&nbsp; * Tooltip t = new Tooltip(&quot;A Square&quot;);
+<i>90</i>&nbsp; * Tooltip.install(rect, t);
+<i>91</i>&nbsp; * &lt;/pre&gt;
+<i>92</i>&nbsp; *
+<i>93</i>&nbsp; * This tooltip will then participate with the typical tooltip semantics (i.e.
+<i>94</i>&nbsp; * appearing on hover, etc). Note that the Tooltip does not have to be
+<i>95</i>&nbsp; * uninstalled: it will be garbage collected when it is not referenced by any
+<i>96</i>&nbsp; * Node. It is possible to manually uninstall the tooltip, however.
+<i>97</i>&nbsp; *
+<i>98</i>&nbsp; * &lt;p&gt;A single tooltip can be installed on multiple target nodes or multiple
+<i>99</i>&nbsp; * controls.
+<i>100</i>&nbsp; *
+<i>101</i>&nbsp; * &lt;p&gt;Because most Tooltips are shown on UI controls, there is special API
+<i>102</i>&nbsp; * for all controls to make installing a Tooltip less verbose. The example below
+<i>103</i>&nbsp; * shows how to create a tooltip for a Button control:
+<i>104</i>&nbsp; *
+<i>105</i>&nbsp; * &lt;pre&gt;
+<i>106</i>&nbsp; * import javafx.scene.control.Tooltip;
+<i>107</i>&nbsp; * import javafx.scene.control.Button;
+<i>108</i>&nbsp; *
+<i>109</i>&nbsp; * Button button = new Button(&quot;Hover Over Me&quot;);
+<i>110</i>&nbsp; * button.setTooltip(new Tooltip(&quot;Tooltip for Button&quot;));
+<i>111</i>&nbsp; * &lt;/pre&gt;
+<i>112</i>&nbsp; * @since JavaFX 2.0
+<i>113</i>&nbsp; */
+<i>114</i>&nbsp;@IDProperty(&quot;id&quot;)
+<b class="nc"><i>115</i>&nbsp;public class Tooltip extends PopupControl {</b>
+<b class="nc"><i>116</i>&nbsp;    private static String TOOLTIP_PROP_KEY = &quot;javafx.scene.control.Tooltip&quot;;</b>
+<i>117</i>&nbsp;
+<i>118</i>&nbsp;    // RT-31134 : the tooltip style includes a shadow around the tooltip with a
+<i>119</i>&nbsp;    // width of 9 and height of 5. This causes mouse events to not reach the control
+<i>120</i>&nbsp;    // underneath resulting in losing hover state on the control while the tooltip is showing.
+<i>121</i>&nbsp;    // Displaying the tooltip at an offset indicated below resolves this issue.
+<i>122</i>&nbsp;    // RT-37107: The y-offset was upped to 7 to ensure no overlaps when the tooltip
+<i>123</i>&nbsp;    // is shown near the right edge of the screen.
+<b class="nc"><i>124</i>&nbsp;    private static int TOOLTIP_XOFFSET = 10;</b>
+<b class="nc"><i>125</i>&nbsp;    private static int TOOLTIP_YOFFSET = 7;</b>
+<i>126</i>&nbsp;
+<b class="nc"><i>127</i>&nbsp;    private static TooltipBehavior BEHAVIOR = new TooltipBehavior(false);</b>
+<i>128</i>&nbsp;
+<i>129</i>&nbsp;    /**
+<i>130</i>&nbsp;     * Associates the given {@link Tooltip} with the given {@link Node}. The tooltip
+<i>131</i>&nbsp;     * can then behave similar to when it is set on any {@link Control}. A single
+<i>132</i>&nbsp;     * tooltip can be associated with multiple nodes.
+<i>133</i>&nbsp;     * @param node the node
+<i>134</i>&nbsp;     * @param t the tooltip
+<i>135</i>&nbsp;     * @see Tooltip
+<i>136</i>&nbsp;     */
+<i>137</i>&nbsp;    public static void install(Node node, Tooltip t) {
+<b class="nc"><i>138</i>&nbsp;        BEHAVIOR.install(node, t);</b>
+<b class="nc"><i>139</i>&nbsp;    }</b>
+<i>140</i>&nbsp;
+<i>141</i>&nbsp;    /**
+<i>142</i>&nbsp;     * Removes the association of the given {@link Tooltip} on the specified
+<i>143</i>&nbsp;     * {@link Node}. Hence hovering on the node will no longer result in showing of the
+<i>144</i>&nbsp;     * tooltip.
+<i>145</i>&nbsp;     * @param node the node
+<i>146</i>&nbsp;     * @param t the tooltip
+<i>147</i>&nbsp;     * @see Tooltip
+<i>148</i>&nbsp;     */
+<i>149</i>&nbsp;    public static void uninstall(Node node, Tooltip t) {
+<b class="nc"><i>150</i>&nbsp;        BEHAVIOR.uninstall(node);</b>
+<b class="nc"><i>151</i>&nbsp;    }</b>
+<i>152</i>&nbsp;
+<i>153</i>&nbsp;    /***************************************************************************
+<i>154</i>&nbsp;     *                                                                         *
+<i>155</i>&nbsp;     * Constructors                                                            *
+<i>156</i>&nbsp;     *                                                                         *
+<i>157</i>&nbsp;     **************************************************************************/
+<i>158</i>&nbsp;
+<i>159</i>&nbsp;    /**
+<i>160</i>&nbsp;     * Creates a tooltip with an empty string for its text.
+<i>161</i>&nbsp;     */
+<i>162</i>&nbsp;    public Tooltip() {
+<b class="nc"><i>163</i>&nbsp;        this(null);</b>
+<b class="nc"><i>164</i>&nbsp;    }</b>
+<i>165</i>&nbsp;
+<i>166</i>&nbsp;    /**
+<i>167</i>&nbsp;     * Creates a tooltip with the specified text.
+<i>168</i>&nbsp;     *
+<i>169</i>&nbsp;     * @param text A text string for the tooltip.
+<i>170</i>&nbsp;     */
+<i>171</i>&nbsp;    public Tooltip(String text) {
+<b class="nc"><i>172</i>&nbsp;        super();</b>
+<b class="nc"><i>173</i>&nbsp;        if (text != null) setText(text);</b>
+<b class="nc"><i>174</i>&nbsp;        bridge = new CSSBridge();</b>
+<b class="nc"><i>175</i>&nbsp;        PopupWindowHelper.getContent(this).setAll(bridge);</b>
+<b class="nc"><i>176</i>&nbsp;        getStyleClass().setAll(&quot;tooltip&quot;);</b>
+<b class="nc"><i>177</i>&nbsp;    }</b>
+<i>178</i>&nbsp;
+<i>179</i>&nbsp;    /***************************************************************************
+<i>180</i>&nbsp;     *                                                                         *
+<i>181</i>&nbsp;     * Properties                                                              *
+<i>182</i>&nbsp;     *                                                                         *
+<i>183</i>&nbsp;     **************************************************************************/
+<i>184</i>&nbsp;    /**
+<i>185</i>&nbsp;     * The text to display in the tooltip. If the text is set to null, an empty
+<i>186</i>&nbsp;     * string will be displayed, despite the value being null.
+<i>187</i>&nbsp;     * @return the text property
+<i>188</i>&nbsp;     */
+<b class="nc"><i>189</i>&nbsp;    public final StringProperty textProperty() { return text; }</b>
+<i>190</i>&nbsp;    public final void setText(String value) {
+<b class="nc"><i>191</i>&nbsp;        textProperty().setValue(value);</b>
+<b class="nc"><i>192</i>&nbsp;    }</b>
+<b class="nc"><i>193</i>&nbsp;    public final String getText() { return text.getValue() == null ? &quot;&quot; : text.getValue(); }</b>
+<b class="nc"><i>194</i>&nbsp;    private final StringProperty text = new SimpleStringProperty(this, &quot;text&quot;, &quot;&quot;) {</b>
+<i>195</i>&nbsp;        @Override protected void invalidated() {
+<i>196</i>&nbsp;            super.invalidated();
+<i>197</i>&nbsp;            final String value = get();
+<i>198</i>&nbsp;            if (isShowing() &amp;&amp; value != null &amp;&amp; !value.equals(getText())) {
+<i>199</i>&nbsp;                //Dynamic tooltip content is location-dependant.
+<i>200</i>&nbsp;                //Chromium trick.
+<i>201</i>&nbsp;                setAnchorX(BEHAVIOR.lastMouseX);
+<i>202</i>&nbsp;                setAnchorY(BEHAVIOR.lastMouseY);
+<i>203</i>&nbsp;            }
+<i>204</i>&nbsp;        }
+<i>205</i>&nbsp;    };
+<i>206</i>&nbsp;
+<i>207</i>&nbsp;    /**
+<i>208</i>&nbsp;     * Specifies the behavior for lines of text &lt;em&gt;when text is multiline&lt;/em&gt;.
+<i>209</i>&nbsp;     * Unlike {@link #contentDisplayProperty() contentDisplay} which affects the
+<i>210</i>&nbsp;     * graphic and text, this setting only affects multiple lines of text
+<i>211</i>&nbsp;     * relative to the text bounds.
+<i>212</i>&nbsp;     * @return the text alignment property
+<i>213</i>&nbsp;     */
+<i>214</i>&nbsp;    public final ObjectProperty&lt;TextAlignment&gt; textAlignmentProperty() {
+<b class="nc"><i>215</i>&nbsp;        return textAlignment;</b>
+<i>216</i>&nbsp;    }
+<i>217</i>&nbsp;    public final void setTextAlignment(TextAlignment value) {
+<b class="nc"><i>218</i>&nbsp;        textAlignmentProperty().setValue(value);</b>
+<b class="nc"><i>219</i>&nbsp;    }</b>
+<i>220</i>&nbsp;    public final TextAlignment getTextAlignment() {
+<b class="nc"><i>221</i>&nbsp;        return textAlignmentProperty().getValue();</b>
+<i>222</i>&nbsp;    }
+<b class="nc"><i>223</i>&nbsp;    private final ObjectProperty&lt;TextAlignment&gt; textAlignment =</b>
+<i>224</i>&nbsp;            new SimpleStyleableObjectProperty&lt;&gt;(TEXT_ALIGNMENT, this, &quot;textAlignment&quot;, TextAlignment.LEFT);;
+<i>225</i>&nbsp;
+<i>226</i>&nbsp;    /**
+<i>227</i>&nbsp;     * Specifies the behavior to use if the text of the {@code Tooltip}
+<i>228</i>&nbsp;     * exceeds the available space for rendering the text.
+<i>229</i>&nbsp;     * @return the text overrun property
+<i>230</i>&nbsp;     */
+<i>231</i>&nbsp;    public final ObjectProperty&lt;OverrunStyle&gt; textOverrunProperty() {
+<b class="nc"><i>232</i>&nbsp;        return textOverrun;</b>
+<i>233</i>&nbsp;    }
+<i>234</i>&nbsp;    public final void setTextOverrun(OverrunStyle value) {
+<b class="nc"><i>235</i>&nbsp;        textOverrunProperty().setValue(value);</b>
+<b class="nc"><i>236</i>&nbsp;    }</b>
+<i>237</i>&nbsp;    public final OverrunStyle getTextOverrun() {
+<b class="nc"><i>238</i>&nbsp;        return textOverrunProperty().getValue();</b>
+<i>239</i>&nbsp;    }
+<b class="nc"><i>240</i>&nbsp;    private final ObjectProperty&lt;OverrunStyle&gt; textOverrun =</b>
+<i>241</i>&nbsp;            new SimpleStyleableObjectProperty&lt;OverrunStyle&gt;(TEXT_OVERRUN, this, &quot;textOverrun&quot;, OverrunStyle.ELLIPSIS);
+<i>242</i>&nbsp;
+<i>243</i>&nbsp;    /**
+<i>244</i>&nbsp;     * If a run of text exceeds the width of the Tooltip, then this variable
+<i>245</i>&nbsp;     * indicates whether the text should wrap onto another line.
+<i>246</i>&nbsp;     * @return the wrap text property
+<i>247</i>&nbsp;     */
+<i>248</i>&nbsp;    public final BooleanProperty wrapTextProperty() {
+<b class="nc"><i>249</i>&nbsp;        return wrapText;</b>
+<i>250</i>&nbsp;    }
+<i>251</i>&nbsp;    public final void setWrapText(boolean value) {
+<b class="nc"><i>252</i>&nbsp;        wrapTextProperty().setValue(value);</b>
+<b class="nc"><i>253</i>&nbsp;    }</b>
+<i>254</i>&nbsp;    public final boolean isWrapText() {
+<b class="nc"><i>255</i>&nbsp;        return wrapTextProperty().getValue();</b>
+<i>256</i>&nbsp;    }
+<b class="nc"><i>257</i>&nbsp;    private final BooleanProperty wrapText =</b>
+<i>258</i>&nbsp;            new SimpleStyleableBooleanProperty(WRAP_TEXT, this, &quot;wrapText&quot;, false);
+<i>259</i>&nbsp;
+<i>260</i>&nbsp;
+<i>261</i>&nbsp;    /**
+<i>262</i>&nbsp;     * The default font to use for text in the Tooltip. If the Tooltip&#39;s text is
+<i>263</i>&nbsp;     * rich text then this font may or may not be used depending on the font
+<i>264</i>&nbsp;     * information embedded in the rich text, but in any case where a default
+<i>265</i>&nbsp;     * font is required, this font will be used.
+<i>266</i>&nbsp;     * @return the font property
+<i>267</i>&nbsp;     */
+<i>268</i>&nbsp;    public final ObjectProperty&lt;Font&gt; fontProperty() {
+<b class="nc"><i>269</i>&nbsp;        return font;</b>
+<i>270</i>&nbsp;    }
+<i>271</i>&nbsp;    public final void setFont(Font value) {
+<b class="nc"><i>272</i>&nbsp;        fontProperty().setValue(value);</b>
+<b class="nc"><i>273</i>&nbsp;    }</b>
+<i>274</i>&nbsp;    public final Font getFont() {
+<b class="nc"><i>275</i>&nbsp;        return fontProperty().getValue();</b>
+<i>276</i>&nbsp;    }
+<b class="nc"><i>277</i>&nbsp;    private final ObjectProperty&lt;Font&gt; font = new StyleableObjectProperty&lt;Font&gt;(Font.getDefault()) {</b>
+<i>278</i>&nbsp;        private boolean fontSetByCss = false;
+<i>279</i>&nbsp;
+<i>280</i>&nbsp;        @Override public void applyStyle(StyleOrigin newOrigin, Font value) {
+<i>281</i>&nbsp;            // RT-20727 - if CSS is setting the font, then make sure invalidate doesn&#39;t call NodeHelper.reapplyCSS
+<i>282</i>&nbsp;            try {
+<i>283</i>&nbsp;                // super.applyStyle calls set which might throw if value is bound.
+<i>284</i>&nbsp;                // Have to make sure fontSetByCss is reset.
+<i>285</i>&nbsp;                fontSetByCss = true;
+<i>286</i>&nbsp;                super.applyStyle(newOrigin, value);
+<i>287</i>&nbsp;            } catch(Exception e) {
+<i>288</i>&nbsp;                throw e;
+<i>289</i>&nbsp;            } finally {
+<i>290</i>&nbsp;                fontSetByCss = false;
+<i>291</i>&nbsp;            }
+<i>292</i>&nbsp;        }
+<i>293</i>&nbsp;
+<i>294</i>&nbsp;        @Override public void set(Font value) {
+<i>295</i>&nbsp;            final Font oldValue = get();
+<i>296</i>&nbsp;            StyleOrigin origin = ((StyleableObjectProperty&lt;Font&gt;)font).getStyleOrigin();
+<i>297</i>&nbsp;            if (origin == null || (value != null ? !value.equals(oldValue) : oldValue != null)) {
+<i>298</i>&nbsp;                super.set(value);
+<i>299</i>&nbsp;            }
+<i>300</i>&nbsp;        }
+<i>301</i>&nbsp;
+<i>302</i>&nbsp;        @Override protected void invalidated() {
+<i>303</i>&nbsp;            // RT-20727 - if font is changed by calling setFont, then
+<i>304</i>&nbsp;            // css might need to be reapplied since font size affects
+<i>305</i>&nbsp;            // calculated values for styles with relative values
+<i>306</i>&nbsp;            if(fontSetByCss == false) {
+<i>307</i>&nbsp;                NodeHelper.reapplyCSS(Tooltip.this.bridge);
+<i>308</i>&nbsp;            }
+<i>309</i>&nbsp;        }
+<i>310</i>&nbsp;
+<i>311</i>&nbsp;        @Override public CssMetaData&lt;Tooltip.CSSBridge,Font&gt; getCssMetaData() {
+<i>312</i>&nbsp;            return FONT;
+<i>313</i>&nbsp;        }
+<i>314</i>&nbsp;
+<i>315</i>&nbsp;        @Override public Object getBean() {
+<i>316</i>&nbsp;            return Tooltip.this;
+<i>317</i>&nbsp;        }
+<i>318</i>&nbsp;
+<i>319</i>&nbsp;        @Override public String getName() {
+<i>320</i>&nbsp;            return &quot;font&quot;;
+<i>321</i>&nbsp;        }
+<i>322</i>&nbsp;    };
+<i>323</i>&nbsp;
+<i>324</i>&nbsp;
+<i>325</i>&nbsp;    /**
+<i>326</i>&nbsp;     * The delay between the mouse entering the hovered node and when the associated tooltip will be shown to the user.
+<i>327</i>&nbsp;     * The default delay is 1000ms.
+<i>328</i>&nbsp;     *
+<i>329</i>&nbsp;     * @return show delay property
+<i>330</i>&nbsp;     * @since 9
+<i>331</i>&nbsp;     * @defaultValue 1000ms
+<i>332</i>&nbsp;     */
+<i>333</i>&nbsp;    public final ObjectProperty&lt;Duration&gt; showDelayProperty() {
+<b class="nc"><i>334</i>&nbsp;        return showDelayProperty;</b>
+<i>335</i>&nbsp;    }
+<i>336</i>&nbsp;    public final void setShowDelay(Duration showDelay) {
+<b class="nc"><i>337</i>&nbsp;        showDelayProperty.set(showDelay);</b>
+<b class="nc"><i>338</i>&nbsp;    }</b>
+<i>339</i>&nbsp;    public final Duration getShowDelay() {
+<b class="nc"><i>340</i>&nbsp;        return showDelayProperty.get();</b>
+<i>341</i>&nbsp;    }
+<b class="nc"><i>342</i>&nbsp;    private final ObjectProperty&lt;Duration&gt; showDelayProperty</b>
+<i>343</i>&nbsp;            = new SimpleStyleableObjectProperty&lt;&gt;(SHOW_DELAY, this, &quot;showDelay&quot;, new Duration(1000));
+<i>344</i>&nbsp;
+<i>345</i>&nbsp;
+<i>346</i>&nbsp;    /**
+<i>347</i>&nbsp;     * The duration that the tooltip should remain showing for until it is no longer visible to the user.
+<i>348</i>&nbsp;     * If the mouse leaves the control before the showDuration finishes, then the tooltip will remain showing
+<i>349</i>&nbsp;     * for the duration specified in the {@link #hideDelayProperty()}, even if the remaining time of the showDuration
+<i>350</i>&nbsp;     * is less than the hideDelay duration. The default value is 5000ms.
+<i>351</i>&nbsp;     *
+<i>352</i>&nbsp;     * @return the show duration property
+<i>353</i>&nbsp;     * @since 9
+<i>354</i>&nbsp;     * @defaultValue 5000ms
+<i>355</i>&nbsp;     */
+<i>356</i>&nbsp;    public final ObjectProperty&lt;Duration&gt; showDurationProperty() {
+<b class="nc"><i>357</i>&nbsp;        return showDurationProperty;</b>
+<i>358</i>&nbsp;    }
+<i>359</i>&nbsp;    public final void setShowDuration(Duration showDuration) {
+<b class="nc"><i>360</i>&nbsp;        showDurationProperty.set(showDuration);</b>
+<b class="nc"><i>361</i>&nbsp;    }</b>
+<i>362</i>&nbsp;    public final Duration getShowDuration() {
+<b class="nc"><i>363</i>&nbsp;        return showDurationProperty.get();</b>
+<i>364</i>&nbsp;    }
+<b class="nc"><i>365</i>&nbsp;    private final ObjectProperty&lt;Duration&gt; showDurationProperty</b>
+<i>366</i>&nbsp;            = new SimpleStyleableObjectProperty&lt;&gt;(SHOW_DURATION, this, &quot;showDuration&quot;, new Duration(5000));
+<i>367</i>&nbsp;
+<i>368</i>&nbsp;
+<i>369</i>&nbsp;    /**
+<i>370</i>&nbsp;     * The duration in which to continue showing the tooltip after the mouse has left the node. Once this time has
+<i>371</i>&nbsp;     * elapsed the tooltip will hide. The default value is 200ms.
+<i>372</i>&nbsp;     *
+<i>373</i>&nbsp;     * @return the hide delay property
+<i>374</i>&nbsp;     * @since 9
+<i>375</i>&nbsp;     * @defaultValue 200ms
+<i>376</i>&nbsp;     */
+<i>377</i>&nbsp;    public final ObjectProperty&lt;Duration&gt; hideDelayProperty() {
+<b class="nc"><i>378</i>&nbsp;        return hideDelayProperty;</b>
+<i>379</i>&nbsp;    }
+<i>380</i>&nbsp;    public final void setHideDelay(Duration hideDelay) {
+<b class="nc"><i>381</i>&nbsp;        hideDelayProperty.set(hideDelay);</b>
+<b class="nc"><i>382</i>&nbsp;    }</b>
+<i>383</i>&nbsp;    public final Duration getHideDelay() {
+<b class="nc"><i>384</i>&nbsp;        return hideDelayProperty.get();</b>
+<i>385</i>&nbsp;    }
+<b class="nc"><i>386</i>&nbsp;    private final ObjectProperty&lt;Duration&gt; hideDelayProperty</b>
+<i>387</i>&nbsp;            = new SimpleStyleableObjectProperty&lt;&gt;(HIDE_DELAY, this, &quot;hideDelay&quot;, new Duration(200));
+<i>388</i>&nbsp;
+<i>389</i>&nbsp;
+<i>390</i>&nbsp;    /**
+<i>391</i>&nbsp;     * An optional icon for the Tooltip. This can be positioned relative to the
+<i>392</i>&nbsp;     * text by using the {@link #contentDisplayProperty() content display}
+<i>393</i>&nbsp;     * property.
+<i>394</i>&nbsp;     * The node specified for this variable cannot appear elsewhere in the
+<i>395</i>&nbsp;     * scene graph, otherwise the {@code IllegalArgumentException} is thrown.
+<i>396</i>&nbsp;     * See the class description of {@link javafx.scene.Node Node} for more detail.
+<i>397</i>&nbsp;     * @return the graphic property
+<i>398</i>&nbsp;     */
+<i>399</i>&nbsp;    public final ObjectProperty&lt;Node&gt; graphicProperty() {
+<b class="nc"><i>400</i>&nbsp;        return graphic;</b>
+<i>401</i>&nbsp;    }
+<i>402</i>&nbsp;    public final void setGraphic(Node value) {
+<b class="nc"><i>403</i>&nbsp;        graphicProperty().setValue(value);</b>
+<b class="nc"><i>404</i>&nbsp;    }</b>
+<i>405</i>&nbsp;    public final Node getGraphic() {
+<b class="nc"><i>406</i>&nbsp;        return graphicProperty().getValue();</b>
+<i>407</i>&nbsp;    }
+<b class="nc"><i>408</i>&nbsp;    private final ObjectProperty&lt;Node&gt; graphic = new StyleableObjectProperty&lt;Node&gt;() {</b>
+<i>409</i>&nbsp;        // The graphic is styleable by css, but it is the
+<i>410</i>&nbsp;        // imageUrlProperty that handles the style value.
+<i>411</i>&nbsp;        @Override public CssMetaData getCssMetaData() {
+<i>412</i>&nbsp;            return GRAPHIC;
+<i>413</i>&nbsp;        }
+<i>414</i>&nbsp;
+<i>415</i>&nbsp;        @Override public Object getBean() {
+<i>416</i>&nbsp;            return Tooltip.this;
+<i>417</i>&nbsp;        }
+<i>418</i>&nbsp;
+<i>419</i>&nbsp;        @Override public String getName() {
+<i>420</i>&nbsp;            return &quot;graphic&quot;;
+<i>421</i>&nbsp;        }
+<i>422</i>&nbsp;
+<i>423</i>&nbsp;    };
+<i>424</i>&nbsp;
+<i>425</i>&nbsp;    private StyleableStringProperty imageUrlProperty() {
+<b class="nc"><i>426</i>&nbsp;        if (imageUrl == null) {</b>
+<b class="nc"><i>427</i>&nbsp;            imageUrl = new StyleableStringProperty() {</b>
+<i>428</i>&nbsp;                // If imageUrlProperty is invalidated, this is the origin of the style that
+<i>429</i>&nbsp;                // triggered the invalidation. This is used in the invaildated() method where the
+<i>430</i>&nbsp;                // value of super.getStyleOrigin() is not valid until after the call to set(v) returns,
+<i>431</i>&nbsp;                // by which time invalidated will have been called.
+<i>432</i>&nbsp;                // This value is initialized to USER in case someone calls set on the imageUrlProperty, which
+<i>433</i>&nbsp;                // is possible:
+<i>434</i>&nbsp;                //     CssMetaData metaData = ((StyleableProperty)labeled.graphicProperty()).getCssMetaData();
+<i>435</i>&nbsp;                //     StyleableProperty prop = metaData.getStyleableProperty(labeled);
+<i>436</i>&nbsp;                //     prop.set(someUrl);
+<i>437</i>&nbsp;                //
+<i>438</i>&nbsp;                // TODO: Note that prop != labeled, which violates the contract between StyleableProperty and CssMetaData.
+<i>439</i>&nbsp;                StyleOrigin origin = StyleOrigin.USER;
+<i>440</i>&nbsp;
+<i>441</i>&nbsp;                @Override public void applyStyle(StyleOrigin origin, String v) {
+<i>442</i>&nbsp;
+<i>443</i>&nbsp;                    this.origin = origin;
+<i>444</i>&nbsp;
+<i>445</i>&nbsp;                    // Don&#39;t want applyStyle to throw an exception which would leave this.origin set to the wrong value
+<i>446</i>&nbsp;                    if (graphic == null || graphic.isBound() == false) super.applyStyle(origin, v);
+<i>447</i>&nbsp;
+<i>448</i>&nbsp;                    // Origin is only valid for this invocation of applyStyle, so reset it to USER in case someone calls set.
+<i>449</i>&nbsp;                    this.origin = StyleOrigin.USER;
+<i>450</i>&nbsp;                }
+<i>451</i>&nbsp;
+<i>452</i>&nbsp;                @Override protected void invalidated() {
+<i>453</i>&nbsp;
+<i>454</i>&nbsp;                    // need to call super.get() here since get() is overridden to return the graphicProperty&#39;s value
+<i>455</i>&nbsp;                    final String url = super.get();
+<i>456</i>&nbsp;
+<i>457</i>&nbsp;                    if (url == null) {
+<i>458</i>&nbsp;                        ((StyleableProperty&lt;Node&gt;)(WritableValue&lt;Node&gt;)graphicProperty()).applyStyle(origin, null);
+<i>459</i>&nbsp;                    } else {
+<i>460</i>&nbsp;                        // RT-34466 - if graphic&#39;s url is the same as this property&#39;s value, then don&#39;t overwrite.
+<i>461</i>&nbsp;                        final Node graphicNode = Tooltip.this.getGraphic();
+<i>462</i>&nbsp;                        if (graphicNode instanceof ImageView) {
+<i>463</i>&nbsp;                            final ImageView imageView = (ImageView)graphicNode;
+<i>464</i>&nbsp;                            final Image image = imageView.getImage();
+<i>465</i>&nbsp;                            if (image != null) {
+<i>466</i>&nbsp;                                final String imageViewUrl = image.getUrl();
+<i>467</i>&nbsp;                                if (url.equals(imageViewUrl)) return;
+<i>468</i>&nbsp;                            }
+<i>469</i>&nbsp;
+<i>470</i>&nbsp;                        }
+<i>471</i>&nbsp;
+<i>472</i>&nbsp;                        final Image img = StyleManager.getInstance().getCachedImage(url);
+<i>473</i>&nbsp;
+<i>474</i>&nbsp;                        if (img != null) {
+<i>475</i>&nbsp;                            // Note that it is tempting to try to re-use existing ImageView simply by setting
+<i>476</i>&nbsp;                            // the image on the current ImageView, if there is one. This would effectively change
+<i>477</i>&nbsp;                            // the image, but not the ImageView which means that no graphicProperty listeners would
+<i>478</i>&nbsp;                            // be notified. This is probably not what we want.
+<i>479</i>&nbsp;
+<i>480</i>&nbsp;                            // Have to call applyStyle on graphicProperty so that the graphicProperty&#39;s
+<i>481</i>&nbsp;                            // origin matches the imageUrlProperty&#39;s origin.
+<i>482</i>&nbsp;                            ((StyleableProperty&lt;Node&gt;)(WritableValue&lt;Node&gt;)graphicProperty()).applyStyle(origin, new ImageView(img));
+<i>483</i>&nbsp;                        }
+<i>484</i>&nbsp;                    }
+<i>485</i>&nbsp;                }
+<i>486</i>&nbsp;
+<i>487</i>&nbsp;                @Override public String get() {
+<i>488</i>&nbsp;                    // The value of the imageUrlProperty is that of the graphicProperty.
+<i>489</i>&nbsp;                    // Return the value in a way that doesn&#39;t expand the graphicProperty.
+<i>490</i>&nbsp;                    final Node graphic = getGraphic();
+<i>491</i>&nbsp;                    if (graphic instanceof ImageView) {
+<i>492</i>&nbsp;                        final Image image = ((ImageView)graphic).getImage();
+<i>493</i>&nbsp;                        if (image != null) {
+<i>494</i>&nbsp;                            return image.getUrl();
+<i>495</i>&nbsp;                        }
+<i>496</i>&nbsp;                    }
+<i>497</i>&nbsp;                    return null;
+<i>498</i>&nbsp;                }
+<i>499</i>&nbsp;
+<i>500</i>&nbsp;                @Override public StyleOrigin getStyleOrigin() {
+<i>501</i>&nbsp;                    // The origin of the imageUrlProperty is that of the graphicProperty.
+<i>502</i>&nbsp;                    // Return the origin in a way that doesn&#39;t expand the graphicProperty.
+<i>503</i>&nbsp;                    return graphic != null ? ((StyleableProperty&lt;Node&gt;)(WritableValue&lt;Node&gt;)graphic).getStyleOrigin() : null;
+<i>504</i>&nbsp;                }
+<i>505</i>&nbsp;
+<i>506</i>&nbsp;                @Override public Object getBean() {
+<i>507</i>&nbsp;                    return Tooltip.this;
+<i>508</i>&nbsp;                }
+<i>509</i>&nbsp;
+<i>510</i>&nbsp;                @Override public String getName() {
+<i>511</i>&nbsp;                    return &quot;imageUrl&quot;;
+<i>512</i>&nbsp;                }
+<i>513</i>&nbsp;
+<i>514</i>&nbsp;                @Override public CssMetaData&lt;Tooltip.CSSBridge,String&gt; getCssMetaData() {
+<i>515</i>&nbsp;                    return GRAPHIC;
+<i>516</i>&nbsp;                }
+<i>517</i>&nbsp;            };
+<i>518</i>&nbsp;        }
+<b class="nc"><i>519</i>&nbsp;        return imageUrl;</b>
+<i>520</i>&nbsp;    }
+<i>521</i>&nbsp;
+<b class="nc"><i>522</i>&nbsp;    private StyleableStringProperty imageUrl = null;</b>
+<i>523</i>&nbsp;
+<i>524</i>&nbsp;    /**
+<i>525</i>&nbsp;     * Specifies the positioning of the graphic relative to the text.
+<i>526</i>&nbsp;     * @return the content display property
+<i>527</i>&nbsp;     */
+<i>528</i>&nbsp;    public final ObjectProperty&lt;ContentDisplay&gt; contentDisplayProperty() {
+<b class="nc"><i>529</i>&nbsp;        return contentDisplay;</b>
+<i>530</i>&nbsp;    }
+<i>531</i>&nbsp;    public final void setContentDisplay(ContentDisplay value) {
+<b class="nc"><i>532</i>&nbsp;        contentDisplayProperty().setValue(value);</b>
+<b class="nc"><i>533</i>&nbsp;    }</b>
+<i>534</i>&nbsp;    public final ContentDisplay getContentDisplay() {
+<b class="nc"><i>535</i>&nbsp;        return contentDisplayProperty().getValue();</b>
+<i>536</i>&nbsp;    }
+<b class="nc"><i>537</i>&nbsp;    private final ObjectProperty&lt;ContentDisplay&gt; contentDisplay =</b>
+<i>538</i>&nbsp;            new SimpleStyleableObjectProperty&lt;&gt;(CONTENT_DISPLAY, this, &quot;contentDisplay&quot;, ContentDisplay.LEFT);
+<i>539</i>&nbsp;
+<i>540</i>&nbsp;    /**
+<i>541</i>&nbsp;     * The amount of space between the graphic and text
+<i>542</i>&nbsp;     * @return the graphic text gap property
+<i>543</i>&nbsp;     */
+<i>544</i>&nbsp;    public final DoubleProperty graphicTextGapProperty() {
+<b class="nc"><i>545</i>&nbsp;        return graphicTextGap;</b>
+<i>546</i>&nbsp;    }
+<i>547</i>&nbsp;    public final void setGraphicTextGap(double value) {
+<b class="nc"><i>548</i>&nbsp;        graphicTextGapProperty().setValue(value);</b>
+<b class="nc"><i>549</i>&nbsp;    }</b>
+<i>550</i>&nbsp;    public final double getGraphicTextGap() {
+<b class="nc"><i>551</i>&nbsp;        return graphicTextGapProperty().getValue();</b>
+<i>552</i>&nbsp;    }
+<b class="nc"><i>553</i>&nbsp;    private final DoubleProperty graphicTextGap =</b>
+<b class="nc"><i>554</i>&nbsp;            new SimpleStyleableDoubleProperty(GRAPHIC_TEXT_GAP, this, &quot;graphicTextGap&quot;, 4d);</b>
+<i>555</i>&nbsp;
+<i>556</i>&nbsp;    /**
+<i>557</i>&nbsp;     * Typically, the tooltip is &quot;activated&quot; when the mouse moves over a Control.
+<i>558</i>&nbsp;     * There is usually some delay between when the Tooltip becomes &quot;activated&quot;
+<i>559</i>&nbsp;     * and when it is actually shown. The details (such as the amount of delay, etc)
+<i>560</i>&nbsp;     * is left to the Skin implementation.
+<i>561</i>&nbsp;     */
+<b class="nc"><i>562</i>&nbsp;    private final ReadOnlyBooleanWrapper activated = new ReadOnlyBooleanWrapper(this, &quot;activated&quot;);</b>
+<b class="nc"><i>563</i>&nbsp;    final void setActivated(boolean value) { activated.set(value); }</b>
+<b class="nc"><i>564</i>&nbsp;    public final boolean isActivated() { return activated.get(); }</b>
+<b class="nc"><i>565</i>&nbsp;    public final ReadOnlyBooleanProperty activatedProperty() { return activated.getReadOnlyProperty(); }</b>
+<i>566</i>&nbsp;
+<i>567</i>&nbsp;
+<i>568</i>&nbsp;
+<i>569</i>&nbsp;    /***************************************************************************
+<i>570</i>&nbsp;     *                                                                         *
+<i>571</i>&nbsp;     * Methods                                                                 *
+<i>572</i>&nbsp;     *                                                                         *
+<i>573</i>&nbsp;     **************************************************************************/
+<i>574</i>&nbsp;
+<i>575</i>&nbsp;    /** {@inheritDoc} */
+<i>576</i>&nbsp;    @Override protected Skin&lt;?&gt; createDefaultSkin() {
+<b class="nc"><i>577</i>&nbsp;        return new TooltipSkin(this);</b>
+<i>578</i>&nbsp;    }
+<i>579</i>&nbsp;
+<i>580</i>&nbsp;
+<i>581</i>&nbsp;
+<i>582</i>&nbsp;    /***************************************************************************
+<i>583</i>&nbsp;     *                                                                         *
+<i>584</i>&nbsp;     *                         Stylesheet Handling                             *
+<i>585</i>&nbsp;     *                                                                         *
+<i>586</i>&nbsp;     **************************************************************************/
+<i>587</i>&nbsp;
+<i>588</i>&nbsp;
+<b class="nc"><i>589</i>&nbsp;    private static final CssMetaData&lt;Tooltip.CSSBridge,Font&gt; FONT =</b>
+<b class="nc"><i>590</i>&nbsp;            new FontCssMetaData&lt;Tooltip.CSSBridge&gt;(&quot;-fx-font&quot;, Font.getDefault()) {</b>
+<i>591</i>&nbsp;
+<i>592</i>&nbsp;                @Override
+<i>593</i>&nbsp;                public boolean isSettable(Tooltip.CSSBridge cssBridge) {
+<i>594</i>&nbsp;                    return !cssBridge.tooltip.fontProperty().isBound();
+<i>595</i>&nbsp;                }
+<i>596</i>&nbsp;
+<i>597</i>&nbsp;                @Override
+<i>598</i>&nbsp;                public StyleableProperty&lt;Font&gt; getStyleableProperty(Tooltip.CSSBridge cssBridge) {
+<i>599</i>&nbsp;                    return (StyleableProperty&lt;Font&gt;)(WritableValue&lt;Font&gt;)cssBridge.tooltip.fontProperty();
+<i>600</i>&nbsp;                }
+<i>601</i>&nbsp;            };
+<i>602</i>&nbsp;
+<b class="nc"><i>603</i>&nbsp;    private static final CssMetaData&lt;Tooltip.CSSBridge,TextAlignment&gt; TEXT_ALIGNMENT =</b>
+<i>604</i>&nbsp;            new CssMetaData&lt;Tooltip.CSSBridge,TextAlignment&gt;(&quot;-fx-text-alignment&quot;,
+<i>605</i>&nbsp;                    new EnumConverter&lt;TextAlignment&gt;(TextAlignment.class),
+<i>606</i>&nbsp;                    TextAlignment.LEFT) {
+<i>607</i>&nbsp;
+<i>608</i>&nbsp;                @Override
+<i>609</i>&nbsp;                public boolean isSettable(Tooltip.CSSBridge cssBridge) {
+<i>610</i>&nbsp;                    return !cssBridge.tooltip.textAlignmentProperty().isBound();
+<i>611</i>&nbsp;                }
+<i>612</i>&nbsp;
+<i>613</i>&nbsp;                @Override
+<i>614</i>&nbsp;                public StyleableProperty&lt;TextAlignment&gt; getStyleableProperty(Tooltip.CSSBridge cssBridge) {
+<i>615</i>&nbsp;                    return (StyleableProperty&lt;TextAlignment&gt;)(WritableValue&lt;TextAlignment&gt;)cssBridge.tooltip.textAlignmentProperty();
+<i>616</i>&nbsp;                }
+<i>617</i>&nbsp;            };
+<i>618</i>&nbsp;
+<b class="nc"><i>619</i>&nbsp;    private static final CssMetaData&lt;Tooltip.CSSBridge,OverrunStyle&gt; TEXT_OVERRUN =</b>
+<i>620</i>&nbsp;            new CssMetaData&lt;Tooltip.CSSBridge,OverrunStyle&gt;(&quot;-fx-text-overrun&quot;,
+<i>621</i>&nbsp;                    new EnumConverter&lt;OverrunStyle&gt;(OverrunStyle.class),
+<i>622</i>&nbsp;                    OverrunStyle.ELLIPSIS) {
+<i>623</i>&nbsp;
+<i>624</i>&nbsp;                @Override
+<i>625</i>&nbsp;                public boolean isSettable(Tooltip.CSSBridge cssBridge) {
+<i>626</i>&nbsp;                    return !cssBridge.tooltip.textOverrunProperty().isBound();
+<i>627</i>&nbsp;                }
+<i>628</i>&nbsp;
+<i>629</i>&nbsp;                @Override
+<i>630</i>&nbsp;                public StyleableProperty&lt;OverrunStyle&gt; getStyleableProperty(Tooltip.CSSBridge cssBridge) {
+<i>631</i>&nbsp;                    return (StyleableProperty&lt;OverrunStyle&gt;)(WritableValue&lt;OverrunStyle&gt;)cssBridge.tooltip.textOverrunProperty();
+<i>632</i>&nbsp;                }
+<i>633</i>&nbsp;            };
+<i>634</i>&nbsp;
+<b class="nc"><i>635</i>&nbsp;    private static final CssMetaData&lt;Tooltip.CSSBridge,Boolean&gt; WRAP_TEXT =</b>
+<i>636</i>&nbsp;            new CssMetaData&lt;Tooltip.CSSBridge,Boolean&gt;(&quot;-fx-wrap-text&quot;,
+<b class="nc"><i>637</i>&nbsp;                    BooleanConverter.getInstance(), Boolean.FALSE) {</b>
+<i>638</i>&nbsp;
+<i>639</i>&nbsp;                @Override
+<i>640</i>&nbsp;                public boolean isSettable(Tooltip.CSSBridge cssBridge) {
+<i>641</i>&nbsp;                    return !cssBridge.tooltip.wrapTextProperty().isBound();
+<i>642</i>&nbsp;                }
+<i>643</i>&nbsp;
+<i>644</i>&nbsp;                @Override
+<i>645</i>&nbsp;                public StyleableProperty&lt;Boolean&gt; getStyleableProperty(Tooltip.CSSBridge cssBridge) {
+<i>646</i>&nbsp;                    return (StyleableProperty&lt;Boolean&gt;)(WritableValue&lt;Boolean&gt;)cssBridge.tooltip.wrapTextProperty();
+<i>647</i>&nbsp;                }
+<i>648</i>&nbsp;            };
+<i>649</i>&nbsp;
+<b class="nc"><i>650</i>&nbsp;    private static final CssMetaData&lt;Tooltip.CSSBridge,String&gt; GRAPHIC =</b>
+<i>651</i>&nbsp;            new CssMetaData&lt;Tooltip.CSSBridge,String&gt;(&quot;-fx-graphic&quot;,
+<b class="nc"><i>652</i>&nbsp;                    StringConverter.getInstance()) {</b>
+<i>653</i>&nbsp;
+<i>654</i>&nbsp;                @Override
+<i>655</i>&nbsp;                public boolean isSettable(Tooltip.CSSBridge cssBridge) {
+<i>656</i>&nbsp;                    return !cssBridge.tooltip.graphicProperty().isBound();
+<i>657</i>&nbsp;                }
+<i>658</i>&nbsp;
+<i>659</i>&nbsp;                @Override
+<i>660</i>&nbsp;                public StyleableProperty&lt;String&gt; getStyleableProperty(Tooltip.CSSBridge cssBridge) {
+<i>661</i>&nbsp;                    return (StyleableProperty&lt;String&gt;)cssBridge.tooltip.imageUrlProperty();
+<i>662</i>&nbsp;                }
+<i>663</i>&nbsp;            };
+<i>664</i>&nbsp;
+<b class="nc"><i>665</i>&nbsp;    private static final CssMetaData&lt;Tooltip.CSSBridge,ContentDisplay&gt; CONTENT_DISPLAY =</b>
+<i>666</i>&nbsp;            new CssMetaData&lt;Tooltip.CSSBridge,ContentDisplay&gt;(&quot;-fx-content-display&quot;,
+<i>667</i>&nbsp;                    new EnumConverter&lt;ContentDisplay&gt;(ContentDisplay.class),
+<i>668</i>&nbsp;                    ContentDisplay.LEFT) {
+<i>669</i>&nbsp;
+<i>670</i>&nbsp;                @Override
+<i>671</i>&nbsp;                public boolean isSettable(Tooltip.CSSBridge cssBridge) {
+<i>672</i>&nbsp;                    return !cssBridge.tooltip.contentDisplayProperty().isBound();
+<i>673</i>&nbsp;                }
+<i>674</i>&nbsp;
+<i>675</i>&nbsp;                @Override
+<i>676</i>&nbsp;                public StyleableProperty&lt;ContentDisplay&gt; getStyleableProperty(Tooltip.CSSBridge cssBridge) {
+<i>677</i>&nbsp;                    return (StyleableProperty&lt;ContentDisplay&gt;)(WritableValue&lt;ContentDisplay&gt;)cssBridge.tooltip.contentDisplayProperty();
+<i>678</i>&nbsp;                }
+<i>679</i>&nbsp;            };
+<i>680</i>&nbsp;
+<b class="nc"><i>681</i>&nbsp;    private static final CssMetaData&lt;Tooltip.CSSBridge,Number&gt; GRAPHIC_TEXT_GAP =</b>
+<i>682</i>&nbsp;            new CssMetaData&lt;Tooltip.CSSBridge,Number&gt;(&quot;-fx-graphic-text-gap&quot;,
+<b class="nc"><i>683</i>&nbsp;                    SizeConverter.getInstance(), 4.0) {</b>
+<i>684</i>&nbsp;
+<i>685</i>&nbsp;                @Override
+<i>686</i>&nbsp;                public boolean isSettable(Tooltip.CSSBridge cssBridge) {
+<i>687</i>&nbsp;                    return !cssBridge.tooltip.graphicTextGapProperty().isBound();
+<i>688</i>&nbsp;                }
+<i>689</i>&nbsp;
+<i>690</i>&nbsp;                @Override
+<i>691</i>&nbsp;                public StyleableProperty&lt;Number&gt; getStyleableProperty(Tooltip.CSSBridge cssBridge) {
+<i>692</i>&nbsp;                    return (StyleableProperty&lt;Number&gt;)(WritableValue&lt;Number&gt;)cssBridge.tooltip.graphicTextGapProperty();
+<i>693</i>&nbsp;                }
+<i>694</i>&nbsp;            };
+<i>695</i>&nbsp;
+<b class="nc"><i>696</i>&nbsp;    private static final CssMetaData&lt;Tooltip.CSSBridge,Duration&gt; SHOW_DELAY =</b>
+<i>697</i>&nbsp;            new CssMetaData&lt;Tooltip.CSSBridge,Duration&gt;(&quot;-fx-show-delay&quot;,
+<b class="nc"><i>698</i>&nbsp;                    DurationConverter.getInstance(), new Duration(1000)) {</b>
+<i>699</i>&nbsp;
+<i>700</i>&nbsp;                @Override
+<i>701</i>&nbsp;                public boolean isSettable(Tooltip.CSSBridge cssBridge) {
+<i>702</i>&nbsp;                    return !cssBridge.tooltip.showDelayProperty().isBound();
+<i>703</i>&nbsp;                }
+<i>704</i>&nbsp;
+<i>705</i>&nbsp;                @Override
+<i>706</i>&nbsp;                public StyleableProperty&lt;Duration&gt; getStyleableProperty(Tooltip.CSSBridge cssBridge) {
+<i>707</i>&nbsp;                    return (StyleableProperty&lt;Duration&gt;)(WritableValue&lt;Duration&gt;)cssBridge.tooltip.showDelayProperty();
+<i>708</i>&nbsp;                }
+<i>709</i>&nbsp;            };
+<i>710</i>&nbsp;
+<b class="nc"><i>711</i>&nbsp;    private static final CssMetaData&lt;Tooltip.CSSBridge,Duration&gt; SHOW_DURATION =</b>
+<i>712</i>&nbsp;            new CssMetaData&lt;Tooltip.CSSBridge,Duration&gt;(&quot;-fx-show-duration&quot;,
+<b class="nc"><i>713</i>&nbsp;                    DurationConverter.getInstance(), new Duration(5000)) {</b>
+<i>714</i>&nbsp;
+<i>715</i>&nbsp;                @Override
+<i>716</i>&nbsp;                public boolean isSettable(Tooltip.CSSBridge cssBridge) {
+<i>717</i>&nbsp;                    return !cssBridge.tooltip.showDurationProperty().isBound();
+<i>718</i>&nbsp;                }
+<i>719</i>&nbsp;
+<i>720</i>&nbsp;                @Override
+<i>721</i>&nbsp;                public StyleableProperty&lt;Duration&gt; getStyleableProperty(Tooltip.CSSBridge cssBridge) {
+<i>722</i>&nbsp;                    return (StyleableProperty&lt;Duration&gt;)(WritableValue&lt;Duration&gt;)cssBridge.tooltip.showDurationProperty();
+<i>723</i>&nbsp;                }
+<i>724</i>&nbsp;            };
+<i>725</i>&nbsp;
+<b class="nc"><i>726</i>&nbsp;    private static final CssMetaData&lt;Tooltip.CSSBridge,Duration&gt; HIDE_DELAY =</b>
+<i>727</i>&nbsp;            new CssMetaData&lt;Tooltip.CSSBridge,Duration&gt;(&quot;-fx-hide-delay&quot;,
+<b class="nc"><i>728</i>&nbsp;                    DurationConverter.getInstance(), new Duration(200)) {</b>
+<i>729</i>&nbsp;
+<i>730</i>&nbsp;                @Override
+<i>731</i>&nbsp;                public boolean isSettable(Tooltip.CSSBridge cssBridge) {
+<i>732</i>&nbsp;                    return !cssBridge.tooltip.hideDelayProperty().isBound();
+<i>733</i>&nbsp;                }
+<i>734</i>&nbsp;
+<i>735</i>&nbsp;                @Override
+<i>736</i>&nbsp;                public StyleableProperty&lt;Duration&gt; getStyleableProperty(Tooltip.CSSBridge cssBridge) {
+<i>737</i>&nbsp;                    return (StyleableProperty&lt;Duration&gt;)(WritableValue&lt;Duration&gt;)cssBridge.tooltip.hideDelayProperty();
+<i>738</i>&nbsp;                }
+<i>739</i>&nbsp;            };
+<i>740</i>&nbsp;
+<i>741</i>&nbsp;
+<i>742</i>&nbsp;    private static final List&lt;CssMetaData&lt;? extends Styleable, ?&gt;&gt; STYLEABLES;
+<i>743</i>&nbsp;    static {
+<b class="nc"><i>744</i>&nbsp;        final List&lt;CssMetaData&lt;? extends Styleable, ?&gt;&gt; styleables =</b>
+<b class="nc"><i>745</i>&nbsp;                new ArrayList&lt;CssMetaData&lt;? extends Styleable, ?&gt;&gt;(PopupControl.getClassCssMetaData());</b>
+<b class="nc"><i>746</i>&nbsp;        styleables.add(FONT);</b>
+<b class="nc"><i>747</i>&nbsp;        styleables.add(TEXT_ALIGNMENT);</b>
+<b class="nc"><i>748</i>&nbsp;        styleables.add(TEXT_OVERRUN);</b>
+<b class="nc"><i>749</i>&nbsp;        styleables.add(WRAP_TEXT);</b>
+<b class="nc"><i>750</i>&nbsp;        styleables.add(GRAPHIC);</b>
+<b class="nc"><i>751</i>&nbsp;        styleables.add(CONTENT_DISPLAY);</b>
+<b class="nc"><i>752</i>&nbsp;        styleables.add(GRAPHIC_TEXT_GAP);</b>
+<b class="nc"><i>753</i>&nbsp;        styleables.add(SHOW_DELAY);</b>
+<b class="nc"><i>754</i>&nbsp;        styleables.add(SHOW_DURATION);</b>
+<b class="nc"><i>755</i>&nbsp;        styleables.add(HIDE_DELAY);</b>
+<b class="nc"><i>756</i>&nbsp;        STYLEABLES = Collections.unmodifiableList(styleables);</b>
+<b class="nc"><i>757</i>&nbsp;    }</b>
+<i>758</i>&nbsp;
+<i>759</i>&nbsp;    /**
+<i>760</i>&nbsp;     * @return The CssMetaData associated with this class, which may include the
+<i>761</i>&nbsp;     * CssMetaData of its superclasses.
+<i>762</i>&nbsp;     * @since JavaFX 8.0
+<i>763</i>&nbsp;     */
+<i>764</i>&nbsp;    public static List&lt;CssMetaData&lt;? extends Styleable, ?&gt;&gt; getClassCssMetaData() {
+<b class="nc"><i>765</i>&nbsp;        return STYLEABLES;</b>
+<i>766</i>&nbsp;    }
+<i>767</i>&nbsp;
+<i>768</i>&nbsp;    /**
+<i>769</i>&nbsp;     * {@inheritDoc}
+<i>770</i>&nbsp;     * @since JavaFX 8.0
+<i>771</i>&nbsp;     */
+<i>772</i>&nbsp;    @Override
+<i>773</i>&nbsp;    public List&lt;CssMetaData&lt;? extends Styleable, ?&gt;&gt; getCssMetaData() {
+<b class="nc"><i>774</i>&nbsp;        return getClassCssMetaData();</b>
+<i>775</i>&nbsp;    }
+<i>776</i>&nbsp;
+<i>777</i>&nbsp;    @Override public Styleable getStyleableParent() {
+<b class="nc"><i>778</i>&nbsp;        if (BEHAVIOR.hoveredNode == null) {</b>
+<b class="nc"><i>779</i>&nbsp;            return super.getStyleableParent();</b>
+<i>780</i>&nbsp;        }
+<b class="nc"><i>781</i>&nbsp;        return BEHAVIOR.hoveredNode;</b>
+<i>782</i>&nbsp;    }
+<i>783</i>&nbsp;
+<i>784</i>&nbsp;
+<i>785</i>&nbsp;
+<i>786</i>&nbsp;    /***************************************************************************
+<i>787</i>&nbsp;     *                                                                         *
+<i>788</i>&nbsp;     * Support classes                                                         *
+<i>789</i>&nbsp;     *                                                                         *
+<i>790</i>&nbsp;     **************************************************************************/
+<i>791</i>&nbsp;
+<i>792</i>&nbsp;    private final class CSSBridge extends PopupControl.CSSBridge {
+<i>793</i>&nbsp;        private Tooltip tooltip = Tooltip.this;
+<i>794</i>&nbsp;
+<i>795</i>&nbsp;        CSSBridge() {
+<i>796</i>&nbsp;            super();
+<i>797</i>&nbsp;            setAccessibleRole(AccessibleRole.TOOLTIP);
+<i>798</i>&nbsp;        }
+<i>799</i>&nbsp;    }
+<i>800</i>&nbsp;
+<i>801</i>&nbsp;
+<i>802</i>&nbsp;    private static class TooltipBehavior {
+<i>803</i>&nbsp;        /*
+<i>804</i>&nbsp;         * There are two key concepts with Tooltip: activated and visible. A Tooltip
+<i>805</i>&nbsp;         * is activated as soon as a mouse move occurs over the target node. When it
+<i>806</i>&nbsp;         * becomes activated, we start off the ACTIVATION_TIMER. If the
+<i>807</i>&nbsp;         * ACTIVATION_TIMER expires before another mouse event occurs, then we will
+<i>808</i>&nbsp;         * show the popup. This timer typically lasts about 1 second.
+<i>809</i>&nbsp;         *
+<i>810</i>&nbsp;         * Once visible, we reset the ACTIVATION_TIMER and start the HIDE_TIMER.
+<i>811</i>&nbsp;         * This second timer will allow the tooltip to remain visible for some time
+<i>812</i>&nbsp;         * period (such as 5 seconds). If the mouse hasn&#39;t moved, and the HIDE_TIMER
+<i>813</i>&nbsp;         * expires, then the tooltip is hidden and the tooltip is no longer
+<i>814</i>&nbsp;         * activated.
+<i>815</i>&nbsp;         *
+<i>816</i>&nbsp;         * If another mouse move occurs, the ACTIVATION_TIMER starts again, and the
+<i>817</i>&nbsp;         * same rules apply as above.
+<i>818</i>&nbsp;         *
+<i>819</i>&nbsp;         * If a mouse exit event occurs while the HIDE_TIMER is ticking, we reset
+<i>820</i>&nbsp;         * the HIDE_TIMER. Thus, the tooltip disappears after 5 seconds from the
+<i>821</i>&nbsp;         * last mouse move.
+<i>822</i>&nbsp;         *
+<i>823</i>&nbsp;         * If some other mouse event occurs while the HIDE_TIMER is running, other
+<i>824</i>&nbsp;         * than mouse move or mouse enter/exit (such as a click), then the tooltip
+<i>825</i>&nbsp;         * is hidden, the HIDE_TIMER stopped, and activated set to false.
+<i>826</i>&nbsp;         *
+<i>827</i>&nbsp;         * If a mouse exit occurs while the HIDE_TIMER is running, we stop the
+<i>828</i>&nbsp;         * HIDE_TIMER and start the LEFT_TIMER, and immediately hide the tooltip.
+<i>829</i>&nbsp;         * This timer is very short, maybe about a 1/2 second. If the mouse enters a
+<i>830</i>&nbsp;         * new node which also has a tooltip before LEFT_TIMER expires, then the
+<i>831</i>&nbsp;         * second tooltip is activated and shown immediately (the ACTIVATION_TIMER
+<i>832</i>&nbsp;         * having been bypassed), and the HIDE_TIMER is started. If the LEFT_TIMER
+<i>833</i>&nbsp;         * expires and there is no mouse movement over a control with a tooltip,
+<i>834</i>&nbsp;         * then we are back to the initial steady state where the next mouse move
+<i>835</i>&nbsp;         * over a node with a tooltip installed will start the ACTIVATION_TIMER.
+<i>836</i>&nbsp;         */
+<i>837</i>&nbsp;
+<i>838</i>&nbsp;        private Timeline activationTimer = new Timeline();
+<i>839</i>&nbsp;        private Timeline hideTimer = new Timeline();
+<i>840</i>&nbsp;        private Timeline leftTimer = new Timeline();
+<i>841</i>&nbsp;
+<i>842</i>&nbsp;        /**
+<i>843</i>&nbsp;         * The Node with a tooltip over which the mouse is hovering. There can
+<i>844</i>&nbsp;         * only be one of these at a time.
+<i>845</i>&nbsp;         */
+<i>846</i>&nbsp;        private Node hoveredNode;
+<i>847</i>&nbsp;
+<i>848</i>&nbsp;        /**
+<i>849</i>&nbsp;         * The tooltip that is currently activated. There can only be one
+<i>850</i>&nbsp;         * of these at a time.
+<i>851</i>&nbsp;         */
+<i>852</i>&nbsp;        private Tooltip activatedTooltip;
+<i>853</i>&nbsp;
+<i>854</i>&nbsp;        /**
+<i>855</i>&nbsp;         * The tooltip that is currently visible. There can only be one
+<i>856</i>&nbsp;         * of these at a time.
+<i>857</i>&nbsp;         */
+<i>858</i>&nbsp;        private Tooltip visibleTooltip;
+<i>859</i>&nbsp;
+<i>860</i>&nbsp;        /**
+<i>861</i>&nbsp;         * The last position of the mouse, in screen coordinates.
+<i>862</i>&nbsp;         */
+<i>863</i>&nbsp;        private double lastMouseX;
+<i>864</i>&nbsp;        private double lastMouseY;
+<i>865</i>&nbsp;
+<i>866</i>&nbsp;        private boolean hideOnExit;
+<i>867</i>&nbsp;        private boolean cssForced = false;
+<i>868</i>&nbsp;
+<i>869</i>&nbsp;        TooltipBehavior(final boolean hideOnExit) {
+<i>870</i>&nbsp;            this.hideOnExit = hideOnExit;
+<i>871</i>&nbsp;
+<i>872</i>&nbsp;            activationTimer.setOnFinished(event -&gt; {
+<i>873</i>&nbsp;                // Show the currently activated tooltip and start the
+<i>874</i>&nbsp;                // HIDE_TIMER.
+<i>875</i>&nbsp;                assert activatedTooltip != null;
+<i>876</i>&nbsp;                final Window owner = getWindow(hoveredNode);
+<i>877</i>&nbsp;                final boolean treeVisible = isWindowHierarchyVisible(hoveredNode);
+<i>878</i>&nbsp;
+<i>879</i>&nbsp;                // If the ACTIVATED tooltip is part of a visible window
+<i>880</i>&nbsp;                // hierarchy, we can go ahead and show the tooltip and
+<i>881</i>&nbsp;                // start the HIDE_TIMER.
+<i>882</i>&nbsp;                //
+<i>883</i>&nbsp;                // If the owner is null or invisible, then it either means a
+<i>884</i>&nbsp;                // bug in our code, the node was removed from a scene or
+<i>885</i>&nbsp;                // window or made invisible, or the node is not part of a
+<i>886</i>&nbsp;                // visible window hierarchy. In that case, we don&#39;t show the
+<i>887</i>&nbsp;                // tooltip, and we don&#39;t start the HIDE_TIMER. We simply let
+<i>888</i>&nbsp;                // ACTIVATED_TIMER expire, and wait until the next mouse
+<i>889</i>&nbsp;                // the movement to start it again.
+<i>890</i>&nbsp;                if (owner != null &amp;&amp; owner.isShowing() &amp;&amp; treeVisible) {
+<i>891</i>&nbsp;                    double x = lastMouseX;
+<i>892</i>&nbsp;                    double y = lastMouseY;
+<i>893</i>&nbsp;
+<i>894</i>&nbsp;                    // The tooltip always inherits the nodeOrientation of
+<i>895</i>&nbsp;                    // the Node that it is attached to (see RT-26147). It
+<i>896</i>&nbsp;                    // is possible to override this for the Tooltip content
+<i>897</i>&nbsp;                    // (but not the popup placement) by setting the
+<i>898</i>&nbsp;                    // nodeOrientation on tooltip.getScene().getRoot().
+<i>899</i>&nbsp;                    NodeOrientation nodeOrientation = hoveredNode.getEffectiveNodeOrientation();
+<i>900</i>&nbsp;                    activatedTooltip.getScene().setNodeOrientation(nodeOrientation);
+<i>901</i>&nbsp;                    if (nodeOrientation == NodeOrientation.RIGHT_TO_LEFT) {
+<i>902</i>&nbsp;                        x -= activatedTooltip.getWidth();
+<i>903</i>&nbsp;                    }
+<i>904</i>&nbsp;
+<i>905</i>&nbsp;                    activatedTooltip.show(owner, x+TOOLTIP_XOFFSET, y+TOOLTIP_YOFFSET);
+<i>906</i>&nbsp;
+<i>907</i>&nbsp;                    // RT-37107: Ensure the tooltip is displayed in a position
+<i>908</i>&nbsp;                    // where it will not be under the mouse, even when the tooltip
+<i>909</i>&nbsp;                    // is near the edge of the screen
+<i>910</i>&nbsp;                    if ((y+TOOLTIP_YOFFSET) &gt; activatedTooltip.getAnchorY()) {
+<i>911</i>&nbsp;                        // the tooltip has been shifted vertically upwards,
+<i>912</i>&nbsp;                        // most likely to be underneath the mouse cursor, so we
+<i>913</i>&nbsp;                        // need to shift it further by hiding and reshowing
+<i>914</i>&nbsp;                        // in another location
+<i>915</i>&nbsp;                        activatedTooltip.hide();
+<i>916</i>&nbsp;
+<i>917</i>&nbsp;                        y -= activatedTooltip.getHeight();
+<i>918</i>&nbsp;                        activatedTooltip.show(owner, x+TOOLTIP_XOFFSET, y);
+<i>919</i>&nbsp;                    }
+<i>920</i>&nbsp;
+<i>921</i>&nbsp;                    visibleTooltip = activatedTooltip;
+<i>922</i>&nbsp;                    hoveredNode = null;
+<i>923</i>&nbsp;                    if (activatedTooltip.getShowDuration() != null) {
+<i>924</i>&nbsp;                        hideTimer.getKeyFrames().setAll(new KeyFrame(activatedTooltip.getShowDuration()));
+<i>925</i>&nbsp;                    }
+<i>926</i>&nbsp;                    hideTimer.playFromStart();
+<i>927</i>&nbsp;                }
+<i>928</i>&nbsp;
+<i>929</i>&nbsp;                // Once the activation timer has expired, the tooltip is no
+<i>930</i>&nbsp;                // longer in the activated state, it is only in the visible
+<i>931</i>&nbsp;                // state, so we go ahead and set activated to false
+<i>932</i>&nbsp;                activatedTooltip.setActivated(false);
+<i>933</i>&nbsp;                activatedTooltip = null;
+<i>934</i>&nbsp;            });
+<i>935</i>&nbsp;
+<i>936</i>&nbsp;            hideTimer.setOnFinished(event -&gt; {
+<i>937</i>&nbsp;                // Hide the currently visible tooltip.
+<i>938</i>&nbsp;                assert visibleTooltip != null;
+<i>939</i>&nbsp;                visibleTooltip.hide();
+<i>940</i>&nbsp;                visibleTooltip = null;
+<i>941</i>&nbsp;                hoveredNode = null;
+<i>942</i>&nbsp;            });
+<i>943</i>&nbsp;
+<i>944</i>&nbsp;            leftTimer.setOnFinished(event -&gt; {
+<i>945</i>&nbsp;                if (!hideOnExit) {
+<i>946</i>&nbsp;                    // Hide the currently visible tooltip.
+<i>947</i>&nbsp;                    assert visibleTooltip != null;
+<i>948</i>&nbsp;                    visibleTooltip.hide();
+<i>949</i>&nbsp;                    visibleTooltip = null;
+<i>950</i>&nbsp;                    hoveredNode = null;
+<i>951</i>&nbsp;                }
+<i>952</i>&nbsp;            });
+<i>953</i>&nbsp;        }
+<i>954</i>&nbsp;
+<i>955</i>&nbsp;        /**
+<i>956</i>&nbsp;         * Registers for mouse move events only. When the mouse is moved, this
+<i>957</i>&nbsp;         * handler will detect it and decide whether to start the ACTIVATION_TIMER
+<i>958</i>&nbsp;         * (if the ACTIVATION_TIMER is not started), restart the ACTIVATION_TIMER
+<i>959</i>&nbsp;         * (if ACTIVATION_TIMER is running), or skip the ACTIVATION_TIMER and just
+<i>960</i>&nbsp;         * show the tooltip (if the LEFT_TIMER is running).
+<i>961</i>&nbsp;         */
+<i>962</i>&nbsp;        private EventHandler&lt;MouseEvent&gt; MOVE_HANDLER = (MouseEvent event) -&gt; {
+<i>963</i>&nbsp;            //Screen coordinates need to be actual for dynamic tooltip.
+<i>964</i>&nbsp;            //See Tooltip.setText
+<i>965</i>&nbsp;
+<i>966</i>&nbsp;            lastMouseX = event.getScreenX();
+<i>967</i>&nbsp;            lastMouseY = event.getScreenY();
+<i>968</i>&nbsp;
+<i>969</i>&nbsp;            // If the HIDE_TIMER is running, then we don&#39;t want this event
+<i>970</i>&nbsp;            // handler to do anything, or change any state at all.
+<i>971</i>&nbsp;            if (hideTimer.getStatus() == Timeline.Status.RUNNING) {
+<i>972</i>&nbsp;                return;
+<i>973</i>&nbsp;            }
+<i>974</i>&nbsp;
+<i>975</i>&nbsp;            // Note that the &quot;install&quot; step will both register this handler
+<i>976</i>&nbsp;            // with the target node and also associate the tooltip with the
+<i>977</i>&nbsp;            // target node, by stashing it in the client properties of the node.
+<i>978</i>&nbsp;            hoveredNode = (Node) event.getSource();
+<i>979</i>&nbsp;            Tooltip t = (Tooltip) hoveredNode.getProperties().get(TOOLTIP_PROP_KEY);
+<i>980</i>&nbsp;            if (t != null) {
+<i>981</i>&nbsp;                // In theory we should never get here with an invisible or
+<i>982</i>&nbsp;                // non-existant window hierarchy, but might in some cases where
+<i>983</i>&nbsp;                // people are feeding fake mouse events into the hierarchy. So
+<i>984</i>&nbsp;                // we&#39;ll guard against that case.
+<i>985</i>&nbsp;                final Window owner = getWindow(hoveredNode);
+<i>986</i>&nbsp;                final boolean treeVisible = isWindowHierarchyVisible(hoveredNode);
+<i>987</i>&nbsp;                if (owner != null &amp;&amp; treeVisible) {
+<i>988</i>&nbsp;                    // Now we know that the currently HOVERED node has a tooltip
+<i>989</i>&nbsp;                    // and that it is part of a visible window Hierarchy.
+<i>990</i>&nbsp;                    // If LEFT_TIMER is running, then we make this tooltip
+<i>991</i>&nbsp;                    // visible immediately, stop the LEFT_TIMER, and start the
+<i>992</i>&nbsp;                    // HIDE_TIMER.
+<i>993</i>&nbsp;                    if (leftTimer.getStatus() == Timeline.Status.RUNNING) {
+<i>994</i>&nbsp;                        if (visibleTooltip != null) visibleTooltip.hide();
+<i>995</i>&nbsp;                        visibleTooltip = t;
+<i>996</i>&nbsp;                        t.show(owner, event.getScreenX()+TOOLTIP_XOFFSET,
+<i>997</i>&nbsp;                                event.getScreenY()+TOOLTIP_YOFFSET);
+<i>998</i>&nbsp;                        leftTimer.stop();
+<i>999</i>&nbsp;                        if (t.getShowDuration() != null) {
+<i>1000</i>&nbsp;                            hideTimer.getKeyFrames().setAll(new KeyFrame(t.getShowDuration()));
+<i>1001</i>&nbsp;                        }
+<i>1002</i>&nbsp;                        hideTimer.playFromStart();
+<i>1003</i>&nbsp;                    } else {
+<i>1004</i>&nbsp;                        // Force the CSS to be processed for the tooltip so that it uses the
+<i>1005</i>&nbsp;                        // appropriate timings for showDelay, showDuration, and hideDelay.
+<i>1006</i>&nbsp;                        if (!cssForced) {
+<i>1007</i>&nbsp;                            double opacity = t.getOpacity();
+<i>1008</i>&nbsp;                            t.setOpacity(0);
+<i>1009</i>&nbsp;                            t.show(owner);
+<i>1010</i>&nbsp;                            t.hide();
+<i>1011</i>&nbsp;                            t.setOpacity(opacity);
+<i>1012</i>&nbsp;                            cssForced = true;
+<i>1013</i>&nbsp;                        }
+<i>1014</i>&nbsp;
+<i>1015</i>&nbsp;                        // Start / restart the timer and make sure the tooltip
+<i>1016</i>&nbsp;                        // is marked as activated.
+<i>1017</i>&nbsp;                        t.setActivated(true);
+<i>1018</i>&nbsp;                        activatedTooltip = t;
+<i>1019</i>&nbsp;                        activationTimer.stop();
+<i>1020</i>&nbsp;                        if (t.getShowDelay() != null) {
+<i>1021</i>&nbsp;                            activationTimer.getKeyFrames().setAll(new KeyFrame(t.getShowDelay()));
+<i>1022</i>&nbsp;                        }
+<i>1023</i>&nbsp;                        activationTimer.playFromStart();
+<i>1024</i>&nbsp;                    }
+<i>1025</i>&nbsp;                }
+<i>1026</i>&nbsp;            } else {
+<i>1027</i>&nbsp;                // TODO should deregister, no point being here anymore!
+<i>1028</i>&nbsp;            }
+<i>1029</i>&nbsp;        };
+<i>1030</i>&nbsp;
+<i>1031</i>&nbsp;        /**
+<i>1032</i>&nbsp;         * Registers for mouse exit events. If the ACTIVATION_TIMER is running then
+<i>1033</i>&nbsp;         * this will simply stop it. If the HIDE_TIMER is running then this will
+<i>1034</i>&nbsp;         * stop the HIDE_TIMER, hide the tooltip, and start the LEFT_TIMER.
+<i>1035</i>&nbsp;         */
+<i>1036</i>&nbsp;        private EventHandler&lt;MouseEvent&gt; LEAVING_HANDLER = (MouseEvent event) -&gt; {
+<i>1037</i>&nbsp;            // detect bogus mouse exit events, if it didn&#39;t really move then ignore it
+<i>1038</i>&nbsp;            if (activationTimer.getStatus() == Timeline.Status.RUNNING) {
+<i>1039</i>&nbsp;                activationTimer.stop();
+<i>1040</i>&nbsp;            } else if (hideTimer.getStatus() == Timeline.Status.RUNNING) {
+<i>1041</i>&nbsp;                assert visibleTooltip != null;
+<i>1042</i>&nbsp;                hideTimer.stop();
+<i>1043</i>&nbsp;                if (hideOnExit) visibleTooltip.hide();
+<i>1044</i>&nbsp;                Node source = (Node) event.getSource();
+<i>1045</i>&nbsp;                Tooltip t = (Tooltip) source.getProperties().get(TOOLTIP_PROP_KEY);
+<i>1046</i>&nbsp;                if (t != null) {
+<i>1047</i>&nbsp;                    if (t.getHideDelay() != null) {
+<i>1048</i>&nbsp;                        leftTimer.getKeyFrames().setAll(new KeyFrame(t.getHideDelay()));
+<i>1049</i>&nbsp;                    }
+<i>1050</i>&nbsp;                    leftTimer.playFromStart();
+<i>1051</i>&nbsp;                }
+<i>1052</i>&nbsp;            }
+<i>1053</i>&nbsp;
+<i>1054</i>&nbsp;            hoveredNode = null;
+<i>1055</i>&nbsp;            activatedTooltip = null;
+<i>1056</i>&nbsp;            if (hideOnExit) visibleTooltip = null;
+<i>1057</i>&nbsp;        };
+<i>1058</i>&nbsp;
+<i>1059</i>&nbsp;        /**
+<i>1060</i>&nbsp;         * Registers for mouse click, press, release, drag events. If any of these
+<i>1061</i>&nbsp;         * occur, then the tooltip is hidden (if it is visible), it is deactivated,
+<i>1062</i>&nbsp;         * and any and all timers are stopped.
+<i>1063</i>&nbsp;         */
+<i>1064</i>&nbsp;        private EventHandler&lt;MouseEvent&gt; KILL_HANDLER = (MouseEvent event) -&gt; {
+<i>1065</i>&nbsp;            activationTimer.stop();
+<i>1066</i>&nbsp;            hideTimer.stop();
+<i>1067</i>&nbsp;            leftTimer.stop();
+<i>1068</i>&nbsp;            if (visibleTooltip != null) visibleTooltip.hide();
+<i>1069</i>&nbsp;            hoveredNode = null;
+<i>1070</i>&nbsp;            activatedTooltip = null;
+<i>1071</i>&nbsp;            visibleTooltip = null;
+<i>1072</i>&nbsp;        };
+<i>1073</i>&nbsp;
+<i>1074</i>&nbsp;        private void install(Node node, Tooltip t) {
+<i>1075</i>&nbsp;            // Install the MOVE_HANDLER, LEAVING_HANDLER, and KILL_HANDLER on
+<i>1076</i>&nbsp;            // the given node. Stash the tooltip in the node&#39;s client properties
+<i>1077</i>&nbsp;            // map so that it is not gc&#39;d. The handlers must all be installed
+<i>1078</i>&nbsp;            // with a TODO weak reference so as not to cause a memory leak
+<i>1079</i>&nbsp;            if (node == null) return;
+<i>1080</i>&nbsp;            node.addEventHandler(MouseEvent.MOUSE_MOVED, MOVE_HANDLER);
+<i>1081</i>&nbsp;            node.addEventHandler(MouseEvent.MOUSE_EXITED, LEAVING_HANDLER);
+<i>1082</i>&nbsp;            node.addEventHandler(MouseEvent.MOUSE_PRESSED, KILL_HANDLER);
+<i>1083</i>&nbsp;            node.getProperties().put(TOOLTIP_PROP_KEY, t);
+<i>1084</i>&nbsp;        }
+<i>1085</i>&nbsp;
+<i>1086</i>&nbsp;        private void uninstall(Node node) {
+<i>1087</i>&nbsp;            if (node == null) return;
+<i>1088</i>&nbsp;            node.removeEventHandler(MouseEvent.MOUSE_MOVED, MOVE_HANDLER);
+<i>1089</i>&nbsp;            node.removeEventHandler(MouseEvent.MOUSE_EXITED, LEAVING_HANDLER);
+<i>1090</i>&nbsp;            node.removeEventHandler(MouseEvent.MOUSE_PRESSED, KILL_HANDLER);
+<i>1091</i>&nbsp;            Tooltip t = (Tooltip)node.getProperties().get(TOOLTIP_PROP_KEY);
+<i>1092</i>&nbsp;            if (t != null) {
+<i>1093</i>&nbsp;                node.getProperties().remove(TOOLTIP_PROP_KEY);
+<i>1094</i>&nbsp;                if (t.equals(visibleTooltip) || t.equals(activatedTooltip)) {
+<i>1095</i>&nbsp;                    KILL_HANDLER.handle(null);
+<i>1096</i>&nbsp;                }
+<i>1097</i>&nbsp;            }
+<i>1098</i>&nbsp;        }
+<i>1099</i>&nbsp;
+<i>1100</i>&nbsp;        /**
+<i>1101</i>&nbsp;         * Gets the top level window associated with this node.
+<i>1102</i>&nbsp;         * @param node the node
+<i>1103</i>&nbsp;         * @return the top level window
+<i>1104</i>&nbsp;         */
+<i>1105</i>&nbsp;        private Window getWindow(final Node node) {
+<i>1106</i>&nbsp;            final Scene scene = node == null ? null : node.getScene();
+<i>1107</i>&nbsp;            return scene == null ? null : scene.getWindow();
+<i>1108</i>&nbsp;        }
+<i>1109</i>&nbsp;
+<i>1110</i>&nbsp;        /**
+<i>1111</i>&nbsp;         * Gets whether the entire window hierarchy is visible for this node.
+<i>1112</i>&nbsp;         * @param node the node to check
+<i>1113</i>&nbsp;         * @return true if entire hierarchy is visible
+<i>1114</i>&nbsp;         */
+<i>1115</i>&nbsp;        private boolean isWindowHierarchyVisible(Node node) {
+<i>1116</i>&nbsp;            boolean treeVisible = node != null;
+<i>1117</i>&nbsp;            Parent parent = node == null ? null : node.getParent();
+<i>1118</i>&nbsp;            while (parent != null &amp;&amp; treeVisible) {
+<i>1119</i>&nbsp;                treeVisible = parent.isVisible();
+<i>1120</i>&nbsp;                parent = parent.getParent();
+<i>1121</i>&nbsp;            }
+<i>1122</i>&nbsp;            return treeVisible;
+<i>1123</i>&nbsp;        }
+<i>1124</i>&nbsp;    }
+<i>1125</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2017-12-04 21:49</div>
+</div>
+</body>
+</html>

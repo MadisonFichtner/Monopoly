@@ -1,0 +1,177 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: ControlHelper</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.javafx.scene.control</a> ]
+</div>
+
+<h1>Coverage Summary for Class: ControlHelper (com.sun.javafx.scene.control)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">ControlHelper</td>
+<td class="coverageStat">
+  <span class="percent">
+    88.9%
+  </span>
+  <span class="absValue">
+    (8/ 9)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    88.9%
+  </span>
+  <span class="absValue">
+    (16/ 18)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">ControlHelper$ControlAccessor</td>
+  </tr>
+<tr>
+  <td class="name"><strong>total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    88.9%
+  </span>
+  <span class="absValue">
+    (8/ 9)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    88.9%
+  </span>
+  <span class="absValue">
+    (16/ 18)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright (c) 2016, Oracle and/or its affiliates. All rights reserved.
+<i>3</i>&nbsp; * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+<i>4</i>&nbsp; *
+<i>5</i>&nbsp; *
+<i>6</i>&nbsp; *
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; *
+<i>11</i>&nbsp; *
+<i>12</i>&nbsp; *
+<i>13</i>&nbsp; *
+<i>14</i>&nbsp; *
+<i>15</i>&nbsp; *
+<i>16</i>&nbsp; *
+<i>17</i>&nbsp; *
+<i>18</i>&nbsp; *
+<i>19</i>&nbsp; *
+<i>20</i>&nbsp; *
+<i>21</i>&nbsp; *
+<i>22</i>&nbsp; *
+<i>23</i>&nbsp; *
+<i>24</i>&nbsp; */
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;package com.sun.javafx.scene.control;
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;import com.sun.javafx.scene.layout.RegionHelper;
+<i>29</i>&nbsp;import com.sun.javafx.util.Utils;
+<i>30</i>&nbsp;import javafx.beans.property.StringProperty;
+<i>31</i>&nbsp;import javafx.scene.Node;
+<i>32</i>&nbsp;import javafx.scene.control.Control;
+<i>33</i>&nbsp;
+<i>34</i>&nbsp;/*
+<i>35</i>&nbsp; * Used to access internal methods of Control.
+<i>36</i>&nbsp; */
+<b class="fc"><i>37</i>&nbsp;public class ControlHelper extends RegionHelper {</b>
+<i>38</i>&nbsp;    private static final ControlHelper theInstance;
+<i>39</i>&nbsp;    private static ControlAccessor controlAccessor;
+<i>40</i>&nbsp;
+<i>41</i>&nbsp;    static {
+<b class="fc"><i>42</i>&nbsp;        theInstance = new ControlHelper();</b>
+<b class="fc"><i>43</i>&nbsp;        Utils.forceInit(Control.class);</b>
+<b class="fc"><i>44</i>&nbsp;    }</b>
+<i>45</i>&nbsp;
+<i>46</i>&nbsp;    private static ControlHelper getInstance() {
+<b class="fc"><i>47</i>&nbsp;        return theInstance;</b>
+<i>48</i>&nbsp;    }
+<i>49</i>&nbsp;
+<i>50</i>&nbsp;    public static void initHelper(Control control) {
+<b class="fc"><i>51</i>&nbsp;        setHelper(control, getInstance());</b>
+<b class="fc"><i>52</i>&nbsp;    }</b>
+<i>53</i>&nbsp;
+<i>54</i>&nbsp;    public static void superProcessCSS(Node node) {
+<b class="fc"><i>55</i>&nbsp;        ((ControlHelper) getHelper(node)).superProcessCSSImpl(node);</b>
+<b class="fc"><i>56</i>&nbsp;    }</b>
+<i>57</i>&nbsp;
+<i>58</i>&nbsp;    public static StringProperty skinClassNameProperty(Control control) {
+<b class="nc"><i>59</i>&nbsp;        return controlAccessor.skinClassNameProperty(control);</b>
+<i>60</i>&nbsp;    }
+<i>61</i>&nbsp;
+<i>62</i>&nbsp;    void superProcessCSSImpl(Node node) {
+<b class="fc"><i>63</i>&nbsp;        super.processCSSImpl(node);</b>
+<b class="fc"><i>64</i>&nbsp;    }</b>
+<i>65</i>&nbsp;
+<i>66</i>&nbsp;    protected void processCSSImpl(Node node) {
+<b class="fc"><i>67</i>&nbsp;        controlAccessor.doProcessCSS(node);</b>
+<b class="fc"><i>68</i>&nbsp;    }</b>
+<i>69</i>&nbsp;
+<i>70</i>&nbsp;
+<i>71</i>&nbsp;    public static void setControlAccessor(final ControlAccessor newAccessor) {
+<b class="fc"><i>72</i>&nbsp;        if (controlAccessor != null) {</b>
+<b class="nc"><i>73</i>&nbsp;            throw new IllegalStateException();</b>
+<i>74</i>&nbsp;        }
+<i>75</i>&nbsp;
+<b class="fc"><i>76</i>&nbsp;        controlAccessor = newAccessor;</b>
+<b class="fc"><i>77</i>&nbsp;    }</b>
+<i>78</i>&nbsp;
+<i>79</i>&nbsp;    public interface ControlAccessor {
+<i>80</i>&nbsp;        void doProcessCSS(Node node);
+<i>81</i>&nbsp;        StringProperty skinClassNameProperty(Control control);
+<i>82</i>&nbsp;    }
+<i>83</i>&nbsp;
+<i>84</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2017-12-04 21:49</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,159 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: BoxShadowState</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.scenario.effect.impl.state</a> ]
+</div>
+
+<h1>Coverage Summary for Class: BoxShadowState (com.sun.scenario.effect.impl.state)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">BoxShadowState</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    71.4%
+  </span>
+  <span class="absValue">
+    (5/ 7)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    69.2%
+  </span>
+  <span class="absValue">
+    (9/ 13)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright (c) 2009, 2014, Oracle and/or its affiliates. All rights reserved.
+<i>3</i>&nbsp; * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+<i>4</i>&nbsp; *
+<i>5</i>&nbsp; *
+<i>6</i>&nbsp; *
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; *
+<i>11</i>&nbsp; *
+<i>12</i>&nbsp; *
+<i>13</i>&nbsp; *
+<i>14</i>&nbsp; *
+<i>15</i>&nbsp; *
+<i>16</i>&nbsp; *
+<i>17</i>&nbsp; *
+<i>18</i>&nbsp; *
+<i>19</i>&nbsp; *
+<i>20</i>&nbsp; *
+<i>21</i>&nbsp; *
+<i>22</i>&nbsp; *
+<i>23</i>&nbsp; *
+<i>24</i>&nbsp; */
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;package com.sun.scenario.effect.impl.state;
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;import com.sun.scenario.effect.Color4f;
+<i>29</i>&nbsp;
+<i>30</i>&nbsp;/**
+<i>31</i>&nbsp; * The helper class for defining a 1 dimensional linear convolution shadow
+<i>32</i>&nbsp; * kernel for the LinearConvolveShadow Shader.  This class leverages the
+<i>33</i>&nbsp; * {@link BoxBlurState} class for defining the kernel and simply stores
+<i>34</i>&nbsp; * additional {@code shadowColor} and {@code spread} properties for the
+<i>35</i>&nbsp; * associated support methods for the shadow version of the shader.
+<i>36</i>&nbsp; */
+<b class="fc"><i>37</i>&nbsp;public class BoxShadowState extends BoxBlurState {</b>
+<i>38</i>&nbsp;    private Color4f shadowColor;
+<i>39</i>&nbsp;    private float spread;
+<i>40</i>&nbsp;
+<i>41</i>&nbsp;    @Override
+<i>42</i>&nbsp;    public Color4f getShadowColor() {
+<b class="fc"><i>43</i>&nbsp;        return shadowColor;</b>
+<i>44</i>&nbsp;    }
+<i>45</i>&nbsp;
+<i>46</i>&nbsp;    public void setShadowColor(Color4f shadowColor) {
+<b class="fc"><i>47</i>&nbsp;        if (shadowColor == null) {</b>
+<b class="nc"><i>48</i>&nbsp;            throw new IllegalArgumentException(&quot;Color must be non-null&quot;);</b>
+<i>49</i>&nbsp;        }
+<b class="fc"><i>50</i>&nbsp;        this.shadowColor = shadowColor;</b>
+<b class="fc"><i>51</i>&nbsp;    }</b>
+<i>52</i>&nbsp;
+<i>53</i>&nbsp;    @Override
+<i>54</i>&nbsp;    public float getSpread() {
+<b class="fc"><i>55</i>&nbsp;        return spread;</b>
+<i>56</i>&nbsp;    }
+<i>57</i>&nbsp;
+<i>58</i>&nbsp;    public void setSpread(float spread) {
+<b class="fc"><i>59</i>&nbsp;        if (spread &lt; 0f || spread &gt; 1f) {</b>
+<b class="nc"><i>60</i>&nbsp;            throw new IllegalArgumentException(&quot;Spread must be in the range [0,1]&quot;);</b>
+<i>61</i>&nbsp;        }
+<b class="fc"><i>62</i>&nbsp;        this.spread = spread;</b>
+<b class="fc"><i>63</i>&nbsp;    }</b>
+<i>64</i>&nbsp;
+<i>65</i>&nbsp;    @Override
+<i>66</i>&nbsp;    public boolean isNop() {
+<i>67</i>&nbsp;        // The shadow operation is never a NOP since it replaces the colors
+<i>68</i>&nbsp;        // if nothing else.
+<b class="nc"><i>69</i>&nbsp;        return false;</b>
+<i>70</i>&nbsp;    }
+<i>71</i>&nbsp;
+<i>72</i>&nbsp;    @Override
+<i>73</i>&nbsp;    public boolean isShadow() {
+<b class="nc"><i>74</i>&nbsp;        return true;</b>
+<i>75</i>&nbsp;    }
+<i>76</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2017-12-04 21:49</div>
+</div>
+</body>
+</html>

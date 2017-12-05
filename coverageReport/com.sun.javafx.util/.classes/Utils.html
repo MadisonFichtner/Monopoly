@@ -1,0 +1,1047 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: Utils</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.javafx.util</a> ]
+</div>
+
+<h1>Coverage Summary for Class: Utils (com.sun.javafx.util)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">Utils</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    61.4%
+  </span>
+  <span class="absValue">
+    (27/ 44)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    41.5%
+  </span>
+  <span class="absValue">
+    (168/ 405)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright (c) 2010, 2016, Oracle and/or its affiliates. All rights reserved.
+<i>3</i>&nbsp; * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+<i>4</i>&nbsp; *
+<i>5</i>&nbsp; *
+<i>6</i>&nbsp; *
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; *
+<i>11</i>&nbsp; *
+<i>12</i>&nbsp; *
+<i>13</i>&nbsp; *
+<i>14</i>&nbsp; *
+<i>15</i>&nbsp; *
+<i>16</i>&nbsp; *
+<i>17</i>&nbsp; *
+<i>18</i>&nbsp; *
+<i>19</i>&nbsp; *
+<i>20</i>&nbsp; *
+<i>21</i>&nbsp; *
+<i>22</i>&nbsp; *
+<i>23</i>&nbsp; *
+<i>24</i>&nbsp; */
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;package com.sun.javafx.util;
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;import static com.sun.javafx.FXPermissions.ACCESS_WINDOW_LIST_PERMISSION;
+<i>29</i>&nbsp;import javafx.geometry.BoundingBox;
+<i>30</i>&nbsp;import javafx.geometry.Bounds;
+<i>31</i>&nbsp;import javafx.geometry.HPos;
+<i>32</i>&nbsp;import javafx.geometry.NodeOrientation;
+<i>33</i>&nbsp;import javafx.geometry.Point2D;
+<i>34</i>&nbsp;import javafx.geometry.Rectangle2D;
+<i>35</i>&nbsp;import javafx.geometry.VPos;
+<i>36</i>&nbsp;import javafx.scene.Node;
+<i>37</i>&nbsp;import javafx.scene.Scene;
+<i>38</i>&nbsp;import javafx.scene.paint.Color;
+<i>39</i>&nbsp;import javafx.scene.paint.Stop;
+<i>40</i>&nbsp;import javafx.stage.Screen;
+<i>41</i>&nbsp;import javafx.stage.Stage;
+<i>42</i>&nbsp;import javafx.stage.Window;
+<i>43</i>&nbsp;import java.util.List;
+<i>44</i>&nbsp;import com.sun.javafx.PlatformUtil;
+<i>45</i>&nbsp;import java.security.AccessController;
+<i>46</i>&nbsp;import java.security.PrivilegedAction;
+<i>47</i>&nbsp;
+<i>48</i>&nbsp;/**
+<i>49</i>&nbsp; * Some basic utilities which need to be in java (for shifting operations or
+<i>50</i>&nbsp; * other reasons), which are not toolkit dependent.
+<i>51</i>&nbsp; *
+<i>52</i>&nbsp; */
+<b class="fc"><i>53</i>&nbsp;public class Utils {</b>
+<i>54</i>&nbsp;
+<i>55</i>&nbsp;    /***************************************************************************
+<i>56</i>&nbsp;     *                                                                         *
+<i>57</i>&nbsp;     * Math-related utilities                                                  *
+<i>58</i>&nbsp;     *                                                                         *
+<i>59</i>&nbsp;     **************************************************************************/
+<i>60</i>&nbsp;
+<i>61</i>&nbsp;    /**
+<i>62</i>&nbsp;     * Simple utility function which clamps the given value to be strictly
+<i>63</i>&nbsp;     * between the min and max values.
+<i>64</i>&nbsp;     */
+<i>65</i>&nbsp;    public static float clamp(float min, float value, float max) {
+<b class="nc"><i>66</i>&nbsp;        if (value &lt; min) return min;</b>
+<b class="nc"><i>67</i>&nbsp;        if (value &gt; max) return max;</b>
+<b class="nc"><i>68</i>&nbsp;        return value;</b>
+<i>69</i>&nbsp;    }
+<i>70</i>&nbsp;
+<i>71</i>&nbsp;    /**
+<i>72</i>&nbsp;     * Simple utility function which clamps the given value to be strictly
+<i>73</i>&nbsp;     * between the min and max values.
+<i>74</i>&nbsp;     */
+<i>75</i>&nbsp;    public static int clamp(int min, int value, int max) {
+<b class="fc"><i>76</i>&nbsp;        if (value &lt; min) return min;</b>
+<b class="fc"><i>77</i>&nbsp;        if (value &gt; max) return max;</b>
+<b class="fc"><i>78</i>&nbsp;        return value;</b>
+<i>79</i>&nbsp;    }
+<i>80</i>&nbsp;
+<i>81</i>&nbsp;    /**
+<i>82</i>&nbsp;     * Simple utility function which clamps the given value to be strictly
+<i>83</i>&nbsp;     * between the min and max values.
+<i>84</i>&nbsp;     */
+<i>85</i>&nbsp;    public static double clamp(double min, double value, double max) {
+<b class="fc"><i>86</i>&nbsp;        if (value &lt; min) return min;</b>
+<b class="fc"><i>87</i>&nbsp;        if (value &gt; max) return max;</b>
+<b class="fc"><i>88</i>&nbsp;        return value;</b>
+<i>89</i>&nbsp;    }
+<i>90</i>&nbsp;
+<i>91</i>&nbsp;    /**
+<i>92</i>&nbsp;     * Simple utility function which clamps the given value to be strictly
+<i>93</i>&nbsp;     * above the min value.
+<i>94</i>&nbsp;     */
+<i>95</i>&nbsp;    public static double clampMin(double value, double min) {
+<b class="fc"><i>96</i>&nbsp;        if (value &lt; min) return min;</b>
+<b class="fc"><i>97</i>&nbsp;        return value;</b>
+<i>98</i>&nbsp;    }
+<i>99</i>&nbsp;
+<i>100</i>&nbsp;    /**
+<i>101</i>&nbsp;     * Simple utility function which clamps the given value to be strictly
+<i>102</i>&nbsp;     * under the max value.
+<i>103</i>&nbsp;     */
+<i>104</i>&nbsp;    public static int clampMax(int value, int max) {
+<b class="nc"><i>105</i>&nbsp;        if (value &gt; max) return max;</b>
+<b class="nc"><i>106</i>&nbsp;        return value;</b>
+<i>107</i>&nbsp;    }
+<i>108</i>&nbsp;
+<i>109</i>&nbsp;    /**
+<i>110</i>&nbsp;     * Utility function which returns either {@code less} or {@code more}
+<i>111</i>&nbsp;     * depending on which {@code value} is closer to. If {@code value}
+<i>112</i>&nbsp;     * is perfectly between them, then either may be returned.
+<i>113</i>&nbsp;     */
+<i>114</i>&nbsp;    public static double nearest(double less, double value, double more) {
+<b class="nc"><i>115</i>&nbsp;        double lessDiff = value - less;</b>
+<b class="nc"><i>116</i>&nbsp;        double moreDiff = more - value;</b>
+<b class="nc"><i>117</i>&nbsp;        if (lessDiff &lt; moreDiff) return less;</b>
+<b class="nc"><i>118</i>&nbsp;        return more;</b>
+<i>119</i>&nbsp;    }
+<i>120</i>&nbsp;
+<i>121</i>&nbsp;    /***************************************************************************
+<i>122</i>&nbsp;     *                                                                         *
+<i>123</i>&nbsp;     * String-related utilities                                                *
+<i>124</i>&nbsp;     *                                                                         *
+<i>125</i>&nbsp;     **************************************************************************/
+<i>126</i>&nbsp;
+<i>127</i>&nbsp;    /**
+<i>128</i>&nbsp;     * Helper to remove leading and trailing quotes from a string.
+<i>129</i>&nbsp;     * Works with single or double quotes.
+<i>130</i>&nbsp;     */
+<i>131</i>&nbsp;    public static String stripQuotes(String str) {
+<b class="nc"><i>132</i>&nbsp;        if (str == null) return str;</b>
+<b class="nc"><i>133</i>&nbsp;        if (str.length() == 0) return str;</b>
+<i>134</i>&nbsp;
+<b class="nc"><i>135</i>&nbsp;        int beginIndex = 0;</b>
+<b class="nc"><i>136</i>&nbsp;        final char openQuote = str.charAt(beginIndex);</b>
+<b class="nc"><i>137</i>&nbsp;        if ( openQuote == &#39;\&quot;&#39; || openQuote==&#39;\&#39;&#39; ) beginIndex += 1;</b>
+<i>138</i>&nbsp;
+<b class="nc"><i>139</i>&nbsp;        int endIndex = str.length();</b>
+<b class="nc"><i>140</i>&nbsp;        final char closeQuote = str.charAt(endIndex - 1);</b>
+<b class="nc"><i>141</i>&nbsp;        if ( closeQuote == &#39;\&quot;&#39; || closeQuote==&#39;\&#39;&#39; ) endIndex -= 1;</b>
+<i>142</i>&nbsp;
+<b class="nc"><i>143</i>&nbsp;        if ((endIndex - beginIndex) &lt; 0) return str;</b>
+<i>144</i>&nbsp;
+<i>145</i>&nbsp;        // note that String.substring returns &quot;this&quot; if beginIndex == 0 &amp;&amp; endIndex == count
+<i>146</i>&nbsp;        // or a new string that shares the character buffer with the original string.
+<b class="nc"><i>147</i>&nbsp;        return str.substring(beginIndex, endIndex);</b>
+<i>148</i>&nbsp;    }
+<i>149</i>&nbsp;
+<i>150</i>&nbsp;    /**
+<i>151</i>&nbsp;     * Because mobile doesn&#39;t have string.split(s) function, this function
+<i>152</i>&nbsp;     * was written.
+<i>153</i>&nbsp;     */
+<i>154</i>&nbsp;    public static String[] split(String str, String separator) {
+<b class="nc"><i>155</i>&nbsp;        if (str == null || str.length() == 0) return new String[] { };</b>
+<b class="nc"><i>156</i>&nbsp;        if (separator == null || separator.length() == 0) return new String[] { };</b>
+<b class="nc"><i>157</i>&nbsp;        if (separator.length() &gt; str.length()) return new String[] { };</b>
+<i>158</i>&nbsp;
+<b class="nc"><i>159</i>&nbsp;        java.util.List&lt;String&gt; result = new java.util.ArrayList&lt;String&gt;();</b>
+<i>160</i>&nbsp;
+<b class="nc"><i>161</i>&nbsp;        int index = str.indexOf(separator);</b>
+<b class="nc"><i>162</i>&nbsp;        while (index &gt;= 0) {</b>
+<b class="nc"><i>163</i>&nbsp;            String newStr = str.substring(0, index);</b>
+<b class="nc"><i>164</i>&nbsp;            if (newStr != null &amp;&amp; newStr.length() &gt; 0) {</b>
+<b class="nc"><i>165</i>&nbsp;                result.add(newStr);</b>
+<i>166</i>&nbsp;            }
+<b class="nc"><i>167</i>&nbsp;            str = str.substring(index + separator.length());</b>
+<b class="nc"><i>168</i>&nbsp;            index = str.indexOf(separator);</b>
+<b class="nc"><i>169</i>&nbsp;        }</b>
+<i>170</i>&nbsp;
+<b class="nc"><i>171</i>&nbsp;        if (str != null &amp;&amp; str.length() &gt; 0) {</b>
+<b class="nc"><i>172</i>&nbsp;            result.add(str);</b>
+<i>173</i>&nbsp;        }
+<i>174</i>&nbsp;
+<b class="nc"><i>175</i>&nbsp;        return result.toArray(new String[] { });</b>
+<i>176</i>&nbsp;    }
+<i>177</i>&nbsp;
+<i>178</i>&nbsp;    /**
+<i>179</i>&nbsp;     * Because mobile doesn&#39;t have string.contains(s) function, this function
+<i>180</i>&nbsp;     * was written.
+<i>181</i>&nbsp;     */
+<i>182</i>&nbsp;    public static boolean contains(String src, String s) {
+<b class="nc"><i>183</i>&nbsp;        if (src == null || src.length() == 0) return false;</b>
+<b class="nc"><i>184</i>&nbsp;        if (s == null || s.length() == 0) return false;</b>
+<b class="nc"><i>185</i>&nbsp;        if (s.length() &gt; src.length()) return false;</b>
+<i>186</i>&nbsp;
+<b class="nc"><i>187</i>&nbsp;        return src.indexOf(s) &gt; -1;</b>
+<i>188</i>&nbsp;    }
+<i>189</i>&nbsp;
+<i>190</i>&nbsp;    /***************************************************************************
+<i>191</i>&nbsp;     *                                                                         *
+<i>192</i>&nbsp;     * Color-related utilities                                                 *
+<i>193</i>&nbsp;     *                                                                         *
+<i>194</i>&nbsp;     **************************************************************************/
+<i>195</i>&nbsp;
+<i>196</i>&nbsp;    /**
+<i>197</i>&nbsp;     * Calculates a perceptual brightness for a color between 0.0 black and 1.0 while
+<i>198</i>&nbsp;     */
+<i>199</i>&nbsp;    public static double calculateBrightness(Color color) {
+<b class="fc"><i>200</i>&nbsp;          return  (0.3*color.getRed()) + (0.59*color.getGreen()) + (0.11*color.getBlue());</b>
+<i>201</i>&nbsp;    }
+<i>202</i>&nbsp;
+<i>203</i>&nbsp;    /**
+<i>204</i>&nbsp;     * Derives a lighter or darker of a given color.
+<i>205</i>&nbsp;     *
+<i>206</i>&nbsp;     * @param c           The color to derive from
+<i>207</i>&nbsp;     * @param brightness  The brightness difference for the new color -1.0 being 100% dark which is always black, 0.0 being
+<i>208</i>&nbsp;     *                    no change and 1.0 being 100% lighter which is always white
+<i>209</i>&nbsp;     */
+<i>210</i>&nbsp;    public static Color deriveColor(Color c, double brightness) {
+<b class="fc"><i>211</i>&nbsp;        double baseBrightness = calculateBrightness(c);</b>
+<b class="fc"><i>212</i>&nbsp;        double calcBrightness = brightness;</b>
+<i>213</i>&nbsp;        // Fine adjustments to colors in ranges of brightness to adjust the contrast for them
+<b class="fc"><i>214</i>&nbsp;        if (brightness &gt; 0) {</b>
+<b class="fc"><i>215</i>&nbsp;            if (baseBrightness &gt; 0.85) {</b>
+<b class="fc"><i>216</i>&nbsp;                calcBrightness = calcBrightness * 1.6;</b>
+<b class="nc"><i>217</i>&nbsp;            } else if (baseBrightness &gt; 0.6) {</b>
+<i>218</i>&nbsp;                // no change
+<b class="nc"><i>219</i>&nbsp;            } else if (baseBrightness &gt; 0.5) {</b>
+<b class="nc"><i>220</i>&nbsp;                calcBrightness = calcBrightness * 0.9;</b>
+<b class="nc"><i>221</i>&nbsp;            } else if (baseBrightness &gt; 0.4) {</b>
+<b class="nc"><i>222</i>&nbsp;                calcBrightness = calcBrightness * 0.8;</b>
+<b class="nc"><i>223</i>&nbsp;            } else if (baseBrightness &gt; 0.3) {</b>
+<b class="nc"><i>224</i>&nbsp;                calcBrightness = calcBrightness * 0.7;</b>
+<i>225</i>&nbsp;            } else {
+<b class="nc"><i>226</i>&nbsp;                calcBrightness = calcBrightness * 0.6;</b>
+<i>227</i>&nbsp;            }
+<i>228</i>&nbsp;        } else {
+<b class="fc"><i>229</i>&nbsp;            if (baseBrightness &lt; 0.2) {</b>
+<b class="nc"><i>230</i>&nbsp;                calcBrightness = calcBrightness * 0.6;</b>
+<i>231</i>&nbsp;            }
+<i>232</i>&nbsp;        }
+<i>233</i>&nbsp;        // clamp brightness
+<b class="fc"><i>234</i>&nbsp;        if (calcBrightness &lt; -1) { calcBrightness = -1; } else if (calcBrightness &gt; 1) {calcBrightness = 1;}</b>
+<i>235</i>&nbsp;        // window two take the calculated brightness multiplyer and derive color based on source color
+<b class="fc"><i>236</i>&nbsp;        double[] hsb = RGBtoHSB(c.getRed(), c.getGreen(), c.getBlue());</b>
+<i>237</i>&nbsp;        // change brightness
+<b class="fc"><i>238</i>&nbsp;        if (calcBrightness &gt; 0) { // brighter</b>
+<b class="fc"><i>239</i>&nbsp;            hsb[1] *= 1 - calcBrightness;</b>
+<b class="fc"><i>240</i>&nbsp;            hsb[2] += (1 - hsb[2]) * calcBrightness;</b>
+<i>241</i>&nbsp;        } else { // darker
+<b class="fc"><i>242</i>&nbsp;            hsb[2] *=  calcBrightness + 1;</b>
+<i>243</i>&nbsp;        }
+<i>244</i>&nbsp;        // clip saturation and brightness
+<b class="fc"><i>245</i>&nbsp;        if (hsb[1] &lt; 0) { hsb[1] = 0;} else if (hsb[1] &gt; 1) {hsb[1] = 1;}</b>
+<b class="fc"><i>246</i>&nbsp;        if (hsb[2] &lt; 0) { hsb[2] = 0;} else if (hsb[2] &gt; 1) {hsb[2] = 1;}</b>
+<i>247</i>&nbsp;        // convert back to color
+<b class="fc"><i>248</i>&nbsp;        Color c2 = Color.hsb((int)hsb[0], hsb[1], hsb[2],c.getOpacity());</b>
+<b class="fc"><i>249</i>&nbsp;        return Color.hsb((int)hsb[0], hsb[1], hsb[2],c.getOpacity());</b>
+<i>250</i>&nbsp;
+<i>251</i>&nbsp;     /*   var hsb:Number[] = RGBtoHSB(c.red,c.green,c.blue);
+<i>252</i>&nbsp;        // change brightness
+<i>253</i>&nbsp;        if (brightness &gt; 0) {
+<i>254</i>&nbsp;            //var bright:Number = brightness * (1-calculateBrightness(c));
+<i>255</i>&nbsp;            var bright:Number = if (calculateBrightness(c)&lt;0.65 and brightness &gt; 0.5) {
+<i>256</i>&nbsp;                    if (calculateBrightness(c)&lt;0.2) then brightness * 0.55 else brightness * 0.7
+<i>257</i>&nbsp;            } else brightness;
+<i>258</i>&nbsp;            // brighter
+<i>259</i>&nbsp;            hsb[1] *= 1 - bright;
+<i>260</i>&nbsp;            hsb[2] += (1 - hsb[2]) * bright;
+<i>261</i>&nbsp;        } else {
+<i>262</i>&nbsp;            // darker
+<i>263</i>&nbsp;            hsb[2] *= brightness+1;
+<i>264</i>&nbsp;        }
+<i>265</i>&nbsp;        // clip saturation and brightness
+<i>266</i>&nbsp;        if (hsb[1] &lt; 0) { hsb[1] = 0;} else if (hsb[1] &gt; 1) {hsb[1] = 1}
+<i>267</i>&nbsp;        if (hsb[2] &lt; 0) { hsb[2] = 0;} else if (hsb[2] &gt; 1) {hsb[2] = 1}
+<i>268</i>&nbsp;        // convert back to color
+<i>269</i>&nbsp;        return Color.hsb(hsb[0],hsb[1],hsb[2]) */
+<i>270</i>&nbsp;    }
+<i>271</i>&nbsp;
+<i>272</i>&nbsp;    /**
+<i>273</i>&nbsp;     * interpolate at a set {@code position} between two colors {@code color1} and {@code color2}.
+<i>274</i>&nbsp;     * The interpolation is done is linear RGB color space not the default sRGB color space.
+<i>275</i>&nbsp;     */
+<i>276</i>&nbsp;    private static Color interpolateLinear(double position, Color color1, Color color2) {
+<b class="fc"><i>277</i>&nbsp;        Color c1Linear = convertSRGBtoLinearRGB(color1);</b>
+<b class="fc"><i>278</i>&nbsp;        Color c2Linear = convertSRGBtoLinearRGB(color2);</b>
+<b class="fc"><i>279</i>&nbsp;        return convertLinearRGBtoSRGB(Color.color(</b>
+<b class="fc"><i>280</i>&nbsp;            c1Linear.getRed()     + (c2Linear.getRed()     - c1Linear.getRed())     * position,</b>
+<b class="fc"><i>281</i>&nbsp;            c1Linear.getGreen()   + (c2Linear.getGreen()   - c1Linear.getGreen())   * position,</b>
+<b class="fc"><i>282</i>&nbsp;            c1Linear.getBlue()    + (c2Linear.getBlue()    - c1Linear.getBlue())    * position,</b>
+<b class="fc"><i>283</i>&nbsp;            c1Linear.getOpacity() + (c2Linear.getOpacity() - c1Linear.getOpacity()) * position</b>
+<i>284</i>&nbsp;        ));
+<i>285</i>&nbsp;    }
+<i>286</i>&nbsp;
+<i>287</i>&nbsp;    /**
+<i>288</i>&nbsp;     * Get the color at the give {@code position} in the ladder of color stops
+<i>289</i>&nbsp;     */
+<i>290</i>&nbsp;    private static Color ladder(final double position, final Stop[] stops) {
+<b class="fc"><i>291</i>&nbsp;        Stop prevStop = null;</b>
+<b class="fc"><i>292</i>&nbsp;        for (int i=0; i&lt;stops.length; i++) {</b>
+<b class="fc"><i>293</i>&nbsp;            Stop stop = stops[i];</b>
+<b class="fc"><i>294</i>&nbsp;            if(position &lt;= stop.getOffset()){</b>
+<b class="fc"><i>295</i>&nbsp;                if (prevStop == null) {</b>
+<b class="fc"><i>296</i>&nbsp;                    return stop.getColor();</b>
+<i>297</i>&nbsp;                } else {
+<b class="fc"><i>298</i>&nbsp;                    return interpolateLinear((position-prevStop.getOffset())/(stop.getOffset()-prevStop.getOffset()), prevStop.getColor(), stop.getColor());</b>
+<i>299</i>&nbsp;                }
+<i>300</i>&nbsp;            }
+<b class="fc"><i>301</i>&nbsp;            prevStop = stop;</b>
+<i>302</i>&nbsp;        }
+<i>303</i>&nbsp;        // position is greater than biggest stop, so will we biggest stop&#39;s color
+<b class="fc"><i>304</i>&nbsp;        return prevStop.getColor();</b>
+<i>305</i>&nbsp;    }
+<i>306</i>&nbsp;
+<i>307</i>&nbsp;    /**
+<i>308</i>&nbsp;     * Get the color at the give {@code position} in the ladder of color stops
+<i>309</i>&nbsp;     */
+<i>310</i>&nbsp;    public static Color ladder(final Color color, final Stop[] stops) {
+<b class="fc"><i>311</i>&nbsp;        return ladder(calculateBrightness(color), stops);</b>
+<i>312</i>&nbsp;    }
+<i>313</i>&nbsp;
+<i>314</i>&nbsp;    public static double[] HSBtoRGB(double hue, double saturation, double brightness) {
+<i>315</i>&nbsp;        // normalize the hue
+<b class="fc"><i>316</i>&nbsp;        double normalizedHue = ((hue % 360) + 360) % 360;</b>
+<b class="fc"><i>317</i>&nbsp;        hue = normalizedHue/360;</b>
+<i>318</i>&nbsp;
+<b class="fc"><i>319</i>&nbsp;        double r = 0, g = 0, b = 0;</b>
+<b class="fc"><i>320</i>&nbsp;        if (saturation == 0) {</b>
+<b class="fc"><i>321</i>&nbsp;            r = g = b = brightness;</b>
+<i>322</i>&nbsp;        } else {
+<b class="nc"><i>323</i>&nbsp;            double h = (hue - Math.floor(hue)) * 6.0;</b>
+<b class="nc"><i>324</i>&nbsp;            double f = h - java.lang.Math.floor(h);</b>
+<b class="nc"><i>325</i>&nbsp;            double p = brightness * (1.0 - saturation);</b>
+<b class="nc"><i>326</i>&nbsp;            double q = brightness * (1.0 - saturation * f);</b>
+<b class="nc"><i>327</i>&nbsp;            double t = brightness * (1.0 - (saturation * (1.0 - f)));</b>
+<b class="nc"><i>328</i>&nbsp;            switch ((int) h) {</b>
+<i>329</i>&nbsp;                case 0:
+<b class="nc"><i>330</i>&nbsp;                    r = brightness;</b>
+<b class="nc"><i>331</i>&nbsp;                    g = t;</b>
+<b class="nc"><i>332</i>&nbsp;                    b = p;</b>
+<b class="nc"><i>333</i>&nbsp;                    break;</b>
+<i>334</i>&nbsp;                case 1:
+<b class="nc"><i>335</i>&nbsp;                    r = q;</b>
+<b class="nc"><i>336</i>&nbsp;                    g = brightness;</b>
+<b class="nc"><i>337</i>&nbsp;                    b = p;</b>
+<b class="nc"><i>338</i>&nbsp;                    break;</b>
+<i>339</i>&nbsp;                case 2:
+<b class="nc"><i>340</i>&nbsp;                    r = p;</b>
+<b class="nc"><i>341</i>&nbsp;                    g = brightness;</b>
+<b class="nc"><i>342</i>&nbsp;                    b = t;</b>
+<b class="nc"><i>343</i>&nbsp;                    break;</b>
+<i>344</i>&nbsp;                case 3:
+<b class="nc"><i>345</i>&nbsp;                    r = p;</b>
+<b class="nc"><i>346</i>&nbsp;                    g = q;</b>
+<b class="nc"><i>347</i>&nbsp;                    b = brightness;</b>
+<b class="nc"><i>348</i>&nbsp;                    break;</b>
+<i>349</i>&nbsp;                case 4:
+<b class="nc"><i>350</i>&nbsp;                    r = t;</b>
+<b class="nc"><i>351</i>&nbsp;                    g = p;</b>
+<b class="nc"><i>352</i>&nbsp;                    b = brightness;</b>
+<b class="nc"><i>353</i>&nbsp;                    break;</b>
+<i>354</i>&nbsp;                case 5:
+<b class="nc"><i>355</i>&nbsp;                    r = brightness;</b>
+<b class="nc"><i>356</i>&nbsp;                    g = p;</b>
+<b class="nc"><i>357</i>&nbsp;                    b = q;</b>
+<i>358</i>&nbsp;                    break;
+<i>359</i>&nbsp;            }
+<i>360</i>&nbsp;        }
+<b class="fc"><i>361</i>&nbsp;        double[] f = new double[3];</b>
+<b class="fc"><i>362</i>&nbsp;        f[0] = r;</b>
+<b class="fc"><i>363</i>&nbsp;        f[1] = g;</b>
+<b class="fc"><i>364</i>&nbsp;        f[2] = b;</b>
+<b class="fc"><i>365</i>&nbsp;        return f;</b>
+<i>366</i>&nbsp;    }
+<i>367</i>&nbsp;
+<i>368</i>&nbsp;    public static double[] RGBtoHSB(double r, double g, double b) {
+<i>369</i>&nbsp;        double hue, saturation, brightness;
+<b class="fc"><i>370</i>&nbsp;        double[] hsbvals = new double[3];</b>
+<b class="fc"><i>371</i>&nbsp;        double cmax = (r &gt; g) ? r : g;</b>
+<b class="fc"><i>372</i>&nbsp;        if (b &gt; cmax) cmax = b;</b>
+<b class="fc"><i>373</i>&nbsp;        double cmin = (r &lt; g) ? r : g;</b>
+<b class="fc"><i>374</i>&nbsp;        if (b &lt; cmin) cmin = b;</b>
+<i>375</i>&nbsp;
+<b class="fc"><i>376</i>&nbsp;        brightness = cmax;</b>
+<b class="fc"><i>377</i>&nbsp;        if (cmax != 0)</b>
+<b class="fc"><i>378</i>&nbsp;            saturation = (double) (cmax - cmin) / cmax;</b>
+<i>379</i>&nbsp;        else
+<b class="nc"><i>380</i>&nbsp;            saturation = 0;</b>
+<i>381</i>&nbsp;
+<b class="fc"><i>382</i>&nbsp;        if (saturation == 0) {</b>
+<b class="fc"><i>383</i>&nbsp;            hue = 0;</b>
+<i>384</i>&nbsp;        } else {
+<b class="nc"><i>385</i>&nbsp;            double redc = (cmax - r) / (cmax - cmin);</b>
+<b class="nc"><i>386</i>&nbsp;            double greenc = (cmax - g) / (cmax - cmin);</b>
+<b class="nc"><i>387</i>&nbsp;            double bluec = (cmax - b) / (cmax - cmin);</b>
+<b class="nc"><i>388</i>&nbsp;            if (r == cmax)</b>
+<b class="nc"><i>389</i>&nbsp;                hue = bluec - greenc;</b>
+<b class="nc"><i>390</i>&nbsp;            else if (g == cmax)</b>
+<b class="nc"><i>391</i>&nbsp;                hue = 2.0 + redc - bluec;</b>
+<i>392</i>&nbsp;            else
+<b class="nc"><i>393</i>&nbsp;                hue = 4.0 + greenc - redc;</b>
+<b class="nc"><i>394</i>&nbsp;            hue = hue / 6.0;</b>
+<b class="nc"><i>395</i>&nbsp;            if (hue &lt; 0)</b>
+<b class="nc"><i>396</i>&nbsp;                hue = hue + 1.0;</b>
+<i>397</i>&nbsp;        }
+<b class="fc"><i>398</i>&nbsp;        hsbvals[0] = hue * 360;</b>
+<b class="fc"><i>399</i>&nbsp;        hsbvals[1] = saturation;</b>
+<b class="fc"><i>400</i>&nbsp;        hsbvals[2] = brightness;</b>
+<b class="fc"><i>401</i>&nbsp;        return hsbvals;</b>
+<i>402</i>&nbsp;    }
+<i>403</i>&nbsp;
+<i>404</i>&nbsp;    /**
+<i>405</i>&nbsp;     * Helper function to convert a color in sRGB space to linear RGB space.
+<i>406</i>&nbsp;     */
+<i>407</i>&nbsp;    public static Color convertSRGBtoLinearRGB(Color color) {
+<b class="fc"><i>408</i>&nbsp;        double[] colors = new double[] { color.getRed(), color.getGreen(), color.getBlue() };</b>
+<b class="fc"><i>409</i>&nbsp;        for (int i=0; i&lt;colors.length; i++) {</b>
+<b class="fc"><i>410</i>&nbsp;            if (colors[i] &lt;= 0.04045) {</b>
+<b class="nc"><i>411</i>&nbsp;                colors[i] = colors[i] / 12.92;</b>
+<i>412</i>&nbsp;            } else {
+<b class="fc"><i>413</i>&nbsp;                colors[i] = Math.pow((colors[i] + 0.055) / 1.055, 2.4);</b>
+<i>414</i>&nbsp;            }
+<i>415</i>&nbsp;        }
+<b class="fc"><i>416</i>&nbsp;        return Color.color(colors[0], colors[1], colors[2], color.getOpacity());</b>
+<i>417</i>&nbsp;    }
+<i>418</i>&nbsp;
+<i>419</i>&nbsp;    /**
+<i>420</i>&nbsp;     * Helper function to convert a color in linear RGB space to SRGB space.
+<i>421</i>&nbsp;     */
+<i>422</i>&nbsp;    public static Color convertLinearRGBtoSRGB(Color color) {
+<b class="fc"><i>423</i>&nbsp;        double[] colors = new double[] { color.getRed(), color.getGreen(), color.getBlue() };</b>
+<b class="fc"><i>424</i>&nbsp;        for (int i=0; i&lt;colors.length; i++) {</b>
+<b class="fc"><i>425</i>&nbsp;            if (colors[i] &lt;= 0.0031308) {</b>
+<b class="nc"><i>426</i>&nbsp;                colors[i] = colors[i] * 12.92;</b>
+<i>427</i>&nbsp;            } else {
+<b class="fc"><i>428</i>&nbsp;                colors[i] = (1.055 * Math.pow(colors[i], (1.0 / 2.4))) - 0.055;</b>
+<i>429</i>&nbsp;            }
+<i>430</i>&nbsp;        }
+<b class="fc"><i>431</i>&nbsp;        return Color.color(colors[0], colors[1], colors[2], color.getOpacity());</b>
+<i>432</i>&nbsp;    }
+<i>433</i>&nbsp;
+<i>434</i>&nbsp;    /** helper function for calculating the sum of a series of numbers */
+<i>435</i>&nbsp;    public static double sum(double[] values) {
+<b class="nc"><i>436</i>&nbsp;        double sum = 0;</b>
+<b class="nc"><i>437</i>&nbsp;        for (double v : values) sum = sum+v;</b>
+<b class="nc"><i>438</i>&nbsp;        return sum / values.length;</b>
+<i>439</i>&nbsp;    }
+<i>440</i>&nbsp;
+<i>441</i>&nbsp;    public static Point2D pointRelativeTo(Node parent, Node node, HPos hpos,
+<i>442</i>&nbsp;            VPos vpos, double dx, double dy, boolean reposition)
+<i>443</i>&nbsp;    {
+<b class="nc"><i>444</i>&nbsp;        final double nodeWidth = node.getLayoutBounds().getWidth();</b>
+<b class="nc"><i>445</i>&nbsp;        final double nodeHeight = node.getLayoutBounds().getHeight();</b>
+<b class="nc"><i>446</i>&nbsp;        return pointRelativeTo(parent, nodeWidth, nodeHeight, hpos, vpos, dx, dy, reposition);</b>
+<i>447</i>&nbsp;    }
+<i>448</i>&nbsp;
+<i>449</i>&nbsp;    public static Point2D pointRelativeTo(Node parent, double anchorWidth,
+<i>450</i>&nbsp;            double anchorHeight, HPos hpos, VPos vpos, double dx, double dy,
+<i>451</i>&nbsp;            boolean reposition)
+<i>452</i>&nbsp;    {
+<b class="fc"><i>453</i>&nbsp;        final Bounds parentBounds = getBounds(parent);</b>
+<b class="fc"><i>454</i>&nbsp;        Scene scene = parent.getScene();</b>
+<b class="fc"><i>455</i>&nbsp;        NodeOrientation orientation = parent.getEffectiveNodeOrientation();</b>
+<i>456</i>&nbsp;
+<b class="fc"><i>457</i>&nbsp;        if (orientation == NodeOrientation.RIGHT_TO_LEFT) {</b>
+<b class="nc"><i>458</i>&nbsp;            if (hpos == HPos.LEFT) {</b>
+<b class="nc"><i>459</i>&nbsp;                hpos = HPos.RIGHT;</b>
+<b class="nc"><i>460</i>&nbsp;            } else if (hpos == HPos.RIGHT) {</b>
+<b class="nc"><i>461</i>&nbsp;                hpos = HPos.LEFT;</b>
+<i>462</i>&nbsp;            }
+<b class="nc"><i>463</i>&nbsp;            dx *= -1;</b>
+<i>464</i>&nbsp;        }
+<i>465</i>&nbsp;
+<b class="fc"><i>466</i>&nbsp;        double layoutX = positionX(parentBounds, anchorWidth, hpos) + dx;</b>
+<b class="fc"><i>467</i>&nbsp;        final double layoutY = positionY(parentBounds, anchorHeight, vpos) + dy;</b>
+<i>468</i>&nbsp;
+<b class="fc"><i>469</i>&nbsp;        if (orientation == NodeOrientation.RIGHT_TO_LEFT &amp;&amp; hpos == HPos.CENTER) {</b>
+<i>470</i>&nbsp;            //TODO - testing for an instance of Stage seems wrong but works for menus
+<b class="nc"><i>471</i>&nbsp;            if (scene.getWindow() instanceof Stage) {</b>
+<b class="nc"><i>472</i>&nbsp;                layoutX = layoutX + parentBounds.getWidth() - anchorWidth;</b>
+<i>473</i>&nbsp;            } else {
+<b class="nc"><i>474</i>&nbsp;                layoutX = layoutX - parentBounds.getWidth() - anchorWidth;</b>
+<i>475</i>&nbsp;            }
+<i>476</i>&nbsp;        }
+<i>477</i>&nbsp;
+<b class="fc"><i>478</i>&nbsp;        if (reposition) {</b>
+<b class="fc"><i>479</i>&nbsp;            return pointRelativeTo(parent, anchorWidth, anchorHeight, layoutX, layoutY, hpos, vpos);</b>
+<i>480</i>&nbsp;        } else {
+<b class="nc"><i>481</i>&nbsp;            return new Point2D(layoutX, layoutY);</b>
+<i>482</i>&nbsp;        }
+<i>483</i>&nbsp;    }
+<i>484</i>&nbsp;
+<i>485</i>&nbsp;    /**
+<i>486</i>&nbsp;     * This is the fallthrough function that most other functions fall into. It takes
+<i>487</i>&nbsp;     * care specifically of the repositioning of the item such that it remains onscreen
+<i>488</i>&nbsp;     * as best it can, given it&#39;s unique qualities.
+<i>489</i>&nbsp;     *
+<i>490</i>&nbsp;     * As will all other functions, this one returns a Point2D that represents an x,y
+<i>491</i>&nbsp;     * location that should safely position the item onscreen as best as possible.
+<i>492</i>&nbsp;     *
+<i>493</i>&nbsp;     * Note that &lt;code&gt;width&lt;/code&gt; and &lt;height&gt; refer to the width and height of the
+<i>494</i>&nbsp;     * node/popup that is needing to be repositioned, not of the parent.
+<i>495</i>&nbsp;     *
+<i>496</i>&nbsp;     * Don&#39;t use the BASELINE vpos, it doesn&#39;t make sense and would produce wrong result.
+<i>497</i>&nbsp;     */
+<i>498</i>&nbsp;    public static Point2D pointRelativeTo(Object parent, double width,
+<i>499</i>&nbsp;            double height, double screenX, double screenY, HPos hpos, VPos vpos)
+<i>500</i>&nbsp;    {
+<b class="fc"><i>501</i>&nbsp;        double finalScreenX = screenX;</b>
+<b class="fc"><i>502</i>&nbsp;        double finalScreenY = screenY;</b>
+<b class="fc"><i>503</i>&nbsp;        final Bounds parentBounds = getBounds(parent);</b>
+<i>504</i>&nbsp;
+<i>505</i>&nbsp;        // ...and then we get the bounds of this screen
+<b class="fc"><i>506</i>&nbsp;        final Screen currentScreen = getScreen(parent);</b>
+<i>507</i>&nbsp;        final Rectangle2D screenBounds =
+<b class="fc"><i>508</i>&nbsp;                hasFullScreenStage(currentScreen)</b>
+<b class="nc"><i>509</i>&nbsp;                        ? currentScreen.getBounds()</b>
+<b class="fc"><i>510</i>&nbsp;                        : currentScreen.getVisualBounds();</b>
+<i>511</i>&nbsp;
+<i>512</i>&nbsp;        // test if this layout will force the node to appear outside
+<i>513</i>&nbsp;        // of the screens bounds. If so, we must reposition the item to a better position.
+<i>514</i>&nbsp;        // We firstly try to do this intelligently, so as to not overlap the parent if
+<i>515</i>&nbsp;        // at all possible.
+<b class="fc"><i>516</i>&nbsp;        if (hpos != null) {</b>
+<i>517</i>&nbsp;            // Firstly we consider going off the right hand side
+<b class="fc"><i>518</i>&nbsp;            if ((finalScreenX + width) &gt; screenBounds.getMaxX()) {</b>
+<b class="nc"><i>519</i>&nbsp;                finalScreenX = positionX(parentBounds, width, getHPosOpposite(hpos, vpos));</b>
+<i>520</i>&nbsp;            }
+<i>521</i>&nbsp;
+<i>522</i>&nbsp;            // don&#39;t let the node go off to the left of the current screen
+<b class="fc"><i>523</i>&nbsp;            if (finalScreenX &lt; screenBounds.getMinX()) {</b>
+<b class="nc"><i>524</i>&nbsp;                finalScreenX = positionX(parentBounds, width, getHPosOpposite(hpos, vpos));</b>
+<i>525</i>&nbsp;            }
+<i>526</i>&nbsp;        }
+<i>527</i>&nbsp;
+<b class="fc"><i>528</i>&nbsp;        if (vpos != null) {</b>
+<i>529</i>&nbsp;            // don&#39;t let the node go off the bottom of the current screen
+<b class="fc"><i>530</i>&nbsp;            if ((finalScreenY + height) &gt; screenBounds.getMaxY()) {</b>
+<b class="nc"><i>531</i>&nbsp;                finalScreenY = positionY(parentBounds, height, getVPosOpposite(hpos,vpos));</b>
+<i>532</i>&nbsp;            }
+<i>533</i>&nbsp;
+<i>534</i>&nbsp;            // don&#39;t let the node out of the top of the current screen
+<b class="fc"><i>535</i>&nbsp;            if (finalScreenY &lt; screenBounds.getMinY()) {</b>
+<b class="nc"><i>536</i>&nbsp;                finalScreenY = positionY(parentBounds, height, getVPosOpposite(hpos,vpos));</b>
+<i>537</i>&nbsp;            }
+<i>538</i>&nbsp;        }
+<i>539</i>&nbsp;
+<i>540</i>&nbsp;        // --- after all the moving around, we do one last check / rearrange.
+<i>541</i>&nbsp;        // Unlike the check above, this time we are just fully committed to keeping
+<i>542</i>&nbsp;        // the item on screen at all costs, regardless of whether or not that results
+<i>543</i>&nbsp;        /// in overlapping the parent object.
+<b class="fc"><i>544</i>&nbsp;        if ((finalScreenX + width) &gt; screenBounds.getMaxX()) {</b>
+<b class="nc"><i>545</i>&nbsp;            finalScreenX -= (finalScreenX + width - screenBounds.getMaxX());</b>
+<i>546</i>&nbsp;        }
+<b class="fc"><i>547</i>&nbsp;        if (finalScreenX &lt; screenBounds.getMinX()) {</b>
+<b class="nc"><i>548</i>&nbsp;            finalScreenX = screenBounds.getMinX();</b>
+<i>549</i>&nbsp;        }
+<b class="fc"><i>550</i>&nbsp;        if ((finalScreenY + height) &gt; screenBounds.getMaxY()) {</b>
+<b class="nc"><i>551</i>&nbsp;            finalScreenY -= (finalScreenY + height - screenBounds.getMaxY());</b>
+<i>552</i>&nbsp;        }
+<b class="fc"><i>553</i>&nbsp;        if (finalScreenY &lt; screenBounds.getMinY()) {</b>
+<b class="nc"><i>554</i>&nbsp;            finalScreenY = screenBounds.getMinY();</b>
+<i>555</i>&nbsp;        }
+<i>556</i>&nbsp;
+<b class="fc"><i>557</i>&nbsp;        return new Point2D(finalScreenX, finalScreenY);</b>
+<i>558</i>&nbsp;    }
+<i>559</i>&nbsp;
+<i>560</i>&nbsp;    /**
+<i>561</i>&nbsp;     * Utility function that returns the x-axis position that an object should be positioned at,
+<i>562</i>&nbsp;     * given the parents screen bounds, the width of the object, and
+<i>563</i>&nbsp;     * the required HPos.
+<i>564</i>&nbsp;     */
+<i>565</i>&nbsp;    private static double positionX(Bounds parentBounds, double width, HPos hpos) {
+<b class="fc"><i>566</i>&nbsp;        if (hpos == HPos.CENTER) {</b>
+<i>567</i>&nbsp;            // this isn&#39;t right, but it is needed for root menus to show properly
+<b class="fc"><i>568</i>&nbsp;            return parentBounds.getMinX();</b>
+<b class="nc"><i>569</i>&nbsp;        } else if (hpos == HPos.RIGHT) {</b>
+<b class="nc"><i>570</i>&nbsp;            return parentBounds.getMaxX();</b>
+<b class="nc"><i>571</i>&nbsp;        } else if (hpos == HPos.LEFT) {</b>
+<b class="nc"><i>572</i>&nbsp;            return parentBounds.getMinX() - width;</b>
+<i>573</i>&nbsp;        } else {
+<b class="nc"><i>574</i>&nbsp;            return 0;</b>
+<i>575</i>&nbsp;        }
+<i>576</i>&nbsp;    }
+<i>577</i>&nbsp;
+<i>578</i>&nbsp;    /**
+<i>579</i>&nbsp;     * Utility function that returns the y-axis position that an object should be positioned at,
+<i>580</i>&nbsp;     * given the parents screen bounds, the height of the object, and
+<i>581</i>&nbsp;     * the required VPos.
+<i>582</i>&nbsp;     *
+<i>583</i>&nbsp;     * The BASELINE vpos doesn&#39;t make sense here, 0 is returned for it.
+<i>584</i>&nbsp;     */
+<i>585</i>&nbsp;    private static double positionY(Bounds parentBounds, double height, VPos vpos) {
+<b class="fc"><i>586</i>&nbsp;        if (vpos == VPos.BOTTOM) {</b>
+<b class="fc"><i>587</i>&nbsp;            return parentBounds.getMaxY();</b>
+<b class="nc"><i>588</i>&nbsp;        } else if (vpos == VPos.CENTER) {</b>
+<b class="nc"><i>589</i>&nbsp;            return parentBounds.getMinY();</b>
+<b class="nc"><i>590</i>&nbsp;        } else if (vpos == VPos.TOP) {</b>
+<b class="nc"><i>591</i>&nbsp;            return parentBounds.getMinY() - height;</b>
+<i>592</i>&nbsp;        } else {
+<b class="nc"><i>593</i>&nbsp;            return 0;</b>
+<i>594</i>&nbsp;        }
+<i>595</i>&nbsp;    }
+<i>596</i>&nbsp;
+<i>597</i>&nbsp;    /**
+<i>598</i>&nbsp;     * To facilitate multiple types of parent object, we unfortunately must allow for
+<i>599</i>&nbsp;     * Objects to be passed in. This method handles determining the bounds of the
+<i>600</i>&nbsp;     * given Object. If the Object type is not supported, a default Bounds will be returned.
+<i>601</i>&nbsp;     */
+<i>602</i>&nbsp;    private static Bounds getBounds(Object obj) {
+<b class="fc"><i>603</i>&nbsp;        if (obj instanceof Node) {</b>
+<b class="fc"><i>604</i>&nbsp;            final Node n = (Node)obj;</b>
+<b class="fc"><i>605</i>&nbsp;            Bounds b = n.localToScreen(n.getLayoutBounds());</b>
+<b class="fc"><i>606</i>&nbsp;            return b != null ? b : new BoundingBox(0, 0, 0, 0);</b>
+<b class="nc"><i>607</i>&nbsp;        } else if (obj instanceof Window) {</b>
+<b class="nc"><i>608</i>&nbsp;            final Window window = (Window)obj;</b>
+<b class="nc"><i>609</i>&nbsp;            return new BoundingBox(window.getX(), window.getY(), window.getWidth(), window.getHeight());</b>
+<i>610</i>&nbsp;        } else {
+<b class="nc"><i>611</i>&nbsp;            return new BoundingBox(0, 0, 0, 0);</b>
+<i>612</i>&nbsp;        }
+<i>613</i>&nbsp;    }
+<i>614</i>&nbsp;
+<i>615</i>&nbsp;    /*
+<i>616</i>&nbsp;     * Simple utitilty function to return the &#39;opposite&#39; value of a given HPos, taking
+<i>617</i>&nbsp;     * into account the current VPos value. This is used to try and avoid overlapping.
+<i>618</i>&nbsp;     */
+<i>619</i>&nbsp;    private static HPos getHPosOpposite(HPos hpos, VPos vpos) {
+<b class="nc"><i>620</i>&nbsp;        if (vpos == VPos.CENTER) {</b>
+<b class="nc"><i>621</i>&nbsp;            if (hpos == HPos.LEFT){</b>
+<b class="nc"><i>622</i>&nbsp;                return HPos.RIGHT;</b>
+<b class="nc"><i>623</i>&nbsp;            } else if (hpos == HPos.RIGHT){</b>
+<b class="nc"><i>624</i>&nbsp;                return HPos.LEFT;</b>
+<b class="nc"><i>625</i>&nbsp;            } else if (hpos == HPos.CENTER){</b>
+<b class="nc"><i>626</i>&nbsp;                return HPos.CENTER;</b>
+<i>627</i>&nbsp;            } else {
+<i>628</i>&nbsp;                // by default center for now
+<b class="nc"><i>629</i>&nbsp;                return HPos.CENTER;</b>
+<i>630</i>&nbsp;            }
+<i>631</i>&nbsp;        } else {
+<b class="nc"><i>632</i>&nbsp;            return HPos.CENTER;</b>
+<i>633</i>&nbsp;        }
+<i>634</i>&nbsp;    }
+<i>635</i>&nbsp;
+<i>636</i>&nbsp;    /*
+<i>637</i>&nbsp;     * Simple utitilty function to return the &#39;opposite&#39; value of a given VPos, taking
+<i>638</i>&nbsp;     * into account the current HPos value. This is used to try and avoid overlapping.
+<i>639</i>&nbsp;     */
+<i>640</i>&nbsp;    private static VPos getVPosOpposite(HPos hpos, VPos vpos) {
+<b class="nc"><i>641</i>&nbsp;        if (hpos == HPos.CENTER) {</b>
+<b class="nc"><i>642</i>&nbsp;            if (vpos == VPos.BASELINE){</b>
+<b class="nc"><i>643</i>&nbsp;                return VPos.BASELINE;</b>
+<b class="nc"><i>644</i>&nbsp;            } else if (vpos == VPos.BOTTOM){</b>
+<b class="nc"><i>645</i>&nbsp;                return VPos.TOP;</b>
+<b class="nc"><i>646</i>&nbsp;            } else if (vpos == VPos.CENTER){</b>
+<b class="nc"><i>647</i>&nbsp;                return VPos.CENTER;</b>
+<b class="nc"><i>648</i>&nbsp;            } else if (vpos == VPos.TOP){</b>
+<b class="nc"><i>649</i>&nbsp;                return VPos.BOTTOM;</b>
+<i>650</i>&nbsp;            } else {
+<i>651</i>&nbsp;                // by default center for now
+<b class="nc"><i>652</i>&nbsp;                return VPos.CENTER;</b>
+<i>653</i>&nbsp;            }
+<i>654</i>&nbsp;        } else {
+<b class="nc"><i>655</i>&nbsp;            return VPos.CENTER;</b>
+<i>656</i>&nbsp;        }
+<i>657</i>&nbsp;    }
+<i>658</i>&nbsp;
+<i>659</i>&nbsp;    public static boolean hasFullScreenStage(final Screen screen) {
+<b class="fc"><i>660</i>&nbsp;        final List&lt;Window&gt; allWindows = AccessController.doPrivileged(</b>
+<b class="fc"><i>661</i>&nbsp;                (PrivilegedAction&lt;List&lt;Window&gt;&gt;) () -&gt; Window.getWindows(),</b>
+<i>662</i>&nbsp;                null,
+<i>663</i>&nbsp;                ACCESS_WINDOW_LIST_PERMISSION);
+<i>664</i>&nbsp;
+<b class="fc"><i>665</i>&nbsp;        for (final Window window : allWindows) {</b>
+<b class="fc"><i>666</i>&nbsp;            if (window instanceof Stage) {</b>
+<b class="fc"><i>667</i>&nbsp;                final Stage stage = (Stage) window;</b>
+<b class="fc"><i>668</i>&nbsp;                if (stage.isFullScreen() &amp;&amp; (getScreen(stage) == screen)) {</b>
+<b class="nc"><i>669</i>&nbsp;                    return true;</b>
+<i>670</i>&nbsp;                }
+<i>671</i>&nbsp;            }
+<b class="fc"><i>672</i>&nbsp;        }</b>
+<b class="fc"><i>673</i>&nbsp;        return false;</b>
+<i>674</i>&nbsp;    }
+<i>675</i>&nbsp;
+<i>676</i>&nbsp;    /*
+<i>677</i>&nbsp;     * Returns true if the primary Screen has QVGA dimensions, in landscape or portrait mode.
+<i>678</i>&nbsp;     */
+<i>679</i>&nbsp;    public static boolean isQVGAScreen() {
+<b class="nc"><i>680</i>&nbsp;        Rectangle2D bounds = Screen.getPrimary().getBounds();</b>
+<b class="nc"><i>681</i>&nbsp;        return ((bounds.getWidth() == 320 &amp;&amp; bounds.getHeight() == 240) ||</b>
+<b class="nc"><i>682</i>&nbsp;                (bounds.getWidth() == 240 &amp;&amp; bounds.getHeight() == 320));</b>
+<i>683</i>&nbsp;    }
+<i>684</i>&nbsp;
+<i>685</i>&nbsp;    /**
+<i>686</i>&nbsp;     * This function attempts to determine the best screen given the parent object
+<i>687</i>&nbsp;     * from which we are wanting to position another item relative to. This is particularly
+<i>688</i>&nbsp;     * important when we want to keep items from going off screen, and for handling
+<i>689</i>&nbsp;     * multiple monitor support.
+<i>690</i>&nbsp;     */
+<i>691</i>&nbsp;    public static Screen getScreen(Object obj) {
+<b class="fc"><i>692</i>&nbsp;        final Bounds parentBounds = getBounds(obj);</b>
+<i>693</i>&nbsp;
+<b class="fc"><i>694</i>&nbsp;        final Rectangle2D rect = new Rectangle2D(</b>
+<b class="fc"><i>695</i>&nbsp;                parentBounds.getMinX(),</b>
+<b class="fc"><i>696</i>&nbsp;                parentBounds.getMinY(),</b>
+<b class="fc"><i>697</i>&nbsp;                parentBounds.getWidth(),</b>
+<b class="fc"><i>698</i>&nbsp;                parentBounds.getHeight());</b>
+<i>699</i>&nbsp;
+<b class="fc"><i>700</i>&nbsp;        return getScreenForRectangle(rect);</b>
+<i>701</i>&nbsp;    }
+<i>702</i>&nbsp;
+<i>703</i>&nbsp;    public static Screen getScreenForRectangle(final Rectangle2D rect) {
+<b class="fc"><i>704</i>&nbsp;        final List&lt;Screen&gt; screens = Screen.getScreens();</b>
+<i>705</i>&nbsp;
+<b class="fc"><i>706</i>&nbsp;        final double rectX0 = rect.getMinX();</b>
+<b class="fc"><i>707</i>&nbsp;        final double rectX1 = rect.getMaxX();</b>
+<b class="fc"><i>708</i>&nbsp;        final double rectY0 = rect.getMinY();</b>
+<b class="fc"><i>709</i>&nbsp;        final double rectY1 = rect.getMaxY();</b>
+<i>710</i>&nbsp;
+<i>711</i>&nbsp;        Screen selectedScreen;
+<i>712</i>&nbsp;
+<b class="fc"><i>713</i>&nbsp;        selectedScreen = null;</b>
+<b class="fc"><i>714</i>&nbsp;        double maxIntersection = 0;</b>
+<b class="fc"><i>715</i>&nbsp;        for (final Screen screen: screens) {</b>
+<b class="fc"><i>716</i>&nbsp;            final Rectangle2D screenBounds = screen.getBounds();</b>
+<b class="fc"><i>717</i>&nbsp;            final double intersection =</b>
+<b class="fc"><i>718</i>&nbsp;                    getIntersectionLength(rectX0, rectX1,</b>
+<b class="fc"><i>719</i>&nbsp;                                          screenBounds.getMinX(),</b>
+<b class="fc"><i>720</i>&nbsp;                                          screenBounds.getMaxX())</b>
+<b class="fc"><i>721</i>&nbsp;                        * getIntersectionLength(rectY0, rectY1,</b>
+<b class="fc"><i>722</i>&nbsp;                                                screenBounds.getMinY(),</b>
+<b class="fc"><i>723</i>&nbsp;                                                screenBounds.getMaxY());</b>
+<i>724</i>&nbsp;
+<b class="fc"><i>725</i>&nbsp;            if (maxIntersection &lt; intersection) {</b>
+<b class="fc"><i>726</i>&nbsp;                maxIntersection = intersection;</b>
+<b class="fc"><i>727</i>&nbsp;                selectedScreen = screen;</b>
+<i>728</i>&nbsp;            }
+<b class="fc"><i>729</i>&nbsp;        }</b>
+<i>730</i>&nbsp;
+<b class="fc"><i>731</i>&nbsp;        if (selectedScreen != null) {</b>
+<b class="fc"><i>732</i>&nbsp;            return selectedScreen;</b>
+<i>733</i>&nbsp;        }
+<i>734</i>&nbsp;
+<b class="nc"><i>735</i>&nbsp;        selectedScreen = Screen.getPrimary();</b>
+<b class="nc"><i>736</i>&nbsp;        double minDistance = Double.MAX_VALUE;</b>
+<b class="nc"><i>737</i>&nbsp;        for (final Screen screen: screens) {</b>
+<b class="nc"><i>738</i>&nbsp;            final Rectangle2D screenBounds = screen.getBounds();</b>
+<b class="nc"><i>739</i>&nbsp;            final double dx = getOuterDistance(rectX0, rectX1,</b>
+<b class="nc"><i>740</i>&nbsp;                                               screenBounds.getMinX(),</b>
+<b class="nc"><i>741</i>&nbsp;                                               screenBounds.getMaxX());</b>
+<b class="nc"><i>742</i>&nbsp;            final double dy = getOuterDistance(rectY0, rectY1,</b>
+<b class="nc"><i>743</i>&nbsp;                                               screenBounds.getMinY(),</b>
+<b class="nc"><i>744</i>&nbsp;                                               screenBounds.getMaxY());</b>
+<b class="nc"><i>745</i>&nbsp;            final double distance = dx * dx + dy * dy;</b>
+<i>746</i>&nbsp;
+<b class="nc"><i>747</i>&nbsp;            if (minDistance &gt; distance) {</b>
+<b class="nc"><i>748</i>&nbsp;                minDistance = distance;</b>
+<b class="nc"><i>749</i>&nbsp;                selectedScreen = screen;</b>
+<i>750</i>&nbsp;            }
+<b class="nc"><i>751</i>&nbsp;        }</b>
+<i>752</i>&nbsp;
+<b class="nc"><i>753</i>&nbsp;        return selectedScreen;</b>
+<i>754</i>&nbsp;    }
+<i>755</i>&nbsp;
+<i>756</i>&nbsp;    public static Screen getScreenForPoint(final double x, final double y) {
+<b class="fc"><i>757</i>&nbsp;        final List&lt;Screen&gt; screens = Screen.getScreens();</b>
+<i>758</i>&nbsp;
+<i>759</i>&nbsp;        // first check whether the point is inside some screen
+<b class="fc"><i>760</i>&nbsp;        for (final Screen screen: screens) {</b>
+<i>761</i>&nbsp;            // can&#39;t use screen.bounds.contains, because it returns true for
+<i>762</i>&nbsp;            // the min + width point
+<b class="fc"><i>763</i>&nbsp;            final Rectangle2D screenBounds = screen.getBounds();</b>
+<b class="fc"><i>764</i>&nbsp;            if ((x &gt;= screenBounds.getMinX())</b>
+<b class="fc"><i>765</i>&nbsp;                    &amp;&amp; (x &lt; screenBounds.getMaxX())</b>
+<b class="fc"><i>766</i>&nbsp;                    &amp;&amp; (y &gt;= screenBounds.getMinY())</b>
+<b class="fc"><i>767</i>&nbsp;                    &amp;&amp; (y &lt; screenBounds.getMaxY())) {</b>
+<b class="fc"><i>768</i>&nbsp;                return screen;</b>
+<i>769</i>&nbsp;            }
+<b class="nc"><i>770</i>&nbsp;        }</b>
+<i>771</i>&nbsp;
+<i>772</i>&nbsp;        // the point is not inside any screen, find the closest screen now
+<b class="nc"><i>773</i>&nbsp;        Screen selectedScreen = Screen.getPrimary();</b>
+<b class="nc"><i>774</i>&nbsp;        double minDistance = Double.MAX_VALUE;</b>
+<b class="nc"><i>775</i>&nbsp;        for (final Screen screen: screens) {</b>
+<b class="nc"><i>776</i>&nbsp;            final Rectangle2D screenBounds = screen.getBounds();</b>
+<b class="nc"><i>777</i>&nbsp;            final double dx = getOuterDistance(screenBounds.getMinX(),</b>
+<b class="nc"><i>778</i>&nbsp;                                               screenBounds.getMaxX(),</b>
+<i>779</i>&nbsp;                                               x);
+<b class="nc"><i>780</i>&nbsp;            final double dy = getOuterDistance(screenBounds.getMinY(),</b>
+<b class="nc"><i>781</i>&nbsp;                                               screenBounds.getMaxY(),</b>
+<i>782</i>&nbsp;                                               y);
+<b class="nc"><i>783</i>&nbsp;            final double distance = dx * dx + dy * dy;</b>
+<b class="nc"><i>784</i>&nbsp;            if (minDistance &gt;= distance) {</b>
+<b class="nc"><i>785</i>&nbsp;                minDistance = distance;</b>
+<b class="nc"><i>786</i>&nbsp;                selectedScreen = screen;</b>
+<i>787</i>&nbsp;            }
+<b class="nc"><i>788</i>&nbsp;        }</b>
+<i>789</i>&nbsp;
+<b class="nc"><i>790</i>&nbsp;        return selectedScreen;</b>
+<i>791</i>&nbsp;    }
+<i>792</i>&nbsp;
+<i>793</i>&nbsp;    private static double getIntersectionLength(
+<i>794</i>&nbsp;            final double a0, final double a1,
+<i>795</i>&nbsp;            final double b0, final double b1) {
+<i>796</i>&nbsp;        // (a0 &lt;= a1) &amp;&amp; (b0 &lt;= b1)
+<b class="fc"><i>797</i>&nbsp;        return (a0 &lt;= b0) ? getIntersectionLengthImpl(b0, b1, a1)</b>
+<b class="fc"><i>798</i>&nbsp;                          : getIntersectionLengthImpl(a0, a1, b1);</b>
+<i>799</i>&nbsp;    }
+<i>800</i>&nbsp;
+<i>801</i>&nbsp;    private static double getIntersectionLengthImpl(
+<i>802</i>&nbsp;            final double v0, final double v1, final double v) {
+<i>803</i>&nbsp;        // (v0 &lt;= v1)
+<b class="fc"><i>804</i>&nbsp;        if (v &lt;= v0) {</b>
+<b class="fc"><i>805</i>&nbsp;            return 0;</b>
+<i>806</i>&nbsp;        }
+<i>807</i>&nbsp;
+<b class="fc"><i>808</i>&nbsp;        return (v &lt;= v1) ? v - v0 : v1 - v0;</b>
+<i>809</i>&nbsp;    }
+<i>810</i>&nbsp;
+<i>811</i>&nbsp;    private static double getOuterDistance(
+<i>812</i>&nbsp;            final double a0, final double a1,
+<i>813</i>&nbsp;            final double b0, final double b1) {
+<i>814</i>&nbsp;        // (a0 &lt;= a1) &amp;&amp; (b0 &lt;= b1)
+<b class="nc"><i>815</i>&nbsp;        if (a1 &lt;= b0) {</b>
+<b class="nc"><i>816</i>&nbsp;            return b0 - a1;</b>
+<i>817</i>&nbsp;        }
+<i>818</i>&nbsp;
+<b class="nc"><i>819</i>&nbsp;        if (b1 &lt;= a0) {</b>
+<b class="nc"><i>820</i>&nbsp;            return b1 - a0;</b>
+<i>821</i>&nbsp;        }
+<i>822</i>&nbsp;
+<b class="nc"><i>823</i>&nbsp;        return 0;</b>
+<i>824</i>&nbsp;    }
+<i>825</i>&nbsp;
+<i>826</i>&nbsp;    private static double getOuterDistance(final double v0,
+<i>827</i>&nbsp;                                           final double v1,
+<i>828</i>&nbsp;                                           final double v) {
+<i>829</i>&nbsp;        // (v0 &lt;= v1)
+<b class="nc"><i>830</i>&nbsp;        if (v &lt;= v0) {</b>
+<b class="nc"><i>831</i>&nbsp;            return v0 - v;</b>
+<i>832</i>&nbsp;        }
+<i>833</i>&nbsp;
+<b class="nc"><i>834</i>&nbsp;        if (v &gt;= v1) {</b>
+<b class="nc"><i>835</i>&nbsp;            return v - v1;</b>
+<i>836</i>&nbsp;        }
+<i>837</i>&nbsp;
+<b class="nc"><i>838</i>&nbsp;        return 0;</b>
+<i>839</i>&nbsp;    }
+<i>840</i>&nbsp;
+<i>841</i>&nbsp;    /***************************************************************************
+<i>842</i>&nbsp;     *                                                                         *
+<i>843</i>&nbsp;     * Miscellaneous utilities                                                 *
+<i>844</i>&nbsp;     *                                                                         *
+<i>845</i>&nbsp;     **************************************************************************/
+<i>846</i>&nbsp;
+<i>847</i>&nbsp;    /**
+<i>848</i>&nbsp;     * To force initialization of a class
+<i>849</i>&nbsp;     * @param classToInit
+<i>850</i>&nbsp;     */
+<i>851</i>&nbsp;    public static void forceInit(final Class&lt;?&gt; classToInit) {
+<i>852</i>&nbsp;        try {
+<b class="fc"><i>853</i>&nbsp;            Class.forName(classToInit.getName(), true,</b>
+<b class="fc"><i>854</i>&nbsp;                    classToInit.getClassLoader());</b>
+<b class="nc"><i>855</i>&nbsp;        } catch (final ClassNotFoundException e) {</b>
+<b class="nc"><i>856</i>&nbsp;            throw new AssertionError(e);  // Can&#39;t happen</b>
+<b class="fc"><i>857</i>&nbsp;        }</b>
+<b class="fc"><i>858</i>&nbsp;    }</b>
+<i>859</i>&nbsp;
+<i>860</i>&nbsp;    public static boolean assertionEnabled() {
+<b class="fc"><i>861</i>&nbsp;        boolean assertsEnabled = false;</b>
+<b class="fc"><i>862</i>&nbsp;        assert assertsEnabled = true;  // Intentional side-effect !!!</b>
+<i>863</i>&nbsp;
+<b class="fc"><i>864</i>&nbsp;        return assertsEnabled;</b>
+<i>865</i>&nbsp;    }
+<i>866</i>&nbsp;
+<i>867</i>&nbsp;    /**
+<i>868</i>&nbsp;     * Returns true if the operating system is a form of Windows.
+<i>869</i>&nbsp;     */
+<i>870</i>&nbsp;    public static boolean isWindows(){
+<b class="nc"><i>871</i>&nbsp;        return PlatformUtil.isWindows();</b>
+<i>872</i>&nbsp;    }
+<i>873</i>&nbsp;
+<i>874</i>&nbsp;    /**
+<i>875</i>&nbsp;     * Returns true if the operating system is a form of Mac OS.
+<i>876</i>&nbsp;     */
+<i>877</i>&nbsp;    public static boolean isMac(){
+<b class="nc"><i>878</i>&nbsp;        return PlatformUtil.isMac();</b>
+<i>879</i>&nbsp;    }
+<i>880</i>&nbsp;
+<i>881</i>&nbsp;    /**
+<i>882</i>&nbsp;     * Returns true if the operating system is a form of Unix, including Linux.
+<i>883</i>&nbsp;     */
+<i>884</i>&nbsp;    public static boolean isUnix(){
+<b class="nc"><i>885</i>&nbsp;        return PlatformUtil.isUnix();</b>
+<i>886</i>&nbsp;    }
+<i>887</i>&nbsp;
+<i>888</i>&nbsp;    /***************************************************************************
+<i>889</i>&nbsp;     *                                                                         *
+<i>890</i>&nbsp;     * Unicode-related utilities                                               *
+<i>891</i>&nbsp;     *                                                                         *
+<i>892</i>&nbsp;     **************************************************************************/
+<i>893</i>&nbsp;
+<i>894</i>&nbsp;    public static String convertUnicode(String src) {
+<i>895</i>&nbsp;        /** The input buffer, index of next character to be read,
+<i>896</i>&nbsp;         *  index of one past last character in buffer.
+<i>897</i>&nbsp;         */
+<i>898</i>&nbsp;        char[] buf;
+<i>899</i>&nbsp;        int bp;
+<i>900</i>&nbsp;        int buflen;
+<i>901</i>&nbsp;
+<i>902</i>&nbsp;        /** The current character.
+<i>903</i>&nbsp;         */
+<i>904</i>&nbsp;        char ch;
+<i>905</i>&nbsp;
+<i>906</i>&nbsp;        /** The buffer index of the last converted unicode character
+<i>907</i>&nbsp;         */
+<b class="nc"><i>908</i>&nbsp;        int unicodeConversionBp = -1;</b>
+<i>909</i>&nbsp;
+<b class="nc"><i>910</i>&nbsp;        buf = src.toCharArray();</b>
+<b class="nc"><i>911</i>&nbsp;        buflen = buf.length;</b>
+<b class="nc"><i>912</i>&nbsp;        bp = -1;</b>
+<i>913</i>&nbsp;
+<b class="nc"><i>914</i>&nbsp;        char[] dst = new char[buflen];</b>
+<b class="nc"><i>915</i>&nbsp;        int dstIndex = 0;</b>
+<i>916</i>&nbsp;
+<b class="nc"><i>917</i>&nbsp;        while (bp &lt; buflen - 1) {</b>
+<b class="nc"><i>918</i>&nbsp;            ch = buf[++bp];</b>
+<b class="nc"><i>919</i>&nbsp;            if (ch == &#39;\\&#39;) {</b>
+<b class="nc"><i>920</i>&nbsp;                if (unicodeConversionBp != bp) {</b>
+<b class="nc"><i>921</i>&nbsp;                    bp++; ch = buf[bp];</b>
+<b class="nc"><i>922</i>&nbsp;                    if (ch == &#39;u&#39;) {</b>
+<i>923</i>&nbsp;                        do {
+<b class="nc"><i>924</i>&nbsp;                            bp++; ch = buf[bp];</b>
+<b class="nc"><i>925</i>&nbsp;                        } while (ch == &#39;u&#39;);</b>
+<b class="nc"><i>926</i>&nbsp;                        int limit = bp + 3;</b>
+<b class="nc"><i>927</i>&nbsp;                        if (limit &lt; buflen) {</b>
+<b class="nc"><i>928</i>&nbsp;                            char c = ch;</b>
+<b class="nc"><i>929</i>&nbsp;                            int result = Character.digit(c, 16);</b>
+<b class="nc"><i>930</i>&nbsp;                            if (result &gt;= 0 &amp;&amp; c &gt; 0x7f) {</b>
+<i>931</i>&nbsp;                                //lexError(pos+1, &quot;illegal.nonascii.digit&quot;);
+<b class="nc"><i>932</i>&nbsp;                                ch = &quot;0123456789abcdef&quot;.charAt(result);</b>
+<i>933</i>&nbsp;                            }
+<b class="nc"><i>934</i>&nbsp;                            int d = result;</b>
+<b class="nc"><i>935</i>&nbsp;                            int code = d;</b>
+<b class="nc"><i>936</i>&nbsp;                            while (bp &lt; limit &amp;&amp; d &gt;= 0) {</b>
+<b class="nc"><i>937</i>&nbsp;                                bp++; ch = buf[bp];</b>
+<b class="nc"><i>938</i>&nbsp;                                char c1 = ch;</b>
+<b class="nc"><i>939</i>&nbsp;                                int result1 = Character.digit(c1, 16);</b>
+<b class="nc"><i>940</i>&nbsp;                                if (result1 &gt;= 0 &amp;&amp; c1 &gt; 0x7f) {</b>
+<i>941</i>&nbsp;                                    //lexError(pos+1, &quot;illegal.nonascii.digit&quot;);
+<b class="nc"><i>942</i>&nbsp;                                    ch = &quot;0123456789abcdef&quot;.charAt(result1);</b>
+<i>943</i>&nbsp;                                }
+<b class="nc"><i>944</i>&nbsp;                                d = result1;</b>
+<b class="nc"><i>945</i>&nbsp;                                code = (code &lt;&lt; 4) + d;</b>
+<b class="nc"><i>946</i>&nbsp;                            }</b>
+<b class="nc"><i>947</i>&nbsp;                            if (d &gt;= 0) {</b>
+<b class="nc"><i>948</i>&nbsp;                                ch = (char)code;</b>
+<b class="nc"><i>949</i>&nbsp;                                unicodeConversionBp = bp;</b>
+<i>950</i>&nbsp;                            }
+<i>951</i>&nbsp;                        }
+<i>952</i>&nbsp;                        //lexError(bp, &quot;illegal.unicode.esc&quot;);
+<b class="nc"><i>953</i>&nbsp;                    } else {</b>
+<b class="nc"><i>954</i>&nbsp;                        bp--;</b>
+<b class="nc"><i>955</i>&nbsp;                        ch = &#39;\\&#39;;</b>
+<i>956</i>&nbsp;                    }
+<i>957</i>&nbsp;                }
+<i>958</i>&nbsp;            }
+<b class="nc"><i>959</i>&nbsp;            dst[dstIndex++] = ch;</b>
+<i>960</i>&nbsp;        }
+<i>961</i>&nbsp;
+<b class="nc"><i>962</i>&nbsp;        return new String(dst, 0, dstIndex);</b>
+<i>963</i>&nbsp;    }
+<i>964</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2017-12-04 21:49</div>
+</div>
+</body>
+</html>

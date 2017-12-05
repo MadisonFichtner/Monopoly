@@ -1,0 +1,137 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: EventDispatchChain</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">javafx.event</a> ]
+</div>
+
+<h1>Coverage Summary for Class: EventDispatchChain (javafx.event)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+</tr>
+<tr>
+  <td class="name">EventDispatchChain</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright (c) 2010, 2013, Oracle and/or its affiliates. All rights reserved.
+<i>3</i>&nbsp; * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+<i>4</i>&nbsp; *
+<i>5</i>&nbsp; *
+<i>6</i>&nbsp; *
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; *
+<i>11</i>&nbsp; *
+<i>12</i>&nbsp; *
+<i>13</i>&nbsp; *
+<i>14</i>&nbsp; *
+<i>15</i>&nbsp; *
+<i>16</i>&nbsp; *
+<i>17</i>&nbsp; *
+<i>18</i>&nbsp; *
+<i>19</i>&nbsp; *
+<i>20</i>&nbsp; *
+<i>21</i>&nbsp; *
+<i>22</i>&nbsp; *
+<i>23</i>&nbsp; *
+<i>24</i>&nbsp; */
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;package javafx.event;
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;// PENDING_DOC_REVIEW
+<i>29</i>&nbsp;/**
+<i>30</i>&nbsp; * Represents a chain of {@code EventDispatcher} objects, which can dispatch
+<i>31</i>&nbsp; * an {@code Event}. The event is dispatched by passing it from one
+<i>32</i>&nbsp; * {@code EventDispatcher} to the next in the chain until the end of chain is
+<i>33</i>&nbsp; * reached. Each {@code EventDispatcher} in the chain can influence the event
+<i>34</i>&nbsp; * path and the event itself. The chain is usually formed by following some
+<i>35</i>&nbsp; * parent - child hierarchy from the root to the event target and appending
+<i>36</i>&nbsp; * all {@code EventDispatcher} objects encountered to the chain.
+<i>37</i>&nbsp; * @since JavaFX 2.0
+<i>38</i>&nbsp; */
+<i>39</i>&nbsp;public interface EventDispatchChain {
+<i>40</i>&nbsp;    /**
+<i>41</i>&nbsp;     * Appends the specified {@code EventDispatcher} to this chain. Returns a
+<i>42</i>&nbsp;     * reference to the chain with the appended element.
+<i>43</i>&nbsp;     * &lt;p&gt;
+<i>44</i>&nbsp;     * The caller shouldn&#39;t assume that this {@code EventDispatchChain} remains
+<i>45</i>&nbsp;     * unchanged nor that the returned value will reference a different chain
+<i>46</i>&nbsp;     * after the call. All this depends on the {@code EventDispatchChain}
+<i>47</i>&nbsp;     * implementation.
+<i>48</i>&nbsp;     * &lt;p&gt;
+<i>49</i>&nbsp;     * So the call should be always done in the following form:
+<i>50</i>&nbsp;     * {@code chain = chain.append(eventDispatcher);}
+<i>51</i>&nbsp;     *
+<i>52</i>&nbsp;     * @param eventDispatcher the {@code EventDispatcher} to append to the
+<i>53</i>&nbsp;     *      chain
+<i>54</i>&nbsp;     * @return the chain with the appended event dispatcher
+<i>55</i>&nbsp;     */
+<i>56</i>&nbsp;    EventDispatchChain append(EventDispatcher eventDispatcher);
+<i>57</i>&nbsp;
+<i>58</i>&nbsp;    /**
+<i>59</i>&nbsp;     * Prepends the specified {@code EventDispatcher} to this chain. Returns a
+<i>60</i>&nbsp;     * reference to the chain with the prepended element.
+<i>61</i>&nbsp;     * &lt;p&gt;
+<i>62</i>&nbsp;     * The caller shouldn&#39;t assume that this {@code EventDispatchChain} remains
+<i>63</i>&nbsp;     * unchanged nor that the returned value will reference a different chain
+<i>64</i>&nbsp;     * after the call. All this depends on the {@code EventDispatchChain}
+<i>65</i>&nbsp;     * implementation.
+<i>66</i>&nbsp;     * &lt;p&gt;
+<i>67</i>&nbsp;     * So the call should be always done in the following form:
+<i>68</i>&nbsp;     * {@code chain = chain.prepend(eventDispatcher);}
+<i>69</i>&nbsp;     *
+<i>70</i>&nbsp;     * @param eventDispatcher the {@code EventDispatcher} to prepend to the
+<i>71</i>&nbsp;     *      chain
+<i>72</i>&nbsp;     * @return the chain with the prepended event dispatcher
+<i>73</i>&nbsp;     */
+<i>74</i>&nbsp;    EventDispatchChain prepend(EventDispatcher eventDispatcher);
+<i>75</i>&nbsp;
+<i>76</i>&nbsp;    /**
+<i>77</i>&nbsp;     * Dispatches the specified event through this {@code EventDispatchChain}.
+<i>78</i>&nbsp;     * The return value represents the event after processing done by the chain.
+<i>79</i>&nbsp;     * If further processing is to be done after the call the event referenced
+<i>80</i>&nbsp;     * by the return value should be used instead of the original event. In the
+<i>81</i>&nbsp;     * case the event is fully handled / consumed in the chain the returned
+<i>82</i>&nbsp;     * value is {@code null} and no further processing should be done with that
+<i>83</i>&nbsp;     * event.
+<i>84</i>&nbsp;     *
+<i>85</i>&nbsp;     * @param event the event to dispatch
+<i>86</i>&nbsp;     * @return the processed event or {@code null} if the event had been fully
+<i>87</i>&nbsp;     *      handled / consumed
+<i>88</i>&nbsp;     */
+<i>89</i>&nbsp;    Event dispatchEvent(Event event);
+<i>90</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2017-12-04 21:49</div>
+</div>
+</body>
+</html>

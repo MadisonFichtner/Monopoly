@@ -1,0 +1,706 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: D3DContext</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.prism.d3d</a> ]
+</div>
+
+<h1>Coverage Summary for Class: D3DContext (com.sun.prism.d3d)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">D3DContext</td>
+<td class="coverageStat">
+  <span class="percent">
+    38.1%
+  </span>
+  <span class="absValue">
+    (16/ 42)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    46.7%
+  </span>
+  <span class="absValue">
+    (98/ 210)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">D3DContext$1</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (2/ 2)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    39.5%
+  </span>
+  <span class="absValue">
+    (17/ 43)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    47.2%
+  </span>
+  <span class="absValue">
+    (100/ 212)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright (c) 2008, 2016, Oracle and/or its affiliates. All rights reserved.
+<i>3</i>&nbsp; * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+<i>4</i>&nbsp; *
+<i>5</i>&nbsp; *
+<i>6</i>&nbsp; *
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; *
+<i>11</i>&nbsp; *
+<i>12</i>&nbsp; *
+<i>13</i>&nbsp; *
+<i>14</i>&nbsp; *
+<i>15</i>&nbsp; *
+<i>16</i>&nbsp; *
+<i>17</i>&nbsp; *
+<i>18</i>&nbsp; *
+<i>19</i>&nbsp; *
+<i>20</i>&nbsp; *
+<i>21</i>&nbsp; *
+<i>22</i>&nbsp; *
+<i>23</i>&nbsp; *
+<i>24</i>&nbsp; */
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;package com.sun.prism.d3d;
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;import com.sun.glass.ui.Screen;
+<i>29</i>&nbsp;import com.sun.javafx.geom.Rectangle;
+<i>30</i>&nbsp;import com.sun.javafx.geom.Vec3d;
+<i>31</i>&nbsp;import com.sun.javafx.geom.transform.Affine3D;
+<i>32</i>&nbsp;import com.sun.javafx.geom.transform.BaseTransform;
+<i>33</i>&nbsp;import com.sun.javafx.geom.transform.GeneralTransform3D;
+<i>34</i>&nbsp;import com.sun.javafx.sg.prism.NGCamera;
+<i>35</i>&nbsp;import com.sun.javafx.sg.prism.NGDefaultCamera;
+<i>36</i>&nbsp;import com.sun.prism.CompositeMode;
+<i>37</i>&nbsp;import com.sun.prism.Graphics;
+<i>38</i>&nbsp;import com.sun.prism.MeshView;
+<i>39</i>&nbsp;import com.sun.prism.RTTexture;
+<i>40</i>&nbsp;import com.sun.prism.RenderTarget;
+<i>41</i>&nbsp;import com.sun.prism.Texture;
+<i>42</i>&nbsp;import com.sun.prism.impl.PrismSettings;
+<i>43</i>&nbsp;import com.sun.prism.impl.ps.BaseShaderContext;
+<i>44</i>&nbsp;import com.sun.prism.ps.Shader;
+<i>45</i>&nbsp;
+<i>46</i>&nbsp;class D3DContext extends BaseShaderContext {
+<i>47</i>&nbsp;
+<i>48</i>&nbsp;    public static final int D3DERR_DEVICENOTRESET   = 0x88760869;
+<i>49</i>&nbsp;    public static final int D3DERR_DEVICELOST       = 0x88760868;
+<i>50</i>&nbsp;    public static final int E_FAIL                  = 0x80004005;
+<i>51</i>&nbsp;    public static final int D3DERR_OUTOFVIDEOMEMORY = 0x8876017c;
+<i>52</i>&nbsp;    public static final int D3D_OK                  = 0x0;
+<i>53</i>&nbsp;
+<i>54</i>&nbsp;    public static final int D3DCOMPMODE_CLEAR           = 0;
+<i>55</i>&nbsp;    public static final int D3DCOMPMODE_SRC             = 1;
+<i>56</i>&nbsp;    public static final int D3DCOMPMODE_SRCOVER         = 2;
+<i>57</i>&nbsp;    public static final int D3DCOMPMODE_DSTOUT          = 3;
+<i>58</i>&nbsp;    public static final int D3DCOMPMODE_ADD             = 4;
+<i>59</i>&nbsp;
+<i>60</i>&nbsp;    public static final int D3DTADDRESS_NOP             = 0;
+<i>61</i>&nbsp;    public static final int D3DTADDRESS_WRAP            = 1;
+<i>62</i>&nbsp;    public static final int D3DTADDRESS_MIRROR          = 2;
+<i>63</i>&nbsp;    public static final int D3DTADDRESS_CLAMP           = 3;
+<i>64</i>&nbsp;    public static final int D3DTADDRESS_BORDER          = 4;
+<i>65</i>&nbsp;
+<i>66</i>&nbsp;    // Use by face culling for 3D implementation
+<i>67</i>&nbsp;    public final static int CULL_BACK                  = 110;
+<i>68</i>&nbsp;    public final static int CULL_FRONT                 = 111;
+<i>69</i>&nbsp;    public final static int CULL_NONE                  = 112;
+<i>70</i>&nbsp;    /**
+<i>71</i>&nbsp;     * WIN32 COM bool FAILED(HRESULT hr) macro synonym
+<i>72</i>&nbsp;     * @param hr
+<i>73</i>&nbsp;     * @return
+<i>74</i>&nbsp;     */
+<i>75</i>&nbsp;    public static boolean FAILED(int hr) {
+<b class="fc"><i>76</i>&nbsp;        return hr&lt;0;</b>
+<i>77</i>&nbsp;    }
+<i>78</i>&nbsp;
+<i>79</i>&nbsp;    // Temp. variables (Not Thread Safe)
+<b class="fc"><i>80</i>&nbsp;    private static GeneralTransform3D scratchTx = new GeneralTransform3D();</b>
+<b class="fc"><i>81</i>&nbsp;    private static final Affine3D scratchAffine3DTx = new Affine3D();</b>
+<b class="fc"><i>82</i>&nbsp;    private static double[] tempAdjustClipSpaceMat = new double[16];</b>
+<i>83</i>&nbsp;
+<i>84</i>&nbsp;    private State state;
+<b class="fc"><i>85</i>&nbsp;    private boolean isLost = false;</b>
+<i>86</i>&nbsp;
+<i>87</i>&nbsp;    private final long pContext;
+<i>88</i>&nbsp;
+<b class="fc"><i>89</i>&nbsp;    private Vec3d cameraPos = new Vec3d();</b>
+<b class="fc"><i>90</i>&nbsp;    private GeneralTransform3D projViewTx = new GeneralTransform3D();</b>
+<b class="fc"><i>91</i>&nbsp;    private int targetWidth = 0, targetHeight = 0;</b>
+<i>92</i>&nbsp;
+<i>93</i>&nbsp;    private final D3DResourceFactory factory;
+<i>94</i>&nbsp;
+<b class="fc"><i>95</i>&nbsp;    public static final int NUM_QUADS = PrismSettings.superShader ? 4096 : 256;</b>
+<i>96</i>&nbsp;
+<i>97</i>&nbsp;    D3DContext(long pContext, Screen screen, D3DResourceFactory factory) {
+<b class="fc"><i>98</i>&nbsp;        super(screen, factory, NUM_QUADS);</b>
+<b class="fc"><i>99</i>&nbsp;        this.pContext = pContext;</b>
+<b class="fc"><i>100</i>&nbsp;        this.factory = factory;</b>
+<b class="fc"><i>101</i>&nbsp;    }</b>
+<i>102</i>&nbsp;
+<i>103</i>&nbsp;    @Override
+<i>104</i>&nbsp;    public D3DResourceFactory getResourceFactory() {
+<b class="fc"><i>105</i>&nbsp;        return factory;</b>
+<i>106</i>&nbsp;    }
+<i>107</i>&nbsp;
+<i>108</i>&nbsp;    protected void initState() {
+<b class="fc"><i>109</i>&nbsp;        init();</b>
+<b class="fc"><i>110</i>&nbsp;        state = new State();</b>
+<b class="fc"><i>111</i>&nbsp;        validate(nSetBlendEnabled(pContext, D3DCOMPMODE_SRCOVER));</b>
+<b class="fc"><i>112</i>&nbsp;        validate(nSetDeviceParametersFor2D(pContext));</b>
+<b class="fc"><i>113</i>&nbsp;    }</b>
+<i>114</i>&nbsp;
+<i>115</i>&nbsp;    long getContextHandle() {
+<b class="fc"><i>116</i>&nbsp;        return pContext;</b>
+<i>117</i>&nbsp;    }
+<i>118</i>&nbsp;
+<i>119</i>&nbsp;    /**
+<i>120</i>&nbsp;     * Returns whether the context is lost.
+<i>121</i>&nbsp;     * @return true if lost, false otherwise
+<i>122</i>&nbsp;     */
+<i>123</i>&nbsp;    boolean isLost() {
+<b class="nc"><i>124</i>&nbsp;        return isLost;</b>
+<i>125</i>&nbsp;    }
+<i>126</i>&nbsp;
+<i>127</i>&nbsp;    /**
+<i>128</i>&nbsp;     * Does D3D native return value validation for DEBUG interests
+<i>129</i>&nbsp;     */
+<i>130</i>&nbsp;    static void validate(int res) {
+<b class="fc"><i>131</i>&nbsp;        if (PrismSettings.verbose &amp;&amp; FAILED(res)) {</b>
+<b class="nc"><i>132</i>&nbsp;            System.out.println(&quot;D3D hresult failed :&quot; + hResultToString(res));</b>
+<b class="nc"><i>133</i>&nbsp;            new Exception(&quot;Stack trace&quot;).printStackTrace(System.out);</b>
+<i>134</i>&nbsp;        }
+<b class="fc"><i>135</i>&nbsp;    }</b>
+<i>136</i>&nbsp;
+<i>137</i>&nbsp;    /**
+<i>138</i>&nbsp;     * set device to lost state
+<i>139</i>&nbsp;     */
+<i>140</i>&nbsp;    private void setLost() {
+<b class="nc"><i>141</i>&nbsp;        isLost = true;</b>
+<b class="nc"><i>142</i>&nbsp;    }</b>
+<i>143</i>&nbsp;
+<i>144</i>&nbsp;    /**
+<i>145</i>&nbsp;     * Validates the device, sets the context lost
+<i>146</i>&nbsp;     * status if necessary, and tries to restore the context if needed.
+<i>147</i>&nbsp;     */
+<i>148</i>&nbsp;    boolean testLostStateAndReset() {
+<b class="fc"><i>149</i>&nbsp;        int hr = D3DResourceFactory.nTestCooperativeLevel(pContext);</b>
+<i>150</i>&nbsp;
+<b class="fc"><i>151</i>&nbsp;        if (hr == D3DERR_DEVICELOST) {</b>
+<b class="nc"><i>152</i>&nbsp;            setLost();</b>
+<i>153</i>&nbsp;        }
+<i>154</i>&nbsp;
+<b class="fc"><i>155</i>&nbsp;        if (hr == D3DERR_DEVICENOTRESET) {</b>
+<b class="nc"><i>156</i>&nbsp;            boolean wasLost = isLost();</b>
+<b class="nc"><i>157</i>&nbsp;            setLost();</b>
+<i>158</i>&nbsp;            // disposing the lcd buffer because the device is about to be lost
+<b class="nc"><i>159</i>&nbsp;            disposeLCDBuffer();</b>
+<b class="nc"><i>160</i>&nbsp;            factory.notifyReset();</b>
+<i>161</i>&nbsp;
+<b class="nc"><i>162</i>&nbsp;            hr = D3DResourceFactory.nResetDevice(pContext);</b>
+<i>163</i>&nbsp;
+<b class="nc"><i>164</i>&nbsp;            if (hr == D3D_OK) {</b>
+<b class="nc"><i>165</i>&nbsp;                isLost = false;</b>
+<b class="nc"><i>166</i>&nbsp;                initState();</b>
+<i>167</i>&nbsp;                // Notify caller that the device was reset
+<b class="nc"><i>168</i>&nbsp;                if (!wasLost) return false;</b>
+<i>169</i>&nbsp;            }
+<i>170</i>&nbsp;        }
+<i>171</i>&nbsp;
+<b class="fc"><i>172</i>&nbsp;        return !FAILED(hr);</b>
+<i>173</i>&nbsp;    }
+<i>174</i>&nbsp;
+<i>175</i>&nbsp;    /**
+<i>176</i>&nbsp;     * Validates result of present operation,
+<i>177</i>&nbsp;     * sets the context lost status if necessary
+<i>178</i>&nbsp;     */
+<i>179</i>&nbsp;    boolean validatePresent(int res) {
+<b class="fc"><i>180</i>&nbsp;        if (res == D3DERR_DEVICELOST || res == D3DERR_DEVICENOTRESET) {</b>
+<b class="nc"><i>181</i>&nbsp;            setLost();</b>
+<i>182</i>&nbsp;        } else {
+<b class="fc"><i>183</i>&nbsp;            validate(res);</b>
+<i>184</i>&nbsp;        }
+<i>185</i>&nbsp;
+<b class="fc"><i>186</i>&nbsp;        return !FAILED(res);</b>
+<i>187</i>&nbsp;    }
+<i>188</i>&nbsp;
+<i>189</i>&nbsp;    /**
+<i>190</i>&nbsp;     * OpenGL projection transform use z-range of [-1, 1] while D3D expects it
+<i>191</i>&nbsp;     * to be [0, 1], so we need to adjust the matrix, see RT-32880.
+<i>192</i>&nbsp;     */
+<i>193</i>&nbsp;    private GeneralTransform3D adjustClipSpace(GeneralTransform3D projViewTx) {
+<b class="fc"><i>194</i>&nbsp;        double[] m = projViewTx.get(tempAdjustClipSpaceMat);</b>
+<b class="fc"><i>195</i>&nbsp;        m[8] = (m[8] + m[12])/2;</b>
+<b class="fc"><i>196</i>&nbsp;        m[9] = (m[9] + m[13])/2;</b>
+<b class="fc"><i>197</i>&nbsp;        m[10] = (m[10] + m[14])/2;</b>
+<b class="fc"><i>198</i>&nbsp;        m[11] = (m[11] + m[15])/2;</b>
+<b class="fc"><i>199</i>&nbsp;        projViewTx.set(m);</b>
+<b class="fc"><i>200</i>&nbsp;        return projViewTx;</b>
+<i>201</i>&nbsp;    }
+<i>202</i>&nbsp;
+<i>203</i>&nbsp;    @Override
+<i>204</i>&nbsp;    protected State updateRenderTarget(RenderTarget target, NGCamera camera,
+<i>205</i>&nbsp;                                       boolean depthTest)  {
+<b class="fc"><i>206</i>&nbsp;        long resourceHandle = ((D3DRenderTarget)target).getResourceHandle();</b>
+<b class="fc"><i>207</i>&nbsp;        int res = nSetRenderTarget(pContext, resourceHandle, depthTest, target.isMSAA());</b>
+<b class="fc"><i>208</i>&nbsp;        validate(res);</b>
+<i>209</i>&nbsp;        // resetLastClip should be called only if render target was changed
+<i>210</i>&nbsp;        // return value is S_FALSE (success with negative result)
+<i>211</i>&nbsp;        // if render target wasn&#39;t changed
+<b class="fc"><i>212</i>&nbsp;        if (res == D3D_OK) {</b>
+<b class="fc"><i>213</i>&nbsp;            resetLastClip(state);</b>
+<i>214</i>&nbsp;        }
+<i>215</i>&nbsp;
+<b class="fc"><i>216</i>&nbsp;        targetWidth = target.getPhysicalWidth();</b>
+<b class="fc"><i>217</i>&nbsp;        targetHeight = target.getPhysicalHeight();</b>
+<i>218</i>&nbsp;
+<i>219</i>&nbsp;        // Need to validate the camera before getting its computed data.
+<b class="fc"><i>220</i>&nbsp;        if (camera instanceof NGDefaultCamera) {</b>
+<b class="fc"><i>221</i>&nbsp;            ((NGDefaultCamera) camera).validate(targetWidth, targetHeight);</b>
+<b class="fc"><i>222</i>&nbsp;            projViewTx = adjustClipSpace(camera.getProjViewTx(projViewTx));</b>
+<i>223</i>&nbsp;        } else {
+<b class="fc"><i>224</i>&nbsp;            projViewTx = adjustClipSpace(camera.getProjViewTx(projViewTx));</b>
+<i>225</i>&nbsp;            // TODO: verify that this is the right solution. There may be
+<i>226</i>&nbsp;            // other use-cases where rendering needs different viewport size.
+<b class="fc"><i>227</i>&nbsp;            double vw = camera.getViewWidth();</b>
+<b class="fc"><i>228</i>&nbsp;            double vh = camera.getViewHeight();</b>
+<b class="fc"><i>229</i>&nbsp;            if (targetWidth != vw || targetHeight != vh) {</b>
+<b class="nc"><i>230</i>&nbsp;                projViewTx.scale(vw / targetWidth, vh / targetHeight, 1.0);</b>
+<i>231</i>&nbsp;            }
+<i>232</i>&nbsp;        }
+<i>233</i>&nbsp;
+<i>234</i>&nbsp;        // Set projection view matrix
+<b class="fc"><i>235</i>&nbsp;        res = nSetProjViewMatrix(pContext, depthTest,</b>
+<b class="fc"><i>236</i>&nbsp;            projViewTx.get(0),  projViewTx.get(1),  projViewTx.get(2),  projViewTx.get(3),</b>
+<b class="fc"><i>237</i>&nbsp;            projViewTx.get(4),  projViewTx.get(5),  projViewTx.get(6),  projViewTx.get(7),</b>
+<b class="fc"><i>238</i>&nbsp;            projViewTx.get(8),  projViewTx.get(9),  projViewTx.get(10), projViewTx.get(11),</b>
+<b class="fc"><i>239</i>&nbsp;            projViewTx.get(12), projViewTx.get(13), projViewTx.get(14), projViewTx.get(15));</b>
+<b class="fc"><i>240</i>&nbsp;        validate(res);</b>
+<i>241</i>&nbsp;
+<b class="fc"><i>242</i>&nbsp;        cameraPos = camera.getPositionInWorld(cameraPos);</b>
+<i>243</i>&nbsp;//        System.err.println(&quot;Camera position in world = &quot; + cameraPos);
+<i>244</i>&nbsp;
+<b class="fc"><i>245</i>&nbsp;        return state;</b>
+<i>246</i>&nbsp;    }
+<i>247</i>&nbsp;
+<i>248</i>&nbsp;    @Override
+<i>249</i>&nbsp;    protected void updateTexture(int texUnit, Texture tex) {
+<i>250</i>&nbsp;        long texHandle;
+<i>251</i>&nbsp;        boolean linear;
+<i>252</i>&nbsp;        int wrapMode;
+<b class="fc"><i>253</i>&nbsp;        if (tex != null) {</b>
+<b class="fc"><i>254</i>&nbsp;            D3DTexture d3dtex = (D3DTexture)tex;</b>
+<b class="fc"><i>255</i>&nbsp;            texHandle = d3dtex.getNativeSourceHandle();</b>
+<b class="fc"><i>256</i>&nbsp;            linear = tex.getLinearFiltering();</b>
+<b class="fc"><i>257</i>&nbsp;            switch (tex.getWrapMode()) {</b>
+<i>258</i>&nbsp;                case CLAMP_NOT_NEEDED:
+<b class="fc"><i>259</i>&nbsp;                    wrapMode = D3DTADDRESS_NOP;</b>
+<b class="fc"><i>260</i>&nbsp;                    break;</b>
+<i>261</i>&nbsp;                case CLAMP_TO_EDGE:
+<i>262</i>&nbsp;                case CLAMP_TO_EDGE_SIMULATED:
+<i>263</i>&nbsp;                case CLAMP_TO_ZERO_SIMULATED:
+<b class="fc"><i>264</i>&nbsp;                    wrapMode = D3DTADDRESS_CLAMP;</b>
+<b class="fc"><i>265</i>&nbsp;                    break;</b>
+<i>266</i>&nbsp;                case CLAMP_TO_ZERO:
+<b class="fc"><i>267</i>&nbsp;                    wrapMode = D3DTADDRESS_BORDER;</b>
+<b class="fc"><i>268</i>&nbsp;                    break;</b>
+<i>269</i>&nbsp;                case REPEAT:
+<i>270</i>&nbsp;                case REPEAT_SIMULATED:
+<b class="nc"><i>271</i>&nbsp;                    wrapMode = D3DTADDRESS_WRAP;</b>
+<b class="nc"><i>272</i>&nbsp;                    break;</b>
+<i>273</i>&nbsp;                default:
+<b class="nc"><i>274</i>&nbsp;                    throw new InternalError(&quot;Unrecognized wrap mode: &quot;+tex.getWrapMode());</b>
+<i>275</i>&nbsp;            }
+<b class="fc"><i>276</i>&nbsp;        } else {</b>
+<b class="fc"><i>277</i>&nbsp;            texHandle = 0L;</b>
+<b class="fc"><i>278</i>&nbsp;            linear = false;</b>
+<b class="fc"><i>279</i>&nbsp;            wrapMode = D3DTADDRESS_CLAMP;</b>
+<i>280</i>&nbsp;        }
+<b class="fc"><i>281</i>&nbsp;        validate(nSetTexture(pContext, texHandle, texUnit, linear, wrapMode));</b>
+<b class="fc"><i>282</i>&nbsp;    }</b>
+<i>283</i>&nbsp;
+<i>284</i>&nbsp;    @Override
+<i>285</i>&nbsp;    protected void updateShaderTransform(Shader shader, BaseTransform xform) {
+<i>286</i>&nbsp;        int res;
+<b class="fc"><i>287</i>&nbsp;        if (xform == null || xform.isIdentity()) {</b>
+<b class="fc"><i>288</i>&nbsp;            res = nResetTransform(pContext);</b>
+<i>289</i>&nbsp;        } else {
+<b class="nc"><i>290</i>&nbsp;            res = nSetTransform(pContext,</b>
+<b class="nc"><i>291</i>&nbsp;                xform.getMxx(), xform.getMxy(), xform.getMxz(), xform.getMxt(),</b>
+<b class="nc"><i>292</i>&nbsp;                xform.getMyx(), xform.getMyy(), xform.getMyz(), xform.getMyt(),</b>
+<b class="nc"><i>293</i>&nbsp;                xform.getMzx(), xform.getMzy(), xform.getMzz(), xform.getMzt(),</b>
+<i>294</i>&nbsp;                0.0, 0.0, 0.0, 1.0);
+<i>295</i>&nbsp;        }
+<b class="fc"><i>296</i>&nbsp;        validate(res);</b>
+<b class="fc"><i>297</i>&nbsp;    }</b>
+<i>298</i>&nbsp;
+<i>299</i>&nbsp;    protected void updateWorldTransform(BaseTransform xform) {
+<b class="nc"><i>300</i>&nbsp;        if ((xform == null) || xform.isIdentity()) {</b>
+<b class="nc"><i>301</i>&nbsp;            nSetWorldTransformToIdentity(pContext);</b>
+<i>302</i>&nbsp;        } else {
+<b class="nc"><i>303</i>&nbsp;            nSetWorldTransform(pContext,</b>
+<b class="nc"><i>304</i>&nbsp;                    xform.getMxx(), xform.getMxy(), xform.getMxz(), xform.getMxt(),</b>
+<b class="nc"><i>305</i>&nbsp;                    xform.getMyx(), xform.getMyy(), xform.getMyz(), xform.getMyt(),</b>
+<b class="nc"><i>306</i>&nbsp;                    xform.getMzx(), xform.getMzy(), xform.getMzz(), xform.getMzt(),</b>
+<i>307</i>&nbsp;                    0.0, 0.0, 0.0, 1.0);
+<i>308</i>&nbsp;        }
+<b class="nc"><i>309</i>&nbsp;    }</b>
+<i>310</i>&nbsp;
+<i>311</i>&nbsp;    @Override
+<i>312</i>&nbsp;    protected void updateClipRect(Rectangle clipRect) {
+<i>313</i>&nbsp;        int res;
+<b class="fc"><i>314</i>&nbsp;        if (clipRect == null || clipRect.isEmpty()) {</b>
+<b class="fc"><i>315</i>&nbsp;            res = nResetClipRect(pContext);</b>
+<i>316</i>&nbsp;        } else {
+<b class="fc"><i>317</i>&nbsp;            int x1 = clipRect.x;</b>
+<b class="fc"><i>318</i>&nbsp;            int y1 = clipRect.y;</b>
+<b class="fc"><i>319</i>&nbsp;            int x2 = x1 + clipRect.width;</b>
+<b class="fc"><i>320</i>&nbsp;            int y2 = y1 + clipRect.height;</b>
+<b class="fc"><i>321</i>&nbsp;            res = nSetClipRect(pContext, x1, y1, x2, y2);</b>
+<i>322</i>&nbsp;        }
+<b class="fc"><i>323</i>&nbsp;        validate(res);</b>
+<b class="fc"><i>324</i>&nbsp;    }</b>
+<i>325</i>&nbsp;
+<i>326</i>&nbsp;    @Override
+<i>327</i>&nbsp;    protected void updateCompositeMode(CompositeMode mode) {
+<i>328</i>&nbsp;        int d3dmode;
+<b class="fc"><i>329</i>&nbsp;        switch (mode) {</b>
+<i>330</i>&nbsp;            case CLEAR:
+<b class="nc"><i>331</i>&nbsp;                d3dmode = D3DCOMPMODE_CLEAR;</b>
+<b class="nc"><i>332</i>&nbsp;                break;</b>
+<i>333</i>&nbsp;            case SRC:
+<b class="fc"><i>334</i>&nbsp;                d3dmode = D3DCOMPMODE_SRC;</b>
+<b class="fc"><i>335</i>&nbsp;                break;</b>
+<i>336</i>&nbsp;            case SRC_OVER:
+<b class="fc"><i>337</i>&nbsp;                d3dmode = D3DCOMPMODE_SRCOVER;</b>
+<b class="fc"><i>338</i>&nbsp;                break;</b>
+<i>339</i>&nbsp;            case DST_OUT:
+<b class="nc"><i>340</i>&nbsp;                d3dmode = D3DCOMPMODE_DSTOUT;</b>
+<b class="nc"><i>341</i>&nbsp;                break;</b>
+<i>342</i>&nbsp;            case ADD:
+<b class="nc"><i>343</i>&nbsp;                d3dmode = D3DCOMPMODE_ADD;</b>
+<b class="nc"><i>344</i>&nbsp;                break;</b>
+<i>345</i>&nbsp;            default:
+<b class="nc"><i>346</i>&nbsp;                throw new InternalError(&quot;Unrecognized composite mode: &quot;+mode);</b>
+<i>347</i>&nbsp;        }
+<b class="fc"><i>348</i>&nbsp;        validate(nSetBlendEnabled(pContext, d3dmode));</b>
+<b class="fc"><i>349</i>&nbsp;    }</b>
+<i>350</i>&nbsp;
+<i>351</i>&nbsp;    D3DFrameStats getFrameStats(boolean reset, D3DFrameStats result) {
+<b class="nc"><i>352</i>&nbsp;        if (result == null) {</b>
+<b class="nc"><i>353</i>&nbsp;            result = new D3DFrameStats();</b>
+<i>354</i>&nbsp;        }
+<b class="nc"><i>355</i>&nbsp;        return nGetFrameStats(pContext, result, reset) ? result : null;</b>
+<i>356</i>&nbsp;    }
+<i>357</i>&nbsp;
+<i>358</i>&nbsp;    /*
+<i>359</i>&nbsp;     * @param depthBuffer if true will create and attach a depthBuffer,
+<i>360</i>&nbsp;     * if needed, of the same format as the render target. The depth test state
+<i>361</i>&nbsp;     * is handled elsewhere.
+<i>362</i>&nbsp;     */
+<i>363</i>&nbsp;    private static native int nSetRenderTarget(long pContext, long pDest, boolean depthBuffer, boolean msaa);
+<i>364</i>&nbsp;    private static native int nSetTexture(long pContext, long pTex, int texUnit,
+<i>365</i>&nbsp;        boolean linear, int wrapMode);
+<i>366</i>&nbsp;    private static native int nResetTransform(long pContext);
+<i>367</i>&nbsp;    private static native int nSetTransform(long pContext,
+<i>368</i>&nbsp;        double m00, double m01, double m02, double m03,
+<i>369</i>&nbsp;        double m10, double m11, double m12, double m13,
+<i>370</i>&nbsp;        double m20, double m21, double m22, double m23,
+<i>371</i>&nbsp;        double m30, double m31, double m32, double m33);
+<i>372</i>&nbsp;    private static native void nSetWorldTransformToIdentity(long pContext);
+<i>373</i>&nbsp;    private static native void nSetWorldTransform(long pContext,
+<i>374</i>&nbsp;            double m00, double m01, double m02, double m03,
+<i>375</i>&nbsp;            double m10, double m11, double m12, double m13,
+<i>376</i>&nbsp;            double m20, double m21, double m22, double m23,
+<i>377</i>&nbsp;            double m30, double m31, double m32, double m33);
+<i>378</i>&nbsp;    private static native int nSetCameraPosition(long pContext, double x, double y, double z);
+<i>379</i>&nbsp;    private static native int nSetProjViewMatrix(long pContext, boolean isOrtho,
+<i>380</i>&nbsp;        double m00, double m01, double m02, double m03,
+<i>381</i>&nbsp;        double m10, double m11, double m12, double m13,
+<i>382</i>&nbsp;        double m20, double m21, double m22, double m23,
+<i>383</i>&nbsp;        double m30, double m31, double m32, double m33);
+<i>384</i>&nbsp;    private static native int nResetClipRect(long pContext);
+<i>385</i>&nbsp;    private static native int nSetClipRect(long pContext,
+<i>386</i>&nbsp;        int x1, int y1, int x2, int y2);
+<i>387</i>&nbsp;    private static native int nSetBlendEnabled(long pContext, int mode);
+<i>388</i>&nbsp;    private static native int nSetDeviceParametersFor2D(long pContext);
+<i>389</i>&nbsp;    private static native int nSetDeviceParametersFor3D(long pContext);
+<i>390</i>&nbsp;
+<i>391</i>&nbsp;    private static native long nCreateD3DMesh(long pContext);
+<i>392</i>&nbsp;    private static native void nReleaseD3DMesh(long pContext, long nativeHandle);
+<i>393</i>&nbsp;    private static native boolean nBuildNativeGeometryShort(long pContext, long nativeHandle,
+<i>394</i>&nbsp;            float[] vertexBuffer, int vertexBufferLength, short[] indexBuffer, int indexBufferLength);
+<i>395</i>&nbsp;    private static native boolean nBuildNativeGeometryInt(long pContext, long nativeHandle,
+<i>396</i>&nbsp;            float[] vertexBuffer, int vertexBufferLength, int[] indexBuffer, int indexBufferLength);
+<i>397</i>&nbsp;    private static native long nCreateD3DPhongMaterial(long pContext);
+<i>398</i>&nbsp;    private static native void nReleaseD3DPhongMaterial(long pContext, long nativeHandle);
+<i>399</i>&nbsp;    private static native void nSetDiffuseColor(long pContext, long nativePhongMaterial,
+<i>400</i>&nbsp;            float r, float g, float b, float a);
+<i>401</i>&nbsp;    private static native void nSetSpecularColor(long pContext, long nativePhongMaterial,
+<i>402</i>&nbsp;            boolean set, float r, float g, float b, float a);
+<i>403</i>&nbsp;    private static native void nSetMap(long pContext, long nativePhongMaterial,
+<i>404</i>&nbsp;            int mapType, long texID);
+<i>405</i>&nbsp;    private static native long nCreateD3DMeshView(long pContext, long nativeMesh);
+<i>406</i>&nbsp;    private static native void nReleaseD3DMeshView(long pContext, long nativeHandle);
+<i>407</i>&nbsp;    private static native void nSetCullingMode(long pContext, long nativeMeshView,
+<i>408</i>&nbsp;            int cullingMode);
+<i>409</i>&nbsp;    private static native void nSetMaterial(long pContext, long nativeMeshView,
+<i>410</i>&nbsp;            long nativePhongMaterialInfo);
+<i>411</i>&nbsp;    private static native void nSetWireframe(long pContext, long nativeMeshView,
+<i>412</i>&nbsp;            boolean wireframe);
+<i>413</i>&nbsp;    private static native void nSetAmbientLight(long pContext, long nativeMeshView,
+<i>414</i>&nbsp;            float r, float g, float b);
+<i>415</i>&nbsp;    private static native void nSetPointLight(long pContext, long nativeMeshView,
+<i>416</i>&nbsp;            int index, float x, float y, float z, float r, float g, float b, float w);
+<i>417</i>&nbsp;    private static native void nRenderMeshView(long pContext, long nativeMeshView);
+<i>418</i>&nbsp;    private static native int nDrawIndexedQuads(long pContext,
+<i>419</i>&nbsp;            float coords[], byte colors[], int numVertices);
+<i>420</i>&nbsp;
+<i>421</i>&nbsp;
+<i>422</i>&nbsp;    /*
+<i>423</i>&nbsp;     * @param nSrcRTT must be valid native resource
+<i>424</i>&nbsp;     * @param nDstRTT can be NULL if a valide render target is set
+<i>425</i>&nbsp;     */
+<i>426</i>&nbsp;    private static native void nBlit(long pContext, long nSrcRTT, long nDstRTT,
+<i>427</i>&nbsp;            int srcX0, int srcY0, int srcX1, int srcY1,
+<i>428</i>&nbsp;            int dstX0, int dstY0, int dstX1, int dstY1);
+<i>429</i>&nbsp;
+<i>430</i>&nbsp;    private static native boolean nGetFrameStats(long pContext,
+<i>431</i>&nbsp;            D3DFrameStats returnValue, boolean bReset);
+<i>432</i>&nbsp;
+<i>433</i>&nbsp;    private static native boolean nIsRTTVolatile(long contextHandle);
+<i>434</i>&nbsp;
+<i>435</i>&nbsp;    public boolean isRTTVolatile() {
+<b class="nc"><i>436</i>&nbsp;        return nIsRTTVolatile(pContext);</b>
+<i>437</i>&nbsp;    }
+<i>438</i>&nbsp;
+<i>439</i>&nbsp;    public static String hResultToString(long hResult) {
+<b class="nc"><i>440</i>&nbsp;        switch ((int)hResult) {</b>
+<i>441</i>&nbsp;            case (int)D3DERR_DEVICENOTRESET:
+<b class="nc"><i>442</i>&nbsp;                return &quot;D3DERR_DEVICENOTRESET&quot;;</b>
+<i>443</i>&nbsp;            case (int)D3DERR_DEVICELOST:
+<b class="nc"><i>444</i>&nbsp;                return &quot;D3DERR_DEVICELOST&quot;;</b>
+<i>445</i>&nbsp;            case (int)D3DERR_OUTOFVIDEOMEMORY:
+<b class="nc"><i>446</i>&nbsp;                return &quot;D3DERR_OUTOFVIDEOMEMORY&quot;;</b>
+<i>447</i>&nbsp;            case (int)D3D_OK:
+<b class="nc"><i>448</i>&nbsp;                return &quot;D3D_OK&quot;;</b>
+<i>449</i>&nbsp;            default:
+<b class="nc"><i>450</i>&nbsp;                return &quot;D3D_ERROR &quot; + Long.toHexString(hResult);</b>
+<i>451</i>&nbsp;        }
+<i>452</i>&nbsp;    }
+<i>453</i>&nbsp;
+<i>454</i>&nbsp;    @Override
+<i>455</i>&nbsp;    public void setDeviceParametersFor2D() {
+<b class="nc"><i>456</i>&nbsp;        nSetDeviceParametersFor2D(pContext);</b>
+<b class="nc"><i>457</i>&nbsp;    }</b>
+<i>458</i>&nbsp;
+<i>459</i>&nbsp;    @Override
+<i>460</i>&nbsp;    protected void setDeviceParametersFor3D() {
+<b class="nc"><i>461</i>&nbsp;        nSetDeviceParametersFor3D(pContext);</b>
+<b class="nc"><i>462</i>&nbsp;    }</b>
+<i>463</i>&nbsp;
+<i>464</i>&nbsp;    long createD3DMesh() {
+<b class="nc"><i>465</i>&nbsp;        return nCreateD3DMesh(pContext);</b>
+<i>466</i>&nbsp;    }
+<i>467</i>&nbsp;
+<i>468</i>&nbsp;    // TODO: 3D - Should this be called dispose?
+<i>469</i>&nbsp;    void releaseD3DMesh(long nativeHandle) {
+<b class="nc"><i>470</i>&nbsp;        nReleaseD3DMesh(pContext, nativeHandle);</b>
+<b class="nc"><i>471</i>&nbsp;    }</b>
+<i>472</i>&nbsp;
+<i>473</i>&nbsp;    boolean buildNativeGeometry(long nativeHandle, float[] vertexBuffer, int vertexBufferLength,
+<i>474</i>&nbsp;            short[] indexBuffer, int indexBufferLength) {
+<b class="nc"><i>475</i>&nbsp;        return nBuildNativeGeometryShort(pContext, nativeHandle, vertexBuffer,</b>
+<i>476</i>&nbsp;                vertexBufferLength, indexBuffer, indexBufferLength);
+<i>477</i>&nbsp;    }
+<i>478</i>&nbsp;
+<i>479</i>&nbsp;    boolean buildNativeGeometry(long nativeHandle, float[] vertexBuffer, int vertexBufferLength,
+<i>480</i>&nbsp;            int[] indexBuffer, int indexBufferLength) {
+<b class="nc"><i>481</i>&nbsp;        return nBuildNativeGeometryInt(pContext, nativeHandle, vertexBuffer,</b>
+<i>482</i>&nbsp;                vertexBufferLength, indexBuffer, indexBufferLength);
+<i>483</i>&nbsp;    }
+<i>484</i>&nbsp;
+<i>485</i>&nbsp;    long createD3DPhongMaterial() {
+<b class="nc"><i>486</i>&nbsp;        return nCreateD3DPhongMaterial(pContext);</b>
+<i>487</i>&nbsp;    }
+<i>488</i>&nbsp;
+<i>489</i>&nbsp;    // TODO: 3D - Should this be called dispose?
+<i>490</i>&nbsp;    void releaseD3DPhongMaterial(long nativeHandle) {
+<b class="nc"><i>491</i>&nbsp;        nReleaseD3DPhongMaterial(pContext, nativeHandle);</b>
+<b class="nc"><i>492</i>&nbsp;    }</b>
+<i>493</i>&nbsp;
+<i>494</i>&nbsp;    void setDiffuseColor(long nativePhongMaterial, float r, float g, float b, float a) {
+<b class="nc"><i>495</i>&nbsp;        nSetDiffuseColor(pContext, nativePhongMaterial, r, g, b, a);</b>
+<b class="nc"><i>496</i>&nbsp;    }</b>
+<i>497</i>&nbsp;
+<i>498</i>&nbsp;    void setSpecularColor(long nativePhongMaterial, boolean set, float r, float g, float b, float a) {
+<b class="nc"><i>499</i>&nbsp;        nSetSpecularColor(pContext, nativePhongMaterial, set, r, g, b, a);</b>
+<b class="nc"><i>500</i>&nbsp;    }</b>
+<i>501</i>&nbsp;
+<i>502</i>&nbsp;    void setMap(long nativePhongMaterial, int mapType, long nativeTexture) {
+<b class="nc"><i>503</i>&nbsp;        nSetMap(pContext, nativePhongMaterial, mapType, nativeTexture);</b>
+<b class="nc"><i>504</i>&nbsp;    }</b>
+<i>505</i>&nbsp;
+<i>506</i>&nbsp;    long createD3DMeshView(long nativeMesh) {
+<b class="nc"><i>507</i>&nbsp;        return nCreateD3DMeshView(pContext, nativeMesh);</b>
+<i>508</i>&nbsp;    }
+<i>509</i>&nbsp;
+<i>510</i>&nbsp;    // TODO: 3D - Should this be called dispose?
+<i>511</i>&nbsp;    void releaseD3DMeshView(long nativeMeshView) {
+<b class="nc"><i>512</i>&nbsp;        nReleaseD3DMeshView(pContext, nativeMeshView);</b>
+<b class="nc"><i>513</i>&nbsp;    }</b>
+<i>514</i>&nbsp;
+<i>515</i>&nbsp;    void setCullingMode(long nativeMeshView, int cullMode) {
+<i>516</i>&nbsp;        int cm;
+<b class="nc"><i>517</i>&nbsp;        if (cullMode == MeshView.CULL_NONE) {</b>
+<b class="nc"><i>518</i>&nbsp;            cm = CULL_NONE;</b>
+<b class="nc"><i>519</i>&nbsp;        } else if (cullMode == MeshView.CULL_BACK) {</b>
+<b class="nc"><i>520</i>&nbsp;            cm = CULL_BACK;</b>
+<b class="nc"><i>521</i>&nbsp;        } else if (cullMode == MeshView.CULL_FRONT) {</b>
+<b class="nc"><i>522</i>&nbsp;            cm = CULL_FRONT;</b>
+<i>523</i>&nbsp;        } else {
+<b class="nc"><i>524</i>&nbsp;            throw new IllegalArgumentException(&quot;illegal value for CullMode: &quot; + cullMode);</b>
+<i>525</i>&nbsp;        }
+<b class="nc"><i>526</i>&nbsp;        nSetCullingMode(pContext, nativeMeshView, cm);</b>
+<b class="nc"><i>527</i>&nbsp;    }</b>
+<i>528</i>&nbsp;
+<i>529</i>&nbsp;    void setMaterial(long nativeMeshView, long nativePhongMaterial) {
+<b class="nc"><i>530</i>&nbsp;        nSetMaterial(pContext, nativeMeshView, nativePhongMaterial);</b>
+<b class="nc"><i>531</i>&nbsp;    }</b>
+<i>532</i>&nbsp;
+<i>533</i>&nbsp;    void setWireframe(long nativeMeshView, boolean wireframe) {
+<b class="nc"><i>534</i>&nbsp;         nSetWireframe(pContext, nativeMeshView, wireframe);</b>
+<b class="nc"><i>535</i>&nbsp;    }</b>
+<i>536</i>&nbsp;
+<i>537</i>&nbsp;    void setAmbientLight(long nativeMeshView, float r, float g, float b) {
+<b class="nc"><i>538</i>&nbsp;        nSetAmbientLight(pContext, nativeMeshView, r, g, b);</b>
+<b class="nc"><i>539</i>&nbsp;    }</b>
+<i>540</i>&nbsp;
+<i>541</i>&nbsp;    void setPointLight(long nativeMeshView, int index, float x, float y, float z, float r, float g, float b, float w) {
+<b class="nc"><i>542</i>&nbsp;        nSetPointLight(pContext, nativeMeshView, index, x, y, z, r, g, b, w);</b>
+<b class="nc"><i>543</i>&nbsp;    }</b>
+<i>544</i>&nbsp;
+<i>545</i>&nbsp;    @Override
+<i>546</i>&nbsp;    protected void renderQuads(float coordArray[], byte colorArray[], int numVertices) {
+<b class="fc"><i>547</i>&nbsp;        int res = nDrawIndexedQuads(pContext, coordArray, colorArray, numVertices);</b>
+<b class="fc"><i>548</i>&nbsp;        D3DContext.validate(res);</b>
+<b class="fc"><i>549</i>&nbsp;    }</b>
+<i>550</i>&nbsp;
+<i>551</i>&nbsp;    void renderMeshView(long nativeMeshView, Graphics g) {
+<i>552</i>&nbsp;
+<i>553</i>&nbsp;        // Support retina display by scaling the projViewTx and pass it to the shader.
+<b class="nc"><i>554</i>&nbsp;        scratchTx = scratchTx.set(projViewTx);</b>
+<b class="nc"><i>555</i>&nbsp;        float pixelScaleFactorX = g.getPixelScaleFactorX();</b>
+<b class="nc"><i>556</i>&nbsp;        float pixelScaleFactorY = g.getPixelScaleFactorY();</b>
+<b class="nc"><i>557</i>&nbsp;        if (pixelScaleFactorX != 1.0 || pixelScaleFactorY != 1.0) {</b>
+<b class="nc"><i>558</i>&nbsp;            scratchTx.scale(pixelScaleFactorX, pixelScaleFactorY, 1.0);</b>
+<i>559</i>&nbsp;        }
+<i>560</i>&nbsp;
+<i>561</i>&nbsp;        // Set projection view matrix
+<b class="nc"><i>562</i>&nbsp;        int res = nSetProjViewMatrix(pContext, g.isDepthTest(),</b>
+<b class="nc"><i>563</i>&nbsp;                scratchTx.get(0), scratchTx.get(1), scratchTx.get(2), scratchTx.get(3),</b>
+<b class="nc"><i>564</i>&nbsp;                scratchTx.get(4), scratchTx.get(5), scratchTx.get(6), scratchTx.get(7),</b>
+<b class="nc"><i>565</i>&nbsp;                scratchTx.get(8), scratchTx.get(9), scratchTx.get(10), scratchTx.get(11),</b>
+<b class="nc"><i>566</i>&nbsp;                scratchTx.get(12), scratchTx.get(13), scratchTx.get(14), scratchTx.get(15));</b>
+<b class="nc"><i>567</i>&nbsp;        validate(res);</b>
+<i>568</i>&nbsp;
+<b class="nc"><i>569</i>&nbsp;        res = nSetCameraPosition(pContext, cameraPos.x, cameraPos.y, cameraPos.z);</b>
+<b class="nc"><i>570</i>&nbsp;        validate(res);</b>
+<i>571</i>&nbsp;
+<i>572</i>&nbsp;        // Undo the SwapChain scaling done in createGraphics() because 3D needs
+<i>573</i>&nbsp;        // this information in the shader (via projViewTx)
+<b class="nc"><i>574</i>&nbsp;        BaseTransform xform = g.getTransformNoClone();</b>
+<b class="nc"><i>575</i>&nbsp;        if (pixelScaleFactorX != 1.0 || pixelScaleFactorY != 1.0) {</b>
+<b class="nc"><i>576</i>&nbsp;            scratchAffine3DTx.setToIdentity();</b>
+<b class="nc"><i>577</i>&nbsp;            scratchAffine3DTx.scale(1.0 / pixelScaleFactorX, 1.0 / pixelScaleFactorY);</b>
+<b class="nc"><i>578</i>&nbsp;            scratchAffine3DTx.concatenate(xform);</b>
+<b class="nc"><i>579</i>&nbsp;            updateWorldTransform(scratchAffine3DTx);</b>
+<i>580</i>&nbsp;        } else {
+<b class="nc"><i>581</i>&nbsp;            updateWorldTransform(xform);</b>
+<i>582</i>&nbsp;        }
+<i>583</i>&nbsp;
+<b class="nc"><i>584</i>&nbsp;        nRenderMeshView(pContext, nativeMeshView);</b>
+<b class="nc"><i>585</i>&nbsp;    }</b>
+<i>586</i>&nbsp;
+<i>587</i>&nbsp;    @Override
+<i>588</i>&nbsp;    public void blit(RTTexture srcRTT, RTTexture dstRTT,
+<i>589</i>&nbsp;                     int srcX0, int srcY0, int srcX1, int srcY1,
+<i>590</i>&nbsp;                     int dstX0, int dstY0, int dstX1, int dstY1) {
+<b class="nc"><i>591</i>&nbsp;        long dstNativeHandle = dstRTT == null ? 0L : ((D3DTexture)dstRTT).getNativeSourceHandle();</b>
+<b class="nc"><i>592</i>&nbsp;        long srcNativeHandle = ((D3DTexture)srcRTT).getNativeSourceHandle();</b>
+<b class="nc"><i>593</i>&nbsp;        nBlit(pContext, srcNativeHandle, dstNativeHandle,</b>
+<i>594</i>&nbsp;                          srcX0, srcY0, srcX1, srcY1,
+<i>595</i>&nbsp;                          dstX0, dstY0, dstX1, dstY1);
+<b class="nc"><i>596</i>&nbsp;    }</b>
+<i>597</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2017-12-04 21:49</div>
+</div>
+</body>
+</html>

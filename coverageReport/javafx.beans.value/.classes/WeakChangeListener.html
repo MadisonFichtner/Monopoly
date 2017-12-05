@@ -1,0 +1,181 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: WeakChangeListener</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">javafx.beans.value</a> ]
+</div>
+
+<h1>Coverage Summary for Class: WeakChangeListener (javafx.beans.value)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">WeakChangeListener</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (3/ 3)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    81.8%
+  </span>
+  <span class="absValue">
+    (9/ 11)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright (c) 2011, 2013, Oracle and/or its affiliates. All rights reserved.
+<i>3</i>&nbsp; * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+<i>4</i>&nbsp; *
+<i>5</i>&nbsp; *
+<i>6</i>&nbsp; *
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; *
+<i>11</i>&nbsp; *
+<i>12</i>&nbsp; *
+<i>13</i>&nbsp; *
+<i>14</i>&nbsp; *
+<i>15</i>&nbsp; *
+<i>16</i>&nbsp; *
+<i>17</i>&nbsp; *
+<i>18</i>&nbsp; *
+<i>19</i>&nbsp; *
+<i>20</i>&nbsp; *
+<i>21</i>&nbsp; *
+<i>22</i>&nbsp; *
+<i>23</i>&nbsp; *
+<i>24</i>&nbsp; */
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;package javafx.beans.value;
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;import javafx.beans.NamedArg;
+<i>29</i>&nbsp;import javafx.beans.WeakListener;
+<i>30</i>&nbsp;
+<i>31</i>&nbsp;import java.lang.ref.WeakReference;
+<i>32</i>&nbsp;
+<i>33</i>&nbsp;/**
+<i>34</i>&nbsp; * A {@code WeakChangeListener} can be used, if an {@link ObservableValue}
+<i>35</i>&nbsp; * should only maintain a weak reference to the listener. This helps to avoid
+<i>36</i>&nbsp; * memory leaks, that can occur if observers are not unregistered from observed
+<i>37</i>&nbsp; * objects after use.
+<i>38</i>&nbsp; * &lt;p&gt;
+<i>39</i>&nbsp; * {@code WeakChangeListener} are created by passing in the original
+<i>40</i>&nbsp; * {@link ChangeListener}. The {@code WeakChangeListener} should then be
+<i>41</i>&nbsp; * registered to listen for changes of the observed object.
+<i>42</i>&nbsp; * &lt;p&gt;
+<i>43</i>&nbsp; * Note: You have to keep a reference to the {@code ChangeListener}, that
+<i>44</i>&nbsp; * was passed in as long as it is in use, otherwise it will be garbage collected
+<i>45</i>&nbsp; * to soon.
+<i>46</i>&nbsp; *
+<i>47</i>&nbsp; * @see ChangeListener
+<i>48</i>&nbsp; * @see ObservableValue
+<i>49</i>&nbsp; *
+<i>50</i>&nbsp; * @param &lt;T&gt;
+<i>51</i>&nbsp; *            The type of the observed value
+<i>52</i>&nbsp; *
+<i>53</i>&nbsp; *
+<i>54</i>&nbsp; * @since JavaFX 2.0
+<i>55</i>&nbsp; */
+<i>56</i>&nbsp;public final class WeakChangeListener&lt;T&gt; implements ChangeListener&lt;T&gt;, WeakListener {
+<i>57</i>&nbsp;
+<i>58</i>&nbsp;    private final WeakReference&lt;ChangeListener&lt;T&gt;&gt; ref;
+<i>59</i>&nbsp;
+<i>60</i>&nbsp;    /**
+<i>61</i>&nbsp;     * The constructor of {@code WeakChangeListener}.
+<i>62</i>&nbsp;     *
+<i>63</i>&nbsp;     * @param listener
+<i>64</i>&nbsp;     *            The original listener that should be notified
+<i>65</i>&nbsp;     */
+<b class="fc"><i>66</i>&nbsp;    public WeakChangeListener(@NamedArg(&quot;listener&quot;) ChangeListener&lt;T&gt; listener) {</b>
+<b class="fc"><i>67</i>&nbsp;        if (listener == null) {</b>
+<b class="nc"><i>68</i>&nbsp;            throw new NullPointerException(&quot;Listener must be specified.&quot;);</b>
+<i>69</i>&nbsp;        }
+<b class="fc"><i>70</i>&nbsp;        this.ref = new WeakReference&lt;ChangeListener&lt;T&gt;&gt;(listener);</b>
+<b class="fc"><i>71</i>&nbsp;    }</b>
+<i>72</i>&nbsp;
+<i>73</i>&nbsp;    /**
+<i>74</i>&nbsp;     * {@inheritDoc}
+<i>75</i>&nbsp;     */
+<i>76</i>&nbsp;    @Override
+<i>77</i>&nbsp;    public boolean wasGarbageCollected() {
+<b class="fc"><i>78</i>&nbsp;        return (ref.get() == null);</b>
+<i>79</i>&nbsp;    }
+<i>80</i>&nbsp;
+<i>81</i>&nbsp;    /**
+<i>82</i>&nbsp;     * {@inheritDoc}
+<i>83</i>&nbsp;     */
+<i>84</i>&nbsp;    @Override
+<i>85</i>&nbsp;    public void changed(ObservableValue&lt;? extends T&gt; observable, T oldValue,
+<i>86</i>&nbsp;            T newValue) {
+<b class="fc"><i>87</i>&nbsp;        ChangeListener&lt;T&gt; listener = ref.get();</b>
+<b class="fc"><i>88</i>&nbsp;        if (listener != null) {</b>
+<b class="fc"><i>89</i>&nbsp;            listener.changed(observable, oldValue, newValue);</b>
+<i>90</i>&nbsp;        } else {
+<i>91</i>&nbsp;            // The weakly reference listener has been garbage collected,
+<i>92</i>&nbsp;            // so this WeakListener will now unhook itself from the
+<i>93</i>&nbsp;            // source bean
+<b class="nc"><i>94</i>&nbsp;            observable.removeListener(this);</b>
+<i>95</i>&nbsp;        }
+<b class="fc"><i>96</i>&nbsp;    }</b>
+<i>97</i>&nbsp;
+<i>98</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2017-12-04 21:49</div>
+</div>
+</body>
+</html>

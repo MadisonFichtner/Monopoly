@@ -1,0 +1,893 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: KeyCombination</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">javafx.scene.input</a> ]
+</div>
+
+<h1>Coverage Summary for Class: KeyCombination (javafx.scene.input)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">KeyCombination</td>
+<td class="coverageStat">
+  <span class="percent">
+    36%
+  </span>
+  <span class="absValue">
+    (9/ 25)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    35.6%
+  </span>
+  <span class="absValue">
+    (72/ 202)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">KeyCombination$1</td>
+<td class="coverageStat">
+  <span class="percent">
+    50%
+  </span>
+  <span class="absValue">
+    (1/ 2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    50%
+  </span>
+  <span class="absValue">
+    (1/ 2)
+  </span>
+</td>
+  </tr>
+  <tr>
+    <td class="name">KeyCombination$Modifier</td>
+<td class="coverageStat">
+  <span class="percent">
+    60%
+  </span>
+  <span class="absValue">
+    (3/ 5)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    77.8%
+  </span>
+  <span class="absValue">
+    (7/ 9)
+  </span>
+</td>
+  </tr>
+  <tr>
+    <td class="name">KeyCombination$ModifierValue</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (2/ 2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (4/ 4)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    44.1%
+  </span>
+  <span class="absValue">
+    (15/ 34)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    38.7%
+  </span>
+  <span class="absValue">
+    (84/ 217)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright (c) 2011, 2014, Oracle and/or its affiliates. All rights reserved.
+<i>3</i>&nbsp; * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+<i>4</i>&nbsp; *
+<i>5</i>&nbsp; *
+<i>6</i>&nbsp; *
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; *
+<i>11</i>&nbsp; *
+<i>12</i>&nbsp; *
+<i>13</i>&nbsp; *
+<i>14</i>&nbsp; *
+<i>15</i>&nbsp; *
+<i>16</i>&nbsp; *
+<i>17</i>&nbsp; *
+<i>18</i>&nbsp; *
+<i>19</i>&nbsp; *
+<i>20</i>&nbsp; *
+<i>21</i>&nbsp; *
+<i>22</i>&nbsp; *
+<i>23</i>&nbsp; *
+<i>24</i>&nbsp; */
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;package javafx.scene.input;
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;import com.sun.javafx.tk.Toolkit;
+<i>29</i>&nbsp;import java.util.ArrayList;
+<i>30</i>&nbsp;import java.util.List;
+<i>31</i>&nbsp;import java.util.Locale;
+<i>32</i>&nbsp;
+<i>33</i>&nbsp;// PENDING_DOC_REVIEW
+<i>34</i>&nbsp;/**
+<i>35</i>&nbsp; * Represents a combination of keys which are used in keyboard shortcuts.
+<i>36</i>&nbsp; * A key combination consists of a main key and a set of modifier keys. The main
+<i>37</i>&nbsp; * key can be specified by its key code - {@code KeyCodeCombination} or key
+<i>38</i>&nbsp; * character - {@code KeyCharacterCombination}. A modifier key is {@code shift},
+<i>39</i>&nbsp; * {@code control}, {@code alt}, {@code meta} or {@code shortcut} and can be
+<i>40</i>&nbsp; * defined as {@code DOWN}, {@code UP} or {@code ANY}.
+<i>41</i>&nbsp; * &lt;p&gt;
+<i>42</i>&nbsp; * The {@code shortcut} modifier is used to represent the modifier key which is
+<i>43</i>&nbsp; * used commonly in keyboard shortcuts on the host platform. This is for
+<i>44</i>&nbsp; * example {@code control} on Windows and {@code meta} (command key) on Mac.
+<i>45</i>&nbsp; * By using {@code shortcut} key modifier developers can create platform
+<i>46</i>&nbsp; * independent shortcuts. So the &quot;Shortcut+C&quot; key combination is handled
+<i>47</i>&nbsp; * internally as &quot;Ctrl+C&quot; on Windows and &quot;Meta+C&quot; on Mac.
+<i>48</i>&nbsp; * @since JavaFX 2.0
+<i>49</i>&nbsp; */
+<i>50</i>&nbsp;public abstract class KeyCombination {
+<i>51</i>&nbsp;
+<i>52</i>&nbsp;    /** Modifier which specifies that the {@code shift} key must be down. */
+<b class="fc"><i>53</i>&nbsp;    public static final Modifier SHIFT_DOWN =</b>
+<i>54</i>&nbsp;            new Modifier(KeyCode.SHIFT, ModifierValue.DOWN);
+<i>55</i>&nbsp;    /**
+<i>56</i>&nbsp;     * Modifier which specifies that the {@code shift} key can be either up or
+<i>57</i>&nbsp;     * down.
+<i>58</i>&nbsp;     */
+<b class="fc"><i>59</i>&nbsp;    public static final Modifier SHIFT_ANY =</b>
+<i>60</i>&nbsp;            new Modifier(KeyCode.SHIFT, ModifierValue.ANY);
+<i>61</i>&nbsp;    /** Modifier which specifies that the {@code control} key must be down. */
+<b class="fc"><i>62</i>&nbsp;    public static final Modifier CONTROL_DOWN =</b>
+<i>63</i>&nbsp;            new Modifier(KeyCode.CONTROL, ModifierValue.DOWN);
+<i>64</i>&nbsp;    /**
+<i>65</i>&nbsp;     * Modifier which specifies that the {@code control} key can be either up or
+<i>66</i>&nbsp;     * down.
+<i>67</i>&nbsp;     */
+<b class="fc"><i>68</i>&nbsp;    public static final Modifier CONTROL_ANY =</b>
+<i>69</i>&nbsp;            new Modifier(KeyCode.CONTROL, ModifierValue.ANY);
+<i>70</i>&nbsp;    /** Modifier which specifies that the {@code alt} key must be down. */
+<b class="fc"><i>71</i>&nbsp;    public static final Modifier ALT_DOWN =</b>
+<i>72</i>&nbsp;            new Modifier(KeyCode.ALT, ModifierValue.DOWN);
+<i>73</i>&nbsp;    /**
+<i>74</i>&nbsp;     * Modifier which specifies that the {@code alt} key can be either up or
+<i>75</i>&nbsp;     * down.
+<i>76</i>&nbsp;     */
+<b class="fc"><i>77</i>&nbsp;    public static final Modifier ALT_ANY =</b>
+<i>78</i>&nbsp;            new Modifier(KeyCode.ALT, ModifierValue.ANY);
+<i>79</i>&nbsp;    /** Modifier which specifies that the {@code meta} key must be down. */
+<b class="fc"><i>80</i>&nbsp;    public static final Modifier META_DOWN =</b>
+<i>81</i>&nbsp;            new Modifier(KeyCode.META, ModifierValue.DOWN);
+<i>82</i>&nbsp;    /**
+<i>83</i>&nbsp;     * Modifier which specifies that the {@code meta} key can be either up or
+<i>84</i>&nbsp;     * down.
+<i>85</i>&nbsp;     */
+<b class="fc"><i>86</i>&nbsp;    public static final Modifier META_ANY =</b>
+<i>87</i>&nbsp;            new Modifier(KeyCode.META, ModifierValue.ANY);
+<i>88</i>&nbsp;    /** Modifier which specifies that the {@code shortcut} key must be down. */
+<b class="fc"><i>89</i>&nbsp;    public static final Modifier SHORTCUT_DOWN =</b>
+<i>90</i>&nbsp;            new Modifier(KeyCode.SHORTCUT, ModifierValue.DOWN);
+<i>91</i>&nbsp;    /**
+<i>92</i>&nbsp;     * Modifier which specifies that the {@code shortcut} key can be either up
+<i>93</i>&nbsp;     * or down.
+<i>94</i>&nbsp;     */
+<b class="fc"><i>95</i>&nbsp;    public static final Modifier SHORTCUT_ANY =</b>
+<i>96</i>&nbsp;            new Modifier(KeyCode.SHORTCUT, ModifierValue.ANY);
+<i>97</i>&nbsp;
+<b class="fc"><i>98</i>&nbsp;    private static final Modifier[] POSSIBLE_MODIFIERS = {</b>
+<i>99</i>&nbsp;        SHIFT_DOWN, SHIFT_ANY,
+<i>100</i>&nbsp;        CONTROL_DOWN, CONTROL_ANY,
+<i>101</i>&nbsp;        ALT_DOWN, ALT_ANY,
+<i>102</i>&nbsp;        META_DOWN, META_ANY,
+<i>103</i>&nbsp;        SHORTCUT_DOWN, SHORTCUT_ANY
+<i>104</i>&nbsp;    };
+<i>105</i>&nbsp;
+<i>106</i>&nbsp;    /**
+<i>107</i>&nbsp;     * A KeyCombination that will match with no events.
+<i>108</i>&nbsp;     */
+<b class="fc"><i>109</i>&nbsp;    public static final KeyCombination NO_MATCH = new KeyCombination() {</b>
+<i>110</i>&nbsp;        @Override
+<i>111</i>&nbsp;        public boolean match(KeyEvent e) {
+<b class="nc"><i>112</i>&nbsp;            return false;</b>
+<i>113</i>&nbsp;        }
+<i>114</i>&nbsp;    };
+<i>115</i>&nbsp;
+<i>116</i>&nbsp;    /** The state of the {@code shift} key in this key combination. */
+<i>117</i>&nbsp;    private final ModifierValue shift;
+<i>118</i>&nbsp;
+<i>119</i>&nbsp;    /**
+<i>120</i>&nbsp;     * The state of the {@code shift} key in this key combination.
+<i>121</i>&nbsp;     * @return The state of the {@code shift} key in this key combination
+<i>122</i>&nbsp;     */
+<i>123</i>&nbsp;    public final ModifierValue getShift() {
+<b class="nc"><i>124</i>&nbsp;        return shift;</b>
+<i>125</i>&nbsp;    }
+<i>126</i>&nbsp;    /** The state of the {@code control} key in this key combination. */
+<i>127</i>&nbsp;    private final ModifierValue control;
+<i>128</i>&nbsp;
+<i>129</i>&nbsp;    /**
+<i>130</i>&nbsp;     * The state of the {@code control} key in this key combination.
+<i>131</i>&nbsp;     * @return The state of the {@code control} key in this key combination
+<i>132</i>&nbsp;     */
+<i>133</i>&nbsp;    public final ModifierValue getControl() {
+<b class="nc"><i>134</i>&nbsp;        return control;</b>
+<i>135</i>&nbsp;    }
+<i>136</i>&nbsp;    /** The state of the {@code alt} key in this key combination. */
+<i>137</i>&nbsp;    private final ModifierValue alt;
+<i>138</i>&nbsp;
+<i>139</i>&nbsp;    /**
+<i>140</i>&nbsp;     * The state of the {@code alt} key in this key combination.
+<i>141</i>&nbsp;     * @return The state of the {@code alt} key in this key combination.
+<i>142</i>&nbsp;     */
+<i>143</i>&nbsp;    public final ModifierValue getAlt() {
+<b class="nc"><i>144</i>&nbsp;        return alt;</b>
+<i>145</i>&nbsp;    }
+<i>146</i>&nbsp;    /** The state of the {@code meta} key in this key combination. */
+<i>147</i>&nbsp;    private final ModifierValue meta;
+<i>148</i>&nbsp;
+<i>149</i>&nbsp;    /**
+<i>150</i>&nbsp;     * The state of the {@code meta} key in this key combination.
+<i>151</i>&nbsp;     * @return The state of the {@code meta} key in this key combination
+<i>152</i>&nbsp;     */
+<i>153</i>&nbsp;    public final ModifierValue getMeta() {
+<b class="nc"><i>154</i>&nbsp;        return meta;</b>
+<i>155</i>&nbsp;    }
+<i>156</i>&nbsp;
+<i>157</i>&nbsp;    /** The state of the {@code shortcut} key in this key combination. */
+<i>158</i>&nbsp;    private final ModifierValue shortcut;
+<i>159</i>&nbsp;
+<i>160</i>&nbsp;    /**
+<i>161</i>&nbsp;     * The state of the {@code shortcut} key in this key combination.
+<i>162</i>&nbsp;     * @return The state of the {@code shortcut} key in this key combination
+<i>163</i>&nbsp;     */
+<i>164</i>&nbsp;    public final ModifierValue getShortcut() {
+<b class="nc"><i>165</i>&nbsp;        return shortcut;</b>
+<i>166</i>&nbsp;    }
+<i>167</i>&nbsp;
+<i>168</i>&nbsp;    /**
+<i>169</i>&nbsp;     * Constructs a {@code KeyCombination} with an explicit specification
+<i>170</i>&nbsp;     * of all modifier keys. Each modifier key can be set to {@code DOWN},
+<i>171</i>&nbsp;     * {@code UP} or {@code ANY}.
+<i>172</i>&nbsp;     *
+<i>173</i>&nbsp;     * @param shift the value of the {@code shift} modifier key
+<i>174</i>&nbsp;     * @param control the value of the {@code control} modifier key
+<i>175</i>&nbsp;     * @param alt the value of the {@code alt} modifier key
+<i>176</i>&nbsp;     * @param meta the value of the {@code meta} modifier key
+<i>177</i>&nbsp;     * @param shortcut the value of the {@code shortcut} modifier key
+<i>178</i>&nbsp;     */
+<i>179</i>&nbsp;    protected KeyCombination(final ModifierValue shift,
+<i>180</i>&nbsp;                             final ModifierValue control,
+<i>181</i>&nbsp;                             final ModifierValue alt,
+<i>182</i>&nbsp;                             final ModifierValue meta,
+<b class="fc"><i>183</i>&nbsp;                             final ModifierValue shortcut) {</b>
+<b class="fc"><i>184</i>&nbsp;        if ((shift == null)</b>
+<i>185</i>&nbsp;                || (control == null)
+<i>186</i>&nbsp;                || (alt == null)
+<i>187</i>&nbsp;                || (meta == null)
+<i>188</i>&nbsp;                || (shortcut == null)) {
+<b class="nc"><i>189</i>&nbsp;            throw new NullPointerException(&quot;Modifier value must not be null!&quot;);</b>
+<i>190</i>&nbsp;        }
+<i>191</i>&nbsp;
+<b class="fc"><i>192</i>&nbsp;        this.shift = shift;</b>
+<b class="fc"><i>193</i>&nbsp;        this.control = control;</b>
+<b class="fc"><i>194</i>&nbsp;        this.alt = alt;</b>
+<b class="fc"><i>195</i>&nbsp;        this.meta = meta;</b>
+<b class="fc"><i>196</i>&nbsp;        this.shortcut = shortcut;</b>
+<b class="fc"><i>197</i>&nbsp;    }</b>
+<i>198</i>&nbsp;
+<i>199</i>&nbsp;    /**
+<i>200</i>&nbsp;     * Constructs a {@code KeyCombination} with the specified list of modifiers.
+<i>201</i>&nbsp;     * All modifier keys which are not explicitly listed are set to the
+<i>202</i>&nbsp;     * default {@code UP} value.
+<i>203</i>&nbsp;     * &lt;p&gt;
+<i>204</i>&nbsp;     * All possible modifiers which change the default modifier value are
+<i>205</i>&nbsp;     * defined as constants in the {@code KeyCombination} class.
+<i>206</i>&nbsp;     *
+<i>207</i>&nbsp;     * @param modifiers the list of modifier keys and their corresponding values
+<i>208</i>&nbsp;     */
+<i>209</i>&nbsp;    protected KeyCombination(final Modifier... modifiers) {
+<b class="fc"><i>210</i>&nbsp;        this(getModifierValue(modifiers, KeyCode.SHIFT),</b>
+<b class="fc"><i>211</i>&nbsp;             getModifierValue(modifiers, KeyCode.CONTROL),</b>
+<b class="fc"><i>212</i>&nbsp;             getModifierValue(modifiers, KeyCode.ALT),</b>
+<b class="fc"><i>213</i>&nbsp;             getModifierValue(modifiers, KeyCode.META),</b>
+<b class="fc"><i>214</i>&nbsp;             getModifierValue(modifiers, KeyCode.SHORTCUT));</b>
+<b class="fc"><i>215</i>&nbsp;    }</b>
+<i>216</i>&nbsp;
+<i>217</i>&nbsp;    /**
+<i>218</i>&nbsp;     * Tests whether this key combination matches the combination in the given
+<i>219</i>&nbsp;     * {@code KeyEvent}.
+<i>220</i>&nbsp;     * &lt;p&gt;
+<i>221</i>&nbsp;     * The implementation of this method in the {@code KeyCombination} class
+<i>222</i>&nbsp;     * does only a partial test with the modifier keys. This method is
+<i>223</i>&nbsp;     * overridden in subclasses to include the main key in the test.
+<i>224</i>&nbsp;     *
+<i>225</i>&nbsp;     * @param event the key event
+<i>226</i>&nbsp;     * @return {@code true} if the key combinations match, {@code false}
+<i>227</i>&nbsp;     *      otherwise
+<i>228</i>&nbsp;     */
+<i>229</i>&nbsp;    public boolean match(final KeyEvent event) {
+<i>230</i>&nbsp;        final KeyCode shortcutKey =
+<b class="nc"><i>231</i>&nbsp;                Toolkit.getToolkit().getPlatformShortcutKey();</b>
+<b class="nc"><i>232</i>&nbsp;        return test(KeyCode.SHIFT, shift, shortcutKey, shortcut,</b>
+<b class="nc"><i>233</i>&nbsp;                    event.isShiftDown())</b>
+<b class="nc"><i>234</i>&nbsp;                &amp;&amp; test(KeyCode.CONTROL, control, shortcutKey, shortcut,</b>
+<b class="nc"><i>235</i>&nbsp;                        event.isControlDown())</b>
+<b class="nc"><i>236</i>&nbsp;                &amp;&amp; test(KeyCode.ALT, alt, shortcutKey, shortcut,</b>
+<b class="nc"><i>237</i>&nbsp;                        event.isAltDown())</b>
+<b class="nc"><i>238</i>&nbsp;                &amp;&amp; test(KeyCode.META, meta, shortcutKey, shortcut,</b>
+<b class="nc"><i>239</i>&nbsp;                        event.isMetaDown());</b>
+<i>240</i>&nbsp;    }
+<i>241</i>&nbsp;
+<i>242</i>&nbsp;    /**
+<i>243</i>&nbsp;     * Returns a string representation of this {@code KeyCombination}.
+<i>244</i>&nbsp;     * &lt;p&gt;
+<i>245</i>&nbsp;     * The string representation consists of sections separated by plus
+<i>246</i>&nbsp;     * characters. Each section specifies either a modifier key or the main key.
+<i>247</i>&nbsp;     * &lt;p&gt;
+<i>248</i>&nbsp;     * A modifier key section contains the {@code KeyCode} name of a modifier
+<i>249</i>&nbsp;     * key. It can be prefixed with the {@code Ignored} keyword. A non-prefixed
+<i>250</i>&nbsp;     * modifier key implies its {@code DOWN} value while the prefixed version
+<i>251</i>&nbsp;     * implies the {@code ANY} (ignored) value. If some modifier key is not
+<i>252</i>&nbsp;     * specified in the string at all, it means it has the default {@code UP}
+<i>253</i>&nbsp;     * value.
+<i>254</i>&nbsp;     * &lt;p&gt;
+<i>255</i>&nbsp;     * The format of the main key section of the key combination string depends
+<i>256</i>&nbsp;     * on the {@code KeyCombination} subclass. It is either the key code name
+<i>257</i>&nbsp;     * for {@code KeyCodeCombination} or the single quoted key character for
+<i>258</i>&nbsp;     * {@code KeyCharacterCombination}.
+<i>259</i>&nbsp;     * &lt;p&gt;
+<i>260</i>&nbsp;     * Examples of {@code KeyCombination} string representations:
+<i>261</i>&nbsp;
+<i>262</i>&nbsp;&lt;PRE&gt;
+<i>263</i>&nbsp;&quot;Ctrl+Alt+Q&quot;
+<i>264</i>&nbsp;&quot;Ignore Shift+Ctrl+A&quot;
+<i>265</i>&nbsp;&quot;Alt+&#39;w&#39;&quot;
+<i>266</i>&nbsp;&lt;/PRE&gt;
+<i>267</i>&nbsp;
+<i>268</i>&nbsp;     * @return the string representation of this {@code KeyCombination}
+<i>269</i>&nbsp;     */
+<i>270</i>&nbsp;    public String getName() {
+<b class="nc"><i>271</i>&nbsp;        StringBuilder sb = new StringBuilder();</b>
+<b class="nc"><i>272</i>&nbsp;        addModifiersIntoString(sb);</b>
+<i>273</i>&nbsp;
+<b class="nc"><i>274</i>&nbsp;        return sb.toString();</b>
+<i>275</i>&nbsp;    }
+<i>276</i>&nbsp;
+<i>277</i>&nbsp;    /**
+<i>278</i>&nbsp;     * Returns a string representation of this {@code KeyCombination} that is
+<i>279</i>&nbsp;     * suitable for display in a user interface (for example, beside a menu item).
+<i>280</i>&nbsp;     *
+<i>281</i>&nbsp;     * @return A string representation of this {@code KeyCombination}, suitable
+<i>282</i>&nbsp;     *      for display in a user interface.
+<i>283</i>&nbsp;     * @since JavaFX 8u20
+<i>284</i>&nbsp;     */
+<i>285</i>&nbsp;    public String getDisplayText() {
+<b class="nc"><i>286</i>&nbsp;        StringBuilder stringBuilder = new StringBuilder();</b>
+<b class="nc"><i>287</i>&nbsp;        if (com.sun.javafx.PlatformUtil.isMac()) {</b>
+<i>288</i>&nbsp;            // Macs have a different convention for keyboard accelerators -
+<i>289</i>&nbsp;            // no pluses to separate modifiers, and special symbols for
+<i>290</i>&nbsp;            // each modifier (in a particular order), etc
+<b class="nc"><i>291</i>&nbsp;            if (getControl() == KeyCombination.ModifierValue.DOWN) {</b>
+<b class="nc"><i>292</i>&nbsp;                stringBuilder.append(&quot;\u2303&quot;);</b>
+<i>293</i>&nbsp;            }
+<b class="nc"><i>294</i>&nbsp;            if (getAlt() == KeyCombination.ModifierValue.DOWN) {</b>
+<b class="nc"><i>295</i>&nbsp;                stringBuilder.append(&quot;\u2325&quot;);</b>
+<i>296</i>&nbsp;            }
+<b class="nc"><i>297</i>&nbsp;            if (getShift() == KeyCombination.ModifierValue.DOWN) {</b>
+<b class="nc"><i>298</i>&nbsp;                stringBuilder.append(&quot;\u21e7&quot;);</b>
+<i>299</i>&nbsp;            }
+<b class="nc"><i>300</i>&nbsp;            if (getMeta() == KeyCombination.ModifierValue.DOWN || getShortcut() == KeyCombination.ModifierValue.DOWN) {</b>
+<b class="nc"><i>301</i>&nbsp;                stringBuilder.append(&quot;\u2318&quot;);</b>
+<i>302</i>&nbsp;            }
+<i>303</i>&nbsp;            // TODO refer to RT-14486 for remaining glyphs
+<i>304</i>&nbsp;        }
+<i>305</i>&nbsp;        else {
+<b class="nc"><i>306</i>&nbsp;            if (getControl() == KeyCombination.ModifierValue.DOWN || getShortcut() == KeyCombination.ModifierValue.DOWN ) {</b>
+<b class="nc"><i>307</i>&nbsp;                stringBuilder.append(&quot;Ctrl+&quot;);</b>
+<i>308</i>&nbsp;            }
+<b class="nc"><i>309</i>&nbsp;            if (getAlt() == KeyCombination.ModifierValue.DOWN) {</b>
+<b class="nc"><i>310</i>&nbsp;                stringBuilder.append(&quot;Alt+&quot;);</b>
+<i>311</i>&nbsp;            }
+<b class="nc"><i>312</i>&nbsp;            if (getShift() == KeyCombination.ModifierValue.DOWN) {</b>
+<b class="nc"><i>313</i>&nbsp;                stringBuilder.append(&quot;Shift+&quot;);</b>
+<i>314</i>&nbsp;            }
+<b class="nc"><i>315</i>&nbsp;            if (getMeta() == KeyCombination.ModifierValue.DOWN) {</b>
+<b class="nc"><i>316</i>&nbsp;                stringBuilder.append(&quot;Meta+&quot;);</b>
+<i>317</i>&nbsp;            }
+<i>318</i>&nbsp;        }
+<i>319</i>&nbsp;
+<b class="nc"><i>320</i>&nbsp;        return stringBuilder.toString();</b>
+<i>321</i>&nbsp;    }
+<i>322</i>&nbsp;
+<i>323</i>&nbsp;    /**
+<i>324</i>&nbsp;     * Tests whether this {@code KeyCombination} equals to the specified object.
+<i>325</i>&nbsp;     *
+<i>326</i>&nbsp;     * @param obj the object to compare to
+<i>327</i>&nbsp;     * @return {@code true} if the objects are equal, {@code false} otherwise
+<i>328</i>&nbsp;     */
+<i>329</i>&nbsp;    @Override
+<i>330</i>&nbsp;    public boolean equals(final Object obj) {
+<b class="nc"><i>331</i>&nbsp;        if (!(obj instanceof KeyCombination)) {</b>
+<b class="nc"><i>332</i>&nbsp;            return false;</b>
+<i>333</i>&nbsp;        }
+<i>334</i>&nbsp;
+<b class="nc"><i>335</i>&nbsp;        final KeyCombination other = (KeyCombination) obj;</b>
+<b class="nc"><i>336</i>&nbsp;        return (shift == other.shift)</b>
+<i>337</i>&nbsp;                &amp;&amp; (control == other.control)
+<i>338</i>&nbsp;                &amp;&amp; (alt == other.alt)
+<i>339</i>&nbsp;                &amp;&amp; (meta == other.meta)
+<i>340</i>&nbsp;                &amp;&amp; (shortcut == other.shortcut);
+<i>341</i>&nbsp;    }
+<i>342</i>&nbsp;
+<i>343</i>&nbsp;    /**
+<i>344</i>&nbsp;     * Returns a hash code value for this {@code KeyCombination}.
+<i>345</i>&nbsp;     *
+<i>346</i>&nbsp;     * @return the hash code value
+<i>347</i>&nbsp;     */
+<i>348</i>&nbsp;    @Override
+<i>349</i>&nbsp;    public int hashCode() {
+<b class="nc"><i>350</i>&nbsp;        int hash = 7;</b>
+<i>351</i>&nbsp;
+<b class="nc"><i>352</i>&nbsp;        hash = 23 * hash + shift.hashCode();</b>
+<b class="nc"><i>353</i>&nbsp;        hash = 23 * hash + control.hashCode();</b>
+<b class="nc"><i>354</i>&nbsp;        hash = 23 * hash + alt.hashCode();</b>
+<b class="nc"><i>355</i>&nbsp;        hash = 23 * hash + meta.hashCode();</b>
+<b class="nc"><i>356</i>&nbsp;        hash = 23 * hash + shortcut.hashCode();</b>
+<i>357</i>&nbsp;
+<b class="nc"><i>358</i>&nbsp;        return hash;</b>
+<i>359</i>&nbsp;    }
+<i>360</i>&nbsp;
+<i>361</i>&nbsp;    /**
+<i>362</i>&nbsp;     * Returns a string representation of this object. Implementation returns
+<i>363</i>&nbsp;     * the result of the {@code getName()} call.
+<i>364</i>&nbsp;     *
+<i>365</i>&nbsp;     * @return the string representation of this {@code KeyCombination}
+<i>366</i>&nbsp;     */
+<i>367</i>&nbsp;    @Override
+<i>368</i>&nbsp;    public String toString() {
+<b class="nc"><i>369</i>&nbsp;        return getName();</b>
+<i>370</i>&nbsp;    }
+<i>371</i>&nbsp;
+<i>372</i>&nbsp;    /**
+<i>373</i>&nbsp;     * Constructs a new {@code KeyCombination} from the specified string. The
+<i>374</i>&nbsp;     * string should be in the same format as produced by the {@code getName}
+<i>375</i>&nbsp;     * method.
+<i>376</i>&nbsp;     * &lt;p&gt;
+<i>377</i>&nbsp;     * If the main key section string is quoted in single quotes the method
+<i>378</i>&nbsp;     * creates a new {@code KeyCharacterCombination} for the unquoted substring.
+<i>379</i>&nbsp;     * Otherwise it finds the key code which name corresponds to the main key
+<i>380</i>&nbsp;     * section string and creates a {@code KeyCodeCombination} for it. If this
+<i>381</i>&nbsp;     * can&#39;t be done, it falls back to the {@code KeyCharacterCombination}.
+<i>382</i>&nbsp;     *
+<i>383</i>&nbsp;     * @param value the string which represents the requested key combination
+<i>384</i>&nbsp;     * @return the constructed {@code KeyCombination}
+<i>385</i>&nbsp;     * @since JavaFX 2.1
+<i>386</i>&nbsp;     */
+<i>387</i>&nbsp;    public static KeyCombination valueOf(String value) {
+<b class="fc"><i>388</i>&nbsp;        final List&lt;Modifier&gt; modifiers = new ArrayList&lt;Modifier&gt;(4);</b>
+<i>389</i>&nbsp;
+<b class="fc"><i>390</i>&nbsp;        final String[] tokens = splitName(value);</b>
+<i>391</i>&nbsp;
+<b class="fc"><i>392</i>&nbsp;        KeyCode keyCode = null;</b>
+<b class="fc"><i>393</i>&nbsp;        String keyCharacter = null;</b>
+<b class="fc"><i>394</i>&nbsp;        for (String token : tokens) {</b>
+<i>395</i>&nbsp;
+<b class="fc"><i>396</i>&nbsp;            if ((token.length() &gt; 2)</b>
+<b class="fc"><i>397</i>&nbsp;                    &amp;&amp; (token.charAt(0) == &#39;\&#39;&#39;)</b>
+<b class="nc"><i>398</i>&nbsp;                    &amp;&amp; (token.charAt(token.length() - 1) == &#39;\&#39;&#39;)) {</b>
+<b class="nc"><i>399</i>&nbsp;                if ((keyCode != null) || (keyCharacter != null)) {</b>
+<b class="nc"><i>400</i>&nbsp;                    throw new IllegalArgumentException(</b>
+<i>401</i>&nbsp;                            &quot;Cannot parse key binding &quot; + value);
+<i>402</i>&nbsp;                }
+<i>403</i>&nbsp;
+<b class="nc"><i>404</i>&nbsp;                keyCharacter = token.substring(1, token.length() - 1)</b>
+<b class="nc"><i>405</i>&nbsp;                        .replace(&quot;\\&#39;&quot;, &quot;&#39;&quot;);</b>
+<b class="nc"><i>406</i>&nbsp;                continue;</b>
+<i>407</i>&nbsp;            }
+<i>408</i>&nbsp;
+<b class="fc"><i>409</i>&nbsp;            final String normalizedToken = normalizeToken(token);</b>
+<i>410</i>&nbsp;
+<b class="fc"><i>411</i>&nbsp;            final Modifier modifier = getModifier(normalizedToken);</b>
+<b class="fc"><i>412</i>&nbsp;            if (modifier != null) {</b>
+<b class="nc"><i>413</i>&nbsp;                modifiers.add(modifier);</b>
+<b class="nc"><i>414</i>&nbsp;                continue;</b>
+<i>415</i>&nbsp;            }
+<i>416</i>&nbsp;
+<b class="fc"><i>417</i>&nbsp;            if ((keyCode != null) || (keyCharacter != null)) {</b>
+<b class="nc"><i>418</i>&nbsp;                throw new IllegalArgumentException(</b>
+<i>419</i>&nbsp;                        &quot;Cannot parse key binding &quot; + value);
+<i>420</i>&nbsp;            }
+<i>421</i>&nbsp;
+<b class="fc"><i>422</i>&nbsp;            keyCode = KeyCode.getKeyCode(normalizedToken);</b>
+<b class="fc"><i>423</i>&nbsp;            if (keyCode == null) {</b>
+<b class="nc"><i>424</i>&nbsp;                keyCharacter = token;</b>
+<i>425</i>&nbsp;            }
+<i>426</i>&nbsp;        }
+<i>427</i>&nbsp;
+<b class="fc"><i>428</i>&nbsp;        if ((keyCode == null) &amp;&amp; (keyCharacter == null)) {</b>
+<b class="nc"><i>429</i>&nbsp;            throw new IllegalArgumentException(</b>
+<i>430</i>&nbsp;                    &quot;Cannot parse key binding &quot; + value);
+<i>431</i>&nbsp;        }
+<i>432</i>&nbsp;
+<b class="fc"><i>433</i>&nbsp;        final Modifier[] modifierArray =</b>
+<b class="fc"><i>434</i>&nbsp;                modifiers.toArray(new Modifier[modifiers.size()]);</b>
+<b class="fc"><i>435</i>&nbsp;        return (keyCode != null)</b>
+<b class="fc"><i>436</i>&nbsp;                    ? new KeyCodeCombination(keyCode, modifierArray)</b>
+<b class="nc"><i>437</i>&nbsp;                    : new KeyCharacterCombination(keyCharacter, modifierArray);</b>
+<i>438</i>&nbsp;    }
+<i>439</i>&nbsp;
+<i>440</i>&nbsp;    /**
+<i>441</i>&nbsp;     * Constructs a new {@code KeyCombination} from the specified string. This
+<i>442</i>&nbsp;     * method simply delegates to {@link #valueOf(String)}.
+<i>443</i>&nbsp;     *
+<i>444</i>&nbsp;     * @param name the string which represents the requested key combination
+<i>445</i>&nbsp;     * @return the constructed {@code KeyCombination}
+<i>446</i>&nbsp;     *
+<i>447</i>&nbsp;     * @see #valueOf(String)
+<i>448</i>&nbsp;     */
+<i>449</i>&nbsp;    public static KeyCombination keyCombination(String name) {
+<b class="fc"><i>450</i>&nbsp;        return valueOf(name);</b>
+<i>451</i>&nbsp;    }
+<i>452</i>&nbsp;
+<i>453</i>&nbsp;    /**
+<i>454</i>&nbsp;     * This class represents a pair of modifier key and its value.
+<i>455</i>&nbsp;     * @since JavaFX 2.0
+<i>456</i>&nbsp;     */
+<b class="fc"><i>457</i>&nbsp;    public static final class Modifier {</b>
+<i>458</i>&nbsp;        private final KeyCode key;
+<i>459</i>&nbsp;        private final ModifierValue value;
+<i>460</i>&nbsp;
+<i>461</i>&nbsp;        private Modifier(final KeyCode key,
+<b class="fc"><i>462</i>&nbsp;                         final ModifierValue value) {</b>
+<b class="fc"><i>463</i>&nbsp;            this.key = key;</b>
+<b class="fc"><i>464</i>&nbsp;            this.value = value;</b>
+<b class="fc"><i>465</i>&nbsp;        }</b>
+<i>466</i>&nbsp;
+<i>467</i>&nbsp;        /**
+<i>468</i>&nbsp;         * Gets the modifier key of this {@code Modifier}.
+<i>469</i>&nbsp;         *
+<i>470</i>&nbsp;         * @return the modifier key
+<i>471</i>&nbsp;         */
+<i>472</i>&nbsp;        public KeyCode getKey() {
+<b class="nc"><i>473</i>&nbsp;            return key;</b>
+<i>474</i>&nbsp;        }
+<i>475</i>&nbsp;
+<i>476</i>&nbsp;        /**
+<i>477</i>&nbsp;         * Gets the modifier value of this {@code Modifier}.
+<i>478</i>&nbsp;         *
+<i>479</i>&nbsp;         * @return the modifier value
+<i>480</i>&nbsp;         */
+<i>481</i>&nbsp;        public ModifierValue getValue() {
+<b class="nc"><i>482</i>&nbsp;            return value;</b>
+<i>483</i>&nbsp;        }
+<i>484</i>&nbsp;
+<i>485</i>&nbsp;        /**
+<i>486</i>&nbsp;         * Returns a string representation of the modifier.
+<i>487</i>&nbsp;         * @return a string representation of the modifier
+<i>488</i>&nbsp;         */
+<i>489</i>&nbsp;        @Override
+<i>490</i>&nbsp;        public String toString() {
+<b class="fc"><i>491</i>&nbsp;            return ((value == ModifierValue.ANY) ? &quot;Ignore &quot; : &quot;&quot;)</b>
+<b class="fc"><i>492</i>&nbsp;                       + key.getName();</b>
+<i>493</i>&nbsp;
+<i>494</i>&nbsp;        }
+<i>495</i>&nbsp;    }
+<i>496</i>&nbsp;
+<i>497</i>&nbsp;    /**
+<i>498</i>&nbsp;     * {@code ModifierValue} specifies state of modifier keys.
+<i>499</i>&nbsp;     * @since JavaFX 2.0
+<i>500</i>&nbsp;     */
+<b class="fc"><i>501</i>&nbsp;    public static enum ModifierValue {</b>
+<i>502</i>&nbsp;        /** Constant which indicates that the modifier key must be down. */
+<b class="fc"><i>503</i>&nbsp;        DOWN,</b>
+<i>504</i>&nbsp;        /** Constant which indicates that the modifier key must be up. */
+<b class="fc"><i>505</i>&nbsp;        UP,</b>
+<i>506</i>&nbsp;        /**
+<i>507</i>&nbsp;         * Constant which indicates that the modifier key can be either up or
+<i>508</i>&nbsp;         * down.
+<i>509</i>&nbsp;         */
+<b class="fc"><i>510</i>&nbsp;        ANY</b>
+<i>511</i>&nbsp;    }
+<i>512</i>&nbsp;
+<i>513</i>&nbsp;    private void addModifiersIntoString(final StringBuilder sb) {
+<b class="nc"><i>514</i>&nbsp;        addModifierIntoString(sb, KeyCode.SHIFT, shift);</b>
+<b class="nc"><i>515</i>&nbsp;        addModifierIntoString(sb, KeyCode.CONTROL, control);</b>
+<b class="nc"><i>516</i>&nbsp;        addModifierIntoString(sb, KeyCode.ALT, alt);</b>
+<b class="nc"><i>517</i>&nbsp;        addModifierIntoString(sb, KeyCode.META, meta);</b>
+<b class="nc"><i>518</i>&nbsp;        addModifierIntoString(sb, KeyCode.SHORTCUT, shortcut);</b>
+<b class="nc"><i>519</i>&nbsp;    }</b>
+<i>520</i>&nbsp;
+<i>521</i>&nbsp;    private static void addModifierIntoString(
+<i>522</i>&nbsp;            final StringBuilder sb,
+<i>523</i>&nbsp;            final KeyCode modifierKey,
+<i>524</i>&nbsp;            final ModifierValue modifierValue) {
+<i>525</i>&nbsp;
+<b class="nc"><i>526</i>&nbsp;        if (modifierValue == ModifierValue.UP) {</b>
+<b class="nc"><i>527</i>&nbsp;            return;</b>
+<i>528</i>&nbsp;        }
+<i>529</i>&nbsp;
+<b class="nc"><i>530</i>&nbsp;        if (sb.length() &gt; 0) {</b>
+<b class="nc"><i>531</i>&nbsp;            sb.append(&quot;+&quot;);</b>
+<i>532</i>&nbsp;        }
+<i>533</i>&nbsp;
+<b class="nc"><i>534</i>&nbsp;        if (modifierValue == ModifierValue.ANY) {</b>
+<b class="nc"><i>535</i>&nbsp;            sb.append(&quot;Ignore &quot;);</b>
+<i>536</i>&nbsp;        }
+<i>537</i>&nbsp;
+<b class="nc"><i>538</i>&nbsp;        sb.append(modifierKey.getName());</b>
+<b class="nc"><i>539</i>&nbsp;    }</b>
+<i>540</i>&nbsp;
+<i>541</i>&nbsp;    private static boolean test(final KeyCode testedModifierKey,
+<i>542</i>&nbsp;                                final ModifierValue testedModifierValue,
+<i>543</i>&nbsp;                                final KeyCode shortcutModifierKey,
+<i>544</i>&nbsp;                                final ModifierValue shortcutModifierValue,
+<i>545</i>&nbsp;                                final boolean isKeyDown) {
+<i>546</i>&nbsp;        final ModifierValue finalModifierValue =
+<b class="nc"><i>547</i>&nbsp;                (testedModifierKey == shortcutModifierKey)</b>
+<b class="nc"><i>548</i>&nbsp;                        ? resolveModifierValue(testedModifierValue,</b>
+<i>549</i>&nbsp;                                               shortcutModifierValue)
+<b class="nc"><i>550</i>&nbsp;                        : testedModifierValue;</b>
+<i>551</i>&nbsp;
+<b class="nc"><i>552</i>&nbsp;        return test(finalModifierValue, isKeyDown);</b>
+<i>553</i>&nbsp;
+<i>554</i>&nbsp;    }
+<i>555</i>&nbsp;
+<i>556</i>&nbsp;    private static boolean test(final ModifierValue modifierValue,
+<i>557</i>&nbsp;                                final boolean isDown) {
+<b class="nc"><i>558</i>&nbsp;        switch (modifierValue) {</b>
+<i>559</i>&nbsp;            case DOWN:
+<b class="nc"><i>560</i>&nbsp;                return isDown;</b>
+<i>561</i>&nbsp;
+<i>562</i>&nbsp;            case UP:
+<b class="nc"><i>563</i>&nbsp;                return !isDown;</b>
+<i>564</i>&nbsp;
+<i>565</i>&nbsp;            case ANY:
+<i>566</i>&nbsp;            default:
+<b class="nc"><i>567</i>&nbsp;                return true;</b>
+<i>568</i>&nbsp;        }
+<i>569</i>&nbsp;    }
+<i>570</i>&nbsp;
+<i>571</i>&nbsp;    private static ModifierValue resolveModifierValue(
+<i>572</i>&nbsp;            final ModifierValue firstValue,
+<i>573</i>&nbsp;            final ModifierValue secondValue) {
+<b class="nc"><i>574</i>&nbsp;        if ((firstValue == ModifierValue.DOWN)</b>
+<i>575</i>&nbsp;                || (secondValue == ModifierValue.DOWN)) {
+<b class="nc"><i>576</i>&nbsp;            return ModifierValue.DOWN;</b>
+<i>577</i>&nbsp;        }
+<i>578</i>&nbsp;
+<b class="nc"><i>579</i>&nbsp;        if ((firstValue == ModifierValue.ANY)</b>
+<i>580</i>&nbsp;                || (secondValue == ModifierValue.ANY)) {
+<b class="nc"><i>581</i>&nbsp;            return ModifierValue.ANY;</b>
+<i>582</i>&nbsp;        }
+<i>583</i>&nbsp;
+<b class="nc"><i>584</i>&nbsp;        return ModifierValue.UP;</b>
+<i>585</i>&nbsp;    }
+<i>586</i>&nbsp;
+<i>587</i>&nbsp;    static Modifier getModifier(final String name) {
+<b class="fc"><i>588</i>&nbsp;        for (final Modifier modifier: POSSIBLE_MODIFIERS) {</b>
+<b class="fc"><i>589</i>&nbsp;            if (modifier.toString().equals(name)) {</b>
+<b class="nc"><i>590</i>&nbsp;                return modifier;</b>
+<i>591</i>&nbsp;            }
+<i>592</i>&nbsp;        }
+<i>593</i>&nbsp;
+<b class="fc"><i>594</i>&nbsp;        return null;</b>
+<i>595</i>&nbsp;    }
+<i>596</i>&nbsp;
+<i>597</i>&nbsp;    private static ModifierValue getModifierValue(
+<i>598</i>&nbsp;            final Modifier[] modifiers,
+<i>599</i>&nbsp;            final KeyCode modifierKey) {
+<b class="fc"><i>600</i>&nbsp;        ModifierValue modifierValue = ModifierValue.UP;</b>
+<b class="fc"><i>601</i>&nbsp;        for (final Modifier modifier: modifiers) {</b>
+<b class="nc"><i>602</i>&nbsp;            if (modifier == null) {</b>
+<b class="nc"><i>603</i>&nbsp;                throw new NullPointerException(&quot;Modifier must not be null!&quot;);</b>
+<i>604</i>&nbsp;            }
+<i>605</i>&nbsp;
+<b class="nc"><i>606</i>&nbsp;            if (modifier.getKey() == modifierKey) {</b>
+<b class="nc"><i>607</i>&nbsp;                if (modifierValue != ModifierValue.UP) {</b>
+<b class="nc"><i>608</i>&nbsp;                    throw new IllegalArgumentException(</b>
+<b class="nc"><i>609</i>&nbsp;                            (modifier.getValue() != modifierValue)</b>
+<b class="nc"><i>610</i>&nbsp;                                    ? &quot;Conflicting modifiers specified!&quot;</b>
+<b class="nc"><i>611</i>&nbsp;                                    : &quot;Duplicate modifiers specified!&quot;);</b>
+<i>612</i>&nbsp;                }
+<i>613</i>&nbsp;
+<b class="nc"><i>614</i>&nbsp;                modifierValue = modifier.getValue();</b>
+<i>615</i>&nbsp;            }
+<i>616</i>&nbsp;        }
+<i>617</i>&nbsp;
+<b class="fc"><i>618</i>&nbsp;        return modifierValue;</b>
+<i>619</i>&nbsp;    }
+<i>620</i>&nbsp;
+<i>621</i>&nbsp;    private static String normalizeToken(final String token) {
+<b class="fc"><i>622</i>&nbsp;        final String[] words = token.split(&quot;\\s+&quot;);</b>
+<b class="fc"><i>623</i>&nbsp;        final StringBuilder sb = new StringBuilder();</b>
+<i>624</i>&nbsp;
+<b class="fc"><i>625</i>&nbsp;        for (final String word: words) {</b>
+<b class="fc"><i>626</i>&nbsp;            if (sb.length() &gt; 0) {</b>
+<b class="nc"><i>627</i>&nbsp;                sb.append(&#39; &#39;);</b>
+<i>628</i>&nbsp;            }
+<i>629</i>&nbsp;
+<b class="fc"><i>630</i>&nbsp;            sb.append(word.substring(0, 1).toUpperCase(Locale.ROOT));</b>
+<b class="fc"><i>631</i>&nbsp;            sb.append(word.substring(1).toLowerCase(Locale.ROOT));</b>
+<i>632</i>&nbsp;        }
+<i>633</i>&nbsp;
+<b class="fc"><i>634</i>&nbsp;        return sb.toString();</b>
+<i>635</i>&nbsp;    }
+<i>636</i>&nbsp;
+<i>637</i>&nbsp;    private static String[] splitName(String name) {
+<b class="fc"><i>638</i>&nbsp;        List&lt;String&gt; tokens = new ArrayList&lt;String&gt;();</b>
+<b class="fc"><i>639</i>&nbsp;        char[] chars = name.trim().toCharArray();</b>
+<i>640</i>&nbsp;
+<i>641</i>&nbsp;        final int STATE_BASIC = 0;      // general text
+<i>642</i>&nbsp;        final int STATE_WHITESPACE = 1; // spaces found
+<i>643</i>&nbsp;        final int STATE_SEPARATOR = 2;  // plus found
+<i>644</i>&nbsp;        final int STATE_QUOTED = 3;     // quoted text
+<i>645</i>&nbsp;
+<b class="fc"><i>646</i>&nbsp;        int state = STATE_BASIC;</b>
+<b class="fc"><i>647</i>&nbsp;        int tokenStart = 0;</b>
+<b class="fc"><i>648</i>&nbsp;        int tokenEnd = -1;</b>
+<i>649</i>&nbsp;
+<b class="fc"><i>650</i>&nbsp;        for (int i = 0; i &lt; chars.length; i++) {</b>
+<b class="fc"><i>651</i>&nbsp;            char c = chars[i];</b>
+<b class="fc"><i>652</i>&nbsp;            switch(state) {</b>
+<i>653</i>&nbsp;                case STATE_BASIC:
+<b class="fc"><i>654</i>&nbsp;                    switch(c) {</b>
+<i>655</i>&nbsp;                        case &#39; &#39;:
+<i>656</i>&nbsp;                        case &#39;\t&#39;:
+<i>657</i>&nbsp;                        case &#39;\n&#39;:
+<i>658</i>&nbsp;                        case &#39;\f&#39;:
+<i>659</i>&nbsp;                        case &#39;\r&#39;:
+<i>660</i>&nbsp;                        case &#39;\u000B&#39;:
+<b class="nc"><i>661</i>&nbsp;                            tokenEnd = i;</b>
+<b class="nc"><i>662</i>&nbsp;                            state = STATE_WHITESPACE;</b>
+<b class="nc"><i>663</i>&nbsp;                            break;</b>
+<i>664</i>&nbsp;                        case &#39;+&#39;:
+<b class="nc"><i>665</i>&nbsp;                            tokenEnd = i;</b>
+<b class="nc"><i>666</i>&nbsp;                            state = STATE_SEPARATOR;</b>
+<b class="nc"><i>667</i>&nbsp;                            break;</b>
+<i>668</i>&nbsp;                        case &#39;\&#39;&#39;:
+<b class="nc"><i>669</i>&nbsp;                            if (i == 0 || chars[i - 1] != &#39;\\&#39;) {</b>
+<b class="nc"><i>670</i>&nbsp;                                state = STATE_QUOTED;</b>
+<i>671</i>&nbsp;                            }
+<i>672</i>&nbsp;                            break;
+<i>673</i>&nbsp;                        default:
+<b class="fc"><i>674</i>&nbsp;                            break;</b>
+<i>675</i>&nbsp;                    }
+<i>676</i>&nbsp;                    break;
+<i>677</i>&nbsp;                case STATE_WHITESPACE:
+<b class="nc"><i>678</i>&nbsp;                    switch(c) {</b>
+<i>679</i>&nbsp;                        case &#39; &#39;:
+<i>680</i>&nbsp;                        case &#39;\t&#39;:
+<i>681</i>&nbsp;                        case &#39;\n&#39;:
+<i>682</i>&nbsp;                        case &#39;\f&#39;:
+<i>683</i>&nbsp;                        case &#39;\r&#39;:
+<i>684</i>&nbsp;                        case &#39;\u000B&#39;:
+<b class="nc"><i>685</i>&nbsp;                            break;</b>
+<i>686</i>&nbsp;                        case &#39;+&#39;:
+<b class="nc"><i>687</i>&nbsp;                            state = STATE_SEPARATOR;</b>
+<b class="nc"><i>688</i>&nbsp;                            break;</b>
+<i>689</i>&nbsp;                        case &#39;\&#39;&#39;:
+<b class="nc"><i>690</i>&nbsp;                            state = STATE_QUOTED;</b>
+<b class="nc"><i>691</i>&nbsp;                            tokenEnd = -1;</b>
+<b class="nc"><i>692</i>&nbsp;                            break;</b>
+<i>693</i>&nbsp;                        default:
+<b class="nc"><i>694</i>&nbsp;                            state = STATE_BASIC;</b>
+<b class="nc"><i>695</i>&nbsp;                            tokenEnd = -1;</b>
+<b class="nc"><i>696</i>&nbsp;                            break;</b>
+<i>697</i>&nbsp;                    }
+<i>698</i>&nbsp;                    break;
+<i>699</i>&nbsp;                case STATE_SEPARATOR:
+<b class="nc"><i>700</i>&nbsp;                    switch(c) {</b>
+<i>701</i>&nbsp;                        case &#39; &#39;:
+<i>702</i>&nbsp;                        case &#39;\t&#39;:
+<i>703</i>&nbsp;                        case &#39;\n&#39;:
+<i>704</i>&nbsp;                        case &#39;\f&#39;:
+<i>705</i>&nbsp;                        case &#39;\r&#39;:
+<i>706</i>&nbsp;                        case &#39;\u000B&#39;:
+<b class="nc"><i>707</i>&nbsp;                            break;</b>
+<i>708</i>&nbsp;                        case &#39;+&#39;:
+<b class="nc"><i>709</i>&nbsp;                            throw new IllegalArgumentException(</b>
+<i>710</i>&nbsp;                                    &quot;Cannot parse key binding &quot; + name);
+<i>711</i>&nbsp;                        default:
+<b class="nc"><i>712</i>&nbsp;                            if (tokenEnd &lt;= tokenStart) {</b>
+<b class="nc"><i>713</i>&nbsp;                                throw new IllegalArgumentException(</b>
+<i>714</i>&nbsp;                                        &quot;Cannot parse key binding &quot; + name);
+<i>715</i>&nbsp;                            }
+<b class="nc"><i>716</i>&nbsp;                            tokens.add(new String(chars,</b>
+<i>717</i>&nbsp;                                    tokenStart, tokenEnd - tokenStart));
+<b class="nc"><i>718</i>&nbsp;                            tokenStart = i;</b>
+<b class="nc"><i>719</i>&nbsp;                            tokenEnd = -1;</b>
+<b class="nc"><i>720</i>&nbsp;                            state = (c == &#39;\&#39;&#39; ? STATE_QUOTED : STATE_BASIC);</b>
+<b class="nc"><i>721</i>&nbsp;                            break;</b>
+<i>722</i>&nbsp;                    }
+<i>723</i>&nbsp;                    break;
+<i>724</i>&nbsp;                case STATE_QUOTED:
+<b class="nc"><i>725</i>&nbsp;                    if (c == &#39;\&#39;&#39; &amp;&amp; chars[i - 1] != &#39;\\&#39;) {</b>
+<b class="nc"><i>726</i>&nbsp;                        state = STATE_BASIC;</b>
+<i>727</i>&nbsp;                    }
+<i>728</i>&nbsp;                    break;
+<i>729</i>&nbsp;            }
+<i>730</i>&nbsp;        }
+<i>731</i>&nbsp;
+<b class="fc"><i>732</i>&nbsp;        switch(state) {</b>
+<i>733</i>&nbsp;            case STATE_BASIC:
+<i>734</i>&nbsp;            case STATE_WHITESPACE:
+<b class="fc"><i>735</i>&nbsp;                tokens.add(new String(chars,</b>
+<i>736</i>&nbsp;                        tokenStart, chars.length - tokenStart));
+<b class="fc"><i>737</i>&nbsp;                break;</b>
+<i>738</i>&nbsp;            case STATE_SEPARATOR:
+<i>739</i>&nbsp;            case STATE_QUOTED:
+<b class="nc"><i>740</i>&nbsp;                throw new IllegalArgumentException(</b>
+<i>741</i>&nbsp;                        &quot;Cannot parse key binding &quot; + name);
+<i>742</i>&nbsp;        }
+<i>743</i>&nbsp;
+<b class="fc"><i>744</i>&nbsp;        return tokens.toArray(new String[tokens.size()]);</b>
+<i>745</i>&nbsp;    }
+<i>746</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2017-12-04 21:49</div>
+</div>
+</body>
+</html>

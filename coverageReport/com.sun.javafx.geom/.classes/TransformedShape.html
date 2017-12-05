@@ -1,0 +1,336 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: TransformedShape</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.javafx.geom</a> ]
+</div>
+
+<h1>Coverage Summary for Class: TransformedShape (com.sun.javafx.geom)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">TransformedShape</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 14)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 29)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright (c) 2011, 2013, Oracle and/or its affiliates. All rights reserved.
+<i>3</i>&nbsp; * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+<i>4</i>&nbsp; *
+<i>5</i>&nbsp; *
+<i>6</i>&nbsp; *
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; *
+<i>11</i>&nbsp; *
+<i>12</i>&nbsp; *
+<i>13</i>&nbsp; *
+<i>14</i>&nbsp; *
+<i>15</i>&nbsp; *
+<i>16</i>&nbsp; *
+<i>17</i>&nbsp; *
+<i>18</i>&nbsp; *
+<i>19</i>&nbsp; *
+<i>20</i>&nbsp; *
+<i>21</i>&nbsp; *
+<i>22</i>&nbsp; *
+<i>23</i>&nbsp; *
+<i>24</i>&nbsp; */
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;package com.sun.javafx.geom;
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;import com.sun.javafx.geom.transform.BaseTransform;
+<i>29</i>&nbsp;import com.sun.javafx.geom.transform.NoninvertibleTransformException;
+<i>30</i>&nbsp;
+<i>31</i>&nbsp;/**
+<i>32</i>&nbsp; * {@code TransformedShape} objects are transformed &quot;views&quot; onto existing
+<i>33</i>&nbsp; * {@code Shape} objects.  These objects make no attempt to clone or protect
+<i>34</i>&nbsp; * against access to the original {@code Shape} so any modifications to the
+<i>35</i>&nbsp; * original {@code Shape} will be immediately reflected in the behaviors
+<i>36</i>&nbsp; * and results of this object.
+<i>37</i>&nbsp; *
+<i>38</i>&nbsp; */
+<i>39</i>&nbsp;public abstract class TransformedShape extends Shape {
+<i>40</i>&nbsp;    /**
+<i>41</i>&nbsp;     * Returns a {@link Shape} object backed by the specified original
+<i>42</i>&nbsp;     * but with the indicated transform applied to all of its coordinates.
+<i>43</i>&nbsp;     * The original {@code Shape} is not cloned or copied by this factory
+<i>44</i>&nbsp;     * method so any changes to the original object will be immediately
+<i>45</i>&nbsp;     * reflected in the methods of the return value.
+<i>46</i>&nbsp;     * The original {@code BaseTransform} object is, however, copied since
+<i>47</i>&nbsp;     * transform objects are far more likely to be scratch objects and a
+<i>48</i>&nbsp;     * lot less costly to clone.  In addition, the underlying implementation
+<i>49</i>&nbsp;     * may dig some values out of the transform and then discard the actual
+<i>50</i>&nbsp;     * object in some cases for optimization purposes.  Since that would
+<i>51</i>&nbsp;     * make those cases independent of future changes to the transform, we
+<i>52</i>&nbsp;     * copy the transform so that all return values from this method are
+<i>53</i>&nbsp;     * independent of further mutations to the transform object.
+<i>54</i>&nbsp;     *
+<i>55</i>&nbsp;     * @param original the backing {@code Shape}
+<i>56</i>&nbsp;     * @param tx the {@code BaseTransform} to apply to all of the
+<i>57</i>&nbsp;     *           coordinates of the backing {@code Shape} on the fly
+<i>58</i>&nbsp;     * @return a transformed view of the backing {@code Shape}
+<i>59</i>&nbsp;     */
+<i>60</i>&nbsp;    public static TransformedShape transformedShape(Shape original, BaseTransform tx) {
+<b class="nc"><i>61</i>&nbsp;        if (tx.isTranslateOrIdentity()) {</b>
+<b class="nc"><i>62</i>&nbsp;            return translatedShape(original, tx.getMxt(), tx.getMyt());</b>
+<i>63</i>&nbsp;        }
+<b class="nc"><i>64</i>&nbsp;        return new General(original, tx.copy());</b>
+<i>65</i>&nbsp;    }
+<i>66</i>&nbsp;
+<i>67</i>&nbsp;    /**
+<i>68</i>&nbsp;     * Returns a {@link Shape} object backed by the specified original
+<i>69</i>&nbsp;     * but with the indicated translation applied to all of its coordinates.
+<i>70</i>&nbsp;     * The original {@code Shape} is not cloned or copied by this factory
+<i>71</i>&nbsp;     * method so any changes to the original object will be immediately
+<i>72</i>&nbsp;     * reflected in the methods of the return value.
+<i>73</i>&nbsp;     *
+<i>74</i>&nbsp;     * @param original the backing {@code Shape}
+<i>75</i>&nbsp;     * @param tx the X coordinate translation to apply to all of the
+<i>76</i>&nbsp;     *           coordinates of the backing {@code Shape} on the fly
+<i>77</i>&nbsp;     * @param ty the Y coordinate translation to apply to all of the
+<i>78</i>&nbsp;     *           coordinates of the backing {@code Shape} on the fly
+<i>79</i>&nbsp;     * @return a translated view of the backing {@code Shape}
+<i>80</i>&nbsp;     */
+<i>81</i>&nbsp;    public static TransformedShape translatedShape(Shape original, double tx, double ty) {
+<b class="nc"><i>82</i>&nbsp;        return new Translate(original, (float) tx, (float) ty);</b>
+<i>83</i>&nbsp;    }
+<i>84</i>&nbsp;
+<i>85</i>&nbsp;    final protected Shape delegate;
+<i>86</i>&nbsp;
+<b class="nc"><i>87</i>&nbsp;    protected TransformedShape(Shape delegate) {</b>
+<b class="nc"><i>88</i>&nbsp;        this.delegate = delegate;</b>
+<b class="nc"><i>89</i>&nbsp;    }</b>
+<i>90</i>&nbsp;
+<i>91</i>&nbsp;    public Shape getDelegateNoClone() {
+<b class="nc"><i>92</i>&nbsp;        return delegate;</b>
+<i>93</i>&nbsp;    }
+<i>94</i>&nbsp;
+<i>95</i>&nbsp;    public abstract BaseTransform getTransformNoClone();
+<i>96</i>&nbsp;
+<i>97</i>&nbsp;    /**
+<i>98</i>&nbsp;     * Returns a new transform that represents the specified transform with
+<i>99</i>&nbsp;     * the transform of this {@code TransformedShape} concatenated.
+<i>100</i>&nbsp;     * @param tx the specified contextual transform
+<i>101</i>&nbsp;     * @return the concatenated transform
+<i>102</i>&nbsp;     */
+<i>103</i>&nbsp;    public abstract BaseTransform adjust(BaseTransform tx);
+<i>104</i>&nbsp;
+<i>105</i>&nbsp;    protected Point2D untransform(float x, float y) {
+<b class="nc"><i>106</i>&nbsp;        Point2D p = new Point2D(x, y);</b>
+<i>107</i>&nbsp;        try {
+<b class="nc"><i>108</i>&nbsp;            p = getTransformNoClone().inverseTransform(p, p);</b>
+<b class="nc"><i>109</i>&nbsp;        } catch (NoninvertibleTransformException e) {</b>
+<i>110</i>&nbsp;            // No point should intersect such a shape in the first place
+<i>111</i>&nbsp;            // so it is not likely to matter what point we test with...
+<b class="nc"><i>112</i>&nbsp;        }</b>
+<b class="nc"><i>113</i>&nbsp;        return p;</b>
+<i>114</i>&nbsp;    }
+<i>115</i>&nbsp;
+<i>116</i>&nbsp;    protected BaseBounds untransformedBounds(float x, float y, float w, float h) {
+<b class="nc"><i>117</i>&nbsp;        RectBounds b = new RectBounds(x, y, x+w, y+h);</b>
+<i>118</i>&nbsp;        try {
+<b class="nc"><i>119</i>&nbsp;            return getTransformNoClone().inverseTransform(b, b);</b>
+<b class="nc"><i>120</i>&nbsp;        } catch (NoninvertibleTransformException e) {</b>
+<b class="nc"><i>121</i>&nbsp;            return b.makeEmpty();</b>
+<i>122</i>&nbsp;        }
+<i>123</i>&nbsp;    }
+<i>124</i>&nbsp;
+<i>125</i>&nbsp;    @Override
+<i>126</i>&nbsp;    public RectBounds getBounds() {
+<b class="nc"><i>127</i>&nbsp;        float box[] = new float[4];</b>
+<b class="nc"><i>128</i>&nbsp;        Shape.accumulate(box, delegate, getTransformNoClone());</b>
+<b class="nc"><i>129</i>&nbsp;        return new RectBounds(box[0], box[1], box[2], box[3]);</b>
+<i>130</i>&nbsp;    }
+<i>131</i>&nbsp;
+<i>132</i>&nbsp;    // Note that we are not expecting contains() and intersects() to be
+<i>133</i>&nbsp;    // called very often, if at all, for the generated Shape objects so these
+<i>134</i>&nbsp;    // implementations are basic (not heavily optimized and generate garbage).
+<i>135</i>&nbsp;    @Override
+<i>136</i>&nbsp;    public boolean contains(float x, float y) {
+<b class="nc"><i>137</i>&nbsp;        return delegate.contains(untransform(x, y));</b>
+<i>138</i>&nbsp;    }
+<i>139</i>&nbsp;
+<i>140</i>&nbsp;    // intersects(rect) and contains(rect) are especially non-optimal
+<i>141</i>&nbsp;    // because there is no good way to test if a Shape contains or
+<i>142</i>&nbsp;    // intersects a transformed rectangle and transforming the rect
+<i>143</i>&nbsp;    // through any other than a rectilinear transform increases its
+<i>144</i>&nbsp;    // scope which changes the answer.
+<i>145</i>&nbsp;    private Shape cachedTransformedShape;
+<i>146</i>&nbsp;    private Shape getCachedTransformedShape() {
+<b class="nc"><i>147</i>&nbsp;        if (cachedTransformedShape == null) {</b>
+<b class="nc"><i>148</i>&nbsp;            cachedTransformedShape = copy();</b>
+<i>149</i>&nbsp;        }
+<b class="nc"><i>150</i>&nbsp;        return cachedTransformedShape;</b>
+<i>151</i>&nbsp;    }
+<i>152</i>&nbsp;
+<i>153</i>&nbsp;    @Override
+<i>154</i>&nbsp;    public boolean intersects(float x, float y, float w, float h) {
+<i>155</i>&nbsp;        // TODO: Could check for rectilinear shapes, if it matters (RT-26884)
+<b class="nc"><i>156</i>&nbsp;        return getCachedTransformedShape().intersects(x, y, w, h);</b>
+<i>157</i>&nbsp;    }
+<i>158</i>&nbsp;
+<i>159</i>&nbsp;    @Override
+<i>160</i>&nbsp;    public boolean contains(float x, float y, float w, float h) {
+<i>161</i>&nbsp;        // TODO: Could check for rectilinear shapes, if it matters (RT-26884)
+<b class="nc"><i>162</i>&nbsp;        return getCachedTransformedShape().contains(x, y, w, h);</b>
+<i>163</i>&nbsp;    }
+<i>164</i>&nbsp;
+<i>165</i>&nbsp;    @Override
+<i>166</i>&nbsp;    public PathIterator getPathIterator(BaseTransform transform) {
+<b class="nc"><i>167</i>&nbsp;        return delegate.getPathIterator(adjust(transform));</b>
+<i>168</i>&nbsp;    }
+<i>169</i>&nbsp;
+<i>170</i>&nbsp;    @Override
+<i>171</i>&nbsp;    public PathIterator getPathIterator(BaseTransform transform,
+<i>172</i>&nbsp;                                        float flatness)
+<i>173</i>&nbsp;    {
+<b class="nc"><i>174</i>&nbsp;        return delegate.getPathIterator(adjust(transform), flatness);</b>
+<i>175</i>&nbsp;    }
+<i>176</i>&nbsp;
+<i>177</i>&nbsp;    @Override
+<i>178</i>&nbsp;    public Shape copy() {
+<b class="nc"><i>179</i>&nbsp;        return getTransformNoClone().createTransformedShape(delegate);</b>
+<i>180</i>&nbsp;    }
+<i>181</i>&nbsp;
+<i>182</i>&nbsp;    static final class General extends TransformedShape {
+<i>183</i>&nbsp;        BaseTransform transform;
+<i>184</i>&nbsp;
+<i>185</i>&nbsp;        General(Shape delegate, BaseTransform transform) {
+<i>186</i>&nbsp;            super(delegate);
+<i>187</i>&nbsp;            this.transform = transform;
+<i>188</i>&nbsp;        }
+<i>189</i>&nbsp;
+<i>190</i>&nbsp;        public BaseTransform getTransformNoClone() {
+<i>191</i>&nbsp;            return transform;
+<i>192</i>&nbsp;        }
+<i>193</i>&nbsp;
+<i>194</i>&nbsp;        public BaseTransform adjust(BaseTransform transform) {
+<i>195</i>&nbsp;            if (transform == null || transform.isIdentity()) {
+<i>196</i>&nbsp;                return this.transform.copy();
+<i>197</i>&nbsp;            } else {
+<i>198</i>&nbsp;                return transform.copy().deriveWithConcatenation(this.transform);
+<i>199</i>&nbsp;            }
+<i>200</i>&nbsp;        }
+<i>201</i>&nbsp;    }
+<i>202</i>&nbsp;
+<i>203</i>&nbsp;    static final class Translate extends TransformedShape {
+<i>204</i>&nbsp;        private final float tx, ty;
+<i>205</i>&nbsp;        private BaseTransform cachedTx;
+<i>206</i>&nbsp;
+<i>207</i>&nbsp;        public Translate(Shape delegate, float tx, float ty) {
+<i>208</i>&nbsp;            super(delegate);
+<i>209</i>&nbsp;            this.tx = tx;
+<i>210</i>&nbsp;            this.ty = ty;
+<i>211</i>&nbsp;        }
+<i>212</i>&nbsp;
+<i>213</i>&nbsp;        @Override
+<i>214</i>&nbsp;        public BaseTransform getTransformNoClone() {
+<i>215</i>&nbsp;            if (cachedTx == null) {
+<i>216</i>&nbsp;                cachedTx = BaseTransform.getTranslateInstance(tx, ty);
+<i>217</i>&nbsp;            }
+<i>218</i>&nbsp;            return cachedTx;
+<i>219</i>&nbsp;        }
+<i>220</i>&nbsp;
+<i>221</i>&nbsp;        public BaseTransform adjust(BaseTransform transform) {
+<i>222</i>&nbsp;            if (transform == null || transform.isIdentity()) {
+<i>223</i>&nbsp;                return BaseTransform.getTranslateInstance(tx, ty);
+<i>224</i>&nbsp;            } else {
+<i>225</i>&nbsp;                return transform.copy().deriveWithTranslation(tx, ty);
+<i>226</i>&nbsp;            }
+<i>227</i>&nbsp;        }
+<i>228</i>&nbsp;
+<i>229</i>&nbsp;        @Override
+<i>230</i>&nbsp;        public RectBounds getBounds() {
+<i>231</i>&nbsp;            RectBounds rb = delegate.getBounds();
+<i>232</i>&nbsp;            rb.setBounds(rb.getMinX() + tx, rb.getMinY() + ty,
+<i>233</i>&nbsp;                         rb.getMaxX() + tx, rb.getMaxY() + ty);
+<i>234</i>&nbsp;
+<i>235</i>&nbsp;            return rb;
+<i>236</i>&nbsp;        }
+<i>237</i>&nbsp;
+<i>238</i>&nbsp;        @Override
+<i>239</i>&nbsp;        public boolean contains(float x, float y) {
+<i>240</i>&nbsp;            return delegate.contains(x - tx, y - ty);
+<i>241</i>&nbsp;        }
+<i>242</i>&nbsp;
+<i>243</i>&nbsp;        @Override
+<i>244</i>&nbsp;        public boolean intersects(float x, float y, float w, float h) {
+<i>245</i>&nbsp;            return delegate.intersects(x - tx, y - ty, w, h);
+<i>246</i>&nbsp;        }
+<i>247</i>&nbsp;
+<i>248</i>&nbsp;        @Override
+<i>249</i>&nbsp;        public boolean contains(float x, float y, float w, float h) {
+<i>250</i>&nbsp;            return delegate.contains(x - tx, y - ty, w, h);
+<i>251</i>&nbsp;        }
+<i>252</i>&nbsp;    }
+<i>253</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2017-12-04 21:49</div>
+</div>
+</body>
+</html>

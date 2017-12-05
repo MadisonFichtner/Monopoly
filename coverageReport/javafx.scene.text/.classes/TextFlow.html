@@ -1,0 +1,709 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: TextFlow</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">javafx.scene.text</a> ]
+</div>
+
+<h1>Coverage Summary for Class: TextFlow (javafx.scene.text)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">TextFlow</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 33)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 167)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright (c) 2012, 2017, Oracle and/or its affiliates. All rights reserved.
+<i>3</i>&nbsp; * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+<i>4</i>&nbsp; *
+<i>5</i>&nbsp; *
+<i>6</i>&nbsp; *
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; *
+<i>11</i>&nbsp; *
+<i>12</i>&nbsp; *
+<i>13</i>&nbsp; *
+<i>14</i>&nbsp; *
+<i>15</i>&nbsp; *
+<i>16</i>&nbsp; *
+<i>17</i>&nbsp; *
+<i>18</i>&nbsp; *
+<i>19</i>&nbsp; *
+<i>20</i>&nbsp; *
+<i>21</i>&nbsp; *
+<i>22</i>&nbsp; *
+<i>23</i>&nbsp; *
+<i>24</i>&nbsp; */
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;package javafx.scene.text;
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;import java.util.ArrayList;
+<i>29</i>&nbsp;import java.util.Collections;
+<i>30</i>&nbsp;import java.util.List;
+<i>31</i>&nbsp;import javafx.beans.property.DoubleProperty;
+<i>32</i>&nbsp;import javafx.beans.property.ObjectProperty;
+<i>33</i>&nbsp;import javafx.geometry.HPos;
+<i>34</i>&nbsp;import javafx.geometry.Insets;
+<i>35</i>&nbsp;import javafx.geometry.NodeOrientation;
+<i>36</i>&nbsp;import javafx.geometry.Orientation;
+<i>37</i>&nbsp;import javafx.geometry.VPos;
+<i>38</i>&nbsp;import javafx.scene.AccessibleAttribute;
+<i>39</i>&nbsp;import javafx.scene.AccessibleRole;
+<i>40</i>&nbsp;import javafx.scene.Node;
+<i>41</i>&nbsp;import javafx.scene.layout.Pane;
+<i>42</i>&nbsp;import javafx.scene.shape.PathElement;
+<i>43</i>&nbsp;import javafx.css.StyleableDoubleProperty;
+<i>44</i>&nbsp;import javafx.css.StyleableObjectProperty;
+<i>45</i>&nbsp;import javafx.css.CssMetaData;
+<i>46</i>&nbsp;import javafx.css.converter.EnumConverter;
+<i>47</i>&nbsp;import javafx.css.converter.SizeConverter;
+<i>48</i>&nbsp;import com.sun.javafx.geom.BaseBounds;
+<i>49</i>&nbsp;import com.sun.javafx.geom.Point2D;
+<i>50</i>&nbsp;import com.sun.javafx.geom.RectBounds;
+<i>51</i>&nbsp;import com.sun.javafx.scene.text.GlyphList;
+<i>52</i>&nbsp;import com.sun.javafx.scene.text.TextLayout;
+<i>53</i>&nbsp;import com.sun.javafx.scene.text.TextLayoutFactory;
+<i>54</i>&nbsp;import com.sun.javafx.scene.text.TextSpan;
+<i>55</i>&nbsp;import com.sun.javafx.tk.Toolkit;
+<i>56</i>&nbsp;import javafx.css.Styleable;
+<i>57</i>&nbsp;import javafx.css.StyleableProperty;
+<i>58</i>&nbsp;
+<i>59</i>&nbsp;/**
+<i>60</i>&nbsp; * TextFlow is special layout designed to lay out rich text.
+<i>61</i>&nbsp; * It can be used to layout several {@link Text} nodes in a single text flow.
+<i>62</i>&nbsp; * The TextFlow uses the text and the font of each {@link Text} node inside of it
+<i>63</i>&nbsp; * plus it own width and text alignment to determine the location for each child.
+<i>64</i>&nbsp; * A single {@link Text} node can span over several lines due to wrapping and
+<i>65</i>&nbsp; * the visual location of {@link Text} node can differ from the logical location
+<i>66</i>&nbsp; * due to bidi reordering.
+<i>67</i>&nbsp; *
+<i>68</i>&nbsp; * &lt;p&gt;
+<i>69</i>&nbsp; * Any other Node, rather than Text, will be treated as embedded object in the
+<i>70</i>&nbsp; * text layout. It will be inserted in the content using its preferred width,
+<i>71</i>&nbsp; * height, and baseline offset.
+<i>72</i>&nbsp; *
+<i>73</i>&nbsp; * &lt;p&gt;
+<i>74</i>&nbsp; * When a {@link Text} node is inside of a TextFlow some its properties are ignored.
+<i>75</i>&nbsp; * For example, the x and y properties of the {@link Text} node are ignored since
+<i>76</i>&nbsp; * the location of the node is determined by the parent. Likewise, the wrapping
+<i>77</i>&nbsp; * width in the {@link Text} node is ignored since the width used for wrapping
+<i>78</i>&nbsp; * is the TextFlow&#39;s width. The value of the &lt;code&gt;pickOnBounds&lt;/code&gt; property
+<i>79</i>&nbsp; * of a {@link Text} is set to &lt;code&gt;false&lt;/code&gt; when it is laid out by the
+<i>80</i>&nbsp; * TextFlow. This happens because the content of a single {@link Text} node can
+<i>81</i>&nbsp; * divided and placed in the different locations on the TextFlow (usually due to
+<i>82</i>&nbsp; * line breaking and bidi reordering).
+<i>83</i>&nbsp; *
+<i>84</i>&nbsp; * &lt;p&gt;
+<i>85</i>&nbsp; * The wrapping width of the layout is determined by the region&#39;s current width.
+<i>86</i>&nbsp; * It can be specified by the application by setting the textflow&#39;s preferred
+<i>87</i>&nbsp; * width. If no wrapping is desired, the application can either set the preferred
+<i>88</i>&nbsp; * with to Double.MAX_VALUE or Region.USE_COMPUTED_SIZE.
+<i>89</i>&nbsp; *
+<i>90</i>&nbsp; * &lt;p&gt;
+<i>91</i>&nbsp; * Paragraphs are separated by {@code &#39;\n&#39;} present in any Text child.
+<i>92</i>&nbsp; *
+<i>93</i>&nbsp; * &lt;p&gt;
+<i>94</i>&nbsp; * Example of a TextFlow:
+<i>95</i>&nbsp; * &lt;pre&gt;{@code
+<i>96</i>&nbsp; *     Text text1 = new Text(&quot;Big italic red text&quot;);
+<i>97</i>&nbsp; *     text1.setFill(Color.RED);
+<i>98</i>&nbsp; *     text1.setFont(Font.font(&quot;Helvetica&quot;, FontPosture.ITALIC, 40));
+<i>99</i>&nbsp; *     Text text2 = new Text(&quot; little bold blue text&quot;);
+<i>100</i>&nbsp; *     text2.setFill(Color.BLUE);
+<i>101</i>&nbsp; *     text2.setFont(Font.font(&quot;Helvetica&quot;, FontWeight.BOLD, 10));
+<i>102</i>&nbsp; *     TextFlow textFlow = new TextFlow(text1, text2);
+<i>103</i>&nbsp; * }&lt;/pre&gt;
+<i>104</i>&nbsp; *
+<i>105</i>&nbsp; * &lt;p&gt;
+<i>106</i>&nbsp; * TextFlow lays out each managed child regardless of the child&#39;s visible property value;
+<i>107</i>&nbsp; * unmanaged children are ignored for all layout calculations.&lt;/p&gt;
+<i>108</i>&nbsp; *
+<i>109</i>&nbsp; * &lt;p&gt;
+<i>110</i>&nbsp; * TextFlow may be styled with backgrounds and borders using CSS.  See
+<i>111</i>&nbsp; * {@link javafx.scene.layout.Region Region} superclass for details.&lt;/p&gt;
+<i>112</i>&nbsp; *
+<i>113</i>&nbsp; * &lt;h3&gt;Resizable Range&lt;/h3&gt;
+<i>114</i>&nbsp; *
+<i>115</i>&nbsp; * &lt;p&gt;
+<i>116</i>&nbsp; * A textflow&#39;s parent will resize the textflow within the textflow&#39;s range
+<i>117</i>&nbsp; * during layout. By default the textflow computes this range based on its content
+<i>118</i>&nbsp; * as outlined in the tables below.
+<i>119</i>&nbsp; * &lt;/p&gt;
+<i>120</i>&nbsp; *
+<i>121</i>&nbsp; * &lt;table border=&quot;1&quot;&gt;
+<i>122</i>&nbsp; * &lt;caption&gt;TextFlow Resize Table&lt;/caption&gt;
+<i>123</i>&nbsp; * &lt;tr&gt;&lt;td&gt;&lt;/td&gt;&lt;th&gt;width&lt;/th&gt;&lt;th&gt;height&lt;/th&gt;&lt;/tr&gt;
+<i>124</i>&nbsp; * &lt;tr&gt;&lt;th&gt;minimum&lt;/th&gt;
+<i>125</i>&nbsp; * &lt;td&gt;left/right insets&lt;/td&gt;
+<i>126</i>&nbsp; * &lt;td&gt;top/bottom insets plus the height of the text content&lt;/td&gt;&lt;/tr&gt;
+<i>127</i>&nbsp; * &lt;tr&gt;&lt;th&gt;preferred&lt;/th&gt;
+<i>128</i>&nbsp; * &lt;td&gt;left/right insets plus the width of the text content&lt;/td&gt;
+<i>129</i>&nbsp; * &lt;td&gt;top/bottom insets plus the height of the text content&lt;/td&gt;&lt;/tr&gt;
+<i>130</i>&nbsp; * &lt;tr&gt;&lt;th&gt;maximum&lt;/th&gt;
+<i>131</i>&nbsp; * &lt;td&gt;Double.MAX_VALUE&lt;/td&gt;&lt;td&gt;Double.MAX_VALUE&lt;/td&gt;&lt;/tr&gt;
+<i>132</i>&nbsp; * &lt;/table&gt;
+<i>133</i>&nbsp; * &lt;p&gt;
+<i>134</i>&nbsp; * A textflow&#39;s unbounded maximum width and height are an indication to the parent that
+<i>135</i>&nbsp; * it may be resized beyond its preferred size to fill whatever space is assigned to it.
+<i>136</i>&nbsp; * &lt;p&gt;
+<i>137</i>&nbsp; * TextFlow provides properties for setting the size range directly.  These
+<i>138</i>&nbsp; * properties default to the sentinel value Region.USE_COMPUTED_SIZE, however the
+<i>139</i>&nbsp; * application may set them to other values as needed:
+<i>140</i>&nbsp; * &lt;pre&gt;&lt;code&gt;
+<i>141</i>&nbsp; *     &lt;b&gt;textflow.setMaxWidth(500);&lt;/b&gt;
+<i>142</i>&nbsp; * &lt;/code&gt;&lt;/pre&gt;
+<i>143</i>&nbsp; * Applications may restore the computed values by setting these properties back
+<i>144</i>&nbsp; * to Region.USE_COMPUTED_SIZE.
+<i>145</i>&nbsp; * &lt;p&gt;
+<i>146</i>&nbsp; * TextFlow does not clip its content by default, so it is possible that childrens&#39;
+<i>147</i>&nbsp; * bounds may extend outside its own bounds if a child&#39;s pref size is larger than
+<i>148</i>&nbsp; * the space textflow has to allocate for it.&lt;/p&gt;
+<i>149</i>&nbsp; *
+<i>150</i>&nbsp; * @since JavaFX 8.0
+<i>151</i>&nbsp; */
+<b class="nc"><i>152</i>&nbsp;public class TextFlow extends Pane {</b>
+<i>153</i>&nbsp;
+<i>154</i>&nbsp;    private TextLayout layout;
+<i>155</i>&nbsp;    private boolean needsContent;
+<i>156</i>&nbsp;    private boolean inLayout;
+<i>157</i>&nbsp;
+<i>158</i>&nbsp;    /**
+<i>159</i>&nbsp;     * Creates an empty TextFlow layout.
+<i>160</i>&nbsp;     */
+<i>161</i>&nbsp;    public TextFlow() {
+<b class="nc"><i>162</i>&nbsp;        super();</b>
+<b class="nc"><i>163</i>&nbsp;        effectiveNodeOrientationProperty().addListener(observable -&gt; checkOrientation());</b>
+<b class="nc"><i>164</i>&nbsp;        setAccessibleRole(AccessibleRole.TEXT);</b>
+<b class="nc"><i>165</i>&nbsp;    }</b>
+<i>166</i>&nbsp;
+<i>167</i>&nbsp;    /**
+<i>168</i>&nbsp;     * Creates a TextFlow layout with the given children.
+<i>169</i>&nbsp;     *
+<i>170</i>&nbsp;     * @param children children.
+<i>171</i>&nbsp;     */
+<i>172</i>&nbsp;    public TextFlow(Node... children) {
+<b class="nc"><i>173</i>&nbsp;        this();</b>
+<b class="nc"><i>174</i>&nbsp;        getChildren().addAll(children);</b>
+<b class="nc"><i>175</i>&nbsp;    }</b>
+<i>176</i>&nbsp;
+<i>177</i>&nbsp;    private void checkOrientation() {
+<b class="nc"><i>178</i>&nbsp;        NodeOrientation orientation = getEffectiveNodeOrientation();</b>
+<b class="nc"><i>179</i>&nbsp;        boolean rtl =  orientation == NodeOrientation.RIGHT_TO_LEFT;</b>
+<b class="nc"><i>180</i>&nbsp;        int dir = rtl ? TextLayout.DIRECTION_RTL : TextLayout.DIRECTION_LTR;</b>
+<b class="nc"><i>181</i>&nbsp;        TextLayout layout = getTextLayout();</b>
+<b class="nc"><i>182</i>&nbsp;        if (layout.setDirection(dir)) {</b>
+<b class="nc"><i>183</i>&nbsp;            requestLayout();</b>
+<i>184</i>&nbsp;        }
+<b class="nc"><i>185</i>&nbsp;    }</b>
+<i>186</i>&nbsp;
+<i>187</i>&nbsp;    /**
+<i>188</i>&nbsp;     * Maps local point to index in the content.
+<i>189</i>&nbsp;     *
+<i>190</i>&nbsp;     * @param point the specified point to be tested
+<i>191</i>&nbsp;     * @return a {@code HitInfo} representing the character index found
+<i>192</i>&nbsp;     * @since 9
+<i>193</i>&nbsp;     */
+<i>194</i>&nbsp;    public final HitInfo hitTest(javafx.geometry.Point2D point) {
+<b class="nc"><i>195</i>&nbsp;        if (point != null) {</b>
+<b class="nc"><i>196</i>&nbsp;            TextLayout layout = getTextLayout();</b>
+<b class="nc"><i>197</i>&nbsp;            double x = point.getX()/* - getX()*/;</b>
+<b class="nc"><i>198</i>&nbsp;            double y = point.getY()/* - getY()/* + getYRendering()*/;</b>
+<b class="nc"><i>199</i>&nbsp;            TextLayout.Hit layoutHit = layout.getHitInfo((float)x, (float)y);</b>
+<b class="nc"><i>200</i>&nbsp;            return new HitInfo(layoutHit.getCharIndex(), layoutHit.getInsertionIndex(),</b>
+<b class="nc"><i>201</i>&nbsp;                               layoutHit.isLeading(), null/*getText()*/);</b>
+<i>202</i>&nbsp;        } else {
+<b class="nc"><i>203</i>&nbsp;            return null;</b>
+<i>204</i>&nbsp;        }
+<i>205</i>&nbsp;    }
+<i>206</i>&nbsp;
+<i>207</i>&nbsp;    /**
+<i>208</i>&nbsp;     * Returns shape of caret in local coordinates.
+<i>209</i>&nbsp;     *
+<i>210</i>&nbsp;     * @param charIndex the character index for the caret
+<i>211</i>&nbsp;     * @param leading whether the caret is biased on the leading edge of the character
+<i>212</i>&nbsp;     * @return an array of {@code PathElement} which can be used to create a {@code Shape}
+<i>213</i>&nbsp;     * @since 9
+<i>214</i>&nbsp;     */
+<i>215</i>&nbsp;    public PathElement[] caretShape(int charIndex, boolean leading) {
+<b class="nc"><i>216</i>&nbsp;        return getTextLayout().getCaretShape(charIndex, leading, 0, 0);</b>
+<i>217</i>&nbsp;    }
+<i>218</i>&nbsp;
+<i>219</i>&nbsp;    /**
+<i>220</i>&nbsp;     * Returns shape for the range of the text in local coordinates.
+<i>221</i>&nbsp;     *
+<i>222</i>&nbsp;     * @param start the beginning character index for the range
+<i>223</i>&nbsp;     * @param end the end character index (non-inclusive) for the range
+<i>224</i>&nbsp;     * @return an array of {@code PathElement} which can be used to create a {@code Shape}
+<i>225</i>&nbsp;     * @since 9
+<i>226</i>&nbsp;     */
+<i>227</i>&nbsp;    public final PathElement[] rangeShape(int start, int end) {
+<b class="nc"><i>228</i>&nbsp;        return getRange(start, end, TextLayout.TYPE_TEXT);</b>
+<i>229</i>&nbsp;    }
+<i>230</i>&nbsp;
+<i>231</i>&nbsp;    @Override
+<i>232</i>&nbsp;    public boolean usesMirroring() {
+<b class="nc"><i>233</i>&nbsp;        return false;</b>
+<i>234</i>&nbsp;    }
+<i>235</i>&nbsp;
+<i>236</i>&nbsp;    @Override protected void setWidth(double value) {
+<b class="nc"><i>237</i>&nbsp;        if (value != getWidth()) {</b>
+<b class="nc"><i>238</i>&nbsp;            TextLayout layout = getTextLayout();</b>
+<b class="nc"><i>239</i>&nbsp;            Insets insets = getInsets();</b>
+<b class="nc"><i>240</i>&nbsp;            double left = snapSpaceX(insets.getLeft());</b>
+<b class="nc"><i>241</i>&nbsp;            double right = snapSpaceX(insets.getRight());</b>
+<b class="nc"><i>242</i>&nbsp;            double width = Math.max(1, value - left - right);</b>
+<b class="nc"><i>243</i>&nbsp;            layout.setWrapWidth((float)width);</b>
+<b class="nc"><i>244</i>&nbsp;            super.setWidth(value);</b>
+<i>245</i>&nbsp;        }
+<b class="nc"><i>246</i>&nbsp;    }</b>
+<i>247</i>&nbsp;
+<i>248</i>&nbsp;    @Override protected double computePrefWidth(double height) {
+<b class="nc"><i>249</i>&nbsp;        TextLayout layout = getTextLayout();</b>
+<b class="nc"><i>250</i>&nbsp;        layout.setWrapWidth(0);</b>
+<b class="nc"><i>251</i>&nbsp;        double width = layout.getBounds().getWidth();</b>
+<b class="nc"><i>252</i>&nbsp;        Insets insets = getInsets();</b>
+<b class="nc"><i>253</i>&nbsp;        double left = snapSpaceX(insets.getLeft());</b>
+<b class="nc"><i>254</i>&nbsp;        double right = snapSpaceX(insets.getRight());</b>
+<b class="nc"><i>255</i>&nbsp;        double wrappingWidth = Math.max(1, getWidth() - left - right);</b>
+<b class="nc"><i>256</i>&nbsp;        layout.setWrapWidth((float)wrappingWidth);</b>
+<b class="nc"><i>257</i>&nbsp;        return left + width + right;</b>
+<i>258</i>&nbsp;    }
+<i>259</i>&nbsp;
+<i>260</i>&nbsp;    @Override protected double computePrefHeight(double width) {
+<b class="nc"><i>261</i>&nbsp;        TextLayout layout = getTextLayout();</b>
+<b class="nc"><i>262</i>&nbsp;        Insets insets = getInsets();</b>
+<b class="nc"><i>263</i>&nbsp;        double left = snapSpaceX(insets.getLeft());</b>
+<b class="nc"><i>264</i>&nbsp;        double right = snapSpaceX(insets.getRight());</b>
+<b class="nc"><i>265</i>&nbsp;        if (width == USE_COMPUTED_SIZE) {</b>
+<b class="nc"><i>266</i>&nbsp;            layout.setWrapWidth(0);</b>
+<i>267</i>&nbsp;        } else {
+<b class="nc"><i>268</i>&nbsp;            double wrappingWidth = Math.max(1, width - left - right);</b>
+<b class="nc"><i>269</i>&nbsp;            layout.setWrapWidth((float)wrappingWidth);</b>
+<i>270</i>&nbsp;        }
+<b class="nc"><i>271</i>&nbsp;        double height = layout.getBounds().getHeight();</b>
+<b class="nc"><i>272</i>&nbsp;        double wrappingWidth = Math.max(1, getWidth() - left - right);</b>
+<b class="nc"><i>273</i>&nbsp;        layout.setWrapWidth((float)wrappingWidth);</b>
+<b class="nc"><i>274</i>&nbsp;        double top = snapSpaceY(insets.getTop());</b>
+<b class="nc"><i>275</i>&nbsp;        double bottom = snapSpaceY(insets.getBottom());</b>
+<b class="nc"><i>276</i>&nbsp;        return top + height + bottom;</b>
+<i>277</i>&nbsp;    }
+<i>278</i>&nbsp;
+<i>279</i>&nbsp;    @Override protected double computeMinHeight(double width) {
+<b class="nc"><i>280</i>&nbsp;        return computePrefHeight(width);</b>
+<i>281</i>&nbsp;    }
+<i>282</i>&nbsp;
+<i>283</i>&nbsp;    @Override public void requestLayout() {
+<i>284</i>&nbsp;        /* The geometry of text nodes can be changed during layout children.
+<i>285</i>&nbsp;         * For that reason it has to call NodeHelper.geomChanged(this) causing
+<i>286</i>&nbsp;         * requestLayout() to happen during layoutChildren().
+<i>287</i>&nbsp;         * The inLayout flag prevents this call to cause any extra work.
+<i>288</i>&nbsp;         */
+<b class="nc"><i>289</i>&nbsp;        if (inLayout) return;</b>
+<i>290</i>&nbsp;
+<i>291</i>&nbsp;        /*
+<i>292</i>&nbsp;        * There is no need to reset the text layout&#39;s content every time
+<i>293</i>&nbsp;        * requestLayout() is called. For example, the content needs
+<i>294</i>&nbsp;        * to be set when:
+<i>295</i>&nbsp;        *  children add or removed
+<i>296</i>&nbsp;        *  children managed state changes
+<i>297</i>&nbsp;        *  children geomChanged (width/height of embedded node)
+<i>298</i>&nbsp;        *  children content changes (text/font of text node)
+<i>299</i>&nbsp;        * The content does not need to set when:
+<i>300</i>&nbsp;        *  the width/height changes in the region
+<i>301</i>&nbsp;        *  the insets changes in the region
+<i>302</i>&nbsp;        *
+<i>303</i>&nbsp;        * Unfortunately, it is not possible to know what change invoked request
+<i>304</i>&nbsp;        * layout. The solution is to always reset the content in the text
+<i>305</i>&nbsp;        * layout and rely on it to preserve itself if the new content equals to
+<i>306</i>&nbsp;        * the old one. The cost to generate the new content is not avoid.
+<i>307</i>&nbsp;        */
+<b class="nc"><i>308</i>&nbsp;        needsContent = true;</b>
+<b class="nc"><i>309</i>&nbsp;        super.requestLayout();</b>
+<b class="nc"><i>310</i>&nbsp;    }</b>
+<i>311</i>&nbsp;
+<i>312</i>&nbsp;    @Override public Orientation getContentBias() {
+<b class="nc"><i>313</i>&nbsp;        return Orientation.HORIZONTAL;</b>
+<i>314</i>&nbsp;    }
+<i>315</i>&nbsp;
+<i>316</i>&nbsp;    @Override protected void layoutChildren() {
+<b class="nc"><i>317</i>&nbsp;        inLayout = true;</b>
+<b class="nc"><i>318</i>&nbsp;        Insets insets = getInsets();</b>
+<b class="nc"><i>319</i>&nbsp;        double top = snapSpaceY(insets.getTop());</b>
+<b class="nc"><i>320</i>&nbsp;        double left = snapSpaceX(insets.getLeft());</b>
+<i>321</i>&nbsp;
+<b class="nc"><i>322</i>&nbsp;        GlyphList[] runs = getTextLayout().getRuns();</b>
+<b class="nc"><i>323</i>&nbsp;        for (int j = 0; j &lt; runs.length; j++) {</b>
+<b class="nc"><i>324</i>&nbsp;            GlyphList run = runs[j];</b>
+<b class="nc"><i>325</i>&nbsp;            TextSpan span = run.getTextSpan();</b>
+<b class="nc"><i>326</i>&nbsp;            if (span instanceof EmbeddedSpan) {</b>
+<b class="nc"><i>327</i>&nbsp;                Node child = ((EmbeddedSpan)span).getNode();</b>
+<b class="nc"><i>328</i>&nbsp;                Point2D location = run.getLocation();</b>
+<b class="nc"><i>329</i>&nbsp;                double baselineOffset = -run.getLineBounds().getMinY();</b>
+<i>330</i>&nbsp;
+<b class="nc"><i>331</i>&nbsp;                layoutInArea(child, left + location.x, top + location.y,</b>
+<b class="nc"><i>332</i>&nbsp;                             run.getWidth(), run.getHeight(),</b>
+<i>333</i>&nbsp;                             baselineOffset, null, true, true,
+<i>334</i>&nbsp;                             HPos.CENTER, VPos.BASELINE);
+<i>335</i>&nbsp;            }
+<i>336</i>&nbsp;        }
+<i>337</i>&nbsp;
+<b class="nc"><i>338</i>&nbsp;        List&lt;Node&gt; managed = getManagedChildren();</b>
+<b class="nc"><i>339</i>&nbsp;        for (Node node: managed) {</b>
+<b class="nc"><i>340</i>&nbsp;            if (node instanceof Text) {</b>
+<b class="nc"><i>341</i>&nbsp;                Text text = (Text)node;</b>
+<b class="nc"><i>342</i>&nbsp;                text.layoutSpan(runs);</b>
+<b class="nc"><i>343</i>&nbsp;                BaseBounds spanBounds = text.getSpanBounds();</b>
+<b class="nc"><i>344</i>&nbsp;                text.relocate(left + spanBounds.getMinX(),</b>
+<b class="nc"><i>345</i>&nbsp;                              top + spanBounds.getMinY());</b>
+<i>346</i>&nbsp;            }
+<b class="nc"><i>347</i>&nbsp;        }</b>
+<b class="nc"><i>348</i>&nbsp;        inLayout = false;</b>
+<b class="nc"><i>349</i>&nbsp;    }</b>
+<i>350</i>&nbsp;
+<i>351</i>&nbsp;    private PathElement[] getRange(int start, int end, int type) {
+<b class="nc"><i>352</i>&nbsp;        TextLayout layout = getTextLayout();</b>
+<b class="nc"><i>353</i>&nbsp;        return layout.getRange(start, end, type, 0, 0);</b>
+<i>354</i>&nbsp;    }
+<i>355</i>&nbsp;
+<i>356</i>&nbsp;    private static class EmbeddedSpan implements TextSpan {
+<i>357</i>&nbsp;        RectBounds bounds;
+<i>358</i>&nbsp;        Node node;
+<i>359</i>&nbsp;        public EmbeddedSpan(Node node, double baseline, double width, double height) {
+<i>360</i>&nbsp;            this.node = node;
+<i>361</i>&nbsp;            bounds = new RectBounds(0, (float)-baseline,
+<i>362</i>&nbsp;                                    (float)width, (float)(height - baseline));
+<i>363</i>&nbsp;        }
+<i>364</i>&nbsp;
+<i>365</i>&nbsp;        @Override public String getText() {
+<i>366</i>&nbsp;            return &quot;\uFFFC&quot;;
+<i>367</i>&nbsp;        }
+<i>368</i>&nbsp;
+<i>369</i>&nbsp;        @Override public Object getFont() {
+<i>370</i>&nbsp;            return null;
+<i>371</i>&nbsp;        }
+<i>372</i>&nbsp;
+<i>373</i>&nbsp;        @Override public RectBounds getBounds() {
+<i>374</i>&nbsp;            return bounds;
+<i>375</i>&nbsp;        }
+<i>376</i>&nbsp;
+<i>377</i>&nbsp;        public Node getNode() {
+<i>378</i>&nbsp;            return node;
+<i>379</i>&nbsp;        }
+<i>380</i>&nbsp;    }
+<i>381</i>&nbsp;
+<i>382</i>&nbsp;    TextLayout getTextLayout() {
+<b class="nc"><i>383</i>&nbsp;        if (layout == null) {</b>
+<b class="nc"><i>384</i>&nbsp;            TextLayoutFactory factory = Toolkit.getToolkit().getTextLayoutFactory();</b>
+<b class="nc"><i>385</i>&nbsp;            layout = factory.createLayout();</b>
+<b class="nc"><i>386</i>&nbsp;            needsContent = true;</b>
+<i>387</i>&nbsp;        }
+<b class="nc"><i>388</i>&nbsp;        if (needsContent) {</b>
+<b class="nc"><i>389</i>&nbsp;            List&lt;Node&gt; children = getManagedChildren();</b>
+<b class="nc"><i>390</i>&nbsp;            TextSpan[] spans = new TextSpan[children.size()];</b>
+<b class="nc"><i>391</i>&nbsp;            for (int i = 0; i &lt; spans.length; i++) {</b>
+<b class="nc"><i>392</i>&nbsp;                Node node = children.get(i);</b>
+<b class="nc"><i>393</i>&nbsp;                if (node instanceof Text) {</b>
+<b class="nc"><i>394</i>&nbsp;                    spans[i] = ((Text)node).getTextSpan();</b>
+<i>395</i>&nbsp;                } else {
+<i>396</i>&nbsp;                    /* Creating a text span every time forces text layout
+<i>397</i>&nbsp;                     * to run a full text analysis in the new content.
+<i>398</i>&nbsp;                     */
+<b class="nc"><i>399</i>&nbsp;                    double baseline = node.getBaselineOffset();</b>
+<b class="nc"><i>400</i>&nbsp;                    if (baseline == BASELINE_OFFSET_SAME_AS_HEIGHT) {</b>
+<b class="nc"><i>401</i>&nbsp;                        baseline = node.getLayoutBounds().getHeight();</b>
+<i>402</i>&nbsp;                    }
+<b class="nc"><i>403</i>&nbsp;                    double width = computeChildPrefAreaWidth(node, null);</b>
+<b class="nc"><i>404</i>&nbsp;                    double height = computeChildPrefAreaHeight(node, null);</b>
+<b class="nc"><i>405</i>&nbsp;                    spans[i] = new EmbeddedSpan(node, baseline, width, height);</b>
+<i>406</i>&nbsp;                }
+<i>407</i>&nbsp;            }
+<b class="nc"><i>408</i>&nbsp;            layout.setContent(spans);</b>
+<b class="nc"><i>409</i>&nbsp;            needsContent = false;</b>
+<i>410</i>&nbsp;        }
+<b class="nc"><i>411</i>&nbsp;        return layout;</b>
+<i>412</i>&nbsp;    }
+<i>413</i>&nbsp;
+<i>414</i>&nbsp;    /**
+<i>415</i>&nbsp;     * Defines horizontal text alignment.
+<i>416</i>&nbsp;     *
+<i>417</i>&nbsp;     * @defaultValue TextAlignment.LEFT
+<i>418</i>&nbsp;     */
+<i>419</i>&nbsp;    private ObjectProperty&lt;TextAlignment&gt; textAlignment;
+<i>420</i>&nbsp;
+<i>421</i>&nbsp;    public final void setTextAlignment(TextAlignment value) {
+<b class="nc"><i>422</i>&nbsp;        textAlignmentProperty().set(value);</b>
+<b class="nc"><i>423</i>&nbsp;    }</b>
+<i>424</i>&nbsp;
+<i>425</i>&nbsp;    public final TextAlignment getTextAlignment() {
+<b class="nc"><i>426</i>&nbsp;        return textAlignment == null ? TextAlignment.LEFT : textAlignment.get();</b>
+<i>427</i>&nbsp;    }
+<i>428</i>&nbsp;
+<i>429</i>&nbsp;    public final ObjectProperty&lt;TextAlignment&gt; textAlignmentProperty() {
+<b class="nc"><i>430</i>&nbsp;        if (textAlignment == null) {</b>
+<b class="nc"><i>431</i>&nbsp;            textAlignment =</b>
+<i>432</i>&nbsp;                new StyleableObjectProperty&lt;TextAlignment&gt;(TextAlignment.LEFT) {
+<i>433</i>&nbsp;                @Override public Object getBean() { return TextFlow.this; }
+<i>434</i>&nbsp;                @Override public String getName() { return &quot;textAlignment&quot;; }
+<i>435</i>&nbsp;                @Override public CssMetaData&lt;TextFlow, TextAlignment&gt; getCssMetaData() {
+<i>436</i>&nbsp;                    return StyleableProperties.TEXT_ALIGNMENT;
+<i>437</i>&nbsp;                }
+<i>438</i>&nbsp;                @Override public void invalidated() {
+<i>439</i>&nbsp;                    TextAlignment align = get();
+<i>440</i>&nbsp;                    if (align == null) align = TextAlignment.LEFT;
+<i>441</i>&nbsp;                    TextLayout layout = getTextLayout();
+<i>442</i>&nbsp;                    layout.setAlignment(align.ordinal());
+<i>443</i>&nbsp;                    requestLayout();
+<i>444</i>&nbsp;                }
+<i>445</i>&nbsp;            };
+<i>446</i>&nbsp;        }
+<b class="nc"><i>447</i>&nbsp;        return textAlignment;</b>
+<i>448</i>&nbsp;    }
+<i>449</i>&nbsp;
+<i>450</i>&nbsp;    /**
+<i>451</i>&nbsp;     * Defines the vertical space in pixel between lines.
+<i>452</i>&nbsp;     *
+<i>453</i>&nbsp;     * @defaultValue 0
+<i>454</i>&nbsp;     *
+<i>455</i>&nbsp;     * @since JavaFX 8.0
+<i>456</i>&nbsp;     */
+<i>457</i>&nbsp;    private DoubleProperty lineSpacing;
+<i>458</i>&nbsp;
+<i>459</i>&nbsp;    public final void setLineSpacing(double spacing) {
+<b class="nc"><i>460</i>&nbsp;        lineSpacingProperty().set(spacing);</b>
+<b class="nc"><i>461</i>&nbsp;    }</b>
+<i>462</i>&nbsp;
+<i>463</i>&nbsp;    public final double getLineSpacing() {
+<b class="nc"><i>464</i>&nbsp;        return lineSpacing == null ? 0 : lineSpacing.get();</b>
+<i>465</i>&nbsp;    }
+<i>466</i>&nbsp;
+<i>467</i>&nbsp;    public final DoubleProperty lineSpacingProperty() {
+<b class="nc"><i>468</i>&nbsp;        if (lineSpacing == null) {</b>
+<b class="nc"><i>469</i>&nbsp;            lineSpacing =</b>
+<i>470</i>&nbsp;                new StyleableDoubleProperty(0) {
+<i>471</i>&nbsp;                @Override public Object getBean() { return TextFlow.this; }
+<i>472</i>&nbsp;                @Override public String getName() { return &quot;lineSpacing&quot;; }
+<i>473</i>&nbsp;                @Override public CssMetaData&lt;TextFlow, Number&gt; getCssMetaData() {
+<i>474</i>&nbsp;                    return StyleableProperties.LINE_SPACING;
+<i>475</i>&nbsp;                }
+<i>476</i>&nbsp;                @Override public void invalidated() {
+<i>477</i>&nbsp;                    TextLayout layout = getTextLayout();
+<i>478</i>&nbsp;                    if (layout.setLineSpacing((float)get())) {
+<i>479</i>&nbsp;                        requestLayout();
+<i>480</i>&nbsp;                    }
+<i>481</i>&nbsp;                }
+<i>482</i>&nbsp;            };
+<i>483</i>&nbsp;        }
+<b class="nc"><i>484</i>&nbsp;        return lineSpacing;</b>
+<i>485</i>&nbsp;    }
+<i>486</i>&nbsp;
+<i>487</i>&nbsp;    @Override public final double getBaselineOffset() {
+<b class="nc"><i>488</i>&nbsp;        Insets insets = getInsets();</b>
+<b class="nc"><i>489</i>&nbsp;        double top = snapSpaceY(insets.getTop());</b>
+<b class="nc"><i>490</i>&nbsp;        return top - getTextLayout().getBounds().getMinY();</b>
+<i>491</i>&nbsp;    }
+<i>492</i>&nbsp;
+<i>493</i>&nbsp;   /***************************************************************************
+<i>494</i>&nbsp;    *                                                                         *
+<i>495</i>&nbsp;    *                            Stylesheet Handling                          *
+<i>496</i>&nbsp;    *                                                                         *
+<i>497</i>&nbsp;    **************************************************************************/
+<i>498</i>&nbsp;
+<i>499</i>&nbsp;    /*
+<i>500</i>&nbsp;     * Super-lazy instantiation pattern from Bill Pugh.
+<i>501</i>&nbsp;     */
+<i>502</i>&nbsp;     private static class StyleableProperties {
+<i>503</i>&nbsp;
+<i>504</i>&nbsp;         private static final
+<i>505</i>&nbsp;             CssMetaData&lt;TextFlow, TextAlignment&gt; TEXT_ALIGNMENT =
+<i>506</i>&nbsp;                 new CssMetaData&lt;TextFlow,TextAlignment&gt;(&quot;-fx-text-alignment&quot;,
+<i>507</i>&nbsp;                 new EnumConverter&lt;TextAlignment&gt;(TextAlignment.class),
+<i>508</i>&nbsp;                 TextAlignment.LEFT) {
+<i>509</i>&nbsp;
+<i>510</i>&nbsp;            @Override public boolean isSettable(TextFlow node) {
+<i>511</i>&nbsp;                return node.textAlignment == null || !node.textAlignment.isBound();
+<i>512</i>&nbsp;            }
+<i>513</i>&nbsp;
+<i>514</i>&nbsp;            @Override public StyleableProperty&lt;TextAlignment&gt; getStyleableProperty(TextFlow node) {
+<i>515</i>&nbsp;                return (StyleableProperty&lt;TextAlignment&gt;)node.textAlignmentProperty();
+<i>516</i>&nbsp;            }
+<i>517</i>&nbsp;         };
+<i>518</i>&nbsp;
+<i>519</i>&nbsp;         private static final
+<i>520</i>&nbsp;             CssMetaData&lt;TextFlow,Number&gt; LINE_SPACING =
+<i>521</i>&nbsp;                 new CssMetaData&lt;TextFlow,Number&gt;(&quot;-fx-line-spacing&quot;,
+<i>522</i>&nbsp;                 SizeConverter.getInstance(), 0) {
+<i>523</i>&nbsp;
+<i>524</i>&nbsp;            @Override public boolean isSettable(TextFlow node) {
+<i>525</i>&nbsp;                return node.lineSpacing == null || !node.lineSpacing.isBound();
+<i>526</i>&nbsp;            }
+<i>527</i>&nbsp;
+<i>528</i>&nbsp;            @Override public StyleableProperty&lt;Number&gt; getStyleableProperty(TextFlow node) {
+<i>529</i>&nbsp;                return (StyleableProperty&lt;Number&gt;)node.lineSpacingProperty();
+<i>530</i>&nbsp;            }
+<i>531</i>&nbsp;         };
+<i>532</i>&nbsp;
+<i>533</i>&nbsp;     private static final List&lt;CssMetaData&lt;? extends Styleable, ?&gt;&gt; STYLEABLES;
+<i>534</i>&nbsp;         static {
+<i>535</i>&nbsp;            final List&lt;CssMetaData&lt;? extends Styleable, ?&gt;&gt; styleables =
+<i>536</i>&nbsp;                new ArrayList&lt;CssMetaData&lt;? extends Styleable, ?&gt;&gt;(Pane.getClassCssMetaData());
+<i>537</i>&nbsp;            styleables.add(TEXT_ALIGNMENT);
+<i>538</i>&nbsp;            styleables.add(LINE_SPACING);
+<i>539</i>&nbsp;            STYLEABLES = Collections.unmodifiableList(styleables);
+<i>540</i>&nbsp;         }
+<i>541</i>&nbsp;    }
+<i>542</i>&nbsp;
+<i>543</i>&nbsp;    /**
+<i>544</i>&nbsp;     * @return The CssMetaData associated with this class, which may include the
+<i>545</i>&nbsp;     * CssMetaData of its superclasses.
+<i>546</i>&nbsp;     */
+<i>547</i>&nbsp;    public static List&lt;CssMetaData&lt;? extends Styleable, ?&gt;&gt; getClassCssMetaData() {
+<b class="nc"><i>548</i>&nbsp;        return StyleableProperties.STYLEABLES;</b>
+<i>549</i>&nbsp;    }
+<i>550</i>&nbsp;
+<i>551</i>&nbsp;    @Override
+<i>552</i>&nbsp;    public List&lt;CssMetaData&lt;? extends Styleable, ?&gt;&gt; getCssMetaData() {
+<b class="nc"><i>553</i>&nbsp;        return getClassCssMetaData();</b>
+<i>554</i>&nbsp;    }
+<i>555</i>&nbsp;
+<i>556</i>&nbsp;    /* The methods in this section are copied from Region due to package visibility restriction */
+<i>557</i>&nbsp;    private static double snapSpace(double value, boolean snapToPixel) {
+<b class="nc"><i>558</i>&nbsp;        return snapToPixel ? Math.round(value) : value;</b>
+<i>559</i>&nbsp;    }
+<i>560</i>&nbsp;
+<i>561</i>&nbsp;    static double boundedSize(double min, double pref, double max) {
+<b class="nc"><i>562</i>&nbsp;        double a = pref &gt;= min ? pref : min;</b>
+<b class="nc"><i>563</i>&nbsp;        double b = min &gt;= max ? min : max;</b>
+<b class="nc"><i>564</i>&nbsp;        return a &lt;= b ? a : b;</b>
+<i>565</i>&nbsp;    }
+<i>566</i>&nbsp;
+<i>567</i>&nbsp;    double computeChildPrefAreaWidth(Node child, Insets margin) {
+<b class="nc"><i>568</i>&nbsp;        return computeChildPrefAreaWidth(child, margin, -1);</b>
+<i>569</i>&nbsp;    }
+<i>570</i>&nbsp;
+<i>571</i>&nbsp;    double computeChildPrefAreaWidth(Node child, Insets margin, double height) {
+<b class="nc"><i>572</i>&nbsp;        final boolean snap = isSnapToPixel();</b>
+<b class="nc"><i>573</i>&nbsp;        double top = margin != null? snapSpace(margin.getTop(), snap) : 0;</b>
+<b class="nc"><i>574</i>&nbsp;        double bottom = margin != null? snapSpace(margin.getBottom(), snap) : 0;</b>
+<b class="nc"><i>575</i>&nbsp;        double left = margin != null? snapSpace(margin.getLeft(), snap) : 0;</b>
+<b class="nc"><i>576</i>&nbsp;        double right = margin != null? snapSpace(margin.getRight(), snap) : 0;</b>
+<b class="nc"><i>577</i>&nbsp;        double alt = -1;</b>
+<b class="nc"><i>578</i>&nbsp;        if (child.getContentBias() == Orientation.VERTICAL) { // width depends on height</b>
+<b class="nc"><i>579</i>&nbsp;            alt = snapSizeY(boundedSize(</b>
+<b class="nc"><i>580</i>&nbsp;                    child.minHeight(-1), height != -1? height - top - bottom :</b>
+<b class="nc"><i>581</i>&nbsp;                           child.prefHeight(-1), child.maxHeight(-1)));</b>
+<i>582</i>&nbsp;        }
+<b class="nc"><i>583</i>&nbsp;        return left + snapSizeX(boundedSize(child.minWidth(alt), child.prefWidth(alt), child.maxWidth(alt))) + right;</b>
+<i>584</i>&nbsp;    }
+<i>585</i>&nbsp;
+<i>586</i>&nbsp;    double computeChildPrefAreaHeight(Node child, Insets margin) {
+<b class="nc"><i>587</i>&nbsp;        return computeChildPrefAreaHeight(child, margin, -1);</b>
+<i>588</i>&nbsp;    }
+<i>589</i>&nbsp;
+<i>590</i>&nbsp;    double computeChildPrefAreaHeight(Node child, Insets margin, double width) {
+<b class="nc"><i>591</i>&nbsp;        final boolean snap = isSnapToPixel();</b>
+<b class="nc"><i>592</i>&nbsp;        double top = margin != null? snapSpace(margin.getTop(), snap) : 0;</b>
+<b class="nc"><i>593</i>&nbsp;        double bottom = margin != null? snapSpace(margin.getBottom(), snap) : 0;</b>
+<b class="nc"><i>594</i>&nbsp;        double left = margin != null? snapSpace(margin.getLeft(), snap) : 0;</b>
+<b class="nc"><i>595</i>&nbsp;        double right = margin != null? snapSpace(margin.getRight(), snap) : 0;</b>
+<b class="nc"><i>596</i>&nbsp;        double alt = -1;</b>
+<b class="nc"><i>597</i>&nbsp;        if (child.getContentBias() == Orientation.HORIZONTAL) { // height depends on width</b>
+<b class="nc"><i>598</i>&nbsp;            alt = snapSizeX(boundedSize(</b>
+<b class="nc"><i>599</i>&nbsp;                    child.minWidth(-1), width != -1? width - left - right :</b>
+<b class="nc"><i>600</i>&nbsp;                           child.prefWidth(-1), child.maxWidth(-1)));</b>
+<i>601</i>&nbsp;        }
+<b class="nc"><i>602</i>&nbsp;        return top + snapSizeY(boundedSize(child.minHeight(alt), child.prefHeight(alt), child.maxHeight(alt))) + bottom;</b>
+<i>603</i>&nbsp;    }
+<i>604</i>&nbsp;    /* end of copied code */
+<i>605</i>&nbsp;
+<i>606</i>&nbsp;    /** {@inheritDoc} */
+<i>607</i>&nbsp;    @Override
+<i>608</i>&nbsp;    public Object queryAccessibleAttribute(AccessibleAttribute attribute, Object... parameters) {
+<b class="nc"><i>609</i>&nbsp;        switch (attribute) {</b>
+<i>610</i>&nbsp;            case TEXT: {
+<b class="nc"><i>611</i>&nbsp;                String accText = getAccessibleText();</b>
+<b class="nc"><i>612</i>&nbsp;                if (accText != null &amp;&amp; !accText.isEmpty()) return accText;</b>
+<i>613</i>&nbsp;
+<b class="nc"><i>614</i>&nbsp;                StringBuilder title = new StringBuilder();</b>
+<b class="nc"><i>615</i>&nbsp;                for (Node node: getChildren()) {</b>
+<b class="nc"><i>616</i>&nbsp;                    Object text = node.queryAccessibleAttribute(AccessibleAttribute.TEXT, parameters);</b>
+<b class="nc"><i>617</i>&nbsp;                    if (text != null) {</b>
+<b class="nc"><i>618</i>&nbsp;                        title.append(text.toString());</b>
+<i>619</i>&nbsp;                    }
+<b class="nc"><i>620</i>&nbsp;                }</b>
+<b class="nc"><i>621</i>&nbsp;                return title.toString();</b>
+<i>622</i>&nbsp;            }
+<b class="nc"><i>623</i>&nbsp;            default: return super.queryAccessibleAttribute(attribute, parameters);</b>
+<i>624</i>&nbsp;        }
+<i>625</i>&nbsp;    }
+<i>626</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2017-12-04 21:49</div>
+</div>
+</body>
+</html>

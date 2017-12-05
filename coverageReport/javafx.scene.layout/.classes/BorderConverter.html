@@ -1,0 +1,284 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: BorderConverter</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">javafx.scene.layout</a> ]
+</div>
+
+<h1>Coverage Summary for Class: BorderConverter (javafx.scene.layout)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">BorderConverter</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    60%
+  </span>
+  <span class="absValue">
+    (3/ 5)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    3.5%
+  </span>
+  <span class="absValue">
+    (3/ 85)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright (c) 2012, 2015, Oracle and/or its affiliates. All rights reserved.
+<i>3</i>&nbsp; * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+<i>4</i>&nbsp; *
+<i>5</i>&nbsp; *
+<i>6</i>&nbsp; *
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; *
+<i>11</i>&nbsp; *
+<i>12</i>&nbsp; *
+<i>13</i>&nbsp; *
+<i>14</i>&nbsp; *
+<i>15</i>&nbsp; *
+<i>16</i>&nbsp; *
+<i>17</i>&nbsp; *
+<i>18</i>&nbsp; *
+<i>19</i>&nbsp; *
+<i>20</i>&nbsp; *
+<i>21</i>&nbsp; *
+<i>22</i>&nbsp; *
+<i>23</i>&nbsp; *
+<i>24</i>&nbsp; */
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;package javafx.scene.layout;
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;import com.sun.javafx.css.StyleManager;
+<i>29</i>&nbsp;import com.sun.javafx.scene.layout.region.BorderImageSlices;
+<i>30</i>&nbsp;import com.sun.javafx.scene.layout.region.Margins;
+<i>31</i>&nbsp;import com.sun.javafx.scene.layout.region.RepeatStruct;
+<i>32</i>&nbsp;import java.util.Map;
+<i>33</i>&nbsp;import javafx.css.CssMetaData;
+<i>34</i>&nbsp;import javafx.css.ParsedValue;
+<i>35</i>&nbsp;import javafx.css.Styleable;
+<i>36</i>&nbsp;import javafx.css.StyleConverter;
+<i>37</i>&nbsp;import javafx.geometry.Insets;
+<i>38</i>&nbsp;import javafx.scene.image.Image;
+<i>39</i>&nbsp;import javafx.scene.paint.Color;
+<i>40</i>&nbsp;import javafx.scene.paint.Paint;
+<i>41</i>&nbsp;
+<i>42</i>&nbsp;/**
+<i>43</i>&nbsp; */
+<i>44</i>&nbsp;class BorderConverter extends StyleConverter&lt;ParsedValue[], Border&gt; {
+<i>45</i>&nbsp;
+<b class="fc"><i>46</i>&nbsp;    private static final BorderConverter BORDER_IMAGE_CONVERTER =</b>
+<i>47</i>&nbsp;            new BorderConverter();
+<i>48</i>&nbsp;
+<i>49</i>&nbsp;    public static BorderConverter getInstance() {
+<b class="fc"><i>50</i>&nbsp;        return BORDER_IMAGE_CONVERTER;</b>
+<i>51</i>&nbsp;    }
+<i>52</i>&nbsp;
+<i>53</i>&nbsp;    // Disallow instantiation
+<b class="fc"><i>54</i>&nbsp;    private BorderConverter() { }</b>
+<i>55</i>&nbsp;
+<i>56</i>&nbsp;    @Override
+<i>57</i>&nbsp;    public Border convert(Map&lt;CssMetaData&lt;? extends Styleable, ?&gt;, Object&gt; convertedValues) {
+<b class="nc"><i>58</i>&nbsp;        final Paint[][] strokeFills = (Paint[][])convertedValues.get(Border.BORDER_COLOR);</b>
+<b class="nc"><i>59</i>&nbsp;        final BorderStrokeStyle[][] strokeStyles = (BorderStrokeStyle[][]) convertedValues.get(Border.BORDER_STYLE);</b>
+<b class="nc"><i>60</i>&nbsp;        final String[] imageUrls = (String[]) convertedValues.get(Border.BORDER_IMAGE_SOURCE);</b>
+<i>61</i>&nbsp;        //
+<i>62</i>&nbsp;        // In W3C CSS, border colors and border images are not layered. In javafx, they are. We&#39;ve taken the position
+<i>63</i>&nbsp;        // that there is one layer per -fx-border-color or -fx-border-image-source. This is consistent with
+<i>64</i>&nbsp;        // background-image (see http://www.w3.org/TR/css3-background/#layering). But, in a browser, you can have a
+<i>65</i>&nbsp;        // border-style with no corresponding border-color - the border-color just defaults to &#39;currentColor&#39; (which
+<i>66</i>&nbsp;        // we don&#39;t have so we&#39;ll call it &#39;black&#39; for the time being). So the number of stroke-border layers is now
+<i>67</i>&nbsp;        // determined by the max of strokeFills.length and strokeStyles.length. If there are more styles than fills,
+<i>68</i>&nbsp;        // the remaining styles will use the last fill value (this is consistent with handling of the other stroke
+<i>69</i>&nbsp;        // border properties). If there aren&#39;t any fills at all, then the fill is &#39;currentColor&#39; (i.e., black) just
+<i>70</i>&nbsp;        // as the default stroke is solid.
+<i>71</i>&nbsp;        //
+<b class="nc"><i>72</i>&nbsp;        final boolean hasStrokes = (strokeFills != null &amp;&amp; strokeFills.length &gt; 0) || (strokeStyles != null &amp;&amp; strokeStyles.length &gt; 0);</b>
+<b class="nc"><i>73</i>&nbsp;        final boolean hasImages = imageUrls != null &amp;&amp; imageUrls.length &gt; 0;</b>
+<i>74</i>&nbsp;
+<i>75</i>&nbsp;        // If there are neither background fills nor images, then there is nothing for us to construct.
+<b class="nc"><i>76</i>&nbsp;        if (!hasStrokes &amp;&amp; !hasImages) return null;</b>
+<i>77</i>&nbsp;
+<b class="nc"><i>78</i>&nbsp;        BorderStroke[] borderStrokes = null;</b>
+<b class="nc"><i>79</i>&nbsp;        if (hasStrokes) {</b>
+<i>80</i>&nbsp;
+<b class="nc"><i>81</i>&nbsp;            final int lastStrokeFill = strokeFills != null ? strokeFills.length - 1 : -1;</b>
+<b class="nc"><i>82</i>&nbsp;            final int lastStrokeStyle = strokeStyles != null ? strokeStyles.length - 1 : -1;</b>
+<b class="nc"><i>83</i>&nbsp;            final int nLayers = (lastStrokeFill &gt;= lastStrokeStyle ? lastStrokeFill : lastStrokeStyle) + 1;</b>
+<i>84</i>&nbsp;
+<b class="nc"><i>85</i>&nbsp;            Object tmp = convertedValues.get(Border.BORDER_WIDTH);</b>
+<b class="nc"><i>86</i>&nbsp;            final Margins[] borderWidths = tmp == null ? new Margins[0] : (Margins[]) tmp;</b>
+<b class="nc"><i>87</i>&nbsp;            final int lastMarginIndex = borderWidths.length - 1;</b>
+<i>88</i>&nbsp;
+<b class="nc"><i>89</i>&nbsp;            tmp = convertedValues.get(Border.BORDER_RADIUS);</b>
+<b class="nc"><i>90</i>&nbsp;            final CornerRadii[] borderRadii = tmp == null ? new CornerRadii[0] : (CornerRadii[]) tmp;</b>
+<b class="nc"><i>91</i>&nbsp;            final int lastRadiusIndex = borderRadii.length - 1;</b>
+<i>92</i>&nbsp;
+<b class="nc"><i>93</i>&nbsp;            tmp = convertedValues.get(Border.BORDER_INSETS);</b>
+<b class="nc"><i>94</i>&nbsp;            final Insets[] borderInsets = tmp == null ? new Insets[0] : (Insets[]) tmp;</b>
+<b class="nc"><i>95</i>&nbsp;            final int lastInsetsIndex = borderInsets.length - 1;</b>
+<i>96</i>&nbsp;
+<b class="nc"><i>97</i>&nbsp;            for (int i=0; i&lt;nLayers; i++) {</b>
+<i>98</i>&nbsp;
+<i>99</i>&nbsp;                BorderStrokeStyle[] styles;
+<i>100</i>&nbsp;                // if there are no strokeStyles, then lastStrokeStyle will be &lt; 0
+<b class="nc"><i>101</i>&nbsp;                if (lastStrokeStyle &lt; 0) {</b>
+<b class="nc"><i>102</i>&nbsp;                    styles = new BorderStrokeStyle[4];</b>
+<b class="nc"><i>103</i>&nbsp;                    styles[0] = styles[1] = styles[2] = styles[3] = BorderStrokeStyle.SOLID;</b>
+<i>104</i>&nbsp;                } else {
+<b class="nc"><i>105</i>&nbsp;                    styles = strokeStyles[i &lt;= lastStrokeStyle ? i : lastStrokeStyle];</b>
+<i>106</i>&nbsp;                }
+<i>107</i>&nbsp;
+<b class="nc"><i>108</i>&nbsp;                if (styles[0] == BorderStrokeStyle.NONE &amp;&amp;</b>
+<i>109</i>&nbsp;                        styles[1] == BorderStrokeStyle.NONE &amp;&amp;
+<i>110</i>&nbsp;                        styles[2] == BorderStrokeStyle.NONE &amp;&amp;
+<b class="nc"><i>111</i>&nbsp;                        styles[3] == BorderStrokeStyle.NONE) continue;</b>
+<i>112</i>&nbsp;
+<i>113</i>&nbsp;                Paint[] strokes;
+<i>114</i>&nbsp;                // if there are no strokeFills, then lastStrokeFill will be &lt; 0
+<b class="nc"><i>115</i>&nbsp;                if (lastStrokeFill &lt; 0) {</b>
+<b class="nc"><i>116</i>&nbsp;                    strokes = new Paint[4];</b>
+<i>117</i>&nbsp;                    // TODO: should be &#39;currentColor&#39;
+<b class="nc"><i>118</i>&nbsp;                    strokes[0] = strokes[1] = strokes[2] = strokes[3] = Color.BLACK;</b>
+<i>119</i>&nbsp;                }  else {
+<b class="nc"><i>120</i>&nbsp;                    strokes = strokeFills[i &lt;= lastStrokeFill ? i : lastStrokeFill];</b>
+<i>121</i>&nbsp;                }
+<i>122</i>&nbsp;
+<b class="nc"><i>123</i>&nbsp;                if (borderStrokes == null) borderStrokes = new BorderStroke[nLayers];</b>
+<i>124</i>&nbsp;
+<b class="nc"><i>125</i>&nbsp;                final Margins margins = borderWidths.length == 0 ?</b>
+<b class="nc"><i>126</i>&nbsp;                        null :</b>
+<b class="nc"><i>127</i>&nbsp;                        borderWidths[i &lt;= lastMarginIndex ? i : lastMarginIndex];</b>
+<b class="nc"><i>128</i>&nbsp;                final CornerRadii radii = borderRadii.length == 0 ?</b>
+<b class="nc"><i>129</i>&nbsp;                        CornerRadii.EMPTY :</b>
+<b class="nc"><i>130</i>&nbsp;                        borderRadii[i &lt;= lastRadiusIndex ? i : lastRadiusIndex];</b>
+<b class="nc"><i>131</i>&nbsp;                final Insets insets = borderInsets.length == 0 ?</b>
+<b class="nc"><i>132</i>&nbsp;                        null :</b>
+<b class="nc"><i>133</i>&nbsp;                        borderInsets[i &lt;= lastInsetsIndex ? i : lastInsetsIndex];</b>
+<i>134</i>&nbsp;
+<b class="nc"><i>135</i>&nbsp;                borderStrokes[i] = new BorderStroke(</b>
+<i>136</i>&nbsp;                        strokes[0], strokes[1], strokes[2], strokes[3],
+<i>137</i>&nbsp;                        styles[0], styles[1], styles[2], styles[3],
+<i>138</i>&nbsp;                        radii,
+<b class="nc"><i>139</i>&nbsp;                        margins == null ?</b>
+<b class="nc"><i>140</i>&nbsp;                                BorderStroke.DEFAULT_WIDTHS :</b>
+<b class="nc"><i>141</i>&nbsp;                                new BorderWidths(margins.getTop(), margins.getRight(), margins.getBottom(), margins.getLeft()),</b>
+<i>142</i>&nbsp;                        insets);
+<i>143</i>&nbsp;            }
+<i>144</i>&nbsp;        }
+<i>145</i>&nbsp;
+<b class="nc"><i>146</i>&nbsp;        BorderImage[] borderImages = null;</b>
+<b class="nc"><i>147</i>&nbsp;        if (hasImages) {</b>
+<b class="nc"><i>148</i>&nbsp;            borderImages = new BorderImage[imageUrls.length];</b>
+<b class="nc"><i>149</i>&nbsp;            Object tmp = convertedValues.get(Border.BORDER_IMAGE_REPEAT);</b>
+<b class="nc"><i>150</i>&nbsp;            final RepeatStruct[] repeats = tmp == null ? new RepeatStruct[0] : (RepeatStruct[]) tmp;</b>
+<b class="nc"><i>151</i>&nbsp;            final int lastRepeatIndex = repeats.length - 1;</b>
+<i>152</i>&nbsp;
+<b class="nc"><i>153</i>&nbsp;            tmp = convertedValues.get(Border.BORDER_IMAGE_SLICE);</b>
+<b class="nc"><i>154</i>&nbsp;            final BorderImageSlices[] slices = tmp == null ? new BorderImageSlices[0] : (BorderImageSlices[]) tmp;</b>
+<b class="nc"><i>155</i>&nbsp;            final int lastSlicesIndex = slices.length - 1;</b>
+<i>156</i>&nbsp;
+<b class="nc"><i>157</i>&nbsp;            tmp = convertedValues.get(Border.BORDER_IMAGE_WIDTH);</b>
+<b class="nc"><i>158</i>&nbsp;            final BorderWidths[] widths = tmp == null ? new BorderWidths[0] : (BorderWidths[]) tmp;</b>
+<b class="nc"><i>159</i>&nbsp;            final int lastWidthsIndex = widths.length - 1;</b>
+<i>160</i>&nbsp;
+<b class="nc"><i>161</i>&nbsp;            tmp = convertedValues.get(Border.BORDER_IMAGE_INSETS);</b>
+<b class="nc"><i>162</i>&nbsp;            final Insets[] insets = tmp == null ? new Insets[0] : (Insets[]) tmp;</b>
+<b class="nc"><i>163</i>&nbsp;            final int lastInsetsIndex = insets.length - 1;</b>
+<i>164</i>&nbsp;
+<b class="nc"><i>165</i>&nbsp;            for (int i=0; i&lt;imageUrls.length; i++) {</b>
+<b class="nc"><i>166</i>&nbsp;                if (imageUrls[i] == null) continue;</b>
+<b class="nc"><i>167</i>&nbsp;                BorderRepeat repeatX = BorderRepeat.STRETCH, repeatY = BorderRepeat.STRETCH;</b>
+<b class="nc"><i>168</i>&nbsp;                if (repeats.length &gt; 0) {</b>
+<b class="nc"><i>169</i>&nbsp;                    final RepeatStruct repeat = repeats[i &lt;= lastRepeatIndex ? i : lastRepeatIndex];</b>
+<b class="nc"><i>170</i>&nbsp;                    switch (repeat.repeatX) {</b>
+<b class="nc"><i>171</i>&nbsp;                        case SPACE: repeatX = BorderRepeat.SPACE; break;</b>
+<b class="nc"><i>172</i>&nbsp;                        case ROUND: repeatX = BorderRepeat.ROUND; break;</b>
+<b class="nc"><i>173</i>&nbsp;                        case REPEAT: repeatX = BorderRepeat.REPEAT; break;</b>
+<b class="nc"><i>174</i>&nbsp;                        case NO_REPEAT: repeatX = BorderRepeat.STRETCH; break;</b>
+<i>175</i>&nbsp;                    }
+<b class="nc"><i>176</i>&nbsp;                    switch (repeat.repeatY) {</b>
+<b class="nc"><i>177</i>&nbsp;                        case SPACE: repeatY = BorderRepeat.SPACE; break;</b>
+<b class="nc"><i>178</i>&nbsp;                        case ROUND: repeatY = BorderRepeat.ROUND; break;</b>
+<b class="nc"><i>179</i>&nbsp;                        case REPEAT: repeatY = BorderRepeat.REPEAT; break;</b>
+<b class="nc"><i>180</i>&nbsp;                        case NO_REPEAT: repeatY = BorderRepeat.STRETCH; break;</b>
+<i>181</i>&nbsp;                    }
+<i>182</i>&nbsp;                }
+<i>183</i>&nbsp;
+<b class="nc"><i>184</i>&nbsp;                final BorderImageSlices slice = slices.length &gt; 0 ? slices[i &lt;= lastSlicesIndex ? i : lastSlicesIndex] : BorderImageSlices.DEFAULT;</b>
+<b class="nc"><i>185</i>&nbsp;                final Insets inset = insets.length &gt; 0 ? insets[i &lt;= lastInsetsIndex ? i : lastInsetsIndex] : Insets.EMPTY;</b>
+<b class="nc"><i>186</i>&nbsp;                final BorderWidths width = widths.length &gt; 0 ? widths[i &lt;= lastWidthsIndex ? i : lastWidthsIndex] : BorderWidths.DEFAULT;</b>
+<b class="nc"><i>187</i>&nbsp;                final Image img = StyleManager.getInstance().getCachedImage(imageUrls[i]);</b>
+<b class="nc"><i>188</i>&nbsp;                borderImages[i] = new BorderImage(img, width, inset, slice.widths, slice.filled, repeatX, repeatY);</b>
+<i>189</i>&nbsp;            }
+<i>190</i>&nbsp;        }
+<i>191</i>&nbsp;
+<b class="nc"><i>192</i>&nbsp;        return borderStrokes == null &amp;&amp; borderImages == null ? null : new Border(borderStrokes, borderImages);</b>
+<i>193</i>&nbsp;    }
+<i>194</i>&nbsp;
+<i>195</i>&nbsp;    /**
+<i>196</i>&nbsp;     * @inheritDoc
+<i>197</i>&nbsp;     */
+<i>198</i>&nbsp;    @Override public String toString() {
+<b class="nc"><i>199</i>&nbsp;        return &quot;BorderConverter&quot;;</b>
+<i>200</i>&nbsp;    }
+<i>201</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2017-12-04 21:49</div>
+</div>
+</body>
+</html>

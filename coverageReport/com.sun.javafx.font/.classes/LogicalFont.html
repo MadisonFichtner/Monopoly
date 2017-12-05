@@ -1,0 +1,603 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: LogicalFont</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.javafx.font</a> ]
+</div>
+
+<h1>Coverage Summary for Class: LogicalFont (com.sun.javafx.font)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">LogicalFont</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    53.8%
+  </span>
+  <span class="absValue">
+    (21/ 39)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    43.8%
+  </span>
+  <span class="absValue">
+    (103/ 235)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright (c) 2011, 2013, Oracle and/or its affiliates. All rights reserved.
+<i>3</i>&nbsp; * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+<i>4</i>&nbsp; *
+<i>5</i>&nbsp; *
+<i>6</i>&nbsp; *
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; *
+<i>11</i>&nbsp; *
+<i>12</i>&nbsp; *
+<i>13</i>&nbsp; *
+<i>14</i>&nbsp; *
+<i>15</i>&nbsp; *
+<i>16</i>&nbsp; *
+<i>17</i>&nbsp; *
+<i>18</i>&nbsp; *
+<i>19</i>&nbsp; *
+<i>20</i>&nbsp; *
+<i>21</i>&nbsp; *
+<i>22</i>&nbsp; *
+<i>23</i>&nbsp; *
+<i>24</i>&nbsp; */
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;package com.sun.javafx.font;
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;import java.lang.ref.WeakReference;
+<i>29</i>&nbsp;import java.util.ArrayList;
+<i>30</i>&nbsp;import java.util.HashMap;
+<i>31</i>&nbsp;import java.util.Map;
+<i>32</i>&nbsp;import java.util.concurrent.ConcurrentHashMap;
+<i>33</i>&nbsp;
+<i>34</i>&nbsp;import com.sun.javafx.geom.transform.BaseTransform;
+<i>35</i>&nbsp;
+<i>36</i>&nbsp;/**
+<i>37</i>&nbsp; * This acts as a factory class for the 12 logical composite font
+<i>38</i>&nbsp; * resources which are available as well as providing the implementation
+<i>39</i>&nbsp; * of the resource.
+<i>40</i>&nbsp; */
+<i>41</i>&nbsp;public class LogicalFont implements CompositeFontResource {
+<i>42</i>&nbsp;
+<i>43</i>&nbsp;    public static final String SYSTEM     = &quot;System&quot;;
+<i>44</i>&nbsp;    public static final String SERIF      = &quot;Serif&quot;;
+<i>45</i>&nbsp;    public static final String SANS_SERIF = &quot;SansSerif&quot;;
+<i>46</i>&nbsp;    public static final String MONOSPACED = &quot;Monospaced&quot;;
+<i>47</i>&nbsp;
+<i>48</i>&nbsp;    public static final String STYLE_REGULAR     = &quot;Regular&quot;;
+<i>49</i>&nbsp;    public static final String STYLE_BOLD        = &quot;Bold&quot;;
+<i>50</i>&nbsp;    public static final String STYLE_ITALIC      = &quot;Italic&quot;;
+<i>51</i>&nbsp;    public static final String STYLE_BOLD_ITALIC = &quot;Bold Italic&quot;;
+<i>52</i>&nbsp;
+<i>53</i>&nbsp;    static final HashMap&lt;String, String&gt;
+<b class="fc"><i>54</i>&nbsp;        canonicalFamilyMap = new  HashMap&lt;String, String&gt;();</b>
+<i>55</i>&nbsp;    static {
+<b class="fc"><i>56</i>&nbsp;        canonicalFamilyMap.put(&quot;system&quot;, SYSTEM);</b>
+<i>57</i>&nbsp;
+<b class="fc"><i>58</i>&nbsp;        canonicalFamilyMap.put(&quot;serif&quot;, SERIF);</b>
+<i>59</i>&nbsp;
+<b class="fc"><i>60</i>&nbsp;        canonicalFamilyMap.put(&quot;sansserif&quot;, SANS_SERIF);</b>
+<b class="fc"><i>61</i>&nbsp;        canonicalFamilyMap.put(&quot;sans-serif&quot;, SANS_SERIF); // css style</b>
+<b class="fc"><i>62</i>&nbsp;        canonicalFamilyMap.put(&quot;dialog&quot;, SANS_SERIF);</b>
+<b class="fc"><i>63</i>&nbsp;        canonicalFamilyMap.put(&quot;default&quot;, SANS_SERIF);</b>
+<i>64</i>&nbsp;
+<b class="fc"><i>65</i>&nbsp;        canonicalFamilyMap.put(&quot;monospaced&quot;, MONOSPACED);</b>
+<b class="fc"><i>66</i>&nbsp;        canonicalFamilyMap.put(&quot;monospace&quot;, MONOSPACED); // css style</b>
+<b class="fc"><i>67</i>&nbsp;        canonicalFamilyMap.put(&quot;dialoginput&quot;, MONOSPACED);</b>
+<i>68</i>&nbsp;    }
+<i>69</i>&nbsp;
+<i>70</i>&nbsp;    static boolean isLogicalFont(String name) {
+<b class="fc"><i>71</i>&nbsp;        int spaceIndex = name.indexOf(&#39; &#39;);</b>
+<b class="fc"><i>72</i>&nbsp;        if (spaceIndex != -1) name = name.substring(0, spaceIndex);</b>
+<b class="fc"><i>73</i>&nbsp;        return canonicalFamilyMap.get(name) != null;</b>
+<i>74</i>&nbsp;    }
+<i>75</i>&nbsp;
+<i>76</i>&nbsp;    private static String getCanonicalFamilyName(String name) {
+<b class="fc"><i>77</i>&nbsp;         if (name == null) {</b>
+<b class="nc"><i>78</i>&nbsp;             return SANS_SERIF;</b>
+<i>79</i>&nbsp;         }
+<b class="fc"><i>80</i>&nbsp;         String lcName = name.toLowerCase();</b>
+<b class="fc"><i>81</i>&nbsp;         return canonicalFamilyMap.get(lcName);</b>
+<i>82</i>&nbsp;    }
+<i>83</i>&nbsp;
+<b class="fc"><i>84</i>&nbsp;    static LogicalFont[] logicalFonts = new LogicalFont[16];</b>
+<i>85</i>&nbsp;
+<i>86</i>&nbsp;    static PGFont getLogicalFont(String familyName, boolean bold,
+<i>87</i>&nbsp;                               boolean italic, float size) {
+<i>88</i>&nbsp;
+<b class="fc"><i>89</i>&nbsp;        String canonicalFamilyName = getCanonicalFamilyName(familyName);</b>
+<b class="fc"><i>90</i>&nbsp;        if (canonicalFamilyName == null) {</b>
+<b class="nc"><i>91</i>&nbsp;            return null;</b>
+<i>92</i>&nbsp;        }
+<i>93</i>&nbsp;
+<b class="fc"><i>94</i>&nbsp;        int fontIndex = 0;</b>
+<b class="fc"><i>95</i>&nbsp;        if (canonicalFamilyName.equals(SANS_SERIF)) {</b>
+<b class="nc"><i>96</i>&nbsp;            fontIndex = 0;</b>
+<b class="fc"><i>97</i>&nbsp;        } else if (canonicalFamilyName.equals(SERIF)) {</b>
+<b class="nc"><i>98</i>&nbsp;            fontIndex = 4;</b>
+<b class="fc"><i>99</i>&nbsp;       } else if (canonicalFamilyName.equals(MONOSPACED)) {</b>
+<b class="nc"><i>100</i>&nbsp;            fontIndex = 8;</b>
+<i>101</i>&nbsp;        } else {
+<b class="fc"><i>102</i>&nbsp;            fontIndex = 12;</b>
+<i>103</i>&nbsp;        }
+<b class="fc"><i>104</i>&nbsp;        if (bold) {</b>
+<b class="nc"><i>105</i>&nbsp;            fontIndex +=1;</b>
+<i>106</i>&nbsp;        }
+<b class="fc"><i>107</i>&nbsp;        if (italic) {</b>
+<b class="nc"><i>108</i>&nbsp;            fontIndex +=2;</b>
+<i>109</i>&nbsp;        }
+<i>110</i>&nbsp;
+<b class="fc"><i>111</i>&nbsp;        LogicalFont font = logicalFonts[fontIndex];</b>
+<b class="fc"><i>112</i>&nbsp;        if (font == null) {</b>
+<b class="fc"><i>113</i>&nbsp;            font = new LogicalFont(canonicalFamilyName, bold, italic);</b>
+<b class="fc"><i>114</i>&nbsp;            logicalFonts[fontIndex] = font;</b>
+<i>115</i>&nbsp;        }
+<b class="fc"><i>116</i>&nbsp;        return new PrismFont(font, font.getFullName(), size);</b>
+<i>117</i>&nbsp;    }
+<i>118</i>&nbsp;
+<i>119</i>&nbsp;    static PGFont getLogicalFont(String fullName, float size) {
+<i>120</i>&nbsp;
+<i>121</i>&nbsp;        /* Need to parse this to find the family portion, for which
+<i>122</i>&nbsp;         * we will allow the various spellings, and the style portion
+<i>123</i>&nbsp;         * which must be exactly one of those we understand. The matching
+<i>124</i>&nbsp;         * is however case insensitive.
+<i>125</i>&nbsp;         * Don&#39;t allow an absence of style, we want people to be
+<i>126</i>&nbsp;         * in the habit of distinguishing family and full name usage.
+<i>127</i>&nbsp;         * None of the family names we understand have a space, so look
+<i>128</i>&nbsp;         * for a space to delimit the family and style.
+<i>129</i>&nbsp;         */
+<b class="fc"><i>130</i>&nbsp;        int spaceIndex = fullName.indexOf(&#39; &#39;);</b>
+<b class="fc"><i>131</i>&nbsp;        if (spaceIndex == -1 || spaceIndex == fullName.length()-1) {</b>
+<b class="nc"><i>132</i>&nbsp;            return null;</b>
+<i>133</i>&nbsp;        }
+<b class="fc"><i>134</i>&nbsp;        String family = fullName.substring(0, spaceIndex);</b>
+<b class="fc"><i>135</i>&nbsp;        String canonicalFamily = getCanonicalFamilyName(family);</b>
+<b class="fc"><i>136</i>&nbsp;        if (canonicalFamily == null) {</b>
+<b class="nc"><i>137</i>&nbsp;            return null;</b>
+<i>138</i>&nbsp;        }
+<b class="fc"><i>139</i>&nbsp;        String style = fullName.substring(spaceIndex+1).toLowerCase();</b>
+<b class="fc"><i>140</i>&nbsp;        boolean bold=false, italic=false;</b>
+<b class="fc"><i>141</i>&nbsp;        if (style.equals(&quot;regular&quot;)) {</b>
+<i>142</i>&nbsp;            // nothing to do
+<b class="nc"><i>143</i>&nbsp;        } else if (style.equals(&quot;bold&quot;)) {</b>
+<b class="nc"><i>144</i>&nbsp;            bold = true;</b>
+<b class="nc"><i>145</i>&nbsp;        } else if (style.equals(&quot;italic&quot;)) {</b>
+<b class="nc"><i>146</i>&nbsp;            italic = true;</b>
+<b class="nc"><i>147</i>&nbsp;        } else if (style.equals(&quot;bold italic&quot;)) {</b>
+<b class="nc"><i>148</i>&nbsp;            bold = true;</b>
+<b class="nc"><i>149</i>&nbsp;            italic = true;</b>
+<i>150</i>&nbsp;        } else {
+<b class="nc"><i>151</i>&nbsp;            return null;</b>
+<i>152</i>&nbsp;        }
+<b class="fc"><i>153</i>&nbsp;        return getLogicalFont(canonicalFamily, bold, italic, size);</b>
+<i>154</i>&nbsp;    }
+<i>155</i>&nbsp;
+<i>156</i>&nbsp;    boolean isBold, isItalic;
+<i>157</i>&nbsp;    private String fullName, familyName, styleName;
+<i>158</i>&nbsp;    private String physicalFamily;
+<i>159</i>&nbsp;    private String physicalFullName;
+<i>160</i>&nbsp;    private String physicalFileName;
+<i>161</i>&nbsp;
+<b class="fc"><i>162</i>&nbsp;    private LogicalFont(String family, boolean bold, boolean italic) {</b>
+<i>163</i>&nbsp;
+<b class="fc"><i>164</i>&nbsp;        familyName = family;</b>
+<b class="fc"><i>165</i>&nbsp;        isBold = bold;</b>
+<b class="fc"><i>166</i>&nbsp;        isItalic = italic;</b>
+<i>167</i>&nbsp;
+<b class="fc"><i>168</i>&nbsp;        if (!bold &amp;&amp; !italic) {</b>
+<b class="fc"><i>169</i>&nbsp;            styleName = STYLE_REGULAR;</b>
+<b class="nc"><i>170</i>&nbsp;        } else if (bold &amp;&amp; !italic) {</b>
+<b class="nc"><i>171</i>&nbsp;            styleName = STYLE_BOLD;</b>
+<b class="nc"><i>172</i>&nbsp;        } else if (!bold &amp;&amp; italic) {</b>
+<b class="nc"><i>173</i>&nbsp;            styleName = STYLE_ITALIC;</b>
+<i>174</i>&nbsp;        } else {
+<b class="nc"><i>175</i>&nbsp;            styleName = STYLE_BOLD_ITALIC;</b>
+<i>176</i>&nbsp;        }
+<b class="fc"><i>177</i>&nbsp;        fullName = familyName + &quot; &quot; + styleName;</b>
+<b class="fc"><i>178</i>&nbsp;        if (PrismFontFactory.isLinux) {</b>
+<b class="nc"><i>179</i>&nbsp;            FontConfigManager.FcCompFont fcCompFont =</b>
+<b class="nc"><i>180</i>&nbsp;                FontConfigManager.getFontConfigFont(family, bold, italic);</b>
+<b class="nc"><i>181</i>&nbsp;            physicalFullName = fcCompFont.firstFont.fullName;</b>
+<b class="nc"><i>182</i>&nbsp;            physicalFileName = fcCompFont.firstFont.fontFile;</b>
+<b class="nc"><i>183</i>&nbsp;        } else {</b>
+<b class="fc"><i>184</i>&nbsp;            physicalFamily = PrismFontFactory.getSystemFont(familyName);</b>
+<i>185</i>&nbsp;        }
+<b class="fc"><i>186</i>&nbsp;    }</b>
+<i>187</i>&nbsp;
+<i>188</i>&nbsp;    private FontResource slot0FontResource;
+<i>189</i>&nbsp;
+<i>190</i>&nbsp;    private FontResource getSlot0Resource() {
+<b class="fc"><i>191</i>&nbsp;        if (slot0FontResource == null) {</b>
+<b class="fc"><i>192</i>&nbsp;            PrismFontFactory factory = PrismFontFactory.getFontFactory();</b>
+<b class="fc"><i>193</i>&nbsp;            if (physicalFamily != null) {</b>
+<b class="fc"><i>194</i>&nbsp;                slot0FontResource =  factory.getFontResource(physicalFamily,</b>
+<i>195</i>&nbsp;                                                             isBold,
+<i>196</i>&nbsp;                                                             isItalic, false);
+<i>197</i>&nbsp;            } else {
+<b class="nc"><i>198</i>&nbsp;                slot0FontResource = factory.getFontResource(physicalFullName,</b>
+<i>199</i>&nbsp;                                                            physicalFileName,
+<i>200</i>&nbsp;                                                            false);
+<i>201</i>&nbsp;            }
+<i>202</i>&nbsp;            // Its unlikely but possible that this font isn&#39;t installed.
+<b class="fc"><i>203</i>&nbsp;            if (slot0FontResource == null) {</b>
+<b class="nc"><i>204</i>&nbsp;                slot0FontResource = factory.getDefaultFontResource(false);</b>
+<i>205</i>&nbsp;            }
+<i>206</i>&nbsp;        }
+<b class="fc"><i>207</i>&nbsp;        return slot0FontResource;</b>
+<i>208</i>&nbsp;    }
+<i>209</i>&nbsp;
+<i>210</i>&nbsp;    private ArrayList&lt;String&gt; linkedFontFiles;
+<i>211</i>&nbsp;    private ArrayList&lt;String&gt; linkedFontNames;
+<i>212</i>&nbsp;    private FontResource[] fallbacks;
+<i>213</i>&nbsp;    private FontResource[] nativeFallbacks;
+<i>214</i>&nbsp;
+<i>215</i>&nbsp;    private void getLinkedFonts() {
+<b class="fc"><i>216</i>&nbsp;        if (fallbacks == null) {</b>
+<i>217</i>&nbsp;            ArrayList&lt;String&gt;[] linkedFontInfo;
+<b class="fc"><i>218</i>&nbsp;            if (PrismFontFactory.isLinux) {</b>
+<b class="nc"><i>219</i>&nbsp;                FontConfigManager.FcCompFont font =</b>
+<b class="nc"><i>220</i>&nbsp;                    FontConfigManager.getFontConfigFont(familyName,</b>
+<i>221</i>&nbsp;                                                        isBold, isItalic);
+<b class="nc"><i>222</i>&nbsp;                linkedFontFiles = FontConfigManager.getFileNames(font, true);</b>
+<b class="nc"><i>223</i>&nbsp;                linkedFontNames = FontConfigManager.getFontNames(font, true);</b>
+<b class="nc"><i>224</i>&nbsp;            } else {</b>
+<b class="fc"><i>225</i>&nbsp;                linkedFontInfo = PrismFontFactory.getLinkedFonts(&quot;Tahoma&quot;, true);</b>
+<b class="fc"><i>226</i>&nbsp;                linkedFontFiles = linkedFontInfo[0];</b>
+<b class="fc"><i>227</i>&nbsp;                linkedFontNames = linkedFontInfo[1];</b>
+<i>228</i>&nbsp;            }
+<b class="fc"><i>229</i>&nbsp;            fallbacks = new FontResource[linkedFontFiles.size()];</b>
+<i>230</i>&nbsp;        }
+<b class="fc"><i>231</i>&nbsp;    }</b>
+<i>232</i>&nbsp;
+<i>233</i>&nbsp;    public int getNumSlots() {
+<b class="fc"><i>234</i>&nbsp;        getLinkedFonts();</b>
+<b class="fc"><i>235</i>&nbsp;        int num = linkedFontFiles.size();</b>
+<b class="fc"><i>236</i>&nbsp;        if (nativeFallbacks != null) {</b>
+<b class="nc"><i>237</i>&nbsp;            num += nativeFallbacks.length;</b>
+<i>238</i>&nbsp;        }
+<b class="fc"><i>239</i>&nbsp;        return num + 1;</b>
+<i>240</i>&nbsp;    }
+<i>241</i>&nbsp;
+<i>242</i>&nbsp;    public int getSlotForFont(String fontName) {
+<b class="nc"><i>243</i>&nbsp;        getLinkedFonts();</b>
+<b class="nc"><i>244</i>&nbsp;        int i = 1;</b>
+<b class="nc"><i>245</i>&nbsp;        for (String linkedFontName : linkedFontNames) {</b>
+<b class="nc"><i>246</i>&nbsp;            if (fontName.equalsIgnoreCase(linkedFontName)) {</b>
+<b class="nc"><i>247</i>&nbsp;                return i;</b>
+<i>248</i>&nbsp;            }
+<b class="nc"><i>249</i>&nbsp;            i++;</b>
+<b class="nc"><i>250</i>&nbsp;        }</b>
+<b class="nc"><i>251</i>&nbsp;        if (nativeFallbacks != null) {</b>
+<b class="nc"><i>252</i>&nbsp;            for (FontResource nativeFallback : nativeFallbacks) {</b>
+<b class="nc"><i>253</i>&nbsp;                if (fontName.equalsIgnoreCase(nativeFallback.getFullName())) {</b>
+<b class="nc"><i>254</i>&nbsp;                    return i;</b>
+<i>255</i>&nbsp;                }
+<b class="nc"><i>256</i>&nbsp;                i++;</b>
+<i>257</i>&nbsp;            }
+<i>258</i>&nbsp;        }
+<i>259</i>&nbsp;
+<b class="nc"><i>260</i>&nbsp;        if (i &gt;= 0x7E) {</b>
+<i>261</i>&nbsp;            /* There are 8bits (0xFF) reserved in a glyph code to store the slot
+<i>262</i>&nbsp;             * number. The first bit cannot be set to avoid negative values
+<i>263</i>&nbsp;             * (leaving 0x7F). The extra -1 (leaving 0x7E) is to account for
+<i>264</i>&nbsp;             * the primary font resource in PrismCompositeFontResource.
+<i>265</i>&nbsp;             */
+<b class="nc"><i>266</i>&nbsp;            if (PrismFontFactory.debugFonts) {</b>
+<b class="nc"><i>267</i>&nbsp;                System.err.println(&quot;\tToo many font fallbacks!&quot;);</b>
+<i>268</i>&nbsp;            }
+<b class="nc"><i>269</i>&nbsp;            return -1;</b>
+<i>270</i>&nbsp;        }
+<b class="nc"><i>271</i>&nbsp;        PrismFontFactory factory = PrismFontFactory.getFontFactory();</b>
+<b class="nc"><i>272</i>&nbsp;        FontResource fr = factory.getFontResource(fontName, null, false);</b>
+<b class="nc"><i>273</i>&nbsp;        if (fr == null) {</b>
+<b class="nc"><i>274</i>&nbsp;            if (PrismFontFactory.debugFonts) {</b>
+<b class="nc"><i>275</i>&nbsp;                System.err.println(&quot;\t Font name not supported \&quot;&quot; + fontName + &quot;\&quot;.&quot;);</b>
+<i>276</i>&nbsp;            }
+<b class="nc"><i>277</i>&nbsp;            return -1;</b>
+<i>278</i>&nbsp;        }
+<i>279</i>&nbsp;
+<i>280</i>&nbsp;        /* Add the font to the list of native fallbacks */
+<i>281</i>&nbsp;        FontResource[] tmp;
+<b class="nc"><i>282</i>&nbsp;        if (nativeFallbacks == null) {</b>
+<b class="nc"><i>283</i>&nbsp;            tmp = new FontResource[1];</b>
+<i>284</i>&nbsp;        } else {
+<b class="nc"><i>285</i>&nbsp;            tmp = new FontResource[nativeFallbacks.length + 1];</b>
+<b class="nc"><i>286</i>&nbsp;            System.arraycopy(nativeFallbacks, 0, tmp, 0, nativeFallbacks.length);</b>
+<i>287</i>&nbsp;        }
+<b class="nc"><i>288</i>&nbsp;        tmp[tmp.length - 1] = fr;</b>
+<b class="nc"><i>289</i>&nbsp;        nativeFallbacks = tmp;</b>
+<i>290</i>&nbsp;
+<b class="nc"><i>291</i>&nbsp;        return i;</b>
+<i>292</i>&nbsp;    }
+<i>293</i>&nbsp;
+<i>294</i>&nbsp;    public FontResource getSlotResource(int slot) {
+<b class="fc"><i>295</i>&nbsp;        if (slot == 0) {</b>
+<b class="fc"><i>296</i>&nbsp;            return getSlot0Resource();</b>
+<i>297</i>&nbsp;        } else {
+<b class="nc"><i>298</i>&nbsp;            getLinkedFonts();</b>
+<b class="nc"><i>299</i>&nbsp;            slot = slot - 1;</b>
+<b class="nc"><i>300</i>&nbsp;            if (slot &gt;= fallbacks.length) {</b>
+<b class="nc"><i>301</i>&nbsp;                slot = slot - fallbacks.length;</b>
+<b class="nc"><i>302</i>&nbsp;                if (nativeFallbacks == null || slot &gt;= nativeFallbacks.length) {</b>
+<b class="nc"><i>303</i>&nbsp;                    return null;</b>
+<i>304</i>&nbsp;                }
+<b class="nc"><i>305</i>&nbsp;                return nativeFallbacks[slot];</b>
+<i>306</i>&nbsp;            }
+<b class="nc"><i>307</i>&nbsp;            if (fallbacks[slot] == null) {</b>
+<b class="nc"><i>308</i>&nbsp;                String file = linkedFontFiles.get(slot);</b>
+<b class="nc"><i>309</i>&nbsp;                String name = linkedFontNames.get(slot);</b>
+<b class="nc"><i>310</i>&nbsp;                fallbacks[slot] =</b>
+<b class="nc"><i>311</i>&nbsp;                    PrismFontFactory.getFontFactory().</b>
+<b class="nc"><i>312</i>&nbsp;                          getFontResource(name, file, false);</b>
+<b class="nc"><i>313</i>&nbsp;                if (fallbacks[slot] == null) {</b>
+<b class="nc"><i>314</i>&nbsp;                    fallbacks[slot] = getSlot0Resource();</b>
+<i>315</i>&nbsp;                }
+<i>316</i>&nbsp;            }
+<b class="nc"><i>317</i>&nbsp;            return fallbacks[slot];</b>
+<i>318</i>&nbsp;        }
+<i>319</i>&nbsp;    }
+<i>320</i>&nbsp;
+<i>321</i>&nbsp;    public String getFullName() {
+<b class="fc"><i>322</i>&nbsp;        return fullName;</b>
+<i>323</i>&nbsp;    }
+<i>324</i>&nbsp;
+<i>325</i>&nbsp;    public String getPSName() {
+<b class="nc"><i>326</i>&nbsp;        return fullName;</b>
+<i>327</i>&nbsp;    }
+<i>328</i>&nbsp;
+<i>329</i>&nbsp;    public String getFamilyName() {
+<b class="fc"><i>330</i>&nbsp;        return familyName;</b>
+<i>331</i>&nbsp;    }
+<i>332</i>&nbsp;
+<i>333</i>&nbsp;    public String getStyleName() {
+<b class="fc"><i>334</i>&nbsp;        return styleName;</b>
+<i>335</i>&nbsp;    }
+<i>336</i>&nbsp;
+<i>337</i>&nbsp;    public String getLocaleFullName() {
+<b class="nc"><i>338</i>&nbsp;        return fullName;</b>
+<i>339</i>&nbsp;    }
+<i>340</i>&nbsp;
+<i>341</i>&nbsp;    public String getLocaleFamilyName() {
+<b class="nc"><i>342</i>&nbsp;        return familyName;</b>
+<i>343</i>&nbsp;    }
+<i>344</i>&nbsp;
+<i>345</i>&nbsp;    public String getLocaleStyleName() {
+<b class="nc"><i>346</i>&nbsp;        return styleName;</b>
+<i>347</i>&nbsp;    }
+<i>348</i>&nbsp;
+<i>349</i>&nbsp;    public boolean isBold() {
+<b class="nc"><i>350</i>&nbsp;        return getSlotResource(0).isBold();</b>
+<i>351</i>&nbsp;    }
+<i>352</i>&nbsp;
+<i>353</i>&nbsp;    public boolean isItalic() {
+<b class="nc"><i>354</i>&nbsp;        return getSlotResource(0).isItalic();</b>
+<i>355</i>&nbsp;    }
+<i>356</i>&nbsp;
+<i>357</i>&nbsp;    public String getFileName() {
+<b class="nc"><i>358</i>&nbsp;        return getSlotResource(0).getFileName();</b>
+<i>359</i>&nbsp;    }
+<i>360</i>&nbsp;
+<i>361</i>&nbsp;    public int getFeatures() {
+<b class="fc"><i>362</i>&nbsp;        return getSlotResource(0).getFeatures();</b>
+<i>363</i>&nbsp;    }
+<i>364</i>&nbsp;
+<i>365</i>&nbsp;    public Object getPeer() {
+<b class="nc"><i>366</i>&nbsp;        return null;</b>
+<i>367</i>&nbsp;    }
+<i>368</i>&nbsp;
+<i>369</i>&nbsp;    public boolean isEmbeddedFont() {
+<b class="nc"><i>370</i>&nbsp;        return getSlotResource(0).isEmbeddedFont();</b>
+<i>371</i>&nbsp;    }
+<i>372</i>&nbsp;
+<i>373</i>&nbsp;    public void setPeer(Object peer) {
+<b class="nc"><i>374</i>&nbsp;        throw new UnsupportedOperationException(&quot;Not supported&quot;);</b>
+<i>375</i>&nbsp;    }
+<i>376</i>&nbsp;
+<i>377</i>&nbsp;    public float[] getGlyphBoundingBox(int glyphCode,
+<i>378</i>&nbsp;                                float size, float[] retArr) {
+<b class="fc"><i>379</i>&nbsp;        int slot = (glyphCode &gt;&gt;&gt; 24);</b>
+<b class="fc"><i>380</i>&nbsp;        int slotglyphCode = glyphCode &amp; CompositeGlyphMapper.GLYPHMASK;</b>
+<b class="fc"><i>381</i>&nbsp;        FontResource slotResource = getSlotResource(slot);</b>
+<b class="fc"><i>382</i>&nbsp;        return slotResource.getGlyphBoundingBox(slotglyphCode, size, retArr);</b>
+<i>383</i>&nbsp;   }
+<i>384</i>&nbsp;
+<i>385</i>&nbsp;    public float getAdvance(int glyphCode, float size) {
+<b class="fc"><i>386</i>&nbsp;        int slot = (glyphCode &gt;&gt;&gt; 24);</b>
+<b class="fc"><i>387</i>&nbsp;        int slotglyphCode = glyphCode &amp; CompositeGlyphMapper.GLYPHMASK;</b>
+<b class="fc"><i>388</i>&nbsp;        FontResource slotResource = getSlotResource(slot);</b>
+<b class="fc"><i>389</i>&nbsp;        return slotResource.getAdvance(slotglyphCode, size);</b>
+<i>390</i>&nbsp;    }
+<i>391</i>&nbsp;
+<i>392</i>&nbsp;    CompositeGlyphMapper mapper;
+<i>393</i>&nbsp;    public CharToGlyphMapper getGlyphMapper() {
+<i>394</i>&nbsp;        //return getSlot0Resource().getGlyphMapper();
+<b class="fc"><i>395</i>&nbsp;        if (mapper == null) {</b>
+<b class="fc"><i>396</i>&nbsp;            mapper = new CompositeGlyphMapper(this);</b>
+<i>397</i>&nbsp;        }
+<b class="fc"><i>398</i>&nbsp;        return mapper;</b>
+<i>399</i>&nbsp;    }
+<i>400</i>&nbsp;
+<b class="fc"><i>401</i>&nbsp;    Map&lt;FontStrikeDesc, WeakReference&lt;FontStrike&gt;&gt; strikeMap =</b>
+<i>402</i>&nbsp;        new ConcurrentHashMap&lt;FontStrikeDesc, WeakReference&lt;FontStrike&gt;&gt;();
+<i>403</i>&nbsp;
+<i>404</i>&nbsp;    public Map&lt;FontStrikeDesc, WeakReference&lt;FontStrike&gt;&gt; getStrikeMap() {
+<b class="nc"><i>405</i>&nbsp;        return strikeMap;</b>
+<i>406</i>&nbsp;    }
+<i>407</i>&nbsp;
+<i>408</i>&nbsp;    public int getDefaultAAMode() {
+<b class="fc"><i>409</i>&nbsp;        return getSlot0Resource().getDefaultAAMode();</b>
+<i>410</i>&nbsp;    }
+<i>411</i>&nbsp;
+<i>412</i>&nbsp;    public FontStrike getStrike(float size, BaseTransform transform) {
+<b class="fc"><i>413</i>&nbsp;        return getStrike(size, transform, getDefaultAAMode());</b>
+<i>414</i>&nbsp;    }
+<i>415</i>&nbsp;
+<i>416</i>&nbsp;    public FontStrike getStrike(float size, BaseTransform transform,
+<i>417</i>&nbsp;                                int aaMode) {
+<b class="fc"><i>418</i>&nbsp;        FontStrikeDesc desc= new FontStrikeDesc(size, transform, aaMode);</b>
+<b class="fc"><i>419</i>&nbsp;        WeakReference&lt;FontStrike&gt; ref = strikeMap.get(desc);</b>
+<b class="fc"><i>420</i>&nbsp;        CompositeStrike strike = null;</b>
+<i>421</i>&nbsp;
+<b class="fc"><i>422</i>&nbsp;        if (ref != null) {</b>
+<b class="fc"><i>423</i>&nbsp;            strike = (CompositeStrike)ref.get();</b>
+<i>424</i>&nbsp;        }
+<b class="fc"><i>425</i>&nbsp;        if (strike == null) {</b>
+<b class="fc"><i>426</i>&nbsp;            strike = new CompositeStrike(this, size, transform, aaMode, desc);</b>
+<b class="fc"><i>427</i>&nbsp;            if (strike.disposer != null) {</b>
+<b class="fc"><i>428</i>&nbsp;                ref = Disposer.addRecord(strike, strike.disposer);</b>
+<i>429</i>&nbsp;            } else {
+<b class="nc"><i>430</i>&nbsp;                ref = new WeakReference&lt;FontStrike&gt;(strike);</b>
+<i>431</i>&nbsp;            }
+<b class="fc"><i>432</i>&nbsp;            strikeMap.put(desc, ref);</b>
+<i>433</i>&nbsp;        }
+<b class="fc"><i>434</i>&nbsp;        return strike;</b>
+<i>435</i>&nbsp;    }
+<i>436</i>&nbsp;
+<i>437</i>&nbsp;    // Family 0 = SansSerif, 1 = Serif, 2 = Monospaced, 3 = System
+<i>438</i>&nbsp;    private static final int SANS_SERIF_INDEX = 0;
+<i>439</i>&nbsp;    private static final int SERIF_INDEX      = 1;
+<i>440</i>&nbsp;    private static final int MONOSPACED_INDEX = 2;
+<i>441</i>&nbsp;    private static final int SYSTEM_INDEX = 3;
+<i>442</i>&nbsp;    // Within a family styles are in the usual order
+<b class="fc"><i>443</i>&nbsp;    static String[][] logFamilies = null;</b>
+<i>444</i>&nbsp;
+<i>445</i>&nbsp;    private static void buildFamily(String[] fullNames, String family) {
+<b class="nc"><i>446</i>&nbsp;        fullNames[0] = family + &quot; &quot; + STYLE_REGULAR;</b>
+<b class="nc"><i>447</i>&nbsp;        fullNames[1] = family + &quot; &quot; + STYLE_BOLD;</b>
+<b class="nc"><i>448</i>&nbsp;        fullNames[2] = family + &quot; &quot; + STYLE_ITALIC;</b>
+<b class="nc"><i>449</i>&nbsp;        fullNames[3] = family + &quot; &quot; + STYLE_BOLD_ITALIC;</b>
+<b class="nc"><i>450</i>&nbsp;    }</b>
+<i>451</i>&nbsp;
+<i>452</i>&nbsp;    private static void buildFamilies() {
+<b class="nc"><i>453</i>&nbsp;        if (logFamilies == null) {</b>
+<b class="nc"><i>454</i>&nbsp;            String[][] tmpFamilies = new String[SYSTEM_INDEX+1][4];</b>
+<b class="nc"><i>455</i>&nbsp;            buildFamily(tmpFamilies[SANS_SERIF_INDEX], SANS_SERIF);</b>
+<b class="nc"><i>456</i>&nbsp;            buildFamily(tmpFamilies[SERIF_INDEX], SERIF);</b>
+<b class="nc"><i>457</i>&nbsp;            buildFamily(tmpFamilies[MONOSPACED_INDEX], MONOSPACED);</b>
+<b class="nc"><i>458</i>&nbsp;            buildFamily(tmpFamilies[SYSTEM_INDEX], SYSTEM);</b>
+<b class="nc"><i>459</i>&nbsp;            logFamilies = tmpFamilies;</b>
+<i>460</i>&nbsp;        }
+<b class="nc"><i>461</i>&nbsp;    }</b>
+<i>462</i>&nbsp;
+<i>463</i>&nbsp;    static void addFamilies(ArrayList&lt;String&gt; familyList) {
+<b class="nc"><i>464</i>&nbsp;        familyList.add(SANS_SERIF);</b>
+<b class="nc"><i>465</i>&nbsp;        familyList.add(SERIF);</b>
+<b class="nc"><i>466</i>&nbsp;        familyList.add(MONOSPACED);</b>
+<b class="nc"><i>467</i>&nbsp;        familyList.add(SYSTEM);</b>
+<b class="nc"><i>468</i>&nbsp;    }</b>
+<i>469</i>&nbsp;
+<i>470</i>&nbsp;    static void addFullNames(ArrayList&lt;String&gt; fullNames) {
+<b class="nc"><i>471</i>&nbsp;        buildFamilies();</b>
+<b class="nc"><i>472</i>&nbsp;        for (int f = 0; f &lt; logFamilies.length; f++) {</b>
+<b class="nc"><i>473</i>&nbsp;            for (int n = 0; n &lt; logFamilies[f].length; n++) {</b>
+<b class="nc"><i>474</i>&nbsp;                fullNames.add(logFamilies[f][n]);</b>
+<i>475</i>&nbsp;            }
+<i>476</i>&nbsp;        }
+<b class="nc"><i>477</i>&nbsp;    }</b>
+<i>478</i>&nbsp;
+<i>479</i>&nbsp;    static String[] getFontsInFamily(String family) {
+<b class="nc"><i>480</i>&nbsp;        String canonicalFamily = getCanonicalFamilyName(family);</b>
+<b class="nc"><i>481</i>&nbsp;        if (canonicalFamily == null) {</b>
+<b class="nc"><i>482</i>&nbsp;            return null;</b>
+<i>483</i>&nbsp;        }
+<b class="nc"><i>484</i>&nbsp;        buildFamilies();</b>
+<b class="nc"><i>485</i>&nbsp;        if (canonicalFamily.equals(SANS_SERIF)) {</b>
+<b class="nc"><i>486</i>&nbsp;            return logFamilies[SANS_SERIF_INDEX];</b>
+<b class="nc"><i>487</i>&nbsp;        } else if (canonicalFamily.equals(SERIF)) {</b>
+<b class="nc"><i>488</i>&nbsp;            return logFamilies[SERIF_INDEX];</b>
+<b class="nc"><i>489</i>&nbsp;        } else if (canonicalFamily.equals(MONOSPACED)) {</b>
+<b class="nc"><i>490</i>&nbsp;            return logFamilies[MONOSPACED_INDEX];</b>
+<i>491</i>&nbsp;        } else {
+<b class="nc"><i>492</i>&nbsp;            return logFamilies[SYSTEM_INDEX];</b>
+<i>493</i>&nbsp;        }
+<i>494</i>&nbsp;    }
+<i>495</i>&nbsp;
+<i>496</i>&nbsp;    @Override
+<i>497</i>&nbsp;    public boolean equals(Object obj) {
+<b class="fc"><i>498</i>&nbsp;        if (obj == null) {</b>
+<b class="nc"><i>499</i>&nbsp;            return false;</b>
+<i>500</i>&nbsp;        }
+<b class="fc"><i>501</i>&nbsp;        if (!(obj instanceof LogicalFont)) {</b>
+<b class="nc"><i>502</i>&nbsp;            return false;</b>
+<i>503</i>&nbsp;        }
+<b class="fc"><i>504</i>&nbsp;        final LogicalFont other = (LogicalFont)obj;</b>
+<i>505</i>&nbsp;
+<b class="fc"><i>506</i>&nbsp;        return this.fullName.equals(other.fullName);</b>
+<i>507</i>&nbsp;    }
+<i>508</i>&nbsp;
+<i>509</i>&nbsp;    private int hash;
+<i>510</i>&nbsp;    @Override
+<i>511</i>&nbsp;    public int hashCode() {
+<b class="nc"><i>512</i>&nbsp;        if (hash != 0) {</b>
+<b class="nc"><i>513</i>&nbsp;            return hash;</b>
+<i>514</i>&nbsp;        }
+<i>515</i>&nbsp;        else {
+<b class="nc"><i>516</i>&nbsp;            hash = fullName.hashCode();</b>
+<b class="nc"><i>517</i>&nbsp;            return hash;</b>
+<i>518</i>&nbsp;        }
+<i>519</i>&nbsp;    }
+<i>520</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2017-12-04 21:49</div>
+</div>
+</body>
+</html>

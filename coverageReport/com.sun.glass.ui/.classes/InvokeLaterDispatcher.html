@@ -1,0 +1,310 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: InvokeLaterDispatcher</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.glass.ui</a> ]
+</div>
+
+<h1>Coverage Summary for Class: InvokeLaterDispatcher (com.sun.glass.ui)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">InvokeLaterDispatcher</td>
+<td class="coverageStat">
+  <span class="percent">
+    50%
+  </span>
+  <span class="absValue">
+    (4/ 8)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    41.5%
+  </span>
+  <span class="absValue">
+    (22/ 53)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">InvokeLaterDispatcher$Future</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (3/ 3)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (12/ 12)
+  </span>
+</td>
+  </tr>
+  <tr>
+    <td class="name">InvokeLaterDispatcher$InvokeLaterSubmitter</td>
+  </tr>
+<tr>
+  <td class="name"><strong>total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    63.6%
+  </span>
+  <span class="absValue">
+    (7/ 11)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    52.3%
+  </span>
+  <span class="absValue">
+    (34/ 65)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright (c) 2012, 2015, Oracle and/or its affiliates. All rights reserved.
+<i>3</i>&nbsp; * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+<i>4</i>&nbsp; *
+<i>5</i>&nbsp; *
+<i>6</i>&nbsp; *
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; *
+<i>11</i>&nbsp; *
+<i>12</i>&nbsp; *
+<i>13</i>&nbsp; *
+<i>14</i>&nbsp; *
+<i>15</i>&nbsp; *
+<i>16</i>&nbsp; *
+<i>17</i>&nbsp; *
+<i>18</i>&nbsp; *
+<i>19</i>&nbsp; *
+<i>20</i>&nbsp; *
+<i>21</i>&nbsp; *
+<i>22</i>&nbsp; *
+<i>23</i>&nbsp; *
+<i>24</i>&nbsp; */
+<i>25</i>&nbsp;package com.sun.glass.ui;
+<i>26</i>&nbsp;
+<i>27</i>&nbsp;import java.util.*;
+<i>28</i>&nbsp;import java.util.concurrent.*;
+<i>29</i>&nbsp;
+<i>30</i>&nbsp;/**
+<i>31</i>&nbsp; * A dispatcher for Application.invokeLater() that submits deferred runnables
+<i>32</i>&nbsp; * to the native system one by one.
+<i>33</i>&nbsp; *
+<i>34</i>&nbsp; * A native system may by default execute all submitted runnables before
+<i>35</i>&nbsp; * actually leaving a nested event loop. However, there is an assumption that a
+<i>36</i>&nbsp; * runnable that calls the Application.leaveNestedEventLoop() method must be
+<i>37</i>&nbsp; * the last runnable executed in the current inner event loop. The next
+<i>38</i>&nbsp; * runnable that might have already been submitted by client code, must be
+<i>39</i>&nbsp; * invoked in the context of the outer event loop. To satisfy this requirement
+<i>40</i>&nbsp; * the runnables must be submitted to the native system one by one. This allows
+<i>41</i>&nbsp; * for fine grain control over executing the deferred tasks when it comes to
+<i>42</i>&nbsp; * entering/leaving nested event loops despite of native system limitations.
+<i>43</i>&nbsp; */
+<b class="fc"><i>44</i>&nbsp;public final class InvokeLaterDispatcher extends Thread {</b>
+<i>45</i>&nbsp;    // The runnables queue
+<b class="fc"><i>46</i>&nbsp;    private final BlockingDeque&lt;Runnable&gt; deque = new LinkedBlockingDeque&lt;Runnable&gt;();</b>
+<i>47</i>&nbsp;
+<i>48</i>&nbsp;    // Main lock
+<b class="fc"><i>49</i>&nbsp;    private final Object LOCK = new StringBuilder(&quot;InvokeLaterLock&quot;);</b>
+<i>50</i>&nbsp;
+<i>51</i>&nbsp;    // Indicates if the application has entered a nested event loop
+<b class="fc"><i>52</i>&nbsp;    private boolean nestedEventLoopEntered = false;</b>
+<i>53</i>&nbsp;
+<i>54</i>&nbsp;    // Indicates if the application is currently leaving a nested event loop
+<b class="fc"><i>55</i>&nbsp;    private volatile boolean leavingNestedEventLoop = false;</b>
+<i>56</i>&nbsp;
+<i>57</i>&nbsp;    /**
+<i>58</i>&nbsp;     * An InvokeLaterDispatcher client implements this interface to allow
+<i>59</i>&nbsp;     * the dispatcher to submit runnables to the native system.
+<i>60</i>&nbsp;     */
+<i>61</i>&nbsp;    public static interface InvokeLaterSubmitter {
+<i>62</i>&nbsp;        /**
+<i>63</i>&nbsp;         * Submits the runnable to the native system for later execution and
+<i>64</i>&nbsp;         * returns immediately.
+<i>65</i>&nbsp;         */
+<i>66</i>&nbsp;        public void submitForLaterInvocation(Runnable r);
+<i>67</i>&nbsp;    }
+<i>68</i>&nbsp;    private final InvokeLaterSubmitter invokeLaterSubmitter;
+<i>69</i>&nbsp;
+<i>70</i>&nbsp;    public InvokeLaterDispatcher(InvokeLaterSubmitter invokeLaterSubmitter) {
+<b class="fc"><i>71</i>&nbsp;        super(&quot;InvokeLaterDispatcher&quot;);</b>
+<b class="fc"><i>72</i>&nbsp;        setDaemon(true);</b>
+<i>73</i>&nbsp;
+<b class="fc"><i>74</i>&nbsp;        this.invokeLaterSubmitter = invokeLaterSubmitter;</b>
+<b class="fc"><i>75</i>&nbsp;    }</b>
+<i>76</i>&nbsp;
+<i>77</i>&nbsp;    private class Future implements Runnable {
+<b class="fc"><i>78</i>&nbsp;        private boolean done = false;</b>
+<i>79</i>&nbsp;        private final Runnable runnable;
+<i>80</i>&nbsp;
+<b class="fc"><i>81</i>&nbsp;        public Future(Runnable r) {</b>
+<b class="fc"><i>82</i>&nbsp;            this.runnable = r;</b>
+<b class="fc"><i>83</i>&nbsp;        }</b>
+<i>84</i>&nbsp;
+<i>85</i>&nbsp;        /**
+<i>86</i>&nbsp;         * Tells whether the runnbale has finished execution.
+<i>87</i>&nbsp;         *
+<i>88</i>&nbsp;         * This method must be called under the LOCK lock.
+<i>89</i>&nbsp;         */
+<i>90</i>&nbsp;        public boolean isDone() {
+<b class="fc"><i>91</i>&nbsp;            return done;</b>
+<i>92</i>&nbsp;        }
+<i>93</i>&nbsp;
+<i>94</i>&nbsp;        @Override public void run() {
+<i>95</i>&nbsp;            try {
+<b class="fc"><i>96</i>&nbsp;                this.runnable.run();</b>
+<i>97</i>&nbsp;            } finally {
+<b class="fc"><i>98</i>&nbsp;                synchronized (LOCK) {</b>
+<b class="fc"><i>99</i>&nbsp;                    this.done = true;</b>
+<b class="fc"><i>100</i>&nbsp;                    LOCK.notifyAll();</b>
+<b class="fc"><i>101</i>&nbsp;                }</b>
+<b class="fc"><i>102</i>&nbsp;            }</b>
+<b class="fc"><i>103</i>&nbsp;        }</b>
+<i>104</i>&nbsp;    }
+<i>105</i>&nbsp;
+<i>106</i>&nbsp;    @Override public void run() {
+<i>107</i>&nbsp;        try {
+<i>108</i>&nbsp;            while (true) {
+<b class="fc"><i>109</i>&nbsp;                Runnable r = deque.takeFirst();</b>
+<i>110</i>&nbsp;
+<b class="fc"><i>111</i>&nbsp;                if (leavingNestedEventLoop) {</b>
+<i>112</i>&nbsp;                    // Defer invocation of the runnable till the current inner
+<i>113</i>&nbsp;                    // event loop returns from its enterNestedEventLoop()
+<b class="nc"><i>114</i>&nbsp;                    deque.addFirst(r);</b>
+<b class="nc"><i>115</i>&nbsp;                    synchronized (LOCK) {</b>
+<b class="nc"><i>116</i>&nbsp;                        while (leavingNestedEventLoop) {</b>
+<b class="nc"><i>117</i>&nbsp;                            LOCK.wait();</b>
+<i>118</i>&nbsp;                        }
+<b class="nc"><i>119</i>&nbsp;                    }</b>
+<i>120</i>&nbsp;                } else {
+<i>121</i>&nbsp;                    // Submit the runnable to the native system
+<b class="fc"><i>122</i>&nbsp;                    final Future future = new Future(r);</b>
+<b class="fc"><i>123</i>&nbsp;                    invokeLaterSubmitter.submitForLaterInvocation(future);</b>
+<b class="fc"><i>124</i>&nbsp;                    synchronized (LOCK) {</b>
+<i>125</i>&nbsp;                        try {
+<b class="fc"><i>126</i>&nbsp;                            while (!future.isDone() &amp;&amp; !nestedEventLoopEntered) {</b>
+<b class="fc"><i>127</i>&nbsp;                                LOCK.wait();</b>
+<i>128</i>&nbsp;                            }
+<i>129</i>&nbsp;                            // Continue processing other runnables if we entered
+<i>130</i>&nbsp;                            // an inner event loop while excuting this runnable
+<i>131</i>&nbsp;                        } finally {
+<b class="fc"><i>132</i>&nbsp;                            nestedEventLoopEntered = false;</b>
+<b class="fc"><i>133</i>&nbsp;                        }</b>
+<b class="fc"><i>134</i>&nbsp;                    }</b>
+<i>135</i>&nbsp;                }
+<b class="fc"><i>136</i>&nbsp;            }</b>
+<b class="nc"><i>137</i>&nbsp;        } catch (InterruptedException ex) {</b>
+<i>138</i>&nbsp;            // OK, let&#39;s stop this thread
+<i>139</i>&nbsp;        }
+<b class="nc"><i>140</i>&nbsp;    }</b>
+<i>141</i>&nbsp;
+<i>142</i>&nbsp;    public void invokeAndWait(Runnable runnable) {
+<b class="nc"><i>143</i>&nbsp;        final Future future = new Future(runnable);</b>
+<b class="nc"><i>144</i>&nbsp;        invokeLaterSubmitter.submitForLaterInvocation(future);</b>
+<b class="nc"><i>145</i>&nbsp;        synchronized (LOCK) {</b>
+<i>146</i>&nbsp;            try {
+<b class="nc"><i>147</i>&nbsp;                while (!future.isDone()) {</b>
+<b class="nc"><i>148</i>&nbsp;                    LOCK.wait();</b>
+<i>149</i>&nbsp;                }
+<b class="nc"><i>150</i>&nbsp;            } catch (InterruptedException ex) {</b>
+<b class="nc"><i>151</i>&nbsp;            }</b>
+<b class="nc"><i>152</i>&nbsp;        }</b>
+<b class="nc"><i>153</i>&nbsp;    }</b>
+<i>154</i>&nbsp;
+<i>155</i>&nbsp;    /**
+<i>156</i>&nbsp;     * Schedules execution of a runnable on the event thread.
+<i>157</i>&nbsp;     *
+<i>158</i>&nbsp;     * @see Application#invokeLater(Runnable)
+<i>159</i>&nbsp;     */
+<i>160</i>&nbsp;    public void invokeLater(Runnable command) {
+<b class="fc"><i>161</i>&nbsp;        deque.addLast(command);</b>
+<b class="fc"><i>162</i>&nbsp;    }</b>
+<i>163</i>&nbsp;
+<i>164</i>&nbsp;    /**
+<i>165</i>&nbsp;     * Notifies that a nested event loop is going to be entered.
+<i>166</i>&nbsp;     *
+<i>167</i>&nbsp;     * An InvokeLaterDispatcher client is responsible for calling this method
+<i>168</i>&nbsp;     * just before the enterNestedEventLoop() is dispatched to the native
+<i>169</i>&nbsp;     * system for actually starting the nested loop.
+<i>170</i>&nbsp;     */
+<i>171</i>&nbsp;    public void notifyEnteringNestedEventLoop() {
+<b class="nc"><i>172</i>&nbsp;        synchronized (LOCK) {</b>
+<b class="nc"><i>173</i>&nbsp;            nestedEventLoopEntered = true;</b>
+<b class="nc"><i>174</i>&nbsp;            LOCK.notifyAll();</b>
+<b class="nc"><i>175</i>&nbsp;        }</b>
+<b class="nc"><i>176</i>&nbsp;    }</b>
+<i>177</i>&nbsp;
+<i>178</i>&nbsp;    /**
+<i>179</i>&nbsp;     * Notifies that the application is leaving a nested event loop.
+<i>180</i>&nbsp;     */
+<i>181</i>&nbsp;    public void notifyLeavingNestedEventLoop() {
+<b class="nc"><i>182</i>&nbsp;        synchronized (LOCK) {</b>
+<b class="nc"><i>183</i>&nbsp;            leavingNestedEventLoop = true;</b>
+<b class="nc"><i>184</i>&nbsp;            LOCK.notifyAll();</b>
+<b class="nc"><i>185</i>&nbsp;        }</b>
+<b class="nc"><i>186</i>&nbsp;    }</b>
+<i>187</i>&nbsp;
+<i>188</i>&nbsp;    /**
+<i>189</i>&nbsp;     * Notifies that the application has left a nested event loop.
+<i>190</i>&nbsp;     */
+<i>191</i>&nbsp;    public void notifyLeftNestedEventLoop() {
+<b class="nc"><i>192</i>&nbsp;        synchronized (LOCK) {</b>
+<b class="nc"><i>193</i>&nbsp;            leavingNestedEventLoop = false;</b>
+<b class="nc"><i>194</i>&nbsp;            LOCK.notifyAll();</b>
+<b class="nc"><i>195</i>&nbsp;        }</b>
+<b class="nc"><i>196</i>&nbsp;    }</b>
+<i>197</i>&nbsp;}
+<i>198</i>&nbsp;
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2017-12-04 21:49</div>
+</div>
+</body>
+</html>

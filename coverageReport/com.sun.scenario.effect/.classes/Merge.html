@@ -1,0 +1,279 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: Merge</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.scenario.effect</a> ]
+</div>
+
+<h1>Coverage Summary for Class: Merge (com.sun.scenario.effect)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">Merge</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    60%
+  </span>
+  <span class="absValue">
+    (6/ 10)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    61.1%
+  </span>
+  <span class="absValue">
+    (22/ 36)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright (c) 2008, 2014, Oracle and/or its affiliates. All rights reserved.
+<i>3</i>&nbsp; * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+<i>4</i>&nbsp; *
+<i>5</i>&nbsp; *
+<i>6</i>&nbsp; *
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; *
+<i>11</i>&nbsp; *
+<i>12</i>&nbsp; *
+<i>13</i>&nbsp; *
+<i>14</i>&nbsp; *
+<i>15</i>&nbsp; *
+<i>16</i>&nbsp; *
+<i>17</i>&nbsp; *
+<i>18</i>&nbsp; *
+<i>19</i>&nbsp; *
+<i>20</i>&nbsp; *
+<i>21</i>&nbsp; *
+<i>22</i>&nbsp; *
+<i>23</i>&nbsp; *
+<i>24</i>&nbsp; */
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;package com.sun.scenario.effect;
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;import com.sun.javafx.geom.Point2D;
+<i>29</i>&nbsp;import com.sun.javafx.geom.Rectangle;
+<i>30</i>&nbsp;import com.sun.javafx.geom.transform.BaseTransform;
+<i>31</i>&nbsp;import com.sun.scenario.effect.impl.state.RenderState;
+<i>32</i>&nbsp;
+<i>33</i>&nbsp;/**
+<i>34</i>&nbsp; * An effect that merges two inputs together into one result.  This produces
+<i>35</i>&nbsp; * the same result as using the {@code Blend} effect with
+<i>36</i>&nbsp; * {@code Blend.Mode.SRC_OVER} and {@code opacity=1.0}, except possibly
+<i>37</i>&nbsp; * more efficient.
+<i>38</i>&nbsp; */
+<i>39</i>&nbsp;public class Merge extends CoreEffect&lt;RenderState&gt; {
+<i>40</i>&nbsp;
+<i>41</i>&nbsp;    /**
+<i>42</i>&nbsp;     * Constructs a new {@code Merge} effect for the given inputs.
+<i>43</i>&nbsp;     *
+<i>44</i>&nbsp;     * @param bottomInput the bottom input
+<i>45</i>&nbsp;     * @param topInput the top input
+<i>46</i>&nbsp;     */
+<i>47</i>&nbsp;    public Merge(Effect bottomInput, Effect topInput) {
+<b class="fc"><i>48</i>&nbsp;        super(bottomInput, topInput);</b>
+<b class="fc"><i>49</i>&nbsp;        updatePeerKey(&quot;Merge&quot;);</b>
+<b class="fc"><i>50</i>&nbsp;    }</b>
+<i>51</i>&nbsp;
+<i>52</i>&nbsp;    /**
+<i>53</i>&nbsp;     * Returns the bottom input for this {@code Effect}.
+<i>54</i>&nbsp;     *
+<i>55</i>&nbsp;     * @return the bottom input for this {@code Effect}
+<i>56</i>&nbsp;     */
+<i>57</i>&nbsp;    public final Effect getBottomInput() {
+<b class="fc"><i>58</i>&nbsp;        return getInputs().get(0);</b>
+<i>59</i>&nbsp;    }
+<i>60</i>&nbsp;
+<i>61</i>&nbsp;    /**
+<i>62</i>&nbsp;     * Sets the bottom input for this {@code Effect} to a specific
+<i>63</i>&nbsp;     * {@code Effect} or to the default input if {@code input} is
+<i>64</i>&nbsp;     * {@code null}.
+<i>65</i>&nbsp;     *
+<i>66</i>&nbsp;     * @param bottomInput the bottom input for this {@code Effect}
+<i>67</i>&nbsp;     */
+<i>68</i>&nbsp;    public void setBottomInput(Effect bottomInput) {
+<b class="nc"><i>69</i>&nbsp;        setInput(0, bottomInput);</b>
+<b class="nc"><i>70</i>&nbsp;    }</b>
+<i>71</i>&nbsp;
+<i>72</i>&nbsp;    /**
+<i>73</i>&nbsp;     * Returns the top input for this {@code Effect}.
+<i>74</i>&nbsp;     *
+<i>75</i>&nbsp;     * @return the top input for this {@code Effect}
+<i>76</i>&nbsp;     */
+<i>77</i>&nbsp;    public final Effect getTopInput() {
+<b class="fc"><i>78</i>&nbsp;        return getInputs().get(1);</b>
+<i>79</i>&nbsp;    }
+<i>80</i>&nbsp;
+<i>81</i>&nbsp;    /**
+<i>82</i>&nbsp;     * Sets the top input for this {@code Effect} to a specific
+<i>83</i>&nbsp;     * {@code Effect} or to the default input if {@code input} is
+<i>84</i>&nbsp;     * {@code null}.
+<i>85</i>&nbsp;     *
+<i>86</i>&nbsp;     * @param topInput the top input for this {@code Effect}
+<i>87</i>&nbsp;     */
+<i>88</i>&nbsp;    public void setTopInput(Effect topInput) {
+<b class="fc"><i>89</i>&nbsp;        setInput(1, topInput);</b>
+<b class="fc"><i>90</i>&nbsp;    }</b>
+<i>91</i>&nbsp;
+<i>92</i>&nbsp;    /**
+<i>93</i>&nbsp;     * Transform the specified point {@code p} from the coordinate space
+<i>94</i>&nbsp;     * of the primary content input to the coordinate space of the effect
+<i>95</i>&nbsp;     * output.
+<i>96</i>&nbsp;     * In essence, this method asks the question &quot;Which output coordinate
+<i>97</i>&nbsp;     * is most affected by the data at the specified coordinate in the
+<i>98</i>&nbsp;     * primary source input?&quot;
+<i>99</i>&nbsp;     * &lt;p&gt;
+<i>100</i>&nbsp;     * The {@code Merge} effect delegates this operation to its {@code top}
+<i>101</i>&nbsp;     * input, or the {@code defaultInput} if the {@code top} input is
+<i>102</i>&nbsp;     * {@code null}.
+<i>103</i>&nbsp;     *
+<i>104</i>&nbsp;     * @param p the point in the coordinate space of the primary content
+<i>105</i>&nbsp;     *          input to be transformed
+<i>106</i>&nbsp;     * @param defaultInput the default input {@code Effect} to be used in
+<i>107</i>&nbsp;     *                     all cases where a filter has a null input
+<i>108</i>&nbsp;     * @return the transformed point in the coordinate space of the result
+<i>109</i>&nbsp;     */
+<i>110</i>&nbsp;    @Override
+<i>111</i>&nbsp;    public Point2D transform(Point2D p, Effect defaultInput) {
+<b class="nc"><i>112</i>&nbsp;        return getDefaultedInput(1, defaultInput).transform(p, defaultInput);</b>
+<i>113</i>&nbsp;    }
+<i>114</i>&nbsp;
+<i>115</i>&nbsp;    /**
+<i>116</i>&nbsp;     * Transform the specified point {@code p} from the coordinate space
+<i>117</i>&nbsp;     * of the output of the effect into the coordinate space of the
+<i>118</i>&nbsp;     * primary content input.
+<i>119</i>&nbsp;     * In essence, this method asks the question &quot;Which source coordinate
+<i>120</i>&nbsp;     * contributes most to the definition of the output at the specified
+<i>121</i>&nbsp;     * coordinate?&quot;
+<i>122</i>&nbsp;     * &lt;p&gt;
+<i>123</i>&nbsp;     * The {@code Merge} effect delegates this operation to its {@code top}
+<i>124</i>&nbsp;     * input, or the {@code defaultInput} if the {@code top} input is
+<i>125</i>&nbsp;     * {@code null}.
+<i>126</i>&nbsp;     *
+<i>127</i>&nbsp;     * @param p the point in the coordinate space of the result output
+<i>128</i>&nbsp;     *          to be transformed
+<i>129</i>&nbsp;     * @param defaultInput the default input {@code Effect} to be used in
+<i>130</i>&nbsp;     *                     all cases where a filter has a null input
+<i>131</i>&nbsp;     * @return the untransformed point in the coordinate space of the
+<i>132</i>&nbsp;     *         primary content input
+<i>133</i>&nbsp;     */
+<i>134</i>&nbsp;    @Override
+<i>135</i>&nbsp;    public Point2D untransform(Point2D p, Effect defaultInput) {
+<b class="nc"><i>136</i>&nbsp;        return getDefaultedInput(1, defaultInput).untransform(p, defaultInput);</b>
+<i>137</i>&nbsp;    }
+<i>138</i>&nbsp;
+<i>139</i>&nbsp;    @Override
+<i>140</i>&nbsp;    public ImageData filter(FilterContext fctx,
+<i>141</i>&nbsp;                            BaseTransform transform,
+<i>142</i>&nbsp;                            Rectangle outputClip,
+<i>143</i>&nbsp;                            Object renderHelper,
+<i>144</i>&nbsp;                            Effect defaultInput)
+<i>145</i>&nbsp;    {
+<b class="fc"><i>146</i>&nbsp;        Effect botinput = getDefaultedInput(0, defaultInput);</b>
+<b class="fc"><i>147</i>&nbsp;        Effect topinput = getDefaultedInput(1, defaultInput);</b>
+<b class="fc"><i>148</i>&nbsp;        ImageData botimg = botinput.filter(fctx, transform, outputClip,</b>
+<i>149</i>&nbsp;                                           renderHelper, defaultInput);
+<b class="fc"><i>150</i>&nbsp;        if (botimg != null) {</b>
+<b class="fc"><i>151</i>&nbsp;            if (!botimg.validate(fctx)) {</b>
+<b class="nc"><i>152</i>&nbsp;                return new ImageData(fctx, null, null);</b>
+<i>153</i>&nbsp;            }
+<b class="fc"><i>154</i>&nbsp;            if (renderHelper instanceof ImageDataRenderer) {</b>
+<b class="fc"><i>155</i>&nbsp;                ImageDataRenderer imgr = (ImageDataRenderer) renderHelper;</b>
+<b class="fc"><i>156</i>&nbsp;                imgr.renderImage(botimg, BaseTransform.IDENTITY_TRANSFORM, fctx);</b>
+<b class="fc"><i>157</i>&nbsp;                botimg.unref();</b>
+<b class="fc"><i>158</i>&nbsp;                botimg = null;</b>
+<i>159</i>&nbsp;            }
+<i>160</i>&nbsp;        }
+<b class="fc"><i>161</i>&nbsp;        if (botimg == null) {</b>
+<b class="fc"><i>162</i>&nbsp;            return topinput.filter(fctx, transform, outputClip,</b>
+<i>163</i>&nbsp;                                   renderHelper, defaultInput);
+<i>164</i>&nbsp;        }
+<b class="nc"><i>165</i>&nbsp;        ImageData topimg = topinput.filter(fctx, transform, outputClip,</b>
+<i>166</i>&nbsp;                                           null, defaultInput);
+<b class="nc"><i>167</i>&nbsp;        if (!topimg.validate(fctx)) {</b>
+<b class="nc"><i>168</i>&nbsp;            return new ImageData(fctx, null, null);</b>
+<i>169</i>&nbsp;        }
+<b class="nc"><i>170</i>&nbsp;        RenderState rstate = getRenderState(fctx, transform, outputClip,</b>
+<i>171</i>&nbsp;                                            renderHelper, defaultInput);
+<b class="nc"><i>172</i>&nbsp;        ImageData ret = filterImageDatas(fctx, transform, outputClip, rstate,</b>
+<i>173</i>&nbsp;                                         botimg, topimg);
+<b class="nc"><i>174</i>&nbsp;        botimg.unref();</b>
+<b class="nc"><i>175</i>&nbsp;        topimg.unref();</b>
+<b class="nc"><i>176</i>&nbsp;        return ret;</b>
+<i>177</i>&nbsp;    }
+<i>178</i>&nbsp;
+<i>179</i>&nbsp;    @Override
+<i>180</i>&nbsp;    public RenderState getRenderState(FilterContext fctx,
+<i>181</i>&nbsp;                                      BaseTransform transform,
+<i>182</i>&nbsp;                                      Rectangle outputClip,
+<i>183</i>&nbsp;                                      Object renderHelper,
+<i>184</i>&nbsp;                                      Effect defaultInput)
+<i>185</i>&nbsp;    {
+<b class="nc"><i>186</i>&nbsp;        return RenderState.RenderSpaceRenderState;</b>
+<i>187</i>&nbsp;    }
+<i>188</i>&nbsp;
+<i>189</i>&nbsp;    @Override
+<i>190</i>&nbsp;    public boolean reducesOpaquePixels() {
+<b class="fc"><i>191</i>&nbsp;        final Effect topInput = getTopInput();</b>
+<b class="fc"><i>192</i>&nbsp;        final Effect bottomInput = getBottomInput();</b>
+<b class="fc"><i>193</i>&nbsp;        return topInput != null &amp;&amp; topInput.reducesOpaquePixels() &amp;&amp; bottomInput != null &amp;&amp; bottomInput.reducesOpaquePixels();</b>
+<i>194</i>&nbsp;    }
+<i>195</i>&nbsp;
+<i>196</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2017-12-04 21:49</div>
+</div>
+</body>
+</html>

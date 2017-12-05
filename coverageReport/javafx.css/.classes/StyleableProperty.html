@@ -1,0 +1,121 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: StyleableProperty</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">javafx.css</a> ]
+</div>
+
+<h1>Coverage Summary for Class: StyleableProperty (javafx.css)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+</tr>
+<tr>
+  <td class="name">StyleableProperty</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright (c) 2011, 2017, Oracle and/or its affiliates. All rights reserved.
+<i>3</i>&nbsp; * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+<i>4</i>&nbsp; *
+<i>5</i>&nbsp; *
+<i>6</i>&nbsp; *
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; *
+<i>11</i>&nbsp; *
+<i>12</i>&nbsp; *
+<i>13</i>&nbsp; *
+<i>14</i>&nbsp; *
+<i>15</i>&nbsp; *
+<i>16</i>&nbsp; *
+<i>17</i>&nbsp; *
+<i>18</i>&nbsp; *
+<i>19</i>&nbsp; *
+<i>20</i>&nbsp; *
+<i>21</i>&nbsp; *
+<i>22</i>&nbsp; *
+<i>23</i>&nbsp; *
+<i>24</i>&nbsp; */
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;package javafx.css;
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;import javafx.beans.value.WritableValue;
+<i>29</i>&nbsp;
+<i>30</i>&nbsp;/**
+<i>31</i>&nbsp; * StyleableProperty allows a {@link javafx.beans.property} to be styled from
+<i>32</i>&nbsp; * CSS.
+<i>33</i>&nbsp; * &lt;p&gt;This interface allows coordination between CSS
+<i>34</i>&nbsp; * processing and a &lt;code&gt;javafx.beans.property&lt;/code&gt;. The implementation
+<i>35</i>&nbsp; * ensure that the priority for setting the value is, in increasing order
+<i>36</i>&nbsp; * and assuming equal importance:
+<i>37</i>&nbsp; * &lt;ol&gt;
+<i>38</i>&nbsp; * &lt;li&gt;a style from a user agent stylesheet in
+<i>39</i>&nbsp; * {@link javafx.application.Application#setUserAgentStylesheet(java.lang.String)}&lt;/li&gt;
+<i>40</i>&nbsp; * &lt;li&gt;value set from code, for example calling {@link javafx.scene.Node#setOpacity(double)}&lt;/li&gt;
+<i>41</i>&nbsp; * &lt;li&gt;a style from an author stylesheet in {@link javafx.scene.Scene#getStylesheets()}
+<i>42</i>&nbsp; * or {@link javafx.scene.Parent#getStylesheets()}&lt;/li&gt;
+<i>43</i>&nbsp; * &lt;li&gt;a style from {@link javafx.scene.Node#setStyle(java.lang.String)}&lt;/li&gt;
+<i>44</i>&nbsp; * &lt;/ol&gt;
+<i>45</i>&nbsp; * &lt;p&gt;The {@link javafx.css.StyleablePropertyFactory StyleablePropertyFactory}
+<i>46</i>&nbsp; * greatly simplifies creating a StyleableProperty and its corresponding CssMetaData.&lt;/p&gt;
+<i>47</i>&nbsp; * @param &lt;T&gt; the specific property
+<i>48</i>&nbsp; * @since JavaFX 8.0
+<i>49</i>&nbsp; * @see javafx.css.StyleablePropertyFactory
+<i>50</i>&nbsp; */
+<i>51</i>&nbsp;public interface StyleableProperty&lt;T&gt; extends WritableValue&lt;T&gt; {
+<i>52</i>&nbsp;
+<i>53</i>&nbsp;    /**
+<i>54</i>&nbsp;     * This method is called from CSS code to set the value of the property.
+<i>55</i>&nbsp;     * @param origin the origin
+<i>56</i>&nbsp;     * @param value the value
+<i>57</i>&nbsp;     */
+<i>58</i>&nbsp;    void applyStyle(StyleOrigin origin, T value);
+<i>59</i>&nbsp;
+<i>60</i>&nbsp;    /**
+<i>61</i>&nbsp;     * Tells the origin of the value of the property. This is needed to
+<i>62</i>&nbsp;     * determine whether or not CSS can override the value.
+<i>63</i>&nbsp;     * @return the style origin
+<i>64</i>&nbsp;     */
+<i>65</i>&nbsp;    StyleOrigin getStyleOrigin();
+<i>66</i>&nbsp;
+<i>67</i>&nbsp;    /**
+<i>68</i>&nbsp;     * Reflect back the CssMetaData that corresponds to this
+<i>69</i>&nbsp;     * &lt;code&gt;javafx.beans.property.StyleableProperty&lt;/code&gt;
+<i>70</i>&nbsp;     * @return the corresponding CssMetaData
+<i>71</i>&nbsp;     */
+<i>72</i>&nbsp;    CssMetaData&lt;? extends Styleable, T&gt; getCssMetaData();
+<i>73</i>&nbsp;
+<i>74</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2017-12-04 21:49</div>
+</div>
+</body>
+</html>

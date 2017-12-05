@@ -1,0 +1,228 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: TopMostTraversalEngine</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.javafx.scene.traversal</a> ]
+</div>
+
+<h1>Coverage Summary for Class: TopMostTraversalEngine (com.sun.javafx.scene.traversal)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">TopMostTraversalEngine</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    71.4%
+  </span>
+  <span class="absValue">
+    (5/ 7)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    69.6%
+  </span>
+  <span class="absValue">
+    (32/ 46)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright (c) 2011, 2016, Oracle and/or its affiliates. All rights reserved.
+<i>3</i>&nbsp; * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+<i>4</i>&nbsp; *
+<i>5</i>&nbsp; *
+<i>6</i>&nbsp; *
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; *
+<i>11</i>&nbsp; *
+<i>12</i>&nbsp; *
+<i>13</i>&nbsp; *
+<i>14</i>&nbsp; *
+<i>15</i>&nbsp; *
+<i>16</i>&nbsp; *
+<i>17</i>&nbsp; *
+<i>18</i>&nbsp; *
+<i>19</i>&nbsp; *
+<i>20</i>&nbsp; *
+<i>21</i>&nbsp; *
+<i>22</i>&nbsp; *
+<i>23</i>&nbsp; *
+<i>24</i>&nbsp; */
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;package com.sun.javafx.scene.traversal;
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;import com.sun.javafx.scene.ParentHelper;
+<i>29</i>&nbsp;import javafx.scene.Node;
+<i>30</i>&nbsp;import javafx.scene.Parent;
+<i>31</i>&nbsp;
+<i>32</i>&nbsp;/**
+<i>33</i>&nbsp; * This is the class for all top-level traversal engines in scenes and subscenes.
+<i>34</i>&nbsp; * These traversal engines are created automatically and can only have the default algorithm.
+<i>35</i>&nbsp; *
+<i>36</i>&nbsp; * These engines should be used by calling {@link #trav(javafx.scene.Node, Direction)}, {@link #traverseToFirst()} and
+<i>37</i>&nbsp; * {@link #traverseToLast()} methods. These methods do the actual traversal - selecting the Node that&#39;s should be focused next and
+<i>38</i>&nbsp; * focusing it. Also, listener calls are handled by top-most traversal engines.
+<i>39</i>&nbsp; * select* methods can be used as well, but will *not* transfer the focus to the result, they are just query methods.
+<i>40</i>&nbsp; */
+<i>41</i>&nbsp;public abstract class TopMostTraversalEngine extends TraversalEngine{
+<i>42</i>&nbsp;
+<i>43</i>&nbsp;    protected TopMostTraversalEngine() {
+<i>44</i>&nbsp;        /*
+<i>45</i>&nbsp;         * for 2d behaviour from TAB use :
+<i>46</i>&nbsp;         *    algorithm = new WeightedClosestCorner();
+<i>47</i>&nbsp;         * for Container sequence TAB behaviour and 2d arrow behaviour use :
+<i>48</i>&nbsp;         *    algorithm = new ContainerTabOrder();
+<i>49</i>&nbsp;         * for 2D arrow behaviour with a target bias and a stack use :
+<i>50</i>&nbsp;         *    algorithm = new Biased2DWithStack();
+<i>51</i>&nbsp;         */
+<b class="fc"><i>52</i>&nbsp;        super(DEFAULT_ALGORITHM);</b>
+<b class="fc"><i>53</i>&nbsp;    }</b>
+<i>54</i>&nbsp;
+<i>55</i>&nbsp;    /**
+<i>56</i>&nbsp;     * For testing purposes only!
+<i>57</i>&nbsp;     */
+<i>58</i>&nbsp;    TopMostTraversalEngine(Algorithm algorithm) {
+<b class="nc"><i>59</i>&nbsp;        super(algorithm);</b>
+<b class="nc"><i>60</i>&nbsp;    }</b>
+<i>61</i>&nbsp;
+<i>62</i>&nbsp;    /**
+<i>63</i>&nbsp;     * Traverse the focus to the next node in the specified direction.
+<i>64</i>&nbsp;     *
+<i>65</i>&nbsp;     * @param node The starting node to traverse from
+<i>66</i>&nbsp;     * @param dir the traversal direction
+<i>67</i>&nbsp;     * @return the new focus owner or null if none found (in that case old focus owner is still valid)
+<i>68</i>&nbsp;     */
+<i>69</i>&nbsp;    public final Node trav(Node node, Direction dir) {
+<b class="fc"><i>70</i>&nbsp;        Node newNode = null;</b>
+<b class="fc"><i>71</i>&nbsp;        Parent p = node.getParent();</b>
+<b class="fc"><i>72</i>&nbsp;        Node traverseNode = node;</b>
+<b class="fc"><i>73</i>&nbsp;        while (p != null) {</b>
+<i>74</i>&nbsp;            // First find the nearest traversal engine override (i.e. a ParentTraversalEngine that is traversable)
+<b class="fc"><i>75</i>&nbsp;            ParentTraversalEngine engine = ParentHelper.getTraversalEngine(p);</b>
+<b class="fc"><i>76</i>&nbsp;            if (engine != null &amp;&amp; engine.canTraverse()) {</b>
+<b class="nc"><i>77</i>&nbsp;                newNode = engine.select(node, dir);</b>
+<b class="nc"><i>78</i>&nbsp;                if (newNode != null) {</b>
+<b class="nc"><i>79</i>&nbsp;                    break;</b>
+<i>80</i>&nbsp;                } else {
+<i>81</i>&nbsp;                    // The inner traversal engine wasn&#39;t able to select anything in the specified direction.
+<i>82</i>&nbsp;                    // So now we try to traverse from the whole parent (associated with that traversal engine)
+<i>83</i>&nbsp;                    // by a traversal engine that&#39;s higher in the hierarchy
+<b class="nc"><i>84</i>&nbsp;                    traverseNode = p;</b>
+<b class="nc"><i>85</i>&nbsp;                    if (dir == Direction.NEXT) {</b>
+<b class="nc"><i>86</i>&nbsp;                        dir = Direction.NEXT_IN_LINE;</b>
+<i>87</i>&nbsp;                    }
+<i>88</i>&nbsp;                }
+<i>89</i>&nbsp;            }
+<b class="fc"><i>90</i>&nbsp;            p = p.getParent();</b>
+<b class="fc"><i>91</i>&nbsp;        }</b>
+<i>92</i>&nbsp;        // No engine override was able to find the Node in the specified direction, so
+<b class="fc"><i>93</i>&nbsp;        if (newNode == null) {</b>
+<b class="fc"><i>94</i>&nbsp;            newNode = select(traverseNode, dir);</b>
+<i>95</i>&nbsp;        }
+<b class="fc"><i>96</i>&nbsp;        if (newNode == null) {</b>
+<b class="fc"><i>97</i>&nbsp;            if (dir == Direction.NEXT || dir == Direction.NEXT_IN_LINE) {</b>
+<b class="fc"><i>98</i>&nbsp;                newNode = selectFirst();</b>
+<b class="nc"><i>99</i>&nbsp;            } else if (dir == Direction.PREVIOUS) {</b>
+<b class="nc"><i>100</i>&nbsp;                newNode = selectLast();</b>
+<i>101</i>&nbsp;            }
+<i>102</i>&nbsp;        }
+<b class="fc"><i>103</i>&nbsp;        if (newNode != null) {</b>
+<b class="fc"><i>104</i>&nbsp;            focusAndNotify(newNode);</b>
+<i>105</i>&nbsp;        }
+<b class="fc"><i>106</i>&nbsp;        return newNode;</b>
+<i>107</i>&nbsp;    }
+<i>108</i>&nbsp;
+<i>109</i>&nbsp;    private void focusAndNotify(Node newNode) {
+<b class="fc"><i>110</i>&nbsp;        newNode.requestFocus();</b>
+<b class="fc"><i>111</i>&nbsp;        notifyTreeTraversedTo(newNode);</b>
+<b class="fc"><i>112</i>&nbsp;    }</b>
+<i>113</i>&nbsp;
+<i>114</i>&nbsp;    private void notifyTreeTraversedTo(Node newNode) {
+<b class="fc"><i>115</i>&nbsp;        Parent p = newNode.getParent();</b>
+<b class="fc"><i>116</i>&nbsp;        while (p != null) {</b>
+<b class="fc"><i>117</i>&nbsp;            final ParentTraversalEngine traversalEngine = ParentHelper.getTraversalEngine(p);</b>
+<b class="fc"><i>118</i>&nbsp;            if (traversalEngine != null) {</b>
+<b class="nc"><i>119</i>&nbsp;                traversalEngine.notifyTraversedTo(newNode);</b>
+<i>120</i>&nbsp;            }
+<b class="fc"><i>121</i>&nbsp;            p = p.getParent();</b>
+<b class="fc"><i>122</i>&nbsp;        }</b>
+<b class="fc"><i>123</i>&nbsp;        notifyTraversedTo(newNode);</b>
+<b class="fc"><i>124</i>&nbsp;    }</b>
+<i>125</i>&nbsp;
+<i>126</i>&nbsp;    /**
+<i>127</i>&nbsp;     * Set focus on the first Node in this context (if any)
+<i>128</i>&nbsp;     * @return the first node or null if there&#39;s none
+<i>129</i>&nbsp;     */
+<i>130</i>&nbsp;    public final Node traverseToFirst() {
+<b class="fc"><i>131</i>&nbsp;        Node n = selectFirst();</b>
+<b class="fc"><i>132</i>&nbsp;        if (n != null) focusAndNotify(n);</b>
+<b class="fc"><i>133</i>&nbsp;        return n;</b>
+<i>134</i>&nbsp;    }
+<i>135</i>&nbsp;
+<i>136</i>&nbsp;    /**
+<i>137</i>&nbsp;     * Set focus on the last Node in this context (if any)
+<i>138</i>&nbsp;     * @return the last node or null if there&#39;s none
+<i>139</i>&nbsp;     */
+<i>140</i>&nbsp;    public final Node traverseToLast() {
+<b class="nc"><i>141</i>&nbsp;        Node n = selectLast();</b>
+<b class="nc"><i>142</i>&nbsp;        if (n != null) focusAndNotify(n);</b>
+<b class="nc"><i>143</i>&nbsp;        return n;</b>
+<i>144</i>&nbsp;    }
+<i>145</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2017-12-04 21:49</div>
+</div>
+</body>
+</html>

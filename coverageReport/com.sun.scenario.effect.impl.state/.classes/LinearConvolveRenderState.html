@@ -1,0 +1,470 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: LinearConvolveRenderState</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.scenario.effect.impl.state</a> ]
+</div>
+
+<h1>Coverage Summary for Class: LinearConvolveRenderState (com.sun.scenario.effect.impl.state)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">LinearConvolveRenderState</td>
+<td class="coverageStat">
+  <span class="percent">
+    87.5%
+  </span>
+  <span class="absValue">
+    (7/ 8)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    73.9%
+  </span>
+  <span class="absValue">
+    (17/ 23)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">LinearConvolveRenderState$PassType</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (2/ 2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (4/ 4)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    90%
+  </span>
+  <span class="absValue">
+    (9/ 10)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    77.8%
+  </span>
+  <span class="absValue">
+    (21/ 27)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright (c) 2014, Oracle and/or its affiliates. All rights reserved.
+<i>3</i>&nbsp; * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+<i>4</i>&nbsp; *
+<i>5</i>&nbsp; *
+<i>6</i>&nbsp; *
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; *
+<i>11</i>&nbsp; *
+<i>12</i>&nbsp; *
+<i>13</i>&nbsp; *
+<i>14</i>&nbsp; *
+<i>15</i>&nbsp; *
+<i>16</i>&nbsp; *
+<i>17</i>&nbsp; *
+<i>18</i>&nbsp; *
+<i>19</i>&nbsp; *
+<i>20</i>&nbsp; *
+<i>21</i>&nbsp; *
+<i>22</i>&nbsp; *
+<i>23</i>&nbsp; *
+<i>24</i>&nbsp; */
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;package com.sun.scenario.effect.impl.state;
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;import com.sun.javafx.PlatformUtil;
+<i>29</i>&nbsp;import com.sun.javafx.geom.Rectangle;
+<i>30</i>&nbsp;import com.sun.scenario.effect.Color4f;
+<i>31</i>&nbsp;import com.sun.scenario.effect.FilterContext;
+<i>32</i>&nbsp;import com.sun.scenario.effect.ImageData;
+<i>33</i>&nbsp;import com.sun.scenario.effect.impl.EffectPeer;
+<i>34</i>&nbsp;import com.sun.scenario.effect.impl.Renderer;
+<i>35</i>&nbsp;import java.nio.FloatBuffer;
+<i>36</i>&nbsp;import java.security.AccessController;
+<i>37</i>&nbsp;import java.security.PrivilegedAction;
+<i>38</i>&nbsp;
+<i>39</i>&nbsp;/**
+<i>40</i>&nbsp; * The {@code LinearConvolveRenderState} object manages the strategies of
+<i>41</i>&nbsp; * applying a 1 or 2 pass linear convolution to an input and calculates the
+<i>42</i>&nbsp; * necessary data for the filter shader to compute the convolution.
+<i>43</i>&nbsp; * The object is constructed based on the transform that was provided for
+<i>44</i>&nbsp; * the entire filter operation and determines its strategy.
+<i>45</i>&nbsp; * Methods prefixed by {@code getInput*()} return information about the
+<i>46</i>&nbsp; * general plan for obtaining and managing the input source image.
+<i>47</i>&nbsp; * After the input effect is called with the information from the
+<i>48</i>&nbsp; * {@code getInput*()} methods and its result {@code ImageData} is obtained,
+<i>49</i>&nbsp; * the {@code validatePassInput()} method is used to examine the size and
+<i>50</i>&nbsp; * transform of the supplied input and determine the parameters needed to
+<i>51</i>&nbsp; * perform the convolution for the first pass.
+<i>52</i>&nbsp; * Once validated, the methods prefixed by {@code getPass*()} return information
+<i>53</i>&nbsp; * for applying the convolution for that validated pass.
+<i>54</i>&nbsp; * If necessary, the {@code validatePassInput()} method is called on the
+<i>55</i>&nbsp; * results of the first pass to calculate further data for the second pass.
+<i>56</i>&nbsp; * Finally the {@code getResultTransform()} method is used to possibly transform
+<i>57</i>&nbsp; * the final resulting {@code ImageData} of the last pass.
+<i>58</i>&nbsp; */
+<b class="fc"><i>59</i>&nbsp;public abstract class LinearConvolveRenderState implements RenderState {</b>
+<i>60</i>&nbsp;    public static final int MAX_COMPILED_KERNEL_SIZE = 128;
+<i>61</i>&nbsp;    public static final int MAX_KERNEL_SIZE;
+<i>62</i>&nbsp;
+<i>63</i>&nbsp;    static final float MIN_EFFECT_RADIUS = 1.0f / 256.0f;
+<i>64</i>&nbsp;
+<b class="fc"><i>65</i>&nbsp;    static final float[] BLACK_COMPONENTS =</b>
+<b class="fc"><i>66</i>&nbsp;        Color4f.BLACK.getPremultipliedRGBComponents();</b>
+<i>67</i>&nbsp;
+<i>68</i>&nbsp;    static {
+<i>69</i>&nbsp;        /*
+<i>70</i>&nbsp;         * Set the maximum linear convolve kernel size used in LinearConvolveRenderState.
+<i>71</i>&nbsp;         * The default value is set to 64 if platform is an embedded system and 128 otherwise.
+<i>72</i>&nbsp;         */
+<b class="fc"><i>73</i>&nbsp;        final int defSize = PlatformUtil.isEmbedded() ? 64 : MAX_COMPILED_KERNEL_SIZE;</b>
+<b class="fc"><i>74</i>&nbsp;        int size = AccessController.doPrivileged(</b>
+<b class="fc"><i>75</i>&nbsp;                (PrivilegedAction&lt;Integer&gt;) () -&gt; Integer.getInteger(</b>
+<i>76</i>&nbsp;                        &quot;decora.maxLinearConvolveKernelSize&quot;, defSize));
+<b class="fc"><i>77</i>&nbsp;        if (size &gt; MAX_COMPILED_KERNEL_SIZE) {</b>
+<b class="nc"><i>78</i>&nbsp;            System.out.println(&quot;Clamping maxLinearConvolveKernelSize to &quot;</b>
+<i>79</i>&nbsp;                    + MAX_COMPILED_KERNEL_SIZE);
+<b class="nc"><i>80</i>&nbsp;            size = MAX_COMPILED_KERNEL_SIZE;</b>
+<i>81</i>&nbsp;        }
+<b class="fc"><i>82</i>&nbsp;        MAX_KERNEL_SIZE = size;</b>
+<b class="fc"><i>83</i>&nbsp;    }</b>
+<i>84</i>&nbsp;
+<b class="fc"><i>85</i>&nbsp;    public enum PassType {</b>
+<i>86</i>&nbsp;        /**
+<i>87</i>&nbsp;         * The kernel on this pass will be applied horizontally with
+<i>88</i>&nbsp;         * the kernel centered symmetrically around each pixel.
+<i>89</i>&nbsp;         * The specific conditions indicated by this type are:
+<i>90</i>&nbsp;         * &lt;ul&gt;
+<i>91</i>&nbsp;         * &lt;li&gt;The kernel is an odd size {@code (2*k+1)}
+<i>92</i>&nbsp;         * &lt;li&gt;The data for destination pixel {@code (x,y)} is taken from
+<i>93</i>&nbsp;         *     pixels {@code x-k,y} through {@code (x+k,y)} with the weights
+<i>94</i>&nbsp;         *     applied in that same order.
+<i>95</i>&nbsp;         * &lt;li&gt;If the bounds of the source image are {@code (x,y,w,h)} then
+<i>96</i>&nbsp;         *     the bounds of the destination will be {@code (x-k,y,w+2*k,h)}.
+<i>97</i>&nbsp;         * &lt;/ul&gt;
+<i>98</i>&nbsp;         */
+<b class="fc"><i>99</i>&nbsp;        HORIZONTAL_CENTERED,</b>
+<i>100</i>&nbsp;
+<i>101</i>&nbsp;        /**
+<i>102</i>&nbsp;         * The kernel on this pass will be applied vertically with
+<i>103</i>&nbsp;         * the kernel centered symmetrically around each pixel.
+<i>104</i>&nbsp;         * The specific conditions indicated by this type are:
+<i>105</i>&nbsp;         * &lt;ul&gt;
+<i>106</i>&nbsp;         * &lt;li&gt;The kernel is an odd size {@code (2*k+1)}
+<i>107</i>&nbsp;         * &lt;li&gt;The data for destination pixel {@code (x,y)} is taken from
+<i>108</i>&nbsp;         *     pixels {@code x,y-k} through {@code (x,y+k)} with the weights
+<i>109</i>&nbsp;         *     applied in that same order.
+<i>110</i>&nbsp;         * &lt;li&gt;If the bounds of the source image are {@code (x,y,w,h)} then
+<i>111</i>&nbsp;         *     the bounds of the destination will be {@code (x,y-k,w,h+2*k)}.
+<i>112</i>&nbsp;         * &lt;/ul&gt;
+<i>113</i>&nbsp;         */
+<b class="fc"><i>114</i>&nbsp;        VERTICAL_CENTERED,</b>
+<i>115</i>&nbsp;
+<i>116</i>&nbsp;        /**
+<i>117</i>&nbsp;         * The kernel on this pass can be applied in any direction or with
+<i>118</i>&nbsp;         * any kind of offset.
+<i>119</i>&nbsp;         * No assumptions are made about the offset and delta of the kernel
+<i>120</i>&nbsp;         * vector.
+<i>121</i>&nbsp;         */
+<b class="fc"><i>122</i>&nbsp;        GENERAL_VECTOR,</b>
+<i>123</i>&nbsp;    };
+<i>124</i>&nbsp;
+<i>125</i>&nbsp;    /**
+<i>126</i>&nbsp;     * Returns the peer sample count for a given kernel size.  There are
+<i>127</i>&nbsp;     * only a few peers defined to operate on specific sizes of convolution
+<i>128</i>&nbsp;     * kernel.  If there are peers defined only for kernel sizes of 8 and 16
+<i>129</i>&nbsp;     * and a given effect has a linear convolution kernel with 5 weights,
+<i>130</i>&nbsp;     * then the peer for size 8 will be used and the buffer of weights must
+<i>131</i>&nbsp;     * be padded out to the appropriate size with 0s so that the shader
+<i>132</i>&nbsp;     * constant pool will be fully initialized and the extra unneeded
+<i>133</i>&nbsp;     * convolution samples will be ignored by the 0 weights.
+<i>134</i>&nbsp;     *
+<i>135</i>&nbsp;     * @param ksize the number of computed convolution kernel weights
+<i>136</i>&nbsp;     * @return the number of convolution weights which will be applied by
+<i>137</i>&nbsp;     *         the associated peer.
+<i>138</i>&nbsp;     */
+<i>139</i>&nbsp;    public static int getPeerSize(int ksize) {
+<b class="fc"><i>140</i>&nbsp;        if (ksize &lt; 32) return ((ksize + 3) &amp; (~3));</b>
+<b class="nc"><i>141</i>&nbsp;        if (ksize &lt;= MAX_KERNEL_SIZE) return ((ksize + 31) &amp; (~31));</b>
+<b class="nc"><i>142</i>&nbsp;        throw new RuntimeException(&quot;No peer available for kernel size: &quot;+ksize);</b>
+<i>143</i>&nbsp;    }
+<i>144</i>&nbsp;
+<i>145</i>&nbsp;    /**
+<i>146</i>&nbsp;     * Returns true if summing v over size pixels ends up close enough to
+<i>147</i>&nbsp;     * 0.0 that we will not have shifted the sampling by enough to see any
+<i>148</i>&nbsp;     * changes.
+<i>149</i>&nbsp;     * &quot;Close enough&quot; in this context is measured by whether or not using
+<i>150</i>&nbsp;     * the coordinate in a linear interpolating sampling operation on 8-bit
+<i>151</i>&nbsp;     * per sample images will cause the next pixel over to be blended in.
+<i>152</i>&nbsp;     *
+<i>153</i>&nbsp;     * @param v the value being summed across the pixels
+<i>154</i>&nbsp;     * @param size the number of pixels being summed across
+<i>155</i>&nbsp;     * @return true if the accumulated value will be negligible
+<i>156</i>&nbsp;     */
+<i>157</i>&nbsp;    static boolean nearZero(float v, int size) {
+<b class="fc"><i>158</i>&nbsp;        return (Math.abs(v * size) &lt; 1.0/512.0);</b>
+<i>159</i>&nbsp;    }
+<i>160</i>&nbsp;
+<i>161</i>&nbsp;    /**
+<i>162</i>&nbsp;     * Returns true if summing v over size pixels ends up close enough to
+<i>163</i>&nbsp;     * size.0 that we will not have shifted the sampling by enough to see any
+<i>164</i>&nbsp;     * changes.
+<i>165</i>&nbsp;     * &quot;Close enough&quot; in this context is measured by whether or not using
+<i>166</i>&nbsp;     * the coordinate in a linear interpolating sampling operation on 8-bit
+<i>167</i>&nbsp;     * per sample images will cause the next pixel over to be blended in.
+<i>168</i>&nbsp;     *
+<i>169</i>&nbsp;     * @param v the value being summed across the pixels
+<i>170</i>&nbsp;     * @param size the number of pixels being summed across
+<i>171</i>&nbsp;     * @return true if the accumulated value will be close enough to size
+<i>172</i>&nbsp;     */
+<i>173</i>&nbsp;    static boolean nearOne(float v, int size) {
+<b class="fc"><i>174</i>&nbsp;        return (Math.abs(v * size - size) &lt; 1.0/512.0);</b>
+<i>175</i>&nbsp;    }
+<i>176</i>&nbsp;
+<i>177</i>&nbsp;    /**
+<i>178</i>&nbsp;     * Returns true if this is a shadow convolution operation where a
+<i>179</i>&nbsp;     * constant color is substituted for the color components of the
+<i>180</i>&nbsp;     * output.
+<i>181</i>&nbsp;     * This value is dependent only on the original {@code Effect} from which
+<i>182</i>&nbsp;     * this {@code RenderState} was instantiated and does not vary as the
+<i>183</i>&nbsp;     * filter operation progresses.
+<i>184</i>&nbsp;     *
+<i>185</i>&nbsp;     * @return true if this is a shadow operation
+<i>186</i>&nbsp;     */
+<i>187</i>&nbsp;    public abstract boolean isShadow();
+<i>188</i>&nbsp;
+<i>189</i>&nbsp;    /**
+<i>190</i>&nbsp;     * Returns the {@code Color4f} representing the shadow color if this
+<i>191</i>&nbsp;     * is a shadow operation.
+<i>192</i>&nbsp;     * This value is dependent only on the original {@code Effect} from which
+<i>193</i>&nbsp;     * this {@code RenderState} was instantiated and does not vary as the
+<i>194</i>&nbsp;     * filter operation progresses.
+<i>195</i>&nbsp;     *
+<i>196</i>&nbsp;     * @return the {@code Color4f} for the shadow color, or null
+<i>197</i>&nbsp;     */
+<i>198</i>&nbsp;    public abstract Color4f getShadowColor();
+<i>199</i>&nbsp;
+<i>200</i>&nbsp;    /**
+<i>201</i>&nbsp;     * Returns the size of the desired convolution kernel for the given pass
+<i>202</i>&nbsp;     * as it would be applied in the coordinate space indicated by the
+<i>203</i>&nbsp;     * {@link #getInputKernelSize(int)} method.
+<i>204</i>&nbsp;     * This value is calculated at the start of the render operation and
+<i>205</i>&nbsp;     * does not vary as the filter operation progresses, but it may not
+<i>206</i>&nbsp;     * represent the actual kernel size used when the indicated pass actually
+<i>207</i>&nbsp;     * occurs if the {@link #validatePassInput()} method needs to choose
+<i>208</i>&nbsp;     * different values when it sees the incoming image source.
+<i>209</i>&nbsp;     *
+<i>210</i>&nbsp;     * @param pass the pass for which the intended kernel size is desired
+<i>211</i>&nbsp;     * @return the intended kernel size for the requested pass
+<i>212</i>&nbsp;     */
+<i>213</i>&nbsp;    public abstract int getInputKernelSize(int pass);
+<i>214</i>&nbsp;
+<i>215</i>&nbsp;    /**
+<i>216</i>&nbsp;     * Returns true if the resulting operation is globally a NOP operation.
+<i>217</i>&nbsp;     * This condition is calculated at the start of the render operation and
+<i>218</i>&nbsp;     * is based on whether the perturbations of the convolution kernel would
+<i>219</i>&nbsp;     * be noticeable at all in the coordinate space of the output.
+<i>220</i>&nbsp;     *
+<i>221</i>&nbsp;     * @return true if the operation is a global NOP
+<i>222</i>&nbsp;     */
+<i>223</i>&nbsp;    public abstract boolean isNop();
+<i>224</i>&nbsp;
+<i>225</i>&nbsp;    /**
+<i>226</i>&nbsp;     * Validates the {@code RenderState} object for a given pass of the
+<i>227</i>&nbsp;     * convolution.
+<i>228</i>&nbsp;     * The supplied source image is provided so that the {@code RenderState}
+<i>229</i>&nbsp;     * object can determine if it needs to change its strategy for how the
+<i>230</i>&nbsp;     * convolution operation will be performed and to scale its data for
+<i>231</i>&nbsp;     * the {@code getPass*()} methods relative to the source dimensions and
+<i>232</i>&nbsp;     * transform.
+<i>233</i>&nbsp;     *
+<i>234</i>&nbsp;     * @param src the {@code ImageData} object supplied by the source effect
+<i>235</i>&nbsp;     * @param pass the pass of the operation being applied (usually horizontal
+<i>236</i>&nbsp;     *             for pass 0 and vertical for pass 1)
+<i>237</i>&nbsp;     * @return the {@code ImageData} to be used for the actual convolution
+<i>238</i>&nbsp;     *         operation
+<i>239</i>&nbsp;     */
+<i>240</i>&nbsp;    public abstract ImageData validatePassInput(ImageData src, int pass);
+<i>241</i>&nbsp;
+<i>242</i>&nbsp;    /**
+<i>243</i>&nbsp;     * Returns true if the operation of the currently validated pass would
+<i>244</i>&nbsp;     * be a NOP operation.
+<i>245</i>&nbsp;     *
+<i>246</i>&nbsp;     * @return true if the current pass is a NOP
+<i>247</i>&nbsp;     */
+<i>248</i>&nbsp;    public abstract boolean isPassNop();
+<i>249</i>&nbsp;
+<i>250</i>&nbsp;    /**
+<i>251</i>&nbsp;     * Return the {@code EffectPeer} to be used to perform the currently
+<i>252</i>&nbsp;     * validated pass of the convolution operation, or null if this pass
+<i>253</i>&nbsp;     * is a NOP.
+<i>254</i>&nbsp;     *
+<i>255</i>&nbsp;     * @param r the {@code Renderer} being used for this filter operation
+<i>256</i>&nbsp;     * @param fctx the {@code FilterContext} being used for this filter operation
+<i>257</i>&nbsp;     * @return the {@code EffectPeer} to use for this pass, or null
+<i>258</i>&nbsp;     */
+<i>259</i>&nbsp;    public EffectPeer&lt;? extends LinearConvolveRenderState&gt;
+<i>260</i>&nbsp;        getPassPeer(Renderer r, FilterContext fctx)
+<i>261</i>&nbsp;    {
+<b class="fc"><i>262</i>&nbsp;        if (isPassNop()) {</b>
+<b class="nc"><i>263</i>&nbsp;            return null;</b>
+<i>264</i>&nbsp;        }
+<b class="fc"><i>265</i>&nbsp;        int ksize = getPassKernelSize();</b>
+<b class="fc"><i>266</i>&nbsp;        int psize = getPeerSize(ksize);</b>
+<b class="fc"><i>267</i>&nbsp;        String opname = isShadow() ? &quot;LinearConvolveShadow&quot; : &quot;LinearConvolve&quot;;</b>
+<b class="fc"><i>268</i>&nbsp;        return r.getPeerInstance(fctx, opname, psize);</b>
+<i>269</i>&nbsp;    }
+<i>270</i>&nbsp;
+<i>271</i>&nbsp;    /**
+<i>272</i>&nbsp;     * Returns the size of the scaled result image needed to hold the output
+<i>273</i>&nbsp;     * for the currently validated pass with the indicated input dimensions
+<i>274</i>&nbsp;     * and output clip.
+<i>275</i>&nbsp;     * The image may be further scaled after the shader operation is through
+<i>276</i>&nbsp;     * to obtain the final result bounds.
+<i>277</i>&nbsp;     * This value is only of use to the actual shader to understand exactly
+<i>278</i>&nbsp;     * how much room to allocate for the shader result.
+<i>279</i>&nbsp;     *
+<i>280</i>&nbsp;     * @param srcdimension the bounds of the input image
+<i>281</i>&nbsp;     * @param outputClip the area needed for the final result
+<i>282</i>&nbsp;     * @return the bounds of the result image for the current pass
+<i>283</i>&nbsp;     */
+<i>284</i>&nbsp;    public abstract Rectangle getPassResultBounds(Rectangle srcdimension,
+<i>285</i>&nbsp;                                                  Rectangle outputClip);
+<i>286</i>&nbsp;
+<i>287</i>&nbsp;    /**
+<i>288</i>&nbsp;     * Return a hint about the way that the weights will be applied to the
+<i>289</i>&nbsp;     * pixels for the currently validated pass.
+<i>290</i>&nbsp;     *
+<i>291</i>&nbsp;     * @return the appropriate {@link PassType} that describes the filtering
+<i>292</i>&nbsp;     *         operation for this pass of the algorithm
+<i>293</i>&nbsp;     */
+<i>294</i>&nbsp;    public PassType getPassType() {
+<b class="nc"><i>295</i>&nbsp;        return PassType.GENERAL_VECTOR;</b>
+<i>296</i>&nbsp;    }
+<i>297</i>&nbsp;
+<i>298</i>&nbsp;    /**
+<i>299</i>&nbsp;     * A {@link FloatBuffer} padded out to the required size as specified by
+<i>300</i>&nbsp;     * the {@link #getPeerSize()} method filled with the convolution weights
+<i>301</i>&nbsp;     * needed for the currently validated pass.
+<i>302</i>&nbsp;     *
+<i>303</i>&nbsp;     * @return a {@code FloatBuffer} containing the kernel convolution weights
+<i>304</i>&nbsp;     */
+<i>305</i>&nbsp;    public abstract FloatBuffer getPassWeights();
+<i>306</i>&nbsp;
+<i>307</i>&nbsp;    /**
+<i>308</i>&nbsp;     * Returns the maximum number of valid float4 elements that should be
+<i>309</i>&nbsp;     * referenced from the buffer returned by getWeights() for the currently
+<i>310</i>&nbsp;     * validated pass.
+<i>311</i>&nbsp;     *
+<i>312</i>&nbsp;     * @return the maximum number of valid float4 elements in the weights buffer
+<i>313</i>&nbsp;     */
+<i>314</i>&nbsp;    public abstract int getPassWeightsArrayLength();
+<i>315</i>&nbsp;
+<i>316</i>&nbsp;    /**
+<i>317</i>&nbsp;     * Returns an array of 4 floats used to initialize a float4 Shader
+<i>318</i>&nbsp;     * constant with the relative starting location of the first weight
+<i>319</i>&nbsp;     * in the convolution kernel and the incremental offset between each
+<i>320</i>&nbsp;     * sample to be weighted and accumulated.  The values are stored in
+<i>321</i>&nbsp;     * the array in the following order:
+<i>322</i>&nbsp;     * &lt;pre&gt;
+<i>323</i>&nbsp;     *     shadervec.x = vector[0] = incdx // X delta between subsequent samples
+<i>324</i>&nbsp;     *     shadervec.y = vector[1] = incdy // Y delta between subsequent samples
+<i>325</i>&nbsp;     *     shadervec.z = vector[2] = startdx // X offset to first convolution sample
+<i>326</i>&nbsp;     *     shadervec.w = vector[3] = startdy // Y offset to first convolution sample
+<i>327</i>&nbsp;     * &lt;/pre&gt;
+<i>328</i>&nbsp;     * These values are used in the shader loop as follows:
+<i>329</i>&nbsp;     * &lt;pre&gt;
+<i>330</i>&nbsp;     *     samplelocation = outputpixellocation.xy + shadervec.zw;
+<i>331</i>&nbsp;     *     for (each weight) {
+<i>332</i>&nbsp;     *         sum += weight * sample(samplelocation.xy);
+<i>333</i>&nbsp;     *         samplelocation.xy += shadervec.xy;
+<i>334</i>&nbsp;     *     }
+<i>335</i>&nbsp;     * &lt;/pre&gt;
+<i>336</i>&nbsp;     * The values are relative to the texture coordinate space which are
+<i>337</i>&nbsp;     * normalized to the range [0,1] over the source texture.
+<i>338</i>&nbsp;     *
+<i>339</i>&nbsp;     * @return an array of 4 floats representing
+<i>340</i>&nbsp;     *         {@code [ incdx, incdy, startdx, startdy ]}
+<i>341</i>&nbsp;     */
+<i>342</i>&nbsp;    public abstract float[] getPassVector();
+<i>343</i>&nbsp;
+<i>344</i>&nbsp;    /**
+<i>345</i>&nbsp;     * For a shadow convolution operation, return the 4 float versions of
+<i>346</i>&nbsp;     * the color components, in the range {@code [0, 1]} for the shadow color
+<i>347</i>&nbsp;     * to be substituted for the input colors.
+<i>348</i>&nbsp;     * This method will only be called if {@link #isShadow()} returns true.
+<i>349</i>&nbsp;     *
+<i>350</i>&nbsp;     * @return the array of 4 floats representing the shadow color components
+<i>351</i>&nbsp;     */
+<i>352</i>&nbsp;    public abstract float[] getPassShadowColorComponents();
+<i>353</i>&nbsp;
+<i>354</i>&nbsp;    /**
+<i>355</i>&nbsp;     * Returns the appropriate kernel size for the pass that was last
+<i>356</i>&nbsp;     * validated using validateInput().
+<i>357</i>&nbsp;     *
+<i>358</i>&nbsp;     * @return the pixel kernel size of the current pass
+<i>359</i>&nbsp;     */
+<i>360</i>&nbsp;    public abstract int getPassKernelSize();
+<i>361</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2017-12-04 21:49</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,169 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: ByteToBytePixelConverter</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.javafx.image</a> ]
+</div>
+
+<h1>Coverage Summary for Class: ByteToBytePixelConverter (com.sun.javafx.image)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+</tr>
+<tr>
+  <td class="name">ByteToBytePixelConverter</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright (c) 2012, 2013, Oracle and/or its affiliates. All rights reserved.
+<i>3</i>&nbsp; * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+<i>4</i>&nbsp; *
+<i>5</i>&nbsp; *
+<i>6</i>&nbsp; *
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; *
+<i>11</i>&nbsp; *
+<i>12</i>&nbsp; *
+<i>13</i>&nbsp; *
+<i>14</i>&nbsp; *
+<i>15</i>&nbsp; *
+<i>16</i>&nbsp; *
+<i>17</i>&nbsp; *
+<i>18</i>&nbsp; *
+<i>19</i>&nbsp; *
+<i>20</i>&nbsp; *
+<i>21</i>&nbsp; *
+<i>22</i>&nbsp; *
+<i>23</i>&nbsp; *
+<i>24</i>&nbsp; */
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;package com.sun.javafx.image;
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;import java.nio.ByteBuffer;
+<i>29</i>&nbsp;
+<i>30</i>&nbsp;public interface ByteToBytePixelConverter
+<i>31</i>&nbsp;    extends PixelConverter&lt;ByteBuffer, ByteBuffer&gt;
+<i>32</i>&nbsp;{
+<i>33</i>&nbsp;    /**
+<i>34</i>&nbsp;     * Copies a rectangular region of data from the source array to the
+<i>35</i>&nbsp;     * destination array using the following relationship:
+<i>36</i>&nbsp;     * &lt;pre&gt;
+<i>37</i>&nbsp;     * for each xy : 0 &lt;= x,y &lt; w,h {
+<i>38</i>&nbsp;     *     int srcpos = y * srcscanbytes + x * srcbytesperpixel + srcoff;
+<i>39</i>&nbsp;     *     int dstpos = y * dstscanbytes + x * dstbytesperpixel + dstoff;
+<i>40</i>&nbsp;     *     for each j : 0 &lt;= j &lt; srcbytesperpixel {
+<i>41</i>&nbsp;     *         load data from srcarr[srcpos + j];
+<i>42</i>&nbsp;     *     }
+<i>43</i>&nbsp;     *     convert data to destination pixel format
+<i>44</i>&nbsp;     *     for each k : 0 &lt;= k &lt; dstbytesperpixel {
+<i>45</i>&nbsp;     *         store data into dstarr[dstpos + k] = pixel data;
+<i>46</i>&nbsp;     *     }
+<i>47</i>&nbsp;     * }
+<i>48</i>&nbsp;     * &lt;/pre&gt;
+<i>49</i>&nbsp;     *
+<i>50</i>&nbsp;     * @param srcarr the byte array containing the source data
+<i>51</i>&nbsp;     * @param srcoff the index in the array of the first source pixel data
+<i>52</i>&nbsp;     * @param srcscanbytes number of array indices between rows of data in the source
+<i>53</i>&nbsp;     * @param dstbuf the byte array containing the destination data
+<i>54</i>&nbsp;     * @param dstoff the index in the array of the first destination pixel data
+<i>55</i>&nbsp;     * @param dstscanbytes number of array indices between rows of data in the destination
+<i>56</i>&nbsp;     * @param w the number of pixels to process across before moving to the next row
+<i>57</i>&nbsp;     * @param h the number of rows of pixels to process
+<i>58</i>&nbsp;     */
+<i>59</i>&nbsp;    public void convert(byte       srcarr[], int srcoff, int srcscanbytes,
+<i>60</i>&nbsp;                        byte       dstarr[], int dstoff, int dstscanbytes,
+<i>61</i>&nbsp;                        int w, int h);
+<i>62</i>&nbsp;
+<i>63</i>&nbsp;    /**
+<i>64</i>&nbsp;     * Copies a rectangular region of data from the source buffer to the
+<i>65</i>&nbsp;     * destination array using the following relationship:
+<i>66</i>&nbsp;     * &lt;pre&gt;
+<i>67</i>&nbsp;     * for each xy : 0 &lt;= x,y &lt; w,h {
+<i>68</i>&nbsp;     *     int srcpos = y * srcscanbytes + x * srcbytesperpixel + srcoff;
+<i>69</i>&nbsp;     *     int dstpos = y * dstscanbytes + x * dstbytesperpixel + dstoff;
+<i>70</i>&nbsp;     *     for each j : 0 &lt;= j &lt; srcbytesperpixel {
+<i>71</i>&nbsp;     *         load data from srcbuf.get(srcpos + j);
+<i>72</i>&nbsp;     *     }
+<i>73</i>&nbsp;     *     convert data to destination pixel format
+<i>74</i>&nbsp;     *     for each k : 0 &lt;= k &lt; dstbytesperpixel {
+<i>75</i>&nbsp;     *         store data into dstarr[dstpos + k] = pixel data;
+<i>76</i>&nbsp;     *     }
+<i>77</i>&nbsp;     * }
+<i>78</i>&nbsp;     * &lt;/pre&gt;
+<i>79</i>&nbsp;     *
+<i>80</i>&nbsp;     * @param srcbuf the nio buffer containing the source data
+<i>81</i>&nbsp;     * @param srcoff the absolute location in the buffer of the first source pixel data
+<i>82</i>&nbsp;     * @param srcscanbytes number of buffer elements between rows of data in the source
+<i>83</i>&nbsp;     * @param dstbuf the byte array containing the destination data
+<i>84</i>&nbsp;     * @param dstoff the index in the array of the first destination pixel data
+<i>85</i>&nbsp;     * @param dstscanbytes number of array indices between rows of data in the destination
+<i>86</i>&nbsp;     * @param w the number of pixels to process across before moving to the next row
+<i>87</i>&nbsp;     * @param h the number of rows of pixels to process
+<i>88</i>&nbsp;     */
+<i>89</i>&nbsp;    public void convert(ByteBuffer srcbuf,   int srcoff, int srcscanbytes,
+<i>90</i>&nbsp;                        byte       dstarr[], int dstoff, int dstscanbytes,
+<i>91</i>&nbsp;                        int w, int h);
+<i>92</i>&nbsp;
+<i>93</i>&nbsp;    /**
+<i>94</i>&nbsp;     * Copies a rectangular region of data from the source array to the
+<i>95</i>&nbsp;     * destination buffer using the following relationship:
+<i>96</i>&nbsp;     * &lt;pre&gt;
+<i>97</i>&nbsp;     * for each xy : 0 &lt;= x,y &lt; w,h {
+<i>98</i>&nbsp;     *     int srcpos = y * srcscanbytes + x * srcbytesperpixel + srcoff;
+<i>99</i>&nbsp;     *     int dstpos = y * dstscanbytes + x * dstbytesperpixel + dstoff;
+<i>100</i>&nbsp;     *     for each j : 0 &lt;= j &lt; srcbytesperpixel {
+<i>101</i>&nbsp;     *         load data from srcarr[srcpos + j];
+<i>102</i>&nbsp;     *     }
+<i>103</i>&nbsp;     *     convert data to destination pixel format
+<i>104</i>&nbsp;     *     for each k : 0 &lt;= k &lt; dstbytesperpixel {
+<i>105</i>&nbsp;     *         store data into dstbuf.put(dstpos + k, pixel data);
+<i>106</i>&nbsp;     *     }
+<i>107</i>&nbsp;     * }
+<i>108</i>&nbsp;     * &lt;/pre&gt;
+<i>109</i>&nbsp;     *
+<i>110</i>&nbsp;     * @param srcarr the byte array containing the source data
+<i>111</i>&nbsp;     * @param srcoff the index in the array of the first source pixel data
+<i>112</i>&nbsp;     * @param srcscanbytes number of array indices between rows of data in the source
+<i>113</i>&nbsp;     * @param dstbuf the nio buffer containing the destination data
+<i>114</i>&nbsp;     * @param dstoff the absolute location in the buffer of the first destination pixel data
+<i>115</i>&nbsp;     * @param dstscanbytes number of buffer elements between rows of data in the destination
+<i>116</i>&nbsp;     * @param w the number of pixels to process across before moving to the next row
+<i>117</i>&nbsp;     * @param h the number of rows of pixels to process
+<i>118</i>&nbsp;     */
+<i>119</i>&nbsp;    public void convert(byte       srcarr[], int srcoff, int srcscanbytes,
+<i>120</i>&nbsp;                        ByteBuffer dstbuf,   int dstoff, int dstscanbytes,
+<i>121</i>&nbsp;                        int w, int h);
+<i>122</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2017-12-04 21:49</div>
+</div>
+</body>
+</html>

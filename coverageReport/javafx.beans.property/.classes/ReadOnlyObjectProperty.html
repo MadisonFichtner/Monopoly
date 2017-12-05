@@ -1,0 +1,161 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: ReadOnlyObjectProperty</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">javafx.beans.property</a> ]
+</div>
+
+<h1>Coverage Summary for Class: ReadOnlyObjectProperty (javafx.beans.property)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">ReadOnlyObjectProperty</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    50%
+  </span>
+  <span class="absValue">
+    (1/ 2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    18.2%
+  </span>
+  <span class="absValue">
+    (2/ 11)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright (c) 2011, 2017, Oracle and/or its affiliates. All rights reserved.
+<i>3</i>&nbsp; * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+<i>4</i>&nbsp; *
+<i>5</i>&nbsp; *
+<i>6</i>&nbsp; *
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; *
+<i>11</i>&nbsp; *
+<i>12</i>&nbsp; *
+<i>13</i>&nbsp; *
+<i>14</i>&nbsp; *
+<i>15</i>&nbsp; *
+<i>16</i>&nbsp; *
+<i>17</i>&nbsp; *
+<i>18</i>&nbsp; *
+<i>19</i>&nbsp; *
+<i>20</i>&nbsp; *
+<i>21</i>&nbsp; *
+<i>22</i>&nbsp; *
+<i>23</i>&nbsp; *
+<i>24</i>&nbsp; */
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;package javafx.beans.property;
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;import javafx.beans.binding.ObjectExpression;
+<i>29</i>&nbsp;import javafx.collections.ObservableList;
+<i>30</i>&nbsp;import javafx.collections.ObservableMap;
+<i>31</i>&nbsp;import javafx.collections.ObservableSet;
+<i>32</i>&nbsp;
+<i>33</i>&nbsp;/**
+<i>34</i>&nbsp; * Superclass for all readonly properties wrapping an arbitrary {@code Object}.
+<i>35</i>&nbsp; *
+<i>36</i>&nbsp; * For specialized implementations for {@link ObservableList}, {@link ObservableSet} and
+<i>37</i>&nbsp; * {@link ObservableMap} that also report changes inside the collections, see
+<i>38</i>&nbsp; * {@link ReadOnlyListProperty}, {@link ReadOnlySetProperty} and {@link ReadOnlyMapProperty}, respectively.
+<i>39</i>&nbsp; *
+<i>40</i>&nbsp; * @see javafx.beans.value.ObservableObjectValue
+<i>41</i>&nbsp; * @see javafx.beans.binding.ObjectExpression
+<i>42</i>&nbsp; * @see ReadOnlyProperty
+<i>43</i>&nbsp; *
+<i>44</i>&nbsp; *
+<i>45</i>&nbsp; * @param &lt;T&gt;
+<i>46</i>&nbsp; *            the type of the wrapped {@code Object}
+<i>47</i>&nbsp; * @since JavaFX 2.0
+<i>48</i>&nbsp; */
+<i>49</i>&nbsp;public abstract class ReadOnlyObjectProperty&lt;T&gt; extends ObjectExpression&lt;T&gt;
+<i>50</i>&nbsp;        implements ReadOnlyProperty&lt;T&gt; {
+<i>51</i>&nbsp;
+<i>52</i>&nbsp;    /**
+<i>53</i>&nbsp;     * The constructor of {@code ReadOnlyObjectProperty}.
+<i>54</i>&nbsp;     */
+<b class="fc"><i>55</i>&nbsp;    public ReadOnlyObjectProperty() {</b>
+<b class="fc"><i>56</i>&nbsp;    }</b>
+<i>57</i>&nbsp;
+<i>58</i>&nbsp;    /**
+<i>59</i>&nbsp;     * Returns a string representation of this {@code ReadOnlyObjectProperty} object.
+<i>60</i>&nbsp;     * @return a string representation of this {@code ReadOnlyObjectProperty} object.
+<i>61</i>&nbsp;     */
+<i>62</i>&nbsp;    @Override
+<i>63</i>&nbsp;    public String toString() {
+<b class="nc"><i>64</i>&nbsp;        final Object bean = getBean();</b>
+<b class="nc"><i>65</i>&nbsp;        final String name = getName();</b>
+<b class="nc"><i>66</i>&nbsp;        final StringBuilder result = new StringBuilder(</b>
+<i>67</i>&nbsp;                &quot;ReadOnlyObjectProperty [&quot;);
+<b class="nc"><i>68</i>&nbsp;        if (bean != null) {</b>
+<b class="nc"><i>69</i>&nbsp;            result.append(&quot;bean: &quot;).append(bean).append(&quot;, &quot;);</b>
+<i>70</i>&nbsp;        }
+<b class="nc"><i>71</i>&nbsp;        if ((name != null) &amp;&amp; !name.equals(&quot;&quot;)) {</b>
+<b class="nc"><i>72</i>&nbsp;            result.append(&quot;name: &quot;).append(name).append(&quot;, &quot;);</b>
+<i>73</i>&nbsp;        }
+<b class="nc"><i>74</i>&nbsp;        result.append(&quot;value: &quot;).append(get()).append(&quot;]&quot;);</b>
+<b class="nc"><i>75</i>&nbsp;        return result.toString();</b>
+<i>76</i>&nbsp;    }
+<i>77</i>&nbsp;
+<i>78</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2017-12-04 21:49</div>
+</div>
+</body>
+</html>

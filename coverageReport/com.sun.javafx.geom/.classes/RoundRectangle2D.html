@@ -1,0 +1,446 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: RoundRectangle2D</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.javafx.geom</a> ]
+</div>
+
+<h1>Coverage Summary for Class: RoundRectangle2D (com.sun.javafx.geom)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">RoundRectangle2D</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    26.3%
+  </span>
+  <span class="absValue">
+    (5/ 19)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    24.2%
+  </span>
+  <span class="absValue">
+    (22/ 91)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright (c) 1997, 2013, Oracle and/or its affiliates. All rights reserved.
+<i>3</i>&nbsp; * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+<i>4</i>&nbsp; *
+<i>5</i>&nbsp; *
+<i>6</i>&nbsp; *
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; *
+<i>11</i>&nbsp; *
+<i>12</i>&nbsp; *
+<i>13</i>&nbsp; *
+<i>14</i>&nbsp; *
+<i>15</i>&nbsp; *
+<i>16</i>&nbsp; *
+<i>17</i>&nbsp; *
+<i>18</i>&nbsp; *
+<i>19</i>&nbsp; *
+<i>20</i>&nbsp; *
+<i>21</i>&nbsp; *
+<i>22</i>&nbsp; *
+<i>23</i>&nbsp; *
+<i>24</i>&nbsp; */
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;package com.sun.javafx.geom;
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;import com.sun.javafx.geom.transform.BaseTransform;
+<i>29</i>&nbsp;
+<i>30</i>&nbsp;/**
+<i>31</i>&nbsp; * The &lt;code&gt;RoundRectangle2D&lt;/code&gt; class defines a rectangle with
+<i>32</i>&nbsp; * rounded corners defined by a location {@code (x,y)}, a
+<i>33</i>&nbsp; * dimension {@code (w x h)}, and the width and height of an arc
+<i>34</i>&nbsp; * with which to round the corners.
+<i>35</i>&nbsp; *
+<i>36</i>&nbsp; * @version 1.29, 05/05/07
+<i>37</i>&nbsp; */
+<i>38</i>&nbsp;public class RoundRectangle2D extends RectangularShape {
+<i>39</i>&nbsp;    /**
+<i>40</i>&nbsp;     * The X coordinate of this &lt;code&gt;RoundRectangle2D&lt;/code&gt;.
+<i>41</i>&nbsp;     */
+<i>42</i>&nbsp;    public float x;
+<i>43</i>&nbsp;
+<i>44</i>&nbsp;    /**
+<i>45</i>&nbsp;     * The Y coordinate of this &lt;code&gt;RoundRectangle2D&lt;/code&gt;.
+<i>46</i>&nbsp;     */
+<i>47</i>&nbsp;    public float y;
+<i>48</i>&nbsp;
+<i>49</i>&nbsp;    /**
+<i>50</i>&nbsp;     * The width of this &lt;code&gt;RoundRectangle2D&lt;/code&gt;.
+<i>51</i>&nbsp;     */
+<i>52</i>&nbsp;    public float width;
+<i>53</i>&nbsp;
+<i>54</i>&nbsp;    /**
+<i>55</i>&nbsp;     * The height of this &lt;code&gt;RoundRectangle2D&lt;/code&gt;.
+<i>56</i>&nbsp;     */
+<i>57</i>&nbsp;    public float height;
+<i>58</i>&nbsp;
+<i>59</i>&nbsp;    /**
+<i>60</i>&nbsp;     * The width of the arc that rounds off the corners.
+<i>61</i>&nbsp;     */
+<i>62</i>&nbsp;    public float arcWidth;
+<i>63</i>&nbsp;
+<i>64</i>&nbsp;    /**
+<i>65</i>&nbsp;     * The height of the arc that rounds off the corners.
+<i>66</i>&nbsp;     */
+<i>67</i>&nbsp;    public float arcHeight;
+<i>68</i>&nbsp;
+<i>69</i>&nbsp;    /**
+<i>70</i>&nbsp;     * Constructs a new &lt;code&gt;RoundRectangle2D&lt;/code&gt;, initialized to
+<i>71</i>&nbsp;     * location (0.0,&amp;nbsp;0.0), size (0.0,&amp;nbsp;0.0), and corner arcs
+<i>72</i>&nbsp;     * of radius 0.0.
+<i>73</i>&nbsp;     */
+<b class="fc"><i>74</i>&nbsp;    public RoundRectangle2D() {</b>
+<b class="fc"><i>75</i>&nbsp;    }</b>
+<i>76</i>&nbsp;
+<i>77</i>&nbsp;    /**
+<i>78</i>&nbsp;     * Constructs and initializes a &lt;code&gt;RoundRectangle2D&lt;/code&gt;
+<i>79</i>&nbsp;     * from the specified &lt;code&gt;float&lt;/code&gt; coordinates.
+<i>80</i>&nbsp;     *
+<i>81</i>&nbsp;     * @param x the X coordinate of the newly
+<i>82</i>&nbsp;     *          constructed &lt;code&gt;RoundRectangle2D&lt;/code&gt;
+<i>83</i>&nbsp;     * @param y the Y coordinate of the newly
+<i>84</i>&nbsp;     *          constructed &lt;code&gt;RoundRectangle2D&lt;/code&gt;
+<i>85</i>&nbsp;     * @param w the width to which to set the newly
+<i>86</i>&nbsp;     *          constructed &lt;code&gt;RoundRectangle2D&lt;/code&gt;
+<i>87</i>&nbsp;     * @param h the height to which to set the newly
+<i>88</i>&nbsp;     *          constructed &lt;code&gt;RoundRectangle2D&lt;/code&gt;
+<i>89</i>&nbsp;     * @param arcw the width of the arc to use to round off the
+<i>90</i>&nbsp;     *             corners of the newly constructed
+<i>91</i>&nbsp;     *             &lt;code&gt;RoundRectangle2D&lt;/code&gt;
+<i>92</i>&nbsp;     * @param arch the height of the arc to use to round off the
+<i>93</i>&nbsp;     *             corners of the newly constructed
+<i>94</i>&nbsp;     *             &lt;code&gt;RoundRectangle2D&lt;/code&gt;
+<i>95</i>&nbsp;     */
+<b class="nc"><i>96</i>&nbsp;    public RoundRectangle2D(float x, float y, float w, float h, float arcw, float arch) {</b>
+<b class="nc"><i>97</i>&nbsp;        setRoundRect(x, y, w, h, arcw, arch);</b>
+<b class="nc"><i>98</i>&nbsp;    }</b>
+<i>99</i>&nbsp;
+<i>100</i>&nbsp;    /**
+<i>101</i>&nbsp;     * {@inheritDoc}
+<i>102</i>&nbsp;     */
+<i>103</i>&nbsp;    @Override
+<i>104</i>&nbsp;    public float getX() {
+<b class="nc"><i>105</i>&nbsp;        return x;</b>
+<i>106</i>&nbsp;    }
+<i>107</i>&nbsp;
+<i>108</i>&nbsp;    /**
+<i>109</i>&nbsp;     * {@inheritDoc}
+<i>110</i>&nbsp;     */
+<i>111</i>&nbsp;    @Override
+<i>112</i>&nbsp;    public float getY() {
+<b class="nc"><i>113</i>&nbsp;        return y;</b>
+<i>114</i>&nbsp;    }
+<i>115</i>&nbsp;
+<i>116</i>&nbsp;    /**
+<i>117</i>&nbsp;     * {@inheritDoc}
+<i>118</i>&nbsp;     */
+<i>119</i>&nbsp;    @Override
+<i>120</i>&nbsp;    public float getWidth() {
+<b class="nc"><i>121</i>&nbsp;        return width;</b>
+<i>122</i>&nbsp;    }
+<i>123</i>&nbsp;
+<i>124</i>&nbsp;    /**
+<i>125</i>&nbsp;     * {@inheritDoc}
+<i>126</i>&nbsp;     */
+<i>127</i>&nbsp;    @Override
+<i>128</i>&nbsp;    public float getHeight() {
+<b class="nc"><i>129</i>&nbsp;        return height;</b>
+<i>130</i>&nbsp;    }
+<i>131</i>&nbsp;
+<i>132</i>&nbsp;    /**
+<i>133</i>&nbsp;     * {@inheritDoc}
+<i>134</i>&nbsp;     */
+<i>135</i>&nbsp;    @Override
+<i>136</i>&nbsp;    public boolean isEmpty() {
+<b class="fc"><i>137</i>&nbsp;        return (width &lt;= 0.0f) || (height &lt;= 0.0f);</b>
+<i>138</i>&nbsp;    }
+<i>139</i>&nbsp;
+<i>140</i>&nbsp;    /**
+<i>141</i>&nbsp;     * Sets the location, size, and corner radii of this
+<i>142</i>&nbsp;     * &lt;code&gt;RoundRectangle2D&lt;/code&gt; to the specified
+<i>143</i>&nbsp;     * &lt;code&gt;float&lt;/code&gt; values.
+<i>144</i>&nbsp;     *
+<i>145</i>&nbsp;     * @param x the X coordinate to which to set the
+<i>146</i>&nbsp;     *          location of this &lt;code&gt;RoundRectangle2D&lt;/code&gt;
+<i>147</i>&nbsp;     * @param y the Y coordinate to which to set the
+<i>148</i>&nbsp;     *          location of this &lt;code&gt;RoundRectangle2D&lt;/code&gt;
+<i>149</i>&nbsp;     * @param w the width to which to set this
+<i>150</i>&nbsp;     *          &lt;code&gt;RoundRectangle2D&lt;/code&gt;
+<i>151</i>&nbsp;     * @param h the height to which to set this
+<i>152</i>&nbsp;     *          &lt;code&gt;RoundRectangle2D&lt;/code&gt;
+<i>153</i>&nbsp;     * @param arcw the width to which to set the arc of this
+<i>154</i>&nbsp;     *             &lt;code&gt;RoundRectangle2D&lt;/code&gt;
+<i>155</i>&nbsp;     * @param arch the height to which to set the arc of this
+<i>156</i>&nbsp;     *             &lt;code&gt;RoundRectangle2D&lt;/code&gt;
+<i>157</i>&nbsp;     */
+<i>158</i>&nbsp;    public void setRoundRect(float x, float y, float w, float h,
+<i>159</i>&nbsp;                                 float arcw, float arch)
+<i>160</i>&nbsp;    {
+<b class="fc"><i>161</i>&nbsp;        this.x = x;</b>
+<b class="fc"><i>162</i>&nbsp;        this.y = y;</b>
+<b class="fc"><i>163</i>&nbsp;        this.width = w;</b>
+<b class="fc"><i>164</i>&nbsp;        this.height = h;</b>
+<b class="fc"><i>165</i>&nbsp;        this.arcWidth = arcw;</b>
+<b class="fc"><i>166</i>&nbsp;        this.arcHeight = arch;</b>
+<b class="fc"><i>167</i>&nbsp;    }</b>
+<i>168</i>&nbsp;
+<i>169</i>&nbsp;    /**
+<i>170</i>&nbsp;     * {@inheritDoc}
+<i>171</i>&nbsp;     */
+<i>172</i>&nbsp;    @Override
+<i>173</i>&nbsp;    public RectBounds getBounds() {
+<b class="fc"><i>174</i>&nbsp;        return new RectBounds(x, y, x + width, y + height);</b>
+<i>175</i>&nbsp;    }
+<i>176</i>&nbsp;
+<i>177</i>&nbsp;    /**
+<i>178</i>&nbsp;     * Sets this &lt;code&gt;RoundRectangle2D&lt;/code&gt; to be the same as the
+<i>179</i>&nbsp;     * specified &lt;code&gt;RoundRectangle2D&lt;/code&gt;.
+<i>180</i>&nbsp;     * @param rr the specified &lt;code&gt;RoundRectangle2D&lt;/code&gt;
+<i>181</i>&nbsp;     */
+<i>182</i>&nbsp;    public void setRoundRect(RoundRectangle2D rr) {
+<b class="nc"><i>183</i>&nbsp;        setRoundRect(rr.x, rr.y, rr.width, rr.height, rr.arcWidth, rr.arcHeight);</b>
+<b class="nc"><i>184</i>&nbsp;    }</b>
+<i>185</i>&nbsp;
+<i>186</i>&nbsp;    /**
+<i>187</i>&nbsp;     * {@inheritDoc}
+<i>188</i>&nbsp;     */
+<i>189</i>&nbsp;    @Override
+<i>190</i>&nbsp;    public void setFrame(float x, float y, float w, float h) {
+<b class="nc"><i>191</i>&nbsp;        setRoundRect(x, y, w, h, this.arcWidth, this.arcHeight);</b>
+<b class="nc"><i>192</i>&nbsp;    }</b>
+<i>193</i>&nbsp;
+<i>194</i>&nbsp;    /**
+<i>195</i>&nbsp;     * {@inheritDoc}
+<i>196</i>&nbsp;     */
+<i>197</i>&nbsp;    @Override
+<i>198</i>&nbsp;    public boolean contains(float x, float y) {
+<b class="fc"><i>199</i>&nbsp;        if (isEmpty()) { return false; }</b>
+<b class="fc"><i>200</i>&nbsp;        float rrx0 = this.x;</b>
+<b class="fc"><i>201</i>&nbsp;        float rry0 = this.y;</b>
+<b class="fc"><i>202</i>&nbsp;        float rrx1 = rrx0 + this.width;</b>
+<b class="fc"><i>203</i>&nbsp;        float rry1 = rry0 + this.height;</b>
+<i>204</i>&nbsp;        // Check for trivial rejection - point is outside bounding rectangle
+<b class="fc"><i>205</i>&nbsp;        if (x &lt; rrx0 || y &lt; rry0 || x &gt;= rrx1 || y &gt;= rry1) {</b>
+<b class="fc"><i>206</i>&nbsp;            return false;</b>
+<i>207</i>&nbsp;        }
+<b class="fc"><i>208</i>&nbsp;        float aw = Math.min(this.width, Math.abs(this.arcWidth)) / 2f;</b>
+<b class="fc"><i>209</i>&nbsp;        float ah = Math.min(this.height, Math.abs(this.arcHeight)) / 2f;</b>
+<i>210</i>&nbsp;        // Check which corner point is in and do circular containment
+<i>211</i>&nbsp;        // test - otherwise simple acceptance
+<b class="fc"><i>212</i>&nbsp;        if (x &gt;= (rrx0 += aw) &amp;&amp; x &lt; (rrx0 = rrx1 - aw)) {</b>
+<b class="fc"><i>213</i>&nbsp;            return true;</b>
+<i>214</i>&nbsp;        }
+<b class="nc"><i>215</i>&nbsp;        if (y &gt;= (rry0 += ah) &amp;&amp; y &lt; (rry0 = rry1 - ah)) {</b>
+<b class="nc"><i>216</i>&nbsp;            return true;</b>
+<i>217</i>&nbsp;        }
+<b class="nc"><i>218</i>&nbsp;        x = (x - rrx0) / aw;</b>
+<b class="nc"><i>219</i>&nbsp;        y = (y - rry0) / ah;</b>
+<b class="nc"><i>220</i>&nbsp;        return (x * x + y * y &lt;= 1.0);</b>
+<i>221</i>&nbsp;    }
+<i>222</i>&nbsp;
+<i>223</i>&nbsp;    private int classify(float coord, float left, float right, float arcsize) {
+<b class="nc"><i>224</i>&nbsp;        if (coord &lt; left) {</b>
+<b class="nc"><i>225</i>&nbsp;            return 0;</b>
+<b class="nc"><i>226</i>&nbsp;        } else if (coord &lt; left + arcsize) {</b>
+<b class="nc"><i>227</i>&nbsp;            return 1;</b>
+<b class="nc"><i>228</i>&nbsp;        } else if (coord &lt; right - arcsize) {</b>
+<b class="nc"><i>229</i>&nbsp;            return 2;</b>
+<b class="nc"><i>230</i>&nbsp;        } else if (coord &lt; right) {</b>
+<b class="nc"><i>231</i>&nbsp;            return 3;</b>
+<i>232</i>&nbsp;        } else {
+<b class="nc"><i>233</i>&nbsp;            return 4;</b>
+<i>234</i>&nbsp;        }
+<i>235</i>&nbsp;    }
+<i>236</i>&nbsp;
+<i>237</i>&nbsp;    /**
+<i>238</i>&nbsp;     * {@inheritDoc}
+<i>239</i>&nbsp;     */
+<i>240</i>&nbsp;    @Override
+<i>241</i>&nbsp;    public boolean intersects(float x, float y, float w, float h) {
+<b class="nc"><i>242</i>&nbsp;        if (isEmpty() || w &lt;= 0 || h &lt;= 0) {</b>
+<b class="nc"><i>243</i>&nbsp;            return false;</b>
+<i>244</i>&nbsp;        }
+<b class="nc"><i>245</i>&nbsp;        float rrx0 = this.x;</b>
+<b class="nc"><i>246</i>&nbsp;        float rry0 = this.y;</b>
+<b class="nc"><i>247</i>&nbsp;        float rrx1 = rrx0 + this.width;</b>
+<b class="nc"><i>248</i>&nbsp;        float rry1 = rry0 + this.height;</b>
+<i>249</i>&nbsp;        // Check for trivial rejection - bounding rectangles do not intersect
+<b class="nc"><i>250</i>&nbsp;        if (x + w &lt;= rrx0 || x &gt;= rrx1 || y + h &lt;= rry0 || y &gt;= rry1) {</b>
+<b class="nc"><i>251</i>&nbsp;            return false;</b>
+<i>252</i>&nbsp;        }
+<b class="nc"><i>253</i>&nbsp;        float aw = Math.min(this.width, Math.abs(this.arcWidth)) / 2f;</b>
+<b class="nc"><i>254</i>&nbsp;        float ah = Math.min(this.height, Math.abs(this.arcHeight)) / 2f;</b>
+<b class="nc"><i>255</i>&nbsp;        int x0class = classify(x, rrx0, rrx1, aw);</b>
+<b class="nc"><i>256</i>&nbsp;        int x1class = classify(x + w, rrx0, rrx1, aw);</b>
+<b class="nc"><i>257</i>&nbsp;        int y0class = classify(y, rry0, rry1, ah);</b>
+<b class="nc"><i>258</i>&nbsp;        int y1class = classify(y + h, rry0, rry1, ah);</b>
+<i>259</i>&nbsp;        // Trivially accept if any point is inside inner rectangle
+<b class="nc"><i>260</i>&nbsp;        if (x0class == 2 || x1class == 2 || y0class == 2 || y1class == 2) {</b>
+<b class="nc"><i>261</i>&nbsp;            return true;</b>
+<i>262</i>&nbsp;        }
+<i>263</i>&nbsp;        // Trivially accept if either edge spans inner rectangle
+<b class="nc"><i>264</i>&nbsp;        if ((x0class &lt; 2 &amp;&amp; x1class &gt; 2) || (y0class &lt; 2 &amp;&amp; y1class &gt; 2)) {</b>
+<b class="nc"><i>265</i>&nbsp;            return true;</b>
+<i>266</i>&nbsp;        }
+<i>267</i>&nbsp;        // Since neither edge spans the center, then one of the corners
+<i>268</i>&nbsp;        // must be in one of the rounded edges.  We detect this case if
+<i>269</i>&nbsp;        // a [xy]0class is 3 or a [xy]1class is 1.  One of those two cases
+<i>270</i>&nbsp;        // must be true for each direction.
+<i>271</i>&nbsp;        // We now find a &quot;nearest point&quot; to test for being inside a rounded
+<i>272</i>&nbsp;        // corner.
+<b class="nc"><i>273</i>&nbsp;        x = (x1class == 1) ? (x = x + w - (rrx0 + aw)) : (x = x - (rrx1 - aw));</b>
+<b class="nc"><i>274</i>&nbsp;        y = (y1class == 1) ? (y = y + h - (rry0 + ah)) : (y = y - (rry1 - ah));</b>
+<b class="nc"><i>275</i>&nbsp;        x = x / aw;</b>
+<b class="nc"><i>276</i>&nbsp;        y = y / ah;</b>
+<b class="nc"><i>277</i>&nbsp;        return (x * x + y * y &lt;= 1f);</b>
+<i>278</i>&nbsp;    }
+<i>279</i>&nbsp;
+<i>280</i>&nbsp;    /**
+<i>281</i>&nbsp;     * {@inheritDoc}
+<i>282</i>&nbsp;     */
+<i>283</i>&nbsp;    @Override
+<i>284</i>&nbsp;    public boolean contains(float x, float y, float w, float h) {
+<b class="nc"><i>285</i>&nbsp;        if (isEmpty() || w &lt;= 0 || h &lt;= 0) {</b>
+<b class="nc"><i>286</i>&nbsp;            return false;</b>
+<i>287</i>&nbsp;        }
+<b class="nc"><i>288</i>&nbsp;        return (contains(x, y) &amp;&amp;</b>
+<b class="nc"><i>289</i>&nbsp;            contains(x + w, y) &amp;&amp;</b>
+<b class="nc"><i>290</i>&nbsp;            contains(x, y + h) &amp;&amp;</b>
+<b class="nc"><i>291</i>&nbsp;            contains(x + w, y + h));</b>
+<i>292</i>&nbsp;    }
+<i>293</i>&nbsp;
+<i>294</i>&nbsp;    /**
+<i>295</i>&nbsp;     * Returns an iteration object that defines the boundary of this
+<i>296</i>&nbsp;     * &lt;code&gt;RoundRectangle2D&lt;/code&gt;.
+<i>297</i>&nbsp;     * The iterator for this class is multi-threaded safe, which means
+<i>298</i>&nbsp;     * that this &lt;code&gt;RoundRectangle2D&lt;/code&gt; class guarantees that
+<i>299</i>&nbsp;     * modifications to the geometry of this &lt;code&gt;RoundRectangle2D&lt;/code&gt;
+<i>300</i>&nbsp;     * object do not affect any iterations of that geometry that
+<i>301</i>&nbsp;     * are already in process.
+<i>302</i>&nbsp;     * @param tx an optional &lt;code&gt;BaseTransform&lt;/code&gt; to be applied to
+<i>303</i>&nbsp;     * the coordinates as they are returned in the iteration, or
+<i>304</i>&nbsp;     * &lt;code&gt;null&lt;/code&gt; if untransformed coordinates are desired
+<i>305</i>&nbsp;     * @return    the &lt;code&gt;PathIterator&lt;/code&gt; object that returns the
+<i>306</i>&nbsp;     *          geometry of the outline of this
+<i>307</i>&nbsp;     *          &lt;code&gt;RoundRectangle2D&lt;/code&gt;, one segment at a time.
+<i>308</i>&nbsp;     */
+<i>309</i>&nbsp;    @Override
+<i>310</i>&nbsp;    public PathIterator getPathIterator(BaseTransform tx) {
+<b class="nc"><i>311</i>&nbsp;        return new RoundRectIterator(this, tx);</b>
+<i>312</i>&nbsp;    }
+<i>313</i>&nbsp;
+<i>314</i>&nbsp;    @Override
+<i>315</i>&nbsp;    public RoundRectangle2D copy() {
+<b class="nc"><i>316</i>&nbsp;        return new RoundRectangle2D(x, y, width, height, arcWidth, arcHeight);</b>
+<i>317</i>&nbsp;    }
+<i>318</i>&nbsp;
+<i>319</i>&nbsp;    /**
+<i>320</i>&nbsp;     * Returns the hashcode for this &lt;code&gt;RoundRectangle2D&lt;/code&gt;.
+<i>321</i>&nbsp;     * @return the hashcode for this &lt;code&gt;RoundRectangle2D&lt;/code&gt;.
+<i>322</i>&nbsp;     */
+<i>323</i>&nbsp;    @Override
+<i>324</i>&nbsp;    public int hashCode() {
+<b class="nc"><i>325</i>&nbsp;        int bits = java.lang.Float.floatToIntBits(x);</b>
+<b class="nc"><i>326</i>&nbsp;        bits += java.lang.Float.floatToIntBits(y) * 37;</b>
+<b class="nc"><i>327</i>&nbsp;        bits += java.lang.Float.floatToIntBits(width) * 43;</b>
+<b class="nc"><i>328</i>&nbsp;        bits += java.lang.Float.floatToIntBits(height) * 47;</b>
+<b class="nc"><i>329</i>&nbsp;        bits += java.lang.Float.floatToIntBits(arcWidth) * 53;</b>
+<b class="nc"><i>330</i>&nbsp;        bits += java.lang.Float.floatToIntBits(arcHeight) * 59;</b>
+<b class="nc"><i>331</i>&nbsp;        return bits;</b>
+<i>332</i>&nbsp;    }
+<i>333</i>&nbsp;
+<i>334</i>&nbsp;    /**
+<i>335</i>&nbsp;     * Determines whether or not the specified &lt;code&gt;Object&lt;/code&gt; is
+<i>336</i>&nbsp;     * equal to this &lt;code&gt;RoundRectangle2D&lt;/code&gt;.  The specified
+<i>337</i>&nbsp;     * &lt;code&gt;Object&lt;/code&gt; is equal to this &lt;code&gt;RoundRectangle2D&lt;/code&gt;
+<i>338</i>&nbsp;     * if it is an instance of &lt;code&gt;RoundRectangle2D&lt;/code&gt; and if its
+<i>339</i>&nbsp;     * location, size, and corner arc dimensions are the same as this
+<i>340</i>&nbsp;     * &lt;code&gt;RoundRectangle2D&lt;/code&gt;.
+<i>341</i>&nbsp;     * @param obj  an &lt;code&gt;Object&lt;/code&gt; to be compared with this
+<i>342</i>&nbsp;     *             &lt;code&gt;RoundRectangle2D&lt;/code&gt;.
+<i>343</i>&nbsp;     * @return  &lt;code&gt;true&lt;/code&gt; if &lt;code&gt;obj&lt;/code&gt; is an instance
+<i>344</i>&nbsp;     *          of &lt;code&gt;RoundRectangle2D&lt;/code&gt; and has the same values;
+<i>345</i>&nbsp;     *          &lt;code&gt;false&lt;/code&gt; otherwise.
+<i>346</i>&nbsp;     */
+<i>347</i>&nbsp;    @Override
+<i>348</i>&nbsp;    public boolean equals(Object obj) {
+<b class="nc"><i>349</i>&nbsp;        if (obj == this) {</b>
+<b class="nc"><i>350</i>&nbsp;            return true;</b>
+<i>351</i>&nbsp;        }
+<b class="nc"><i>352</i>&nbsp;        if (obj instanceof RoundRectangle2D) {</b>
+<b class="nc"><i>353</i>&nbsp;            RoundRectangle2D rr2d = (RoundRectangle2D) obj;</b>
+<b class="nc"><i>354</i>&nbsp;            return ((x == rr2d.x) &amp;&amp;</b>
+<i>355</i>&nbsp;                    (y == rr2d.y) &amp;&amp;
+<i>356</i>&nbsp;                    (width == rr2d.width) &amp;&amp;
+<i>357</i>&nbsp;                    (height == rr2d.height) &amp;&amp;
+<i>358</i>&nbsp;                    (arcWidth == rr2d.arcWidth) &amp;&amp;
+<i>359</i>&nbsp;                    (arcHeight == rr2d.arcHeight));
+<i>360</i>&nbsp;        }
+<b class="nc"><i>361</i>&nbsp;        return false;</b>
+<i>362</i>&nbsp;    }
+<i>363</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2017-12-04 21:49</div>
+</div>
+</body>
+</html>

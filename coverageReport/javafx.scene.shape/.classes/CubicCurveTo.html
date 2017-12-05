@@ -1,0 +1,488 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: CubicCurveTo</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">javafx.scene.shape</a> ]
+</div>
+
+<h1>Coverage Summary for Class: CubicCurveTo (javafx.scene.shape)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">CubicCurveTo</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 25)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 85)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright (c) 2010, 2016, Oracle and/or its affiliates. All rights reserved.
+<i>3</i>&nbsp; * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+<i>4</i>&nbsp; *
+<i>5</i>&nbsp; *
+<i>6</i>&nbsp; *
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; *
+<i>11</i>&nbsp; *
+<i>12</i>&nbsp; *
+<i>13</i>&nbsp; *
+<i>14</i>&nbsp; *
+<i>15</i>&nbsp; *
+<i>16</i>&nbsp; *
+<i>17</i>&nbsp; *
+<i>18</i>&nbsp; *
+<i>19</i>&nbsp; *
+<i>20</i>&nbsp; *
+<i>21</i>&nbsp; *
+<i>22</i>&nbsp; *
+<i>23</i>&nbsp; *
+<i>24</i>&nbsp; */
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;package javafx.scene.shape;
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;import com.sun.javafx.geom.Path2D;
+<i>29</i>&nbsp;import com.sun.javafx.scene.shape.CubicCurveToHelper;
+<i>30</i>&nbsp;import com.sun.javafx.sg.prism.NGPath;
+<i>31</i>&nbsp;import javafx.beans.property.DoubleProperty;
+<i>32</i>&nbsp;import javafx.beans.property.DoublePropertyBase;
+<i>33</i>&nbsp;
+<i>34</i>&nbsp;
+<i>35</i>&nbsp;/**
+<i>36</i>&nbsp; * Creates a curved path element, defined by three new points,
+<i>37</i>&nbsp; * by drawing a Cubic B&amp;eacute;zier curve that intersects both the current coordinates
+<i>38</i>&nbsp; * and the specified coordinates {@code (x,y)}, using the
+<i>39</i>&nbsp; * specified points {@code (controlX1,controlY1)} and {@code (controlX2,controlY2)}
+<i>40</i>&nbsp; * as B&amp;eacute;zier control points. All coordinates are specified in double precision.
+<i>41</i>&nbsp; *
+<i>42</i>&nbsp; * &lt;p&gt;For more information on path elements see the {@link Path} and
+<i>43</i>&nbsp; * {@link PathElement} classes.
+<i>44</i>&nbsp; *
+<i>45</i>&nbsp; * &lt;p&gt;Example:
+<i>46</i>&nbsp; *
+<i>47</i>&nbsp;&lt;PRE&gt;
+<i>48</i>&nbsp;import javafx.scene.shape.*;
+<i>49</i>&nbsp;
+<i>50</i>&nbsp;Path path = new Path();
+<i>51</i>&nbsp;
+<i>52</i>&nbsp;MoveTo moveTo = new MoveTo();
+<i>53</i>&nbsp;moveTo.setX(0.0f);
+<i>54</i>&nbsp;moveTo.setY(0.0f);
+<i>55</i>&nbsp;
+<i>56</i>&nbsp;CubicCurveTo cubicTo = new CubicCurveTo();
+<i>57</i>&nbsp;cubicTo.setControlX1(0.0f);
+<i>58</i>&nbsp;cubicTo.setControlY1(0.0f);
+<i>59</i>&nbsp;cubicTo.setControlX2(100.0f);
+<i>60</i>&nbsp;cubicTo.setControlY2(100.0f);
+<i>61</i>&nbsp;cubicTo.setX(100.0f);
+<i>62</i>&nbsp;cubicTo.setY(50.0f);
+<i>63</i>&nbsp;
+<i>64</i>&nbsp;path.getElements().add(moveTo);
+<i>65</i>&nbsp;path.getElements().add(cubicTo);
+<i>66</i>&nbsp;&lt;/PRE&gt;
+<i>67</i>&nbsp; * @since JavaFX 2.0
+<i>68</i>&nbsp; */
+<b class="nc"><i>69</i>&nbsp;public class CubicCurveTo extends PathElement {</b>
+<i>70</i>&nbsp;    static {
+<b class="nc"><i>71</i>&nbsp;        CubicCurveToHelper.setCubicCurveToAccessor(new CubicCurveToHelper.CubicCurveToAccessor() {</b>
+<i>72</i>&nbsp;            @Override
+<i>73</i>&nbsp;            public void doAddTo(PathElement pathElement, Path2D path) {
+<i>74</i>&nbsp;                ((CubicCurveTo) pathElement).doAddTo(path);
+<i>75</i>&nbsp;            }
+<i>76</i>&nbsp;        });
+<b class="nc"><i>77</i>&nbsp;    }</b>
+<i>78</i>&nbsp;
+<i>79</i>&nbsp;    /**
+<i>80</i>&nbsp;     * Creates an empty instance of CubicCurveTo.
+<i>81</i>&nbsp;     */
+<b class="nc"><i>82</i>&nbsp;    public CubicCurveTo() {</b>
+<b class="nc"><i>83</i>&nbsp;        CubicCurveToHelper.initHelper(this);</b>
+<b class="nc"><i>84</i>&nbsp;    }</b>
+<i>85</i>&nbsp;
+<i>86</i>&nbsp;    /**
+<i>87</i>&nbsp;     * Creates a new instance of CubicCurveTo.
+<i>88</i>&nbsp;     * @param controlX1 the X coordinate of the first B&amp;eacute;zier control point
+<i>89</i>&nbsp;     * @param controlY1 the Y coordinate of the first B&amp;eacute;zier control point
+<i>90</i>&nbsp;     * @param controlX2 the X coordinate of the second B&amp;eacute;zier control point
+<i>91</i>&nbsp;     * @param controlY2 the Y coordinate of the second B&amp;eacute;zier control point
+<i>92</i>&nbsp;     * @param x the X coordinate of the final end point
+<i>93</i>&nbsp;     * @param y the Y coordinate of the final end point
+<i>94</i>&nbsp;     */
+<i>95</i>&nbsp;    public CubicCurveTo(double controlX1, double controlY1, double controlX2,
+<i>96</i>&nbsp;        double controlY2, double x, double y)
+<b class="nc"><i>97</i>&nbsp;    {</b>
+<b class="nc"><i>98</i>&nbsp;        setControlX1(controlX1);</b>
+<b class="nc"><i>99</i>&nbsp;        setControlY1(controlY1);</b>
+<b class="nc"><i>100</i>&nbsp;        setControlX2(controlX2);</b>
+<b class="nc"><i>101</i>&nbsp;        setControlY2(controlY2);</b>
+<b class="nc"><i>102</i>&nbsp;        setX(x);</b>
+<b class="nc"><i>103</i>&nbsp;        setY(y);</b>
+<b class="nc"><i>104</i>&nbsp;        CubicCurveToHelper.initHelper(this);</b>
+<b class="nc"><i>105</i>&nbsp;    }</b>
+<i>106</i>&nbsp;
+<i>107</i>&nbsp;    /**
+<i>108</i>&nbsp;     * Defines the X coordinate of the first B&amp;eacute;zier control point.
+<i>109</i>&nbsp;     *
+<i>110</i>&nbsp;     * @defaultValue 0.0
+<i>111</i>&nbsp;     */
+<i>112</i>&nbsp;    private DoubleProperty controlX1;
+<i>113</i>&nbsp;
+<i>114</i>&nbsp;
+<i>115</i>&nbsp;    public final void setControlX1(double value) {
+<b class="nc"><i>116</i>&nbsp;        if (controlX1 != null || value != 0.0) {</b>
+<b class="nc"><i>117</i>&nbsp;            controlX1Property().set(value);</b>
+<i>118</i>&nbsp;        }
+<b class="nc"><i>119</i>&nbsp;    }</b>
+<i>120</i>&nbsp;
+<i>121</i>&nbsp;    public final double getControlX1() {
+<b class="nc"><i>122</i>&nbsp;        return controlX1 == null ? 0.0 : controlX1.get();</b>
+<i>123</i>&nbsp;    }
+<i>124</i>&nbsp;
+<i>125</i>&nbsp;    public final DoubleProperty controlX1Property() {
+<b class="nc"><i>126</i>&nbsp;        if (controlX1 == null) {</b>
+<b class="nc"><i>127</i>&nbsp;            controlX1 = new DoublePropertyBase() {</b>
+<i>128</i>&nbsp;
+<i>129</i>&nbsp;                @Override
+<i>130</i>&nbsp;                public void invalidated() {
+<i>131</i>&nbsp;                    u();
+<i>132</i>&nbsp;                }
+<i>133</i>&nbsp;
+<i>134</i>&nbsp;                @Override
+<i>135</i>&nbsp;                public Object getBean() {
+<i>136</i>&nbsp;                    return CubicCurveTo.this;
+<i>137</i>&nbsp;                }
+<i>138</i>&nbsp;
+<i>139</i>&nbsp;                @Override
+<i>140</i>&nbsp;                public String getName() {
+<i>141</i>&nbsp;                    return &quot;controlX1&quot;;
+<i>142</i>&nbsp;                }
+<i>143</i>&nbsp;            };
+<i>144</i>&nbsp;        }
+<b class="nc"><i>145</i>&nbsp;        return controlX1;</b>
+<i>146</i>&nbsp;    }
+<i>147</i>&nbsp;
+<i>148</i>&nbsp;    /**
+<i>149</i>&nbsp;     * Defines the Y coordinate of the first B&amp;eacute;zier control point.
+<i>150</i>&nbsp;     *
+<i>151</i>&nbsp;     * @defaultValue 0.0
+<i>152</i>&nbsp;     */
+<i>153</i>&nbsp;    private DoubleProperty controlY1;
+<i>154</i>&nbsp;
+<i>155</i>&nbsp;
+<i>156</i>&nbsp;    public final void setControlY1(double value) {
+<b class="nc"><i>157</i>&nbsp;        if (controlY1 != null || value != 0.0) {</b>
+<b class="nc"><i>158</i>&nbsp;            controlY1Property().set(value);</b>
+<i>159</i>&nbsp;        }
+<b class="nc"><i>160</i>&nbsp;    }</b>
+<i>161</i>&nbsp;
+<i>162</i>&nbsp;    public final double getControlY1() {
+<b class="nc"><i>163</i>&nbsp;        return controlY1 == null ? 0.0 : controlY1.get();</b>
+<i>164</i>&nbsp;    }
+<i>165</i>&nbsp;
+<i>166</i>&nbsp;    public final DoubleProperty controlY1Property() {
+<b class="nc"><i>167</i>&nbsp;        if (controlY1 == null) {</b>
+<b class="nc"><i>168</i>&nbsp;            controlY1 = new DoublePropertyBase() {</b>
+<i>169</i>&nbsp;
+<i>170</i>&nbsp;                @Override
+<i>171</i>&nbsp;                public void invalidated() {
+<i>172</i>&nbsp;                    u();
+<i>173</i>&nbsp;                }
+<i>174</i>&nbsp;
+<i>175</i>&nbsp;                @Override
+<i>176</i>&nbsp;                public Object getBean() {
+<i>177</i>&nbsp;                    return CubicCurveTo.this;
+<i>178</i>&nbsp;                }
+<i>179</i>&nbsp;
+<i>180</i>&nbsp;                @Override
+<i>181</i>&nbsp;                public String getName() {
+<i>182</i>&nbsp;                    return &quot;controlY1&quot;;
+<i>183</i>&nbsp;                }
+<i>184</i>&nbsp;            };
+<i>185</i>&nbsp;        }
+<b class="nc"><i>186</i>&nbsp;        return controlY1;</b>
+<i>187</i>&nbsp;    }
+<i>188</i>&nbsp;
+<i>189</i>&nbsp;    /**
+<i>190</i>&nbsp;     * Defines the X coordinate of the second B&amp;eacute;zier control point.
+<i>191</i>&nbsp;     *
+<i>192</i>&nbsp;     * @defaultValue 0.0
+<i>193</i>&nbsp;     */
+<i>194</i>&nbsp;    private DoubleProperty controlX2;
+<i>195</i>&nbsp;
+<i>196</i>&nbsp;
+<i>197</i>&nbsp;    public final void setControlX2(double value) {
+<b class="nc"><i>198</i>&nbsp;        if (controlX2 != null || value != 0.0) {</b>
+<b class="nc"><i>199</i>&nbsp;            controlX2Property().set(value);</b>
+<i>200</i>&nbsp;        }
+<b class="nc"><i>201</i>&nbsp;    }</b>
+<i>202</i>&nbsp;
+<i>203</i>&nbsp;    public final double getControlX2() {
+<b class="nc"><i>204</i>&nbsp;        return controlX2 == null ? 0.0 : controlX2.get();</b>
+<i>205</i>&nbsp;    }
+<i>206</i>&nbsp;
+<i>207</i>&nbsp;    public final DoubleProperty controlX2Property() {
+<b class="nc"><i>208</i>&nbsp;        if (controlX2 == null) {</b>
+<b class="nc"><i>209</i>&nbsp;            controlX2 = new DoublePropertyBase() {</b>
+<i>210</i>&nbsp;
+<i>211</i>&nbsp;                @Override
+<i>212</i>&nbsp;                public void invalidated() {
+<i>213</i>&nbsp;                    u();
+<i>214</i>&nbsp;                }
+<i>215</i>&nbsp;
+<i>216</i>&nbsp;                @Override
+<i>217</i>&nbsp;                public Object getBean() {
+<i>218</i>&nbsp;                    return CubicCurveTo.this;
+<i>219</i>&nbsp;                }
+<i>220</i>&nbsp;
+<i>221</i>&nbsp;                @Override
+<i>222</i>&nbsp;                public String getName() {
+<i>223</i>&nbsp;                    return &quot;controlX2&quot;;
+<i>224</i>&nbsp;                }
+<i>225</i>&nbsp;            };
+<i>226</i>&nbsp;        }
+<b class="nc"><i>227</i>&nbsp;        return controlX2;</b>
+<i>228</i>&nbsp;    }
+<i>229</i>&nbsp;
+<i>230</i>&nbsp;    /**
+<i>231</i>&nbsp;     * Defines the Y coordinate of the second B&amp;eacute;zier control point.
+<i>232</i>&nbsp;     *
+<i>233</i>&nbsp;     * @defaultValue 0.0
+<i>234</i>&nbsp;     */
+<i>235</i>&nbsp;    private DoubleProperty controlY2;
+<i>236</i>&nbsp;
+<i>237</i>&nbsp;
+<i>238</i>&nbsp;    public final void setControlY2(double value) {
+<b class="nc"><i>239</i>&nbsp;        if (controlY2 != null || value != 0.0) {</b>
+<b class="nc"><i>240</i>&nbsp;            controlY2Property().set(value);</b>
+<i>241</i>&nbsp;        }
+<b class="nc"><i>242</i>&nbsp;    }</b>
+<i>243</i>&nbsp;
+<i>244</i>&nbsp;    public final double getControlY2() {
+<b class="nc"><i>245</i>&nbsp;        return controlY2 == null ? 0.0 : controlY2.get();</b>
+<i>246</i>&nbsp;    }
+<i>247</i>&nbsp;
+<i>248</i>&nbsp;    public final DoubleProperty controlY2Property() {
+<b class="nc"><i>249</i>&nbsp;        if (controlY2 == null) {</b>
+<b class="nc"><i>250</i>&nbsp;            controlY2 = new DoublePropertyBase() {</b>
+<i>251</i>&nbsp;
+<i>252</i>&nbsp;                @Override
+<i>253</i>&nbsp;                public void invalidated() {
+<i>254</i>&nbsp;                    u();
+<i>255</i>&nbsp;                }
+<i>256</i>&nbsp;
+<i>257</i>&nbsp;                @Override
+<i>258</i>&nbsp;                public Object getBean() {
+<i>259</i>&nbsp;                    return CubicCurveTo.this;
+<i>260</i>&nbsp;                }
+<i>261</i>&nbsp;
+<i>262</i>&nbsp;                @Override
+<i>263</i>&nbsp;                public String getName() {
+<i>264</i>&nbsp;                    return &quot;controlY2&quot;;
+<i>265</i>&nbsp;                }
+<i>266</i>&nbsp;            };
+<i>267</i>&nbsp;        }
+<b class="nc"><i>268</i>&nbsp;        return controlY2;</b>
+<i>269</i>&nbsp;    }
+<i>270</i>&nbsp;
+<i>271</i>&nbsp;    /**
+<i>272</i>&nbsp;     * Defines the X coordinate of the final end point.
+<i>273</i>&nbsp;     *
+<i>274</i>&nbsp;     * @defaultValue 0.0
+<i>275</i>&nbsp;     */
+<i>276</i>&nbsp;    private DoubleProperty x;
+<i>277</i>&nbsp;
+<i>278</i>&nbsp;    public final void setX(double value) {
+<b class="nc"><i>279</i>&nbsp;        if (x != null || value != 0.0) {</b>
+<b class="nc"><i>280</i>&nbsp;            xProperty().set(value);</b>
+<i>281</i>&nbsp;        }
+<b class="nc"><i>282</i>&nbsp;    }</b>
+<i>283</i>&nbsp;
+<i>284</i>&nbsp;    public final double getX() {
+<b class="nc"><i>285</i>&nbsp;        return x == null ? 0.0 : x.get();</b>
+<i>286</i>&nbsp;    }
+<i>287</i>&nbsp;
+<i>288</i>&nbsp;    public final DoubleProperty xProperty() {
+<b class="nc"><i>289</i>&nbsp;        if (x == null) {</b>
+<b class="nc"><i>290</i>&nbsp;            x = new DoublePropertyBase() {</b>
+<i>291</i>&nbsp;
+<i>292</i>&nbsp;                @Override
+<i>293</i>&nbsp;                public void invalidated() {
+<i>294</i>&nbsp;                    u();
+<i>295</i>&nbsp;                }
+<i>296</i>&nbsp;
+<i>297</i>&nbsp;                @Override
+<i>298</i>&nbsp;                public Object getBean() {
+<i>299</i>&nbsp;                    return CubicCurveTo.this;
+<i>300</i>&nbsp;                }
+<i>301</i>&nbsp;
+<i>302</i>&nbsp;                @Override
+<i>303</i>&nbsp;                public String getName() {
+<i>304</i>&nbsp;                    return &quot;x&quot;;
+<i>305</i>&nbsp;                }
+<i>306</i>&nbsp;            };
+<i>307</i>&nbsp;        }
+<b class="nc"><i>308</i>&nbsp;        return x;</b>
+<i>309</i>&nbsp;    }
+<i>310</i>&nbsp;
+<i>311</i>&nbsp;    /**
+<i>312</i>&nbsp;     * Defines the Y coordinate of the final end point.
+<i>313</i>&nbsp;     *
+<i>314</i>&nbsp;     * @defaultValue 0.0
+<i>315</i>&nbsp;     */
+<i>316</i>&nbsp;    private DoubleProperty y;
+<i>317</i>&nbsp;
+<i>318</i>&nbsp;
+<i>319</i>&nbsp;    public final void setY(double value) {
+<b class="nc"><i>320</i>&nbsp;        if (y != null || value != 0.0) {</b>
+<b class="nc"><i>321</i>&nbsp;            yProperty().set(value);</b>
+<i>322</i>&nbsp;        }
+<b class="nc"><i>323</i>&nbsp;    }</b>
+<i>324</i>&nbsp;
+<i>325</i>&nbsp;    public final double getY() {
+<b class="nc"><i>326</i>&nbsp;        return y == null ? 0.0 : y.get();</b>
+<i>327</i>&nbsp;    }
+<i>328</i>&nbsp;
+<i>329</i>&nbsp;    public final DoubleProperty yProperty() {
+<b class="nc"><i>330</i>&nbsp;        if (y == null) {</b>
+<b class="nc"><i>331</i>&nbsp;            y = new DoublePropertyBase() {</b>
+<i>332</i>&nbsp;
+<i>333</i>&nbsp;                @Override
+<i>334</i>&nbsp;                public void invalidated() {
+<i>335</i>&nbsp;                    u();
+<i>336</i>&nbsp;                }
+<i>337</i>&nbsp;
+<i>338</i>&nbsp;                @Override
+<i>339</i>&nbsp;                public Object getBean() {
+<i>340</i>&nbsp;                    return CubicCurveTo.this;
+<i>341</i>&nbsp;                }
+<i>342</i>&nbsp;
+<i>343</i>&nbsp;                @Override
+<i>344</i>&nbsp;                public String getName() {
+<i>345</i>&nbsp;                    return &quot;y&quot;;
+<i>346</i>&nbsp;                }
+<i>347</i>&nbsp;            };
+<i>348</i>&nbsp;        }
+<b class="nc"><i>349</i>&nbsp;        return y;</b>
+<i>350</i>&nbsp;    }
+<i>351</i>&nbsp;
+<i>352</i>&nbsp;    /**
+<i>353</i>&nbsp;     * Adds the curved path element to the specified path.
+<i>354</i>&nbsp;     */
+<i>355</i>&nbsp;    @Override
+<i>356</i>&nbsp;    void addTo(NGPath pgPath) {
+<b class="nc"><i>357</i>&nbsp;        if (isAbsolute()) {</b>
+<b class="nc"><i>358</i>&nbsp;            pgPath.addCubicTo((float)getControlX1(), (float)getControlY1(),</b>
+<b class="nc"><i>359</i>&nbsp;                              (float)getControlX2(), (float)getControlY2(),</b>
+<b class="nc"><i>360</i>&nbsp;                              (float)getX(), (float)getY());</b>
+<i>361</i>&nbsp;        } else {
+<b class="nc"><i>362</i>&nbsp;            final double dx = pgPath.getCurrentX();</b>
+<b class="nc"><i>363</i>&nbsp;            final double dy = pgPath.getCurrentY();</b>
+<b class="nc"><i>364</i>&nbsp;            pgPath.addCubicTo((float)(getControlX1()+dx), (float)(getControlY1()+dy),</b>
+<b class="nc"><i>365</i>&nbsp;                              (float)(getControlX2()+dx), (float)(getControlY2()+dy),</b>
+<b class="nc"><i>366</i>&nbsp;                              (float)(getX()+dx), (float)(getY()+dy));</b>
+<i>367</i>&nbsp;        }
+<b class="nc"><i>368</i>&nbsp;    }</b>
+<i>369</i>&nbsp;
+<i>370</i>&nbsp;    /*
+<i>371</i>&nbsp;     * Note: This method MUST only be called via its accessor method.
+<i>372</i>&nbsp;     */
+<i>373</i>&nbsp;    private void doAddTo(Path2D path) {
+<b class="nc"><i>374</i>&nbsp;        if (isAbsolute()) {</b>
+<b class="nc"><i>375</i>&nbsp;            path.curveTo((float)getControlX1(), (float)getControlY1(),</b>
+<b class="nc"><i>376</i>&nbsp;                         (float)getControlX2(), (float)getControlY2(),</b>
+<b class="nc"><i>377</i>&nbsp;                         (float)getX(), (float)getY());</b>
+<i>378</i>&nbsp;        } else {
+<b class="nc"><i>379</i>&nbsp;            final double dx = path.getCurrentX();</b>
+<b class="nc"><i>380</i>&nbsp;            final double dy = path.getCurrentY();</b>
+<b class="nc"><i>381</i>&nbsp;            path.curveTo((float)(getControlX1()+dx), (float)(getControlY1()+dy),</b>
+<b class="nc"><i>382</i>&nbsp;                         (float)(getControlX2()+dx), (float)(getControlY2()+dy),</b>
+<b class="nc"><i>383</i>&nbsp;                         (float)(getX()+dx), (float)(getY()+dy));</b>
+<i>384</i>&nbsp;        }
+<b class="nc"><i>385</i>&nbsp;    }</b>
+<i>386</i>&nbsp;
+<i>387</i>&nbsp;    /**
+<i>388</i>&nbsp;     * Returns a string representation of this {@code CubicCurveTo} object.
+<i>389</i>&nbsp;     * @return a string representation of this {@code CubicCurveTo} object.
+<i>390</i>&nbsp;     */
+<i>391</i>&nbsp;    @Override
+<i>392</i>&nbsp;    public String toString() {
+<b class="nc"><i>393</i>&nbsp;        final StringBuilder sb = new StringBuilder(&quot;CubicCurveTo[&quot;);</b>
+<i>394</i>&nbsp;
+<b class="nc"><i>395</i>&nbsp;        sb.append(&quot;x=&quot;).append(getX());</b>
+<b class="nc"><i>396</i>&nbsp;        sb.append(&quot;, y=&quot;).append(getY());</b>
+<b class="nc"><i>397</i>&nbsp;        sb.append(&quot;, controlX1=&quot;).append(getControlX1());</b>
+<b class="nc"><i>398</i>&nbsp;        sb.append(&quot;, controlY1=&quot;).append(getControlY1());</b>
+<b class="nc"><i>399</i>&nbsp;        sb.append(&quot;, controlX2=&quot;).append(getControlX2());</b>
+<b class="nc"><i>400</i>&nbsp;        sb.append(&quot;, controlY2=&quot;).append(getControlY2());</b>
+<i>401</i>&nbsp;
+<b class="nc"><i>402</i>&nbsp;        return sb.append(&quot;]&quot;).toString();</b>
+<i>403</i>&nbsp;    }
+<i>404</i>&nbsp;}
+<i>405</i>&nbsp;
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2017-12-04 21:49</div>
+</div>
+</body>
+</html>

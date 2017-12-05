@@ -1,0 +1,480 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: BoxShadow</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.sun.scenario.effect</a> ]
+</div>
+
+<h1>Coverage Summary for Class: BoxShadow (com.sun.scenario.effect)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">BoxShadow</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    43.3%
+  </span>
+  <span class="absValue">
+    (13/ 30)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    38.6%
+  </span>
+  <span class="absValue">
+    (32/ 83)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/*
+<i>2</i>&nbsp; * Copyright (c) 2009, 2014, Oracle and/or its affiliates. All rights reserved.
+<i>3</i>&nbsp; * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+<i>4</i>&nbsp; *
+<i>5</i>&nbsp; *
+<i>6</i>&nbsp; *
+<i>7</i>&nbsp; *
+<i>8</i>&nbsp; *
+<i>9</i>&nbsp; *
+<i>10</i>&nbsp; *
+<i>11</i>&nbsp; *
+<i>12</i>&nbsp; *
+<i>13</i>&nbsp; *
+<i>14</i>&nbsp; *
+<i>15</i>&nbsp; *
+<i>16</i>&nbsp; *
+<i>17</i>&nbsp; *
+<i>18</i>&nbsp; *
+<i>19</i>&nbsp; *
+<i>20</i>&nbsp; *
+<i>21</i>&nbsp; *
+<i>22</i>&nbsp; *
+<i>23</i>&nbsp; *
+<i>24</i>&nbsp; */
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;package com.sun.scenario.effect;
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;import com.sun.javafx.geom.BaseBounds;
+<i>29</i>&nbsp;import com.sun.javafx.geom.DirtyRegionContainer;
+<i>30</i>&nbsp;import com.sun.javafx.geom.DirtyRegionPool;
+<i>31</i>&nbsp;import com.sun.javafx.geom.RectBounds;
+<i>32</i>&nbsp;import com.sun.javafx.geom.Rectangle;
+<i>33</i>&nbsp;import com.sun.javafx.geom.transform.BaseTransform;
+<i>34</i>&nbsp;import com.sun.scenario.effect.impl.Renderer;
+<i>35</i>&nbsp;import com.sun.scenario.effect.impl.state.BoxShadowState;
+<i>36</i>&nbsp;import com.sun.scenario.effect.impl.state.LinearConvolveKernel;
+<i>37</i>&nbsp;
+<i>38</i>&nbsp;/**
+<i>39</i>&nbsp; * A shadow effect using a box-shaped convolution kernel, with a configurable
+<i>40</i>&nbsp; * size for each dimension of the kernel and a number of passes to control
+<i>41</i>&nbsp; * the quality of the blur.
+<i>42</i>&nbsp; */
+<i>43</i>&nbsp;public class BoxShadow extends AbstractShadow {
+<i>44</i>&nbsp;
+<b class="fc"><i>45</i>&nbsp;    private final BoxShadowState state = new BoxShadowState();</b>
+<i>46</i>&nbsp;
+<i>47</i>&nbsp;    /**
+<i>48</i>&nbsp;     * Constructs a new {@code BoxShadow} effect with
+<i>49</i>&nbsp;     * the default blur sizes (1, 1)
+<i>50</i>&nbsp;     * and the default number of passes (1),
+<i>51</i>&nbsp;     * using the default input for source data.
+<i>52</i>&nbsp;     * This is a shorthand equivalent to:
+<i>53</i>&nbsp;     * &lt;pre&gt;
+<i>54</i>&nbsp;     *     new BoxShadow(1, 1, 1, DefaultInput)
+<i>55</i>&nbsp;     * &lt;/pre&gt;
+<i>56</i>&nbsp;     */
+<i>57</i>&nbsp;    public BoxShadow() {
+<b class="fc"><i>58</i>&nbsp;        this(1, 1);</b>
+<b class="fc"><i>59</i>&nbsp;    }</b>
+<i>60</i>&nbsp;
+<i>61</i>&nbsp;    /**
+<i>62</i>&nbsp;     * Constructs a new {@code BoxShadow} effect with
+<i>63</i>&nbsp;     * the given blur sizes
+<i>64</i>&nbsp;     * and the default number of passes (1),
+<i>65</i>&nbsp;     * using the default input for source data.
+<i>66</i>&nbsp;     * This is a shorthand equivalent to:
+<i>67</i>&nbsp;     * &lt;pre&gt;
+<i>68</i>&nbsp;     *     new BoxShadow(hsize, vsize, 1, DefaultInput)
+<i>69</i>&nbsp;     * &lt;/pre&gt;
+<i>70</i>&nbsp;     *
+<i>71</i>&nbsp;     * @param hsize the horizontal size of the BoxShadow kernel
+<i>72</i>&nbsp;     * @param vsize the vertical size of the BoxShadow kernel
+<i>73</i>&nbsp;     * @throws IllegalArgumentException if either {@code hsize}
+<i>74</i>&nbsp;     * or {@code vsize} is outside the allowable range
+<i>75</i>&nbsp;     */
+<i>76</i>&nbsp;    public BoxShadow(int hsize, int vsize) {
+<b class="fc"><i>77</i>&nbsp;        this(hsize, vsize, 1, DefaultInput);</b>
+<b class="fc"><i>78</i>&nbsp;    }</b>
+<i>79</i>&nbsp;
+<i>80</i>&nbsp;    /**
+<i>81</i>&nbsp;     * Constructs a new {@code BoxShadow} effect with
+<i>82</i>&nbsp;     * the given blur sizes
+<i>83</i>&nbsp;     * and number of passes,
+<i>84</i>&nbsp;     * using the default input for source data.
+<i>85</i>&nbsp;     * This is a shorthand equivalent to:
+<i>86</i>&nbsp;     * &lt;pre&gt;
+<i>87</i>&nbsp;     *     new BoxShadow(hsize, vsize, passes, DefaultInput)
+<i>88</i>&nbsp;     * &lt;/pre&gt;
+<i>89</i>&nbsp;     *
+<i>90</i>&nbsp;     * @param hsize the horizontal size of the BoxShadow kernel
+<i>91</i>&nbsp;     * @param vsize the vertical size of the BoxShadow kernel
+<i>92</i>&nbsp;     * @param passes the number of blur passes to execute
+<i>93</i>&nbsp;     * @throws IllegalArgumentException if either {@code hsize}
+<i>94</i>&nbsp;     * or {@code vsize} or {@code passes}
+<i>95</i>&nbsp;     * is outside the allowable range
+<i>96</i>&nbsp;     */
+<i>97</i>&nbsp;    public BoxShadow(int hsize, int vsize, int passes) {
+<b class="nc"><i>98</i>&nbsp;        this(hsize, vsize, passes, DefaultInput);</b>
+<b class="nc"><i>99</i>&nbsp;    }</b>
+<i>100</i>&nbsp;
+<i>101</i>&nbsp;    /**
+<i>102</i>&nbsp;     * Constructs a new {@code BoxShadow} effect with
+<i>103</i>&nbsp;     * the given blur sizes
+<i>104</i>&nbsp;     * and number of passes,
+<i>105</i>&nbsp;     * using the output of the specified effect for source data.
+<i>106</i>&nbsp;     *
+<i>107</i>&nbsp;     * @param hsize the horizontal size of the BoxShadow kernel
+<i>108</i>&nbsp;     * @param vsize the vertical size of the BoxShadow kernel
+<i>109</i>&nbsp;     * @param passes the number of blur passes to execute
+<i>110</i>&nbsp;     * @param input the single input {@code Effect}
+<i>111</i>&nbsp;     * @throws IllegalArgumentException if either {@code hsize}
+<i>112</i>&nbsp;     * or {@code vsize} or {@code passes}
+<i>113</i>&nbsp;     * is outside the allowable range
+<i>114</i>&nbsp;     */
+<i>115</i>&nbsp;    public BoxShadow(int hsize, int vsize, int passes, Effect input) {
+<b class="fc"><i>116</i>&nbsp;        super(input);</b>
+<b class="fc"><i>117</i>&nbsp;        setHorizontalSize(hsize);</b>
+<b class="fc"><i>118</i>&nbsp;        setVerticalSize(vsize);</b>
+<b class="fc"><i>119</i>&nbsp;        setPasses(passes);</b>
+<b class="fc"><i>120</i>&nbsp;        setColor(Color4f.BLACK);</b>
+<b class="fc"><i>121</i>&nbsp;        setSpread(0f);</b>
+<b class="fc"><i>122</i>&nbsp;    }</b>
+<i>123</i>&nbsp;
+<i>124</i>&nbsp;    @Override
+<i>125</i>&nbsp;    LinearConvolveKernel getState() {
+<b class="nc"><i>126</i>&nbsp;        return state;</b>
+<i>127</i>&nbsp;    }
+<i>128</i>&nbsp;
+<i>129</i>&nbsp;    /**
+<i>130</i>&nbsp;     * Returns the input for this {@code Effect}.
+<i>131</i>&nbsp;     *
+<i>132</i>&nbsp;     * @return the input for this {@code Effect}
+<i>133</i>&nbsp;     */
+<i>134</i>&nbsp;    public final Effect getInput() {
+<b class="nc"><i>135</i>&nbsp;        return getInputs().get(0);</b>
+<i>136</i>&nbsp;    }
+<i>137</i>&nbsp;
+<i>138</i>&nbsp;    /**
+<i>139</i>&nbsp;     * Sets the input for this {@code Effect}.
+<i>140</i>&nbsp;     * Sets the input for this {@code Effect} to a specific
+<i>141</i>&nbsp;     * {@code Effect} or to the default input if {@code input} is
+<i>142</i>&nbsp;     * {@code null}.
+<i>143</i>&nbsp;     *
+<i>144</i>&nbsp;     * @param input the input for this {@code Effect}
+<i>145</i>&nbsp;     */
+<i>146</i>&nbsp;    public void setInput(Effect input) {
+<b class="fc"><i>147</i>&nbsp;        setInput(0, input);</b>
+<b class="fc"><i>148</i>&nbsp;    }</b>
+<i>149</i>&nbsp;
+<i>150</i>&nbsp;    /**
+<i>151</i>&nbsp;     * Returns the horizontal size of the effect kernel.
+<i>152</i>&nbsp;     *
+<i>153</i>&nbsp;     * @return the horizontal size of the effect kernel
+<i>154</i>&nbsp;     */
+<i>155</i>&nbsp;    public int getHorizontalSize() {
+<b class="nc"><i>156</i>&nbsp;        return state.getHsize();</b>
+<i>157</i>&nbsp;    }
+<i>158</i>&nbsp;
+<i>159</i>&nbsp;    /**
+<i>160</i>&nbsp;     * Sets the horizontal size of the effect kernel.
+<i>161</i>&nbsp;     * &lt;pre&gt;
+<i>162</i>&nbsp;     *       Min:   0
+<i>163</i>&nbsp;     *       Max: 255
+<i>164</i>&nbsp;     *   Default:   1
+<i>165</i>&nbsp;     *  Identity:   0
+<i>166</i>&nbsp;     * &lt;/pre&gt;
+<i>167</i>&nbsp;     *
+<i>168</i>&nbsp;     * @param hsize the horizontal size of the effect kernel
+<i>169</i>&nbsp;     * @throws IllegalArgumentException if {@code hsize}
+<i>170</i>&nbsp;     * is outside the allowable range
+<i>171</i>&nbsp;     */
+<i>172</i>&nbsp;    public final void setHorizontalSize(int hsize) {
+<b class="fc"><i>173</i>&nbsp;        state.setHsize(hsize);</b>
+<b class="fc"><i>174</i>&nbsp;    }</b>
+<i>175</i>&nbsp;
+<i>176</i>&nbsp;    /**
+<i>177</i>&nbsp;     * Returns the vertical size of the effect kernel.
+<i>178</i>&nbsp;     *
+<i>179</i>&nbsp;     * @return the vertical size of the effect kernel
+<i>180</i>&nbsp;     */
+<i>181</i>&nbsp;    public int getVerticalSize() {
+<b class="nc"><i>182</i>&nbsp;        return state.getVsize();</b>
+<i>183</i>&nbsp;    }
+<i>184</i>&nbsp;
+<i>185</i>&nbsp;    /**
+<i>186</i>&nbsp;     * Sets the vertical size of the effect kernel.
+<i>187</i>&nbsp;     * &lt;pre&gt;
+<i>188</i>&nbsp;     *       Min:   0
+<i>189</i>&nbsp;     *       Max: 255
+<i>190</i>&nbsp;     *   Default:   1
+<i>191</i>&nbsp;     *  Identity:   0
+<i>192</i>&nbsp;     * &lt;/pre&gt;
+<i>193</i>&nbsp;     *
+<i>194</i>&nbsp;     * @param vsize the vertical size of the effect kernel
+<i>195</i>&nbsp;     * @throws IllegalArgumentException if {@code vsize}
+<i>196</i>&nbsp;     * is outside the allowable range
+<i>197</i>&nbsp;     */
+<i>198</i>&nbsp;    public final void setVerticalSize(int vsize) {
+<b class="fc"><i>199</i>&nbsp;        state.setVsize(vsize);</b>
+<b class="fc"><i>200</i>&nbsp;    }</b>
+<i>201</i>&nbsp;
+<i>202</i>&nbsp;    /**
+<i>203</i>&nbsp;     * Returns the number of passes of the effect kernel to control the
+<i>204</i>&nbsp;     * quality of the blur.
+<i>205</i>&nbsp;     *
+<i>206</i>&nbsp;     * @return the number of passes of the effect kernel
+<i>207</i>&nbsp;     */
+<i>208</i>&nbsp;    public int getPasses() {
+<b class="nc"><i>209</i>&nbsp;        return state.getBlurPasses();</b>
+<i>210</i>&nbsp;    }
+<i>211</i>&nbsp;
+<i>212</i>&nbsp;    /**
+<i>213</i>&nbsp;     * Sets the number of passes of the effect kernel to control the
+<i>214</i>&nbsp;     * quality of the blur.
+<i>215</i>&nbsp;     * &lt;pre&gt;
+<i>216</i>&nbsp;     *       Min:   0
+<i>217</i>&nbsp;     *       Max:   3
+<i>218</i>&nbsp;     *   Default:   1
+<i>219</i>&nbsp;     *  Identity:   0
+<i>220</i>&nbsp;     * &lt;/pre&gt;
+<i>221</i>&nbsp;     * A setting of 1 creates a low quality blur.  A setting of 3 creates
+<i>222</i>&nbsp;     * a blur that is very close to a Gaussian blur.
+<i>223</i>&nbsp;     *
+<i>224</i>&nbsp;     * @param passes
+<i>225</i>&nbsp;     * @throws IllegalArgumentException if {@code passes} is outside the
+<i>226</i>&nbsp;     * allowable range
+<i>227</i>&nbsp;     */
+<i>228</i>&nbsp;    public final void setPasses(int passes) {
+<b class="fc"><i>229</i>&nbsp;        state.setBlurPasses(passes);</b>
+<b class="fc"><i>230</i>&nbsp;    }</b>
+<i>231</i>&nbsp;
+<i>232</i>&nbsp;    /**
+<i>233</i>&nbsp;     * Returns the shadow color.
+<i>234</i>&nbsp;     *
+<i>235</i>&nbsp;     * @return the shadow color
+<i>236</i>&nbsp;     */
+<i>237</i>&nbsp;    public Color4f getColor() {
+<b class="fc"><i>238</i>&nbsp;        return state.getShadowColor();</b>
+<i>239</i>&nbsp;    }
+<i>240</i>&nbsp;
+<i>241</i>&nbsp;    /**
+<i>242</i>&nbsp;     * Sets the shadow color.
+<i>243</i>&nbsp;     * &lt;pre&gt;
+<i>244</i>&nbsp;     *       Min: n/a
+<i>245</i>&nbsp;     *       Max: n/a
+<i>246</i>&nbsp;     *   Default: Color4f.BLACK
+<i>247</i>&nbsp;     *  Identity: n/a
+<i>248</i>&nbsp;     * &lt;/pre&gt;
+<i>249</i>&nbsp;     *
+<i>250</i>&nbsp;     * @param color the shadow color
+<i>251</i>&nbsp;     * @throws IllegalArgumentException if {@code color} is null
+<i>252</i>&nbsp;     */
+<i>253</i>&nbsp;    public final void setColor(Color4f color) {
+<b class="fc"><i>254</i>&nbsp;        state.setShadowColor(color);</b>
+<b class="fc"><i>255</i>&nbsp;    }</b>
+<i>256</i>&nbsp;
+<i>257</i>&nbsp;    /**
+<i>258</i>&nbsp;     * Gets the spread of the shadow effect.
+<i>259</i>&nbsp;     *
+<i>260</i>&nbsp;     * @return the spread of the shadow effect
+<i>261</i>&nbsp;     */
+<i>262</i>&nbsp;    public float getSpread() {
+<b class="fc"><i>263</i>&nbsp;        return state.getSpread();</b>
+<i>264</i>&nbsp;    }
+<i>265</i>&nbsp;
+<i>266</i>&nbsp;    /**
+<i>267</i>&nbsp;     * Sets the spread of the shadow effect.
+<i>268</i>&nbsp;     * The spread is the portion of the radius where the contribution of
+<i>269</i>&nbsp;     * the source material will be 100%.
+<i>270</i>&nbsp;     * The remaining portion of the radius will have a contribution
+<i>271</i>&nbsp;     * controlled by the Blur kernel.
+<i>272</i>&nbsp;     * A spread of {@code 0.0} will result in a pure box-blur distribution
+<i>273</i>&nbsp;     * of the shadow.
+<i>274</i>&nbsp;     * A spread of {@code 1.0} will result in a solid growth outward of the
+<i>275</i>&nbsp;     * source material opacity to the limit of the kernel sizes with a very
+<i>276</i>&nbsp;     * sharp cutoff to transparency at the edge of the kernel.
+<i>277</i>&nbsp;     * &lt;pre&gt;
+<i>278</i>&nbsp;     *       Min: 0.0
+<i>279</i>&nbsp;     *       Max: 1.0
+<i>280</i>&nbsp;     *   Default: 0.0
+<i>281</i>&nbsp;     *  Identity: 0.0
+<i>282</i>&nbsp;     * &lt;/pre&gt;
+<i>283</i>&nbsp;     *
+<i>284</i>&nbsp;     * @param spread the spread of the shadow effect
+<i>285</i>&nbsp;     * @throws IllegalArgumentException if {@code spread} is outside the
+<i>286</i>&nbsp;     * allowable range
+<i>287</i>&nbsp;     */
+<i>288</i>&nbsp;    public final void setSpread(float spread) {
+<b class="fc"><i>289</i>&nbsp;        state.setSpread(spread);</b>
+<b class="fc"><i>290</i>&nbsp;    }</b>
+<i>291</i>&nbsp;
+<i>292</i>&nbsp;    public float getGaussianRadius() {
+<b class="nc"><i>293</i>&nbsp;        float d = (getHorizontalSize() + getVerticalSize()) / 2.0f;</b>
+<b class="nc"><i>294</i>&nbsp;        d *= 3.0f;</b>
+<b class="nc"><i>295</i>&nbsp;        return (d &lt; 1.0f ? 0.0f : ((d - 1.0f) / 2.0f));</b>
+<i>296</i>&nbsp;    }
+<i>297</i>&nbsp;
+<i>298</i>&nbsp;    public float getGaussianWidth() {
+<b class="nc"><i>299</i>&nbsp;        return getHorizontalSize() * 3.0f;</b>
+<i>300</i>&nbsp;    }
+<i>301</i>&nbsp;
+<i>302</i>&nbsp;    public float getGaussianHeight() {
+<b class="nc"><i>303</i>&nbsp;        return getVerticalSize() * 3.0f;</b>
+<i>304</i>&nbsp;    }
+<i>305</i>&nbsp;
+<i>306</i>&nbsp;    public void setGaussianRadius(float r) {
+<b class="nc"><i>307</i>&nbsp;        float d = r * 2.0f + 1.0f;</b>
+<b class="nc"><i>308</i>&nbsp;        setGaussianWidth(d);</b>
+<b class="nc"><i>309</i>&nbsp;        setGaussianHeight(d);</b>
+<b class="nc"><i>310</i>&nbsp;    }</b>
+<i>311</i>&nbsp;
+<i>312</i>&nbsp;    public void setGaussianWidth(float w) {
+<b class="fc"><i>313</i>&nbsp;        w /= 3.0f;</b>
+<b class="fc"><i>314</i>&nbsp;        setHorizontalSize(Math.round(w));</b>
+<b class="fc"><i>315</i>&nbsp;    }</b>
+<i>316</i>&nbsp;
+<i>317</i>&nbsp;    public void setGaussianHeight(float h) {
+<b class="fc"><i>318</i>&nbsp;        h /= 3.0f;</b>
+<b class="fc"><i>319</i>&nbsp;        setVerticalSize(Math.round(h));</b>
+<b class="fc"><i>320</i>&nbsp;    }</b>
+<i>321</i>&nbsp;
+<i>322</i>&nbsp;    public ShadowMode getMode() {
+<b class="nc"><i>323</i>&nbsp;        switch (getPasses()) {</b>
+<i>324</i>&nbsp;            case 1:
+<b class="nc"><i>325</i>&nbsp;                return ShadowMode.ONE_PASS_BOX;</b>
+<i>326</i>&nbsp;            case 2:
+<b class="nc"><i>327</i>&nbsp;                return ShadowMode.TWO_PASS_BOX;</b>
+<i>328</i>&nbsp;            default:
+<b class="nc"><i>329</i>&nbsp;                return ShadowMode.THREE_PASS_BOX;</b>
+<i>330</i>&nbsp;        }
+<i>331</i>&nbsp;    }
+<i>332</i>&nbsp;
+<i>333</i>&nbsp;    public AbstractShadow implFor(ShadowMode mode) {
+<b class="nc"><i>334</i>&nbsp;        switch (mode) {</b>
+<i>335</i>&nbsp;            case GAUSSIAN:
+<b class="nc"><i>336</i>&nbsp;                GaussianShadow gs = new GaussianShadow();</b>
+<b class="nc"><i>337</i>&nbsp;                gs.setInput(getInput());</b>
+<b class="nc"><i>338</i>&nbsp;                gs.setGaussianWidth(getGaussianWidth());</b>
+<b class="nc"><i>339</i>&nbsp;                gs.setGaussianHeight(getGaussianHeight());</b>
+<b class="nc"><i>340</i>&nbsp;                gs.setColor(getColor());</b>
+<b class="nc"><i>341</i>&nbsp;                gs.setSpread(getSpread());</b>
+<b class="nc"><i>342</i>&nbsp;                return gs;</b>
+<i>343</i>&nbsp;            case ONE_PASS_BOX:
+<b class="nc"><i>344</i>&nbsp;                setPasses(1);</b>
+<b class="nc"><i>345</i>&nbsp;                break;</b>
+<i>346</i>&nbsp;            case TWO_PASS_BOX:
+<b class="nc"><i>347</i>&nbsp;                setPasses(2);</b>
+<b class="nc"><i>348</i>&nbsp;                break;</b>
+<i>349</i>&nbsp;            case THREE_PASS_BOX:
+<b class="nc"><i>350</i>&nbsp;                setPasses(3);</b>
+<i>351</i>&nbsp;                break;
+<i>352</i>&nbsp;        }
+<b class="nc"><i>353</i>&nbsp;        return this;</b>
+<i>354</i>&nbsp;    }
+<i>355</i>&nbsp;
+<i>356</i>&nbsp;    @Override
+<i>357</i>&nbsp;    public AccelType getAccelType(FilterContext fctx) {
+<b class="nc"><i>358</i>&nbsp;        return Renderer.getRenderer(fctx).getAccelType();</b>
+<i>359</i>&nbsp;    }
+<i>360</i>&nbsp;
+<i>361</i>&nbsp;    @Override
+<i>362</i>&nbsp;    public BaseBounds getBounds(BaseTransform transform, Effect defaultInput) {
+<b class="nc"><i>363</i>&nbsp;        BaseBounds r = super.getBounds(null, defaultInput);</b>
+<b class="nc"><i>364</i>&nbsp;        int hgrow = state.getKernelSize(0) / 2;</b>
+<b class="nc"><i>365</i>&nbsp;        int vgrow = state.getKernelSize(1) / 2;</b>
+<b class="nc"><i>366</i>&nbsp;        RectBounds ret = new RectBounds(r.getMinX(), r.getMinY(), r.getMaxX(), r.getMaxY());</b>
+<b class="nc"><i>367</i>&nbsp;        ret.grow(hgrow, vgrow);</b>
+<b class="nc"><i>368</i>&nbsp;        return transformBounds(transform, ret);</b>
+<i>369</i>&nbsp;    }
+<i>370</i>&nbsp;
+<i>371</i>&nbsp;    @Override
+<i>372</i>&nbsp;    public Rectangle getResultBounds(BaseTransform transform,
+<i>373</i>&nbsp;                                     Rectangle outputClip,
+<i>374</i>&nbsp;                                     ImageData... inputDatas)
+<i>375</i>&nbsp;    {
+<b class="nc"><i>376</i>&nbsp;        Rectangle r = inputDatas[0].getUntransformedBounds();</b>
+<b class="nc"><i>377</i>&nbsp;        r = state.getResultBounds(r, 0);</b>
+<b class="nc"><i>378</i>&nbsp;        r = state.getResultBounds(r, 1);</b>
+<b class="nc"><i>379</i>&nbsp;        r.intersectWith(outputClip);</b>
+<b class="nc"><i>380</i>&nbsp;        return r;</b>
+<i>381</i>&nbsp;    }
+<i>382</i>&nbsp;
+<i>383</i>&nbsp;    @Override
+<i>384</i>&nbsp;    public boolean reducesOpaquePixels() {
+<b class="nc"><i>385</i>&nbsp;        return true;</b>
+<i>386</i>&nbsp;    }
+<i>387</i>&nbsp;
+<i>388</i>&nbsp;    @Override
+<i>389</i>&nbsp;    public DirtyRegionContainer getDirtyRegions(Effect defaultInput, DirtyRegionPool regionPool) {
+<b class="nc"><i>390</i>&nbsp;        Effect di = getDefaultedInput(0, defaultInput);</b>
+<b class="nc"><i>391</i>&nbsp;        DirtyRegionContainer drc = di.getDirtyRegions(defaultInput, regionPool);</b>
+<i>392</i>&nbsp;
+<b class="nc"><i>393</i>&nbsp;        drc.grow(state.getKernelSize(0) / 2, state.getKernelSize(1) / 2);</b>
+<i>394</i>&nbsp;
+<b class="nc"><i>395</i>&nbsp;        return drc;</b>
+<i>396</i>&nbsp;    }
+<i>397</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2017-12-04 21:49</div>
+</div>
+</body>
+</html>
